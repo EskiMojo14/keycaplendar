@@ -3,6 +3,7 @@ import { DesktopAppBar, TabletAppBar, MobileAppBar } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
 import { DesktopNavDrawer, MobileNavDrawer } from './NavDrawer';
 import { EmptyContent } from './EmptyContent';
+import './Content.scss';
 
 export class DesktopContent extends React.Component {
   constructor(props) {

@@ -1,0 +1,13 @@
+
+@import "@material/animation/variables";
+@import "@material/drawer/variables";
+.mdc-drawer-app-content {
+    transition-property: margin;
+    transition-timing-function: $mdc-animation-standard-curve-timing-function;
+    .mdc-drawer--animate:not(.mdc-drawer--closing) + &{
+        transition-duration: $mdc-drawer-animation-enter;
+    }
+    .mdc-drawer--closing + &{
+        transition-duration: $mdc-drawer-animation-exit;
+    }
+}

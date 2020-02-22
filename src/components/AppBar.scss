@@ -9,7 +9,10 @@
 }
 
 .mdc-top-app-bar:not(.mdc-top-app-bar--short) .logo {
-    margin-right: -8px;
+    padding-left: 20px;
+    & + .mdc-top-app-bar__title {
+        padding-left: 8px;
+    }
 }
 
 .mdc-top-app-bar--short {
