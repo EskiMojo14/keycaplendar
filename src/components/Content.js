@@ -1,7 +1,8 @@
 import React from 'react';
-import { DesktopAppBar, MobileAppBar } from './AppBar';
+import { DesktopAppBar, TabletAppBar, MobileAppBar } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
 import { DesktopNavDrawer, MobileNavDrawer } from './NavDrawer';
+import { EmptyContent } from './EmptyContent';
 
 export class DesktopContent extends React.Component {
   constructor(props) {
@@ -19,8 +20,8 @@ export class DesktopContent extends React.Component {
         <DesktopAppBar toggleDrawer={this.toggleDrawer} />
         <div style={{ overflow: 'hidden', position: 'relative' }}>
           <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-          <DrawerAppContent style={{height: '100rem'}}>
-            {/* content goes here */}
+          <DrawerAppContent>
+            <EmptyContent />
           </DrawerAppContent>
         </div>
       </div>
@@ -41,9 +42,8 @@ export class TabletContent extends React.Component {
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-        <MobileAppBar view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
-        {/* content goes here */}
-        <div style={{height: '100rem'}}></div>
+        <TabletAppBar view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
+        <EmptyContent />
       </div>
     );
   }
@@ -64,8 +64,7 @@ export class MobileContent extends React.Component {
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <MobileAppBar  view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
-        <div style={{height: '100rem'}}></div>
-        {/* content goes here */}
+        <EmptyContent />
       </div>
     );
   }

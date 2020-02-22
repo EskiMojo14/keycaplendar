@@ -6,5 +6,37 @@
 
 .mdc-top-app-bar .logo {
     height: 40px;
+}
+
+.mdc-top-app-bar:not(.mdc-top-app-bar--short) .logo {
     margin-right: -8px;
+}
+
+.mdc-top-app-bar--short {
+    .short-logo {
+        overflow: hidden;
+        max-width: 0;
+        padding: 0;
+        position: absolute;
+        right: 0;
+    }
+    &.mdc-top-app-bar--short-collapsed {
+        .nav-icon {
+            max-width: 56px;
+            flex-grow: 0;
+        }
+        .actions {
+            display: none;
+        }
+        .short-logo {
+            animation: appear 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            max-width: none;
+            padding: 8px;
+        }
+    }
+}
+@keyframes appear {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }

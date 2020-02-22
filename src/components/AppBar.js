@@ -44,7 +44,7 @@ export class DesktopAppBar extends React.Component {
     }
 };
 
-export class MobileAppBar extends React.Component {
+export class TabletAppBar extends React.Component {
     constructor(props) {
         super(props);
 
@@ -60,7 +60,7 @@ export class MobileAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <Tooltip content="Open navigation" align="bottom"><TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} /></Tooltip>
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
                             <TopAppBarTitle>{this.props.view}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
@@ -74,6 +74,48 @@ export class MobileAppBar extends React.Component {
                                     )
                                 }} />
                             </Tooltip>
+                        </TopAppBarSection>
+                    </TopAppBarRow>
+                </TopAppBar>
+                <TopAppBarFixedAdjust />
+            </div>
+        );
+    }
+};
+
+export class MobileAppBar extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
+    }
+
+    toggleDrawerIcon() {
+        this.props.toggleDrawer();
+    }
+    render() {
+        return (
+            <div>
+                <TopAppBar short>
+                    <TopAppBarRow>
+                        <TopAppBarSection alignStart className="nav-icon">
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
+                            <TopAppBarTitle>{this.props.view}</TopAppBarTitle>
+                        </TopAppBarSection>
+                        <TopAppBarSection alignEnd className="actions">
+                            <Tooltip content="Sort" align="bottom"><TopAppBarActionItem icon="sort" /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
+                            <Tooltip content="View" align="bottom">
+                                <TopAppBarActionItem icon={{
+                                    strategy: 'component',
+                                    icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H4V5h15v4zm1 4H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H4v-4h15v4z" /><path d="M4 15h15v4H4zM4 5h15v4H4z" opacity=".3" /></svg>
+                                    )
+                                }} />
+                            </Tooltip>
+                        </TopAppBarSection>
+                        <TopAppBarSection alignEnd className="short-logo">
+                            <img className="logo" src={logo} alt="logo" />
                         </TopAppBarSection>
                     </TopAppBarRow>
                 </TopAppBar>
