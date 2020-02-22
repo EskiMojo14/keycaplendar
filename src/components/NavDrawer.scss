@@ -1,0 +1,33 @@
+@import '../variables';
+
+@import "@material/drawer/mdc-drawer";
+@import "@material/list/mdc-list";
+@import "@material/top-app-bar/variables";
+
+.mdc-drawer--dismissible {
+    z-index: auto;
+    position: fixed;
+    height: calc(100% - #{$mdc-top-app-bar-row-height});
+};
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+    .mdc-drawer--dismissible {
+        height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    };
+};
+
+.mdc-drawer__header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.nav.mdc-drawer__header {
+    display: flex;
+    align-items: center;
+    .mdc-drawer__title {
+        margin-bottom: 0;
+    }
+    .logo {
+        height: 40px;
+        margin-right: 16px;
+    }
+}

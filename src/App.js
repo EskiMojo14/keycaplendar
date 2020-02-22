@@ -1,21 +1,21 @@
 import React from 'react';
-import { DesktopAppBar } from './components/desktopAppBar';
-import { MobileAppBar } from './components/mobileAppBar';
+import { DesktopContent, TabletContent, MobileContent } from './components/Content';
 import './App.scss';
 
 class App extends React.Component {
   render() {
     const device = this.props.device;
-    let appBar;
+    let content;
     if (device === 'desktop') {
-      appBar = <DesktopAppBar />;
+      content = <DesktopContent />;
+    } else if (device === 'tablet') {
+      content = <TabletContent />;
     } else {
-      appBar = <MobileAppBar />;
+      content = <MobileContent />;
     }
     return (
       <div className="app">
-        {appBar}
-        <div style={{ height: '100rem', padding: '1rem' }}>Scroll Me</div>
+        {content}
       </div>
     );
   }

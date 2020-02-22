@@ -1,0 +1,13 @@
+@import '@material/theme/color-palette';
+
+$mdc-theme-primary: $material-color-teal-500;
+$mdc-theme-secondary: $material-color-deep-orange-200;
+$mdc-theme-on-primary: black;
+$mdc-theme-on-secondary: black;
+$mdc-theme-background: $material-color-grey-200;
+
+$mdc-typography-font-family: unquote("Lato, sans-serif");
+
+$mdc-typography-styles-headline6: (
+    font-family: unquote("Roboto Slab, serif")
+);

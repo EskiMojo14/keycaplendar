@@ -1,24 +1,13 @@
-$mdc-theme-primary: #009688;
-$mdc-theme-secondary: #ffab91;
-$mdc-theme-on-primary: black;
-$mdc-theme-on-secondary: black;
-$mdc-theme-background: #eeeeee;
-
-$mdc-typography-font-family: unquote("Lato, sans-serif");
-
-$mdc-typography-styles-headline6: (
-    font-family: unquote("Roboto Slab, serif")
-);
+@import 'variables';
 
 @import "@material/theme/mdc-theme";
 @import "@material/typography/mdc-typography";
 
-@import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/icon-button/mdc-icon-button";
-
 .mdc-top-app-bar__title {
     @include mdc-theme-prop(color, on-primary);
+    user-select: none;
 }
+
 body {
     @include mdc-theme-prop(background-color, background);
 }
