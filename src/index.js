@@ -14,7 +14,7 @@ if (vw >= 840) {
 } else if (vw < 840 && vw >= 480) {
     device = 'tablet';
 } else {
-    device = 'tablet';
+    device = 'mobile';
 };
 
 console.log(device);
