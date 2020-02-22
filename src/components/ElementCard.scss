@@ -1,0 +1,41 @@
+@import '@material/card/mdc-card';
+@import '@material/button/mdc-button';
+@import '@material/animation/functions';
+
+.mdc-card__action-buttons a {
+   text-decoration: none;
+}
+
+.mdc-card__primary-action {
+    flex-direction: row;
+    padding: 16px;
+    .text-container {
+        flex: auto 1 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        .mdc-typography--headline5 {
+            margin: 0 0 8px 0;
+        }
+        .mdc-typography--subtitle2 {
+            margin: 0;
+        }
+    }
+    .mdc-card__media {
+        border-radius: 2px;
+        flex: 88px 0;
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 839px) {
+    .expand-actions {
+        max-height: 0px;
+        overflow: hidden;
+        transition:  mdc-animation-standard(max-height,200ms);
+        &.expanded {
+            max-height: 52px;
+        }
+    }
+}

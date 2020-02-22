@@ -1,14 +1,15 @@
 import React from 'react';
+import './Content.scss';
 import { DesktopAppBar, TabletAppBar, MobileAppBar } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
 import { DesktopNavDrawer, MobileNavDrawer } from './NavDrawer';
-import { EmptyContent } from './EmptyContent';
-import './Content.scss';
+import { ContentEmpty } from './ContentEmpty';
+import { ContentGrid } from './ContentGrid';
 
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: true };
+    this.state = { drawerOpen: true, content: true, view: 'card' };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -16,13 +17,14 @@ export class DesktopContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
+    const content = (this.state.content ? <ContentGrid view={this.state.view}/> : <ContentEmpty />);
     return (
       <div>
         <DesktopAppBar toggleDrawer={this.toggleDrawer} />
         <div style={{ overflow: 'hidden', position: 'relative' }}>
           <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
           <DrawerAppContent>
-            <EmptyContent />
+            {content}
           </DrawerAppContent>
         </div>
       </div>
@@ -32,7 +34,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false };
+    this.state = { drawerOpen: false, content: true, view: 'card' };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -40,11 +42,12 @@ export class TabletContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
+    const content = (this.state.content ? <ContentGrid /> : <ContentEmpty />);
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <TabletAppBar view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
-        <EmptyContent />
+        {content}
       </div>
     );
   }
@@ -53,7 +56,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false };
+    this.state = { drawerOpen: false, content: true, view: 'card' };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -61,11 +64,12 @@ export class MobileContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
+    const content = (this.state.content ? <ContentGrid /> : <ContentEmpty />);
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <MobileAppBar  view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
-        <EmptyContent />
+        {content}
       </div>
     );
   }
