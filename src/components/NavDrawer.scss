@@ -1,9 +1,11 @@
 @import '../variables';
 
-@import "@material/drawer/mdc-drawer";
-@import "@material/list/mdc-list";
 @import "@material/top-app-bar/variables";
 @import "@material/theme/mixins";
+
+@import "@material/drawer/mdc-drawer";
+@import "@material/list/mdc-list";
+@import "@rmwc/tooltip/tooltip";
 
 .mdc-drawer--dismissible {
     z-index: auto;
@@ -36,10 +38,17 @@
     }
 }
 
-.mdc-drawer .mdc-list-item {
-    margin: 0;
-    padding: 8px 16px;
-    border-radius: 0;
+.mdc-drawer {
+    @include mdc-theme-prop(background-color, surface);
+    .mdc-list-item {
+        margin: 0;
+        padding: 8px 16px;
+        border-radius: 0;
+        &--selected, &--activated {
+           @include mdc-theme-prop(color, primary);
+           font-weight: bold;
+     }
+    }
 }
 
 .drawer-footer {

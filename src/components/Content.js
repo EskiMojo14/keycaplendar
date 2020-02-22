@@ -41,7 +41,7 @@ export class TabletContent extends React.Component {
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-        <MobileAppBar toggleDrawer={this.toggleDrawer} />
+        <MobileAppBar view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
         {/* content goes here */}
         <div style={{height: '100rem'}}></div>
       </div>
@@ -63,7 +63,7 @@ export class MobileContent extends React.Component {
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-        <MobileAppBar toggleDrawer={this.toggleDrawer} />
+        <MobileAppBar  view={'Live GBs'} toggleDrawer={this.toggleDrawer} />
         <div style={{height: '100rem'}}></div>
         {/* content goes here */}
       </div>
