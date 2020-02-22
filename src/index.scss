@@ -1,13 +1,25 @@
+$mdc-theme-primary: #009688;
+$mdc-theme-secondary: #ffab91;
+$mdc-theme-on-primary: black;
+$mdc-theme-on-secondary: black;
+$mdc-theme-background: #eeeeee;
+
+$mdc-typography-font-family: unquote("Lato, sans-serif");
+
+$mdc-typography-styles-headline6: (
+    font-family: unquote("Roboto Slab, serif")
+);
+
+@import "@material/theme/mdc-theme";
+@import "@material/typography/mdc-typography";
+
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/icon-button/mdc-icon-button";
+
+.mdc-top-app-bar__title {
+    @include mdc-theme-prop(color, on-primary);
+}
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    @include mdc-theme-prop(background-color, background);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
