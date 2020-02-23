@@ -6,6 +6,9 @@ $mdc-theme-secondary: $material-color-deep-orange-200;
 $mdc-theme-on-primary: black;
 $mdc-theme-on-secondary: black;
 $mdc-theme-background: $material-color-grey-200;
+$mdc-theme-on-surface: black;
+
+$divider-color: rgba($mdc-theme-on-surface,0.12);
 
 /*
 $mdc-theme-on-primary: if(contrast-tone($mdc-theme-primary) == 'dark', black, white);

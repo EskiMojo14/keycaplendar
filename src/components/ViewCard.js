@@ -22,7 +22,7 @@ export class ViewCard extends React.Component {
                         }
                       };
                     const title = set.profile + ' ' + set.colourway;
-                    const subtitle = 'Runs from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + ' ' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + ' ' + month[gbEnd.getMonth()] + '.';
+                    const subtitle = 'Runs from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + '.';
                     return (
                         <ElementCard title={title} subtitle={subtitle} image={set.image} geekhack={set.ghThread} store={set.storeLink} key={index}/>
                     )

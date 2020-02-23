@@ -22,7 +22,7 @@ export class ElementCard extends React.Component {
                             <Typography use="headline5" tag="h2">{this.props.title}</Typography>
                             <Typography use="subtitle2" tag="p" theme="textSecondaryOnBackground">{this.props.subtitle}</Typography>
                         </div>
-                        <CardMedia square style={{ backgroundImage: 'url(' + this.props.image + ')' }} />
+                        <CardMedia sixteenByNine style={{ backgroundImage: 'url(' + this.props.image + ')' }} />
                     </CardPrimaryAction>
                     <div className={`expand-actions ${this.state.expanded ? "expanded" : ""}`}>
                         <CardActions>

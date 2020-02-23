@@ -1,4 +1,4 @@
-@import '../variables';
+@import '../index';
 
 @import "@material/top-app-bar/variables";
 @import "@material/theme/mixins";
@@ -23,7 +23,7 @@
 };
 
 .mdc-drawer__header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid $divider-color;
 }
 
 .nav.mdc-drawer__header {
@@ -53,7 +53,7 @@
 
 .drawer-footer {
     display: flex;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-top: 1px solid $divider-color;
     user-select: none;
     &-list {
         padding: 0;
@@ -65,7 +65,7 @@
     }
     .dark-mode {
         flex: 56px 0 0;
-        border-left: 1px solid rgba(0, 0, 0, 0.12);
+        border-left: 1px solid $divider-color;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -1,0 +1,65 @@
+@import '@material/theme/color-palette';
+
+$mdc-theme-primary: $material-color-teal-200;
+$mdc-theme-secondary: $material-color-deep-orange-200;
+$mdc-theme-on-primary: white;
+$mdc-theme-on-secondary: white;
+$mdc-theme-background: #121212;
+$mdc-theme-surface:#121212;
+$mdc-theme-on-surface: white;
+
+@import '@material/theme/mixins';
+
+@import "@material/ripple/mixins";
+
+$overlay-values: (
+    1: 5%,   // card, switch
+    2: 7%,   // contained button
+    3: 8%,   // refresh indicator
+    4: 9%,   // app bar
+    6: 11%,  // FAB, snackbar
+    8: 12%,  // menu, side sheet
+    12: 14%, // 
+    16: 15%, // nav drawer, modal side sheet
+    24: 16%  // dialog
+);
+
+$divider-color: rgba($mdc-theme-on-surface,0.12);
+
+@function overlay-elevation($color, $elevation : 0) {
+    @return lighten($color, map-get($overlay-values, $elevation));
+};
+
+.mdc-card {
+    background-color: overlay-elevation(#121212, 1);
+    @include mdc-theme-prop(color, on-surface);
+    .mdc-card__primary-action {
+        @include mdc-states(white);
+    }
+};
+
+.mdc-top-app-bar {
+    background-color: overlay-elevation(#121212, 4);
+};
+
+.mdc-drawer {
+    background-color: overlay-elevation(#121212, 16);
+    .mdc-drawer__title {
+        @include mdc-theme-prop(color, text-primary-on-background);
+    }
+    .mdc-list-item:not(.mdc-list-item--selected), .mdc-list-item:not(.mdc-list-item--selected) .mdc-list-item__graphic{
+        @include mdc-theme-prop(color, text-primary-on-background);
+        @include mdc-states(white);
+        @include mdc-theme-prop(fill, text-secondary-on-background);
+    }
+}
+
+.mdc-drawer.mdc-drawer--dismissible {
+    background-color: overlay-elevation(#121212, 1);
+}
+
+$mdc-typography-font-family: unquote("Lato, sans-serif");
+
+$mdc-typography-styles-headline6: (
+    font-family: unquote("Roboto Slab, serif")
+);
