@@ -1,6 +1,7 @@
 @import '@material/card/mdc-card';
 @import '@material/button/mdc-button';
 @import '@material/animation/functions';
+@import '@material/theme/mixins';
 
 $image-size: 128px;
 
@@ -14,27 +15,45 @@ $image-size: 128px;
     }
 }
 
-.mdc-card__primary-action {
+.main-block {
+    display: flex;
     flex-direction: column;
-    .text-container {
-        flex: calc(100% - #{$image-size}) 1 1;
-        padding: 16px;
+    .text-row {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        .mdc-typography--headline5 {
-            margin: 0 0 8px 0;
+        .text-container {
+            flex: calc(100% - #{$image-size}) 1 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            .title {
+                padding-bottom: 8px;
+                display: flex;
+                .time-indicator {
+                    display: flex;
+                    align-items: center;
+                    padding-right: 8px;
+                    @include mdc-theme-prop(fill, secondary); 
+                }
+                .mdc-typography--headline5 {
+                    margin: 0;
+                }
+            }
+            .mdc-typography--subtitle2 {
+                margin: 0;
+            }
         }
-        .mdc-typography--subtitle2 {
-            margin: 0;
+        .expand-icon-container {
+            display: none;
+            padding: 16px;
+            align-items: center;
+            .expand-icon {
+                @include mdc-theme-prop(color, text-secondary-on-background);
+                transform: scaleY(1);
+                transition:  mdc-animation-standard(transform,200ms);
+            }
         }
-    }
-    .image-container {
-        border-radius: 2px;
-        overflow: hidden;
-        flex: 100% #{$image-size} 1;
-        flex-shrink: 0;
     }
 }
 
@@ -43,8 +62,14 @@ $image-size: 128px;
         max-height: 0px;
         overflow: hidden;
         transition:  mdc-animation-standard(max-height,200ms);
-        &.expanded {
+        .expanded & {
             max-height: 52px;
+        }
+    }
+    .main-block .text-row .expand-icon-container {
+        display: flex;
+        .expanded & .expand-icon {
+            transform: scaleY(-1);
         }
     }
 }

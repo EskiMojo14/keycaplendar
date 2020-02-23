@@ -1,11 +1,15 @@
-@import '../index';
-
 @import "@material/top-app-bar/variables";
+@import "@material/theme/variables";
 @import "@material/theme/mixins";
 
 @import "@material/drawer/mdc-drawer";
 @import "@material/list/mdc-list";
 @import "@rmwc/tooltip/tooltip";
+
+@import "@material/ripple/mixins";
+
+$divider-color: rgba(mdc-theme-prop-value(on-surface),0.12);
+$ripple-color: mdc-theme-prop-value(on-surface);
 
 .mdc-drawer--dismissible {
     z-index: auto;
@@ -44,10 +48,18 @@
         margin: 0;
         padding: 8px 16px;
         border-radius: 0;
+        @include mdc-theme-prop(color, text-primary-on-background);
         &--selected, &--activated {
            @include mdc-theme-prop(color, primary);
            font-weight: bold;
-     }
+        }
+        &:not(.mdc-list-item--selected), &:not(.mdc-list-item--selected) .mdc-list-item__graphic{
+            @include mdc-states($ripple-color);
+        }
+        &__graphic {
+            @include mdc-theme-prop(color, text-secondary-on-background);
+            @include mdc-theme-prop(fill, text-secondary-on-background);
+        }
     }
 }
 
@@ -69,7 +81,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        @include mdc-theme-prop(color, text-secondary-on-background);
-        @include mdc-theme-prop(fill, text-secondary-on-background);
+        .svg-container {
+            svg {@include mdc-theme-prop(fill, text-secondary-on-background);};
+            position: relative;
+            @include mdc-ripple-surface;
+            @include mdc-ripple-radius-unbounded;
+            @include mdc-states(on-surface);
+        };
     }
 }

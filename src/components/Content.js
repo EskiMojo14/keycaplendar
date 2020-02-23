@@ -9,7 +9,7 @@ import { ContentGrid } from './ContentGrid';
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: true, content: true, view: 'card' };
+    this.state = { drawerOpen: true, content: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -17,7 +17,7 @@ export class DesktopContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.state.view}/> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
     return (
       <div>
         <DesktopAppBar toggleDrawer={this.toggleDrawer} />
@@ -34,7 +34,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false, content: true, view: 'card' };
+    this.state = { drawerOpen: false, content: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -42,7 +42,7 @@ export class TabletContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
@@ -56,7 +56,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false, content: true, view: 'card' };
+    this.state = { drawerOpen: false, content: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
   toggleDrawer() {
@@ -64,7 +64,7 @@ export class MobileContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
     return (
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />

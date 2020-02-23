@@ -10,8 +10,6 @@ $mdc-theme-on-surface: white;
 
 @import '@material/theme/mixins';
 
-@import "@material/ripple/mixins";
-
 $overlay-values: (
     1: 5%,   // card, switch
     2: 7%,   // contained button
@@ -32,10 +30,6 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 
 .mdc-card {
     background-color: overlay-elevation(#121212, 1);
-    @include mdc-theme-prop(color, on-surface);
-    .mdc-card__primary-action {
-        @include mdc-states(white);
-    }
 };
 
 .mdc-top-app-bar {
@@ -44,14 +38,6 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 
 .mdc-drawer {
     background-color: overlay-elevation(#121212, 16);
-    .mdc-drawer__title {
-        @include mdc-theme-prop(color, text-primary-on-background);
-    }
-    .mdc-list-item:not(.mdc-list-item--selected), .mdc-list-item:not(.mdc-list-item--selected) .mdc-list-item__graphic{
-        @include mdc-theme-prop(color, text-primary-on-background);
-        @include mdc-states(white);
-        @include mdc-theme-prop(fill, text-secondary-on-background);
-    }
 }
 
 .mdc-drawer.mdc-drawer--dismissible {

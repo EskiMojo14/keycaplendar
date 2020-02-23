@@ -1,7 +1,7 @@
-@import '../variables';
-
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/icon-button/mdc-icon-button";
+@import "@material/ripple/mixins";
+@import "@material/theme/mixins";
 @import "@rmwc/tooltip/tooltip";
 
 .mdc-top-app-bar .logo {
@@ -15,6 +15,13 @@
     }
 }
 
+.svg-container {
+    position: relative;
+    @include mdc-theme-prop(fill,on-primary);
+    @include mdc-ripple-surface;
+    @include mdc-ripple-radius-unbounded;
+    @include mdc-states(on-primary);
+}
 .mdc-top-app-bar--short {
     .short-logo {
         overflow: hidden;

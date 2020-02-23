@@ -24,12 +24,12 @@ export class ContentGrid extends React.Component {
             storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
         };
         const sets = [katLich,katLich,katLich]
-        const backgroundStyle = { backgroundColor: (this.state.view === 'list' ? 'white' : 'none') };
+        const backgroundClass = (this.state.view === 'list' ? 'list-grid' : '');
         let view;
         view = <ViewCard sets={sets} />
 
         return (
-            <Grid style={backgroundStyle}>
+            <Grid className={backgroundClass}>
                 {vendors.map((value, index) => {
                     return (
                         <GridCell className="outer-container" desktop={6} tablet={8} phone={4} key={index}>

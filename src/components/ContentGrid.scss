@@ -1,7 +1,27 @@
 @import '@material/layout-grid/mdc-layout-grid';
+@import '@material/theme/mixins';
 
 .subheader {
     padding-bottom: 16px;
+}
+
+.list-grid {
+    @include mdc-theme-prop(background-color, surface);
+    padding: 0;
+    .subheader {
+        padding: 16px;
+    }
+    .mdc-layout-grid__inner {
+        grid-gap: 0;
+    }
+}
+
+@media (min-width: 840px) {
+    .list-grid {
+        .subheader {
+            padding: 24px 16px 16px 16px;
+        }
+    }
 }
 
 @media (min-width: 839px) and (max-width: 1099px) {
