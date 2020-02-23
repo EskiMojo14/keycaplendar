@@ -10,6 +10,8 @@ $mdc-theme-on-surface: black;
 
 $divider-color: rgba($mdc-theme-on-surface,0.12);
 
+@import 'dark-theme';
+
 /*
 $mdc-theme-on-primary: if(contrast-tone($mdc-theme-primary) == 'dark', black, white);
 $mdc-theme-on-secondary: if(contrast-tone($mdc-theme-secondary) == 'dark', black, white);

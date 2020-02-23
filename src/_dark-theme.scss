@@ -32,6 +32,10 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
     background-color: overlay-elevation(#121212, 1);
 };
 
+.list-grid {
+    background-color: overlay-elevation(#121212, 1);
+};
+
 .mdc-top-app-bar {
     background-color: overlay-elevation(#121212, 4);
 };

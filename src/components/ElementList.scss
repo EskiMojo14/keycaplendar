@@ -1,13 +1,29 @@
-@import 'App';
+@import 'variables';
 
 @import '@material/list/mdc-list';
 @import "@material/theme/variables";
+@import "@material/theme/mixins";
 @import "@material/ripple/mixins";
 
 $ripple-color: mdc-theme-prop-value(on-surface);
 
 .mdc-list .mdc-list-item {
     @include mdc-states(mdc-theme-prop-value(on-surface));
+    .icons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-grow: 1;
+        height: 56px;
+        .time-indicator {
+            height: 24px;
+            padding-right: 16px;
+            @include mdc-theme-prop(fill, secondary); 
+        }
+        .mdc-list-item__meta {
+            margin: 0;
+        }
+    }
 }
 
 .list-image {
