@@ -88,9 +88,11 @@ export class MobileAppBar extends React.Component {
 
         this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
     }
-
     toggleDrawerIcon() {
         this.props.toggleDrawer();
+    }
+    scrollTop() {
+        window.scrollTo(0,0);
     }
     render() {
         return (
@@ -112,7 +114,7 @@ export class MobileAppBar extends React.Component {
                                 </Ripple>
                             </Tooltip>
                         </TopAppBarSection>
-                        <TopAppBarSection alignEnd className="short-logo">
+                        <TopAppBarSection alignEnd className="short-logo" onClick={this.scrollTop}>
                             <img className="logo" src={logo} alt="logo" />
                         </TopAppBarSection>
                     </TopAppBarRow>
