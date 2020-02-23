@@ -1,0 +1,20 @@
+@import 'App';
+
+@import '@material/list/mdc-list';
+@import "@material/theme/variables";
+@import "@material/ripple/mixins";
+
+$ripple-color: mdc-theme-prop-value(on-surface);
+
+.mdc-list .mdc-list-item {
+    @include mdc-states(mdc-theme-prop-value(on-surface));
+}
+
+.list-image {
+    height: 56px;
+    width: 56px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 2px;
+    margin-right: 16px;
+}

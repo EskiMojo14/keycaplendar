@@ -1,3 +1,4 @@
+@import 'App';
 @import "@material/top-app-bar/variables";
 @import "@material/theme/variables";
 @import "@material/theme/mixins";
@@ -12,7 +13,7 @@ $divider-color: rgba(mdc-theme-prop-value(on-surface),0.12);
 $ripple-color: mdc-theme-prop-value(on-surface);
 
 .mdc-drawer--dismissible {
-    z-index: auto;
+    z-index: 1;
     position: fixed;
     height: calc(100% - #{$mdc-top-app-bar-row-height});
 };
@@ -67,7 +68,7 @@ $ripple-color: mdc-theme-prop-value(on-surface);
     display: flex;
     border-top: 1px solid $divider-color;
     user-select: none;
-    &-list {
+    &-list.mdc-list {
         padding: 0;
         flex: auto 1 1;
     }

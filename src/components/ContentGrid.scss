@@ -1,5 +1,7 @@
 @import '@material/layout-grid/mdc-layout-grid';
+@import "@material/top-app-bar/variables";
 @import '@material/theme/mixins';
+@import '@material/elevation/mixins';
 
 .subheader {
     padding-bottom: 16px;
@@ -7,22 +9,25 @@
 
 .list-grid {
     @include mdc-theme-prop(background-color, surface);
-    padding: 0;
+    @include mdc-elevation(1);
+    padding-left: 0;
+    padding-right: 0;
+    min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
     .subheader {
-        padding: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 8px;
     }
     .mdc-layout-grid__inner {
         grid-gap: 0;
     }
 }
 
-@media (min-width: 840px) {
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
     .list-grid {
-        .subheader {
-            padding: 24px 16px 16px 16px;
-        }
-    }
-}
+        min-height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    };
+};
 
 @media (min-width: 839px) and (max-width: 1099px) {
     .outer-container.mdc-layout-grid__cell--span-6-desktop {

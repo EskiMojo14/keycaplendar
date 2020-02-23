@@ -5,7 +5,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { view: 'card' };
+    this.state = { view: 'list' };
   }
   render() {
     const device = this.props.device;

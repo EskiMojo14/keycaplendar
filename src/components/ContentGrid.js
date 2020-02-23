@@ -2,14 +2,11 @@ import React from 'react';
 import { Grid, GridCell } from '@rmwc/grid';
 import { Typography } from '@rmwc/typography';
 import { ViewCard } from './ViewCard';
+import { ViewList } from './ViewList';
 
 import './ContentGrid.scss';
 
 export class ContentGrid extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { view: this.props.view };
-    }
     render() {
         const vendors = ['NovelKeys', 'NovelKeys', 'NovelKeys','NovelKeys', 'NovelKeys', 'NovelKeys']
         const katLich = {
@@ -24,10 +21,13 @@ export class ContentGrid extends React.Component {
             storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
         };
         const sets = [katLich,katLich,katLich]
-        const backgroundClass = (this.state.view === 'list' ? 'list-grid' : '');
+        const backgroundClass = (this.props.view === 'list' ? 'list-grid' : '');
         let view;
-        view = <ViewCard sets={sets} />
-
+        if (this.props.view === 'card')  {
+            view = <ViewCard sets={sets} />;
+        } else if (this.props.view === 'list') {
+            view = <ViewList sets={sets} />;
+        }
         return (
             <Grid className={backgroundClass}>
                 {vendors.map((value, index) => {

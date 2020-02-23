@@ -1,8 +1,10 @@
+@import 'App';
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/icon-button/mdc-icon-button";
 @import "@material/ripple/mixins";
 @import "@material/theme/mixins";
 @import "@rmwc/tooltip/tooltip";
+@import "@material/animation/variables";
 
 .mdc-top-app-bar .logo {
     height: 40px;
@@ -23,6 +25,7 @@
     @include mdc-states(on-primary);
 }
 .mdc-top-app-bar--short {
+    transition: width 250ms $mdc-animation-standard-curve-timing-function, box-shadow 250ms $mdc-animation-standard-curve-timing-function;
     .short-logo {
         overflow: hidden;
         max-width: 0;
@@ -44,6 +47,12 @@
             max-width: none;
             padding: 8px;
         }
+    }
+}
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+    .mdc-top-app-bar--short {
+        transition-duration: 200ms;
     }
 }
 @keyframes appear {
