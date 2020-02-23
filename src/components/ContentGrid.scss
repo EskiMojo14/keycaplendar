@@ -3,3 +3,9 @@
 .subheader {
     padding-bottom: 16px;
 }
+
+@media (min-width: 839px) and (max-width: 1099px) {
+    .outer-container.mdc-layout-grid__cell--span-6-desktop {
+        grid-column-end: span 12;
+    }
+}

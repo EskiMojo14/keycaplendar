@@ -23,7 +23,7 @@ export class ContentGrid extends React.Component {
             vendor: 'NovelKeys',
             storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
         };
-        const sets = [katLich,katLich,katLich,katLich]
+        const sets = [katLich,katLich,katLich]
         const backgroundStyle = { backgroundColor: (this.state.view === 'list' ? 'white' : 'none') };
         let view;
         view = <ViewCard sets={sets} />
@@ -32,7 +32,7 @@ export class ContentGrid extends React.Component {
             <Grid style={backgroundStyle}>
                 {vendors.map((value, index) => {
                     return (
-                        <GridCell desktop={6} tablet={8} phone={4} key={index}>
+                        <GridCell className="outer-container" desktop={6} tablet={8} phone={4} key={index}>
                             <div className="subheader">
                                 <Typography use="subtitle2" theme="textSecondaryOnBackground" key={index}>{value}</Typography>
                             </div>

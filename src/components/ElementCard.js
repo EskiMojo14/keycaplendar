@@ -15,14 +15,14 @@ export class ElementCard extends React.Component {
     }
     render() {
         return (
-            <GridCell desktop={6} tablet={4} phone={4}>
+            <GridCell className='card-container' desktop={4} tablet={4} phone={4}>
                 <Card>
                     <CardPrimaryAction onClick={this.toggleExpand}>
+                        <CardMedia sixteenByNine style={{ backgroundImage: 'url(' + this.props.image + ')' }} />
                         <div className="text-container">
                             <Typography use="headline5" tag="h2">{this.props.title}</Typography>
                             <Typography use="subtitle2" tag="p" theme="textSecondaryOnBackground">{this.props.subtitle}</Typography>
                         </div>
-                        <CardMedia sixteenByNine style={{ backgroundImage: 'url(' + this.props.image + ')' }} />
                     </CardPrimaryAction>
                     <div className={`expand-actions ${this.state.expanded ? "expanded" : ""}`}>
                         <CardActions>

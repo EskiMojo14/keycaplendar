@@ -17,7 +17,7 @@
     .mdc-drawer--dismissible {
         height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
     };
-    .mdc-drawer {
+    .mdc-drawer:not(.mdc-drawer--dismissible) {
         width: calc(100% - 56px);
     };
 };

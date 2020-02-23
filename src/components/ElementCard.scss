@@ -2,15 +2,23 @@
 @import '@material/button/mdc-button';
 @import '@material/animation/functions';
 
+$image-size: 128px;
+
 .mdc-card__action-buttons a {
    text-decoration: none;
 }
 
+@media (min-width: 839px) and (max-width: 1599px) {
+    .card-container.mdc-layout-grid__cell--span-4-desktop {
+        grid-column-end: span 6;
+    }
+}
+
 .mdc-card__primary-action {
-    flex-direction: row;
-    padding: 16px;
+    flex-direction: column;
     .text-container {
-        flex: auto 1 1;
+        flex: calc(100% - #{$image-size}) 1 1;
+        padding: 16px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -22,9 +30,10 @@
             margin: 0;
         }
     }
-    .mdc-card__media {
+    .image-container {
         border-radius: 2px;
-        flex: 128px 0;
+        overflow: hidden;
+        flex: 100% #{$image-size} 1;
         flex-shrink: 0;
     }
 }
