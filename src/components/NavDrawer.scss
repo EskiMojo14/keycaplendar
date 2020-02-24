@@ -54,10 +54,12 @@ $ripple-color: mdc-theme-prop-value(on-surface);
            @include mdc-theme-prop(color, primary);
            font-weight: bold;
         }
-        &:not(.mdc-list-item--selected), &:not(.mdc-list-item--selected) .mdc-list-item__graphic{
+        &:not(.mdc-list-item--selected){ 
             @include mdc-states($ripple-color);
-            @include mdc-theme-prop(color, text-secondary-on-background);
-            @include mdc-theme-prop(fill, text-secondary-on-background);
+            .mdc-list-item__graphic {
+                @include mdc-theme-prop(color, text-secondary-on-background);
+                @include mdc-theme-prop(fill, text-secondary-on-background);
+            }
         }
     }
 }

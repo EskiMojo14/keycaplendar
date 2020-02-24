@@ -12,6 +12,7 @@
     @include mdc-elevation(1);
     padding-left: 0;
     padding-right: 0;
+    padding-bottom: 0;
     min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
     .subheader {
         padding-left: 16px;

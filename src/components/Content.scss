@@ -10,3 +10,8 @@
         transition-duration: $mdc-drawer-animation-exit;
     }
 }
+
+.drawer-open {
+    max-height: 100vh;
+    overflow: hidden;
+}

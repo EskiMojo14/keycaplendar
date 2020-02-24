@@ -21,7 +21,7 @@ export class DesktopContent extends React.Component {
     return (
       <div>
         <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view}/>
-        <div style={{ overflow: 'hidden', position: 'relative' }}>
+        <div>
           <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
           <DrawerAppContent>
             {content}
@@ -44,7 +44,7 @@ export class TabletContent extends React.Component {
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
     return (
-      <div style={{ overflow: 'hidden', position: 'relative' }}>
+      <div className={(this.state.drawerOpen ? 'drawer-open' : '')}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <TabletAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view}/>
         {content}
@@ -66,7 +66,7 @@ export class MobileContent extends React.Component {
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
     return (
-      <div style={{ overflow: 'hidden', position: 'relative' }}>
+      <div className={(this.state.drawerOpen ? 'drawer-open' : '')}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <MobileAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view}/>
         {content}
