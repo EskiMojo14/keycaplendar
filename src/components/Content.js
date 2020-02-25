@@ -17,16 +17,14 @@ export class DesktopContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
     return (
-      <div>
-        <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view}/>
-        <div>
-          <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-          <DrawerAppContent>
-            {content}
-          </DrawerAppContent>
-        </div>
+      <div className={this.props.className}>
+        <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} />
+        <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
+        <DrawerAppContent>
+          {content}
+        </DrawerAppContent>
       </div>
     );
   }
@@ -42,11 +40,11 @@ export class TabletContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
     return (
-      <div className={(this.state.drawerOpen ? 'drawer-open' : '')}>
+      <div className={(this.state.drawerOpen ? 'drawer-open' : '') + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-        <TabletAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view}/>
+        <TabletAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} />
         {content}
       </div>
     );
@@ -64,11 +62,11 @@ export class MobileContent extends React.Component {
     this.setState({ drawerOpen: newState });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view}/> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
     return (
-      <div className={(this.state.drawerOpen ? 'drawer-open' : '')}>
+      <div className={(this.state.drawerOpen ? 'drawer-open' : '') + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
-        <MobileAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view}/>
+        <MobileAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} />
         {content}
       </div>
     );

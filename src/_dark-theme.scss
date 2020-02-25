@@ -48,6 +48,10 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
     background-color: overlay-elevation(#121212, 1);
 }
 
+.mdc-menu {
+    background-color: overlay-elevation(#121212, 12);
+}
+
 $mdc-typography-font-family: unquote("Lato, sans-serif");
 
 $mdc-typography-styles-headline6: (

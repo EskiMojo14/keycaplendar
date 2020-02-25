@@ -1,5 +1,7 @@
 @import "@material/animation/variables";
 @import "@material/drawer/variables";
+@import '@material/animation/variables';
+
 .mdc-drawer-app-content {
     transition-property: margin;
     transition-timing-function: $mdc-animation-standard-curve-timing-function;
@@ -14,4 +16,18 @@
 .drawer-open {
     max-height: 100vh;
     overflow: hidden;
+}
+
+.view-transition .mdc-layout-grid {
+    animation: fade-out 90ms $mdc-animation-acceleration-curve-timing-function, fade-in 210ms 90ms $mdc-animation-deceleration-curve-timing-function;
+    will-change: transform, opacity;
+}
+
+@keyframes fade-out {
+    from {opacity: 1;}
+    to {opacity:0;} 
+}
+@keyframes fade-in {
+    from {transform: scale(0.92); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
 }
