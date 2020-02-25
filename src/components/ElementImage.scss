@@ -1,4 +1,5 @@
 @import "@material/ripple/mixins";
+@import "@material/typography/mixins";
 
 a.mdc-image-list__item {
     margin: 2px;
@@ -7,6 +8,31 @@ a.mdc-image-list__item {
     @include mdc-ripple-radius-bounded;
     @include mdc-states(black);
     width: calc(100% / 3 - 4px);
+    .mdc-image-list__supporting {
+        height: 64px;
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            .primary-text {
+                display: flex;
+                .time-indicator {
+                    height: 24px;
+                    max-width: 0;
+                    overflow: hidden;
+                    @include mdc-theme-prop(fill, secondary); 
+                    &.visible {
+                        max-width: none;
+                        padding-right: 8px;
+                    }
+                }
+            }
+            .secondary-text {
+                @include mdc-typography(body2);
+                @include mdc-theme-prop(color, text-secondary-on-dark);
+            }
+        }
+    }
+
 }
 
 @media (max-width: 1499px) {

@@ -9,18 +9,23 @@ import { ContentGrid } from './ContentGrid';
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: true, content: true };
+    this.state = { drawerOpen: true, content: true, sort: 'vendor' };
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.setSort = this.setSort.bind(this);
   }
   toggleDrawer() {
     let newState = (this.state.drawerOpen ? false : true);
     this.setState({ drawerOpen: newState });
   }
+  setSort(sortBy) {
+    const sort = ['vendor','date','profile'];
+    this.setState({ sort: sort[sortBy] });
+  }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
     return (
       <div className={this.props.className}>
-        <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} />
+        <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         <DesktopNavDrawer open={this.state.drawerOpen} toggleDrawer={this.toggleDrawer} />
         <DrawerAppContent>
           {content}
@@ -38,6 +43,10 @@ export class TabletContent extends React.Component {
   toggleDrawer() {
     let newState = (this.state.drawerOpen ? false : true);
     this.setState({ drawerOpen: newState });
+  }
+  setSort(sortBy) {
+    const sort = ['vendor','date','profile'];
+    this.setState({ sort: sort[sortBy] });
   }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
@@ -60,6 +69,10 @@ export class MobileContent extends React.Component {
   toggleDrawer() {
     let newState = (this.state.drawerOpen ? false : true);
     this.setState({ drawerOpen: newState });
+  }
+  setSort(sortBy) {
+    const sort = ['vendor','date','profile'];
+    this.setState({ sort: sort[sortBy] });
   }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);

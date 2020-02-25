@@ -7,6 +7,10 @@
     padding-bottom: 16px;
 }
 
+.mdc-layout-grid {
+    transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-row-height});
+}
+
 .list-grid {
     @include mdc-theme-prop(background-color, surface);
     @include mdc-elevation(1);
@@ -28,6 +32,10 @@
     .list-grid {
         min-height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
     };
+
+    .mdc-layout-grid {
+        transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
+    }
 };
 
 @media (min-width: 839px) and (max-width: 1099px) {
