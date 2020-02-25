@@ -8,7 +8,7 @@ export class MenuView extends React.Component {
             <Menu anchorCorner="bottomLeft" open={this.props.open} onSelect={this.props.onSelect} onClose={this.props.onClose}>
               <MenuItem selected={(this.props.view === 'card' ? true : false)}>Card</MenuItem>
               <MenuItem selected={(this.props.view === 'list' ? true : false)}>List</MenuItem>
-              <MenuItem selected={(this.props.view === 'imageGrid' ? true : false)}>Images</MenuItem>
+              <MenuItem selected={(this.props.view === 'imageList' ? true : false)}>Image List</MenuItem>
             </Menu>
         );
     }

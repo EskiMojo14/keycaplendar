@@ -1,0 +1,16 @@
+@import "@material/ripple/mixins";
+
+a.mdc-image-list__item {
+    margin: 2px;
+    overflow: hidden;
+    @include mdc-ripple-surface;
+    @include mdc-ripple-radius-bounded;
+    @include mdc-states(black);
+    width: calc(100% / 3 - 4px);
+}
+
+@media (max-width: 1499px) {
+    a.mdc-image-list__item {
+        width: calc(100% / 2 - 4px);
+    }
+}

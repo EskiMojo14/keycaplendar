@@ -3,6 +3,7 @@ import { Grid, GridCell } from '@rmwc/grid';
 import { Typography } from '@rmwc/typography';
 import { ViewCard } from './ViewCard';
 import { ViewList } from './ViewList';
+import { ViewImageList } from './ViewImageList';
 
 import './ContentGrid.scss';
 
@@ -27,6 +28,8 @@ export class ContentGrid extends React.Component {
             view = <ViewCard sets={sets} />;
         } else if (this.props.view === 'list') {
             view = <ViewList sets={sets} />;
+        } else if (this.props.view === 'imageList') {
+            view = <ViewImageList sets={sets} />;
         }
         return (
             <Grid className={backgroundClass}>
