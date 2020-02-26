@@ -81,25 +81,30 @@ export class DesktopNavDrawer extends React.Component {
 export class MobileNavDrawer extends React.Component {
     constructor(props) {
         super(props);
-
         this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
+        this.changePage = this.changePage.bind(this);
     }
 
     toggleDrawerIcon() {
         this.props.toggleDrawer();
     }
+
+    changePage(newPage) {
+        this.props.changePage(newPage);
+        this.props.closeDrawer();
+    }
     render() {
         const drawerOpen = this.props.open;
         return (
             <div>
-                <Drawer modal open={drawerOpen} onClose={evt => { this.toggleDrawerIcon(); }}>
+                <Drawer modal open={drawerOpen} onClose={this.props.closeDrawer}>
                     <DrawerHeader className="nav">
                         <img className="logo" src={logo} alt="logo" />
                         <DrawerTitle>KeycapLendar</DrawerTitle>
                     </DrawerHeader>
                     <DrawerContent>
                         <List>
-                            <ListItem onClick={(e) => this.props.changePage('calendar')} selected={(this.props.page === 'calendar' ? true : false)}>
+                            <ListItem onClick={(e) => this.changePage('calendar')} selected={(this.props.page === 'calendar' ? true : false)}>
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -108,7 +113,7 @@ export class MobileNavDrawer extends React.Component {
                                 }} />
                                 Calendar
                             </ListItem>
-                            <ListItem onClick={(e) => this.props.changePage('live')} selected={(this.props.page === 'live' ? true : false)}>
+                            <ListItem onClick={(e) => this.changePage('live')} selected={(this.props.page === 'live' ? true : false)}>
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -117,7 +122,7 @@ export class MobileNavDrawer extends React.Component {
                                 }} />
                                 Live GBs
                             </ListItem>
-                            <ListItem onClick={(e) => this.props.changePage('ic')} selected={(this.props.page === 'ic' ? true : false)}>
+                            <ListItem onClick={(e) => this.changePage('ic')} selected={(this.props.page === 'ic' ? true : false)}>
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -126,7 +131,7 @@ export class MobileNavDrawer extends React.Component {
                                 }} />
                                 IC Tracker
                             </ListItem>
-                            <ListItem onClick={(e) => this.props.changePage('previous')} selected={(this.props.page === 'previous' ? true : false)}>
+                            <ListItem onClick={(e) => this.changePage('previous')} selected={(this.props.page === 'previous' ? true : false)}>
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -139,7 +144,7 @@ export class MobileNavDrawer extends React.Component {
                     </DrawerContent>
                     <div className="drawer-footer">
                         <List className="drawer-footer-list">
-                            <ListItem onClick={(e) => this.props.changePage('account')} selected={(this.props.page === 'account' ? true : false)}>
+                            <ListItem onClick={(e) => this.changePage('account')} selected={(this.props.page === 'account' ? true : false)}>
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
