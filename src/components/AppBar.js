@@ -92,8 +92,10 @@ export class DesktopAppBar extends React.Component {
 export class TabletAppBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { viewMenuOpen: false };
+        this.state = { sortMenuOpen: false, viewMenuOpen: false };
         this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
+        this.openSortMenu = this.openSortMenu.bind(this);
+        this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
@@ -103,10 +105,10 @@ export class TabletAppBar extends React.Component {
         this.props.toggleDrawer();
     }
     openSortMenu() {
-        this.setState({ viewSortOpen: true });
+        this.setState({ sortMenuOpen: true });
     }
     closeSortMenu() {
-        this.setState({ viewSortOpen: false });
+        this.setState({ sortMenuOpen: false });
     }
     openViewMenu() {
         this.setState({ viewMenuOpen: true });
@@ -171,6 +173,8 @@ export class MobileAppBar extends React.Component {
         super(props);
         this.state = { sortMenuOpen: false, viewMenuOpen: false };
         this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
+        this.openSortMenu = this.openSortMenu.bind(this);
+        this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
@@ -179,10 +183,10 @@ export class MobileAppBar extends React.Component {
         this.props.toggleDrawer();
     }
     openSortMenu() {
-        this.setState({ viewSortOpen: true });
+        this.setState({ sortMenuOpen: true });
     }
     closeSortMenu() {
-        this.setState({ viewSortOpen: false });
+        this.setState({ sortMenuOpen: false });
     }
     openViewMenu() {
         this.setState({ viewMenuOpen: true });
