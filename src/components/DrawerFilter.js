@@ -10,24 +10,24 @@ import './DrawerFilter.scss';
 export class DesktopDrawerFilter extends React.Component {
     render() {
         return (
-            <Drawer dismissible open={this.props.open} className="filter-drawer">
-                <DrawerHeader dir="ltr">
+            <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
+                <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer}/></Tooltip>
+                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer} /></Tooltip>
                 </DrawerHeader>
-                <DrawerContent dir="ltr">
-                <div className="subheader">
-                    <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
-                </div>
-                <div className="checkbox-list">
-                    {this.props.vendors.map((value, index) => {
-                        return (
-                            <FormField>
-                                <CheckboxFilter label={value} key={index}/>
-                            </FormField>
-                        )
-                    })}
-                </div>
+                <DrawerContent>
+                    <div className="subheader">
+                        <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
+                    </div>
+                    <div className="checkbox-list">
+                        {this.props.vendors.map((value, index) => {
+                            return (
+                                <FormField>
+                                    <CheckboxFilter label={value} key={index} />
+                                </FormField>
+                            )
+                        })}
+                    </div>
                 </DrawerContent>
             </Drawer>
         );
@@ -37,20 +37,20 @@ export class DesktopDrawerFilter extends React.Component {
 export class TabletDrawerFilter extends React.Component {
     render() {
         return (
-            <Drawer modal open={this.props.open} className="filter-drawer">
-                <DrawerHeader dir="ltr">
+            <Drawer modal open={this.props.open} className="filter-drawer drawer-right">
+                <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer}/></Tooltip>
+                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer} /></Tooltip>
                 </DrawerHeader>
-                <DrawerContent dir="ltr">
-                <div className="subheader">
-                    <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
-                </div>
-                <div className="checkbox-list">
+                <DrawerContent>
+                    <div className="subheader">
+                        <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
+                    </div>
+                    <div className="checkbox-list">
                         {this.props.vendors.map((value, index) => {
                             return (
                                 <FormField>
-                                    <CheckboxFilter label={value} key={index}/>
+                                    <CheckboxFilter label={value} key={index} />
                                 </FormField>
                             )
                         })}

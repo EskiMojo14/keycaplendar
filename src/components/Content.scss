@@ -2,6 +2,7 @@
 @import '@material/fab/mdc-fab';
 @import "@material/animation/variables";
 @import "@material/drawer/variables";
+@import "@material/top-app-bar/variables";
 
 .mdc-drawer-app-content {
     transition-property: margin;
@@ -33,23 +34,20 @@
     }
 }
 
-@media (max-width: 839px) {
-    .drawer-open {
-        max-height: 100vh;
-        overflow: hidden;
-    }
-}
-
+.modal-drawer-open {
+    max-height: 100vh;
+    overflow: hidden;
+};
 
 .create-fab {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 6;
+    z-index: 4;
     transition-property: right;
     transition-timing-function: $mdc-animation-standard-curve-timing-function;
     transition-duration: $mdc-drawer-animation-enter;
-    .drawer-open + & {
+    .drawer-open + div & {
         right: 24px + 256px;
     }
 }

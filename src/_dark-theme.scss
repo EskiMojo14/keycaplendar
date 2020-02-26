@@ -37,7 +37,7 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
     & &__action-item, & &__navigation-icon, .svg-container {
         @include mdc-theme-prop(color, text-primary-on-background);
         @include mdc-theme-prop(fill, text-primary-on-background);
-        @include mdc-states(white);
+        @include mdc-states(text-primary-on-background);
     }
     .mdc-linear-progress {
         .mdc-linear-progress__buffer {
@@ -48,6 +48,18 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
         }
     }
 };
+
+.full-screen-dialog {
+    background-color: overlay-elevation(#121212, 16);
+    .mdc-top-app-bar .mdc-button {
+        @include mdc-theme-prop(color, text-primary-on-background);
+        @include mdc-states(white)
+    }
+}
+
+.mdc-menu.mdc-select__menu {
+    background-color: overlay-elevation(#121212, 24);
+}
 
 .mdc-drawer {
     background-color: overlay-elevation(#121212, 16);

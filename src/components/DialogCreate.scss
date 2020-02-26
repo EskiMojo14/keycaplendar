@@ -1,0 +1,121 @@
+@import 'variables';
+@import '@material/animation/variables';
+@import '@material/theme/variables';
+@import '@material/theme/mixins';
+@import '@material/elevation/mixins';
+@import '@material/ripple/mixins';
+@import '@material/textfield/mdc-text-field';
+@import '@material/floating-label/mdc-floating-label';
+@import '@material/notched-outline/mdc-notched-outline';
+@import '@material/line-ripple/mdc-line-ripple';
+@import '@material/select/mdc-select';
+@import '@material/menu/mdc-menu';
+@import '@material/menu-surface/mdc-menu-surface';
+
+$enter-time: 450ms;
+$exit-time: 400ms;
+
+.full-screen-dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 7;
+    @include mdc-elevation(16);
+    @include mdc-theme-prop(background-color, surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition-property: transform;
+    transition-timing-function: $mdc-animation-standard-curve-timing-function;
+    display: none;
+    &--animate {
+        transform: translateY(101%);
+    }
+    &--opening {
+        transform: translateY(0);
+        transition-duration: $enter-time;
+    }
+    &--closing {
+        transform: translateY(101%);
+        transition-duration: $exit-time;
+    }
+    &--open {
+        display: block;
+    }
+    &-scrim {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(mdc-theme-prop-value(on-surface), 0.32);
+        opacity: 0;
+        z-index: 6;
+        transition-property: opacity;
+        transition-timing-function: $mdc-animation-standard-curve-timing-function;
+        display: none;
+
+        .full-screen-dialog--open + & {
+            display: block;
+        }
+    
+        .full-screen-dialog--animate + & {
+            opacity: 0;
+        }
+    
+        .full-screen-dialog--opening + & {
+            transition-duration: $enter-time;
+            opacity: 1;
+        }
+    
+        .full-screen-dialog--closing + & {
+            transition-duration: $exit-time;
+            opacity: 0;
+        }
+    }
+    .mdc-top-app-bar {
+        position: static;
+        @include mdc-elevation(4);
+        .mdc-button {
+            @include mdc-theme-prop(color, on-primary);
+            @include mdc-states(on-primary);
+        }
+    }
+    .form {
+        overflow: auto;
+        width: 100%;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        &-double {
+            display: flex;
+            .select {
+                width: 112px;
+                flex-grow: 0;
+                flex-shrink: 0;
+                margin-right: 16px;
+                .mdc-select__dropdown-icon {
+                    $colour: mdc-theme-prop-value(on-surface);
+                    @include mdc-select-dd-arrow-svg-bg_($colour,0.6);
+                }
+            }
+            .field {
+                flex: auto 1;
+            }
+        }
+        .mdc-text-field {
+            margin-bottom: 16px;
+            & + .mdc-text-field-helper-line {
+                margin-top: -16px;
+                margin-bottom: 16px;
+            }
+            &:not(.mdc-text-field--disabled) .mdc-text-field__icon {
+                @include mdc-theme-prop(color, text-secondary-on-background);
+                @include mdc-theme-prop(fill, text-secondary-on-background);
+            }
+        }
+    }
+}
