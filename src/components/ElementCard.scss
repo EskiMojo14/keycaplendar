@@ -31,10 +31,15 @@ $image-size: 128px;
                 padding-bottom: 8px;
                 display: flex;
                 .time-indicator {
+                    max-width: 0;
+                    overflow: hidden;
                     display: flex;
                     align-items: center;
-                    padding-right: 8px;
-                    @include mdc-theme-prop(fill, secondary); 
+                    @include mdc-theme-prop(fill, secondary);
+                    &.visible {
+                        max-width: none;
+                        padding-right: 8px;
+                    }
                 }
                 .mdc-typography--headline5 {
                     margin: 0;

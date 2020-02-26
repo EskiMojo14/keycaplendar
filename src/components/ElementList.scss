@@ -16,9 +16,14 @@ $ripple-color: mdc-theme-prop-value(on-surface);
         flex-grow: 1;
         height: 56px;
         .time-indicator {
+            max-width: 0;
+            overflow: hidden;
             height: 24px;
-            padding-right: 16px;
             @include mdc-theme-prop(fill, secondary); 
+            &.visible {
+                max-width: none;
+                padding-right: 16px;
+            }
         }
         .mdc-list-item__meta {
             margin: 0;
