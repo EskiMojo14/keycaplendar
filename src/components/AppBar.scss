@@ -6,8 +6,17 @@
 @import "@rmwc/tooltip/tooltip";
 @import "@material/animation/variables";
 
-.mdc-top-app-bar .logo {
-    height: 40px;
+.mdc-top-app-bar {
+    .svg-container {
+        position: relative;
+        @include mdc-theme-prop(fill,on-primary);
+        @include mdc-ripple-surface;
+        @include mdc-ripple-radius-unbounded;
+        @include mdc-states(on-primary);
+    }
+    .logo {
+        height: 40px;
+    }
 }
 
 .mdc-top-app-bar:not(.mdc-top-app-bar--short) .logo {
@@ -15,14 +24,6 @@
     & + .mdc-top-app-bar__title {
         padding-left: 8px;
     }
-}
-
-.svg-container {
-    position: relative;
-    @include mdc-theme-prop(fill,on-primary);
-    @include mdc-ripple-surface;
-    @include mdc-ripple-radius-unbounded;
-    @include mdc-states(on-primary);
 }
 .mdc-top-app-bar--short {
     transition: width 250ms $mdc-animation-standard-curve-timing-function, box-shadow 250ms $mdc-animation-standard-curve-timing-function;

@@ -3,6 +3,7 @@
 @import '@material/card/mdc-card';
 @import '@material/button/mdc-button';
 @import '@material/animation/functions';
+@import '@material/animation/variables';
 @import '@material/theme/mixins';
 
 $image-size: 128px;
@@ -68,6 +69,27 @@ $image-size: 128px;
     }
 }
 
+.mdc-card {
+    &__action-icons {
+        opacity: 0;
+        transition: opacity 200ms $mdc-animation-standard-curve-timing-function;
+        .svg-container {
+            @include mdc-theme-prop(fill, text-secondary-on-background);
+            position: relative;
+            @include mdc-ripple-surface;
+            height: 48px;
+            @include mdc-ripple-radius-unbounded;
+            @include mdc-states(on-surface);
+            margin: -6px 0;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+    }
+    &:hover &__action-icons { 
+        opacity: 1;
+    }
+}
+
 @media (max-width: 839px) {
     .expand-actions {
         max-height: 0px;
@@ -82,5 +104,8 @@ $image-size: 128px;
         .expanded & .expand-icon {
             transform: scaleY(-1);
         }
+    }
+    .mdc-card.expanded .mdc-card__action-icons { 
+        opacity: 1;
     }
 }

@@ -12,25 +12,30 @@ a.mdc-image-list__item {
     width: calc(100% / 3 - 4px);
     .mdc-image-list__supporting {
         height: 64px;
-        .text-container {
+        .mdc-image-list__label {  
             display: flex;
-            flex-direction: column;
-            .primary-text {
+            width: 100%;
+            .text-container {
+                flex: auto 1;
                 display: flex;
-                .time-indicator {
-                    height: 24px;
-                    max-width: 0;
-                    overflow: hidden;
+                flex-direction: column;
+                .primary-text {
+                    display: flex;
+                    .time-indicator {
+                        height: 24px;
+                        max-width: 0;
+                        overflow: hidden;
                     @include mdc-theme-prop(fill, secondary); 
-                    &.visible {
-                        max-width: none;
-                        padding-right: 8px;
+                        &.visible {
+                            max-width: none;
+                            padding-right: 8px;
+                        }
                     }
                 }
-            }
-            .secondary-text {
-                @include mdc-typography(body2);
-                @include mdc-theme-prop(color, text-secondary-on-dark);
+                .secondary-text {
+                    @include mdc-typography(body2);
+                    @include mdc-theme-prop(color, text-secondary-on-dark);
+                }
             }
         }
     }

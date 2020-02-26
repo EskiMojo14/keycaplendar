@@ -26,6 +26,15 @@
     right: 24px;
 }
 
+
+
+@media (max-width: 839px) {
+    .create-fab {
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
 .view-transition .mdc-layout-grid {
     animation: fade-out 90ms $mdc-animation-acceleration-curve-timing-function, fade-in 210ms 90ms $mdc-animation-deceleration-curve-timing-function;
     will-change: transform, opacity;

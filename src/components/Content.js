@@ -23,7 +23,7 @@ export class DesktopContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} admin={this.state.admin}/> : <ContentEmpty />);
     const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" label="Create"/> : '');
     return (
       <div className={this.props.className}>
@@ -57,12 +57,12 @@ export class TabletContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} admin={this.state.admin} /> : <ContentEmpty />);
     const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" /> : '');
     return (
       <div className={(this.state.drawerOpen ? 'drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen}  page={this.props.page} changePage={this.props.changePage} closeDrawer={this.closeDrawer} />
-        <TabletAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <TabletAppBar page={this.props.page} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
         {FAB}
       </div>
@@ -90,12 +90,12 @@ export class MobileContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid view={this.props.view} admin={this.state.admin} /> : <ContentEmpty />);
     const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" /> : '');
     return (
       <div className={(this.state.drawerOpen ? 'drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen} page={this.props.page} changePage={this.props.changePage} closeDrawer={this.closeDrawer} />
-        <MobileAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <MobileAppBar page={this.props.page} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
         {FAB}
       </div>

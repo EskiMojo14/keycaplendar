@@ -4,6 +4,7 @@
 @import "@material/theme/variables";
 @import "@material/theme/mixins";
 @import "@material/ripple/mixins";
+@import '@material/animation/variables';
 
 $ripple-color: mdc-theme-prop-value(on-surface);
 
@@ -28,6 +29,43 @@ $ripple-color: mdc-theme-prop-value(on-surface);
         .mdc-list-item__meta {
             margin: 0;
         }
+    }
+}
+
+.list-item-container {
+    display: flex;
+    .mdc-list-item {
+        flex: auto 1 0;
+    }
+    .edit-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 0;
+        flex-shrink: 0;
+        max-width: 0;
+        overflow: hidden;
+        transition: max-width 200ms $mdc-animation-standard-curve-timing-function;
+        .svg-container {
+            width: 56px;
+            height: 56px;
+            padding: 16px;
+            box-sizing: border-box;
+            position: relative;
+            @include mdc-theme-prop(fill, text-secondary-on-background);
+            @include mdc-ripple-surface;
+            @include mdc-ripple-radius-unbounded;
+            @include mdc-states(on-surface);
+        } 
+    }
+    &:hover .edit-icon {
+        max-width: 56px;
+    }
+}
+
+@media (max-width: 839px) {
+    .list-item-container .edit-icon {
+        max-width: 56px;
     }
 }
 

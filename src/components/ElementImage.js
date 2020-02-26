@@ -7,17 +7,8 @@ export class ElementImage extends React.Component {
     render() {
         return (
             <Ripple>
-                <ImageListItem
-                    tag="a"
-                    href={this.props.geekhack}
-                    target="_blank"
-                    rel="noreferrer"
-                    key={this.props.image}
-                    className="image-list-item"
-                >
-                    <ImageListImageAspectContainer
-                        style={{ paddingBottom: 'calc(100% / 1.5)' }}
-                    >
+                <ImageListItem tag="a" href={this.props.geekhack} target="_blank" rel="noreferrer" key={this.props.image} className="image-list-item">
+                    <ImageListImageAspectContainer style={{ paddingBottom: 'calc(100% / 1.5)' }}>
                         <ImageListImage src={this.props.image} />
                     </ImageListImageAspectContainer>
                     <ImageListSupporting>
