@@ -28,6 +28,9 @@ $ripple-color: mdc-theme-prop-value(on-surface);
 };
 
 .mdc-drawer__header {
+    .mdc-drawer__title {
+        @include mdc-theme-prop(color, text-primary-on-background);
+    }
     border-bottom: 1px solid $divider-color;
 }
 

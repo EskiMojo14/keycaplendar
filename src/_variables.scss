@@ -7,9 +7,9 @@ $mdc-theme-on-secondary: black;
 $mdc-theme-background: $material-color-grey-200;
 $mdc-theme-on-surface: black;
 
-$divider-color: rgba($mdc-theme-on-surface,0.12);
+//@import 'variablesDark';
 
-// @import 'dark-theme';
+$divider-color: rgba($mdc-theme-on-surface,0.12);
 
 $mdc-typography-font-family: unquote("Lato, sans-serif");
 

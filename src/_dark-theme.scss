@@ -1,13 +1,4 @@
-@import '@material/theme/color-palette';
-
-$mdc-theme-primary: $material-color-teal-200;
-$mdc-theme-secondary: $material-color-deep-orange-200;
-$mdc-theme-on-primary: white;
-$mdc-theme-on-secondary: white;
-$mdc-theme-background: #121212;
-$mdc-theme-surface:#121212;
-$mdc-theme-on-surface: white;
-
+@import 'variablesDark';
 @import '@material/theme/mixins';
 
 $overlay-values: (
@@ -51,9 +42,3 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 .mdc-menu {
     background-color: overlay-elevation(#121212, 12);
 }
-
-$mdc-typography-font-family: unquote("Lato, sans-serif");
-
-$mdc-typography-styles-headline6: (
-    font-family: unquote("Roboto Slab, serif")
-);
