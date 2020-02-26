@@ -3,13 +3,14 @@ import './Content.scss';
 import { DesktopAppBar, TabletAppBar, MobileAppBar } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
 import { DesktopNavDrawer, MobileNavDrawer } from './NavDrawer';
+import { Fab } from '@rmwc/fab';
 import { ContentEmpty } from './ContentEmpty';
 import { ContentGrid } from './ContentGrid';
 
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: true, content: true, sort: 'vendor' };
+    this.state = { drawerOpen: true, content: true, sort: 'vendor', admin: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
   }
@@ -23,6 +24,7 @@ export class DesktopContent extends React.Component {
   }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" label="Create"/> : '');
     return (
       <div className={this.props.className}>
         <DesktopAppBar toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
@@ -30,6 +32,7 @@ export class DesktopContent extends React.Component {
         <DrawerAppContent>
           {content}
         </DrawerAppContent>
+        {FAB}
       </div>
     );
   }
@@ -37,7 +40,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false, content: true, sort: 'vendor' };
+    this.state = { drawerOpen: false, content: true, sort: 'vendor', admin: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
@@ -55,11 +58,13 @@ export class TabletContent extends React.Component {
   }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" /> : '');
     return (
       <div className={(this.state.drawerOpen ? 'drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen}  page={this.props.page} changePage={this.props.changePage} closeDrawer={this.closeDrawer} />
         <TabletAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
+        {FAB}
       </div>
     );
   }
@@ -68,7 +73,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { drawerOpen: false, content: true, sort: 'vendor' };
+    this.state = { drawerOpen: false, content: true, sort: 'vendor', admin: true };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
@@ -86,11 +91,13 @@ export class MobileContent extends React.Component {
   }
   render() {
     const content = (this.state.content ? <ContentGrid view={this.props.view} /> : <ContentEmpty />);
+    const FAB = (this.state.admin ? <Fab className="create-fab" icon="add" /> : '');
     return (
       <div className={(this.state.drawerOpen ? 'drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.drawerOpen} page={this.props.page} changePage={this.props.changePage} closeDrawer={this.closeDrawer} />
         <MobileAppBar title={'Live GBs'} toggleDrawer={this.toggleDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
+        {FAB}
       </div>
     );
   }

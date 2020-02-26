@@ -7,6 +7,10 @@
 
 $image-size: 128px;
 
+.mdc-card {
+    overflow: hidden;
+}
+
 .mdc-card__action-buttons a {
    text-decoration: none;
 }

@@ -1,3 +1,5 @@
+@import 'variables';
+@import '@material/fab/mdc-fab';
 @import "@material/animation/variables";
 @import "@material/drawer/variables";
 @import '@material/animation/variables';
@@ -16,6 +18,13 @@
 .drawer-open {
     max-height: 100vh;
     overflow: hidden;
+}
+
+
+.create-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
 }
 
 .view-transition .mdc-layout-grid {
