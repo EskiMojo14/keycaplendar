@@ -3,7 +3,7 @@ import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarNavigationIcon, Top
 import { Tooltip } from '@rmwc/tooltip';
 import { Ripple } from '@rmwc/ripple';
 import { LinearProgress } from '@rmwc/linear-progress';
-import { MenuSurfaceAnchor } from '@rmwc/menu';
+import { MenuSurfaceAnchor, Menu, MenuItem } from '@rmwc/menu';
 import { MenuView } from './MenuView';
 import { MenuSort } from './MenuSort';
 import './AppBar.scss';
@@ -13,15 +13,11 @@ export class DesktopAppBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { sortMenuOpen: false, viewMenuOpen: false };
-        this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
-    }
-    toggleDrawerIcon() {
-        this.props.toggleDrawer();
     }
     openSortMenu() {
         this.setState({ sortMenuOpen: true });
@@ -36,7 +32,7 @@ export class DesktopAppBar extends React.Component {
         this.setState({ viewMenuOpen: false });
     }
     changeView(index) {
-        const views = ['card','list','imageList'];
+        const views = ['card', 'list', 'imageList'];
         this.props.changeView(views[index]);
     }
     render() {
@@ -55,7 +51,7 @@ export class DesktopAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleDrawer} />
                             <img className="logo" src={logo} alt="logo" />
                             <TopAppBarTitle onClick={this.props.toggleLoading}>KeycapLendar</TopAppBarTitle>
                         </TopAppBarSection>
@@ -63,12 +59,10 @@ export class DesktopAppBar extends React.Component {
                             <MenuSurfaceAnchor>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Tooltip content="Sort" align="bottom">
-                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu}/>
+                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom">
-                                <TopAppBarActionItem icon="filter_list" />
-                            </Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -119,7 +113,7 @@ export class TabletAppBar extends React.Component {
         this.setState({ viewMenuOpen: false });
     }
     changeView(index) {
-        const views = ['card','list','imageList'];
+        const views = ['card', 'list', 'imageList'];
         this.props.changeView(views[index]);
     }
     render() {
@@ -133,7 +127,7 @@ export class TabletAppBar extends React.Component {
         } else {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" /><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" /></svg>;
         }
-        const title = {calendar: 'Calendar', live:'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account'};
+        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account' };
         return (
             <div>
                 <TopAppBar fixed>
@@ -146,7 +140,7 @@ export class TabletAppBar extends React.Component {
                             <MenuSurfaceAnchor>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Tooltip content="Sort" align="bottom">
-                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu}/>
+                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                             <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
@@ -175,10 +169,12 @@ export class TabletAppBar extends React.Component {
 export class MobileAppBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sortMenuOpen: false, viewMenuOpen: false };
+        this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false };
         this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
+        this.openFilterMenu = this.openFilterMenu.bind(this);
+        this.closeFilterMenu = this.closeFilterMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
@@ -192,6 +188,12 @@ export class MobileAppBar extends React.Component {
     closeSortMenu() {
         this.setState({ sortMenuOpen: false });
     }
+    openFilterMenu() {
+        this.setState({ filterMenuOpen: true });
+    }
+    closeFilterMenu() {
+        this.setState({ filterMenuOpen: false });
+    }
     openViewMenu() {
         this.setState({ viewMenuOpen: true });
     }
@@ -199,7 +201,7 @@ export class MobileAppBar extends React.Component {
         this.setState({ viewMenuOpen: false });
     }
     changeView(index) {
-        const views = ['card','list','imageList'];
+        const views = ['card', 'list', 'imageList'];
         this.props.changeView(views[index]);
     }
     scrollTop() {
@@ -216,7 +218,7 @@ export class MobileAppBar extends React.Component {
         } else {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" /><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" /></svg>;
         }
-        const title = {calendar: 'Calendar', live:'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account'};
+        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account' };
         return (
             <div>
                 <TopAppBar short>
@@ -229,10 +231,17 @@ export class MobileAppBar extends React.Component {
                             <MenuSurfaceAnchor>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Tooltip content="Sort" align="bottom">
-                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu}/>
+                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
+                            <MenuSurfaceAnchor>
+                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={this.props.toggleDialog} onClose={this.closeFilterMenu}>
+                                    <MenuItem>Vendor</MenuItem>
+                                </Menu>
+                                <Tooltip content="Filter" align="bottom">
+                                    <TopAppBarActionItem icon="filter_list" onClick={this.openFilterMenu} />
+                                </Tooltip>
+                            </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">

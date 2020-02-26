@@ -60,3 +60,7 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 .mdc-menu {
     background-color: overlay-elevation(#121212, 12);
 }
+
+.mdc-dialog .mdc-dialog__surface {
+    background-color: overlay-elevation(#121212, 24);
+}
