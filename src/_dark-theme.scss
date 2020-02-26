@@ -1,5 +1,6 @@
 @import 'variablesDark';
 @import '@material/theme/mixins';
+@import '@material/ripple/mixins';
 
 $overlay-values: (
     1: 5%,   // card, switch
@@ -29,6 +30,14 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 
 .mdc-top-app-bar {
     background-color: overlay-elevation(#121212, 4);
+    & &__title {
+        @include mdc-theme-prop(color, text-primary-on-background);
+    }
+    & &__action-item, & &__navigation-icon, .svg-container {
+        @include mdc-theme-prop(color, text-primary-on-background);
+        @include mdc-theme-prop(fill, text-primary-on-background);
+        @include mdc-states(white);
+    }
 };
 
 .mdc-drawer {

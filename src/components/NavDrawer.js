@@ -1,8 +1,8 @@
 import React from 'react';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { List, ListItem, ListItemGraphic } from '@rmwc/list';
-import { Tooltip } from '@rmwc/tooltip';
-import { Ripple } from '@rmwc/ripple';
+// import { Tooltip } from '@rmwc/tooltip';
+// import { Ripple } from '@rmwc/ripple';
 import './NavDrawer.scss';
 import logo from '../logo.svg';
 
