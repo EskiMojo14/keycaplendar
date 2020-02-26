@@ -31,12 +31,12 @@ $ripple-color: mdc-theme-prop-value(on-surface);
     .mdc-drawer__title {
         @include mdc-theme-prop(color, text-primary-on-background);
     }
-    border-bottom: 1px solid $divider-color;
 }
 
 .nav.mdc-drawer__header {
     display: flex;
     align-items: center;
+    border-bottom: 1px solid $divider-color;
     .mdc-drawer__title {
         margin-bottom: 0;
     }

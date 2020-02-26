@@ -38,7 +38,7 @@ export class DesktopAppBar extends React.Component {
     render() {
         let viewIcon;
         if (this.props.view === 'card') {
-            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H4V5h15v4zm1 4H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H4v-4h15v4z" /><path d="M4 15h15v4H4zM4 5h15v4H4z" opacity=".3" /></svg>;
+            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z"/><path d="M10 7h5v9h-5z" opacity=".3"/></svg>;
         } else if (this.props.view === 'list') {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" opacity=".87" /><path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" /><path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" /></svg>;
         } else if (this.props.view === 'imageList') {
@@ -51,7 +51,7 @@ export class DesktopAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleDrawer} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
                             <img className="logo" src={logo} alt="logo" />
                             <TopAppBarTitle onClick={this.props.toggleLoading}>KeycapLendar</TopAppBarTitle>
                         </TopAppBarSection>
@@ -62,7 +62,7 @@ export class DesktopAppBar extends React.Component {
                                     <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" onClick={this.props.toggleFilterDrawer}/></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -89,16 +89,11 @@ export class TabletAppBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { sortMenuOpen: false, viewMenuOpen: false };
-        this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
-    }
-
-    toggleDrawerIcon() {
-        this.props.toggleDrawer();
     }
     openSortMenu() {
         this.setState({ sortMenuOpen: true });
@@ -119,7 +114,7 @@ export class TabletAppBar extends React.Component {
     render() {
         let viewIcon;
         if (this.props.view === 'card') {
-            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H4V5h15v4zm1 4H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H4v-4h15v4z" /><path d="M4 15h15v4H4zM4 5h15v4H4z" opacity=".3" /></svg>;
+            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z"/><path d="M10 7h5v9h-5z" opacity=".3"/></svg>;
         } else if (this.props.view === 'list') {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" opacity=".87" /><path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" /><path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" /></svg>;
         } else if (this.props.view === 'imageList') {
@@ -133,7 +128,7 @@ export class TabletAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
                             <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
@@ -143,7 +138,7 @@ export class TabletAppBar extends React.Component {
                                     <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" onClick={this.props.toggleFilterDrawer}/></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -170,7 +165,6 @@ export class MobileAppBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false };
-        this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openFilterMenu = this.openFilterMenu.bind(this);
@@ -178,9 +172,6 @@ export class MobileAppBar extends React.Component {
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
-    }
-    toggleDrawerIcon() {
-        this.props.toggleDrawer();
     }
     openSortMenu() {
         this.setState({ sortMenuOpen: true });
@@ -210,7 +201,7 @@ export class MobileAppBar extends React.Component {
     render() {
         let viewIcon;
         if (this.props.view === 'card') {
-            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H4V5h15v4zm1 4H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H4v-4h15v4z" /><path d="M4 15h15v4H4zM4 5h15v4H4z" opacity=".3" /></svg>;
+            viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z"/><path d="M10 7h5v9h-5z" opacity=".3"/></svg>;
         } else if (this.props.view === 'list') {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" opacity=".87" /><path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" /><path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" /></svg>;
         } else if (this.props.view === 'imageList') {
@@ -224,7 +215,7 @@ export class MobileAppBar extends React.Component {
                 <TopAppBar short>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart className="nav-icon">
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
                             <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd className="actions">

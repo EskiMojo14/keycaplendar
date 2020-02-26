@@ -1,0 +1,37 @@
+@import 'variables';
+@import '@material/theme/mixins';
+@import '@rmwc/list/collapsible-list';
+
+.filter-drawer {
+    &.mdc-drawer--modal {
+        top: 0;
+    }
+    .subheader {
+        padding: 16px;
+        height: 56px;
+        box-sizing: border-box;
+    }
+    .mdc-drawer__header {
+        display: flex;
+        align-items: center;
+        .mdc-drawer__title {
+            flex: auto 1;
+            flex-shrink: 0;
+            margin-bottom: 0;
+        }
+        .close-icon {
+            flex-grow: 0;
+            flex-shrink: 0;
+            @include mdc-theme-prop(color, text-primary-on-background);
+        }
+    }
+    .checkbox-list {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        padding-top: 0;
+        .mdc-form-field {
+            height: 48px;
+        }
+    }
+}

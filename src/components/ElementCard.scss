@@ -22,6 +22,12 @@ $image-size: 128px;
     }
 }
 
+@media (min-width: 839px) and (max-width: 2139px) {
+    .drawer-open .card-container.mdc-layout-grid__cell--span-4-desktop {
+        grid-column-end: span 6;
+    }
+}
+
 .main-block {
     display: flex;
     flex-direction: column;
