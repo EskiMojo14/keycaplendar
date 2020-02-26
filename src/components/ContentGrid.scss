@@ -9,6 +9,7 @@
 
 .mdc-layout-grid {
     transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-row-height});
+    max-width: 2000px;
 }
 
 .list-grid {
