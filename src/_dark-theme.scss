@@ -1,4 +1,5 @@
 @import 'variablesDark';
+@import '@material/theme/variables';
 @import '@material/theme/mixins';
 @import '@material/ripple/mixins';
 
@@ -37,6 +38,14 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
         @include mdc-theme-prop(color, text-primary-on-background);
         @include mdc-theme-prop(fill, text-primary-on-background);
         @include mdc-states(white);
+    }
+    .mdc-linear-progress {
+        .mdc-linear-progress__buffer {
+            background-color: rgba(mdc-theme-prop-value(primary), 0.25);
+        }
+        .mdc-linear-progress__bar-inner {
+            @include mdc-theme-prop(background-color, primary);
+        }
     }
 };
 

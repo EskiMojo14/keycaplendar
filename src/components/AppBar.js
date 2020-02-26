@@ -2,6 +2,7 @@ import React from 'react';
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarNavigationIcon, TopAppBarTitle, TopAppBarActionItem, TopAppBarFixedAdjust } from '@rmwc/top-app-bar';
 import { Tooltip } from '@rmwc/tooltip';
 import { Ripple } from '@rmwc/ripple';
+import { LinearProgress } from '@rmwc/linear-progress';
 import { MenuSurfaceAnchor } from '@rmwc/menu';
 import { MenuView } from './MenuView';
 import { MenuSort } from './MenuSort';
@@ -56,7 +57,7 @@ export class DesktopAppBar extends React.Component {
                         <TopAppBarSection alignStart>
                             <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
                             <img className="logo" src={logo} alt="logo" />
-                            <TopAppBarTitle>KeycapLendar</TopAppBarTitle>
+                            <TopAppBarTitle onClick={this.props.toggleLoading}>KeycapLendar</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
                             <MenuSurfaceAnchor>
@@ -82,6 +83,7 @@ export class DesktopAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                         </TopAppBarSection>
                     </TopAppBarRow>
+                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -138,7 +140,7 @@ export class TabletAppBar extends React.Component {
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
                             <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
-                            <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
+                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
                             <MenuSurfaceAnchor>
@@ -162,6 +164,7 @@ export class TabletAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                         </TopAppBarSection>
                     </TopAppBarRow>
+                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -220,7 +223,7 @@ export class MobileAppBar extends React.Component {
                     <TopAppBarRow>
                         <TopAppBarSection alignStart className="nav-icon">
                             <TopAppBarNavigationIcon icon="menu" onClick={this.toggleDrawerIcon} />
-                            <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
+                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd className="actions">
                             <MenuSurfaceAnchor>
@@ -247,6 +250,7 @@ export class MobileAppBar extends React.Component {
                             <img className="logo" src={logo} alt="logo" />
                         </TopAppBarSection>
                     </TopAppBarRow>
+                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>

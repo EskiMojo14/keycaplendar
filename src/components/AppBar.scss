@@ -5,6 +5,7 @@
 @import "@material/theme/mixins";
 @import "@rmwc/tooltip/tooltip";
 @import "@material/animation/variables";
+@import "@material/linear-progress/mdc-linear-progress";
 
 .mdc-top-app-bar {
     .svg-container {
@@ -16,6 +17,24 @@
     }
     .logo {
         height: 40px;
+    }
+    .mdc-linear-progress {
+        position: absolute;
+        bottom: 0;
+        max-height: 4px;
+        transition: max-height 250ms $mdc-animation-standard-curve-timing-function;
+        .mdc-linear-progress__buffering-dots {
+            display: none;
+        }
+        .mdc-linear-progress__buffer {
+            background-color: $divider-color;
+        }
+        .mdc-linear-progress__bar-inner {
+            @include mdc-theme-prop(background-color, secondary);
+        }
+        &.hidden {
+            max-height: 0;
+        }
     }
 }
 
