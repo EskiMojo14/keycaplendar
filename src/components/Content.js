@@ -49,7 +49,7 @@ export class DesktopContent extends React.Component {
   render() {
     let vendors = ['NovelKeys'];
     let i;
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < 11; i++) {
       vendors.push('NovelKeys');
     };
     const katLich = {

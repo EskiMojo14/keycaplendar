@@ -37,6 +37,17 @@
 .modal-drawer-open {
     max-height: 100vh;
     overflow: hidden;
+    &.mdc-drawer-app-content {
+        max-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    }
+}
+
+
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+    .modal-drawer-open.mdc-drawer-app-content {
+        max-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    }
 };
 
 .create-fab {
