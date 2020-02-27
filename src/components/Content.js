@@ -81,7 +81,7 @@ export class DesktopContent extends React.Component {
         <DesktopAppBar loading={this.state.loading} toggleLoading={this.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         <DesktopNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} toggleDrawer={this.toggleNavDrawer} />
         <DrawerAppContent className={(this.state.filterDrawerOpen ? 'drawer-open ' : '') + (this.state.createDrawerOpen ? 'modal-drawer-open' : '')}>
-          <div class="content-container">
+          <div className="content-container">
             {content}
             <div className="drawer-container">
               <DesktopDrawerFilter vendors={vendors} open={this.state.filterDrawerOpen} closeFilterDrawer={this.closeFilterDrawer}/>
