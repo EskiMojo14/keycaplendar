@@ -25,7 +25,7 @@ export class ViewList extends React.Component {
                     const title = set.profile + ' ' + set.colourway;
                     const subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + '.';
                     return (
-                        <ElementList title={title} subtitle={subtitle} image={set.image} geekhack={set.ghThread} store={set.storeLink} admin={this.props.admin} key={index} />
+                        <ElementList title={title} subtitle={subtitle} image={set.image} geekhack={set.ghThread} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
                     )
                 })}
                 <ListDivider />

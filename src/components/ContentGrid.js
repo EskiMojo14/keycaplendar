@@ -12,11 +12,11 @@ export class ContentGrid extends React.Component {
         const backgroundClass = (this.props.view === 'list' ? 'list-grid' : '');
         let view;
         if (this.props.view === 'card') {
-            view = <ViewCard sets={this.props.sets} admin={this.props.admin} />;
+            view = <ViewCard sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
         } else if (this.props.view === 'list') {
-            view = <ViewList sets={this.props.sets} admin={this.props.admin} />;
+            view = <ViewList sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
         } else if (this.props.view === 'imageList') {
-            view = <ViewImageList sets={this.props.sets} admin={this.props.admin} />;
+            view = <ViewImageList sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
         }
         return (
             <Grid className={backgroundClass}>

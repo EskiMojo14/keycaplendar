@@ -18,7 +18,7 @@ export class ElementCard extends React.Component {
     }
     render() {
         const editIcon = (this.props.admin ? (
-        <CardActionIcons>
+        <CardActionIcons onClick={this.props.edit}>
             <Tooltip content="Edit" align="bottom">
                 <Ripple unbounded>
                     <div className='svg-container'>
