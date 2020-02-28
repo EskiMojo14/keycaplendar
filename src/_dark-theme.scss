@@ -1,4 +1,4 @@
-@import 'variablesDark';
+@import 'variables';
 @import '@material/theme/variables';
 @import '@material/theme/mixins';
 @import '@material/ripple/mixins';
@@ -18,19 +18,20 @@ $overlay-values: (
 $divider-color: rgba($mdc-theme-on-surface,0.12);
 
 @function overlay-elevation($color, $elevation : 0) {
-    @return lighten($color, map-get($overlay-values, $elevation));
+    $use-color: mdc-theme-prop-value($color);
+    @return lighten($use-color, map-get($overlay-values, $elevation));
 };
 
 .mdc-card {
-    background-color: overlay-elevation(#121212, 1);
+    background-color: overlay-elevation(surface, 1);
 };
 
 .list-grid {
-    background-color: overlay-elevation(#121212, 1);
+    background-color: overlay-elevation(surface, 1);
 };
 
 .mdc-top-app-bar {
-    background-color: overlay-elevation(#121212, 4);
+    background-color: overlay-elevation(surface, 4);
     & &__title {
         @include mdc-theme-prop(color, text-primary-on-background);
     }
@@ -50,7 +51,7 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 };
 
 .full-screen-dialog {
-    background-color: overlay-elevation(#121212, 16);
+    background-color: overlay-elevation(surface, 16);
     .mdc-top-app-bar .mdc-button {
         @include mdc-theme-prop(color, text-primary-on-background);
         @include mdc-states(white)
@@ -58,21 +59,21 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 }
 
 .mdc-menu.mdc-select__menu {
-    background-color: overlay-elevation(#121212, 24);
+    background-color: overlay-elevation(surface, 24);
 }
 
 .mdc-drawer {
-    background-color: overlay-elevation(#121212, 16);
+    background-color: overlay-elevation(surface, 16);
 }
 
 .mdc-drawer.mdc-drawer--dismissible {
-    background-color: overlay-elevation(#121212, 1);
+    background-color: overlay-elevation(surface, 1);
 }
 
 .mdc-menu {
-    background-color: overlay-elevation(#121212, 12);
+    background-color: overlay-elevation(surface, 12);
 }
 
 .mdc-dialog .mdc-dialog__surface {
-    background-color: overlay-elevation(#121212, 24);
+    background-color: overlay-elevation(surface, 24);
 }
