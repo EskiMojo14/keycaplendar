@@ -31,6 +31,14 @@ class App extends React.Component {
       }.bind(this), 300);
     }
   }
+  changeThemeColor() {
+    var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
+    var metaElement = document.querySelector("meta[name=theme-color]");
+    metaElement.setAttribute("content", metaColor);
+  }
+  componentDidMount() {
+    this.changeThemeColor();
+  }
   render() {
     const device = this.props.device;
     let content;

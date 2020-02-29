@@ -1,6 +1,6 @@
 @import 'variables';
 
-//@import 'dark-theme';
+@import 'dark-theme';
 
 @import "@material/theme/mdc-theme";
 @import "@material/typography/mdc-typography";
@@ -12,4 +12,8 @@
 
 body {
     @include mdc-theme-prop(background-color, background);
+}
+
+:root {
+    --meta-color: #{$meta-color};
 }
