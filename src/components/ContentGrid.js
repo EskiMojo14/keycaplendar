@@ -24,7 +24,7 @@ export class ContentGrid extends React.Component {
                     return (
                         <GridCell className="outer-container" desktop={6} tablet={8} phone={4} key={index}>
                             <div className="subheader">
-                                <Typography use="subtitle2" theme="textSecondaryOnBackground" key={index}>{value}</Typography>
+                                <Typography use="subtitle2" key={index}>{value}</Typography>
                             </div>
                             {view}
                         </GridCell>

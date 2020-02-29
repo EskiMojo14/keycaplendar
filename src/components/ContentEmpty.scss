@@ -4,6 +4,8 @@
 
 @import '@material/typography/mdc-typography';
 
+@import '@material/theme/mixins';
+
 .empty-container {
     width: 100%;
     height: calc(100vh - #{$mdc-top-app-bar-row-height});
@@ -21,9 +23,11 @@
         margin-bottom: 4px;
         font-family: Lato, sans-serif;
         font-weight: bold;
+        @include mdc-theme-prop(color, text-primary-on-background);
     }
     .subtitle {
         margin: 0;
+        @include mdc-theme-prop(color, text-secondary-on-background);
     }
 }
 

@@ -10,6 +10,7 @@
         padding: 16px;
         height: 56px;
         box-sizing: border-box;
+        @include mdc-theme-prop(color, text-secondary-on-background);
     }
     .mdc-drawer__header {
         display: flex;

@@ -6,6 +6,7 @@
 
 .subheader {
     padding-bottom: 16px;
+    @include mdc-theme-prop(color, text-secondary-on-background);
 }
 
 .mdc-layout-grid {

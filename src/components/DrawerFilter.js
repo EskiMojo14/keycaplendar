@@ -17,7 +17,7 @@ export class DesktopDrawerFilter extends React.Component {
                 </DrawerHeader>
                 <DrawerContent>
                     <div className="subheader">
-                        <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
+                        <Typography use="subtitle2">Vendor</Typography>
                     </div>
                     <div className="checkbox-list">
                         {this.props.vendors.map((value, index) => {
@@ -44,7 +44,7 @@ export class TabletDrawerFilter extends React.Component {
                 </DrawerHeader>
                 <DrawerContent>
                     <div className="subheader">
-                        <Typography use="subtitle2" theme="textSecondaryOnBackground">Vendor</Typography>
+                        <Typography use="subtitle2">Vendor</Typography>
                     </div>
                     <div className="checkbox-list">
                         {this.props.vendors.map((value, index) => {

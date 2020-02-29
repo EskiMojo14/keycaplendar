@@ -56,10 +56,12 @@ $image-size: 128px;
                 }
                 .mdc-typography--headline5 {
                     margin: 0;
+                    @include mdc-theme-prop(color, text-primary-on-background);
                 }
             }
             .mdc-typography--subtitle2 {
                 margin: 0;
+                @include mdc-theme-prop(color, text-secondary-on-background);
             }
         }
         .expand-icon-container {
