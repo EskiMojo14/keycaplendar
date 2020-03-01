@@ -51,7 +51,7 @@ export class ElementCard extends React.Component {
                     <div className="expand-actions">
                         <CardActions>
                             <CardActionButtons>
-                                <a href={this.props.geekhack} target="_blank" rel="noopener noreferrer"><CardActionButton>Geekhack</CardActionButton></a>
+                                <a href={this.props.details} target="_blank" rel="noopener noreferrer"><CardActionButton>Details</CardActionButton></a>
                                 <a href={this.props.store} target="_blank" rel="noopener noreferrer"><CardActionButton>Store</CardActionButton></a>
                             </CardActionButtons>
                             {editIcon}

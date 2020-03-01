@@ -55,26 +55,45 @@ export class DesktopContent extends React.Component {
     this.setState({ loading: newState });
   }
   render() {
-    let vendors = ['NovelKeys'];
+    let vendors = ['Vendor'];
     let i;
     for (i = 0; i < 11; i++) {
-      vendors.push('NovelKeys');
+      vendors.push('Vendor');
     };
     const katLich = {
       profile: 'KAT',
       colourway: 'Lich',
       icDate: '2019-10-31',
-      ghThread: 'https://geekhack.org/index.php?topic=104129.0',
+      details: 'https://geekhack.org/index.php?topic=104129.0',
       image: 'https://i.imgur.com/x0EkNCQ.jpg',
       gbLaunch: '2020-01-07',
       gbEnd: '2020-01-31',
       vendor: 'NovelKeys',
       storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
     };
-    let sets = [katLich];
-    for (i = 0; i < 2; i++) {
-      sets.push(katLich);
+    const katAtlantis = {
+      profile: 'KAT',
+      colourway: 'Atlantis',
+      icDate: '2019-09-14',
+      details: 'https://geekhack.org/index.php?topic=102423.0',
+      image: 'https://i.imgur.com/zugxfzk.png',
+      gbLaunch: '2020-03-01',
+      gbEnd: '2020-04-01',
+      vendor: 'CannonKeys',
+      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
     };
+    const katOasis = {
+      profile: 'KAT',
+      colourway: 'Oasis',
+      icDate: '2018-05-01',
+      details: 'https://geekhack.org/index.php?topic=104467.0',
+      image: 'https://i.imgur.com/g7IHiiT.jpg',
+      gbLaunch: '2020-01-31',
+      gbEnd: '2020-03-06',
+      vendor: 'Kono',
+      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
+    };
+    let sets = [katLich, katAtlantis, katOasis];
     const content = (this.state.content ? (
       <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer}/>
     ) : <ContentEmpty />);
@@ -151,26 +170,45 @@ export class TabletContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    let vendors = ['NovelKeys'];
+    let vendors = ['Vendor'];
     let i;
-    for (i = 0; i < 12; i++) {
-      vendors.push('NovelKeys');
+    for (i = 0; i < 11; i++) {
+      vendors.push('Vendor');
     };
     const katLich = {
       profile: 'KAT',
       colourway: 'Lich',
       icDate: '2019-10-31',
-      ghThread: 'https://geekhack.org/index.php?topic=104129.0',
+      details: 'https://geekhack.org/index.php?topic=104129.0',
       image: 'https://i.imgur.com/x0EkNCQ.jpg',
       gbLaunch: '2020-01-07',
       gbEnd: '2020-01-31',
       vendor: 'NovelKeys',
       storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
     };
-    let sets = [katLich];
-    for (i = 0; i < 2; i++) {
-      sets.push(katLich);
+    const katAtlantis = {
+      profile: 'KAT',
+      colourway: 'Atlantis',
+      icDate: '2019-09-14',
+      details: 'https://geekhack.org/index.php?topic=102423.0',
+      image: 'https://i.imgur.com/zugxfzk.png',
+      gbLaunch: '2020-03-01',
+      gbEnd: '2020-04-01',
+      vendor: 'CannonKeys',
+      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
     };
+    const katOasis = {
+      profile: 'KAT',
+      colourway: 'Oasis',
+      icDate: '2018-05-01',
+      details: 'https://geekhack.org/index.php?topic=104467.0',
+      image: 'https://i.imgur.com/g7IHiiT.jpg',
+      gbLaunch: '2020-01-31',
+      gbEnd: '2020-03-06',
+      vendor: 'Kono',
+      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
+    };
+    let sets = [katLich, katAtlantis, katOasis];
     const content = (this.state.content ? <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
@@ -238,26 +276,45 @@ export class MobileContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    let vendors = ['NovelKeys'];
+    let vendors = ['Vendor'];
     let i;
-    for (i = 0; i < 12; i++) {
-      vendors.push('NovelKeys');
+    for (i = 0; i < 11; i++) {
+      vendors.push('Vendor');
     };
     const katLich = {
       profile: 'KAT',
       colourway: 'Lich',
       icDate: '2019-10-31',
-      ghThread: 'https://geekhack.org/index.php?topic=104129.0',
+      details: 'https://geekhack.org/index.php?topic=104129.0',
       image: 'https://i.imgur.com/x0EkNCQ.jpg',
       gbLaunch: '2020-01-07',
       gbEnd: '2020-01-31',
       vendor: 'NovelKeys',
       storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
     };
-    let sets = [katLich];
-    for (i = 0; i < 2; i++) {
-      sets.push(katLich);
+    const katAtlantis = {
+      profile: 'KAT',
+      colourway: 'Atlantis',
+      icDate: '2019-09-14',
+      details: 'https://geekhack.org/index.php?topic=102423.0',
+      image: 'https://i.imgur.com/zugxfzk.png',
+      gbLaunch: '2020-03-01',
+      gbEnd: '2020-04-01',
+      vendor: 'CannonKeys',
+      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
     };
+    const katOasis = {
+      profile: 'KAT',
+      colourway: 'Oasis',
+      icDate: '2018-05-01',
+      details: 'https://geekhack.org/index.php?topic=104467.0',
+      image: 'https://i.imgur.com/g7IHiiT.jpg',
+      gbLaunch: '2020-01-31',
+      gbEnd: '2020-03-06',
+      vendor: 'Kono',
+      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
+    };
+    let sets = [katLich, katAtlantis, katOasis];
     const content = (this.state.content ? <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog}/> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>

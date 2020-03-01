@@ -20,7 +20,7 @@ export class ElementList extends React.Component {
         ) : '');
         return (
             <div className="list-item-container">
-                <ListItem tag="a" href={this.props.geekhack} target="_blank" rel="noopener noreferrer">
+                <ListItem tag="a" href={this.props.details} target="_blank" rel="noopener noreferrer">
                     <div className="list-image" style={{ backgroundImage: 'url(' + this.props.image + ')' }}>
                     </div>
                     <ListItemText>

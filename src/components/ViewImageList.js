@@ -25,7 +25,7 @@ export class ViewImageList extends React.Component {
                     const title = set.profile + ' ' + set.colourway;
                     const subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' - ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
                     return (
-                        <ElementImage title={title} subtitle={subtitle} image={set.image} geekhack={set.ghThread} key={index}/>
+                        <ElementImage title={title} subtitle={subtitle} image={set.image} details={set.details} key={index}/>
                     )
                 })}
             </ImageList>
