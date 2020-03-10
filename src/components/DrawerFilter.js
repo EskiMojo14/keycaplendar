@@ -9,6 +9,8 @@ import './DrawerFilter.scss';
 
 export class DesktopDrawerFilter extends React.Component {
     render() {
+        const vendors = this.props.vendors;
+        const profiles = [];
         return (
             <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
                 <DrawerHeader>
@@ -16,17 +18,33 @@ export class DesktopDrawerFilter extends React.Component {
                     <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
-                    <div className="subheader">
-                        <Typography use="subtitle2">Vendor</Typography>
+                    <div>
+                        <div className="subheader">
+                            <Typography use="subtitle2">Vendor</Typography>
+                        </div>
+                        <div className="checkbox-list">
+                            {vendors.map((value) => {
+                                return (
+                                    <FormField key={value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                        <CheckboxFilter label={value} />
+                                    </FormField>
+                                )
+                            })}
+                        </div>
                     </div>
-                    <div className="checkbox-list">
-                        {this.props.vendors.map((value, index) => {
-                            return (
-                                <FormField>
-                                    <CheckboxFilter label={value} key={index} />
-                                </FormField>
-                            )
-                        })}
+                    <div>
+                        <div className="subheader">
+                            <Typography use="subtitle2">Profile</Typography>
+                        </div>
+                        <div className="checkbox-list">
+                            {profiles.map((value, index) => {
+                                return (
+                                    <FormField key={index}>
+                                        <CheckboxFilter label={value} />
+                                    </FormField>
+                                )
+                            })}
+                        </div>
                     </div>
                 </DrawerContent>
             </Drawer>
@@ -37,20 +55,20 @@ export class DesktopDrawerFilter extends React.Component {
 export class TabletDrawerFilter extends React.Component {
     render() {
         return (
-            <Drawer modal open={this.props.open} className="filter-drawer drawer-right">
+            <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-drawer drawer-right">
                 <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer} /></Tooltip>
+                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
                     <div className="subheader">
                         <Typography use="subtitle2">Vendor</Typography>
                     </div>
                     <div className="checkbox-list">
-                        {this.props.vendors.map((value, index) => {
+                        {this.props.vendors.map((value) => {
                             return (
-                                <FormField>
-                                    <CheckboxFilter label={value} key={index} />
+                                <FormField key={value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <CheckboxFilter label={value} />
                                 </FormField>
                             )
                         })}

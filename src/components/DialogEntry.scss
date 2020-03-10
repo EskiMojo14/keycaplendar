@@ -24,8 +24,8 @@ $exit-time: 400ms;
     z-index: 7;
     @include mdc-elevation(16);
     @include mdc-theme-prop(background-color, surface);
-    display: flex;
     flex-direction: column;
+    justify-content: stretch;
     overflow: hidden;
     transition-property: transform;
     transition-timing-function: $mdc-animation-standard-curve-timing-function;
@@ -42,7 +42,7 @@ $exit-time: 400ms;
         transition-duration: $exit-time;
     }
     &--open {
-        display: block;
+        display: flex;
     }
     &-scrim {
         position: fixed;
@@ -76,6 +76,8 @@ $exit-time: 400ms;
         }
     }
     .mdc-top-app-bar {
+        flex-shrink: 0;
+        flex-grow: 0;
         position: static;
         @include mdc-elevation(4);
         .mdc-button {
@@ -84,7 +86,6 @@ $exit-time: 400ms;
         }
     }
     .form {
-        overflow: auto;
         width: 100%;
         padding: 16px;
         display: flex;
@@ -103,8 +104,14 @@ $exit-time: 400ms;
                 }
             }
             .field {
-                flex: auto 1;
+                width: 100%;
+                &-container {
+                    flex-grow: 1;
+                }
             }
+        }
+        &-container {
+            overflow: auto;
         }
         .mdc-text-field {
             margin-bottom: 16px;

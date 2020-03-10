@@ -9,6 +9,7 @@ $mdc-theme-surface: white;
 $mdc-theme-on-surface: #000;
 
 @import 'variablesDark';
+//@import 'variablesLich';
 
 $divider-color: rgba($mdc-theme-on-surface,0.12);
 
@@ -22,3 +23,15 @@ $mdc-typography-font-family: unquote("Lato, sans-serif");
 $mdc-typography-styles-headline6: (
     font-family: unquote("Roboto Slab, serif")
 );
+
+
+/*
+$mdc-typography-font-family: unquote("Signika, sans-serif");
+
+$mdc-typography-styles-headline6: (
+    font-family: unquote("Signika, sans-serif")
+);
+
+* {
+    text-transform: lowercase;
+}*/

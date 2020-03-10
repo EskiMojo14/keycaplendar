@@ -6,8 +6,6 @@
 @import '@material/animation/variables';
 @import '@material/theme/mixins';
 
-$image-size: 128px;
-
 .mdc-card {
     overflow: hidden;
 }
@@ -34,7 +32,7 @@ $image-size: 128px;
     .text-row {
         display: flex;
         .text-container {
-            flex: calc(100% - #{$image-size}) 1 1;
+            flex: auto 1 1;
             padding: 16px;
             display: flex;
             flex-direction: column;
@@ -72,6 +70,7 @@ $image-size: 128px;
                 @include mdc-theme-prop(color, text-secondary-on-background);
                 transform: scaleY(1);
                 transition:  mdc-animation-standard(transform,200ms);
+                user-select: none;
             }
         }
     }

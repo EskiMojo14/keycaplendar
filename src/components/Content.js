@@ -14,7 +14,7 @@ import { DrawerCreate, DrawerEdit } from './DrawerEntry';
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: true, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, sort: 'vendor', admin: true, loading: false };
+    this.state = { navDrawerOpen: true, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.toggleFilterDrawer = this.toggleFilterDrawer.bind(this);
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
@@ -23,7 +23,6 @@ export class DesktopContent extends React.Component {
     this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
-    this.toggleLoading = this.toggleLoading.bind(this);
   }
   toggleNavDrawer() {
     this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
@@ -40,84 +39,47 @@ export class DesktopContent extends React.Component {
   closeCreateDrawer() {
     this.setState({ createDrawerOpen: false });
   }
-  toggleEditDrawer() {
-    this.setState({ editDrawerOpen: !this.state.editDrawerOpen });
+  toggleEditDrawer(set) {
+    this.setState({
+      editDrawerOpen: !this.state.editDrawerOpen,
+      editSet: set
+    });
   }
   closeEditDrawer() {
-    this.setState({ editDrawerOpen: false });
+    this.setState({
+      editDrawerOpen: false,
+      editSet: {}
+    });
   }
   setSort(sortBy) {
     const sort = ['vendor', 'date', 'profile'];
     this.setState({ sort: sort[sortBy] });
   }
-  toggleLoading() {
-    let newState = (this.state.loading ? false : true);
-    this.setState({ loading: newState });
-  }
   render() {
-    let vendors = ['Vendor'];
-    let i;
-    for (i = 0; i < 11; i++) {
-      vendors.push('Vendor');
-    };
-    const katLich = {
-      profile: 'KAT',
-      colourway: 'Lich',
-      icDate: '2019-10-31',
-      details: 'https://geekhack.org/index.php?topic=104129.0',
-      image: 'https://i.imgur.com/x0EkNCQ.jpg',
-      gbLaunch: '2020-01-07',
-      gbEnd: '2020-01-31',
-      vendor: 'NovelKeys',
-      storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
-    };
-    const katAtlantis = {
-      profile: 'KAT',
-      colourway: 'Atlantis',
-      icDate: '2019-09-14',
-      details: 'https://geekhack.org/index.php?topic=102423.0',
-      image: 'https://i.imgur.com/zugxfzk.png',
-      gbLaunch: '2020-03-01',
-      gbEnd: '2020-04-01',
-      vendor: 'CannonKeys',
-      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
-    };
-    const katOasis = {
-      profile: 'KAT',
-      colourway: 'Oasis',
-      icDate: '2018-05-01',
-      details: 'https://geekhack.org/index.php?topic=104467.0',
-      image: 'https://i.imgur.com/g7IHiiT.jpg',
-      gbLaunch: '2020-01-31',
-      gbEnd: '2020-03-06',
-      vendor: 'Kono',
-      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
-    };
-    let sets = [katLich, katAtlantis, katOasis];
     const content = (this.state.content ? (
-      <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer}/>
+      <ContentGrid maxColumns={3} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} />
     ) : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
-    <div>
-      <Fab className="create-fab" icon="add" label="Create" onClick={this.toggleCreateDrawer} />
-      <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer}/>
-      <DrawerEdit open={this.state.editDrawerOpen} close={this.toggleEditDrawer}/>
-    </div>
+      <div>
+        <Fab className="create-fab" icon="add" label="Create" onClick={this.toggleCreateDrawer} />
+        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
+        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
+      </div>
     ) : '');
     return (
       <div className={this.props.className}>
-        <DesktopAppBar loading={this.state.loading} toggleLoading={this.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
-        <DesktopNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} toggleDrawer={this.toggleNavDrawer} />
+        <DesktopAppBar loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <DesktopNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} />
         <DrawerAppContent className={(this.state.filterDrawerOpen ? 'drawer-open ' : '') + (this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '')}>
           <div className="content-container">
             {content}
             <div className="drawer-container">
-              <DesktopDrawerFilter vendors={vendors} open={this.state.filterDrawerOpen} closeFilterDrawer={this.closeFilterDrawer}/>
+              <DesktopDrawerFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDrawerOpen} closeFilterDrawer={this.closeFilterDrawer} />
             </div>
           </div>
         </DrawerAppContent>
         {adminElements}
-        
+
       </div>
     );
   }
@@ -125,7 +87,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, sort: 'vendor', admin: true, loading: false };
+    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true, loading: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
@@ -135,7 +97,6 @@ export class TabletContent extends React.Component {
     this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
-    this.toggleLoading = this.toggleLoading.bind(this);
   }
   toggleNavDrawer() {
     let newState = (this.state.navDrawerOpen ? false : true);
@@ -150,11 +111,17 @@ export class TabletContent extends React.Component {
   closeCreateDrawer() {
     this.setState({ createDrawerOpen: false });
   }
-  toggleEditDrawer() {
-    this.setState({ editDrawerOpen: !this.state.editDrawerOpen });
+  toggleEditDrawer(set) {
+    this.setState({
+      editDrawerOpen: !this.state.editDrawerOpen,
+      editSet: set
+    });
   }
   closeEditDrawer() {
-    this.setState({ editDrawerOpen: false });
+    this.setState({
+      editDrawerOpen: false,
+      editSet: {}
+    });
   }
   toggleFilterDrawer() {
     this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
@@ -170,60 +137,21 @@ export class TabletContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    let vendors = ['Vendor'];
-    let i;
-    for (i = 0; i < 11; i++) {
-      vendors.push('Vendor');
-    };
-    const katLich = {
-      profile: 'KAT',
-      colourway: 'Lich',
-      icDate: '2019-10-31',
-      details: 'https://geekhack.org/index.php?topic=104129.0',
-      image: 'https://i.imgur.com/x0EkNCQ.jpg',
-      gbLaunch: '2020-01-07',
-      gbEnd: '2020-01-31',
-      vendor: 'NovelKeys',
-      storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
-    };
-    const katAtlantis = {
-      profile: 'KAT',
-      colourway: 'Atlantis',
-      icDate: '2019-09-14',
-      details: 'https://geekhack.org/index.php?topic=102423.0',
-      image: 'https://i.imgur.com/zugxfzk.png',
-      gbLaunch: '2020-03-01',
-      gbEnd: '2020-04-01',
-      vendor: 'CannonKeys',
-      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
-    };
-    const katOasis = {
-      profile: 'KAT',
-      colourway: 'Oasis',
-      icDate: '2018-05-01',
-      details: 'https://geekhack.org/index.php?topic=104467.0',
-      image: 'https://i.imgur.com/g7IHiiT.jpg',
-      gbLaunch: '2020-01-31',
-      gbEnd: '2020-03-06',
-      vendor: 'Kono',
-      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
-    };
-    let sets = [katLich, katAtlantis, katOasis];
-    const content = (this.state.content ? <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid maxColumns={2} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} />
-        <DrawerCreate open={this.state.createDrawerOpen} closeCreateDrawer={this.closeCreateDrawer}/>
-        <DrawerEdit open={this.state.editDrawerOpen} close={this.toggleEditDrawer}/>
+        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
+        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
       </div>
     ) : '');
     return (
       <div className={(this.state.navDrawerOpen || this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
-        <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} closeNavDrawer={this.closeNavDrawer} />
-        <TabletAppBar page={this.props.page} loading={this.state.loading} toggleLoading={this.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
+        <TabletAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
         {adminElements}
-        <TabletDrawerFilter vendors={vendors} open={this.state.filterDrawerOpen} closeFilterDrawer={this.closeFilterDrawer}/>
+        <TabletDrawerFilter vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
       </div>
     );
   }
@@ -232,7 +160,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, content: true, sort: 'vendor', admin: true, loading: false };
+    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, content: true, sort: 'vendor', editSet: {}, admin: true, loading: false, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleFilterDialog = this.toggleFilterDialog.bind(this);
@@ -242,10 +170,40 @@ export class MobileContent extends React.Component {
     this.toggleEditDialog = this.toggleEditDialog.bind(this);
     this.closeEditDialog = this.closeEditDialog.bind(this);
     this.setSort = this.setSort.bind(this);
-    this.toggleLoading = this.toggleLoading.bind(this);
+    this.hideFab = this.hideFab.bind(this);
   }
-  toggleLoading() {
-    this.setState({ loading: !this.state.loading });
+  componentDidMount() {
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function () {
+        var context = this, args = arguments;
+        var later = function () {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+    };
+    let lastScrollTop = 0;
+    const onScroll = () => {
+      var st = window.pageYOffset || document.documentElement.scrollTop;
+      if (st > lastScrollTop) {
+        this.setState({
+          hideFab: true
+        });
+      } else {
+        this.setState({
+          hideFab: false
+        });
+      }
+      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    };
+    window.addEventListener("scroll", debounce(function() {
+        onScroll();
+    },100), false);
   }
   toggleNavDrawer() {
     this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
@@ -265,71 +223,43 @@ export class MobileContent extends React.Component {
   closeCreateDialog() {
     this.setState({ createDialogOpen: false });
   }
-  toggleEditDialog() {
-    this.setState({ editDialogOpen: !this.state.editDialogOpen });
+  toggleEditDialog(set) {
+    this.setState({
+      editDialogOpen: !this.state.editDialogOpen,
+      editSet: set
+    });
   }
   closeEditDialog() {
-    this.setState({ editDialogOpen: false });
+    this.setState({
+      editDialogOpen: false,
+      editSet: {}
+    });
+  }
+  hideFab(value) {
+    this.setState({
+      hideFab: value
+    })
   }
   setSort(sortBy) {
     const sort = ['vendor', 'date', 'profile'];
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    let vendors = ['Vendor'];
-    let i;
-    for (i = 0; i < 11; i++) {
-      vendors.push('Vendor');
-    };
-    const katLich = {
-      profile: 'KAT',
-      colourway: 'Lich',
-      icDate: '2019-10-31',
-      details: 'https://geekhack.org/index.php?topic=104129.0',
-      image: 'https://i.imgur.com/x0EkNCQ.jpg',
-      gbLaunch: '2020-01-07',
-      gbEnd: '2020-01-31',
-      vendor: 'NovelKeys',
-      storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
-    };
-    const katAtlantis = {
-      profile: 'KAT',
-      colourway: 'Atlantis',
-      icDate: '2019-09-14',
-      details: 'https://geekhack.org/index.php?topic=102423.0',
-      image: 'https://i.imgur.com/zugxfzk.png',
-      gbLaunch: '2020-03-01',
-      gbEnd: '2020-04-01',
-      vendor: 'CannonKeys',
-      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
-    };
-    const katOasis = {
-      profile: 'KAT',
-      colourway: 'Oasis',
-      icDate: '2018-05-01',
-      details: 'https://geekhack.org/index.php?topic=104467.0',
-      image: 'https://i.imgur.com/g7IHiiT.jpg',
-      gbLaunch: '2020-01-31',
-      gbEnd: '2020-03-06',
-      vendor: 'Kono',
-      storeLink: 'https://kono.store/collections/keycap-sets/products/kat-oasis'
-    };
-    let sets = [katLich, katAtlantis, katOasis];
-    const content = (this.state.content ? <ContentGrid vendors={vendors} sets={sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog}/> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid maxColumns={1} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog}/>
-        <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog}/>
-        <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog}/>
+        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
+        <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} getData={this.props.getData} />
+        <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
       </div>
     ) : '');
     return (
       <div className={(this.state.navDrawerOpen || this.state.createDialogOpen || this.state.editDialogOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
-        <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} closeDrawer={this.closeNavDrawer} />
-        <MobileAppBar page={this.props.page} loading={this.state.loading} toggleLoading={this.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
+        <MobileAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
         {content}
         {adminElements}
-        <DialogFilter vendors={vendors} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} />
+        <DialogFilter vendors={this.props.vendors} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} />
       </div>
     );
   }

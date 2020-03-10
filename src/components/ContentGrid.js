@@ -1,5 +1,4 @@
 import React from 'react';
-import { Grid, GridCell } from '@rmwc/grid';
 import { Typography } from '@rmwc/typography';
 import { ViewCard } from './ViewCard';
 import { ViewList } from './ViewList';
@@ -8,29 +7,40 @@ import { ViewImageList } from './ViewImageList';
 import './ContentGrid.scss';
 
 export class ContentGrid extends React.Component {
-    render() {
-        const backgroundClass = (this.props.view === 'list' ? 'list-grid' : '');
-        let view;
+    filterSets = (sets, vendor) => {
+        let filteredSets = [];
+        sets.forEach(set => {
+            if (set.vendor === vendor) {
+                filteredSets.push(set);
+            }
+        });
+        return filteredSets;
+    }
+    createGroup = (vendor, sets, setCount) => {
         if (this.props.view === 'card') {
-            view = <ViewCard sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
+            return(<ViewCard setCount={setCount} vendor={vendor} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         } else if (this.props.view === 'list') {
-            view = <ViewList sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
+            return(<ViewList vendor={vendor} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         } else if (this.props.view === 'imageList') {
-            view = <ViewImageList sets={this.props.sets} admin={this.props.admin} edit={this.props.edit} />;
+            return(<ViewImageList setCount={setCount} vendor={vendor} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         }
+    }
+    render() {
         return (
-            <Grid className={backgroundClass}>
+            <div className={this.props.view + ' content-grid'}>
                 {this.props.vendors.map((value, index) => {
+                    const filteredSets = this.filterSets(this.props.sets, value);
+                    const setCount = (filteredSets.length > this.props.maxColumns ? this.props.maxColumns : filteredSets.length);
                     return (
-                        <GridCell className="outer-container" desktop={6} tablet={8} phone={4} key={index}>
+                        <div className="outer-container" style={{ "--columns": setCount }}key={index}>
                             <div className="subheader">
                                 <Typography use="subtitle2" key={index}>{value}</Typography>
                             </div>
-                            {view}
-                        </GridCell>
+                            {this.createGroup(value, filteredSets, setCount)}
+                        </div>
                     )
                 })}
-            </Grid>
+            </div>
         );
     }
 }

@@ -58,7 +58,10 @@
         padding: 16px;
         box-sizing: border-box;
         display: flex;
-        flex-direction: row-reverse;
+        justify-content: flex-end;
+        .mdc-button {
+            margin-left: 16px;
+        }
     }
 }
 

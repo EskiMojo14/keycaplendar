@@ -1,5 +1,4 @@
 @import 'variables';
-@import '@material/layout-grid/mdc-layout-grid';
 @import "@material/top-app-bar/variables";
 @import '@material/theme/mixins';
 @import '@material/elevation/mixins';
@@ -9,40 +8,87 @@
     @include mdc-theme-prop(color, text-secondary-on-background);
 }
 
-.mdc-layout-grid {
+.content-grid {
+    padding: 24px;
     transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-row-height});
     max-width: 2000px;
+    display: grid;
+    grid-template-columns: repeat(12,minmax(0,1fr));
+    grid-gap: 24px;
+    align-content: start;
+    flex-grow: 1;
+    max-width: 2000px;
+    margin: auto;
 }
 
-.list-grid {
+@media (max-width: 1800px) {
+    .content-grid {
+        grid-template-columns: repeat(8,minmax(0,1fr));
+    }
+}
+
+.outer-container {
+    grid-column-end: span calc(var(--columns)*2);
+}
+
+@media (max-width: 840px) {
+    .content-grid {
+        padding: 16px;
+        grid-gap: 16px;
+        grid-template-columns: repeat(8,minmax(0,1fr));
+        &.imageList {
+            grid-gap: 16px 4px;
+        }
+        .outer-container {
+            grid-column-end: span calc(var(--columns)*4);
+        }
+    }
+    div.list.content-grid .outer-container {
+        grid-column-end: span 8;
+
+    }
+}
+
+@media (max-width: 480px) {
+    .content-grid {
+        grid-template-columns: repeat(4,minmax(0,1fr));
+        .outer-container {
+            grid-column-end: span 4;
+        }
+    }
+}
+
+.list.content-grid {
     @include mdc-theme-prop(background-color, surface);
     @include mdc-elevation(1);
     padding-left: 0;
     padding-right: 0;
-    padding-bottom: 0;
+    grid-gap: 0;
+    margin-bottom: auto;
     min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    box-sizing: border-box;
+    flex-grow: 1;
     .subheader {
         padding-left: 16px;
         padding-right: 16px;
         padding-bottom: 8px;
     }
-    .mdc-layout-grid__inner {
-        grid-gap: 0;
+
+    .outer-container {
+        grid-column-end: span 6;
     }
 }
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
-    .list-grid {
-        min-height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    .list.content-grid {
+        min-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
     };
 
-    .mdc-layout-grid {
+    .content-grid {
         transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
     }
 };
 
-@media (min-width: 839px) and (max-width: 1099px) {
-    .outer-container.mdc-layout-grid__cell--span-6-desktop {
-        grid-column-end: span 12;
-    }
+.imageList.content-grid {
+    grid-gap: 24px 4px;
 }

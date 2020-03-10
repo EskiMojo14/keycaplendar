@@ -1,0 +1,11 @@
+.group-container {
+    display: grid;
+    grid-gap: var(--mdc-layout-grid-gutter-mobile, 16px);
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+}
+
+@media (min-width: 840px) {
+    .group-container {
+        grid-gap: var(--mdc-layout-grid-gutter-desktop, 24px);
+    }
+}

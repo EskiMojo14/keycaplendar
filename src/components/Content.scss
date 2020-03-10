@@ -55,9 +55,11 @@
     bottom: 24px;
     right: 24px;
     z-index: 4;
-    transition-property: right;
-    transition-timing-function: $mdc-animation-standard-curve-timing-function;
-    transition-duration: $mdc-drawer-animation-enter;
+    &.mdc-fab--extended {
+        transition-property: right;
+        transition-timing-function: $mdc-animation-standard-curve-timing-function;
+        transition-duration: $mdc-drawer-animation-enter;
+    }
     .drawer-open + div & {
         right: 24px + 256px;
     }
@@ -72,7 +74,7 @@
     }
 }
 
-.view-transition .mdc-layout-grid {
+.view-transition .content-grid {
     animation: fade-out 90ms $mdc-animation-acceleration-curve-timing-function, fade-in 210ms 90ms $mdc-animation-deceleration-curve-timing-function;
     will-change: transform, opacity;
 }

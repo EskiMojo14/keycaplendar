@@ -1,0 +1,12 @@
+@import 'variables';
+@import '@material/menu/mdc-menu';
+@import '@material/menu-surface/mdc-menu-surface';
+
+@import '@material/theme/mixins';
+
+.mdc-menu-surface.overflow-menu {
+    overflow: visible;
+    .mdc-list-item {
+        white-space: nowrap;
+    }
+}

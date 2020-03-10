@@ -74,12 +74,15 @@ $ripple-color: mdc-theme-prop-value(on-surface);
     &-list.mdc-list {
         padding: 0;
         flex: auto 1 1;
+        .mdc-list-item {
+            padding: 8px 24px;
+            margin-top: 0;
+            &::before, &::after {
+                content: none;
+            }
+        }
     }
-    .mdc-list-item:nth-child(1) {
-        padding: 8px 24px;
-        margin-top: 0;
-    }
-    .dark-mode {
+    .footer-button {
         flex: 56px 0 0;
         border-left: 1px solid $divider-color;
         display: flex;

@@ -9,7 +9,7 @@ a.mdc-image-list__item {
     @include mdc-ripple-surface;
     @include mdc-ripple-radius-bounded;
     @include mdc-states(black);
-    width: calc(100% / 3 - 4px);
+    width: calc(100% / var(--columns) - 4px);
     .mdc-image-list__supporting {
         height: 64px;
         .mdc-image-list__label {  
@@ -21,6 +21,10 @@ a.mdc-image-list__item {
                 flex-direction: column;
                 .primary-text {
                     display: flex;
+                    flex: 1;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     .time-indicator {
                         height: 24px;
                         max-width: 0;
@@ -40,10 +44,4 @@ a.mdc-image-list__item {
         }
     }
 
-}
-
-@media (max-width: 1499px) {
-    a.mdc-image-list__item {
-        width: calc(100% / 2 - 4px);
-    }
 }
