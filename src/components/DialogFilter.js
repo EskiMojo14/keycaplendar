@@ -13,8 +13,8 @@ export class DialogFilter extends React.Component {
                     <div className="checkbox-list">
                         {this.props.vendors.map((value, index) => {
                             return (
-                                <FormField>
-                                    <CheckboxFilter label={value} key={index}/>
+                                <FormField key={index}>
+                                    <CheckboxFilter label={value}/>
                                 </FormField>
                             )
                         })}
