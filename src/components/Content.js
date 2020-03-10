@@ -87,7 +87,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true, loading: false };
+    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true, loading: false, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
@@ -97,6 +97,39 @@ export class TabletContent extends React.Component {
     this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
     this.setSort = this.setSort.bind(this);
+  }
+  componentDidMount() {
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function () {
+        var context = this, args = arguments;
+        var later = function () {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+    };
+    let lastScrollTop = 0;
+    const onScroll = () => {
+      var st = window.pageYOffset || document.documentElement.scrollTop;
+      if (st > lastScrollTop) {
+        this.setState({
+          hideFab: true
+        });
+      } else {
+        this.setState({
+          hideFab: false
+        });
+      }
+      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    };
+    window.addEventListener("scroll", debounce(function() {
+        onScroll();
+    },100), false);
   }
   toggleNavDrawer() {
     let newState = (this.state.navDrawerOpen ? false : true);
@@ -140,7 +173,7 @@ export class TabletContent extends React.Component {
     const content = (this.state.content ? <ContentGrid maxColumns={2} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} />
+        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} exited={this.state.hideFab}/>
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
         <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
       </div>
