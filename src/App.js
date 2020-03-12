@@ -164,7 +164,7 @@ class App extends React.Component {
       vendor: 'TX Keyboard',
       storeLink: ''
     };
-    const sets = [katLich, katAtlantis, katAtlantis, katAtlantis, gmkModernDolchLight, gmkForge, gmkMasterpiece, gmkBleached];
+    const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkForge, gmkMasterpiece, gmkBleached];
     this.setState({
       sets: sets,
       profiles: ['KAT', 'GMK']
