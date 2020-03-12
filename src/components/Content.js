@@ -278,7 +278,7 @@ export class MobileContent extends React.Component {
     this.setState({ sort: sort[sortBy] });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid maxColumns={1} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
