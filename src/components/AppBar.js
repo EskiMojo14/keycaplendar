@@ -220,7 +220,7 @@ export class MobileAppBar extends React.Component {
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
-                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={this.props.toggleDialog} onClose={this.closeFilterMenu}>
+                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.toggleDialog(evt.detail.index)} onClose={this.closeFilterMenu}>
                                     <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
                                 </Menu>

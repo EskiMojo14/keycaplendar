@@ -8,10 +8,10 @@ export class DialogFilter extends React.Component {
     render() {
         return (
             <Dialog className="filter-dialog" open={this.props.open} onClose={evt => { console.log(evt.detail.action); this.props.onClose(); }}>
-                <DialogTitle>Filter Vendors</DialogTitle>
+                <DialogTitle>Filter {this.props.filterBy}</DialogTitle>
                 <DialogContent>
                     <div className="checkbox-list">
-                        {this.props.vendors.map((value, index) => {
+                        {this.props[this.props.filterBy].map((value, index) => {
                             return (
                                 <FormField key={index}>
                                     <CheckboxFilter label={value}/>

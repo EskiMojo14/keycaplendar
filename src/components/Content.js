@@ -183,7 +183,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, content: true, sort: 'vendor', editSet: {}, admin: true, loading: false, hideFab: false };
+    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, content: true, sort: 'vendor', filterBy: 'vendors', editSet: {}, admin: true, loading: false, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleFilterDialog = this.toggleFilterDialog.bind(this);
@@ -233,8 +233,9 @@ export class MobileContent extends React.Component {
   closeNavDrawer() {
     this.setState({ navDrawerOpen: false });
   }
-  toggleFilterDialog() {
-    this.setState({ filterDialogOpen: !this.state.filterDialogOpen });
+  toggleFilterDialog(index) {
+    const filters = ['vendors','profiles'];
+    this.setState({ filterDialogOpen: !this.state.filterDialogOpen, filterBy: filters[index] });
   }
   closeFilterDialog() {
     this.setState({ filterDialogOpen: false });
@@ -277,7 +278,7 @@ export class MobileContent extends React.Component {
         <MobileAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} />
         {content}
         {adminElements}
-        <DialogFilter vendors={this.props.vendors} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} />
+        <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy}/>
       </div>
     );
   }
