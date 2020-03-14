@@ -28,6 +28,15 @@ class App extends React.Component {
   }
   changePage(page) {
     if (page !== this.state.page) {
+      if (page === 'calendar') {
+        this.setState({sort: 'date'});
+      } else if (page === 'live') {
+        this.setState({sort: 'vendor'});
+      } else if (page === 'ic') {
+        this.setState({sort: 'profile'});
+      } else if (page === 'previous') {
+        this.setState({sort: 'date'});
+      }
       this.setState({ transition: true });
       setTimeout(function () {
         this.setState({ page: page })
@@ -233,11 +242,21 @@ class App extends React.Component {
       }
     });
     groups.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
-      if (x < y) { return -1; }
-      if (x > y) { return 1; }
-      return 0;
+      let x;
+      let y;
+      if (sort === 'date') {
+        x = new Date(a).getMonth();
+        y = new Date(b).getMonth();
+        if (x < y) { return -1; }
+        if (x > y) { return 1; }
+        return 0;
+      } else {
+        x = a.toLowerCase();
+        y = b.toLowerCase();
+        if (x < y) { return -1; }
+        if (x > y) { return 1; }
+        return 0;
+      }
     });
     this.setState({
       filteredSets: filteredSets,

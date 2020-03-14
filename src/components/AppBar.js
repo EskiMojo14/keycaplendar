@@ -47,17 +47,17 @@ export class DesktopAppBar extends React.Component {
                             <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
-                            <MenuSurfaceAnchor>
+                            <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip content="Sort" align="bottom">
-                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
+                                <Tooltip content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                                    <TopAppBarActionItem icon="sort" style={{'--animation-delay': 1}} onClick={this.openSortMenu}/>
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{'--animation-delay': 2}} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuMore view={this.props.view} open={this.state.moreMenuOpen} changeView={this.changeView} onClose={this.closeMoreMenu} />
                                 <Tooltip content="More" align="bottom">
-                                    <TopAppBarActionItem icon="more_vert" onClick={this.openMoreMenu} />
+                                    <TopAppBarActionItem style={{'--animation-delay': 3}} icon="more_vert" onClick={this.openMoreMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                         </TopAppBarSection>
@@ -120,7 +120,7 @@ export class TabletAppBar extends React.Component {
                             <Tooltip content="Toggle theme" align="bottom">
                                 <div>
                                     <Ripple unbounded>
-                                        <div className="svg-container mdc-icon-button">
+                                        <div className="svg-container mdc-icon-button" style={{'--animation-delay': 1}}>
                                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M18 9.52V6h-3.52L12 3.52 9.52 6H6v3.52L3.52 12 6 14.48V18h3.52L12 20.48 14.48 18H18v-3.52L20.48 12 18 9.52zM12 18V6c3.31 0 6 2.69 6 6s-2.69 6-6 6z" opacity=".3" /><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.79V18h-3.52L12 20.48 9.52 18H6v-3.52L3.52 12 6 9.52V6h3.52L12 3.52 14.48 6H18v3.52L20.48 12 18 14.48zM12 6v12c3.31 0 6-2.69 6-6s-2.69-6-6-6z" /></svg>
                                         </div>
                                     </Ripple>
@@ -129,16 +129,16 @@ export class TabletAppBar extends React.Component {
                             <MenuSurfaceAnchor>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Tooltip content="Sort" align="bottom">
-                                    <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
+                                    <TopAppBarActionItem style={{'--animation-delay': 2}} icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{'--animation-delay': 3}} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
-                                            <div className="svg-container mdc-icon-button">
+                                            <div className="svg-container mdc-icon-button" style={{'--animation-delay': 4}}>
                                                 {viewIcon}
                                             </div>
                                         </Ripple>

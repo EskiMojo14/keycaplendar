@@ -43,6 +43,27 @@
             max-height: 0;
         }
     }
+    .mdc-icon-button {
+        opacity: 0;
+        animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+        animation-delay: calc(var(--animation-delay) * 100ms);
+    }
+}
+.mdc-top-app-bar .hidden {
+    .mdc-menu {
+        display: none;
+    }
+    &.mdc-menu-surface--anchor {
+        pointer-events: none;
+    }
+    .mdc-icon-button {
+        opacity: 1;
+        animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+    }
+}
+
+.rmwc-tooltip.hidden {
+    display: none;
 }
 
 .mdc-top-app-bar:not(.mdc-top-app-bar--short) .logo {
