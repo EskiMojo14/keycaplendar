@@ -50,8 +50,6 @@
 
 .content-container {
     display: flex;
-    overflow: auto;
-    min-height: 2000px;
     .content-grid {
         flex: auto 1;
         flex-shrink: 1;
