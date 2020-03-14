@@ -1,10 +1,12 @@
 @import 'variables';
 @import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/top-app-bar/variables";
 @import "@material/icon-button/mdc-icon-button";
 @import "@material/ripple/mixins";
 @import "@material/theme/mixins";
 @import "@rmwc/tooltip/tooltip";
 @import "@material/animation/variables";
+@import "@material/drawer/variables";
 @import "@material/linear-progress/mdc-linear-progress";
 
 .mdc-top-app-bar {

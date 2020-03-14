@@ -1,6 +1,7 @@
 import React from 'react';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { List, ListItem, ListItemGraphic } from '@rmwc/list';
+import { IconButton } from '@rmwc/icon-button';
 import { Tooltip } from '@rmwc/tooltip';
 import { Ripple } from '@rmwc/ripple';
 import './NavDrawer.scss';
@@ -11,6 +12,11 @@ export class DesktopNavDrawer extends React.Component {
         const drawerOpen = this.props.open;
         return (
             <Drawer dismissible open={drawerOpen}>
+                <DrawerHeader className="nav">
+                    <img className="logo" src={logo} alt="logo" />
+                    <DrawerTitle>KeycapLendar</DrawerTitle>
+                    <IconButton icon="chevron_left" onClick={this.props.close}/>
+                </DrawerHeader>
                 <DrawerContent>
                     <List>
                         <ListItem onClick={(e) => this.props.changePage('calendar')} selected={(this.props.page === 'calendar' ? true : false)}>

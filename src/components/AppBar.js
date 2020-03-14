@@ -37,14 +37,14 @@ export class DesktopAppBar extends React.Component {
         this.props.changeView(views[index]);
     }
     render() {
+        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account' };
         return (
             <div>
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
-                            <img className="logo" src={logo} alt="logo" />
-                            <TopAppBarTitle onClick={this.props.toggleLoading}>KeycapLendar</TopAppBarTitle>
+                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
                             <MenuSurfaceAnchor>

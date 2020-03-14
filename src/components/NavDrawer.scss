@@ -2,6 +2,7 @@
 @import "@material/top-app-bar/variables";
 @import "@material/theme/variables";
 @import "@material/theme/mixins";
+@import "@material/typography/mixins";
 
 @import "@material/drawer/mdc-drawer";
 @import "@material/list/mdc-list";
@@ -15,13 +16,10 @@ $ripple-color: mdc-theme-prop-value(on-surface);
 .mdc-drawer--dismissible {
     z-index: 1;
     position: fixed;
-    height: calc(100% - #{$mdc-top-app-bar-row-height});
+    height: 100%;
 };
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
-    .mdc-drawer--dismissible {
-        height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
-    };
     .mdc-drawer:not(.mdc-drawer--dismissible) {
         width: calc(100% - 56px);
     };
@@ -37,12 +35,19 @@ $ripple-color: mdc-theme-prop-value(on-surface);
     display: flex;
     align-items: center;
     border-bottom: 1px solid $divider-color;
+    padding: 0 8px 4px;
     .mdc-drawer__title {
         margin-bottom: 0;
+        font-family: "Roboto Slab", serif;
+        font-size: 1.125rem;
     }
     .logo {
         height: 40px;
-        margin-right: 16px;
+        margin-right: 8px;
+    }
+    .mdc-icon-button {
+        margin-left: auto;
+        @include mdc-theme-prop(color, text-secondary-on-background);
     }
 }
 
