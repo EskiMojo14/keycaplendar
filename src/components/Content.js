@@ -160,7 +160,7 @@ export class TabletContent extends React.Component {
     this.setState({ loading: !this.state.loading });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid maxColumns={2} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} exited={this.state.hideFab}/>
@@ -262,12 +262,8 @@ export class MobileContent extends React.Component {
       hideFab: value
     })
   }
-  setSort(sortBy) {
-    const sort = ['vendor', 'date', 'profile'];
-    this.setState({ sort: sort[sortBy] });
-  }
   render() {
-    const content = (this.state.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDialog} /> : <ContentEmpty />);
+    const content = (this.state.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
