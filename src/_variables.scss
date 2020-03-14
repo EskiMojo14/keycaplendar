@@ -9,7 +9,6 @@ $mdc-theme-surface: white;
 $mdc-theme-on-surface: #000;
 
 //@import 'variablesDark';
-//@import 'variablesLich';
 
 $divider-color: rgba($mdc-theme-on-surface,0.12);
 
@@ -19,11 +18,3 @@ $divider-color: rgba($mdc-theme-on-surface,0.12);
 $meta-color: darken(mdc-theme-prop-value(primary),10%);
 
 $mdc-typography-font-family: unquote("Lato, sans-serif");
-
-
-/*
-$mdc-typography-font-family: unquote("Signika, sans-serif");
-
-* {
-    text-transform: lowercase;
-}*/

@@ -6,13 +6,14 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { page: 'live', view: 'card', transition: false, vendors: [], sets: [], filteredSets: [], loading: false };
+    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
     this.filterData = this.filterData.bind(this);
     this.createExampleData = this.createExampleData.bind(this);
     this.toggleLoading = this.toggleLoading.bind(this);
+    this.setSort = this.setSort.bind(this);
   }
   changeView(view) {
     if (view !== this.state.view) {
@@ -30,7 +31,7 @@ class App extends React.Component {
       this.setState({ transition: true });
       setTimeout(function () {
         this.setState({ page: page })
-        this.filterData(page, this.state.sets);
+        this.filterData(page, this.state.sets, this.state.sort);
       }.bind(this), 90);
       setTimeout(function () {
         this.setState({ transition: false })
@@ -50,8 +51,6 @@ class App extends React.Component {
     const db = firebase.firestore();
     db.collection("keysets").get().then((querySnapshot) => {
       let sets = [];
-      let vendors = [];
-      let profiles = [];
       querySnapshot.forEach((doc) => {
         sets.push({
           id: doc.id,
@@ -65,30 +64,11 @@ class App extends React.Component {
           vendor: doc.data().vendor,
           storeLink: doc.data().storeLink
         });
-        if (vendors.includes(doc.data().vendor)) {
-          return;
-        } else {
-          vendors.push(doc.data().vendor);
-        };
-        if (profiles.includes(doc.data().profile)) {
-          return;
-        } else {
-          profiles.push(doc.data().profile);
-        };
-      });
-      vendors.sort(function (a, b) {
-        var x = a.toLowerCase();
-        var y = b.toLowerCase();
-        if (x < y) { return -1; }
-        if (x > y) { return 1; }
-        return 0;
       });
       this.setState({
-        sets: sets,
-        vendors: vendors,
-        profiles: profiles
+        sets: sets
       })
-      this.filterData(this.state.page, sets);
+      this.filterData(this.state.page, sets, this.state.sort);
     });
   }
   createExampleData() {
@@ -161,20 +141,21 @@ class App extends React.Component {
       image: 'https://i.imgur.com/XK1Pgrr.png',
       gbLaunch: '',
       gbEnd: '',
-      vendor: 'TX Keyboard',
+      vendor: 'TX Keyboards',
       storeLink: ''
     };
     const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkForge, gmkMasterpiece, gmkBleached];
     this.setState({
-      sets: sets,
-      profiles: ['KAT', 'GMK']
+      sets: sets
     })
-    this.filterData(this.state.page, sets);
+    this.filterData(this.state.page, sets, this.state.sort);
   }
-  filterData(page, sets) {
+  filterData(page, sets, sort) {
     const today = new Date();
     let filteredSets = [];
     let filteredVendors = [];
+    let filteredProfiles = [];
+    let groups = [];
     if (page === 'calendar') {
       filteredSets = sets.filter(set => {
         const startDate = new Date(set.gbLaunch);
@@ -213,7 +194,7 @@ class App extends React.Component {
     } else {
       filteredSets = sets;
     }
-    filteredSets.forEach((set) => {
+    sets.forEach((set) => {
       if (!filteredVendors.includes(set.vendor)) {
         filteredVendors.push(set.vendor);
       }
@@ -225,10 +206,50 @@ class App extends React.Component {
       if (x > y) { return 1; }
       return 0;
     });
+    sets.forEach((set) => {
+      if (!filteredProfiles.includes(set.profile)) {
+        filteredProfiles.push(set.profile);
+      }
+    });
+    filteredProfiles.sort(function (a, b) {
+      var x = a.toLowerCase();
+      var y = b.toLowerCase();
+      if (x < y) { return -1; }
+      if (x > y) { return 1; }
+      return 0;
+    });
+    filteredSets.forEach((set) => {
+      if (sort === 'date') {
+        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
+        const setMonth = month[setDate.getMonth()];
+        if (!groups.includes(setMonth)) {
+          groups.push(setMonth);
+        }
+      } else {
+        if (!groups.includes(set[sort])) {
+          groups.push(set[sort]);
+        }
+      }
+    });
+    groups.sort(function (a, b) {
+      var x = a.toLowerCase();
+      var y = b.toLowerCase();
+      if (x < y) { return -1; }
+      if (x > y) { return 1; }
+      return 0;
+    });
     this.setState({
       filteredSets: filteredSets,
-      vendors: filteredVendors
+      vendors: filteredVendors,
+      profiles: filteredProfiles,
+      groups: groups
     });
+  }
+  setSort(sortBy) {
+    const sort = ['vendor', 'date', 'profile'];
+    this.setState({ sort: sort[sortBy] });
+    this.filterData(this.state.page, this.state.sets, sort[sortBy]);
   }
   componentDidMount() {
     this.changeThemeColor();
@@ -239,11 +260,11 @@ class App extends React.Component {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} loading={this.state.loading} toggleLoading={this.toggleLoading} />;
+      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} />;
     } else if (device === 'tablet') {
-      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} loading={this.state.loading} toggleLoading={this.toggleLoading} />;
+      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} />;
     } else {
-      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} loading={this.state.loading} toggleLoading={this.toggleLoading} />;
+      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} />;
     }
     return (
       <div className="app">

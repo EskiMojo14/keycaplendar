@@ -9,7 +9,12 @@
 @import "@material/drawer/variables";
 @import "@material/linear-progress/mdc-linear-progress";
 
+
 .mdc-top-app-bar {
+    &__title {
+        @include mdc-theme-prop(color, on-primary);
+        user-select: none;
+    }
     .svg-container {
         position: relative;
         @include mdc-theme-prop(fill,on-primary);

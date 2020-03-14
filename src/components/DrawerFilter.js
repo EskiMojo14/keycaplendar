@@ -10,7 +10,7 @@ import './DrawerFilter.scss';
 export class DesktopDrawerFilter extends React.Component {
     render() {
         const vendors = this.props.vendors;
-        const profiles = [];
+        const profiles = this.props.profiles;
         return (
             <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
                 <DrawerHeader>
@@ -25,7 +25,7 @@ export class DesktopDrawerFilter extends React.Component {
                         <div className="checkbox-list">
                             {vendors.map((value) => {
                                 return (
-                                    <FormField key={value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} />
                                     </FormField>
                                 )
@@ -37,9 +37,9 @@ export class DesktopDrawerFilter extends React.Component {
                             <Typography use="subtitle2">Profile</Typography>
                         </div>
                         <div className="checkbox-list">
-                            {profiles.map((value, index) => {
+                            {profiles.map((value) => {
                                 return (
-                                    <FormField key={index}>
+                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} />
                                     </FormField>
                                 )

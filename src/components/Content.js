@@ -14,7 +14,7 @@ import { DrawerCreate, DrawerEdit } from './DrawerEntry';
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: true, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true };
+    this.state = { navDrawerOpen: true, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, admin: true };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.toggleFilterDrawer = this.toggleFilterDrawer.bind(this);
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
@@ -22,7 +22,6 @@ export class DesktopContent extends React.Component {
     this.closeCreateDrawer = this.closeCreateDrawer.bind(this);
     this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
-    this.setSort = this.setSort.bind(this);
   }
   toggleNavDrawer() {
     this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
@@ -51,13 +50,9 @@ export class DesktopContent extends React.Component {
       editSet: {}
     });
   }
-  setSort(sortBy) {
-    const sort = ['vendor', 'date', 'profile'];
-    this.setState({ sort: sort[sortBy] });
-  }
   render() {
     const content = (this.state.content ? (
-      <ContentGrid maxColumns={3} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} />
+      <ContentGrid maxColumns={3} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} />
     ) : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
       <div>
@@ -70,7 +65,7 @@ export class DesktopContent extends React.Component {
       <div className={this.props.className}>
         <DesktopNavDrawer open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} />
         <DrawerAppContent className={(this.state.filterDrawerOpen ? 'drawer-open ' : '') + (this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '')}>
-          <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+          <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} />
           <div className="content-container">
             {content}
             <div className="drawer-container">
@@ -87,7 +82,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, sort: 'vendor', admin: true, loading: false, hideFab: false };
+    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, admin: true, loading: false, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
@@ -96,7 +91,6 @@ export class TabletContent extends React.Component {
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
     this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
-    this.setSort = this.setSort.bind(this);
   }
   componentDidMount() {
     function debounce(func, wait, immediate) {
@@ -165,10 +159,6 @@ export class TabletContent extends React.Component {
   toggleLoading() {
     this.setState({ loading: !this.state.loading });
   }
-  setSort(sortBy) {
-    const sort = ['vendor', 'date', 'profile'];
-    this.setState({ sort: sort[sortBy] });
-  }
   render() {
     const content = (this.state.content ? <ContentGrid maxColumns={2} vendors={this.props.vendors} sets={this.props.sets} view={this.props.view} admin={this.state.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
     const adminElements = (this.state.admin ? (
@@ -181,7 +171,7 @@ export class TabletContent extends React.Component {
     return (
       <div className={(this.state.navDrawerOpen || this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
-        <TabletAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <TabletAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} />
         {content}
         {adminElements}
         <TabletDrawerFilter vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
@@ -202,7 +192,6 @@ export class MobileContent extends React.Component {
     this.closeCreateDialog = this.closeCreateDialog.bind(this);
     this.toggleEditDialog = this.toggleEditDialog.bind(this);
     this.closeEditDialog = this.closeEditDialog.bind(this);
-    this.setSort = this.setSort.bind(this);
     this.hideFab = this.hideFab.bind(this);
   }
   componentDidMount() {
@@ -289,7 +278,7 @@ export class MobileContent extends React.Component {
     return (
       <div className={(this.state.navDrawerOpen || this.state.createDialogOpen || this.state.editDialogOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
         <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
-        <MobileAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.state.sort} setSort={this.setSort} />
+        <MobileAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} />
         {content}
         {adminElements}
         <DialogFilter vendors={this.props.vendors} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} />
