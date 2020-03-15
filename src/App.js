@@ -6,7 +6,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false };
+    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -279,11 +279,11 @@ class App extends React.Component {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} />;
+      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
     } else if (device === 'tablet') {
-      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} />;
+      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
     } else {
-      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} />;
+      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
     }
     return (
       <div className="app">

@@ -14,7 +14,7 @@ import { DrawerCreate, DrawerEdit } from './DrawerEntry';
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: true, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, admin: true };
+    this.state = { navDrawerOpen: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {} };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.toggleFilterDrawer = this.toggleFilterDrawer.bind(this);
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
@@ -51,10 +51,10 @@ export class DesktopContent extends React.Component {
     });
   }
   render() {
-    const content = (this.state.content ? (
-      <ContentGrid maxColumns={3} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} />
+    const content = (this.props.content ? (
+      <ContentGrid maxColumns={3} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDrawer} />
     ) : <ContentEmpty />);
-    const adminElements = (this.state.admin ? (
+    const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" label="Create" onClick={this.toggleCreateDrawer} />
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
@@ -82,7 +82,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: false, content: true, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, admin: true, loading: false, hideFab: false };
+    this.state = { navDrawerOpen: false, filterDrawerOpen: false, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
@@ -160,8 +160,8 @@ export class TabletContent extends React.Component {
     this.setState({ loading: !this.state.loading });
   }
   render() {
-    const content = (this.state.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
-    const adminElements = (this.state.admin ? (
+    const content = (this.props.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
+    const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} exited={this.state.hideFab}/>
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
@@ -183,7 +183,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, content: true, sort: 'vendor', filterBy: 'vendors', editSet: {}, admin: true, loading: false, hideFab: false };
+    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, filterBy: 'vendors', editSet: {}, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleFilterDialog = this.toggleFilterDialog.bind(this);
@@ -264,8 +264,8 @@ export class MobileContent extends React.Component {
     })
   }
   render() {
-    const content = (this.state.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.state.admin} loading={this.state.loading} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
-    const adminElements = (this.state.admin ? (
+    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDrawer} /> : <ContentEmpty />);
+    const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
         <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} getData={this.props.getData} />
