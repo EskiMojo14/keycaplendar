@@ -19,6 +19,7 @@ a.mdc-image-list__item {
                 flex: auto 1;
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
                 .primary-text {
                     display: flex;
                     flex: 1;
@@ -34,6 +35,11 @@ a.mdc-image-list__item {
                             max-width: none;
                             padding-right: 8px;
                         }
+                    }
+                    &-text {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
                 .secondary-text {

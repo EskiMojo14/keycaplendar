@@ -56,6 +56,9 @@
             grid-column-end: span 4;
         }
     }
+    .imageList.content-grid .outer-container {
+        grid-column-end: span calc(var(--columns)*2);
+    }
 }
 
 .list.content-grid {
