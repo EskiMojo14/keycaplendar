@@ -4,26 +4,10 @@ import { ElementImage } from './ElementImage';
 import './ViewImageList.scss';
 
 export class ViewImageList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.filterSets = this.filterSets.bind(this);
-    }
-    filterSets() {
-        const sets = this.props.sets;
-        let filteredSets = [];
-        sets.forEach(set => {
-            if (set.vendor === this.props.vendor) {
-                filteredSets.push(set);
-            }
-        });
-        return filteredSets;
-    }
     render() {
-        const filteredSets = this.filterSets();
-        
         return (
             <ImageList style={{margin: -2}} withTextProtection>
-                {filteredSets.map((set, index) => {
+                {this.props.sets.map((set, index) => {
                     const gbLaunch = (set.gbLaunch.includes('Q') ? set.gbLaunch : new Date(set.gbLaunch));
                     const gbEnd = new Date(set.gbEnd);
                     const icDate = new Date(set.icDate);
