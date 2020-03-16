@@ -64,7 +64,7 @@ export class DesktopAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
                             <MenuSurfaceAnchor>
-                                <MenuView anchorCorner="bottomLeft" view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
@@ -140,7 +140,7 @@ export class TabletAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
                             <MenuSurfaceAnchor>
-                                <MenuView anchorCorner="bottomLeft" view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
@@ -235,7 +235,7 @@ export class MobileAppBar extends React.Component {
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
-                                <MenuView anchorCorner="bottomLeft" view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
