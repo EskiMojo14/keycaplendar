@@ -1,4 +1,3 @@
-@import 'variables';
 @import '@material/theme/variables';
 @import '@material/theme/mixins';
 @import '@material/ripple/mixins';
@@ -15,14 +14,14 @@ $overlay-values: (
     24: 16%  // dialog
 );
 
-$divider-color: rgba($mdc-theme-on-surface,0.12);
-
 @function overlay-elevation($color, $elevation : 0) {
     $use-color: mdc-theme-prop-value($color);
     @return lighten($use-color, map-get($overlay-values, $elevation));
 };
 
-$meta-color: darken(overlay-elevation(surface, 4),10%);
+:root {
+    --meta-color: #{darken(overlay-elevation(surface, 4),10%)};
+}
 
 .mdc-card {
     background-color: overlay-elevation(surface, 1);

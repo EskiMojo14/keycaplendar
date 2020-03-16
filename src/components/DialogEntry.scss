@@ -1,16 +1,9 @@
-@import 'variables';
 @import '@material/animation/variables';
 @import '@material/theme/variables';
 @import '@material/theme/mixins';
 @import '@material/elevation/mixins';
 @import '@material/ripple/mixins';
-@import '@material/textfield/mdc-text-field';
-@import '@material/floating-label/mdc-floating-label';
-@import '@material/notched-outline/mdc-notched-outline';
-@import '@material/line-ripple/mdc-line-ripple';
-@import '@material/select/mdc-select';
-@import '@material/menu/mdc-menu';
-@import '@material/menu-surface/mdc-menu-surface';
+@import '@material/select/mixins';
 
 $enter-time: 450ms;
 $exit-time: 400ms;

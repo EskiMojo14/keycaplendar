@@ -1,14 +1,53 @@
 @import 'variables';
 
-//@import 'dark-theme';
+$mdc-typography-font-family: unquote("Lato, sans-serif");
 
 @import "@material/theme/mdc-theme";
 @import "@material/typography/mdc-typography";
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/icon-button/mdc-icon-button";
+@import "@rmwc/tooltip/tooltip";
+@import "@material/linear-progress/mdc-linear-progress";
+@import '@material/fab/mdc-fab';
+@import '@material/textfield/mdc-text-field';
+@import '@material/floating-label/mdc-floating-label';
+@import '@material/notched-outline/mdc-notched-outline';
+@import '@material/line-ripple/mdc-line-ripple';
+@import '@material/select/mdc-select';
+@import '@material/menu/mdc-menu';
+@import '@material/menu-surface/mdc-menu-surface';
+@import '@material/dialog/mdc-dialog';
+@import '@material/form-field/mdc-form-field';
+@import '@material/checkbox/mdc-checkbox';
+@import '@material/card/mdc-card';
+@import '@material/button/mdc-button';
+@import '@material/list/mdc-list';
+@import "@material/drawer/mdc-drawer";
+@import '@material/image-list/mdc-image-list';
 
 body {
     @include mdc-theme-prop(background-color, background);
 }
 
 :root {
-    --meta-color: #{$meta-color};
+    --meta-color: #{darken(mdc-theme-prop-value(primary),10%)};
+    --divider-color: #{rgba($mdc-theme-on-surface,0.12)};
 }
+
+.mdc-drawer.drawer-right {
+    border-right-width: 0;
+    border-left-width: 1px;
+    border-right-style: none;
+    border-left-style: solid;
+    border-color: var(--divider-color);
+    left: initial;
+    right: 0;
+    &.mdc-drawer--animate, &.mdc-drawer--closing {
+        transform: translateX(100%);
+    }
+    &.mdc-drawer--opening {
+        transform: translateX(0);
+    }
+}
+
+//@import 'dark-theme';

@@ -1,13 +1,9 @@
-@import 'variables';
-@import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/top-app-bar/variables";
-@import "@material/icon-button/mdc-icon-button";
 @import "@material/ripple/mixins";
 @import "@material/theme/mixins";
-@import "@rmwc/tooltip/tooltip";
+@import "@material/elevation/mixins";
 @import "@material/animation/variables";
 @import "@material/drawer/variables";
-@import "@material/linear-progress/mdc-linear-progress";
 
 
 .mdc-top-app-bar {
@@ -34,7 +30,7 @@
             display: none;
         }
         .mdc-linear-progress__buffer {
-            background-color: $divider-color;
+            background-color: var(--divider-color);
         }
         .mdc-linear-progress__bar-inner {
             @include mdc-theme-prop(background-color, secondary);
@@ -48,17 +44,27 @@
         animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
         animation-delay: calc(var(--animation-delay) * 75ms);
     }
-}
-.mdc-top-app-bar .hidden {
-    .mdc-menu {
-        display: none;
+    .mdc-menu-surface--anchor {
+        .mdc-menu-surface--anchor {
+            width: auto;
+        }
+        width: 48px;
+        transition: width 150ms 150ms $mdc-animation-standard-curve-timing-function;
     }
-    &.mdc-menu-surface--anchor {
-        pointer-events: none;
-    }
-    .mdc-icon-button {
-        opacity: 1;
-        animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+    .hidden {
+        .mdc-menu {
+            display: none;
+        }
+        &.mdc-menu-surface--anchor {
+            pointer-events: none;
+            width: 0;
+            transition-delay: 0;
+        }
+        .mdc-icon-button {
+            opacity: 1;
+            animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+            animation-delay: 0;
+        }
     }
 }
 

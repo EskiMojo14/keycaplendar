@@ -1,12 +1,7 @@
-@import 'variables';
-@import '@material/dialog/mdc-dialog';
-@import '@material/form-field/mdc-form-field';
-@import '@material/checkbox/mdc-checkbox';
-
 .filter-dialog {
     .mdc-dialog__content {
-        border-top: 1px solid $divider-color;
-        border-bottom: 1px solid $divider-color;
+        border-top: 1px solid var(--divider-color);
+        border-bottom: 1px solid var(--divider-color);
         max-height: 320px;
         .checkbox-list {
             display: flex;

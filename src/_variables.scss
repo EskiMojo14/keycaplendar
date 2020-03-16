@@ -7,15 +7,3 @@ $mdc-theme-on-secondary: black;
 $mdc-theme-background: $material-color-grey-200;
 $mdc-theme-surface: white;
 $mdc-theme-on-surface: #000;
-
-//@import 'variablesDark';
-//@import 'variablesDeep';
-
-$divider-color: rgba($mdc-theme-on-surface,0.12);
-
-
-@import '@material/theme/variables';
-
-$meta-color: darken(mdc-theme-prop-value(primary),10%);
-
-$mdc-typography-font-family: unquote("Lato, sans-serif");

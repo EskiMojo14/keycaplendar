@@ -1,7 +1,6 @@
 import React from 'react';
 import { ImageList } from '@rmwc/image-list';
 import { ElementImage } from './ElementImage';
-import './ViewImageList.scss';
 
 export class ViewImageList extends React.Component {
     render() {

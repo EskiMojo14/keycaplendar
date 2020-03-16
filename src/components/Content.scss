@@ -1,5 +1,3 @@
-@import 'variables';
-@import '@material/fab/mdc-fab';
 @import "@material/animation/variables";
 @import "@material/drawer/variables";
 @import "@material/top-app-bar/variables";
@@ -83,7 +81,7 @@
     }
 };
 
-.create-fab {
+.create-fab.mdc-fab {
     position: fixed;
     bottom: 24px;
     right: 24px;

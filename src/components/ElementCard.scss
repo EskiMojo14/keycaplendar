@@ -1,10 +1,8 @@
-@import 'variables';
 
-@import '@material/card/mdc-card';
-@import '@material/button/mdc-button';
 @import '@material/animation/functions';
 @import '@material/animation/variables';
 @import '@material/theme/mixins';
+@import '@material/ripple/mixins';
 
 .mdc-card {
     overflow: hidden;

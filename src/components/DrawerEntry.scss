@@ -1,20 +1,12 @@
-@import 'variables';
 @import '@material/theme/mixins';
-@import '@material/textfield/mdc-text-field';
-@import '@material/floating-label/mdc-floating-label';
-@import '@material/notched-outline/mdc-notched-outline';
-@import '@material/line-ripple/mdc-line-ripple';
-@import '@material/select/mdc-select';
-@import '@material/menu/mdc-menu';
-@import '@material/menu-surface/mdc-menu-surface';
 
-.entry-drawer {
+.mdc-drawer.entry-drawer {
     width: 360px;
     &.mdc-drawer--modal {
         top: 0;
     }
     .mdc-drawer__header {
-        border-bottom: 1px solid $divider-color;
+        border-bottom: 1px solid var(--divider-color);
         .mdc-drawer__title{
             &::before {
                 height: 42px;

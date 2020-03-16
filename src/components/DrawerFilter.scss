@@ -1,8 +1,6 @@
-@import 'variables';
 @import '@material/theme/mixins';
-@import '@rmwc/list/collapsible-list';
 
-.filter-drawer {
+.mdc-drawer.filter-drawer {
     &.mdc-drawer--modal {
         top: 0;
     }
@@ -34,21 +32,5 @@
         .mdc-form-field {
             height: 48px;
         }
-    }
-}
-
-.drawer-right {
-    border-right-width: 0;
-    border-left-width: 1px;
-    border-right-style: none;
-    border-left-style: solid;
-    border-color: $divider-color;
-    left: initial;
-    right: 0;
-    &.mdc-drawer--animate, &.mdc-drawer--closing {
-        transform: translateX(100%);
-    }
-    &.mdc-drawer--opening {
-        transform: translateX(0);
     }
 }
