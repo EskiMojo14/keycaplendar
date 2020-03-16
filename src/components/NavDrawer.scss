@@ -80,25 +80,9 @@ $ripple-color: mdc-theme-prop-value(on-surface);
         padding: 0;
         flex: auto 1 1;
         .mdc-list-item {
-            padding: 8px 24px;
-            margin-top: 0;
-            &::before, &::after {
-                content: none;
-            }
+            padding: 8px 16px;
+            margin: 0;
+            border-radius: 0;
         }
-    }
-    .footer-button {
-        flex: 56px 0 0;
-        border-left: 1px solid var(--divider-color);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .svg-container {
-            svg {@include mdc-theme-prop(fill, text-secondary-on-background);};
-            position: relative;
-            @include mdc-ripple-surface;
-            @include mdc-ripple-radius-unbounded;
-            @include mdc-states(on-surface);
-        };
     }
 }
