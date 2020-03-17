@@ -34,7 +34,7 @@ export class ViewList extends React.Component {
                         subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
                     }
                     return (
-                        <ElementList title={title} subtitle={subtitle} image={set.image} details={set.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
+                        <ElementList set={set} title={title} subtitle={subtitle} image={set.image} details={set.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
                     )
                 })}
                 <ListDivider />
