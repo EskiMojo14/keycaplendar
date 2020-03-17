@@ -38,11 +38,11 @@ export class ContentGrid extends React.Component {
     }
     createGroup = (sets, setCount) => {
         if (this.props.view === 'card') {
-            return (<ViewCard setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewCard setCount={setCount} sets={sets} admin={this.props.admin} details={this.props.details} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'list') {
-            return (<ViewList sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewList sets={sets} admin={this.props.admin} details={this.props.details} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'imageList') {
-            return (<ViewImageList setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewImageList setCount={setCount} sets={sets} admin={this.props.admin} details={this.props.details} detailSet={this.props.detailSet} />);
         }
     }
     render() {
@@ -54,7 +54,7 @@ export class ContentGrid extends React.Component {
                     return (
                         <div className="outer-container" style={{ "--columns": setCount }} key={index}>
                             <div className="subheader">
-                                <Typography use="subtitle2" key={index}>{value}</Typography>
+                                <Typography use="caption" key={index}>{value}</Typography>
                             </div>
                             {this.createGroup(filteredSets, setCount)}
                         </div>

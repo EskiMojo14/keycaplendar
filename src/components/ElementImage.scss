@@ -1,7 +1,8 @@
 @import "@material/ripple/mixins";
 @import "@material/typography/mixins";
 
-a.mdc-image-list__item {
+.mdc-image-list__item {
+    cursor: pointer;
     margin: 2px;
     overflow: hidden;
     @include mdc-ripple-surface;

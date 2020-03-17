@@ -12,7 +12,7 @@ export class ViewList extends React.Component {
                     const gbEnd = new Date(set.gbEnd);
                     const icDate = new Date(set.icDate);
                     const today = new Date();
-                    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     const nth = function (d) {
                         if (d > 3 && d < 21) return 'th';
                         switch (d % 10) {
@@ -34,7 +34,7 @@ export class ViewList extends React.Component {
                         subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
                     }
                     return (
-                        <ElementList set={set} title={title} subtitle={subtitle} image={set.image} details={set.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
+                        <ElementList set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
                     )
                 })}
                 <ListDivider />

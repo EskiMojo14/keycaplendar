@@ -4,8 +4,6 @@
 @import "@material/typography/mixins";
 @import "@material/ripple/mixins";
 
-$ripple-color: mdc-theme-prop-value(on-surface);
-
 .mdc-drawer.mdc-drawer--dismissible {
     z-index: 1;
     position: fixed;
@@ -61,7 +59,7 @@ $ripple-color: mdc-theme-prop-value(on-surface);
                font-weight: bold;
             }
             &:not(.mdc-list-item--selected){ 
-                @include mdc-states($ripple-color);
+                @include mdc-states(on-surface);
                 .mdc-list-item__graphic {
                     @include mdc-theme-prop(color, text-secondary-on-background);
                     @include mdc-theme-prop(fill, text-secondary-on-background);

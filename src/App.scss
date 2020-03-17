@@ -25,6 +25,9 @@
 @import '@material/list/mdc-list';
 @import "@material/drawer/mdc-drawer";
 @import '@material/image-list/mdc-image-list';
+@import '@material/chips/mdc-chips';
+
+@import "@material/top-app-bar/variables";
 
 body {
     @include mdc-theme-prop(background-color, background);
@@ -50,6 +53,17 @@ body {
         transform: translateX(0);
     }
 }
+
+.content-container .mdc-drawer.mdc-drawer--dismissible {
+    height: calc(100% - #{$mdc-top-app-bar-row-height});
+};
+
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+    .content-container .mdc-drawer.mdc-drawer--dismissible {
+        height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    };
+};
 
 .search-bar--persistent .search-bar-field.mdc-text-field {
     background-color: rgba($mdc-theme-on-primary,0.15);

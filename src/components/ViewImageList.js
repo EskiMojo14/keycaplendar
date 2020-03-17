@@ -26,14 +26,14 @@ export class ViewImageList extends React.Component {
                     if (set.gbLaunch && set.gbEnd) {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' - ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
-                        subtitle = 'IC ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '') + ', expected ' + gbLaunch;
+                        subtitle = 'Expected ' + gbLaunch;
                     } else if (set.gbLaunch) {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()];
                     } else {
                         subtitle = 'IC ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '') ;
                     }
                     return (
-                        <ElementImage title={title} subtitle={subtitle} image={set.image} details={set.details} key={index}/>
+                        <ElementImage title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} key={index}/>
                     )
                 })}
             </ImageList>

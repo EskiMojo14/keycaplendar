@@ -1,16 +1,9 @@
 
 @import '@material/animation/functions';
 @import '@material/animation/variables';
+@import '@material/elevation/mixins';
 @import '@material/theme/mixins';
 @import '@material/ripple/mixins';
-
-.mdc-card {
-    overflow: hidden;
-}
-
-.mdc-card__action-buttons a {
-   text-decoration: none;
-}
 
 @media (min-width: 839px) and (max-width: 1599px) {
     .card-container.mdc-layout-grid__cell--span-4-desktop {
@@ -24,93 +17,48 @@
     }
 }
 
-.main-block {
+.card-container .mdc-card {
+    transition: box-shadow 150ms;
+    &.selected {
+        @include mdc-elevation(8);
+    }
+}
+
+.text-row {
     display: flex;
-    flex-direction: column;
-    .text-row {
+    .text-container {
+        flex: auto 1 1;
+        padding: 8px 16px 16px 16px;
         display: flex;
-        .text-container {
-            flex: auto 1 1;
-            padding: 16px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        .mdc-typography--overline {
+            margin: 0;
+            @include mdc-theme-prop(color, text-secondary-on-background);
+        }
+        .title {
+            padding-bottom: 8px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            .title {
-                padding-bottom: 8px;
+            .time-indicator {
+                max-width: 0;
+                overflow: hidden;
                 display: flex;
-                .time-indicator {
-                    max-width: 0;
-                    overflow: hidden;
-                    display: flex;
-                    align-items: center;
-                    @include mdc-theme-prop(fill, secondary);
-                    &.visible {
-                        max-width: none;
-                        padding-right: 8px;
-                    }
-                }
-                .mdc-typography--headline5 {
-                    margin: 0;
-                    @include mdc-theme-prop(color, text-primary-on-background);
+                align-items: center;
+                @include mdc-theme-prop(fill, secondary);
+                &.visible {
+                    max-width: none;
+                    padding-right: 8px;
                 }
             }
-            .mdc-typography--subtitle2 {
+            .mdc-typography--headline5 {
                 margin: 0;
-                @include mdc-theme-prop(color, text-secondary-on-background);
+                @include mdc-theme-prop(color, text-primary-on-background);
             }
         }
-        .expand-icon-container {
-            display: none;
-            padding: 16px;
-            align-items: center;
-            .expand-icon {
-                @include mdc-theme-prop(color, text-secondary-on-background);
-                transform: scaleY(1);
-                transition:  mdc-animation-standard(transform,200ms);
-                user-select: none;
-            }
+        .mdc-typography--subtitle2 {
+            margin: 0;
+            @include mdc-theme-prop(color, text-secondary-on-background);
         }
-    }
-}
-
-.mdc-card {
-    &__action-icons {
-        opacity: 0;
-        transition: opacity 200ms $mdc-animation-standard-curve-timing-function;
-        .svg-container {
-            @include mdc-theme-prop(fill, text-secondary-on-background);
-            position: relative;
-            @include mdc-ripple-surface;
-            height: 48px;
-            @include mdc-ripple-radius-unbounded;
-            @include mdc-states(on-surface);
-            margin: -6px 0;
-            padding: 12px;
-            box-sizing: border-box;
-        }
-    }
-    &:hover &__action-icons { 
-        opacity: 1;
-    }
-}
-
-@media (max-width: 839px) {
-    .expand-actions {
-        max-height: 0px;
-        overflow: hidden;
-        transition:  mdc-animation-standard(max-height,200ms);
-        .expanded & {
-            max-height: 52px;
-        }
-    }
-    .main-block .text-row .expand-icon-container {
-        display: flex;
-        .expanded & .expand-icon {
-            transform: scaleY(-1);
-        }
-    }
-    .mdc-card.expanded .mdc-card__action-icons { 
-        opacity: 1;
     }
 }

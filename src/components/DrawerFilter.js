@@ -15,12 +15,12 @@ export class DesktopDrawerFilter extends React.Component {
             <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
                 <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.closeFilterDrawer} /></Tooltip>
+                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
                     <div>
                         <div className="subheader">
-                            <Typography use="subtitle2">Vendor</Typography>
+                            <Typography use="caption">Vendor</Typography>
                         </div>
                         <div className="checkbox-list">
                             {vendors.map((value) => {
@@ -34,7 +34,7 @@ export class DesktopDrawerFilter extends React.Component {
                     </div>
                     <div>
                         <div className="subheader">
-                            <Typography use="subtitle2">Profile</Typography>
+                            <Typography use="caption">Profile</Typography>
                         </div>
                         <div className="checkbox-list">
                             {profiles.map((value) => {

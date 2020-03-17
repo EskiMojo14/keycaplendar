@@ -7,9 +7,9 @@ export class ElementImage extends React.Component {
     render() {
         return (
             <Ripple>
-                <ImageListItem tag="a" href={this.props.details} target="_blank" rel="noreferrer" key={this.props.image} className="image-list-item">
+                <ImageListItem onClick={() => this.props.details(this.props.set)} key={this.props.image} className="image-list-item">
                     <ImageListImageAspectContainer style={{ paddingBottom: 'calc(100% / 1)' }}>
-                        <ImageListImage style={{ backgroundImage: 'url(' + this.props.image + ')'}} />
+                        <ImageListImage tag="div" style={{ backgroundImage: 'url(' + this.props.image + ')'}} />
                     </ImageListImageAspectContainer>
                     <ImageListSupporting>
                         <ImageListLabel>

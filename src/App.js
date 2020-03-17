@@ -166,7 +166,7 @@ class App extends React.Component {
       profile: 'SA',
       colorway: 'Bliss',
       designer: ['Minterly'],
-      icDate: '2019-05-2019',
+      icDate: '2019-05-01',
       details: 'https://geekhack.org/index.php?topic=101407.0',
       image: 'https://imgur.com/SRThBPS.png',
       gbLaunch: '2019-07-01',

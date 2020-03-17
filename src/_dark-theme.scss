@@ -23,8 +23,12 @@ $overlay-values: (
     --meta-color: #{darken(overlay-elevation(surface, 4),10%)};
 }
 
-.mdc-card {
+.card-container .mdc-card {
     background-color: overlay-elevation(surface, 1);
+    transition: box-shadow 150ms, background-color 150ms;
+    &.selected {
+        background-color: overlay-elevation(surface, 8);
+    }
 };
 
 .list.content-grid {

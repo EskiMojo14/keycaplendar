@@ -8,6 +8,13 @@ export class SearchBarPersistent extends React.Component {
         super(props);
         this.state = { expanded: false };
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.search !== prevProps.search) {
+            this.setState({
+                expanded: (this.props.search.length !== 0 ? true : false)
+            });
+        }
+    }
     handleChange = e => {
         this.setState({
             expanded: (e.target.value.length !== 0 ? true : false)
@@ -52,6 +59,11 @@ export class SearchBarModal extends React.Component {
                 this.openBar();
             } else {
                 this.closeBar();
+            }
+        }
+        if (this.props.search !== prevProps.search) {
+            if (!this.state.open && this.props.search.length > 0) {
+                this.openBar();
             }
         }
     }
