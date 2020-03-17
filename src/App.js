@@ -118,16 +118,16 @@ class App extends React.Component {
       vendor: 'DixieMech',
       storeLink: 'https://dixiemech.com/gmkmodolight'
     };
-    const gmkForge = {
-      id: 'gmkForge',
+    const gmkBushido = {
+      id: 'gmkBushido',
       profile: 'GMK',
-      colorway: 'Forge',
-      icDate: '2019-08-10',
-      details: 'https://geekhack.org/index.php?topic=101948.0',
-      image: 'https://i.imgur.com/tpiRJN4.jpg',
-      gbLaunch: '2020-03-20',
-      gbEnd: '2020-04-20',
-      vendor: 'TX Keyboards',
+      colorway: 'Bushido',
+      icDate: '2019-10-23',
+      details: 'https://geekhack.org/index.php?topic=103083.0',
+      image: 'https://i.imgur.com/Gt7C0NZ.png',
+      gbLaunch: '2020-04-03',
+      gbEnd: '2020-05-01',
+      vendor: 'NovelKeys',
       storeLink: ''
     };
     const gmkMasterpiece = {
@@ -154,7 +154,19 @@ class App extends React.Component {
       vendor: 'TX Keyboards',
       storeLink: ''
     };
-    const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkForge, gmkMasterpiece, gmkBleached];
+    const saBliss = {
+      id: 'saBliss',
+      profile: 'SA',
+      colorway: 'Bliss',
+      icDate: '2019-05-2019',
+      details: 'https://geekhack.org/index.php?topic=101407.0',
+      image: 'https://imgur.com/SRThBPS.png',
+      gbLaunch: '2019-07-01',
+      gbEnd: '2019-07-28',
+      vendor: 'DixieMech',
+      storeLink: 'https://dixiemech.store/collections/sa-bliss'
+    };
+    const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkBushido, gmkMasterpiece, gmkBleached, saBliss];
     this.setState({
       sets: sets
     })
@@ -251,7 +263,7 @@ class App extends React.Component {
       if (sort === 'date') {
         const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
-        const setMonth = month[setDate.getMonth()];
+        const setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
         if (!groups.includes(setMonth)) {
           groups.push(setMonth);
         }
@@ -262,21 +274,28 @@ class App extends React.Component {
       }
     });
     groups.sort(function (a, b) {
-      let x;
-      let y;
       if (sort === 'date') {
-        x = new Date(a).getMonth();
-        y = new Date(b).getMonth();
+        const aMonth = new Date(a).getMonth();
+        const aYear = new Date(a).getFullYear();
+        const bMonth = new Date(b).getMonth();
+        const bYear = new Date(b).getFullYear();
+        const aDate = aYear + '' + aMonth;
+        const bDate = bYear + '' + bMonth;
+        if (page === 'previous') {
+          if (aDate < bDate) { return 1; }
+          if (aDate > bDate) { return -1; }
+
+        } else {
+          if (aDate < bDate) { return -1; }
+          if (aDate > bDate) { return 1; }
+        }
+      } else if (sort === 'vendor') {
+        const x = a.toLowerCase();
+        const y = b.toLowerCase();
         if (x < y) { return -1; }
         if (x > y) { return 1; }
-        return 0;
-      } else {
-        x = a.toLowerCase();
-        y = b.toLowerCase();
-        if (x < y) { return -1; }
-        if (x > y) { return 1; }
-        return 0;
       }
+      return 0;
     });
 
     // set states

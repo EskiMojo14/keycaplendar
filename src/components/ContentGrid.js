@@ -14,7 +14,7 @@ export class ContentGrid extends React.Component {
                 const query = (page === 'live' ? 'gbEnd' : 'gbLaunch');
                 const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 const setDate = new Date(set[query]);
-                const setMonth = month[setDate.getMonth()];
+                const setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
                 if (setMonth === group) {
                     filteredSets.push(set);
                 }
@@ -24,15 +24,25 @@ export class ContentGrid extends React.Component {
                 }
             }
         });
+        filteredSets.sort((a, b) => {
+            const aName = a.profile + ' ' + a.colorway;
+            const bName = b.profile + ' ' + b.colorway;
+            if (aName > bName) {
+                return 1;
+            } else if (aName < bName) {
+                return -1;
+            }
+            return 0;
+        })
         return filteredSets;
     }
     createGroup = (sets, setCount) => {
         if (this.props.view === 'card') {
-            return(<ViewCard setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewCard setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         } else if (this.props.view === 'list') {
-            return(<ViewList sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewList sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         } else if (this.props.view === 'imageList') {
-            return(<ViewImageList setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
+            return (<ViewImageList setCount={setCount} sets={sets} admin={this.props.admin} edit={this.props.edit} />);
         }
     }
     render() {
@@ -42,7 +52,7 @@ export class ContentGrid extends React.Component {
                     const filteredSets = this.filterSets(this.props.sets, value, this.props.sort, this.props.page);
                     const setCount = (filteredSets.length > this.props.maxColumns ? this.props.maxColumns : filteredSets.length);
                     return (
-                        <div className="outer-container" style={{ "--columns": setCount }}key={index}>
+                        <div className="outer-container" style={{ "--columns": setCount }} key={index}>
                             <div className="subheader">
                                 <Typography use="subtitle2" key={index}>{value}</Typography>
                             </div>
