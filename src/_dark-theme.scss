@@ -78,3 +78,19 @@ $overlay-values: (
 .mdc-dialog .mdc-dialog__surface {
     background-color: overlay-elevation(surface, 24);
 }
+.search-bar {
+    &--persistent {
+        .search-bar-field.mdc-text-field {
+            background-color: rgba(mdc-theme-prop-value(on-surface),0.15);
+            @include mdc-theme-prop(color, on-surface);
+            &--focused {
+                &:not(.mdc-text-field--disabled) .mdc-notched-outline__leading, &:not(.mdc-text-field--disabled) .mdc-notched-outline__notch, &:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+                    @include mdc-theme-prop(border-color, primary);
+                }
+            }
+        }
+    }
+    &--modal {
+        background-color: overlay-elevation(surface, 8);
+    }
+}

@@ -50,4 +50,8 @@ body {
     }
 }
 
+.search-bar--persistent .search-bar-field.mdc-text-field {
+    background-color: rgba($mdc-theme-on-primary,0.15);
+}
+
 //@import 'dark-theme';

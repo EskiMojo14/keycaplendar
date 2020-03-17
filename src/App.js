@@ -6,7 +6,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true };
+    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '' };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -14,6 +14,7 @@ class App extends React.Component {
     this.createExampleData = this.createExampleData.bind(this);
     this.toggleLoading = this.toggleLoading.bind(this);
     this.setSort = this.setSort.bind(this);
+    this.setSearch = this.setSearch.bind(this);
   }
   changeView(view) {
     if (view !== this.state.view) {
@@ -40,7 +41,7 @@ class App extends React.Component {
       this.setState({ transition: true });
       setTimeout(function () {
         this.setState({ page: page })
-        this.filterData(page, this.state.sets, this.state.sort);
+        this.filterData(page, this.state.sets, this.state.sort, this.state.search);
       }.bind(this), 90);
       setTimeout(function () {
         this.setState({ transition: false })
@@ -77,7 +78,7 @@ class App extends React.Component {
       this.setState({
         sets: sets
       })
-      this.filterData(this.state.page, sets, this.state.sort);
+      this.filterData(this.state.page, sets, this.state.sort, this.state.search);
     });
   }
   createExampleData() {
@@ -157,14 +158,16 @@ class App extends React.Component {
     this.setState({
       sets: sets
     })
-    this.filterData(this.state.page, sets, this.state.sort);
+    this.filterData(this.state.page, sets, this.state.sort, this.state.search);
   }
-  filterData(page, sets, sort) {
+  filterData(page, sets, sort, search) {
     const today = new Date();
     let filteredSets = [];
-    let filteredVendors = [];
-    let filteredProfiles = [];
+    let allVendors = [];
+    let allProfiles = [];
     let groups = [];
+
+    // page logic
     if (page === 'calendar') {
       filteredSets = sets.filter(set => {
         const startDate = new Date(set.gbLaunch);
@@ -203,31 +206,48 @@ class App extends React.Component {
     } else {
       filteredSets = sets;
     }
+
+    // vendor list
     sets.forEach((set) => {
-      if (!filteredVendors.includes(set.vendor)) {
-        filteredVendors.push(set.vendor);
+      if (!allVendors.includes(set.vendor)) {
+        allVendors.push(set.vendor);
       }
     });
-    filteredVendors.sort(function (a, b) {
+    allVendors.sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
       if (x < y) { return -1; }
       if (x > y) { return 1; }
       return 0;
     });
+
+    // profile list
     sets.forEach((set) => {
-      if (!filteredProfiles.includes(set.profile)) {
-        filteredProfiles.push(set.profile);
+      if (!allProfiles.includes(set.profile)) {
+        allProfiles.push(set.profile);
       }
     });
-    filteredProfiles.sort(function (a, b) {
+    allProfiles.sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
       if (x < y) { return -1; }
       if (x > y) { return 1; }
       return 0;
     });
-    filteredSets.forEach((set) => {
+
+    // search logic
+
+    const searchSets = (search) => {
+      return filteredSets.filter(set => {
+        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendor;
+        return setInfo.toLowerCase().indexOf(search.toLowerCase()) > -1;
+      })
+    };
+
+    const searchedSets = (search !== '' ? searchSets(search) : filteredSets);
+
+    // group display
+    searchedSets.forEach((set) => {
       if (sort === 'date') {
         const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
@@ -258,17 +278,26 @@ class App extends React.Component {
         return 0;
       }
     });
+
+    // set states
     this.setState({
-      filteredSets: filteredSets,
-      vendors: filteredVendors,
-      profiles: filteredProfiles,
-      groups: groups
+      filteredSets: searchedSets,
+      vendors: allVendors,
+      profiles: allProfiles,
+      groups: groups,
+      content: (searchedSets.length > 0 ? true : false)
     });
   }
   setSort(sortBy) {
     const sort = ['vendor', 'date', 'profile'];
     this.setState({ sort: sort[sortBy] });
-    this.filterData(this.state.page, this.state.sets, sort[sortBy]);
+    this.filterData(this.state.page, this.state.sets, sort[sortBy], this.state.search);
+  }
+  setSearch(query) {
+    this.setState({
+      search: query
+    })
+    this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   }
   componentDidMount() {
     this.changeThemeColor();
@@ -279,11 +308,11 @@ class App extends React.Component {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
+      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
     } else if (device === 'tablet') {
-      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
+      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
     } else {
-      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} />;
+      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} toggleLoading={this.toggleLoading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
     }
     return (
       <div className="app">

@@ -6,6 +6,7 @@ import { LinearProgress } from '@rmwc/linear-progress';
 import { MenuSurfaceAnchor, Menu, MenuItem } from '@rmwc/menu';
 import { MenuView } from './MenuView';
 import { MenuSort } from './MenuSort';
+import { SearchBarPersistent, SearchBarModal } from './SearchBar';
 import './AppBar.scss';
 import logo from '../logo.svg';
 
@@ -56,6 +57,7 @@ export class DesktopAppBar extends React.Component {
                             <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
+                            <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch}/>
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Tooltip content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
@@ -88,12 +90,14 @@ export class DesktopAppBar extends React.Component {
 export class TabletAppBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sortMenuOpen: false, viewMenuOpen: false };
+        this.state = { sortMenuOpen: false, viewMenuOpen: false, searchOpen: false };
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
+        this.openSearch = this.openSearch.bind(this);
+        this.closeSearch = this.closeSearch.bind(this);
     }
     openSortMenu() {
         this.setState({ sortMenuOpen: true });
@@ -110,6 +114,12 @@ export class TabletAppBar extends React.Component {
     changeView(index) {
         const views = ['card', 'list', 'imageList'];
         this.props.changeView(views[index]);
+    }
+    openSearch() {
+        this.setState({ searchOpen: true });
+    }
+    closeSearch() {
+        this.setState({ searchOpen: false });
     }
     render() {
         let viewIcon;
@@ -151,6 +161,12 @@ export class TabletAppBar extends React.Component {
                                     </div>
                                 </Tooltip>
                             </MenuSurfaceAnchor>
+                            <div>
+                                <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
+                                <Tooltip content="Search" align="bottom">
+                                    <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
+                                </Tooltip>
+                            </div>
                         </TopAppBarSection>
                     </TopAppBarRow>
                     <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
@@ -164,7 +180,7 @@ export class TabletAppBar extends React.Component {
 export class MobileAppBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false };
+        this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false, searchOpen: false };
         this.openSortMenu = this.openSortMenu.bind(this);
         this.closeSortMenu = this.closeSortMenu.bind(this);
         this.openFilterMenu = this.openFilterMenu.bind(this);
@@ -172,6 +188,8 @@ export class MobileAppBar extends React.Component {
         this.openViewMenu = this.openViewMenu.bind(this);
         this.closeViewMenu = this.closeViewMenu.bind(this);
         this.changeView = this.changeView.bind(this);
+        this.openSearch = this.openSearch.bind(this);
+        this.closeSearch = this.closeSearch.bind(this);
     }
     openSortMenu() {
         this.setState({ sortMenuOpen: true });
@@ -194,6 +212,13 @@ export class MobileAppBar extends React.Component {
     changeView(index) {
         const views = ['card', 'list', 'imageList'];
         this.props.changeView(views[index]);
+    }
+    openSearch() {
+        this.setState({ searchOpen: true });
+        this.scrollTop();
+    }
+    closeSearch() {
+        this.setState({ searchOpen: false });
     }
     scrollTop() {
         window.scrollTo(0, 0);
@@ -239,13 +264,19 @@ export class MobileAppBar extends React.Component {
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
-                                            <div className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
                                                 {viewIcon}
                                             </div>
                                         </Ripple>
                                     </div>
                                 </Tooltip>
                             </MenuSurfaceAnchor>
+                            <div>
+                                <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch}/>
+                                <Tooltip content="Search" align="bottom">
+                                    <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
+                                </Tooltip>
+                            </div>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd className="short-logo" onClick={this.scrollTop}>
                             <img className="logo" src={logo} alt="logo" />
