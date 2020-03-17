@@ -66,6 +66,7 @@ class App extends React.Component {
           id: doc.id,
           profile: doc.data().profile,
           colorway: doc.data().colorway,
+          designer: doc.data().designer,
           icDate: doc.data().icDate,
           details: doc.data().details,
           image: doc.data().image,
@@ -86,6 +87,7 @@ class App extends React.Component {
       id: 'katLich',
       profile: 'KAT',
       colorway: 'Lich',
+      designer: ['Eskimojo'],
       icDate: '2019-10-31',
       details: 'https://geekhack.org/index.php?topic=104129.0',
       image: 'https://i.imgur.com/x0EkNCQ.jpg',
@@ -98,6 +100,7 @@ class App extends React.Component {
       id: 'katAtlantis',
       profile: 'KAT',
       colorway: 'Atlantis',
+      designer: ['Rensuya'],
       icDate: '2019-09-14',
       details: 'https://geekhack.org/index.php?topic=102423.0',
       image: 'https://i.imgur.com/BohSuAU.png',
@@ -110,6 +113,7 @@ class App extends React.Component {
       id: 'gmkModernDolchLight',
       profile: 'GMK',
       colorway: 'Modern Dolch Light',
+      designer: ['Janglad','Dixie'],
       icDate: '2019-10-13',
       details: 'https://geekhack.org/index.php?topic=104498.0',
       image: 'https://i.imgur.com/OQa2VP3.jpg',
@@ -122,6 +126,7 @@ class App extends React.Component {
       id: 'gmkBushido',
       profile: 'GMK',
       colorway: 'Bushido',
+      designer: ['Biip'],
       icDate: '2019-10-23',
       details: 'https://geekhack.org/index.php?topic=103083.0',
       image: 'https://i.imgur.com/Gt7C0NZ.png',
@@ -134,6 +139,7 @@ class App extends React.Component {
       id: 'gmkMasterpiece',
       profile: 'GMK',
       colorway: 'Masterpiece',
+      designer: ['Energieschleuder'],
       icDate: '2019-10-25',
       details: 'https://geekhack.org/index.php?topic=103111.0',
       image: 'https://imgur.com/DLOqWxC.png',
@@ -146,6 +152,7 @@ class App extends React.Component {
       id: 'gmkBleached',
       profile: 'GMK',
       colorway: 'Bleached',
+      designer: ['Botallu'],
       icDate: '2020-01-28',
       details: 'https://geekhack.org/index.php?topic=104430.0',
       image: 'https://i.imgur.com/XK1Pgrr.png',
@@ -158,6 +165,7 @@ class App extends React.Component {
       id: 'saBliss',
       profile: 'SA',
       colorway: 'Bliss',
+      designer: ['Minterly'],
       icDate: '2019-05-2019',
       details: 'https://geekhack.org/index.php?topic=101407.0',
       image: 'https://imgur.com/SRThBPS.png',
@@ -251,7 +259,7 @@ class App extends React.Component {
 
     const searchSets = (search) => {
       return filteredSets.filter(set => {
-        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendor;
+        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendor + set.designer.toString();
         return setInfo.toLowerCase().indexOf(search.toLowerCase()) > -1;
       })
     };

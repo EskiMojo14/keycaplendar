@@ -17,6 +17,7 @@ export class DialogCreate extends React.Component {
             newProfile: false,
             profile: '',
             colorway: '',
+            designer: [],
             icDate: '',
             details: '',
             image: '',
@@ -56,6 +57,7 @@ export class DialogCreate extends React.Component {
             newProfile: false,
             profile: '',
             colorway: '',
+            designer: [],
             icDate: '',
             details: '',
             image: '',
@@ -74,10 +76,18 @@ export class DialogCreate extends React.Component {
             newProfile: !this.state.newProfile
         });
     }
+
     handleChange = e => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+        if (e.target.name === 'designer') {
+            this.setState({
+                [e.target.name]: e.target.value.split(', ')
+            });
+        } else {
+            this.setState({
+                [e.target.name]: e.target.value
+            });
+
+        }
     };
 
     createEntry = e => {
@@ -86,6 +96,7 @@ export class DialogCreate extends React.Component {
         db.collection('keysets').add({
             profile: this.state.profile,
             colorway: this.state.colorway,
+            designer: this.state.designer,
             icDate: this.state.icDate,
             details: this.state.details,
             image: this.state.image,
@@ -135,6 +146,7 @@ export class DialogCreate extends React.Component {
                                 <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                             </div>
                         </div>
+                        <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: 'Separate multiple designers with a comma.' }} onChange={this.handleChange} />
                         <TextField icon={{
                             icon: (
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -174,6 +186,7 @@ export class DialogEdit extends React.Component {
             id: '',
             profile: '',
             colorway: '',
+            designer: [],
             icDate: '',
             details: '',
             image: '',
@@ -214,6 +227,7 @@ export class DialogEdit extends React.Component {
             id: '',
             profile: '',
             colorway: '',
+            designer: [],
             icDate: '',
             details: '',
             image: '',
@@ -250,9 +264,16 @@ export class DialogEdit extends React.Component {
     }
 
     handleChange = e => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+        if (e.target.name === 'designer') {
+            this.setState({
+                [e.target.name]: e.target.value.split(', ')
+            });
+        } else {
+            this.setState({
+                [e.target.name]: e.target.value
+            });
+
+        }
     };
     
     editEntry = e => {
@@ -261,6 +282,7 @@ export class DialogEdit extends React.Component {
         db.collection('keysets').doc(this.state.id).update({
             profile: this.state.profile,
             colorway: this.state.colorway,
+            designer: this.state.designer,
             icDate: this.state.icDate,
             details: this.state.details,
             image: this.state.image,
@@ -306,6 +328,7 @@ export class DialogEdit extends React.Component {
                                     <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                                 </div>
                             </div>
+                            <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: 'Separate multiple designers with a comma.' }} onChange={this.handleChange} />
                             <TextField icon={{
                                 icon: (
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
