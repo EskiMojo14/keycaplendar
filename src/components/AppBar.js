@@ -70,7 +70,7 @@ export class DesktopAppBar extends React.Component {
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
-                                            <div className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
                                                 {viewIcon}
                                             </div>
                                         </Ripple>
@@ -154,7 +154,7 @@ export class TabletAppBar extends React.Component {
                                 <Tooltip content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
-                                            <div className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
                                                 {viewIcon}
                                             </div>
                                         </Ripple>
