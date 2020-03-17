@@ -1,6 +1,7 @@
 @import 'variables';
 
-$mdc-typography-font-family: unquote("Lato, sans-serif");
+@import 'typography-variables';
+
 
 @import "@material/theme/mdc-theme";
 @import "@material/typography/mdc-typography";
