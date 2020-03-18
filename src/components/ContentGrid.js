@@ -49,11 +49,11 @@ export class ContentGrid extends React.Component {
     }
     createGroup = (sets, setCount) => {
         if (this.props.view === 'card') {
-            return (<ViewCard setCount={setCount} sets={sets} admin={this.props.admin} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
+            return (<ViewCard setCount={setCount} sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'list') {
-            return (<ViewList sets={sets} admin={this.props.admin} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
+            return (<ViewList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'imageList') {
-            return (<ViewImageList setCount={setCount} sets={sets} admin={this.props.admin} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
+            return (<ViewImageList setCount={setCount} sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         }
     }
     render() {

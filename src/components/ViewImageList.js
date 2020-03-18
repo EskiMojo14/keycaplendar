@@ -38,7 +38,7 @@ export class ViewImageList extends React.Component {
                         live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
                     }
                     return (
-                        <ElementImage selected={(this.props.detailSet === set)} title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} live={live} key={index}/>
+                        <ElementImage page={this.props.page} selected={(this.props.detailSet === set)} title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} live={live} key={index}/>
                     )
                 })}
             </ImageList>

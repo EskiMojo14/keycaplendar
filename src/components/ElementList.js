@@ -5,7 +5,7 @@ import './ElementList.scss';
 
 export class ElementList extends React.Component {
     render() {
-        const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '')
+        const liveIndicator = (this.props.live && this.props.page !== 'live' ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '')
         return (
                 <ListItem selected={this.props.selected} onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())} >
                     <div className="list-image" style={{ backgroundImage: 'url(' + this.props.image + ')' }}>
@@ -13,10 +13,10 @@ export class ElementList extends React.Component {
                     <ListItemText>
                         <ListItemPrimaryText>
                             {this.props.title}
-                            {liveIndicator}
                         </ListItemPrimaryText>
                         <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
                     </ListItemText>
+                    {liveIndicator}
                     <ListItemMeta className={"time-indicator" + (this.props.thisWeek ? ' visible' : '')} icon={{
                                 strategy: 'component',
                                 icon: (

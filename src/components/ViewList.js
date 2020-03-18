@@ -39,7 +39,7 @@ export class ViewList extends React.Component {
                         live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
                     }
                     return (
-                        <ElementList selected={(this.props.detailSet === set)} set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} thisWeek={thisWeek} live={live} key={index} />
+                        <ElementList page={this.props.page} selected={(this.props.detailSet === set)} set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} thisWeek={thisWeek} live={live} key={index} />
                     )
                 })}
                 <ListDivider />

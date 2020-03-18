@@ -18,7 +18,12 @@
 }
 
 .card-container .mdc-card {
-    transition: box-shadow 150ms;
+    user-select: none;
+    transition: box-shadow 250ms;
+    &:hover {
+        @include mdc-elevation(4);
+    }
+    
     &.selected {
         @include mdc-elevation(8);
     }
@@ -37,15 +42,24 @@
             width: 100%;
             display: flex;
             justify-content: stretch;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
             .mdc-typography--overline {
                 margin: 0;
                 @include mdc-theme-prop(color, text-secondary-on-background);
                 flex-shrink: 0;
                 flex-grow: 1;
-                &.live-indicator {
-                    @include mdc-theme-prop(color, secondary);
-                    flex-grow: 0;
-                }
+            }
+            .live-indicator {
+                display: flex;
+                align-items: center;
+                margin: 0;
+                height: 24px;
+                padding: 0 12px;
+                @include mdc-theme-prop(color, on-secondary);
+                border-radius: 16px;
+                flex-grow: 0;
             }
         }
         .title {

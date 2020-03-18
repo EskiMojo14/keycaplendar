@@ -5,7 +5,7 @@ import './ElementCard.scss';
 
 export class ElementCard extends React.Component {
     render() {
-        const liveIndicator = (this.props.live ? <Typography use="overline" tag="h3" className="live-indicator">Live</Typography> : '')
+        const liveIndicator = (this.props.live && this.props.page !== 'live' ? <Typography use="overline" tag="h4" className="live-indicator">Live</Typography> : '')
         return (
             <div className='card-container'>
                 <Card className={(this.props.selected ? "selected" : "")} onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}>

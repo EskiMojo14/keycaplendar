@@ -98,3 +98,7 @@ $overlay-values: (
         background-color: overlay-elevation(surface, 8);
     }
 }
+
+.text-row .text-container .overline .live-indicator, .mdc-list .mdc-list-item .live-indicator {
+    background-color: rgba($mdc-theme-secondary,0.75);
+}

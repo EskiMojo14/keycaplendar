@@ -39,7 +39,7 @@ export class ViewCard extends React.Component {
                         live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
                     }
                     return (
-                        <ElementCard selected={(this.props.detailSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} live={live} key={index}/>
+                        <ElementCard page={this.props.page} selected={(this.props.detailSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} live={live} key={index}/>
                     )
                 })}
             </div>

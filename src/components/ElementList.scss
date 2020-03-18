@@ -14,20 +14,15 @@
             max-width: none;
         }
     }
-    .mdc-list-item__primary-text {
-        .live-indicator {
-            display: inline-flex;
-            height: 100%;
-            flex-grow: 0;
-            margin-left: 16px;
-            align-items: center;
-            &-text {
-                line-height: normal;
-                margin: 0;
-                @include mdc-theme-prop(color, secondary);
-            }
-        }
-
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        margin: 0;
+        height: 24px;
+        padding: 0 12px;
+        @include mdc-theme-prop(color, on-secondary);
+        border-radius: 16px;
+        flex-grow: 0;
     }
 }
 

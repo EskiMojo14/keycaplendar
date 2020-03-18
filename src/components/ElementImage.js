@@ -6,7 +6,7 @@ import './ElementImage.scss';
 
 export class ElementImage extends React.Component {
     render() {
-        const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '');
+        const liveIndicator = (this.props.live && this.props.page !== 'live' ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '');
         return (
             <Ripple>
                 <ImageListItem onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())} key={this.props.image} className={"image-list-item" + (this.props.selected ? ' selected' : '')}>
@@ -22,10 +22,10 @@ export class ElementImage extends React.Component {
                                 <div className="text-container">
                                     <div className="primary-text">
                                         <div className="primary-text-text">{this.props.title}</div>
-                                        {liveIndicator}
                                     </div>
                                     <div className="secondary-text">{this.props.subtitle}</div>
                                 </div>
+                                {liveIndicator}
                             </ImageListLabel>
                         </ImageListSupporting>
                     </div>

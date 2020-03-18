@@ -40,4 +40,8 @@ body {
     background-color: rgba($mdc-theme-on-primary,0.15);
 }
 
+.text-row .text-container .overline .live-indicator, .mdc-list .mdc-list-item .live-indicator {
+    background-color: rgba($mdc-theme-secondary,0.5);
+}
+
 //@import 'dark-theme';
