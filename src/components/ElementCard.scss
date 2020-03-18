@@ -40,20 +40,23 @@
         .title {
             padding-bottom: 8px;
             display: flex;
-            .time-indicator {
-                max-width: 0;
-                overflow: hidden;
-                display: flex;
-                align-items: center;
-                @include mdc-theme-prop(fill, secondary);
-                &.visible {
-                    max-width: none;
-                    padding-right: 8px;
-                }
-            }
             .mdc-typography--headline5 {
                 margin: 0;
                 @include mdc-theme-prop(color, text-primary-on-background);
+                display: flex;
+                align-items: center;
+                .time-indicator {
+                    max-width: 0;
+                    flex-shrink: 0;
+                    overflow: hidden;
+                    display: inline-flex;
+                    align-items: center;
+                    @include mdc-theme-prop(fill, secondary);
+                    &.visible {
+                        max-width: none;
+                        padding-right: 8px;
+                    }
+                }
             }
         }
         .mdc-typography--subtitle2 {

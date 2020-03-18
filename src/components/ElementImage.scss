@@ -1,7 +1,8 @@
 @import "@material/ripple/mixins";
 @import "@material/typography/mixins";
+@import "@material/animation/variables";
 
-.mdc-image-list__item {
+.outer-container .mdc-image-list__item {
     cursor: pointer;
     margin: 2px;
     overflow: hidden;
@@ -9,11 +10,26 @@
     @include mdc-ripple-radius-bounded;
     @include mdc-states(black);
     width: calc(100% / var(--columns) - 4px);
+    transition: border-radius 150ms $mdc-animation-standard-curve-timing-function;
+    &.selected {
+        border-top-right-radius: 32px;
+    }
     .mdc-image-list__supporting {
         height: 64px;
         .mdc-image-list__label {  
             display: flex;
+            align-items: center;
             width: 100%;
+            .time-indicator {
+                height: 24px;
+                max-width: 0;
+                overflow: hidden;
+                @include mdc-theme-prop(fill, secondary); 
+                &.visible {
+                    max-width: none;
+                    padding-right: 8px;
+                }
+            }
             .text-container {
                 flex: auto 1;
                 display: flex;
@@ -25,21 +41,6 @@
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    .time-indicator {
-                        height: 24px;
-                        max-width: 0;
-                        overflow: hidden;
-                    @include mdc-theme-prop(fill, secondary); 
-                        &.visible {
-                            max-width: none;
-                            padding-right: 8px;
-                        }
-                    }
-                    &-text {
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
                 }
                 .secondary-text {
                     @include mdc-typography(body2);

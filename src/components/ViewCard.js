@@ -33,8 +33,9 @@ export class ViewCard extends React.Component {
                         subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
                     }
                     const designer = set.designer.toString().replace(/,/g, " + ");
+                    const thisWeek = (((gbEnd.getTime() - (7 * 24 * 60 * 60 * 1000)) < today.getTime()) && gbEnd.getTime() > today.getTime());
                     return (
-                        <ElementCard selected={(this.props.detailSet === set)}cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} key={index}/>
+                        <ElementCard selected={(this.props.detailSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} thisWeek={thisWeek} key={index}/>
                     )
                 })}
             </div>

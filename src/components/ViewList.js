@@ -33,8 +33,9 @@ export class ViewList extends React.Component {
                     } else {
                         subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
                     }
+                    const thisWeek = (((gbEnd.getTime() - (7 * 24 * 60 * 60 * 1000)) < today.getTime()) && gbEnd.getTime() > today.getTime());
                     return (
-                        <ElementList set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} key={index} />
+                        <ElementList selected={(this.props.detailSet === set)} set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} store={set.storeLink} admin={this.props.admin} edit={this.props.edit} thisWeek={thisWeek} key={index} />
                     )
                 })}
                 <ListDivider />

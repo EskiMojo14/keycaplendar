@@ -2,12 +2,9 @@
 @import "@material/theme/variables";
 @import "@material/theme/mixins";
 @import "@material/ripple/mixins";
-@import '@material/animation/variables';
-
-$ripple-color: mdc-theme-prop-value(on-surface);
 
 .mdc-list .mdc-list-item {
-    @include mdc-states(mdc-theme-prop-value(on-surface));
+    @include mdc-states(on-surface);
     .time-indicator {
         max-width: 0;
         overflow: hidden;
