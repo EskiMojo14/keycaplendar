@@ -59,11 +59,11 @@ export class DesktopDrawerDetails extends React.Component {
                 verb = 'Runs';
             };
             if (set.gbLaunch && set.gbEnd) {
-                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + '.';
+                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + (gbEnd.getFullYear() !== today.getFullYear() ? ' ' + gbEnd.getFullYear() : '') + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '')) {
-                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + '.';
+                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + '.';
             } else {
                 gb = false;
             }
@@ -107,13 +107,14 @@ export class DesktopDrawerDetails extends React.Component {
                         </List>
                     </div>
                 </DrawerContent>
-                <div className="edit-button">
-                    <Button outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
+                <div className="admin-buttons">
+                    <Button className="edit" outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
                         strategy: 'component',
                         icon: (
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 18.08V19h.92l9.06-9.06-.92-.92z" opacity=".3" /><path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z" /></svg>
                         )
                     }} />
+                    <Button className="delete" outlined danger label="Delete" />
                 </div>
                 <div className="search-chips-container">
                     <div className="search-chips-icon"><Icon icon="search" /></div>
@@ -169,11 +170,11 @@ export class TabletDrawerDetails extends React.Component {
                 verb = 'Runs';
             };
             if (set.gbLaunch && set.gbEnd) {
-                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + '.';
+                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + (gbEnd.getFullYear() !== today.getFullYear() ? ' ' + gbEnd.getFullYear() : '') + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '')) {
-                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + '.';
+                gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + '.';
             } else {
                 gb = false;
             }
@@ -217,13 +218,14 @@ export class TabletDrawerDetails extends React.Component {
                         </List>
                     </div>
                 </DrawerContent>
-                <div className="edit-button">
-                    <Button outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
+                <div className="admin-buttons">
+                    <Button className="edit" outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
                         strategy: 'component',
                         icon: (
                             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 18.08V19h.92l9.06-9.06-.92-.92z" opacity=".3" /><path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z" /></svg>
                         )
                     }} />
+                    <Button className="delete" outlined danger label="Delete" />
                 </div>
                 <div className="search-chips-container">
                     <div className="search-chips-icon"><Icon icon="search" /></div>

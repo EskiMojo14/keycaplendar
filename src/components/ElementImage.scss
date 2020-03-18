@@ -10,9 +10,14 @@
     @include mdc-ripple-radius-bounded;
     @include mdc-states(black);
     width: calc(100% / var(--columns) - 4px);
-    transition: border-radius 150ms $mdc-animation-standard-curve-timing-function;
-    &.selected {
-        border-top-right-radius: 32px;
+    @include mdc-theme-prop(background-color, primary);
+    .container {
+        position: relative;
+        transition: border-radius 150ms $mdc-animation-standard-curve-timing-function;
+        overflow: hidden;
+    }
+    &.selected .container {
+        border-bottom-right-radius: 32px;
     }
     .mdc-image-list__supporting {
         height: 64px;
@@ -44,6 +49,9 @@
                     text-overflow: ellipsis;
                     &-text {
                         flex-grow: 1;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                     .live-indicator {
                         @include mdc-theme-prop(color, secondary);

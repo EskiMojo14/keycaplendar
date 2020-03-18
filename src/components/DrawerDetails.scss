@@ -83,13 +83,18 @@
             }
         }
     }
-    .edit-button {
+    .admin-buttons {
         padding: 8px 16px;
         border-top: var(--divider-color) 1px solid;
         display: flex;
         justify-content: stretch;
-        .mdc-button {
+        .edit {
             flex-grow: 1;
+            margin-right: 8px;
+        }
+        .delete {
+            flex-grow: 0;
+            margin-left: 8px;
         }
     }
     .search-chips {

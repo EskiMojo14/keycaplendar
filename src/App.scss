@@ -27,8 +27,6 @@
 @import '@material/image-list/mdc-image-list';
 @import '@material/chips/mdc-chips';
 
-@import "@material/top-app-bar/variables";
-
 body {
     @include mdc-theme-prop(background-color, background);
 }
@@ -37,33 +35,6 @@ body {
     --meta-color: #{darken(mdc-theme-prop-value(primary),10%)};
     --divider-color: #{rgba($mdc-theme-on-surface,0.12)};
 }
-
-.mdc-drawer.drawer-right {
-    border-right-width: 0;
-    border-left-width: 1px;
-    border-right-style: none;
-    border-left-style: solid;
-    border-color: var(--divider-color);
-    left: initial;
-    right: 0;
-    &.mdc-drawer--animate, &.mdc-drawer--closing {
-        transform: translateX(100%);
-    }
-    &.mdc-drawer--opening {
-        transform: translateX(0);
-    }
-}
-
-.content-container .mdc-drawer.mdc-drawer--dismissible {
-    height: calc(100% - #{$mdc-top-app-bar-row-height});
-};
-
-
-@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
-    .content-container .mdc-drawer.mdc-drawer--dismissible {
-        height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
-    };
-};
 
 .search-bar--persistent .search-bar-field.mdc-text-field {
     background-color: rgba($mdc-theme-on-primary,0.15);

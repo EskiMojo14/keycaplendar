@@ -1,3 +1,36 @@
 html {
     scroll-behavior: smooth;
 }
+
+@import "@material/top-app-bar/variables";
+
+.mdc-drawer.drawer-right {
+    border-right-width: 0;
+    border-left-width: 1px;
+    border-right-style: none;
+    border-left-style: solid;
+    border-color: var(--divider-color);
+    left: initial;
+    right: 0;
+    &.mdc-drawer--animate, &.mdc-drawer--closing {
+        transform: translateX(100%);
+    }
+    &.mdc-drawer--opening {
+        transform: translateX(0);
+    }
+}
+
+.mdc-drawer__content {
+    overflow-x: hidden;
+}
+
+.content-container .mdc-drawer.mdc-drawer--dismissible {
+    height: calc(100% - #{$mdc-top-app-bar-row-height});
+};
+
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+    .content-container .mdc-drawer.mdc-drawer--dismissible {
+        height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    };
+};
