@@ -98,12 +98,14 @@
         flex-shrink: 1;
         overflow: hidden;
         .mdc-chip-set {
+            position: relative;
             height: 100%;
             flex-wrap: nowrap;
             overflow-x: auto;
             overflow-y: hidden;
             padding-bottom: 32px;    
             box-sizing: content-box;
+            scroll-behavior: smooth;
             .mdc-chip {
                 flex-shrink: 0;
             }

@@ -10,6 +10,19 @@ import { Typography } from '@rmwc/typography';
 import './DrawerDetails.scss';
 
 export class DesktopDrawerDetails extends React.Component {
+    setScroll(){
+        const chipSet = document.getElementById('chip-set');
+        if (document.querySelector('.mdc-chip-set .mdc-chip--selected')) {
+            const selectedChip = document.querySelector('.mdc-chip-set .mdc-chip--selected');
+            chipSet.scrollLeft = selectedChip.offsetLeft - 24;
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.search !== prevProps.search || this.props.set !== prevProps.set) {
+            console.log('change');
+            this.setScroll();
+        }
+    }
     render() {
         const set = this.props.set;
         const today = new Date();
@@ -105,7 +118,7 @@ export class DesktopDrawerDetails extends React.Component {
                 <div className="search-chips-container">
                     <div className="search-chips-icon"><Icon icon="search" /></div>
                     <div className="search-chips">
-                        <ChipSet choice>
+                        <ChipSet id="chip-set" choice>
                             {chips.map((value) => {
                                 return (
                                     <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
