@@ -14,7 +14,7 @@ export class ContentGrid extends React.Component {
                 const query = (page === 'live' ? 'gbEnd' : 'gbLaunch');
                 const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 const setDate = new Date(set[query]);
-                const setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
+                let setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
                 if (setMonth === group) {
                     filteredSets.push(set);
                 }
@@ -25,12 +25,23 @@ export class ContentGrid extends React.Component {
             }
         });
         filteredSets.sort((a, b) => {
-            const aName = a.profile + ' ' + a.colorway;
-            const bName = b.profile + ' ' + b.colorway;
-            if (aName > bName) {
-                return 1;
-            } else if (aName < bName) {
-                return -1;
+            if (page === 'timeline') {
+                const aMonth = new Date(a).getMonth();
+                const aYear = new Date(a).getFullYear();
+                const bMonth = new Date(b).getMonth();
+                const bYear = new Date(b).getFullYear();
+                const aDate = aYear + '' + aMonth;
+                const bDate = bYear + '' + bMonth;
+                if (aDate < bDate) { return -1; }
+                if (aDate > bDate) { return 1; }
+            } else {
+                const aName = a.profile + ' ' + a.colorway;
+                const bName = b.profile + ' ' + b.colorway;
+                if (aName > bName) {
+                    return 1;
+                } else if (aName < bName) {
+                    return -1;
+                }
             }
             return 0;
         })

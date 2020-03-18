@@ -37,6 +37,8 @@ class App extends React.Component {
         this.setState({sort: 'profile'});
       } else if (page === 'previous') {
         this.setState({sort: 'date'});
+      } else if (page === 'timeline') {
+        this.setState({sort: 'date'});
       }
       this.setState({ transition: true });
       setTimeout(function () {
@@ -222,9 +224,10 @@ class App extends React.Component {
         endDate.setMilliseconds(999);
         return endDate <= today;
       })
-
-    } else {
-      filteredSets = sets;
+    } else if (page === 'timeline') {
+      filteredSets = sets.filter(set => {
+        return (set.gbLaunch !== '' && !set.gbLaunch.includes('Q'));
+      });
     }
 
     // vendor list
@@ -271,8 +274,8 @@ class App extends React.Component {
       if (sort === 'date') {
         const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
-        const setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
-        if (!groups.includes(setMonth)) {
+        let setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
+        if (!groups.includes(setMonth) && setMonth !== 'undefined NaN') {
           groups.push(setMonth);
         }
       } else {

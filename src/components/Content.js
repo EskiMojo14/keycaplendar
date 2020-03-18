@@ -92,7 +92,7 @@ export class DesktopContent extends React.Component {
   } 
   render() {
     const content = (this.props.content ? (
-      <ContentGrid maxColumns={3} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} detailSet={this.state.detailSet} />
+      <ContentGrid maxColumns={6} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} detailSet={this.state.detailSet} />
     ) : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
