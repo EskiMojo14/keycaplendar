@@ -7,7 +7,7 @@ export class ViewCard extends React.Component {
         return (
             <div className="group-container" style={{ "--columns": this.props.setCount }}>
                 {this.props.sets.map((set, index) => {
-                    const gbLaunch = (set.gbLaunch.includes('Q') ? set.gbLaunch : new Date(set.gbLaunch));
+                    const gbLaunch = (set.gbLaunch.includes('Q') || set.gbLaunch === '' ? set.gbLaunch : new Date(set.gbLaunch));
                     const gbEnd = new Date(set.gbEnd);
                     const icDate = new Date(set.icDate);
                     const today = new Date();
@@ -20,7 +20,7 @@ export class ViewCard extends React.Component {
                           case 3:  return "rd";
                           default: return "th";
                         }
-                      };
+                    };
                     const title = set.profile + ' ' + set.colorway;
                     let subtitle;
                     if (set.gbLaunch && set.gbEnd) {
@@ -34,8 +34,12 @@ export class ViewCard extends React.Component {
                     }
                     const designer = set.designer.toString().replace(/,/g, " + ");
                     const thisWeek = (((gbEnd.getTime() - (7 * 24 * 60 * 60 * 1000)) < today.getTime()) && gbEnd.getTime() > today.getTime());
+                    let live = false;
+                    if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
+                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
+                    }
                     return (
-                        <ElementCard selected={(this.props.detailSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} thisWeek={thisWeek} key={index}/>
+                        <ElementCard selected={(this.props.detailSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} thisWeek={thisWeek} live={live} key={index}/>
                     )
                 })}
             </div>

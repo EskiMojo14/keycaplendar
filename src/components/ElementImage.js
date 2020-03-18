@@ -1,10 +1,12 @@
 import React from 'react';
 import { ImageListItem, ImageListImageAspectContainer, ImageListImage, ImageListSupporting, ImageListLabel } from '@rmwc/image-list';
 import { Ripple } from '@rmwc/ripple';
+import { Typography } from '@rmwc/typography';
 import './ElementImage.scss';
 
 export class ElementImage extends React.Component {
     render() {
+        const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '');
         return (
             <Ripple>
                 <ImageListItem onClick={() => this.props.details(this.props.set)} key={this.props.image} className={"image-list-item" + (this.props.selected ? ' selected' : '')}>
@@ -18,7 +20,8 @@ export class ElementImage extends React.Component {
                             </div>
                             <div className="text-container">
                                 <div className="primary-text">
-                                    <div className="primary-text-text">{this.props.title}</div>
+                                <div className="primary-text-text">{this.props.title}</div>
+                                    {liveIndicator}
                                 </div>
                                 <div className="secondary-text">{this.props.subtitle}</div>
                             </div>

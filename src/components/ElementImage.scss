@@ -38,9 +38,17 @@
                 .primary-text {
                     display: flex;
                     flex: 1;
+                    justify-content: stretch;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    &-text {
+                        flex-grow: 1;
+                    }
+                    .live-indicator {
+                        @include mdc-theme-prop(color, secondary);
+                    }
+
                 }
                 .secondary-text {
                     @include mdc-typography(body2);

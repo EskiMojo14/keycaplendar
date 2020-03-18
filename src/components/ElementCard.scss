@@ -33,9 +33,20 @@
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        .mdc-typography--overline {
-            margin: 0;
-            @include mdc-theme-prop(color, text-secondary-on-background);
+        .overline {
+            width: 100%;
+            display: flex;
+            justify-content: stretch;
+            .mdc-typography--overline {
+                margin: 0;
+                @include mdc-theme-prop(color, text-secondary-on-background);
+                flex-shrink: 0;
+                flex-grow: 1;
+                &.live-indicator {
+                    @include mdc-theme-prop(color, secondary);
+                    flex-grow: 0;
+                }
+            }
         }
         .title {
             padding-bottom: 8px;

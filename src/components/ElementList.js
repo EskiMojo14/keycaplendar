@@ -1,15 +1,20 @@
 import React from 'react';
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from '@rmwc/list';
+import { Typography } from '@rmwc/typography';
 import './ElementList.scss';
 
 export class ElementList extends React.Component {
     render() {
+        const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '')
         return (
                 <ListItem selected={this.props.selected} onClick={() => this.props.details(this.props.set)}>
                     <div className="list-image" style={{ backgroundImage: 'url(' + this.props.image + ')' }}>
                     </div>
                     <ListItemText>
-                        <ListItemPrimaryText>{this.props.title}</ListItemPrimaryText>
+                        <ListItemPrimaryText>
+                            {this.props.title}
+                            {liveIndicator}
+                        </ListItemPrimaryText>
                         <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
                     </ListItemText>
                     <ListItemMeta className={"time-indicator" + (this.props.thisWeek ? ' visible' : '')} icon={{

@@ -14,6 +14,21 @@
             max-width: none;
         }
     }
+    .mdc-list-item__primary-text {
+        .live-indicator {
+            display: inline-flex;
+            height: 100%;
+            flex-grow: 0;
+            margin-left: 16px;
+            align-items: center;
+            &-text {
+                line-height: normal;
+                margin: 0;
+                @include mdc-theme-prop(color, secondary);
+            }
+        }
+
+    }
 }
 
 .list-image {

@@ -33,8 +33,12 @@ export class ViewImageList extends React.Component {
                         subtitle = 'IC ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '') ;
                     }
                     const thisWeek = (((gbEnd.getTime() - (7 * 24 * 60 * 60 * 1000)) < today.getTime()) && gbEnd.getTime() > today.getTime());
+                    let live = false;
+                    if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
+                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
+                    }
                     return (
-                        <ElementImage selected={(this.props.detailSet === set)} title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} thisWeek={thisWeek} key={index}/>
+                        <ElementImage selected={(this.props.detailSet === set)} title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} thisWeek={thisWeek} live={live} key={index}/>
                     )
                 })}
             </ImageList>
