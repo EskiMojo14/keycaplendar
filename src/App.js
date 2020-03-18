@@ -29,20 +29,20 @@ class App extends React.Component {
   }
   changePage(page) {
     if (page !== this.state.page) {
-      if (page === 'calendar') {
-        this.setState({sort: 'date'});
-      } else if (page === 'live') {
-        this.setState({sort: 'vendor'});
-      } else if (page === 'ic') {
-        this.setState({sort: 'profile'});
-      } else if (page === 'previous') {
-        this.setState({sort: 'date'});
-      } else if (page === 'timeline') {
-        this.setState({sort: 'date'});
-      }
       this.setState({ transition: true });
       setTimeout(function () {
         this.setState({ page: page })
+        if (page === 'calendar') {
+          this.setState({sort: 'date'});
+        } else if (page === 'live') {
+          this.setState({sort: 'vendor'});
+        } else if (page === 'ic') {
+          this.setState({sort: 'profile'});
+        } else if (page === 'previous') {
+          this.setState({sort: 'date'});
+        } else if (page === 'timeline') {
+          this.setState({sort: 'date'});
+        }
         this.filterData(page, this.state.sets, this.state.sort, this.state.search);
       }.bind(this), 90);
       setTimeout(function () {
