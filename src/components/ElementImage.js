@@ -9,7 +9,7 @@ export class ElementImage extends React.Component {
         const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '');
         return (
             <Ripple>
-                <ImageListItem onClick={() => this.props.details(this.props.set)} key={this.props.image} className={"image-list-item" + (this.props.selected ? ' selected' : '')}>
+                <ImageListItem onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())} key={this.props.image} className={"image-list-item" + (this.props.selected ? ' selected' : '')}>
                     <div className="container">
                         <ImageListImageAspectContainer style={{ paddingBottom: 'calc(100% / 1)' }}>
                             <ImageListImage tag="div" style={{ backgroundImage: 'url(' + this.props.image + ')' }} />

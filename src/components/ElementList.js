@@ -7,7 +7,7 @@ export class ElementList extends React.Component {
     render() {
         const liveIndicator = (this.props.live ? <div className="live-indicator"><Typography use="overline" className="live-indicator-text">Live</Typography></div> : '')
         return (
-                <ListItem selected={this.props.selected} onClick={() => this.props.details(this.props.set)}>
+                <ListItem selected={this.props.selected} onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())} >
                     <div className="list-image" style={{ backgroundImage: 'url(' + this.props.image + ')' }}>
                     </div>
                     <ListItemText>

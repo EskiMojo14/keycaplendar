@@ -8,7 +8,7 @@ export class ElementCard extends React.Component {
         const liveIndicator = (this.props.live ? <Typography use="overline" tag="h3" className="live-indicator">Live</Typography> : '')
         return (
             <div className='card-container'>
-                <Card className={(this.props.selected ? "selected" : "")} onClick={() => this.props.details(this.props.set)}>
+                <Card className={(this.props.selected ? "selected" : "")} onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}>
                     <CardPrimaryAction>
                         <CardMedia sixteenByNine style={{ backgroundImage: 'url(' + this.props.image + ')' }} />
                         <div className="text-row" onClick={this.toggleExpand}>
