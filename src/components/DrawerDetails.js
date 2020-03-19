@@ -15,11 +15,12 @@ export class DesktopDrawerDetails extends React.Component {
         if (document.querySelector('.mdc-chip-set .mdc-chip--selected')) {
             const selectedChip = document.querySelector('.mdc-chip-set .mdc-chip--selected');
             chipSet.scrollLeft = selectedChip.offsetLeft - 24;
+        } else {
+            chipSet.scrollLeft = 0;
         }
     }
     componentDidUpdate(prevProps) {
         if (this.props.search !== prevProps.search || this.props.set !== prevProps.set) {
-            console.log('change');
             this.setScroll();
         }
     }
