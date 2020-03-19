@@ -36,6 +36,10 @@ body {
     --divider-color: #{rgba($mdc-theme-on-surface,0.12)};
 }
 
+.mdc-button.mdc-button--outlined {
+    border-color: var(--divider-color);
+}
+
 .search-bar--persistent .search-bar-field.mdc-text-field {
     background-color: rgba($mdc-theme-on-primary,0.15);
 }
