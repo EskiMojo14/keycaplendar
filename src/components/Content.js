@@ -92,7 +92,7 @@ export class DesktopContent extends React.Component {
   } 
   render() {
     const content = (this.props.content ? (
-      <ContentGrid maxColumns={6} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} />
+      <ContentGrid maxColumns={6} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
     ) : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
@@ -182,16 +182,28 @@ export class TabletContent extends React.Component {
     this.setState({ createDrawerOpen: false });
   }
   toggleEditDrawer(set) {
-    this.setState({
-      editDrawerOpen: !this.state.editDrawerOpen,
-      editSet: set
-    });
+    if (this.state.detailsDrawerOpen) {
+      this.closeDetailsDrawer();
+      this.setState({ editSet: set });
+      setTimeout(() => {
+        this.setState({editDrawerOpen: !this.state.editDrawerOpen });
+      },400);
+    } else {
+      this.setState({
+        editDrawerOpen: !this.state.editDrawerOpen,
+        editSet: set
+      });
+    }
   }
   closeEditDrawer() {
     this.setState({
-      editDrawerOpen: false,
-      editSet: {}
+      editDrawerOpen: false
     });
+    setTimeout(() => {
+      this.setState({
+        editSet: {}
+    });
+    },200);
   }
   toggleFilterDrawer() {
     this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
@@ -219,7 +231,7 @@ export class TabletContent extends React.Component {
     this.setState({ loading: !this.state.loading });
   }
   render() {
-    const content = (this.props.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
+    const content = (this.props.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} exited={this.state.hideFab}/>
@@ -324,7 +336,7 @@ export class MobileContent extends React.Component {
     })
   }
   render() {
-    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDialog} /> : <ContentEmpty />);
+    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDialog} editSet={this.state.editSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
