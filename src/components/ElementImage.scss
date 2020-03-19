@@ -1,6 +1,6 @@
-@import "@material/ripple/mixins";
-@import "@material/typography/mixins";
-@import "@material/animation/variables";
+@import '@material/animation/variables';
+@import '@material/ripple/mixins';
+@import '@material/typography/mixins';
 
 .outer-container .mdc-image-list__item {
     cursor: pointer;

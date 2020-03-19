@@ -1,9 +1,9 @@
 @import '@material/animation/variables';
 @import '@material/theme/variables';
-@import '@material/theme/mixins';
 @import '@material/elevation/mixins';
 @import '@material/ripple/mixins';
 @import '@material/select/mixins';
+@import '@material/theme/mixins';
 
 $enter-time: 450ms;
 $exit-time: 400ms;

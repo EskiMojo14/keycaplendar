@@ -3,29 +3,29 @@
 @import 'typography-variables';
 
 
-@import "@material/theme/mdc-theme";
-@import "@material/typography/mdc-typography";
-@import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/icon-button/mdc-icon-button";
-@import "@rmwc/tooltip/tooltip";
-@import "@material/linear-progress/mdc-linear-progress";
-@import '@material/fab/mdc-fab';
-@import '@material/textfield/mdc-text-field';
-@import '@material/floating-label/mdc-floating-label';
-@import '@material/notched-outline/mdc-notched-outline';
-@import '@material/line-ripple/mdc-line-ripple';
-@import '@material/select/mdc-select';
-@import '@material/menu/mdc-menu';
-@import '@material/menu-surface/mdc-menu-surface';
-@import '@material/dialog/mdc-dialog';
-@import '@material/form-field/mdc-form-field';
-@import '@material/checkbox/mdc-checkbox';
-@import '@material/card/mdc-card';
 @import '@material/button/mdc-button';
-@import '@material/list/mdc-list';
-@import "@material/drawer/mdc-drawer";
-@import '@material/image-list/mdc-image-list';
+@import '@material/card/mdc-card';
+@import '@material/checkbox/mdc-checkbox';
 @import '@material/chips/mdc-chips';
+@import '@material/dialog/mdc-dialog';
+@import '@material/drawer/mdc-drawer';
+@import '@material/fab/mdc-fab';
+@import '@material/floating-label/mdc-floating-label';
+@import '@material/form-field/mdc-form-field';
+@import '@material/icon-button/mdc-icon-button';
+@import '@material/image-list/mdc-image-list';
+@import '@material/line-ripple/mdc-line-ripple';
+@import '@material/linear-progress/mdc-linear-progress';
+@import '@material/list/mdc-list';
+@import '@material/menu-surface/mdc-menu-surface';
+@import '@material/menu/mdc-menu';
+@import '@material/notched-outline/mdc-notched-outline';
+@import '@material/select/mdc-select';
+@import '@material/textfield/mdc-text-field';
+@import '@material/theme/mdc-theme';
+@import '@material/top-app-bar/mdc-top-app-bar';
+@import '@material/typography/mdc-typography';
+@import '@rmwc/tooltip/tooltip';
 
 body {
     @include mdc-theme-prop(background-color, background);

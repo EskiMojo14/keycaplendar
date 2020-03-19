@@ -1,9 +1,9 @@
 
-@import '@material/animation/functions';
 @import '@material/animation/variables';
+@import '@material/animation/functions';
 @import '@material/elevation/mixins';
-@import '@material/theme/mixins';
 @import '@material/ripple/mixins';
+@import '@material/theme/mixins';
 
 @media (min-width: 839px) and (max-width: 1599px) {
     .card-container.mdc-layout-grid__cell--span-4-desktop {

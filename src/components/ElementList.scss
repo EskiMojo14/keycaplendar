@@ -1,7 +1,7 @@
 
-@import "@material/theme/variables";
-@import "@material/theme/mixins";
-@import "@material/ripple/mixins";
+@import '@material/theme/variables';
+@import '@material/ripple/mixins';
+@import '@material/theme/mixins';
 
 .mdc-list .mdc-list-item {
     @include mdc-states(on-surface);

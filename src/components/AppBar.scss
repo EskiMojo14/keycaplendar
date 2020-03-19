@@ -1,9 +1,10 @@
-@import "@material/top-app-bar/variables";
-@import "@material/ripple/mixins";
-@import "@material/theme/mixins";
-@import "@material/elevation/mixins";
-@import "@material/animation/variables";
-@import "@material/drawer/variables";
+
+@import '@material/animation/variables';
+@import '@material/drawer/variables';
+@import '@material/top-app-bar/variables';
+@import '@material/elevation/mixins';
+@import '@material/ripple/mixins';
+@import '@material/theme/mixins';
 
 
 .mdc-top-app-bar {
