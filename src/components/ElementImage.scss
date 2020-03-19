@@ -27,13 +27,9 @@
             width: 100%;
             .time-indicator {
                 height: 24px;
-                max-width: 0;
+                padding-right: 8px;
                 overflow: hidden;
-                @include mdc-theme-prop(fill, secondary); 
-                &.visible {
-                    max-width: none;
-                    padding-right: 8px;
-                }
+                @include mdc-theme-prop(fill, secondary);
             }
             .text-container {
                 flex: auto 1;

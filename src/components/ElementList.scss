@@ -5,15 +5,6 @@
 
 .mdc-list .mdc-list-item {
     @include mdc-states(on-surface);
-    .time-indicator {
-        max-width: 0;
-        overflow: hidden;
-        height: 24px;
-        @include mdc-theme-prop(fill, secondary); 
-        &.visible {
-            max-width: none;
-        }
-    }
     .live-indicator {
         display: inline-flex;
         align-items: center;
@@ -23,6 +14,15 @@
         @include mdc-theme-prop(color, on-secondary);
         border-radius: 16px;
         flex-grow: 0;
+        margin-left: auto;
+        & + .time-indicator {
+            margin-left: 16px;
+        }
+    }
+    .time-indicator {
+        overflow: hidden;
+        height: 24px;
+        @include mdc-theme-prop(fill, secondary); 
     }
 }
 

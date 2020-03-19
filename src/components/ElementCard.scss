@@ -71,16 +71,12 @@
                 display: flex;
                 align-items: center;
                 .time-indicator {
-                    max-width: 0;
+                    padding-right: 8px;
                     flex-shrink: 0;
                     overflow: hidden;
                     display: inline-flex;
                     align-items: center;
                     @include mdc-theme-prop(fill, secondary);
-                    &.visible {
-                        max-width: none;
-                        padding-right: 8px;
-                    }
                 }
             }
         }
