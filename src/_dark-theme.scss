@@ -25,7 +25,7 @@ $overlay-values: (
 
 .card-container .mdc-card {
     background-color: overlay-elevation(surface, 1);
-    transition: box-shadow 150ms, background-color 150ms;
+    transition: box-shadow 250ms, background-color 250ms;
     &.selected {
         background-color: overlay-elevation(surface, 8);
     }
@@ -69,6 +69,9 @@ $overlay-values: (
 
 .mdc-drawer {
     background-color: overlay-elevation(surface, 16);
+    .mdc-card {
+        background-color: overlay-elevation(surface, 16);
+    }
 }
 
 .mdc-drawer.mdc-drawer--dismissible {

@@ -54,7 +54,7 @@ export class DesktopAppBar extends React.Component {
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
-                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
+                            <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
                             <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch}/>
@@ -139,7 +139,7 @@ export class TabletAppBar extends React.Component {
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
-                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
+                            <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
@@ -241,7 +241,7 @@ export class MobileAppBar extends React.Component {
                     <TopAppBarRow>
                         <TopAppBarSection alignStart className="nav-icon">
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
-                            <TopAppBarTitle onClick={this.props.toggleLoading}>{title[this.props.page]}</TopAppBarTitle>
+                            <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd className="actions">
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
