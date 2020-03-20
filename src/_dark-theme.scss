@@ -69,13 +69,18 @@ $overlay-values: (
 
 .mdc-drawer {
     background-color: overlay-elevation(surface, 16);
+    .mdc-chip {
+        background-color: lighten(overlay-elevation(surface, 16),12%);
+    }
+    &.mdc-drawer--dismissible {
+        background-color: overlay-elevation(surface, 1);
+        .mdc-chip {
+            background-color: lighten(overlay-elevation(surface, 1),12%);
+        }
+    }
     .mdc-card {
         background-color: overlay-elevation(surface, 16);
     }
-}
-
-.mdc-drawer.mdc-drawer--dismissible {
-    background-color: overlay-elevation(surface, 1);
 }
 
 .mdc-menu {
