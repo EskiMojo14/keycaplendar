@@ -255,7 +255,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, navDrawerOpen: false, filterBy: 'vendors', editSet: {}, hideFab: false };
+    this.state = { filterDialogOpen: false, createDialogOpen: false, editDialogOpen: false, detailsDrawerOpen: false, navDrawerOpen: false, filterBy: 'vendors', editSet: {}, detailSet: {}, hideFab: false };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.toggleFilterDialog = this.toggleFilterDialog.bind(this);
@@ -264,6 +264,8 @@ export class MobileContent extends React.Component {
     this.closeCreateDialog = this.closeCreateDialog.bind(this);
     this.toggleEditDialog = this.toggleEditDialog.bind(this);
     this.closeEditDialog = this.closeEditDialog.bind(this);
+    this.openDetailsDrawer = this.openDetailsDrawer.bind(this);
+    this.closeDetailsDrawer = this.closeDetailsDrawer.bind(this);
     this.hideFab = this.hideFab.bind(this);
   }
   componentDidMount() {
@@ -319,16 +321,44 @@ export class MobileContent extends React.Component {
     this.setState({ createDialogOpen: false });
   }
   toggleEditDialog(set) {
-    this.setState({
-      editDialogOpen: !this.state.editDialogOpen,
-      editSet: set
-    });
+    if (this.state.detailsDrawerOpen) {
+      this.closeDetailsDrawer();
+      this.setState({ editSet: set });
+      setTimeout(() => {
+        this.setState({editDialogOpen: !this.state.editDialogOpen });
+      },400);
+    } else {
+      this.setState({
+        editDialogOpen: !this.state.editDialogOpen,
+        editSet: set
+      });
+    }
   }
   closeEditDialog() {
     this.setState({
-      editDialogOpen: false,
-      editSet: {}
+      editDialogOpen: false
     });
+    setTimeout(() => {
+      this.setState({
+        editSet: {}
+    });
+    },200);
+  }
+  openDetailsDrawer(set) {
+    this.setState({
+      detailsDrawerOpen: true,
+      detailSet: set
+    });
+  }
+  closeDetailsDrawer() {
+    this.setState({
+      detailsDrawerOpen: false
+    });
+    setTimeout(() => {
+      this.setState({
+        detailSet: {}
+    });
+    },200);
   }
   hideFab(value) {
     this.setState({
@@ -336,7 +366,7 @@ export class MobileContent extends React.Component {
     })
   }
   render() {
-    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} edit={this.toggleEditDialog} editSet={this.state.editSet} /> : <ContentEmpty />);
+    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
@@ -350,6 +380,7 @@ export class MobileContent extends React.Component {
         <MobileAppBar page={this.props.page} loading={this.props.loading} toggleLoading={this.props.toggleLoading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         {content}
         {adminElements}
+        <TabletDrawerDetails set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy}/>
       </div>
     );
