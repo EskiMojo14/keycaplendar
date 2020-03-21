@@ -229,8 +229,10 @@ class App extends React.Component {
 
     // vendor list
     sets.forEach((set) => {
-      if (!allVendors.includes(set.vendors[0].name)) {
-        allVendors.push(set.vendors[0].name);
+      if (set.vendors[0]) {
+        if (!allVendors.includes(set.vendors[0].name)) {
+          allVendors.push(set.vendors[0].name);
+        }
       }
     });
     allVendors.sort(function (a, b) {
@@ -276,8 +278,10 @@ class App extends React.Component {
           groups.push(setMonth);
         }
       } else if (sort === 'vendor') {
-        if (!groups.includes(set.vendors[0].name)) {
-          groups.push(set.vendors[0].name);
+        if (set.vendors[0]) {
+          if (!groups.includes(set.vendors[0].name)) {
+            groups.push(set.vendors[0].name);
+          }
         }
       } else {
         if (!groups.includes(set[sort])) {

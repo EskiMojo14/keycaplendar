@@ -21,11 +21,14 @@
 @import '@material/menu/mdc-menu';
 @import '@material/notched-outline/mdc-notched-outline';
 @import '@material/select/mdc-select';
+@import '@material/snackbar/mdc-snackbar';
 @import '@material/textfield/mdc-text-field';
 @import '@material/theme/mdc-theme';
 @import '@material/top-app-bar/mdc-top-app-bar';
 @import '@material/typography/mdc-typography';
 @import '@rmwc/tooltip/tooltip';
+
+@import '@material/ripple/mixins';
 
 body {
     @include mdc-theme-prop(background-color, background);
@@ -46,6 +49,11 @@ body {
 
 .text-row .text-container .overline .live-indicator, .mdc-list .mdc-list-item .live-indicator {
     background-color: rgba($mdc-theme-secondary,0.5);
+}
+
+.mdc-snackbar__action:not(:disabled) {
+    @include mdc-theme-prop(color, secondary);
+    @include mdc-states(secondary);
 }
 
 //@import 'dark-theme';
