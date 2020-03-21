@@ -111,7 +111,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/BohSuAU.png',
       gbLaunch: '2020-03-01',
       gbEnd: '2020-04-01',
-      vendors: [new Vendor('Cannonkeys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
+      vendors: [new Vendor('CannonKeys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
     };
     const gmkModernDolchLight = {
       id: 'gmkModernDolchLight',

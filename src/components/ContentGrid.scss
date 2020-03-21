@@ -27,6 +27,9 @@
 }
 
 .outer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
     grid-column-end: span calc(var(--columns)*2);
 }
 

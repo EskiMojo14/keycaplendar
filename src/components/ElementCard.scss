@@ -18,6 +18,7 @@
 }
 
 .card-container .mdc-card {
+    height: 100%;
     transition: box-shadow 250ms;
     &:hover {
         @include mdc-elevation(4);
