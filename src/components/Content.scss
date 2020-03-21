@@ -51,6 +51,7 @@
     .content-grid {
         flex: auto 1;
         flex-shrink: 1;
+        user-select: none;
     }
     .drawer-container {
         flex-grow: 0;

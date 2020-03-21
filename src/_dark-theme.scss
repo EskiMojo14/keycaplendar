@@ -61,6 +61,9 @@ $overlay-values: (
         @include mdc-theme-prop(color, text-primary-on-background);
         @include mdc-states(white)
     }
+    .mdc-card {
+        background-color: overlay-elevation(surface, 16);
+    }
 }
 
 .mdc-menu.mdc-select__menu {

@@ -10,8 +10,8 @@ export class DesktopNavDrawer extends React.Component {
         const drawerOpen = this.props.open;
         const filledIcons = false;
         return (
-            <Drawer dismissible open={drawerOpen}>
-                <DrawerHeader className="nav">
+            <Drawer className="nav" dismissible open={drawerOpen}>
+                <DrawerHeader>
                     <img className="logo" src={logo} alt="logo" />
                     <DrawerTitle>KeycapLendar</DrawerTitle>
                     <IconButton icon="chevron_left" onClick={this.props.close} />
@@ -92,8 +92,8 @@ export class MobileNavDrawer extends React.Component {
         const drawerOpen = this.props.open;
         const filledIcons = false;
         return (
-            <Drawer modal open={drawerOpen} onClose={this.props.close}>
-                <DrawerHeader className="nav">
+            <Drawer className="nav" modal open={drawerOpen} onClose={this.props.close}>
+                <DrawerHeader>
                     <img className="logo" src={logo} alt="logo" />
                     <DrawerTitle>KeycapLendar</DrawerTitle>
                 </DrawerHeader>

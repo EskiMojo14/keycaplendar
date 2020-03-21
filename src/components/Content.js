@@ -109,7 +109,7 @@ export class DesktopContent extends React.Component {
           <div className="content-container">
             {content}
             <div className="drawer-container">
-              <DesktopDrawerDetails set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} search={this.props.search} setSearch={this.props.setSearch} />
+              <DesktopDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} search={this.props.search} setSearch={this.props.setSearch} />
               <DesktopDrawerFilter profiles={this.props.profiles} vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
             </div>
           </div>
@@ -245,7 +245,7 @@ export class TabletContent extends React.Component {
         <TabletAppBar page={this.props.page} loading={this.props.loading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         {content}
         {adminElements}
-        <TabletDrawerDetails set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} search={this.props.search} setSearch={this.props.setSearch} />
         <TabletDrawerFilter vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
       </div>
     );
@@ -380,7 +380,7 @@ export class MobileContent extends React.Component {
         <MobileAppBar page={this.props.page} loading={this.props.loading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         {content}
         {adminElements}
-        <TabletDrawerDetails set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDialog} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy}/>
       </div>
     );

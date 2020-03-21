@@ -78,44 +78,72 @@ $exit-time: 400ms;
             @include mdc-states(on-primary);
         }
     }
-    .form {
+    &-content {
         width: 100%;
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        &-double {
+        height: 100%;
+        overflow-y: auto;
+        .form {
+            width: 100%;
+            padding: 16px;
             display: flex;
-            .select {
-                width: 112px;
-                flex-grow: 0;
-                flex-shrink: 0;
-                margin-right: 16px;
-                .mdc-select__dropdown-icon {
-                    $colour: mdc-theme-prop-value(on-surface);
-                    @include mdc-select-dd-arrow-svg-bg_($colour,0.6);
+            flex-direction: column;
+            box-sizing: border-box;
+            &-double {
+                display: flex;
+                .select {
+                    width: 112px;
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    margin-right: 16px;
+                }
+                .field {
+                    width: 100%;
+                    &-container {
+                        flex-grow: 1;
+                    }
                 }
             }
-            .field {
-                width: 100%;
-                &-container {
-                    flex-grow: 1;
-                }
+            &-container {
+                overflow: auto;
             }
-        }
-        &-container {
-            overflow: auto;
-        }
-        .mdc-text-field {
-            margin-bottom: 16px;
-            & + .mdc-text-field-helper-line {
-                margin-top: -16px;
+            .mdc-text-field {
                 margin-bottom: 16px;
+                & + .mdc-text-field-helper-line {
+                    margin-top: -16px;
+                    margin-bottom: 16px;
+                }
+                &:not(.mdc-text-field--disabled) .mdc-text-field__icon {
+                    @include mdc-theme-prop(color, text-secondary-on-background);
+                    @include mdc-theme-prop(fill, text-secondary-on-background);
+                }
             }
-            &:not(.mdc-text-field--disabled) .mdc-text-field__icon {
-                @include mdc-theme-prop(color, text-secondary-on-background);
-                @include mdc-theme-prop(fill, text-secondary-on-background);
+            
+            .vendor-container {
+                overflow: hidden;
+                &:not(:last-of-type) {
+                    margin-bottom: 16px;
+                }
+                .vendor-title {
+                    @include mdc-theme-prop(color, text-secondary-on-background);
+                    margin: 0;
+                    padding: 16px;
+                }
+                .vendor-form {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0 16px;
+                    .mdc-text-field-helper-line {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+            .add-button {
+                padding-top: 16px;
+                display: flex;
+                justify-content: flex-end;
+                flex-grow: 0;
             }
         }
+        
     }
 }

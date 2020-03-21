@@ -31,8 +31,7 @@
         .details {
             &-image {
                 margin: 8px 16px;
-                width: 288px;
-                height: 162px;
+                padding-top: 56.25%;
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: cover;
@@ -45,11 +44,7 @@
                     @include mdc-theme-prop(color, text-secondary-on-background);
                     margin: 0;
                 }
-                .mdc-typography--headline4 {
-                    @include mdc-theme-prop(color, text-primary-on-background);
-                    margin: 8px 0px;
-                }
-                .mdc-typography--body2 {
+                .mdc-typography--headline4, .mdc-typography--body2 {
                     @include mdc-theme-prop(color, text-primary-on-background);
                     margin: 8px 0px;
                 }
@@ -74,6 +69,8 @@
                     padding: 0;
                     &-item {
                         height: 56px;
+                        margin: 0;
+                        padding: 8px 16px;
                         &__primary-text::before {
                             height: 24px;
                         }

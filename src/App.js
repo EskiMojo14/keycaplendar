@@ -74,8 +74,7 @@ class App extends React.Component {
           image: doc.data().image,
           gbLaunch: doc.data().gbLaunch,
           gbEnd: doc.data().gbEnd,
-          vendor: doc.data().vendor,
-          storeLink: doc.data().storeLink
+          vendors: (doc.data().vendor ? [{name: doc.data().vendor, region: '', storeLink: doc.data().storeLink}] : doc.data().vendors)
         });
       });
       this.setState({
@@ -85,6 +84,11 @@ class App extends React.Component {
     });
   }
   createExampleData() {
+    function Vendor(name, region, storeLink = '') {
+      this.name = name;
+      this.region = region;
+      this.storeLink = storeLink;
+    }
     const katLich = {
       id: 'katLich',
       profile: 'KAT',
@@ -95,8 +99,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/x0EkNCQ.jpg',
       gbLaunch: '2020-01-07',
       gbEnd: '2020-01-31',
-      vendor: 'NovelKeys',
-      storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
+      vendors: [new Vendor('NovelKeys', 'America', 'https://novelkeys.xyz/products/kat-lich-gb'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/search/?q=kat+lich'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/copy-of-group-buy-kat-lich-1'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/products/kat-lich'), new Vendor('SwitchKeys', 'Oceania', 'https://www.switchkeys.com.au/products/kat-liche-group-buy'), new Vendor('FunKeys', 'Ukraine/Russia', 'https://groupbuy.funkeys.com.ua/kat_lich')]
     };
     const katAtlantis = {
       id: 'katAtlantis',
@@ -104,12 +107,11 @@ class App extends React.Component {
       colorway: 'Atlantis',
       designer: ['Rensuya'],
       icDate: '2019-09-14',
-      details: 'https://geekhack.org/index.php?topic=102423.0',
+      details: 'https://geekhack.org/index.php?topic=104912.0',
       image: 'https://i.imgur.com/BohSuAU.png',
       gbLaunch: '2020-03-01',
       gbEnd: '2020-04-01',
-      vendor: 'CannonKeys',
-      storeLink: 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'
+      vendors: [new Vendor('Cannonkeys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
     };
     const gmkModernDolchLight = {
       id: 'gmkModernDolchLight',
@@ -121,8 +123,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/OQa2VP3.jpg',
       gbLaunch: '2020-02-02',
       gbEnd: '2020-03-01',
-      vendor: 'DixieMech',
-      storeLink: 'https://dixiemech.com/gmkmodolight'
+      vendors: [new Vendor('DixieMech', 'America', 'https://dixiemech.store/products/gmk-modern-dolch-light'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/gmk-modern-dolch-light_254/'), new Vendor('iLumKB', 'Asia', 'https://ilumkb.com/collections/groupbuy/products/gb-gmk-modern-dolch-light'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/products/gmk-modern-dolch-light')]
     };
     const gmkBushido = {
       id: 'gmkBushido',
@@ -134,8 +135,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/Gt7C0NZ.png',
       gbLaunch: '2020-04-03',
       gbEnd: '2020-05-01',
-      vendor: 'NovelKeys',
-      storeLink: ''
+      vendors: [new Vendor('NovelKeys', 'America'), new Vendor('CandyKeys', 'Europe'), new Vendor('zFrontier', 'Asia'), new Vendor('DailyClack', 'Oceania')]
     };
     const gmkMasterpiece = {
       id: 'gmkMasterpiece',
@@ -147,8 +147,7 @@ class App extends React.Component {
       image: 'https://imgur.com/DLOqWxC.png',
       gbLaunch: 'Q2 2020',
       gbEnd: '',
-      vendor: 'Project Keyboard',
-      storeLink: ''
+      vendors: [new Vendor('Project Keyboard', 'America'), new Vendor('MyKeyboard', 'Europe'), new Vendor('iLumKB', 'Asia'), new Vendor('DeskHero', 'Canada'), new Vendor('SwitchKeys', 'Oceania', '')]
     };
     const gmkBleached = {
       id: 'gmkBleached',
@@ -160,8 +159,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/XK1Pgrr.png',
       gbLaunch: '',
       gbEnd: '',
-      vendor: 'TX Keyboards',
-      storeLink: ''
+      vendors: [new Vendor('TX Keyboard', 'America'), new Vendor('proto[Typist]', 'Europe'), new Vendor('zFrontier', 'China'), new Vendor('ThicThock', 'Asia'), new Vendor('DeskHero', 'Canada'), new Vendor('DailyClack', 'Oceania', '')]
     };
     const saBliss = {
       id: 'saBliss',
@@ -173,8 +171,7 @@ class App extends React.Component {
       image: 'https://imgur.com/SRThBPS.png',
       gbLaunch: '2019-07-01',
       gbEnd: '2019-07-28',
-      vendor: 'DixieMech',
-      storeLink: 'https://dixiemech.store/collections/sa-bliss'
+      vendors: [new Vendor('DixieMech', 'America', 'https://dixiemech.store/collections/sa-bliss'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/sa-bliss_168/'), new Vendor('DailyClack', 'Asia, Oceania', 'https://dailyclack.com/collections/keycaps/products/sa-bliss')]
     };
     const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkBushido, gmkMasterpiece, gmkBleached, saBliss];
     this.setState({
@@ -232,8 +229,8 @@ class App extends React.Component {
 
     // vendor list
     sets.forEach((set) => {
-      if (!allVendors.includes(set.vendor)) {
-        allVendors.push(set.vendor);
+      if (!allVendors.includes(set.vendors[0].name)) {
+        allVendors.push(set.vendors[0].name);
       }
     });
     allVendors.sort(function (a, b) {
@@ -262,7 +259,7 @@ class App extends React.Component {
 
     const searchSets = (search) => {
       return filteredSets.filter(set => {
-        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendor + set.designer.toString();
+        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendors.map((vendor) => {return ' ' + vendor.name + ' ' + vendor.region}) + ' ' + set.designer.toString();
         return setInfo.toLowerCase().indexOf(search.toLowerCase()) > -1;
       })
     };
@@ -277,6 +274,10 @@ class App extends React.Component {
         let setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
         if (!groups.includes(setMonth) && setMonth !== 'undefined NaN') {
           groups.push(setMonth);
+        }
+      } else if (sort === 'vendor') {
+        if (!groups.includes(set.vendors[0].name)) {
+          groups.push(set.vendors[0].name);
         }
       } else {
         if (!groups.includes(set[sort])) {

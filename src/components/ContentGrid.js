@@ -18,6 +18,10 @@ export class ContentGrid extends React.Component {
                 if (setMonth === group) {
                     filteredSets.push(set);
                 }
+            } else if (sort === 'vendor') {
+                if (set.vendors[0].name === group) {
+                    filteredSets.push(set);
+                }
             } else {
                 if (set[sort] === group) {
                     filteredSets.push(set);
