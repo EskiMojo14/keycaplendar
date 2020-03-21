@@ -8,6 +8,12 @@
 
 
 .mdc-top-app-bar {
+    &--fixed {
+        top: 0;
+        .scrolled & {
+            @include mdc-elevation(4);
+        }
+    }
     &__title {
         @include mdc-theme-prop(color, on-primary);
         user-select: none;
@@ -88,7 +94,7 @@
         position: absolute;
         right: 0;
     }
-    &.mdc-top-app-bar--short-collapsed {
+    &.mdc-top-app-bar--short-collapsed, .scrolled & {
         overflow: hidden;
         .nav-icon {
             max-width: 56px;
@@ -98,10 +104,18 @@
             display: none;
         }
         .short-logo {
-            animation: appear 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
             max-width: none;
             padding: 8px;
+        }
+    }
+    .scrolled &.mdc-top-app-bar--short-has-action-item {
+        width: 112px;
+        @include mdc-elevation(4);
+        border-radius: 0 0 24px 0;
+        transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1), border-radius 100ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        .mdc-top-app-bar__section--align-end {
+            padding-left: 0;
+            padding-right: 12px;
         }
     }
 }

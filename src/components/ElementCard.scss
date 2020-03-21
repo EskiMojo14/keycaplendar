@@ -23,9 +23,11 @@
     &:hover {
         @include mdc-elevation(4);
     }
-    
     &.selected {
         @include mdc-elevation(8);
+    }
+    &__primary-action {
+        height: 100%;
     }
 }
 

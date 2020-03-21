@@ -53,7 +53,7 @@ export class DesktopAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
@@ -64,7 +64,7 @@ export class DesktopAppBar extends React.Component {
                                     <TopAppBarActionItem icon="sort" style={{ '--animation-delay': 1 }} onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -138,7 +138,7 @@ export class TabletAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>
@@ -148,7 +148,7 @@ export class TabletAppBar extends React.Component {
                                     <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilterDrawer} /></Tooltip>
+                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -240,7 +240,7 @@ export class MobileAppBar extends React.Component {
                 <TopAppBar short>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart className="nav-icon">
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNavDrawer} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd className="actions">
@@ -251,7 +251,7 @@ export class MobileAppBar extends React.Component {
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
-                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.toggleDialog(evt.detail.index)} onClose={this.closeFilterMenu}>
+                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
                                     <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
                                 </Menu>

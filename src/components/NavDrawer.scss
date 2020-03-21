@@ -43,6 +43,7 @@
 }
 
 .mdc-drawer {
+    bottom: 0;
     @include mdc-theme-prop(background-color, surface);
     .mdc-drawer__content {
         .mdc-list-item {

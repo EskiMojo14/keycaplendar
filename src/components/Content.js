@@ -14,6 +14,8 @@ import { DesktopDrawerDetails, TabletDrawerDetails } from './DrawerDetails';
 import { DrawerCreate, DrawerEdit } from './DrawerEntry';
 import { SnackbarDeleted } from './SnackbarDeleted';
 
+const bodyScroll = require('body-scroll-toggle');
+
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
@@ -23,14 +25,25 @@ export class DesktopContent extends React.Component {
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
     this.openDetailsDrawer = this.openDetailsDrawer.bind(this);
     this.closeDetailsDrawer = this.closeDetailsDrawer.bind(this);
-    this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
+    this.openCreateDrawer = this.openCreateDrawer.bind(this);
     this.closeCreateDrawer = this.closeCreateDrawer.bind(this);
-    this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
+    this.openEditDrawer = this.openEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
     this.openDeleteDialog = this.openDeleteDialog.bind(this);
     this.closeDeleteDialog = this.closeDeleteDialog.bind(this);
     this.openDeleteSnackbar = this.openDeleteSnackbar.bind(this);
     this.closeDeleteSnackbar = this.closeDeleteSnackbar.bind(this);
+  }
+  openModal() {
+    if (window.scrollY > 0) {
+        document.querySelector('body').classList.add('scrolled');
+    }
+    bodyScroll.disable();
+    
+  }
+  closeModal() {
+    setTimeout(() => {document.querySelector('body').classList.remove('scrolled');}, 20);
+    bodyScroll.enable();
   }
   toggleNavDrawer() {
     this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
@@ -74,13 +87,16 @@ export class DesktopContent extends React.Component {
     });
     },200);
   }
-  toggleCreateDrawer() {
-    this.setState({ createDrawerOpen: !this.state.createDrawerOpen });
+  openCreateDrawer() {
+    this.openModal();
+    this.setState({ createDrawerOpen: true });
   }
   closeCreateDrawer() {
+    this.closeModal();
     this.setState({ createDrawerOpen: false });
   }
   openDeleteDialog(set) {
+    this.openModal();
     this.setState({ 
       deleteDialogOpen: true,
       deleteSet: set 
@@ -95,13 +111,15 @@ export class DesktopContent extends React.Component {
   closeDeleteSnackbar() {
     this.setState({ deleteSnackbarOpen: false });
   }
-  toggleEditDrawer(set) {
+  openEditDrawer(set) {
+    this.openModal();
     this.setState({
-      editDrawerOpen: !this.state.editDrawerOpen,
+      editDrawerOpen: true,
       editSet: set
     });
   }
   closeEditDrawer() {
+    this.closeModal();
     this.setState({
       editDrawerOpen: false
     });
@@ -117,7 +135,7 @@ export class DesktopContent extends React.Component {
     ) : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" label="Create" onClick={this.toggleCreateDrawer} />
+        <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
         <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} />
@@ -127,12 +145,12 @@ export class DesktopContent extends React.Component {
     return (
       <div className={this.props.className}>
         <DesktopNavDrawer open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} />
-        <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '') + (this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '')}>
+        <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
             {content}
             <div className="drawer-container">
-              <DesktopDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
+              <DesktopDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
               <DesktopDrawerFilter profiles={this.props.profiles} vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
             </div>
           </div>
@@ -147,68 +165,50 @@ export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { navDrawerOpen: false, filterDrawerOpen: false, detailsDrawerOpen: false, detailSet: {}, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, hideFab: false };
-    this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
+    this.openNavDrawer = this.openNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
-    this.toggleCreateDrawer = this.toggleCreateDrawer.bind(this);
+    this.openCreateDrawer = this.openCreateDrawer.bind(this);
     this.closeCreateDrawer = this.closeCreateDrawer.bind(this);
-    this.toggleFilterDrawer = this.toggleFilterDrawer.bind(this);
+    this.openFilterDrawer = this.openFilterDrawer.bind(this);
     this.closeFilterDrawer = this.closeFilterDrawer.bind(this);
     this.openDetailsDrawer = this.openDetailsDrawer.bind(this);
     this.closeDetailsDrawer = this.closeDetailsDrawer.bind(this);
-    this.toggleEditDrawer = this.toggleEditDrawer.bind(this);
+    this.openEditDrawer = this.openEditDrawer.bind(this);
     this.closeEditDrawer = this.closeEditDrawer.bind(this);
     this.openDeleteDialog = this.openDeleteDialog.bind(this);
     this.closeDeleteDialog = this.closeDeleteDialog.bind(this);
     this.openDeleteSnackbar = this.openDeleteSnackbar.bind(this);
     this.closeDeleteSnackbar = this.closeDeleteSnackbar.bind(this);
   }
-  componentDidMount() {
-    function debounce(func, wait, immediate) {
-      var timeout;
-      return function () {
-        var context = this, args = arguments;
-        var later = function () {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    };
-    let lastScrollTop = 0;
-    const onScroll = () => {
-      var st = window.pageYOffset || document.documentElement.scrollTop;
-      if (st > lastScrollTop) {
-        this.setState({
-          hideFab: true
-        });
-      } else {
-        this.setState({
-          hideFab: false
-        });
-      }
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-    };
-    window.addEventListener("scroll", debounce(function() {
-        onScroll();
-    },100), false);
+  openModal() {
+    if (window.scrollY > 0) {
+        document.querySelector('body').classList.add('scrolled');
+    }
+    bodyScroll.disable();
+    
   }
-  toggleNavDrawer() {
-    let newState = (this.state.navDrawerOpen ? false : true);
-    this.setState({ navDrawerOpen: newState });
+  closeModal() {
+    setTimeout(() => {document.querySelector('body').classList.remove('scrolled');}, 20);
+    bodyScroll.enable();
+  }
+  openNavDrawer() {
+    this.openModal();
+    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
   }
   closeNavDrawer() {
+    this.closeModal();
     this.setState({ navDrawerOpen: false });
   }
-  toggleCreateDrawer() {
-    this.setState({ createDrawerOpen: !this.state.createDrawerOpen });
+  openCreateDrawer() {
+    this.openModal();
+    this.setState({ createDrawerOpen: true });
   }
   closeCreateDrawer() {
+    this.closeModal();
     this.setState({ createDrawerOpen: false });
   }
-  toggleEditDrawer(set) {
+  openEditDrawer(set) {
+    this.openModal();
     if (this.state.detailsDrawerOpen) {
       this.closeDetailsDrawer();
       this.setState({ editSet: set });
@@ -223,6 +223,7 @@ export class TabletContent extends React.Component {
     }
   }
   closeEditDrawer() {
+    this.closeModal();
     this.setState({
       editDrawerOpen: false
     });
@@ -247,19 +248,23 @@ export class TabletContent extends React.Component {
   closeDeleteSnackbar() {
     this.setState({ deleteSnackbarOpen: false });
   }
-  toggleFilterDrawer() {
-    this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
+  openFilterDrawer() {
+    this.openModal();
+    this.setState({ filterDrawerOpen: true });
   }
   closeFilterDrawer() {
+    this.closeModal();
     this.setState({ filterDrawerOpen: false });
   }
   openDetailsDrawer(set) {
+    this.openModal();
     this.setState({
       detailsDrawerOpen: true,
       detailSet: set
     });
   }
   closeDetailsDrawer() {
+    this.closeModal();
     this.setState({
       detailsDrawerOpen: false
     });
@@ -276,7 +281,7 @@ export class TabletContent extends React.Component {
     const content = (this.props.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDrawer} exited={this.state.hideFab}/>
+        <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} />
         <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} />
@@ -284,12 +289,12 @@ export class TabletContent extends React.Component {
       </div>
     ) : '');
     return (
-      <div className={(this.state.navDrawerOpen || this.state.filterDrawerOpen || this.state.detailsDrawerOpen || this.state.createDrawerOpen || this.state.editDrawerOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
+      <div className={this.props.className}>
         <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
-        <TabletAppBar page={this.props.page} loading={this.props.loading} toggleNavDrawer={this.toggleNavDrawer} toggleFilterDrawer={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletAppBar page={this.props.page} loading={this.props.loading} openNav={this.openNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         {content}
         {adminElements}
-        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <TabletDrawerFilter vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
       </div>
     );
@@ -300,13 +305,13 @@ export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { filterDialogOpen: false, createDialogOpen: false, detailsDrawerOpen: false, detailSet: {}, navDrawerOpen: false, filterBy: 'vendors', editDialogOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, hideFab: false };
-    this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
+    this.openNavDrawer = this.openNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
-    this.toggleFilterDialog = this.toggleFilterDialog.bind(this);
+    this.openFilterDialog = this.openFilterDialog.bind(this);
     this.closeFilterDialog = this.closeFilterDialog.bind(this);
-    this.toggleCreateDialog = this.toggleCreateDialog.bind(this);
+    this.openCreateDialog = this.openCreateDialog.bind(this);
     this.closeCreateDialog = this.closeCreateDialog.bind(this);
-    this.toggleEditDialog = this.toggleEditDialog.bind(this);
+    this.openEditDialog = this.openEditDialog.bind(this);
     this.closeEditDialog = this.closeEditDialog.bind(this);
     this.openDetailsDrawer = this.openDetailsDrawer.bind(this);
     this.closeDetailsDrawer = this.closeDetailsDrawer.bind(this);
@@ -314,68 +319,53 @@ export class MobileContent extends React.Component {
     this.closeDeleteDialog = this.closeDeleteDialog.bind(this);
     this.openDeleteSnackbar = this.openDeleteSnackbar.bind(this);
     this.closeDeleteSnackbar = this.closeDeleteSnackbar.bind(this);
-    this.hideFab = this.hideFab.bind(this);
   }
-  componentDidMount() {
-    function debounce(func, wait, immediate) {
-      var timeout;
-      return function () {
-        var context = this, args = arguments;
-        var later = function () {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    };
-    let lastScrollTop = 0;
-    const onScroll = () => {
-      var st = window.pageYOffset || document.documentElement.scrollTop;
-      if (st > lastScrollTop) {
-        this.setState({
-          hideFab: true
-        });
-      } else {
-        this.setState({
-          hideFab: false
-        });
-      }
-      lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-    };
-    window.addEventListener("scroll", debounce(function() {
-        onScroll();
-    },100), false);
+  openModal() {
+    if (window.scrollY > 0) {
+        document.querySelector('body').classList.add('scrolled');
+    }
+    bodyScroll.disable();
+    
   }
-  toggleNavDrawer() {
-    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
+  closeModal() {
+    setTimeout(() => {document.querySelector('body').classList.remove('scrolled');}, 20);
+    bodyScroll.enable();
+  }
+  openNavDrawer() {
+    this.openModal();
+    this.setState({ navDrawerOpen: true });
   }
   closeNavDrawer() {
+    this.closeModal();
     this.setState({ navDrawerOpen: false });
   }
-  toggleFilterDialog(index) {
+  openFilterDialog(index) {
+    this.openModal();
     const filters = ['vendors','profiles'];
-    this.setState({ filterDialogOpen: !this.state.filterDialogOpen, filterBy: filters[index] });
+    this.setState({ filterDialogOpen: true, filterBy: filters[index] });
   }
   closeFilterDialog() {
+    this.closeModal();
     this.setState({ filterDialogOpen: false });
   }
-  toggleCreateDialog() {
+  openCreateDialog() {
+    this.openModal();
     this.setState({ createDialogOpen: !this.state.createDialogOpen });
   }
   closeCreateDialog() {
+    this.closeModal();
     this.setState({ createDialogOpen: false });
   }
-  toggleEditDialog(set) {
+  openEditDialog(set) {
     if (this.state.detailsDrawerOpen) {
       this.closeDetailsDrawer();
       this.setState({ editSet: set });
       setTimeout(() => {
+        this.openModal();
         this.setState({editDialogOpen: !this.state.editDialogOpen });
       },400);
     } else {
+      this.openModal();
       this.setState({
         editDialogOpen: !this.state.editDialogOpen,
         editSet: set
@@ -387,6 +377,7 @@ export class MobileContent extends React.Component {
       editDialogOpen: false
     });
     setTimeout(() => {
+      this.closeModal();
       this.setState({
         editSet: {}
     });
@@ -408,12 +399,14 @@ export class MobileContent extends React.Component {
     this.setState({ deleteSnackbarOpen: false });
   }
   openDetailsDrawer(set) {
+    this.openModal();
     this.setState({
       detailsDrawerOpen: true,
       detailSet: set
     });
   }
   closeDetailsDrawer() {
+    this.closeModal();
     this.setState({
       detailsDrawerOpen: false
     });
@@ -423,16 +416,11 @@ export class MobileContent extends React.Component {
     });
     },200);
   }
-  hideFab(value) {
-    this.setState({
-      hideFab: value
-    })
-  }
   render() {
     const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" onClick={this.toggleCreateDialog} exited={this.state.hideFab}/>
+        <Fab className="create-fab" icon="add" onClick={this.openCreateDialog}/>
         <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} getData={this.props.getData} />
         <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} />
@@ -440,12 +428,12 @@ export class MobileContent extends React.Component {
       </div>
     ) : '');
     return (
-      <div className={(this.state.navDrawerOpen || this.state.createDialogOpen || this.state.editDialogOpen ? 'modal-drawer-open' : '') + ' ' + this.props.className}>
+      <div className={this.props.className}>
         <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} />
-        <MobileAppBar page={this.props.page} loading={this.props.loading} toggleDialog={this.toggleFilterDialog} toggleNavDrawer={this.toggleNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
+        <MobileAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         {content}
         {adminElements}
-        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.toggleEditDialog} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDialog} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy}/>
       </div>
     );

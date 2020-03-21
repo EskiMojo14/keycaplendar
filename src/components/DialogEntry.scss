@@ -9,7 +9,7 @@ $enter-time: 450ms;
 $exit-time: 400ms;
 
 .full-screen-dialog {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
