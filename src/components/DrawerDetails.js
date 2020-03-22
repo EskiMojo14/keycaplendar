@@ -159,7 +159,7 @@ export class DesktopDrawerDetails extends React.Component {
             <Drawer dismissible open={this.props.open} className="details-drawer drawer-right">
                 <DrawerHeader>
                     <DrawerTitle>Details</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
+                    <Tooltip enterDelay={500} content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
                     <div>

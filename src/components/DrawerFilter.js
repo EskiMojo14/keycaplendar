@@ -15,7 +15,7 @@ export class DesktopDrawerFilter extends React.Component {
             <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
                 <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
+                    <Tooltip enterDelay={500} content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
                     <div>
@@ -58,7 +58,7 @@ export class TabletDrawerFilter extends React.Component {
             <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-drawer drawer-right">
                 <DrawerHeader>
                     <DrawerTitle>Filters</DrawerTitle>
-                    <Tooltip content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
+                    <Tooltip enterDelay={500} content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
                     <div className="subheader">

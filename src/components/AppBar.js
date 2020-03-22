@@ -60,14 +60,14 @@ export class DesktopAppBar extends React.Component {
                             <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch}/>
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                                <Tooltip enterDelay={500} content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                     <TopAppBarActionItem icon="sort" style={{ '--animation-delay': 1 }} onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
+                            <Tooltip enterDelay={500} content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
-                                <Tooltip content="View" align="bottom">
+                                <Tooltip enterDelay={500} content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
                                             <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
@@ -144,11 +144,11 @@ export class TabletAppBar extends React.Component {
                         <TopAppBarSection alignEnd>
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                                <Tooltip enterDelay={500} content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                     <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
-                            <Tooltip content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
+                            <Tooltip enterDelay={500} content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Tooltip content="View" align="bottom">
@@ -163,7 +163,7 @@ export class TabletAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <div>
                                 <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
-                                <Tooltip content="Search" align="bottom">
+                                <Tooltip enterDelay={500} content="Search" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
                                 </Tooltip>
                             </div>
@@ -246,7 +246,7 @@ export class MobileAppBar extends React.Component {
                         <TopAppBarSection alignEnd className="actions">
                             <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
+                                <Tooltip enterDelay={500} className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
@@ -255,13 +255,13 @@ export class MobileAppBar extends React.Component {
                                     <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
                                 </Menu>
-                                <Tooltip content="Filter" align="bottom">
+                                <Tooltip enterDelay={500} content="Filter" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
                                 </Tooltip>
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
-                                <Tooltip content="View" align="bottom">
+                                <Tooltip enterDelay={500} content="View" align="bottom">
                                     <div onClick={this.openViewMenu}>
                                         <Ripple unbounded>
                                             <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
@@ -273,7 +273,7 @@ export class MobileAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <div>
                                 <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch}/>
-                                <Tooltip content="Search" align="bottom">
+                                <Tooltip enterDelay={500} content="Search" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
                                 </Tooltip>
                             </div>
