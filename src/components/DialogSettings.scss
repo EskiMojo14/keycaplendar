@@ -1,0 +1,96 @@
+@import '@material/theme/color-palette';
+@import '@material/ripple/mixins';
+@import '@material/theme/mixins';
+
+.settings-dialog {
+    user-select: none;
+    .mdc-dialog__content {
+        .group {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            .mdc-typography--subtitle2 {
+                padding: 8px 0;
+                margin: 0;
+            }
+            .mdc-list {
+                flex-grow: 1;
+                padding: 0;
+                border-radius: 4px;
+                overflow: hidden;
+                border: 1px solid var(--divider-color);
+                &-item--selected {
+                    font-weight: bold;
+                }
+                &-item__graphic {
+                    margin-right: 16px;
+                }
+                .light {
+                    background-color: white;
+                    &:not(.mdc-list-item--selected) {
+                        color: rgba(black,0.87);
+                        @include mdc-states(black);
+                        .mdc-list-item__graphic {
+                            fill: rgba(black,0.6);
+                        }
+                        .mdc-list-item__meta {
+                            color: $material-color-teal-500;
+                        }
+                    }
+                }
+                .deep {
+                    background-color: #23212a;
+                    &:not(.mdc-list-item--selected) {
+                        color: rgba(white,0.87);
+                        @include mdc-states(white);
+                        .mdc-list-item__graphic {
+                            fill: rgba(white,0.6);
+                        }
+                        .mdc-list-item__meta {
+                            color: $material-color-teal-200;
+                        }
+                    }
+                }
+                .dark {
+                    background-color: #222222;
+                    &:not(.mdc-list-item--selected) {
+                        color: rgba(white,0.87);
+                        @include mdc-states(white);
+                        .mdc-list-item__graphic {
+                            fill: rgba(white,0.6);
+                        }
+                        .mdc-list-item__meta {
+                            color: $material-color-teal-200;
+                        }
+                    }
+                }
+            }
+            .account {
+                display: flex;
+                justify-content: stretch;
+                align-items: center;
+                height: 64px;
+                .avatar {
+                    background-color: var(--divider-color);
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 20px;
+                    margin-right: 16px;
+                }
+                .text {
+                    display: flex;
+                    flex-direction: column;
+                    flex-grow: 1;
+                    margin-right: 16px;
+                    .primary {
+                        @include mdc-theme-prop(color, text-primary-on-background);
+                    }
+                }
+            }
+        }
+
+    }
+}

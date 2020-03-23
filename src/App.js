@@ -6,7 +6,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { page: 'live', view: 'card', transition: false, sort: 'vendor', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '' };
+    this.state = { theme: 'light', page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '' };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -50,10 +50,14 @@ class App extends React.Component {
       }.bind(this), 300);
     }
   }
-  changeThemeColor() {
-    var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
-    var metaElement = document.querySelector("meta[name=theme-color]");
-    metaElement.setAttribute("content", metaColor);
+  changeTheme = (theme) => {
+    this.setState({ theme: theme });
+    document.querySelector('html').classList = theme;
+    setTimeout(() => {
+      var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
+      var metaElement = document.querySelector("meta[name=theme-color]");
+      metaElement.setAttribute("content", metaColor);
+    }, 200);
   }
   toggleLoading() {
     let newState = (this.state.loading ? false : true);
@@ -335,7 +339,10 @@ class App extends React.Component {
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   }
   componentDidMount() {
-    this.changeThemeColor();
+    var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
+    var metaElement = document.querySelector("meta[name=theme-color]");
+    metaElement.setAttribute("content", metaColor);
+    document.querySelector('html').classList = this.state.theme;
     //this.getData();
     this.createExampleData();
   }
@@ -343,11 +350,11 @@ class App extends React.Component {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
+      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
     } else if (device === 'tablet') {
-      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
+      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
     } else {
-      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} />;
+      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
     }
     return (
       <div className="app">

@@ -1,6 +1,7 @@
 @import '@material/theme/mixins';
 
 .mdc-drawer.filter-drawer {
+    user-select: none;
     &.mdc-drawer--modal {
         top: 0;
     }

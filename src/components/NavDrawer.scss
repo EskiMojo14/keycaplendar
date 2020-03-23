@@ -22,26 +22,6 @@
     }
 }
 
-.nav .mdc-drawer__header {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--divider-color);
-    padding: 0 8px 4px;
-    .mdc-drawer__title {
-        margin-bottom: 0;
-        font-family: "Roboto Slab", serif;
-        font-size: 1.125rem;
-    }
-    .logo {
-        height: 40px;
-        margin-right: 8px;
-    }
-    .mdc-icon-button {
-        margin-left: auto;
-        @include mdc-theme-prop(color, text-secondary-on-background);
-    }
-}
-
 .mdc-drawer {
     bottom: 0;
     @include mdc-theme-prop(background-color, surface);
@@ -66,6 +46,26 @@
 
     }
     &.nav {
+        user-select: none;
+        .mdc-drawer__header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--divider-color);
+            padding: 0 8px 4px;
+            .mdc-drawer__title {
+                margin-bottom: 0;
+                font-family: "Roboto Slab", serif;
+                font-size: 1.125rem;
+            }
+            .logo {
+                height: 40px;
+                margin-right: 8px;
+            }
+            .mdc-icon-button {
+                margin-left: auto;
+                @include mdc-theme-prop(color, text-secondary-on-background);
+            }
+        }
         .mdc-drawer__content {
             .mdc-list-item {
                 margin: 0;
