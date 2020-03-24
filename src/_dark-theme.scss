@@ -55,6 +55,15 @@ $overlay-values: (
     }
 };
 
+.mdc-top-app-bar.bottom-app-bar.bottom-app-bar--indent {
+    .mdc-top-app-bar__section:not(.indent) {
+        background-color: overlay-elevation(surface, 4);
+    }
+    .indent {
+        fill: overlay-elevation(surface, 4);
+    }
+}
+
 .full-screen-dialog {
     background-color: overlay-elevation(surface, 16);
     .mdc-top-app-bar .mdc-button {
@@ -92,6 +101,10 @@ $overlay-values: (
 
 .mdc-dialog .mdc-dialog__surface {
     background-color: overlay-elevation(surface, 24);
+    .mdc-switch:not(.mdc-switch--checked) .mdc-switch__thumb {
+        background-color: #BDBDBD;
+        border-color: #BDBDBD;
+    }
 }
 .search-bar {
     &--persistent {
