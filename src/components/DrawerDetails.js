@@ -351,7 +351,7 @@ export class TabletDrawerDetails extends React.Component {
                         <ChipSet choice>
                             {chips.map((value) => {
                                 return (
-                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
+                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => {this.props.setSearch(value); this.props.close();}} />
                                 )
                             })}
                         </ChipSet>

@@ -77,6 +77,19 @@
             }
     
         }
+        &.bottom {
+            width: 100%;
+            height: auto;
+            &.mdc-drawer--animate {
+                transform: translateY(101%);
+            }
+            &.mdc-drawer--opening {
+                transform: translateY(0);
+            }
+            &.mdc-drawer--closing {
+                transform: translateY(101%);
+            }
+        }
     }
 }
 

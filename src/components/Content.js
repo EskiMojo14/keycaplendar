@@ -1,8 +1,8 @@
 import React from 'react';
 import './Content.scss';
-import { DesktopAppBar, TabletAppBar, MobileAppBar } from './AppBar';
+import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
-import { DesktopNavDrawer, MobileNavDrawer } from './NavDrawer';
+import { DesktopNavDrawer, MobileNavDrawer, BottomNavDrawer } from './NavDrawer';
 import { Fab } from '@rmwc/fab';
 import { ContentEmpty } from './ContentEmpty';
 import { ContentGrid } from './ContentGrid';
@@ -14,6 +14,7 @@ import { DesktopDrawerFilter, TabletDrawerFilter } from './DrawerFilter';
 import { DesktopDrawerDetails, TabletDrawerDetails } from './DrawerDetails';
 import { DrawerCreate, DrawerEdit } from './DrawerEntry';
 import { SnackbarDeleted } from './SnackbarDeleted';
+import { SearchAppBar } from './SearchBar';
 
 const bodyScroll = require('body-scroll-toggle');
 
@@ -176,7 +177,7 @@ export class DesktopContent extends React.Component {
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { navDrawerOpen: false, filterDrawerOpen: false, detailsDrawerOpen: false, detailSet: {}, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, settingsDialogOpen: false, hideFab: false };
+    this.state = { navDrawerOpen: false, filterDrawerOpen: false, detailsDrawerOpen: false, detailSet: {}, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, settingsDialogOpen: false };
     this.openNavDrawer = this.openNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.openCreateDrawer = this.openCreateDrawer.bind(this);
@@ -329,7 +330,7 @@ export class TabletContent extends React.Component {
 export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { filterDialogOpen: false, createDialogOpen: false, detailsDrawerOpen: false, detailSet: {}, navDrawerOpen: false, filterBy: 'vendors', editDialogOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, settingsDialogOpen: false, hideFab: false };
+    this.state = { filterDialogOpen: false, createDialogOpen: false, detailsDrawerOpen: false, detailSet: {}, navDrawerOpen: false, filterBy: 'vendors', editDialogOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, settingsDialogOpen: false, searchBarOpen: false };
     this.openNavDrawer = this.openNavDrawer.bind(this);
     this.closeNavDrawer = this.closeNavDrawer.bind(this);
     this.openFilterDialog = this.openFilterDialog.bind(this);
@@ -346,6 +347,8 @@ export class MobileContent extends React.Component {
     this.closeDeleteSnackbar = this.closeDeleteSnackbar.bind(this);
     this.openSettingsDialog = this.openSettingsDialog.bind(this);
     this.closeSettingsDialog = this.closeSettingsDialog.bind(this);
+    this.openSearchBar = this.openSearchBar.bind(this);
+    this.closeSearchBar = this.closeSearchBar.bind(this);
   }
   openModal() {
     if (window.scrollY > 0) {
@@ -453,26 +456,49 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ settingsDialogOpen: false });
   }
+  openSearchBar() {
+    this.setState({ searchBarOpen: true });
+  }
+  closeSearchBar() {
+    this.setState({ searchBarOpen: false });
+  }
   render() {
     const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)}  groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} admin={this.props.admin} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
     const adminElements = (this.props.admin ? (
       <div>
-        <Fab className="create-fab" icon="add" onClick={this.openCreateDialog}/>
+        <Fab className={'create-fab' + (this.props.bottomNav ? ' middle' : '')} icon="add" onClick={this.openCreateDialog}/>
         <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} getData={this.props.getData} />
         <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} />
         <SnackbarDeleted open={this.state.deleteSnackbarOpen} close={this.closeDeleteSnackbar} set={this.state.deleteSet} getData={this.props.getData}/>
       </div>
     ) : '');
-    return (
-      <div className={this.props.className}>
+    const nav = (this.props.bottomNav ? (
+      <div className="bottomNav">
+        <BottomNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
+        {(this.props.admin ? (
+          <BottomAppBarIndent page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} openSearch={this.openSearchBar} />) : (
+          <BottomAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
+        ))}
+      </div>
+    ) : (
+      <div>
         <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
         <MobileAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
+      </div>
+    ));
+    const search = (this.props.bottomNav ? (
+      <SearchAppBar open={this.state.searchBarOpen} openBar={this.openSearchBar} close={this.closeSearchBar} search={this.props.search} setSearch={this.props.setSearch} />
+    ) : (<div></div>))
+    return (
+      <div className={this.props.className + 'app-container'}>
+        {search}
+        {nav}
         {content}
         {adminElements}
         <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDialog} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy}/>
-        <DialogSettings open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme}/>
+        <DialogSettings open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} bottomNav={this.props.bottomNav} changeBottomNav={this.props.changeBottomNav}/>
       </div>
     );
   }

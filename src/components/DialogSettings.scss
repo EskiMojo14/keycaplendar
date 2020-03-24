@@ -5,6 +5,7 @@
 .settings-dialog {
     user-select: none;
     .mdc-dialog__content {
+        overflow: hidden;
         .group {
             display: flex;
             flex-direction: column;
@@ -63,6 +64,16 @@
                             color: $material-color-teal-200;
                         }
                     }
+                }
+            }
+            .mdc-form-field {
+                height: 48px;
+                label {
+                    padding: 0;
+                    flex-grow: 1;
+                }
+                .mdc-switch {
+                    order: 1;
                 }
             }
             .account {

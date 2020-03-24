@@ -3,67 +3,79 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from 
 import { Typography } from '@rmwc/typography';
 import { List, ListItem, ListItemGraphic, ListItemMeta } from '@rmwc/list';
 import { Button } from '@rmwc/button';
+import { Switch } from '@rmwc/switch';
 import './DialogSettings.scss';
 
 export class DialogSettings extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { theme: 'light', account: '' }
+        this.state = { theme: 'light', bottomNav: false, account: '' }
     }
     componentDidUpdate(prevProps) {
         if (this.props.open !== prevProps.open) {
             if (this.props.theme !== this.state.theme) {
                 this.setState({ theme: this.props.theme });
-            } 
+            }
         }
     }
     changeTheme = (theme) => {
         this.setState({ theme: theme });
     }
+    changeBottomNav = (value) => {
+        this.setState({ bottomNav: value });
+    }
     applySettings = () => {
         this.props.changeTheme(this.state.theme);
+        this.props.changeBottomNav(this.state.bottomNav);
         this.props.close();
     }
     render() {
+        const bottomNav = (this.props.changeBottomNav ? (
+            <div className="group">
+                <Typography use="subtitle2" tag="h3">UI</Typography>
+                <Switch label="Bottom navigation" checked={this.state.bottomNav} onChange={ evt => this.changeBottomNav(evt.currentTarget.checked)}/>    
+            </div>
+        ) : '')
         return (
             <Dialog open={this.props.open} className="settings-dialog">
                 <DialogTitle>Settings</DialogTitle>
                 <DialogContent>
                     <div className="group">
-                            <Typography use="subtitle2" tag="h3">Theme</Typography>
-                            <List>
-                                <ListItem onClick={() => this.changeTheme('light')} className="light">
-                                    <ListItemGraphic icon={{
-                                        strategy: 'component',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none"/><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3"/><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>
-                                        )
-                                    }} />
+                        <Typography use="subtitle2" tag="h3">Theme</Typography>
+                        <List>
+                            <ListItem onClick={() => this.changeTheme('light')} className="light">
+                                <ListItemGraphic icon={{
+                                    strategy: 'component',
+                                    icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none" /><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3" /><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" /></svg>
+                                    )
+                                }} />
                                     Light
-                                    {(this.state.theme === 'light' ? <ListItemMeta icon="check"/> : '')}
-                                </ListItem>
-                                <ListItem onClick={() => this.changeTheme('deep')} className="deep">
-                                    <ListItemGraphic icon={{
-                                        strategy: 'component',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none"/><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3"/><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>
-                                        )
-                                    }} />
+                                    {(this.state.theme === 'light' ? <ListItemMeta icon="check" /> : '')}
+                            </ListItem>
+                            <ListItem onClick={() => this.changeTheme('deep')} className="deep">
+                                <ListItemGraphic icon={{
+                                    strategy: 'component',
+                                    icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none" /><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3" /><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" /></svg>
+                                    )
+                                }} />
                                     Deep
-                                    {(this.state.theme === 'deep' ? <ListItemMeta icon="check"/> : '')}
-                                </ListItem>
-                                <ListItem onClick={() => this.changeTheme('dark')} className="dark">
-                                    <ListItemGraphic icon={{
-                                        strategy: 'component',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none"/><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3"/><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>
-                                        )
-                                    }} />
+                                    {(this.state.theme === 'deep' ? <ListItemMeta icon="check" /> : '')}
+                            </ListItem>
+                            <ListItem onClick={() => this.changeTheme('dark')} className="dark">
+                                <ListItemGraphic icon={{
+                                    strategy: 'component',
+                                    icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px"><path d="M24 0H0v24h24V0z" fill="none" /><path d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z" opacity=".3" /><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" /></svg>
+                                    )
+                                }} />
                                     Dark
-                                    {(this.state.theme === 'dark' ? <ListItemMeta icon="check"/> : '')}
-                                </ListItem>
-                            </List>
-                        </div>
+                                    {(this.state.theme === 'dark' ? <ListItemMeta icon="check" /> : '')}
+                            </ListItem>
+                        </List>
+                    </div>
+                    {bottomNav}
                     <div className="group">
                         <Typography use="subtitle2" tag="h3">Account</Typography>
                         <div className="account">
