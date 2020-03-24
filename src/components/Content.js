@@ -487,7 +487,7 @@ export class MobileContent extends React.Component {
         <MobileAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
       </div>
     ));
-    const search = (this.props.bottomNav ? (
+    const search = (this.props.bottomNav && this.props.admin ? (
       <SearchAppBar open={this.state.searchBarOpen} openBar={this.openSearchBar} close={this.closeSearchBar} search={this.props.search} setSearch={this.props.setSearch} />
     ) : (<div></div>))
     return (
