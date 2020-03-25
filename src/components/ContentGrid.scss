@@ -72,7 +72,6 @@
     padding-right: 0;
     grid-gap: 0;
     margin-bottom: auto;
-    min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
     box-sizing: border-box;
     flex-grow: 1;
     .subheader {
@@ -87,10 +86,6 @@
 }
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
-    .list.content-grid {
-        min-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
-    };
-
     .content-grid {
         transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
     }

@@ -48,10 +48,18 @@
 
 .content-container {
     display: flex;
-    .content-grid {
+    .main {
         flex: auto 1;
         flex-shrink: 1;
         user-select: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+        .content-grid {
+            flex-grow: 1;
+            flex-shrink: 0;
+        }
     }
     .drawer-container {
         flex-grow: 0;
@@ -80,7 +88,7 @@
 
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
-    .modal-drawer-open.mdc-drawer-app-content {
+    .modal-drawer-open.mdc-drawer-app-content, .content-container .main {
         max-height: calc(100vh - #{$mdc-top-app-bar-row-height});
     }
 };

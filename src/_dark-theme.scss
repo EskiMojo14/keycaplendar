@@ -35,6 +35,10 @@ $overlay-values: (
     background-color: overlay-elevation(surface, 1);
 };
 
+.footer {
+    background-color: lighten(mdc-theme-prop-value(surface), 2.5%);
+};
+
 .mdc-top-app-bar {
     background-color: overlay-elevation(surface, 4);
     & &__title {

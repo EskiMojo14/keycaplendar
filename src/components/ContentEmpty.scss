@@ -3,12 +3,14 @@
 
 .empty-container {
     width: 100%;
-    height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center; 
     flex-direction: column;
     user-select: none;
+    padding: 16px;
+    box-sizing: border-box;
     .image {
         height: 240px;
         width: 240px;
@@ -19,16 +21,17 @@
         font-family: Lato, sans-serif;
         font-weight: bold;
         @include mdc-theme-prop(color, text-primary-on-background);
+        text-align: center;
     }
     .subtitle {
         margin: 0;
         @include mdc-theme-prop(color, text-secondary-on-background);
+        text-align: center;
     }
 }
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
     .empty-container {
-        height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
         .image {
             height: 192px;
             width: 192px;

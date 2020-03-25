@@ -1,0 +1,23 @@
+@import '@material/theme/color-palette';
+@import '@material/theme/mixins';
+
+.footer {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
+    border-top: solid 1px var(--divider-color);
+    background-color: $material-color-grey-100;
+    display: flex;
+    flex-direction: column;
+    p {
+        @include mdc-theme-prop(color, text-secondary-on-background);
+        margin: 0;
+        &:first-of-type {
+            margin-bottom: 16px;
+        }
+        .bold {
+            @include mdc-theme-prop(color, text-primary-on-background);
+            font-weight: bold;
+        }
+    }
+}
