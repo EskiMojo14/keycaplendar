@@ -54,6 +54,9 @@
                 .secondary-text {
                     @include mdc-typography(body2);
                     @include mdc-theme-prop(color, text-secondary-on-dark);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
             .live-indicator {
