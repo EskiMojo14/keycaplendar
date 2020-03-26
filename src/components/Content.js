@@ -172,7 +172,7 @@ export class DesktopContent extends React.Component {
           </div>
         </DrawerAppContent>
         {adminElements}
-        <DialogSettings open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} />
       </div>
     );
   }
@@ -326,7 +326,7 @@ export class TabletContent extends React.Component {
         {adminElements}
         <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <TabletDrawerFilter vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} />
-        <DialogSettings open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} />
       </div>
     );
   }
@@ -505,7 +505,7 @@ export class MobileContent extends React.Component {
         {adminElements}
         <TabletDrawerDetails admin={this.props.admin} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDialog} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy} />
-        <DialogSettings open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} bottomNav={this.props.bottomNav} changeBottomNav={this.props.changeBottomNav} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} bottomNav={this.props.bottomNav} changeBottomNav={this.props.changeBottomNav} />
       </div>
     );
   }

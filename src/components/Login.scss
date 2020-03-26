@@ -1,0 +1,43 @@
+@import '@material/elevation/mixins';
+@import '@material/theme/mixins';
+
+.login-page-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    .mdc-top-app-bar.mdc-top-app-bar--prominent {
+        position: static;
+        @include mdc-elevation(4);
+    }
+    
+    .login-container {
+        width: 100%;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column;
+        user-select: none;
+        padding: 16px;
+        box-sizing: border-box;
+        .image {
+            height: 240px;
+            width: 240px;
+        }
+        .title {
+            margin-top: 0;
+            margin-bottom: 4px;
+            font-family: Lato, sans-serif;
+            font-weight: bold;
+            @include mdc-theme-prop(color, text-primary-on-background);
+            text-align: center;
+        }
+        .subtitle {
+            margin: 0;
+            @include mdc-theme-prop(color, text-secondary-on-background);
+            text-align: center;
+        }
+    }
+
+}

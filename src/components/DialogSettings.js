@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from "./firebase";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
 import { Typography } from '@rmwc/typography';
 import { List, ListItem, ListItemGraphic, ListItemMeta } from '@rmwc/list';
@@ -26,14 +27,52 @@ export class DialogSettings extends React.Component {
     }
     applySettings = () => {
         this.props.changeTheme(this.state.theme);
-        this.props.changeBottomNav(this.state.bottomNav);
+        if (this.props.changeBottomNav) {
+            this.props.changeBottomNav(this.state.bottomNav);
+        }
         this.props.close();
+    }
+    signOut = () => {
+        firebase.auth().signOut()
+            .then(() => {
+                this.props.setUser({
+                    id: null,
+                    email: null,
+                    name: null,
+                    avatar: null
+                })
+            })
+            .catch((error) => {
+                console.log('Error signing out: ' + error);
+            })
     }
     render() {
         const bottomNav = (this.props.changeBottomNav ? (
             <div className="group">
                 <Typography use="subtitle2" tag="h3">UI</Typography>
                 <Switch label="Bottom navigation" checked={this.state.bottomNav} onChange={ evt => this.changeBottomNav(evt.currentTarget.checked)}/>    
+            </div>
+        ) : '')
+        const user = (this.props.user.name ? (
+            <div className="group">
+                <Typography use="subtitle2" tag="h3">Account</Typography>
+                <div className="account">
+                    <div className="avatar" style={{backgroundImage: 'url(' + this.props.user.avatar + ')'}}></div>
+                    <div className="text">
+                        <Typography use="subtitle1" className="primary">{this.props.user.name}</Typography>
+                        <Typography use="body2" className="secondary">{this.props.user.email}</Typography>
+                    </div>
+                    <div className="button">
+                        <Button raised label="Log out" onClick={this.signOut} icon={{
+                            strategy: 'component',
+                            icon: (
+                                <svg viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z" />
+                                </svg>
+                            )
+                        }} />
+                    </div>
+                </div>
             </div>
         ) : '')
         return (
@@ -76,27 +115,7 @@ export class DialogSettings extends React.Component {
                         </List>
                     </div>
                     {bottomNav}
-                    <div className="group">
-                        <Typography use="subtitle2" tag="h3">Account</Typography>
-                        <div className="account">
-                            <div className="avatar"></div>
-                            <div className="text">
-                                <Typography use="subtitle1" className="primary">Account</Typography>
-                                <Typography use="body2" className="secondary">Email</Typography>
-                            </div>
-                            <div className="button">
-                                <Button raised label="Log in" icon={{
-                                    strategy: 'component',
-                                    icon: (
-                                        <svg viewBox="0 0 24 24">
-                                            <path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z" />
-                                        </svg>
-                                    )
-                                }} />
-                            </div>
-                        </div>
-                        <Typography use="caption">Using an account allows you to save preferences.</Typography>
-                    </div>
+                    {user}
                 </DialogContent>
                 <DialogActions>
                     <DialogButton action="close" onClick={this.props.close} isDefaultAction>Cancel</DialogButton>

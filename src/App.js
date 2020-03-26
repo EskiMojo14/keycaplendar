@@ -1,12 +1,18 @@
 import React from 'react';
 import firebase from "./components/firebase";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 import { DesktopContent, TabletContent, MobileContent } from './components/Content';
+import { Login } from './components/Login';
 import './App.scss';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '' };
+    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '', user: { email: null, name: null, avatar: null } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -33,21 +39,23 @@ class App extends React.Component {
       setTimeout(function () {
         this.setState({ page: page })
         if (page === 'calendar') {
-          this.setState({sort: 'date'});
+          this.setState({ sort: 'date' });
         } else if (page === 'live') {
-          this.setState({sort: 'vendor'});
+          this.setState({ sort: 'vendor' });
         } else if (page === 'ic') {
-          this.setState({sort: 'profile'});
+          this.setState({ sort: 'profile' });
         } else if (page === 'previous') {
-          this.setState({sort: 'date'});
+          this.setState({ sort: 'date' });
         } else if (page === 'timeline') {
-          this.setState({sort: 'date'});
+          this.setState({ sort: 'date' });
         }
         this.filterData(page, this.state.sets, this.state.sort, this.state.search);
       }.bind(this), 90);
       setTimeout(function () {
         this.setState({ transition: false })
       }.bind(this), 300);
+      const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
+      document.title = 'KeycapLendar: ' + title[page];
     }
   }
   changeTheme = (theme) => {
@@ -81,7 +89,7 @@ class App extends React.Component {
           image: doc.data().image,
           gbLaunch: doc.data().gbLaunch,
           gbEnd: doc.data().gbEnd,
-          vendors: (doc.data().vendor ? [{name: doc.data().vendor, region: '', storeLink: doc.data().storeLink}] : doc.data().vendors)
+          vendors: (doc.data().vendor ? [{ name: doc.data().vendor, region: '', storeLink: doc.data().storeLink }] : doc.data().vendors)
         });
       });
       this.setState({
@@ -124,7 +132,7 @@ class App extends React.Component {
       id: 'gmkModernDolchLight',
       profile: 'GMK',
       colorway: 'Modern Dolch Light',
-      designer: ['Janglad','Dixie'],
+      designer: ['Janglad', 'Dixie'],
       icDate: '2019-10-13',
       details: 'https://geekhack.org/index.php?topic=104498.0',
       image: 'https://i.imgur.com/OQa2VP3.jpg',
@@ -268,7 +276,7 @@ class App extends React.Component {
 
     const searchSets = (search) => {
       return filteredSets.filter(set => {
-        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendors.map((vendor) => {return ' ' + vendor.name + ' ' + vendor.region}) + ' ' + set.designer.toString();
+        let setInfo = set.profile + ' ' + set.colorway + ' ' + set.vendors.map((vendor) => { return ' ' + vendor.name + ' ' + vendor.region }) + ' ' + set.designer.toString();
         return setInfo.toLowerCase().indexOf(search.toLowerCase()) > -1;
       })
     };
@@ -341,6 +349,9 @@ class App extends React.Component {
     })
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   }
+  setUser = (user) => {
+    this.setState({ user: user });
+  }
   componentDidMount() {
     var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
     var metaElement = document.querySelector("meta[name=theme-color]");
@@ -353,16 +364,25 @@ class App extends React.Component {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
+      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
     } else if (device === 'tablet') {
-      content = <TabletContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
+      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
     } else {
-      content = <MobileContent getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} />;
+      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} admin={this.state.admin} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} />;
     }
     return (
-      <div className="app">
-        {content}
-      </div>
+      <Router>
+        <Switch>
+          <Route path="/login">
+            <Login user={this.state.user} setUser={this.setUser} />
+          </Route>
+          <Route path="/">
+            <div className="app">
+              {content}
+            </div>
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }
