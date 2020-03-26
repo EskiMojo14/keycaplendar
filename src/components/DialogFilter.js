@@ -7,7 +7,7 @@ import './DialogFilter.scss';
 export class DialogFilter extends React.Component {
     render() {
         return (
-            <Dialog className="filter-dialog" open={this.props.open} onClose={evt => { console.log(evt.detail.action); this.props.onClose(); }}>
+            <Dialog className="filter-dialog" open={this.props.open} onClose={evt => { this.props.onClose(); }}>
                 <DialogTitle>Filter {this.props.filterBy}</DialogTitle>
                 <DialogContent>
                     <div className="checkbox-list">
