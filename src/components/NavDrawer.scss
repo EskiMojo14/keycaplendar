@@ -26,6 +26,9 @@
     bottom: 0;
     @include mdc-theme-prop(background-color, surface);
     .mdc-drawer__content {
+        a {
+            text-decoration: none;
+        }
         .mdc-list-item {
             @include mdc-theme-prop(color, text-primary-on-background);
             &--selected, &--activated {
