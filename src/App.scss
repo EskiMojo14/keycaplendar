@@ -57,4 +57,11 @@ body {
     @include mdc-states(secondary);
 }
 
+.footer p {
+    @include mdc-theme-prop(color, text-secondary-on-background);
+    .bold {
+        @include mdc-theme-prop(color, text-primary-on-background);
+    }
+}
+
 //@import 'dark-theme';
