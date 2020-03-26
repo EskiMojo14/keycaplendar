@@ -33,6 +33,7 @@
         bottom: 0;
         max-height: 4px;
         transition: max-height 250ms $mdc-animation-standard-curve-timing-function;
+        z-index: 4;
         .mdc-linear-progress__buffering-dots {
             display: none;
         }
@@ -85,7 +86,7 @@
         padding-left: 8px;
     }
 }
-.mdc-top-app-bar--short {
+.mdc-top-app-bar.mdc-top-app-bar--short {
     transition: width 250ms $mdc-animation-standard-curve-timing-function, border-radius 100ms $mdc-animation-standard-curve-timing-function, box-shadow 250ms $mdc-animation-standard-curve-timing-function;
     .mdc-top-app-bar__section.short-logo {
         overflow: hidden;
