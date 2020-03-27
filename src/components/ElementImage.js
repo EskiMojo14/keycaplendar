@@ -19,13 +19,13 @@ export class ElementImage extends React.Component {
                         </ImageListImageAspectContainer>
                         <ImageListSupporting>
                             <ImageListLabel>
-                                {timeIndicator}
                                 <div className="text-container">
                                     <div className="primary-text">
                                         <div className="primary-text-text">{this.props.title}</div>
                                     </div>
                                     <div className="secondary-text">{this.props.subtitle}</div>
                                 </div>
+                                {timeIndicator}
                                 {liveIndicator}
                             </ImageListLabel>
                         </ImageListSupporting>

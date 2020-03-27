@@ -67,13 +67,19 @@
         .title {
             padding-bottom: 8px;
             display: flex;
+            width: 100%;
             .mdc-typography--headline5 {
                 margin: 0;
                 @include mdc-theme-prop(color, text-primary-on-background);
                 display: flex;
+                justify-content: stretch;
                 align-items: center;
+                width: 100%;
+                span {
+                    flex-grow: 1;
+                }
                 .time-indicator {
-                    padding-right: 8px;
+                    padding-left: 8px;
                     flex-shrink: 0;
                     overflow: hidden;
                     display: inline-flex;

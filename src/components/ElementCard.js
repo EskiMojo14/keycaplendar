@@ -22,8 +22,8 @@ export class ElementCard extends React.Component {
                                 </div>
                                 <div className="title">
                                     <Typography use="headline5" tag="h2">
+                                        <span>{this.props.title}</span>
                                         {timeIndicator}
-                                        {this.props.title}
                                     </Typography>
                                 </div>
                                 <Typography use="subtitle2" tag="p">{this.props.subtitle}</Typography>
