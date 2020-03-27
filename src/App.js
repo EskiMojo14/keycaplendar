@@ -406,7 +406,7 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/login">
-            <Login user={this.state.user} setUser={this.setUser} />
+            <Login device={this.props.device} user={this.state.user} setUser={this.setUser} />
           </Route>
           <Route path="/">
             <div className="app">
