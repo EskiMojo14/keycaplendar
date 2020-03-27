@@ -175,20 +175,20 @@ export class DialogCreate extends React.Component {
                         <form className="form">
                             <div className="form-double">
                                 <div>
-                                <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
+                                    <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
                                 </div>
                                 <div className="field-container">
                                     <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                                 </div>
                             </div>
-                            <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: 'Separate multiple designers with a comma.' }} onChange={this.handleChange} />
+                            <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: ((this.state.designer[0] ? (this.state.designer[0].indexOf(' ') >= 0 ? 'Separate multiple designers with a comma' : 'Enter a name') : 'Enter a name')) }} onChange={this.handleChange} />
                             <TextField icon={{
                                 icon: (
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
                                 )
                             }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
-                            <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} onChange={this.handleChange} />
-                            <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: 'Must be direct link' }} onChange={this.handleChange} />
+                            <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
+                            <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: (this.state.image.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                             <TextField icon={{
                                 icon: (
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -200,7 +200,7 @@ export class DialogCreate extends React.Component {
                                 )
                             }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                             {this.state.vendors.map((vendor, index) => {
-                                const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => {e.preventDefault(); this.moveVendor(index);}}/> : '');
+                                const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                 return (
                                     <Card key={index} outlined className="vendor-container">
                                         <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
@@ -231,7 +231,6 @@ export class DialogCreate extends React.Component {
                                 <Button outlined label="Add vendor" onClick={(e) => { e.preventDefault(); this.addVendor(); }} />
                             </div>
                         </form>
-
                     </div>
                 </div>
                 <div className="full-screen-dialog-scrim"></div>
@@ -425,20 +424,20 @@ export class DialogEdit extends React.Component {
                             <form className="form">
                                 <div className="form-double">
                                     <div>
-                                    <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
+                                        <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
                                     </div>
                                     <div className="field-container">
                                         <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                                     </div>
                                 </div>
-                                <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: 'Separate multiple designers with a comma.' }} onChange={this.handleChange} />
+                                <TextField outlined label="Designer" required pattern="(\w+)[^\s](,\s*.+)*" value={this.state.designer.toString().replace(/,/g, ", ")} name='designer' helpText={{ persistent: false, validationMsg: true, children: ((this.state.designer[0] ? (this.state.designer[0].indexOf(' ') >= 0 ? 'Separate multiple designers with a comma' : 'Enter a name') : 'Enter a name')) }} onChange={this.handleChange} />
                                 <TextField icon={{
                                     icon: (
                                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
                                     )
                                 }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
-                                <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} onChange={this.handleChange} />
-                                <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: 'Must be direct link' }} onChange={this.handleChange} />
+                                <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
+                                <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: (this.state.image.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                                 <TextField icon={{
                                     icon: (
                                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -450,7 +449,7 @@ export class DialogEdit extends React.Component {
                                     )
                                 }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                                 {this.state.vendors.map((vendor, index) => {
-                                    const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => {e.preventDefault(); this.moveVendor(index);}}/> : '');
+                                    const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                     return (
                                         <Card key={index} outlined className="vendor-container">
                                             <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
