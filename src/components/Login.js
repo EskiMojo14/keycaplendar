@@ -43,7 +43,7 @@ export class Login extends React.Component {
                 <div className="login-container">
                     <img className="image" src={peach} alt="Peach"/>
                     <Typography className="title" use="headline6" tag="h3">Sign in</Typography>
-                    <Typography className="subtitle"use="body1" tag="p">To allow admin access, please verify your account below.</Typography>
+                    <Typography className="subtitle" use="body1" tag="p">To allow editor access, please verify your account below.</Typography>
                     <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
                 </div>
                 <Footer />

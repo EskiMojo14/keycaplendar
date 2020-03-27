@@ -17,8 +17,8 @@
     ],
     "rewrites": [
       {
-        "source": "/api/isAdmin",
-        "function": "isAdmin"
+        "source": "/api/isEditor",
+        "function": "isEditor"
       },
       {
         "source": "**",

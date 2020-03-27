@@ -144,8 +144,8 @@ export class DesktopDrawerDetails extends React.Component {
                 )
             }
         }
-        const adminButtons = (this.props.admin ? (
-            <div className="admin-buttons">
+        const editorButtons = (this.props.editor ? (
+            <div className="editor-buttons">
                 <Button className="edit" outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
                     strategy: 'component',
                     icon: (
@@ -176,7 +176,7 @@ export class DesktopDrawerDetails extends React.Component {
                         {vendorList}
                     </div>
                 </DrawerContent>
-                {adminButtons}
+                {editorButtons}
                 <div className="search-chips-container">
                     <div className="search-chips-icon"><Icon icon="search" /></div>
                     <div className="search-chips">
@@ -315,8 +315,8 @@ export class TabletDrawerDetails extends React.Component {
                 )
             }
         }
-        const adminButtons = (this.props.admin ? (
-            <div className="admin-buttons">
+        const editorButtons = (this.props.editor ? (
+            <div className="editor-buttons">
                 <Button className="edit" outlined label="Edit" onClick={() => this.props.edit(set)} icon={{
                     strategy: 'component',
                     icon: (
@@ -344,7 +344,7 @@ export class TabletDrawerDetails extends React.Component {
                     </div>
                     {vendorList}
                 </DrawerContent>
-                {adminButtons}
+                {editorButtons}
                 <div className="search-chips-container">
                     <div className="search-chips-icon"><Icon icon="search" /></div>
                     <div className="search-chips">
