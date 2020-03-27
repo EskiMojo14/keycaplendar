@@ -48,19 +48,6 @@
 
 .content-container {
     display: flex;
-    .main {
-        flex: auto 1;
-        flex-shrink: 1;
-        user-select: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: stretch;
-        min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
-        .content-grid {
-            flex-grow: 1;
-            flex-shrink: 0;
-        }
-    }
     .drawer-container {
         flex-grow: 0;
         flex-shrink: 0;
@@ -74,6 +61,20 @@
         transition-property: width;
         transition-timing-function: $mdc-animation-standard-curve-timing-function;
         transition-duration: $mdc-drawer-animation-enter;
+    }
+}
+
+.main {
+    flex: auto 1;
+    flex-shrink: 1;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    .content-grid {
+        flex-grow: 1;
+        flex-shrink: 0;
     }
 }
 
