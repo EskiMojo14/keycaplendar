@@ -21,10 +21,6 @@
         "function": "isAdmin"
       },
       {
-        "source": "/api/helloWorld",
-        "function": "helloWorld"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }

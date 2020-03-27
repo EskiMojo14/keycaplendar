@@ -12,7 +12,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '', user: { email: null, name: null, avatar: null } };
+    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, admin: true, search: '', user: { email: null, name: null, avatar: null, isAdmin: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -359,7 +359,39 @@ class App extends React.Component {
     document.querySelector('html').classList = this.state.theme;
     //this.getData();
     this.createExampleData();
+    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
+      (user) => {
+        if (user) {
+          const isAdminFn = firebase.functions().httpsCallable('isAdmin');
+          isAdminFn().then((result) => {
+            console.log(result.data);
+            this.setUser({
+              email: user.email,
+              name: user.displayName,
+              avatar: user.photoURL,
+              isAdmin: result.data
+            });
+          });
+        } else {
+          const isAdminFn = firebase.functions().httpsCallable('isAdmin');
+          isAdminFn().then((result) => {
+            console.log(result.data);
+          });
+          this.setUser({
+            email: null,
+            name: null,
+            avatar: null,
+            isAdmin: false
+          });
+        }
+      }
+    );
   }
+  // Make sure we un-register Firebase observers when the component unmounts.
+  componentWillUnmount() {
+    this.unregisterAuthObserver();
+  }
+
   render() {
     const device = this.props.device;
     let content;

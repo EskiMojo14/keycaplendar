@@ -25,36 +25,6 @@ export class Login extends React.Component {
         }
     };
 
-    userLoggedIn = (user) => {
-        if (user) {
-            this.props.setUser({
-                email: user.email,
-                name: user.displayName,
-                avatar: user.photoURL
-            });
-        } else {
-            this.props.setUser({
-                email: null,
-                name: null,
-                avatar: null
-            });
-        }
-    }
-
-    // Listen to the Firebase Auth state and set the local state.
-    componentDidMount() {
-        this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
-            (user) => {
-                this.userLoggedIn(user);
-            }
-        );
-    }
-
-    // Make sure we un-register Firebase observers when the component unmounts.
-    componentWillUnmount() {
-        this.unregisterAuthObserver();
-    }
-
     render() {
         if (this.props.user.name) {
             return (
