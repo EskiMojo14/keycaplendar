@@ -9,10 +9,11 @@ export class CheckboxFilter extends React.Component {
     }
     toggleChecked() {
         this.setState({isChecked: !this.state.isChecked});
+        this.props.onChange();
     }
     render() {
         return (
-            <Checkbox label={this.props.label} checked={this.state.isChecked} onChange={this.toggleChecked}/>
+            <Checkbox name={this.props.label} label={this.props.label} checked={this.state.isChecked} onChange={this.toggleChecked}/>
         );
     }
 }

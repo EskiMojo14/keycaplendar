@@ -12,7 +12,7 @@ import './App.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false } };
+    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false }, whitelist: { vendors: [], profiles: [], edited: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -49,7 +49,7 @@ class App extends React.Component {
         } else if (page === 'timeline') {
           this.setState({ sort: 'date' });
         }
-        this.filterData(page, this.state.sets, this.state.sort, this.state.search);
+        this.filterData(page);
       }.bind(this), 90);
       setTimeout(function () {
         this.setState({ transition: false })
@@ -95,7 +95,7 @@ class App extends React.Component {
       this.setState({
         sets: sets
       })
-      this.filterData(this.state.page, sets, this.state.sort, this.state.search);
+      this.filterData(this.state.page, sets);
     });
   }
   createExampleData() {
@@ -192,18 +192,18 @@ class App extends React.Component {
     this.setState({
       sets: sets
     })
-    this.filterData(this.state.page, sets, this.state.sort, this.state.search);
+    this.filterData(this.state.page, sets);
   }
-  filterData(page, sets, sort, search) {
+  filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
-    let filteredSets = [];
+    let pageSets = [];
     let allVendors = [];
     let allProfiles = [];
     let groups = [];
 
     // page logic
     if (page === 'calendar') {
-      filteredSets = sets.filter(set => {
+      pageSets = sets.filter(set => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setHours(23);
@@ -213,7 +213,7 @@ class App extends React.Component {
         return startDate > today || (startDate <= today && endDate >= today);
       })
     } else if (page === 'live') {
-      filteredSets = sets.filter(set => {
+      pageSets = sets.filter(set => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setHours(23);
@@ -223,12 +223,12 @@ class App extends React.Component {
         return startDate <= today && endDate >= today;
       })
     } else if (page === 'ic') {
-      filteredSets = sets.filter(set => {
+      pageSets = sets.filter(set => {
         const startDate = (set.gbLaunch.includes('Q') || set.gbLaunch === '' ? set.gbLaunch : new Date(set.gbLaunch));
         return !startDate || startDate === '' || set.gbLaunch.includes('Q');
       })
     } else if (page === 'previous') {
-      filteredSets = sets.filter(set => {
+      pageSets = sets.filter(set => {
         const endDate = new Date(set.gbEnd);
         endDate.setHours(23);
         endDate.setMinutes(59);
@@ -237,7 +237,7 @@ class App extends React.Component {
         return endDate <= today;
       })
     } else if (page === 'timeline') {
-      filteredSets = sets.filter(set => {
+      pageSets = sets.filter(set => {
         return (set.gbLaunch !== '' && !set.gbLaunch.includes('Q'));
       });
     }
@@ -270,6 +270,21 @@ class App extends React.Component {
       if (x < y) { return -1; }
       if (x > y) { return 1; }
       return 0;
+    });
+
+    // whitelist logic
+
+    if (!whitelist.edited) {
+      this.setWhitelist('vendors', allVendors);
+      this.setWhitelist('profiles', allProfiles);
+    }
+
+    const filteredSets = pageSets.filter(set => {
+      if (set.vendors.length > 0) {
+        return whitelist.vendors.indexOf(set.vendors[0].name) > -1 && whitelist.profiles.indexOf(set.profile) > -1;
+      } else {
+        return true;
+      }
     });
 
     // search logic
@@ -341,7 +356,7 @@ class App extends React.Component {
   setSort(sortBy) {
     const sort = ['vendor', 'date', 'profile'];
     this.setState({ sort: sort[sortBy] });
-    this.filterData(this.state.page, this.state.sets, sort[sortBy], this.state.search);
+    this.filterData(this.state.page, this.state.sets, sort[sortBy]);
   }
   setSearch(query) {
     this.setState({
@@ -351,6 +366,15 @@ class App extends React.Component {
   }
   setUser = (user) => {
     this.setState({ user: user });
+  }
+  setWhitelist = (property, values) => {
+    let whitelistCopy = this.state.whitelist;
+    whitelistCopy[property] = values;
+    whitelistCopy.edited = true;
+    this.setState({ 
+      whitelist: whitelistCopy
+    });
+    this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
   }
   componentDidMount() {
     var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
@@ -388,19 +412,19 @@ class App extends React.Component {
     );
   }
   // Make sure we un-register Firebase observers when the component unmounts.
-  componentWillUnmount() {
+  /*componentWillUnmount() {
     this.unregisterAuthObserver();
-  }
+  }*/
 
   render() {
     const device = this.props.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
+      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} />;
     } else if (device === 'tablet') {
-      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} />;
+      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} />;
     } else {
-      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} />;
+      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} setWhitelist={this.setWhitelist} />;
     }
     return (
       <Router>

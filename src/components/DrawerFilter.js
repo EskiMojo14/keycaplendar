@@ -8,9 +8,21 @@ import { CheckboxFilter } from './CheckboxFilter';
 import './DrawerFilter.scss';
 
 export class DesktopDrawerFilter extends React.Component {
+    handleChange = () => {
+        const checkedVendors = document.querySelectorAll('#vendorList input[type=checkbox]:checked');
+        let checkedVendorNames = [];
+        checkedVendors.forEach((checkbox) => {
+            checkedVendorNames.push(checkbox.name);
+        });
+        const checkedProfiles = document.querySelectorAll('#profileList input[type=checkbox]:checked');
+        let checkedProfileNames = [];
+        checkedProfiles.forEach((checkbox) => {
+            checkedProfileNames.push(checkbox.name);
+        });
+        this.props.setWhitelist('vendors', checkedVendorNames);
+        this.props.setWhitelist('profiles', checkedProfileNames);
+    }
     render() {
-        const vendors = this.props.vendors;
-        const profiles = this.props.profiles;
         return (
             <Drawer dismissible open={this.props.open} className="filter-drawer drawer-right">
                 <DrawerHeader>
@@ -22,11 +34,11 @@ export class DesktopDrawerFilter extends React.Component {
                         <div className="subheader">
                             <Typography use="caption">Vendor</Typography>
                         </div>
-                        <div className="checkbox-list">
-                            {vendors.map((value) => {
+                        <div id="vendorList" className="checkbox-list">
+                            {this.props.vendors.map((value) => {
                                 return (
                                     <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
-                                        <CheckboxFilter label={value} />
+                                        <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
                             })}
@@ -36,11 +48,11 @@ export class DesktopDrawerFilter extends React.Component {
                         <div className="subheader">
                             <Typography use="caption">Profile</Typography>
                         </div>
-                        <div className="checkbox-list">
-                            {profiles.map((value) => {
+                        <div id="profileList" className="checkbox-list">
+                            {this.props.profiles.map((value) => {
                                 return (
                                     <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
-                                        <CheckboxFilter label={value} />
+                                        <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
                             })}
@@ -53,6 +65,20 @@ export class DesktopDrawerFilter extends React.Component {
 };
 
 export class TabletDrawerFilter extends React.Component {
+    handleChange = () => {
+        const checkedVendors = document.querySelectorAll('#vendorList input[type=checkbox]:checked');
+        let checkedVendorNames = [];
+        checkedVendors.forEach((checkbox) => {
+            checkedVendorNames.push(checkbox.name);
+        });
+        const checkedProfiles = document.querySelectorAll('#profileList input[type=checkbox]:checked');
+        let checkedProfileNames = [];
+        checkedProfiles.forEach((checkbox) => {
+            checkedProfileNames.push(checkbox.name);
+        });
+        this.props.setWhitelist('vendors', checkedVendorNames);
+        this.props.setWhitelist('profiles', checkedProfileNames);
+    }
     render() {
         return (
             <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-drawer drawer-right">
@@ -61,17 +87,33 @@ export class TabletDrawerFilter extends React.Component {
                     <Tooltip enterDelay={500} content="Close" align="bottom"><IconButton className="close-icon" icon="close" onClick={this.props.close} /></Tooltip>
                 </DrawerHeader>
                 <DrawerContent>
-                    <div className="subheader">
-                        <Typography use="subtitle2">Vendor</Typography>
+                    <div>
+                        <div className="subheader">
+                            <Typography use="caption">Vendor</Typography>
+                        </div>
+                        <div id="vendorList" className="checkbox-list">
+                            {this.props.vendors.map((value) => {
+                                return (
+                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                        <CheckboxFilter label={value} onChange={this.handleChange} />
+                                    </FormField>
+                                )
+                            })}
+                        </div>
                     </div>
-                    <div className="checkbox-list">
-                        {this.props.vendors.map((value) => {
-                            return (
-                                <FormField key={value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
-                                    <CheckboxFilter label={value} />
-                                </FormField>
-                            )
-                        })}
+                    <div>
+                        <div className="subheader">
+                            <Typography use="caption">Profile</Typography>
+                        </div>
+                        <div id="profileList" className="checkbox-list">
+                            {this.props.profiles.map((value) => {
+                                return (
+                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                        <CheckboxFilter label={value} onChange={this.handleChange} />
+                                    </FormField>
+                                )
+                            })}
+                        </div>
                     </div>
                 </DrawerContent>
             </Drawer>
