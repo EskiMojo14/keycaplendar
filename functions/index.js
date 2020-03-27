@@ -5,7 +5,8 @@ const functions = require('firebase-functions');
 //
 exports.isAdmin = functions.https.onCall((data, context) => {
   if (context.auth) {
-    return context.auth.uid;
+    //return context.auth.uid;
+    return true;
   }
   return false;
 });
