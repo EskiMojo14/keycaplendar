@@ -356,6 +356,13 @@ $overlay-values: (
         }
     }
 
+    .legal-container {
+        color: map-get($variables, text-primary);
+        a {
+            color: map-get($variables, primary);
+        }
+    }
+
     .list.content-grid {
         background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
     }
