@@ -8,7 +8,6 @@ import { MenuView } from './MenuView';
 import { MenuSort } from './MenuSort';
 import { SearchBarPersistent, SearchBarModal } from './SearchBar';
 import './AppBar.scss';
-import logo from '../logo.svg';
 
 export class DesktopAppBar extends React.Component {
     constructor(props) {
@@ -237,7 +236,7 @@ export class MobileAppBar extends React.Component {
         const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
         return (
             <div>
-                <TopAppBar short>
+                <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart className="nav-icon">
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
@@ -277,9 +276,6 @@ export class MobileAppBar extends React.Component {
                                     <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
                                 </Tooltip>
                             </div>
-                        </TopAppBarSection>
-                        <TopAppBarSection alignEnd className="short-logo" onClick={this.scrollTop}>
-                            <img className="logo" src={logo} alt="logo" />
                         </TopAppBarSection>
                     </TopAppBarRow>
                     <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
