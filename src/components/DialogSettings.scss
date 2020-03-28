@@ -1,6 +1,5 @@
 @import '@material/theme/color-palette';
 @import '@material/ripple/mixins';
-@import '@material/theme/mixins';
 
 .settings-dialog {
     user-select: none;
@@ -102,9 +101,6 @@
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
-                    }
-                    .primary {
-                        @include mdc-theme-prop(color, text-primary-on-background);
                     }
                 }
                 .button {

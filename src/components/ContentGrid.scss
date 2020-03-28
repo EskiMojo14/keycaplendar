@@ -1,10 +1,8 @@
 @import '@material/top-app-bar/variables';
 @import '@material/elevation/mixins';
-@import '@material/theme/mixins';
 
 .subheader {
     padding-bottom: 16px;
-    @include mdc-theme-prop(color, text-secondary-on-background);
 }
 
 .content-grid {
@@ -66,8 +64,7 @@
 }
 
 .list.content-grid {
-    @include mdc-theme-prop(background-color, surface);
-    @include mdc-elevation(1);
+    border-top: 1px solid var(--divider-color);
     padding-left: 0;
     padding-right: 0;
     grid-gap: 0;

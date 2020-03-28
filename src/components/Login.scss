@@ -1,5 +1,4 @@
 @import '@material/elevation/mixins';
-@import '@material/theme/mixins';
 
 .login-page-container {
     height: 100vh;
@@ -30,12 +29,10 @@
             margin-bottom: 4px;
             font-family: Lato, sans-serif;
             font-weight: bold;
-            @include mdc-theme-prop(color, text-primary-on-background);
             text-align: center;
         }
         .subtitle {
             margin: 0;
-            @include mdc-theme-prop(color, text-secondary-on-background);
             text-align: center;
         }
     }

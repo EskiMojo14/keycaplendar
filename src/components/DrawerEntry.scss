@@ -1,5 +1,4 @@
 @import '@material/animation/variables';
-@import '@material/theme/mixins';
 
 .mdc-drawer.entry-drawer {
     width: 360px;
@@ -41,16 +40,12 @@
                     margin-left: 8px;
                 }
             }
-        }
+        } 
         .mdc-text-field {
             margin-bottom: 16px;
             & + .mdc-text-field-helper-line {
                 margin-top: -16px;
                 margin-bottom: 16px;
-            }
-            &:not(.mdc-text-field--disabled) .mdc-text-field__icon {
-                @include mdc-theme-prop(color, text-secondary-on-background);
-                @include mdc-theme-prop(fill, text-secondary-on-background);
             }
         }
         .vendor-container {
@@ -59,7 +54,6 @@
                 margin-bottom: 16px;
             }
             .vendor-title {
-                @include mdc-theme-prop(color, text-secondary-on-background);
                 margin: 0;
                 padding: 16px;
             }
@@ -90,9 +84,4 @@
             margin-left: 16px;
         }
     }
-}
-
-.mdc-menu .mdc-list .mdc-list-item--activated, .mdc-menu .mdc-list .mdc-list-item--selected {
-    @include mdc-theme-prop(color, primary);
-    font-weight: bold;
 }

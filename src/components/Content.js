@@ -2,7 +2,7 @@ import React from 'react';
 import './Content.scss';
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from './AppBar';
 import { DrawerAppContent } from '@rmwc/drawer';
-import { DesktopNavDrawer, MobileNavDrawer, BottomNavDrawer } from './NavDrawer';
+import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from './DrawerNav';
 import { Fab } from '@rmwc/fab';
 import { ContentEmpty } from './ContentEmpty';
 import { ContentGrid } from './ContentGrid';
@@ -157,7 +157,7 @@ export class DesktopContent extends React.Component {
     ) : '');
     return (
       <div className={this.props.className}>
-        <DesktopNavDrawer open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} openSettings={this.openSettingsDialog} />
+        <DesktopDrawerNav open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} openSettings={this.openSettingsDialog} />
         <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
@@ -317,7 +317,7 @@ export class TabletContent extends React.Component {
     ) : '');
     return (
       <div className={this.props.className}>
-        <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
+        <MobileDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
         <TabletAppBar page={this.props.page} loading={this.props.loading} openNav={this.openNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         <main className="main">
           {content}
@@ -479,7 +479,7 @@ export class MobileContent extends React.Component {
     ) : '');
     const nav = (this.props.bottomNav ? (
       <div className="bottomNav">
-        <BottomNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
+        <BottomDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
         {(this.props.editor ? (
           <BottomAppBarIndent page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} openSearch={this.openSearchBar} />) : (
             <BottomAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
@@ -487,7 +487,7 @@ export class MobileContent extends React.Component {
       </div>
     ) : (
         <div>
-          <MobileNavDrawer open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
+          <MobileDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
           <MobileAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
         </div>
       ));

@@ -3,7 +3,6 @@
 @import '@material/animation/functions';
 @import '@material/elevation/mixins';
 @import '@material/ripple/mixins';
-@import '@material/theme/mixins';
 
 @media (min-width: 839px) and (max-width: 1599px) {
     .card-container.mdc-layout-grid__cell--span-4-desktop {
@@ -49,7 +48,6 @@
             align-items: center;
             .mdc-typography--overline {
                 margin: 0;
-                @include mdc-theme-prop(color, text-secondary-on-background);
                 flex-shrink: 0;
                 flex-grow: 1;
             }
@@ -59,7 +57,6 @@
                 margin: 0;
                 height: 24px;
                 padding: 0 12px;
-                @include mdc-theme-prop(color, on-secondary);
                 border-radius: 16px;
                 flex-grow: 0;
             }
@@ -70,7 +67,6 @@
             width: 100%;
             .mdc-typography--headline5 {
                 margin: 0;
-                @include mdc-theme-prop(color, text-primary-on-background);
                 display: flex;
                 justify-content: stretch;
                 align-items: center;
@@ -84,13 +80,11 @@
                     overflow: hidden;
                     display: inline-flex;
                     align-items: center;
-                    @include mdc-theme-prop(fill, secondary);
                 }
             }
         }
         .mdc-typography--subtitle2 {
             margin: 0;
-            @include mdc-theme-prop(color, text-secondary-on-background);
         }
     }
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Menu, MenuItem } from '@rmwc/menu';
-import './MenuView.scss';
 
 export class MenuView extends React.Component {
     render() {        

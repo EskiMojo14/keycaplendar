@@ -1,6 +1,5 @@
 @import '@material/animation/variables';
 @import '@material/elevation/mixins';
-@import '@material/theme/mixins';
 
 $enter-time: 250ms;
 $exit-time: 200ms;
@@ -10,7 +9,6 @@ $exit-time: 200ms;
         height: 40px;
         margin-right: 8px;
         .search-bar-field.mdc-text-field {
-            @include mdc-theme-prop(color, on-primary);
             border-radius: 4px;
             height: 100%;
             width: 128px;
@@ -20,9 +18,6 @@ $exit-time: 200ms;
             }
             &--focused {
                 width: 256px;
-                &:not(.mdc-text-field--disabled) .mdc-notched-outline__leading, &:not(.mdc-text-field--disabled) .mdc-notched-outline__notch, &:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
-                    @include mdc-theme-prop(border-color, on-primary);
-                }
             }
             &__input {
                 padding-top: 16px;
@@ -41,7 +36,6 @@ $exit-time: 200ms;
         width: 100%;
         height: 100%;
         z-index: 6;
-        @include mdc-theme-prop(background-color, surface);
         display: none;
         justify-content: stretch;
         align-items: center;
@@ -53,9 +47,6 @@ $exit-time: 200ms;
             opacity: 1;
             transition: opacity 150ms $mdc-animation-standard-curve-timing-function, transform 150ms $mdc-animation-standard-curve-timing-function;
             outline: none;
-            &:focus {
-               @include mdc-theme-prop(color, text-primary-on-background); 
-            }
         }
         .search-bar-field.mdc-text-field {
             flex-grow: 1;

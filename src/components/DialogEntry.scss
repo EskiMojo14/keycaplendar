@@ -3,7 +3,6 @@
 @import '@material/elevation/mixins';
 @import '@material/ripple/mixins';
 @import '@material/select/mixins';
-@import '@material/theme/mixins';
 
 $enter-time: 450ms;
 $exit-time: 400ms;
@@ -16,7 +15,6 @@ $exit-time: 400ms;
     height: 100%;
     z-index: 7;
     @include mdc-elevation(16);
-    @include mdc-theme-prop(background-color, surface);
     flex-direction: column;
     justify-content: stretch;
     overflow: hidden;
@@ -43,7 +41,6 @@ $exit-time: 400ms;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(mdc-theme-prop-value(on-surface), 0.32);
         opacity: 0;
         z-index: 6;
         transition-property: opacity;
@@ -73,10 +70,6 @@ $exit-time: 400ms;
         flex-grow: 0;
         position: static;
         @include mdc-elevation(4);
-        .mdc-button {
-            @include mdc-theme-prop(color, on-primary);
-            @include mdc-states(on-primary);
-        }
     }
     &-content {
         width: 100%;
@@ -112,10 +105,6 @@ $exit-time: 400ms;
                     margin-top: -16px;
                     margin-bottom: 16px;
                 }
-                &:not(.mdc-text-field--disabled) .mdc-text-field__icon {
-                    @include mdc-theme-prop(color, text-secondary-on-background);
-                    @include mdc-theme-prop(fill, text-secondary-on-background);
-                }
             }
             
             .vendor-container {
@@ -124,7 +113,6 @@ $exit-time: 400ms;
                     margin-bottom: 16px;
                 }
                 .vendor-title {
-                    @include mdc-theme-prop(color, text-secondary-on-background);
                     margin: 0;
                     padding: 16px;
                 }

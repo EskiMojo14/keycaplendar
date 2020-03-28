@@ -1,7 +1,5 @@
-@import '@material/theme/variables';
 @import '@material/top-app-bar/variables';
 @import '@material/ripple/mixins';
-@import '@material/theme/mixins';
 @import '@material/typography/mixins';
 
 .mdc-drawer.mdc-drawer--dismissible {
@@ -16,37 +14,12 @@
     };
 };
 
-.mdc-drawer__header {
-    .mdc-drawer__title {
-        @include mdc-theme-prop(color, text-primary-on-background);
-    }
-}
-
 .mdc-drawer {
     bottom: 0;
-    @include mdc-theme-prop(background-color, surface);
     .mdc-drawer__content {
         a {
             text-decoration: none;
         }
-        .mdc-list-item {
-            @include mdc-theme-prop(color, text-primary-on-background);
-            &--selected, &--activated {
-               @include mdc-theme-prop(color, primary);
-               .mdc-list-item__graphic {
-                   @include mdc-theme-prop(color, primary);
-                   @include mdc-theme-prop(fill, primary);
-               }
-            }
-            &:not(.mdc-list-item--selected){ 
-                @include mdc-states(on-surface);
-                .mdc-list-item__graphic {
-                    @include mdc-theme-prop(color, text-secondary-on-background);
-                    @include mdc-theme-prop(fill, text-secondary-on-background);
-                }
-            }
-        }
-
     }
     &.nav {
         user-select: none;
@@ -66,7 +39,6 @@
             }
             .mdc-icon-button {
                 margin-left: auto;
-                @include mdc-theme-prop(color, text-secondary-on-background);
             }
         }
         .mdc-drawer__content {

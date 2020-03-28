@@ -1,0 +1,363 @@
+@import '@material/button/mixins';
+@import '@material/card/mixins';
+@import '@material/checkbox/mixins';
+@import '@material/chips/mixins';
+@import '@material/dialog/mixins';
+@import '@material/drawer/mixins';
+@import '@material/fab/mixins';
+@import '@material/list/mixins';
+@import '@material/ripple/mixins';
+@import '@material/snackbar/mixins';
+@import '@material/switch/mixins';
+@import '@material/top-app-bar/mixins';
+@import '@material/textfield/mixins';
+@import '@material/textfield/icon/mixins';
+@import '@material/textfield/helper-text/mixins';
+
+$overlay-values: (
+    1: 5%,   // card, switch
+    2: 7%,   // contained button
+    3: 8%,   // refresh indicator
+    4: 9%,   // app bar
+    6: 11%,  // FAB, snackbar
+    8: 12%,  // menu, side sheet
+    12: 14%, // 
+    16: 15%, // nav drawer, modal side sheet
+    24: 16%  // dialog
+);
+
+@function overlay-elevation($color, $elevation : 0) {
+    $use-color: mdc-theme-prop-value($color);
+    @return lighten($use-color, map-get($overlay-values, $elevation));
+};
+
+@mixin theme($theme, $dark: false) {
+    $text-colors: (
+        text-primary: rgba(map-get($theme, on-surface), 0.87),
+        text-secondary: rgba(map-get($theme, on-surface), 0.6),
+        text-disabled: rgba(map-get($theme, on-surface), 0.38)
+    );
+    $variables: map-merge($theme, $text-colors);
+    --meta-color: #{if($dark, darken(overlay-elevation(map-get($variables, surface), 4),10%), darken(map-get($variables, primary),10%))};
+    --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
+    body {
+        background-color: map-get($variables, background);
+    }
+
+    .mdc-button {
+        @include mdc-button-ink-color(map-get($variables, primary));
+        @include mdc-states(map-get($variables, primary));
+        &.mdc-button--raised {
+            @include mdc-button-container-fill-color(map-get($variables, primary));
+            @include mdc-button-ink-color(map-get($variables, on-primary));
+            @include mdc-states(map-get($variables, on-primary));
+        }
+        &.delete {
+            @include mdc-button-ink-color(map-get($variables, error));
+            @include mdc-states(map-get($variables, error));
+        }
+    }
+    
+    .mdc-card {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+        @if ($dark) {
+            transition-property: box-shadow, background-color;
+            &.selected {
+                background-color: overlay-elevation(map-get($variables, surface), 8);
+            }
+
+        }
+        .mdc-typography--headline5 {
+            color: map-get($variables, text-primary);
+            .time-indicator {
+                fill: map-get($variables, secondary);
+            }
+        }
+        .mdc-typography--overline, .mdc-typography--subtitle2 {
+            color: map-get($variables, text-secondary);
+        }
+        .live-indicator {
+            background-color: rgba(map-get($variables, secondary), if($dark, 0.75, 0.5));
+            color: map-get($variables, on-secondary);
+        }
+    }
+
+    .mdc-checkbox {
+        @include mdc-checkbox-container-colors(map-get($variables, text-secondary), transparent, map-get($variables, secondary), map-get($variables, secondary));
+        @include mdc-states(map-get($variables, on-surface));
+        &.mdc-checkbox--selected {
+            @include mdc-states(map-get($variables, secondary));
+        }
+        .mdc-checkbox__checkmark {
+            color: map-get($variables, on-secondary);
+        }
+    }
+
+    .mdc-dialog {
+        @include mdc-dialog-container-fill-color(if($dark, overlay-elevation(map-get($variables,surface), 24), map-get($variables,surface)));
+        @include mdc-dialog-scrim-color(map-get($variables, on-surface), 0.32);
+        @include mdc-dialog-title-ink-color(map-get($variables, text-primary));
+        @include mdc-dialog-content-ink-color(map-get($variables, text-secondary));
+        .primary {
+            color: map-get($variables, text-primary);
+        }
+    }
+
+    .mdc-drawer {
+        @include mdc-drawer-fill-color-accessible(if($dark, overlay-elevation(map-get($variables,surface), 16), map-get($variables,surface)));
+        @include mdc-drawer-item-activated-icon-ink-color(map-get($variables,primary));
+        @include mdc-drawer-item-activated-text-ink-color(map-get($variables,primary));
+        @include mdc-drawer-scrim-fill-color(rgba(map-get($variables, on-surface), 0.32));
+        &.mdc-drawer--dismissible {
+            @include mdc-drawer-surface-fill-color(if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface)));
+            .mdc-chip {
+                @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)), 12%));
+                @include mdc-chip-selected-ink-color(map-get($variables,primary));
+            }
+        }
+        .mdc-chip {
+            @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface)), 12%));
+            @include mdc-chip-selected-ink-color(map-get($variables,primary));
+        }
+        .mdc-icon-button {
+            color: map-get($variables, text-secondary);
+            @include mdc-states(map-get($variables, on-surface));
+        }
+        .mdc-card {
+            @include mdc-card-fill-color(transparent);
+            .vendor-title {
+                color: map-get($variables, text-secondary);
+            }
+        }
+        &__content {
+            .mdc-list-item {
+                @include mdc-states(map-get($variables, on-surface));
+                &.mdc-list-item--activated {
+                    @include mdc-states(map-get($variables, primary));
+                }
+                &__secondary-text {
+                    color: map-get($variables, text-secondary);
+                }
+                &__meta {
+                    color: map-get($variables, text-disabled);
+                }
+            }
+            .mdc-typography--overline {
+                color: map-get($variables, text-secondary);
+            }
+            .mdc-typography--headline4, .mdc-typography--body2, .mdc-form-field {
+                color: map-get($variables, text-primary);
+            }
+        }
+        .search-chips-icon {
+            color: map-get($variables, text-disabled);
+        }
+    }
+
+    .mdc-fab {
+        @include mdc-fab-accessible(map-get($variables, secondary));
+    }
+
+    .mdc-form-field {
+        color: map-get($variables, text-primary);
+    }
+
+    .mdc-image-list {
+        .mdc-image-list__item {
+            background-color: map-get($variables, primary);
+            .secondary {
+                color: map-get($variables, text-secondary);
+            }
+            .time-indicator {
+                fill: map-get($variables, secondary);
+            }
+            .live-indicator {
+                background-color: map-get($variables, secondary);
+                color: map-get($variables, on-secondary);
+            }
+        }
+    }
+
+    .mdc-list .mdc-list-item {
+        @include mdc-list-item-primary-text-ink-color(map-get($variables, text-primary));
+        @include mdc-list-item-secondary-text-ink-color(map-get($variables, text-secondary));
+        @include mdc-list-item-graphic-ink-color(map-get($variables, text-secondary));
+        @include mdc-list-item-meta-ink-color(map-get($variables, text-secondary));
+        @include mdc-states(map-get($variables, on-surface));
+        &--activated, &--selected {
+            @include mdc-list-item-primary-text-ink-color(map-get($variables, primary));
+            @include mdc-list-item-secondary-text-ink-color(map-get($variables, primary));
+            @include mdc-list-item-graphic-ink-color(map-get($variables, primary));
+            @include mdc-states(map-get($variables, primary));
+        }
+        .live-indicator {
+            background-color: rgba(map-get($variables, secondary), if($dark, 0.75, 0.5));
+            color: map-get($variables, on-secondary);
+        }
+        .time-indicator {
+            fill: map-get($variables, secondary);
+        }
+    }
+
+    .mdc-menu {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 12), map-get($variables, surface));
+    }
+
+    .mdc-snackbar {
+        @include mdc-snackbar-fill-color(mix(map-get($variables, on-surface), map-get($variables, surface), 80%));
+        @include mdc-snackbar-label-ink-color(map-get($variables, surface));
+        &__action:not(:disabled) {
+            color: map-get($variables, secondary);
+            @include mdc-states(map-get($variables, secondary));
+        }
+    }
+
+    .mdc-switch {
+        @include mdc-switch-toggled-off-thumb-color(if($dark,#BDBDBD,#FAFAFA));
+        @include mdc-switch-toggled-on-color(map-get($variables, secondary));
+    }
+
+    .mdc-text-field {
+        &:not(.mdc-text-field--focused) {
+            @include mdc-text-field-icon-color(map-get($variables, text-secondary));
+            @include mdc-text-field-ink-color(map-get($variables, text-primary));
+            @include mdc-text-field-label-color(map-get($variables, text-secondary));
+            @include mdc-text-field-caret-color(map-get($variables, text-primary));
+            @include mdc-text-field-outline-color(map-get($variables, text-disabled));
+            @include mdc-text-field-hover-outline-color(map-get($variables, text-secondary));
+            @include mdc-text-field-helper-text-color(map-get($variables, text-secondary));
+            .mdc-text-field__icon {
+                fill: map-get($variables, text-secondary);
+            }
+            &.mdc-text-field--invalid {
+                @include mdc-text-field-icon-color(map-get($variables, error));
+                @include mdc-text-field-ink-color(map-get($variables, text-primary));
+                @include mdc-text-field-label-color(map-get($variables, error));
+                @include mdc-text-field-caret-color(map-get($variables, error));
+                @include mdc-text-field-outline-color(map-get($variables, error));
+                @include mdc-text-field-hover-outline-color(if($dark, lighten(map-get($variables, error), 12%), darken(map-get($variables, error), 25%)));
+                @include mdc-text-field-helper-text-color(map-get($variables, error));
+                .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
+                    color: map-get($variables, error);
+                }
+            }
+        }
+        &.mdc-text-field--focused {
+            @include mdc-text-field-icon-color(map-get($variables, primary));
+            @include mdc-text-field-ink-color(map-get($variables, text-primary));
+            @include mdc-text-field-label-color(map-get($variables, primary));
+            @include mdc-text-field-caret-color(map-get($variables, primary));
+            @include mdc-text-field-outline-color(map-get($variables, primary));
+            @include mdc-text-field-helper-text-color(map-get($variables, primary));
+            .mdc-text-field__icon {
+                fill: map-get($variables, primary);
+            }
+            .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
+                color: map-get($variables, primary);
+            }
+        }
+    }
+    
+
+    .mdc-top-app-bar {
+        @include mdc-top-app-bar-fill-color(if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary)));
+        @include mdc-top-app-bar-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
+        @include mdc-top-app-bar-icon-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
+        @if ($dark != true) {
+            .mdc-linear-progress__bar-inner {
+                background-color: map-get($variables, secondary);
+            }
+        }
+        .search-bar {
+            &--persistent .search-bar-field.mdc-text-field {
+                background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)),0.15);
+                .mdc-text-field__input::placeholder {
+                    color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+                }
+                &:not(.mdc-text-field--focused) {
+                    @include mdc-text-field-icon-color(if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6)));
+                    @include mdc-text-field-ink-color(if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87)));
+                    @include mdc-text-field-caret-color(if($dark, map-get($variables, on-surface), map-get($variables, on-primary)));
+                    @include mdc-text-field-outline-color(if($dark, map-get($variables, text-disabled), rgba(map-get($variables, on-primary), 0.38)));
+                    @include mdc-text-field-hover-outline-color(if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6)));
+                }
+                &.mdc-text-field--focused {
+                    @include mdc-text-field-icon-color(if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6)));
+                    @include mdc-text-field-ink-color(if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87)));
+                    @include mdc-text-field-caret-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
+                    @include mdc-text-field-outline-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
+                }
+            }
+            &--modal {
+                background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
+                .search-bar-field.mdc-text-field {
+                    .mdc-text-field__input::placeholder {
+                        color: map-get($variables, text-secondary);
+                    }
+                    &:not(.mdc-text-field--focused), &.mdc-text-field--focused {
+                        @include mdc-text-field-icon-color(map-get($variables, text-secondary));
+                        @include mdc-text-field-ink-color(map-get($variables, text-primary));
+                        @include mdc-text-field-caret-color(map-get($variables, on-surface));
+                    }
+                }
+            }
+        }
+        &.bottom-app-bar {
+            .mdc-top-app-bar__section:not(.indent) {
+                background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+            }
+            .indent {
+                fill: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+            }
+        }
+        .svg-container {
+            @include mdc-states(map-get($variables, if($dark, on-surface, on-primary)));
+        }
+
+        .mdc-button {
+            color: map-get($variables, if($dark, text-primary, on-primary));
+            @include mdc-states(map-get($variables, if($dark, text-primary, on-primary)));
+        }
+    }
+
+
+    .empty-container, .login-container {
+        .title {
+            color: map-get($variables, text-primary);
+        }
+        .subtitle {
+            color: map-get($variables, text-secondary);
+        }
+    }
+
+    .footer p {
+        color: map-get($variables, text-secondary);
+        a {
+            color: map-get($variables, primary);
+        }
+        .bold {
+            color: map-get($variables, text-primary);
+        }
+    }
+
+    .full-screen-dialog {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface),16), map-get($variables, surface));
+        &-scrim {
+            background-color: rgba(map-get($variables, on-surface), 0.32);
+        }
+        .mdc-card {
+            @include mdc-card-fill-color(transparent);
+            .vendor-title {
+                color: map-get($variables, text-secondary);
+            }
+        }
+    }
+
+    .list.content-grid {
+        background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
+    }
+
+    .subheader {
+        color: map-get($variables, text-secondary);
+    }
+}

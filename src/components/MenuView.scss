@@ -1,5 +1,0 @@
-@import '@material/theme/mixins';
-
-.mdc-menu .mdc-list-item:not(.mdc-list-item--selected){
-    @include mdc-theme-prop(color, text-primary-on-background);
-}

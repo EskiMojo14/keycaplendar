@@ -1,7 +1,17 @@
-@import 'variables';
+@import '@material/theme/color-palette';
+
+/*
+$mdc-theme-primary: $material-color-teal-500;
+$mdc-theme-secondary: $material-color-deep-orange-200;
+$mdc-theme-on-primary: black;
+$mdc-theme-on-secondary: black;
+$mdc-theme-background: $material-color-grey-200;
+$mdc-theme-surface: white;
+$mdc-theme-on-surface: #000;
+*/
 
 @import 'typography-variables';
-
+@import 'theme';
 
 @import '@material/button/mdc-button';
 @import '@material/card/mdc-card';
@@ -24,44 +34,71 @@
 @import '@material/snackbar/mdc-snackbar';
 @import '@material/switch/mdc-switch';
 @import '@material/textfield/mdc-text-field';
-@import '@material/theme/mdc-theme';
 @import '@material/top-app-bar/mdc-top-app-bar';
 @import '@material/typography/mdc-typography';
 @import '@rmwc/tooltip/tooltip';
 
-@import '@material/ripple/mixins';
-
-body {
-    @include mdc-theme-prop(background-color, background);
-}
-
-:root {
-    --meta-color: #{darken(mdc-theme-prop-value(primary),10%)};
-    --divider-color: #{rgba($mdc-theme-on-surface,0.12)};
-}
-
-.mdc-button.mdc-button--outlined, .mdc-card.mdc-card--outlined {
+.mdc-button.mdc-button--outlined, .mdc-card.mdc-card--outlined, .mdc-drawer, .mdc-list-divider {
     border-color: var(--divider-color);
 }
 
-.search-bar--persistent .search-bar-field.mdc-text-field {
-    background-color: rgba($mdc-theme-on-primary,0.15);
+.light {
+    $theme: (
+        primary: $material-color-teal-500,
+        secondary: $material-color-deep-orange-200,
+        on-primary: black,
+        on-secondary: black,
+        background: $material-color-grey-200,
+        error: #b00020,
+        on-error: white,
+        surface: white,
+        on-surface: black
+    );
+    @include theme($theme);
 }
 
-.text-row .text-container .overline .live-indicator, .mdc-list .mdc-list-item .live-indicator {
-    background-color: rgba($mdc-theme-secondary,0.5);
+.deep {
+    $theme: (
+        primary: $material-color-teal-200,
+        secondary: $material-color-deep-orange-200,
+        on-primary: black,
+        on-secondary: black,
+        background: #17161c,
+        error: #cf6679,
+        on-error: black,
+        surface:#17161c,
+        on-surface: #fff,
+    );
+    @include theme($theme, true);
 }
 
-.mdc-snackbar__action:not(:disabled) {
-    @include mdc-theme-prop(color, secondary);
-    @include mdc-states(secondary);
+.dark {
+    $theme: (
+        primary: $material-color-teal-200,
+        secondary: $material-color-deep-orange-200,
+        on-primary: black,
+        on-secondary: black,
+        background: #121212,
+        error: #cf6679,
+        on-error: black,
+        surface: #121212,
+        on-surface: #fff
+    );
+    @include theme($theme, true);
 }
 
-.footer p {
-    @include mdc-theme-prop(color, text-secondary-on-background);
-    .bold {
-        @include mdc-theme-prop(color, text-primary-on-background);
-    }
+.lich {
+    $theme: (
+        primary: #514163,
+        secondary: #EFC06E,
+        on-primary: #EFC06E,
+        on-secondary: #403845,
+        background: #DECDE7,
+        error: #b00020,
+        surface: lighten(#DECDE7,5%),
+        on-surface: black
+    );
+    @include theme($theme);
 }
 
 //@import 'dark-theme';
