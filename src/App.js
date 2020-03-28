@@ -385,24 +385,38 @@ class App extends React.Component {
         if (user) {
           const isEditorFn = firebase.functions().httpsCallable('isEditor');
           isEditorFn().then((result) => {
-            console.log(result.data);
             this.setUser({
               email: user.email,
               name: user.displayName,
               avatar: user.photoURL,
               isEditor: result.data
             });
-          }).catch((error) => console.log('Error verifying editor access: ' + error));
+          }).catch((error) => {
+            console.log('Error verifying editor access: ' + error);
+            this.setUser({
+              email: user.email,
+              name: user.displayName,
+              avatar: user.photoURL,
+              isEditor: false
+            });
+          });
         } else {
           const isEditorFn = firebase.functions().httpsCallable('isEditor');
           isEditorFn().then((result) => {
-            console.log(result.data);
-          });
-          this.setUser({
-            email: null,
-            name: null,
-            avatar: null,
-            isEditor: false
+            this.setUser({
+              email: null,
+              name: null,
+              avatar: null,
+              isEditor: false
+            });
+          }).catch((error) => {
+            console.log('Error verifying editor access: ' + error);
+            this.setUser({
+              email: null,
+              name: null,
+              avatar: null,
+              isEditor: false
+            });
           });
         }
       }
