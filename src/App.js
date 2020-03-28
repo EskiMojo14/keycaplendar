@@ -14,7 +14,7 @@ import { PrivacyPolicy, TermsOfService } from './components/Legal';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
+    this.state = { device: 'desktop', theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -277,6 +277,23 @@ class App extends React.Component {
     });
     this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
   }
+  setDevice = () => {
+    let device;
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    
+    if (vw >= 840) {
+      device = 'desktop';
+    } else if (vw < 840 && vw >= 480) {
+      device = 'tablet';
+    } else {
+      device = 'mobile';
+    };
+    this.setState({ device: device });
+  }
+  componentWillMount() {
+    this.setDevice();
+    window.addEventListener("resize",this.setDevice);
+  }
   componentDidMount() {
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
@@ -331,7 +348,7 @@ class App extends React.Component {
   }
 
   render() {
-    const device = this.props.device;
+    const device = this.state.device;
     let content;
     if (device === 'desktop') {
       content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} />;
