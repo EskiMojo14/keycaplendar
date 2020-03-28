@@ -21,6 +21,10 @@
         "function": "isEditor"
       },
       {
+        "source": "/api/grantRole",
+        "function": "grantRole"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

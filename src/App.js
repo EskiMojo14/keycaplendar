@@ -8,6 +8,7 @@ import {
 import { DesktopContent, TabletContent, MobileContent } from './components/Content';
 import { Login } from './components/Login';
 import './App.scss';
+import { PrivacyPolicy, TermsOfService } from './components/Legal';
 
 class App extends React.Component {
   constructor(props) {
@@ -61,11 +62,7 @@ class App extends React.Component {
   changeTheme = (theme) => {
     this.setState({ theme: theme });
     document.querySelector('html').classList = theme;
-    setTimeout(() => {
-      var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
-      var metaElement = document.querySelector("meta[name=theme-color]");
-      metaElement.setAttribute("content", metaColor);
-    }, 200);
+    document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
   }
   changeBottomNav = (value) => {
     this.setState({ bottomNav: value });
@@ -377,12 +374,12 @@ class App extends React.Component {
     this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
   }
   componentDidMount() {
-    var metaColor = getComputedStyle(document.documentElement).getPropertyValue('--meta-color');
-    var metaElement = document.querySelector("meta[name=theme-color]");
-    metaElement.setAttribute("content", metaColor);
+    document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
     //this.getData();
     this.createExampleData();
+    //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
+    //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         if (user) {
@@ -431,6 +428,12 @@ class App extends React.Component {
         <Switch>
           <Route path="/login">
             <Login device={this.props.device} user={this.state.user} setUser={this.setUser} />
+          </Route>
+          <Route path="/privacy">
+            <PrivacyPolicy />
+          </Route>
+          <Route path="/terms">
+            <TermsOfService />
           </Route>
           <Route path="/">
             <div className="app">

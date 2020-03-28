@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Typography } from '@rmwc/typography';
 import { Tooltip } from '@rmwc/tooltip';
 import './Footer.scss';
@@ -13,6 +14,8 @@ export class Footer extends React.Component {
                     , inspired by the spreadsheet created by&nbsp;
                     <Tooltip align="top" content="Langelandia" showArrow><span className="bold">Jeff Langeland</span></Tooltip>
                     .
+                    <Link className="link" to="/privacy">Privacy Policy</Link>
+                    <Link className="link" to="/terms">Terms of Service</Link>
                 </Typography>
                 <Typography use="body2" tag="p">
                     Something to add/adjust? Contact me via&nbsp;

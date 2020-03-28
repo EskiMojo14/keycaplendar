@@ -118,12 +118,12 @@ export class DrawerCreate extends React.Component {
             })
                 .then(function (docRef) {
                     console.log("Document written with ID: ", docRef.id);
+                    this.props.getData();
                 })
                 .catch(function (error) {
                     console.error("Error adding document: ", error);
                 });
             this.closeDrawer();
-            this.props.getData();
         }
     };
 
@@ -331,9 +331,15 @@ export class DrawerEdit extends React.Component {
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
             vendors: this.state.vendors
+        })
+        .then(function (docRef) {
+            console.log("Document updated with ID: ", docRef.id);
+            this.props.getData();
+        })
+        .catch(function (error) {
+            console.error("Error editing document: ", error);
         });
         this.closeDrawer();
-        this.props.getData();
     };
 
     render() {

@@ -149,12 +149,12 @@ export class DialogCreate extends React.Component {
         })
             .then(function (docRef) {
                 console.log("Document written with ID: ", docRef.id);
+                this.props.getData();
             })
             .catch(function (error) {
                 console.error("Error adding document: ", error);
             });
         this.closeDialog();
-        this.props.getData();
     };
     render() {
         return (
@@ -399,9 +399,15 @@ export class DialogEdit extends React.Component {
             vendor: firebase.firestore.FieldValue.delete(),
             vendors: this.state.vendors,
             storeLink: this.state.storeLink
+        })
+        .then(function (docRef) {
+            console.log("Document updated with ID: ", docRef.id);
+            this.props.getData();
+        })
+        .catch(function (error) {
+            console.error("Error editing document: ", error);
         });
         this.closeDialog();
-        this.props.getData();
     };
 
     render() {

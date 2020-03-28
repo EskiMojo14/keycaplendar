@@ -19,11 +19,11 @@ export class SnackbarDeleted extends React.Component {
         })
             .then(function (docRef) {
                 console.log("Document recreated with ID: ", docRef.id);
+                this.props.getData();
             })
             .catch(function (error) {
                 console.error("Error adding document: ", error);
             });
-        this.props.getData();
         this.props.close();
     };
     render() {
