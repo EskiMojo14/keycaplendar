@@ -376,8 +376,8 @@ class App extends React.Component {
   componentDidMount() {
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
-    //this.getData();
-    this.createExampleData();
+    this.getData();
+    //this.createExampleData();
     //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
     //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(

@@ -9,7 +9,7 @@
     @include mdc-ripple-surface;
     @include mdc-ripple-radius-bounded;
     @include mdc-states(black);
-    width: calc(100% / var(--columns) - 4px);
+    width: calc( (100% * 1/6) - 4px );
     .container {
         position: relative;
         transition: border-radius 150ms $mdc-animation-standard-curve-timing-function;
@@ -53,8 +53,11 @@
             }
             .time-indicator {
                 height: 24px;
-                padding: 0 8px;
+                padding-left: 0 8px;
                 overflow: hidden;
+                & + .live-indicator {
+                    display: none;
+                }
             }
             .live-indicator {
                 display: flex;
@@ -68,4 +71,10 @@
         }
     }
 
+}
+
+@media (max-width: 839px) {
+    .outer-container .mdc-image-list__item {
+        width: calc( (100% * 1/2) - 4px );
+    }
 }

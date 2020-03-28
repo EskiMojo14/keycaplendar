@@ -9,10 +9,10 @@
     padding: 24px;
     transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-row-height});
     max-width: 2000px;
-    display: grid;
-    grid-template-columns: repeat(12,minmax(0,1fr));
-    grid-gap: 24px;
-    align-content: start;
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+    flex-wrap: wrap;
     flex-grow: 1;
     max-width: 2000px;
     margin: 0 auto;
@@ -20,46 +20,22 @@
     box-sizing: border-box;
 }
 
-@media (max-width: 1800px) {
-    .content-grid {
-        grid-template-columns: repeat(8,minmax(0,1fr));
-    }
-}
-
 .outer-container {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
-    grid-column-end: span calc(var(--columns)*2);
+    width: 100%;
+    &:not(:last-of-type) {
+        padding-bottom: 16px;
+    }
 }
 
 @media (max-width: 840px) {
     .content-grid {
         padding: 16px;
-        grid-gap: 16px;
-        grid-template-columns: repeat(8,minmax(0,1fr));
-        &.imageList {
-            grid-gap: 16px 4px;
-        }
-        .outer-container {
-            grid-column-end: span calc(var(--columns)*4);
-        }
     }
     div.list.content-grid .outer-container {
-        grid-column-end: span 8;
-
-    }
-}
-
-@media (max-width: 480px) {
-    .content-grid {
-        grid-template-columns: repeat(4,minmax(0,1fr));
-        .outer-container {
-            grid-column-end: span 4;
-        }
-    }
-    .imageList.content-grid .outer-container {
-        grid-column-end: span calc(var(--columns)*2);
+        width: 100%;
     }
 }
 
@@ -67,10 +43,11 @@
     border-top: 1px solid var(--divider-color);
     padding-left: 0;
     padding-right: 0;
-    grid-gap: 0;
     margin-bottom: auto;
     box-sizing: border-box;
     flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
     .subheader {
         padding-left: 16px;
         padding-right: 16px;
@@ -78,7 +55,8 @@
     }
 
     .outer-container {
-        grid-column-end: span 6;
+        width: 50%;
+        padding-bottom: 0;
     }
 }
 
@@ -87,7 +65,3 @@
         transform-origin: 50% calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
     }
 };
-
-.imageList.content-grid {
-    grid-gap: 24px 4px;
-}

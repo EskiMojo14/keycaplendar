@@ -4,18 +4,6 @@
 @import '@material/elevation/mixins';
 @import '@material/ripple/mixins';
 
-@media (min-width: 839px) and (max-width: 1599px) {
-    .card-container.mdc-layout-grid__cell--span-4-desktop {
-        grid-column-end: span 6;
-    }
-}
-
-@media (min-width: 839px) and (max-width: 2139px) {
-    .drawer-open .card-container.mdc-layout-grid__cell--span-4-desktop {
-        grid-column-end: span 6;
-    }
-}
-
 .card-container .mdc-card {
     height: 100%;
     transition: box-shadow 250ms;

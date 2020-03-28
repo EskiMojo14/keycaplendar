@@ -5,7 +5,7 @@ import { ElementImage } from './ElementImage';
 export class ViewImageList extends React.Component {
     render() {
         return (
-            <ImageList style={{margin: -2}} withTextProtection>
+            <ImageList style={{margin: -2 }} withTextProtection>
                 {this.props.sets.map((set, index) => {
                     const gbLaunch = (set.gbLaunch.includes('Q') ? set.gbLaunch : new Date(set.gbLaunch));
                     const gbEnd = new Date(set.gbEnd);

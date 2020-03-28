@@ -51,13 +51,13 @@ export class ContentGrid extends React.Component {
         })
         return filteredSets;
     }
-    createGroup = (sets, setCount) => {
+    createGroup = (sets) => {
         if (this.props.view === 'card') {
-            return (<ViewCard setCount={setCount} sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
+            return (<ViewCard sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
         } else if (this.props.view === 'list') {
             return (<ViewList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
         } else if (this.props.view === 'imageList') {
-            return (<ViewImageList setCount={setCount} sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
+            return (<ViewImageList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
         }
     }
     render() {
@@ -65,13 +65,12 @@ export class ContentGrid extends React.Component {
             <div className={this.props.view + ' content-grid'}>
                 {this.props.groups.map((value, index) => {
                     const filteredSets = this.filterSets(this.props.sets, value, this.props.sort, this.props.page);
-                    const setCount = (filteredSets.length > this.props.maxColumns ? this.props.maxColumns : filteredSets.length);
                     return (
-                        <div className="outer-container" style={{ "--columns": setCount }} key={index}>
+                        <div className="outer-container" key={index}>
                             <div className="subheader">
                                 <Typography use="caption" key={index}>{value}</Typography>
                             </div>
-                            {this.createGroup(filteredSets, setCount)}
+                            {this.createGroup(filteredSets)}
                         </div>
                     )
                 })}
