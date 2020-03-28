@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { DesktopContent, TabletContent, MobileContent } from './components/Content';
 import { Login } from './components/Login';
+import { Users } from './components/Users';
 import './App.scss';
 import { PrivacyPolicy, TermsOfService } from './components/Legal';
 
@@ -342,6 +343,9 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
+          <Route path="/users">
+            <Users admin={this.state.user.isAdmin} />
+          </Route>
           <Route path="/login">
             <Login device={this.props.device} user={this.state.user} setUser={this.setUser} />
           </Route>

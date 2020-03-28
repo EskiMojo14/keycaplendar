@@ -331,7 +331,25 @@ $overlay-values: (
 
         .mdc-button {
             color: map-get($variables, if($dark, text-primary, on-primary));
-            @include mdc-states(map-get($variables, if($dark, text-primary, on-primary)));
+            @include mdc-states(map-get($variables, if($dark, on-surface, on-primary)));
+        }
+    }
+
+    .rmwc-data-table {
+        color: map-get($variables, text-primary);
+        &__content {
+            background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
+        }
+        &__cell {
+            background-color: transparent;
+            border-color: var(--divider-color);
+            .mdc-icon-button {
+                color: map-get($variables, text-secondary);
+                @include mdc-states(map-get($variables, on-surface));
+            }
+        }
+        &__head-cell {
+            color: map-get($variables, text-primary);
         }
     }
 

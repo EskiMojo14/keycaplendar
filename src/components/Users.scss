@@ -1,0 +1,54 @@
+@import '@material/elevation/mixins';
+@import '@material/typography/mixins';
+
+.users-container {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    .rmwc-data-table {
+        border: none;
+        border-radius: 4px;
+        @include mdc-elevation(1);
+        &__head .rmwc-data-table__row {
+            height: 56px;
+            .rmwc-data-table__head-cell {
+                @include mdc-typography(subtitle2);
+                vertical-align: middle;
+            }
+        }
+        &__body .rmwc-data-table__row {
+            height: 52px;
+            .rmwc-data-table__cell {
+                @include mdc-typography(body2);
+            }
+        }
+        .user-cell {
+            padding: 0 16px;
+            .user {
+                display: flex;
+                align-items: center;
+                .avatar {
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 20px;
+                    background-color: rgba(0,0,0,0.20);
+                    margin-right: 12px;
+                    background-size: cover;
+                    background-position: center;
+                }
+            }
+        }
+        .checkbox-cell {
+            padding: 0 16px;
+            .mdc-checkbox {
+                margin: 0 auto;
+            }
+        }
+        .icon-cell {
+            padding: 0 16px;
+            .icon-button {
+                margin: 0 auto;
+            }
+        }
+    }
+} 
