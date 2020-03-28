@@ -332,7 +332,7 @@ class App extends React.Component {
           if (aDate < bDate) { return -1; }
           if (aDate > bDate) { return 1; }
         }
-      } else if (sort === 'vendor') {
+      } else {
         const x = a.toLowerCase();
         const y = b.toLowerCase();
         if (x < y) { return -1; }
