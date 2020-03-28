@@ -126,7 +126,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/BohSuAU.png',
       gbLaunch: '2020-03-01',
       gbEnd: '2020-04-01',
-      vendors: [new Vendor('CannonKeys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
+      vendors: [new Vendor('Cannon Keys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
     };
     const gmkModernDolchLight = {
       id: 'gmkModernDolchLight',
@@ -138,7 +138,7 @@ class App extends React.Component {
       image: 'https://i.imgur.com/OQa2VP3.jpg',
       gbLaunch: '2020-02-02',
       gbEnd: '2020-03-01',
-      vendors: [new Vendor('DixieMech', 'America', 'https://dixiemech.store/products/gmk-modern-dolch-light'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/gmk-modern-dolch-light_254/'), new Vendor('iLumKB', 'Asia', 'https://ilumkb.com/collections/groupbuy/products/gb-gmk-modern-dolch-light'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/products/gmk-modern-dolch-light')]
+      vendors: [new Vendor('Dixie Mech', 'America', 'https://Dixie Mech.store/products/gmk-modern-dolch-light'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/gmk-modern-dolch-light_254/'), new Vendor('iLumKB', 'Asia', 'https://ilumkb.com/collections/groupbuy/products/gb-gmk-modern-dolch-light'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/products/gmk-modern-dolch-light')]
     };
     const gmkBushido = {
       id: 'gmkBushido',
@@ -186,7 +186,7 @@ class App extends React.Component {
       image: 'https://imgur.com/SRThBPS.png',
       gbLaunch: '2019-07-01',
       gbEnd: '2019-07-28',
-      vendors: [new Vendor('DixieMech', 'America', 'https://dixiemech.store/collections/sa-bliss'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/sa-bliss_168/'), new Vendor('DailyClack', 'Asia, Oceania', 'https://dailyclack.com/collections/keycaps/products/sa-bliss')]
+      vendors: [new Vendor('Dixie Mech', 'America', 'https://Dixie Mech.store/collections/sa-bliss'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/sa-bliss_168/'), new Vendor('DailyClack', 'Asia, Oceania', 'https://dailyclack.com/collections/keycaps/products/sa-bliss')]
     };
     const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkBushido, gmkMasterpiece, gmkBleached, saBliss];
     this.setState({
@@ -412,9 +412,9 @@ class App extends React.Component {
     );
   }
   // Make sure we un-register Firebase observers when the component unmounts.
-  /*componentWillUnmount() {
+  componentWillUnmount() {
     this.unregisterAuthObserver();
-  }*/
+  }
 
   render() {
     const device = this.props.device;
