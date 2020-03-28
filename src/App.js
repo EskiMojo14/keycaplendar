@@ -13,12 +13,11 @@ import { PrivacyPolicy, TermsOfService } from './components/Legal';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false }, whitelist: { vendors: [], profiles: [], edited: false } };
+    this.state = { theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
     this.filterData = this.filterData.bind(this);
-    this.createExampleData = this.createExampleData.bind(this);
     this.toggleLoading = this.toggleLoading.bind(this);
     this.setSort = this.setSort.bind(this);
     this.setSearch = this.setSearch.bind(this);
@@ -94,102 +93,6 @@ class App extends React.Component {
       })
       this.filterData(this.state.page, sets);
     });
-  }
-  createExampleData() {
-    function Vendor(name, region, storeLink = '') {
-      this.name = name;
-      this.region = region;
-      this.storeLink = storeLink;
-    }
-    const katLich = {
-      id: 'katLich',
-      profile: 'KAT',
-      colorway: 'Lich',
-      designer: ['Eskimojo'],
-      icDate: '2019-10-31',
-      details: 'https://geekhack.org/index.php?topic=104129.0',
-      image: 'https://i.imgur.com/x0EkNCQ.jpg',
-      gbLaunch: '2020-01-07',
-      gbEnd: '2020-01-31',
-      vendors: [new Vendor('NovelKeys', 'America', 'https://novelkeys.xyz/products/kat-lich-gb'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/search/?q=kat+lich'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/copy-of-group-buy-kat-lich-1'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/products/kat-lich'), new Vendor('SwitchKeys', 'Oceania', 'https://www.switchkeys.com.au/products/kat-liche-group-buy'), new Vendor('FunKeys', 'Ukraine/Russia', 'https://groupbuy.funkeys.com.ua/kat_lich')]
-    };
-    const katAtlantis = {
-      id: 'katAtlantis',
-      profile: 'KAT',
-      colorway: 'Atlantis',
-      designer: ['Rensuya'],
-      icDate: '2019-09-14',
-      details: 'https://geekhack.org/index.php?topic=104912.0',
-      image: 'https://i.imgur.com/BohSuAU.png',
-      gbLaunch: '2020-03-01',
-      gbEnd: '2020-04-01',
-      vendors: [new Vendor('Cannon Keys', 'America', 'https://cannonkeys.com/collections/featured/products/gb-kat-atlantis'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/kat-atlantis_265/'), new Vendor('zFrontier', 'Asia', 'https://en.zfrontier.com/collections/groupbuy/products/kat-atlantis'), new Vendor('DeskHero', 'Canada', 'https://www.deskhero.ca/collections/open-group-buys/products/kat-atlantis'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/collections/group-buys/products/kat-atlantis')]
-    };
-    const gmkModernDolchLight = {
-      id: 'gmkModernDolchLight',
-      profile: 'GMK',
-      colorway: 'Modern Dolch Light',
-      designer: ['Janglad', 'Dixie'],
-      icDate: '2019-10-13',
-      details: 'https://geekhack.org/index.php?topic=104498.0',
-      image: 'https://i.imgur.com/OQa2VP3.jpg',
-      gbLaunch: '2020-02-02',
-      gbEnd: '2020-03-01',
-      vendors: [new Vendor('Dixie Mech', 'America', 'https://Dixie Mech.store/products/gmk-modern-dolch-light'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/gmk-modern-dolch-light_254/'), new Vendor('iLumKB', 'Asia', 'https://ilumkb.com/collections/groupbuy/products/gb-gmk-modern-dolch-light'), new Vendor('DailyClack', 'Oceania', 'https://dailyclack.com/products/gmk-modern-dolch-light')]
-    };
-    const gmkBushido = {
-      id: 'gmkBushido',
-      profile: 'GMK',
-      colorway: 'Bushido',
-      designer: ['Biip'],
-      icDate: '2019-10-23',
-      details: 'https://geekhack.org/index.php?topic=103083.0',
-      image: 'https://i.imgur.com/Gt7C0NZ.png',
-      gbLaunch: '2020-04-03',
-      gbEnd: '2020-05-01',
-      vendors: [new Vendor('NovelKeys', 'America'), new Vendor('CandyKeys', 'Europe'), new Vendor('zFrontier', 'Asia'), new Vendor('DailyClack', 'Oceania')]
-    };
-    const gmkMasterpiece = {
-      id: 'gmkMasterpiece',
-      profile: 'GMK',
-      colorway: 'Masterpiece',
-      designer: ['Energieschleuder'],
-      icDate: '2019-10-25',
-      details: 'https://geekhack.org/index.php?topic=103111.0',
-      image: 'https://imgur.com/DLOqWxC.png',
-      gbLaunch: 'Q2 2020',
-      gbEnd: '',
-      vendors: [new Vendor('Project Keyboard', 'America'), new Vendor('MyKeyboard', 'Europe'), new Vendor('iLumKB', 'Asia'), new Vendor('DeskHero', 'Canada'), new Vendor('SwitchKeys', 'Oceania', '')]
-    };
-    const gmkBleached = {
-      id: 'gmkBleached',
-      profile: 'GMK',
-      colorway: 'Bleached',
-      designer: ['Botallu'],
-      icDate: '2020-01-28',
-      details: 'https://geekhack.org/index.php?topic=104430.0',
-      image: 'https://i.imgur.com/XK1Pgrr.png',
-      gbLaunch: '',
-      gbEnd: '',
-      vendors: [new Vendor('TX Keyboard', 'America'), new Vendor('proto[Typist]', 'Europe'), new Vendor('zFrontier', 'China'), new Vendor('ThicThock', 'Asia'), new Vendor('DeskHero', 'Canada'), new Vendor('DailyClack', 'Oceania', '')]
-    };
-    const saBliss = {
-      id: 'saBliss',
-      profile: 'SA',
-      colorway: 'Bliss',
-      designer: ['Minterly'],
-      icDate: '2019-05-01',
-      details: 'https://geekhack.org/index.php?topic=101407.0',
-      image: 'https://imgur.com/SRThBPS.png',
-      gbLaunch: '2019-07-01',
-      gbEnd: '2019-07-28',
-      vendors: [new Vendor('Dixie Mech', 'America', 'https://Dixie Mech.store/collections/sa-bliss'), new Vendor('MyKeyboard', 'Europe', 'https://mykeyboard.eu/catalogue/category/group-buys/sa-bliss_168/'), new Vendor('DailyClack', 'Asia, Oceania', 'https://dailyclack.com/collections/keycaps/products/sa-bliss')]
-    };
-    const sets = [katLich, katAtlantis, gmkModernDolchLight, gmkBushido, gmkMasterpiece, gmkBleached, saBliss];
-    this.setState({
-      sets: sets
-    })
-    this.filterData(this.state.page, sets);
   }
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
@@ -377,7 +280,6 @@ class App extends React.Component {
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
     this.getData();
-    //this.createExampleData();
     //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
     //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
