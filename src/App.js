@@ -72,6 +72,7 @@ class App extends React.Component {
     this.setState({ loading: newState });
   }
   getData() {
+    this.setState({ loading: true });
     const db = firebase.firestore();
     db.collection("keysets").get().then((querySnapshot) => {
       let sets = [];
@@ -93,7 +94,7 @@ class App extends React.Component {
         sets: sets
       })
       this.filterData(this.state.page, sets);
-    });
+    }).catch((error) => console.log('Error getting data: ' + error));
   }
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
@@ -251,7 +252,8 @@ class App extends React.Component {
       vendors: allVendors,
       profiles: allProfiles,
       groups: groups,
-      content: (searchedSets.length > 0 ? true : false)
+      content: (searchedSets.length > 0 ? true : false),
+      loading: false
     });
   }
   setSort(sortBy) {
@@ -272,7 +274,7 @@ class App extends React.Component {
     let whitelistCopy = this.state.whitelist;
     whitelistCopy[property] = values;
     whitelistCopy.edited = true;
-    this.setState({ 
+    this.setState({
       whitelist: whitelistCopy
     });
     this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
@@ -280,7 +282,7 @@ class App extends React.Component {
   setDevice = () => {
     let device;
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    
+
     if (vw >= 840) {
       device = 'desktop';
     } else if (vw < 840 && vw >= 480) {
@@ -290,26 +292,36 @@ class App extends React.Component {
     };
     this.setState({ device: device });
   }
-  componentWillMount() {
-    this.setDevice();
-    window.addEventListener("resize",this.setDevice);
-  }
   componentDidMount() {
+    this.setDevice();
+    window.addEventListener("resize", this.setDevice);
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
     this.getData();
-    //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
-    //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         if (user) {
           const isEditorFn = firebase.functions().httpsCallable('isEditor');
           isEditorFn().then((result) => {
-            this.setUser({
-              email: user.email,
-              name: user.displayName,
-              avatar: user.photoURL,
-              isEditor: result.data
+            const isEditor = result.data;
+            const isAdminFn = firebase.functions().httpsCallable('isAdmin');
+            isAdminFn().then((result) => {
+              this.setUser({
+                email: user.email,
+                name: user.displayName,
+                avatar: user.photoURL,
+                isEditor: isEditor,
+                isAdmin: result.data
+              });
+            }).catch((error) => {
+              console.log('Error verifying admin access: ' + error);
+              this.setUser({
+                email: user.email,
+                name: user.displayName,
+                avatar: user.photoURL,
+                isEditor: isEditor,
+                isAdmin: false
+              });
             });
           }).catch((error) => {
             console.log('Error verifying editor access: ' + error);
@@ -317,9 +329,11 @@ class App extends React.Component {
               email: user.email,
               name: user.displayName,
               avatar: user.photoURL,
-              isEditor: false
+              isEditor: false,
+              isAdmin: false
             });
           });
+
         } else {
           const isEditorFn = firebase.functions().httpsCallable('isEditor');
           isEditorFn().then((result) => {
@@ -327,7 +341,8 @@ class App extends React.Component {
               email: null,
               name: null,
               avatar: null,
-              isEditor: false
+              isEditor: false,
+              isAdmin: false
             });
           }).catch((error) => {
             console.log('Error verifying editor access: ' + error);
@@ -335,7 +350,8 @@ class App extends React.Component {
               email: null,
               name: null,
               avatar: null,
-              isEditor: false
+              isEditor: false,
+              isAdmin: false
             });
           });
         }

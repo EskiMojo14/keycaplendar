@@ -21,6 +21,18 @@
         "function": "isEditor"
       },
       {
+        "source": "/api/isAdmin",
+        "function": "isAdmin"
+      },
+      {
+        "source": "/api/currentUserClaims",
+        "function": "currentUser"
+      },
+      {
+        "source": "/api/listUsers",
+        "function": "listUsers"
+      },
+      {
         "source": "/api/grantRole",
         "function": "grantRole"
       },
