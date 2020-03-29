@@ -18,26 +18,10 @@ exports.isAdmin = functions.https.onCall((data, context) => {
   return false;
 });
 
-exports.currentUserClaims = functions.https.onCall(async (data, context) => {
-  if (!context.auth || context.auth.token.admin !== true) {
-    return {
-      error: "User not admin."
-    }
-  }
-  if (context.auth) {
-    const user = await admin.auth().getUser(context.auth.uid);
-    if (user.customClaims) {
-      return user.customClaims;
-    }
-    return "No custom claims";
-  }
-  return "No user";
-});
-
 exports.listUsers = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
     return {
-      error: "User not admin."
+      error: "Current user is not an admin. Access is not permitted."
     }
   }
   // List batch of users, 1000 at a time.

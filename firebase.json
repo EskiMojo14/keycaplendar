@@ -25,10 +25,6 @@
         "function": "isAdmin"
       },
       {
-        "source": "/api/currentUserClaims",
-        "function": "currentUser"
-      },
-      {
         "source": "/api/listUsers",
         "function": "listUsers"
       },
