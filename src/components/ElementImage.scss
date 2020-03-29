@@ -73,6 +73,18 @@
 
 }
 
+@media (min-width: 1000px) and (max-width: 1149px) {
+    .filter-drawer-open .outer-container .mdc-image-list__item, .details-drawer-open .outer-container .mdc-image-list__item {
+        width: calc( (100% * 1/2) - 4px );
+    }
+}
+
+@media (min-width: 840px) and (max-width: 999px) {
+    .filter-drawer-open .outer-container .mdc-image-list__item, .details-drawer-open .outer-container .mdc-image-list__item {
+        width: calc( 100% - 4px );
+    }
+}
+
 @media (min-width: 840px) and (max-width: 1399px) {
     .outer-container .mdc-image-list__item {
         width: calc( (100% * 1/3) - 4px );
