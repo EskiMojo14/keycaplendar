@@ -116,12 +116,14 @@ export class DrawerCreate extends React.Component {
                 gbEnd: this.state.gbEnd,
                 vendors: this.state.vendors
             })
-                .then(function (docRef) {
+                .then((docRef) => {
                     console.log("Document written with ID: ", docRef.id);
+                    this.props.snackbarQueue.notify({ title: "Entry written successfully." });
                     this.props.getData();
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     console.error("Error adding document: ", error);
+                    this.props.snackbarQueue.notify({ title: "Error adding document: " + error });
                 });
             this.closeDrawer();
         }
@@ -334,10 +336,12 @@ export class DrawerEdit extends React.Component {
         })
         .then(function (docRef) {
             console.log("Document updated with ID: ", docRef.id);
+            this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
             this.props.getData();
         })
         .catch(function (error) {
             console.error("Error editing document: ", error);
+            this.props.snackbarQueue.notify({ title: "Error editing document: " + error });
         });
         this.closeDrawer();
     };

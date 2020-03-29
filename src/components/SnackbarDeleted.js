@@ -17,12 +17,14 @@ export class SnackbarDeleted extends React.Component {
             gbEnd: this.props.set.gbEnd,
             vendors: this.props.set.vendors
         })
-            .then(function (docRef) {
+            .then((docRef) => {
                 console.log("Document recreated with ID: ", docRef.id);
+                this.props.snackbarQueue.notify({ title: "Entry successfully recreated."});
                 this.props.getData();
             })
-            .catch(function (error) {
-                console.error("Error adding document: ", error);
+            .catch((error) => {
+                console.error("Error recreating document: ", error);
+                this.props.snackbarQueue.notify({ title: "Error recreating document: " + error });
             });
         this.props.close();
     };

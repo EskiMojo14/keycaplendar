@@ -48,6 +48,12 @@ $mdc-theme-on-surface: #000;
     transition-duration: 100ms !important;
 }
 
+.offset-snackbar {
+    & + .mdc-snackbar, .mdc-snackbar  {
+        bottom: 84px;
+    }
+}
+
 .light {
     $theme: (
         primary: $material-color-teal-500,

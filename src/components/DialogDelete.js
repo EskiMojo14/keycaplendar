@@ -7,13 +7,13 @@ export class DialogDelete extends React.Component {
         e.preventDefault();
         const db = firebase.firestore();
         db.collection('keysets').doc(this.props.set.id).delete()
-        .then(function (docRef) {
-            console.log("Document deleted with ID: ", docRef.id);
+        .then((docRef) => {
             this.props.openSnackbar();
             this.props.getData();
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.error("Error deleting document: ", error);
+            this.props.snackbarQueue.notify({ title: "Error deleting document: " + error});
         });
         this.props.close();
     };

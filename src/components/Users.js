@@ -5,12 +5,8 @@ import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHead
 import { Checkbox } from '@rmwc/checkbox';
 import { IconButton } from '@rmwc/icon-button';
 import { LinearProgress } from '@rmwc/linear-progress';
-import { createSnackbarQueue, SnackbarQueue } from '@rmwc/snackbar';
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
 import './Users.scss';
-
-const queue = createSnackbarQueue();
-
 export class Users extends React.Component {
     constructor(props) {
         super(props);
@@ -27,7 +23,7 @@ export class Users extends React.Component {
         listUsersFn().then((result) => {
             if (result) {
                 if (result.data.error) {
-                    queue.notify({ title: result.data.error });
+                    this.props.snackbarQueue.notify({ title: result.data.error });
                     this.setState({
                         loading: false
                     });
@@ -51,7 +47,7 @@ export class Users extends React.Component {
                 }
             }
         }).catch((error) => {
-            queue.notify({ title: 'Error listing users: ' + error });
+            this.props.snackbarQueue.notify({ title: 'Error listing users: ' + error });
             this.setState({
                 loading: false
             });
@@ -79,16 +75,16 @@ export class Users extends React.Component {
         const deleteUser = firebase.functions().httpsCallable('deleteUser');
         deleteUser(user).then((result) => {
             if (result.data.error) {
-                queue.notify({ title: result.data.error });
+                this.props.snackbarQueue.notify({ title: result.data.error });
                 this.setState({
                     loading: false
                 });
             } else {
-                queue.notify({ title: 'User ' + user.displayName + ' successfully deleted.' });
+                this.props.snackbarQueue.notify({ title: 'User ' + user.displayName + ' successfully deleted.' });
                 this.getUsers();
             }
         }).catch((error) => {
-            queue.notify({ title: 'Error deleting user: ' + error });
+            this.props.snackbarQueue.notify({ title: 'Error deleting user: ' + error });
             this.setState({
                 loading: false
             });
@@ -161,7 +157,6 @@ export class Users extends React.Component {
                         <LinearProgress className={this.state.loading ? 'visible' : ''} />
                     </DataTable>
                 </div>
-                <SnackbarQueue messages={queue.messages} />
                 <Dialog open={this.state.deleteDialogOpen}>
                     <DialogTitle>Delete User</DialogTitle>
                     <DialogContent>

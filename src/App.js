@@ -5,12 +5,14 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+import { createSnackbarQueue, SnackbarQueue } from '@rmwc/snackbar';
 import { DesktopContent, TabletContent, MobileContent } from './components/Content';
 import { Login } from './components/Login';
 import { Users } from './components/Users';
 import './App.scss';
 import { PrivacyPolicy, TermsOfService } from './components/Legal';
 
+const queue = createSnackbarQueue();
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -94,7 +96,10 @@ class App extends React.Component {
         sets: sets
       })
       this.filterData(this.state.page, sets);
-    }).catch((error) => console.log('Error getting data: ' + error));
+    }).catch((error) => {
+      console.log('Error getting data: ' + error);
+      queue.notify({ title: 'Error getting data: ' + error});
+    });
   }
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
@@ -315,6 +320,7 @@ class App extends React.Component {
               });
             }).catch((error) => {
               console.log('Error verifying admin access: ' + error);
+              queue.notify({ title: 'Error verifying admin access: ' + error });
               this.setUser({
                 email: user.email,
                 name: user.displayName,
@@ -325,6 +331,7 @@ class App extends React.Component {
             });
           }).catch((error) => {
             console.log('Error verifying editor access: ' + error);
+            queue.notify({ title: 'Error verifying editor access: ' + error });
             this.setUser({
               email: user.email,
               name: user.displayName,
@@ -355,17 +362,20 @@ class App extends React.Component {
     const device = this.state.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} />;
+      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     } else if (device === 'tablet') {
-      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} />;
+      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     } else {
-      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} setWhitelist={this.setWhitelist} />;
+      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     }
     return (
       <Router>
         <Switch>
           <Route path="/users">
-            <Users admin={this.state.user.isAdmin} user={this.state.user}/>
+            <div>
+              <Users admin={this.state.user.isAdmin} user={this.state.user} snackbarQueue={queue} />
+              <SnackbarQueue messages={queue.messages} />
+            </div>
           </Route>
           <Route path="/login">
             <Login device={this.state.device} user={this.state.user} setUser={this.setUser} />
@@ -379,6 +389,7 @@ class App extends React.Component {
           <Route path="/">
             <div className="app">
               {content}
+              <SnackbarQueue messages={queue.messages} />
             </div>
           </Route>
         </Switch>

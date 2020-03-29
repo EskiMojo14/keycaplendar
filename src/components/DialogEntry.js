@@ -147,12 +147,14 @@ export class DialogCreate extends React.Component {
             vendors: this.state.vendors,
             storeLink: this.state.storeLink
         })
-            .then(function (docRef) {
+            .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
+                this.props.snackbarQueue.notify({ title: "Entry written successfully."});
                 this.props.getData();
             })
-            .catch(function (error) {
+            .catch((error) => {
                 console.error("Error adding document: ", error);
+                this.props.snackbarQueue.notify({ title: "Error adding entry: ", error});
             });
         this.closeDialog();
     };
@@ -400,12 +402,14 @@ export class DialogEdit extends React.Component {
             vendors: this.state.vendors,
             storeLink: this.state.storeLink
         })
-        .then(function (docRef) {
+        .then((docRef) => {
             console.log("Document updated with ID: ", docRef.id);
+            this.props.snackbarQueue.notify({ title: "Entry edited successfully."})
             this.props.getData();
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.error("Error editing document: ", error);
+            this.props.snackbarQueue.notify({ title: "Error editing document: " + error})
         });
         this.closeDialog();
     };

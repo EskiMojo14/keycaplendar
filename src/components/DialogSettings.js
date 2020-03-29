@@ -44,6 +44,7 @@ export class DialogSettings extends React.Component {
             })
             .catch((error) => {
                 console.log('Error signing out: ' + error);
+                this.props.snackbarQueue.notify({ title: 'Error signing out: ' + error });
             })
     }
     render() {
