@@ -85,9 +85,12 @@
         transition: height 250ms $mdc-animation-standard-curve-timing-function;
         z-index: -1;
     }
+    &.card::before {
+        height: 256px - $mdc-top-app-bar-row-height;
+    }
 }
-:not(.bottomNav) + .main.card::before {
-    height: 256px - $mdc-top-app-bar-row-height;
+.bottomNav + .main.card::before {
+    content: none;
 }
 
 .filter-drawer-open .main.card::before, .details-drawer-open .main.card::before {
@@ -111,7 +114,7 @@
     .main::before {
         top: $mdc-top-app-bar-mobile-row-height;
     }
-    :not(.bottomNav) + .main.card::before {
+    .main.card::before {
         height: 256px - $mdc-top-app-bar-mobile-row-height;
     }
 };
