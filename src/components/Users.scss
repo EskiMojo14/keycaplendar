@@ -24,6 +24,9 @@
             height: 52px;
             .rmwc-data-table__cell {
                 @include mdc-typography(body2);
+                &::before {
+                    transition: opacity 100ms;
+                }
             }
         }
         .user-cell {

@@ -5,47 +5,110 @@ import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHead
 import { Checkbox } from '@rmwc/checkbox';
 import { IconButton } from '@rmwc/icon-button';
 import { LinearProgress } from '@rmwc/linear-progress';
+import { createSnackbarQueue, SnackbarQueue } from '@rmwc/snackbar';
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
 import './Users.scss';
+
+const queue = createSnackbarQueue();
 
 export class Users extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             users: [],
+            deleteDialogOpen: false,
+            deletedUser: { displayName: '' },
             loading: false
         }
     }
-    componentDidMount() {
-        //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
-        //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
+    getUsers = () => {
         this.setState({ loading: true })
         const listUsersFn = firebase.functions().httpsCallable('listUsers');
         listUsersFn().then((result) => {
             if (result) {
                 if (result.data.error) {
-                    console.log(result.data.error);
+                    queue.notify({ title: result.data.error });
                     this.setState({
                         loading: false
                     });
                 } else {
                     this.setState({
-                      loading: false
-                    });
-                    console.log(result.data);
-                    setTimeout(() => {this.setState({
-                        users: result.data,
                         loading: false
-                    });}, 150);
+                    });
+                    result.data.sort((a, b) => {
+                        const x = a.email.toLowerCase();
+                        const y = b.email.toLowerCase();
+                        if (x < y) { return -1; }
+                        if (x > y) { return 1; }
+                        return 0;
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            users: result.data,
+                            loading: false
+                        });
+                    }, 150);
                 }
             }
         }).catch((error) => {
-            console.log('Error listing users: ' + error);
+            queue.notify({ title: 'Error listing users: ' + error });
             this.setState({
                 loading: false
             });
         });
     }
+    openDeleteDialog = (user) => {
+        this.setState({
+            deleteDialogOpen: true,
+            deletedUser: user
+        });
+    }
+    closeDeleteDialog = () => {
+        this.setState({
+            deleteDialogOpen: false
+        });
+        setTimeout(() => {
+            this.setState({
+                deletedUser: { displayName: '' }
+            })
+        }, 75);
+    }
+    deleteUser = (user) => {
+        this.closeDeleteDialog();
+        this.setState({ loading: true })
+        const deleteUser = firebase.functions().httpsCallable('deleteUser');
+        deleteUser(user).then((result) => {
+            if (result.data.error) {
+                queue.notify({ title: result.data.error });
+                this.setState({
+                    loading: false
+                });
+            } else {
+                queue.notify({ title: 'User ' + user.displayName + ' successfully deleted.' });
+                this.getUsers();
+            }
+        }).catch((error) => {
+            queue.notify({ title: 'Error deleting user: ' + error });
+            this.setState({
+                loading: false
+            });
+        });
+    }
+    componentDidMount() {
+        //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
+        //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
+        this.getUsers();
+    }
     render() {
+        const deleteButton = (user) => {
+            if (user.email !== this.props.user.email || user.email !== 'ben.j.durrant@gmail.com') {
+                return (
+                    <IconButton icon="delete" onClick={() => { this.openDeleteDialog(user); }} />
+                );
+            } else {
+                return '';
+            }
+        }
         return (
             <div>
                 <TopAppBar>
@@ -87,7 +150,7 @@ export class Users extends React.Component {
                                                     <Checkbox checked={user.admin} />
                                                 </DataTableCell>
                                                 <DataTableCell className="icon-cell">
-                                                    <IconButton icon="delete" />
+                                                    {deleteButton(user)}
                                                 </DataTableCell>
                                             </DataTableRow>
                                         );
@@ -95,9 +158,20 @@ export class Users extends React.Component {
                                 }
                             </DataTableBody>
                         </DataTableContent>
-                        <LinearProgress className={this.state.loading ? 'visible' : ''}/>
+                        <LinearProgress className={this.state.loading ? 'visible' : ''} />
                     </DataTable>
                 </div>
+                <SnackbarQueue messages={queue.messages} />
+                <Dialog open={this.state.deleteDialogOpen}>
+                    <DialogTitle>Delete User</DialogTitle>
+                    <DialogContent>
+                        Are you sure you want to delete the user {this.state.deletedUser.displayName}?
+                    </DialogContent>
+                    <DialogActions>
+                        <DialogButton action="close" onClick={this.closeDeleteDialog} isDefaultAction>Cancel</DialogButton>
+                        <DialogButton action="accept" className="delete" onClick={() => this.deleteUser(this.state.deletedUser)}>Delete</DialogButton>
+                    </DialogActions>
+                </Dialog>
             </div>
         );
     }

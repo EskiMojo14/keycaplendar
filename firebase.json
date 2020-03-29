@@ -29,6 +29,10 @@
         "function": "listUsers"
       },
       {
+        "source": "/api/deleteUser",
+        "function": "deleteUser"
+      },
+      {
         "source": "/api/grantRole",
         "function": "grantRole"
       },

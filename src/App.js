@@ -335,24 +335,12 @@ class App extends React.Component {
           });
 
         } else {
-          const isEditorFn = firebase.functions().httpsCallable('isEditor');
-          isEditorFn().then((result) => {
-            this.setUser({
-              email: null,
-              name: null,
-              avatar: null,
-              isEditor: false,
-              isAdmin: false
-            });
-          }).catch((error) => {
-            console.log('Error verifying editor access: ' + error);
-            this.setUser({
-              email: null,
-              name: null,
-              avatar: null,
-              isEditor: false,
-              isAdmin: false
-            });
+          this.setUser({
+            email: null,
+            name: null,
+            avatar: null,
+            isEditor: false,
+            isAdmin: false
           });
         }
       }
@@ -377,10 +365,10 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/users">
-            <Users admin={this.state.user.isAdmin} />
+            <Users admin={this.state.user.isAdmin} user={this.state.user}/>
           </Route>
           <Route path="/login">
-            <Login device={this.props.device} user={this.state.user} setUser={this.setUser} />
+            <Login device={this.state.device} user={this.state.user} setUser={this.setUser} />
           </Route>
           <Route path="/privacy">
             <PrivacyPolicy />

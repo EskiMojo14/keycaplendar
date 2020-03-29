@@ -260,6 +260,11 @@ $overlay-values: (
             }
         }
     }
+    .mdc-linear-progress {
+        &__bar-inner {
+            background-color: map-get($variables, primary);
+        }
+    }
     
 
     .mdc-top-app-bar {
@@ -350,6 +355,9 @@ $overlay-values: (
         }
         &__head-cell {
             color: map-get($variables, text-primary);
+        }
+        &__row:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated) .rmwc-data-table__cell::before, &__row:hover:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated) .rmwc-data-table__cell::before {
+            background-color: map-get($variables, on-surface);
         }
     }
 

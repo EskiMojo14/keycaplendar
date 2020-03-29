@@ -54,6 +54,31 @@ exports.listUsers = functions.https.onCall(async (data, context) => {
   return users;
 });
 
+
+exports.deleteUser = functions.https.onCall(async (data, context) => {
+  if (!context.auth || context.auth.token.admin !== true) {
+    return {
+      error: "Current user is not an admin. Access is not permitted."
+    }
+  }
+  if (data.email === 'ben.j.durrant@gmail.com') {
+    return {
+      error: "This user cannot be deleted"
+    }
+  }
+  const currentUser = await admin.auth().getUser(context.auth.uid);
+  const user = await admin.auth().getUserByEmail(data.email);
+  admin.auth().deleteUser(user.uid)
+    .then(() => {
+      console.log(currentUser.displayName + ' successfully deleted account of ' + user.displayName + '.')
+      return null;
+    })
+    .catch((error) => {
+      return { error: 'Error deleting user: ' + error};
+    });
+  return 'Success';
+});
+
 exports.grantRole = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
     return {
