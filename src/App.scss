@@ -44,6 +44,10 @@ $mdc-theme-on-surface: #000;
     border-color: var(--divider-color);
 }
 
+.mdc-ripple-upgraded::before {
+    transition-duration: 100ms !important;
+}
+
 .light {
     $theme: (
         primary: $material-color-teal-500,
