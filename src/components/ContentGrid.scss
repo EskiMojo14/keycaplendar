@@ -34,12 +34,12 @@
     .content-grid {
         padding: 16px;
     }
-    div.list.content-grid .outer-container {
+    .main.list .content-grid .outer-container {
         width: 100%;
     }
 }
 
-.list.content-grid {
+.list .content-grid {
     border-top: 1px solid var(--divider-color);
     padding-left: 0;
     padding-right: 0;

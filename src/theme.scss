@@ -400,8 +400,11 @@ $overlay-values: (
             color: map-get($variables, primary);
         }
     }
+    .main::before {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+    }
 
-    .list.content-grid {
+    .list .content-grid {
         background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
     }
 

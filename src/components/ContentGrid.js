@@ -62,7 +62,7 @@ export class ContentGrid extends React.Component {
     }
     render() {
         return (
-            <div className={this.props.view + ' content-grid'}>
+            <div className='content-grid'>
                 {this.props.groups.map((value, index) => {
                     const filteredSets = this.filterSets(this.props.sets, value, this.props.sort, this.props.page);
                     return (
