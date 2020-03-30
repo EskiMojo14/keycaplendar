@@ -361,6 +361,44 @@ $overlay-values: (
         }
     }
 
+    .rmwc-tooltip {
+        &-inner {
+            background-color: map-get($variables, on-surface);
+            color: map-get($variables, surface);
+        }
+        &-placement-top .rmwc-tooltip-arrow,
+        &-placement-topLeft .rmwc-tooltip-arrow,
+        &-placement-topRight .rmwc-tooltip-arrow  {
+            border-top-color: map-get($variables, on-surface);
+            &-inner {
+                border-top-color: map-get($variables, surface);
+            }
+        }
+        &-placement-right .rmwc-tooltip-arrow,
+        &-placement-rightTop .rmwc-tooltip-arrow,
+        &-placement-rightBottom .rmwc-tooltip-arrow  {
+            border-right-color: map-get($variables, on-surface);
+            &-inner {
+                border-right-color: map-get($variables, surface);
+            }
+        }
+        &-placement-left .rmwc-tooltip-arrow,
+        &-placement-leftTop .rmwc-tooltip-arrow,
+        &-placement-leftBottom .rmwc-tooltip-arrow  {
+            border-left-color: map-get($variables, on-surface);
+            &-inner {
+                border-left-color: map-get($variables, surface);
+            }
+        }
+        &-placement-bottom .rmwc-tooltip-arrow-inner,
+        &-placement-bottomLeft .rmwc-tooltip-arrow-inner,
+        &-placement-bottomRight .rmwc-tooltip-arrow-inner  {
+            border-bottom-color: map-get($variables, on-surface);
+            &-inner {
+                border-bottom-color: map-get($variables, surface);
+            }
+        }
+    }
 
     .empty-container, .login-container {
         .title {
