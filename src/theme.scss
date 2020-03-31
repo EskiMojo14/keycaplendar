@@ -370,7 +370,7 @@ $overlay-values: (
         &__cell {
             background-color: transparent;
             border-color: var(--divider-color);
-            .mdc-icon-button {
+            .mdc-icon-button, .svg-container.mdc-icon-button {
                 color: map-get($variables, text-secondary);
                 @include mdc-states(map-get($variables, on-surface));
                 &.disabled {
