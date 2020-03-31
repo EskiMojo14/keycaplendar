@@ -18,7 +18,6 @@ $mdc-theme-on-surface: #000;
 @import '@material/checkbox/mdc-checkbox';
 @import '@material/chips/mdc-chips';
 @import '@material/data-table/mdc-data-table';
-@import '@rmwc/data-table/data-table';
 @import '@material/dialog/mdc-dialog';
 @import '@material/drawer/mdc-drawer';
 @import '@material/fab/mdc-fab';
@@ -38,6 +37,8 @@ $mdc-theme-on-surface: #000;
 @import '@material/textfield/mdc-text-field';
 @import '@material/top-app-bar/mdc-top-app-bar';
 @import '@material/typography/mdc-typography';
+@import '@rmwc/data-table/data-table';
+@import '@rmwc/circular-progress/circular-progress';
 @import '@rmwc/tooltip/tooltip';
 
 .mdc-button.mdc-button--outlined, .mdc-card.mdc-card--outlined, .mdc-drawer, .mdc-list-divider {

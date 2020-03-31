@@ -1,5 +1,6 @@
 @import '@material/animation/variables';
 @import '@material/elevation/mixins';
+@import '@material/ripple/mixins';
 @import '@material/typography/mixins';
 
 .users-container {
@@ -27,6 +28,14 @@
                 &::before {
                     transition: opacity 100ms;
                 }
+                .svg-container {
+                    position: relative;
+                    @include mdc-ripple-surface;
+                    @include mdc-ripple-radius-unbounded;
+                    &.disabled {
+                        cursor: default;
+                    }
+                }
             }
         }
         .user-cell {
@@ -52,16 +61,12 @@
         }
         .icon-cell {
             padding: 0 16px;
-            .icon-button {
+            .mdc-icon-button {
                 margin: 0 auto;
             }
         }
-        .mdc-linear-progress {
-            transition: height 100ms $mdc-animation-standard-curve-timing-function;
-            height: 0;
-            &.visible {
-                height: 4px;
-            }
+        .rmwc-circular-progress {
+            padding: 12px;
         }
     }
 } 

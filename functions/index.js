@@ -70,7 +70,7 @@ exports.deleteUser = functions.https.onCall(async (data, context) => {
   const user = await admin.auth().getUserByEmail(data.email);
   admin.auth().deleteUser(user.uid)
     .then(() => {
-      console.log(currentUser.displayName + ' successfully deleted account of ' + user.displayName + '.')
+      console.log(currentUser.displayName + ' successfully deleted account of ' + user.displayName + '.');
       return null;
     })
     .catch((error) => {
@@ -79,20 +79,24 @@ exports.deleteUser = functions.https.onCall(async (data, context) => {
   return 'Success';
 });
 
-exports.grantRole = functions.https.onCall(async (data, context) => {
+exports.setRoles = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
     return {
       error: "User not admin."
     }
   }
+  const currentUser = await admin.auth().getUser(context.auth.uid);
   const user = await admin.auth().getUserByEmail(data.email);
-  if (user.customClaims && user.customClaims[data.role] === true) {
-    return user.customClaims;
-  } else {
-    let claims = (user.customClaims ? user.customClaims : {});
-    claims[data.role] = true;
-    await admin.auth().setCustomUserClaims(user.uid, claims);
-    const newUser = await admin.auth().getUserByEmail(data.email);
-    return newUser.customClaims;
+  const claims = {
+    editor: data.editor,
+    admin: data.admin
   }
+  await admin.auth().setCustomUserClaims(user.uid, claims).then(() => {
+    console.log(currentUser.displayName + ' successfully edited account of ' + user.displayName + '. Editor: ' + data.editor + ', admin: ' + data.admin);
+    return null
+  }).catch((error) => {
+    return { error: 'Error setting roles: ' + error};
+  })
+  const newUser = await admin.auth().getUserByEmail(data.email);
+  return newUser.customClaims;
 });

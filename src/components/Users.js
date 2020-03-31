@@ -1,11 +1,11 @@
 import React from 'react';
 import firebase from "./firebase";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarFixedAdjust } from '@rmwc/top-app-bar';
-import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHeadCell, DataTableBody, DataTableCell } from '@rmwc/data-table';
-import { Checkbox } from '@rmwc/checkbox';
+import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHeadCell, DataTableBody } from '@rmwc/data-table';
 import { IconButton } from '@rmwc/icon-button';
-import { LinearProgress } from '@rmwc/linear-progress';
+import { CircularProgress } from '@rmwc/circular-progress';
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
+import { UserRow } from './UserRow';
 import './Users.scss';
 export class Users extends React.Component {
     constructor(props) {
@@ -91,20 +91,10 @@ export class Users extends React.Component {
         });
     }
     componentDidMount() {
-        //const grantRoleFn = firebase.functions().httpsCallable('grantRole');
-        //grantRoleFn({email: 'ben.j.durrant@gmail.com', role: 'editor'}).then((result) => console.log(result.data));
         this.getUsers();
     }
     render() {
-        const deleteButton = (user) => {
-            if (user.email !== this.props.user.email || user.email !== 'ben.j.durrant@gmail.com') {
-                return (
-                    <IconButton icon="delete" onClick={() => { this.openDeleteDialog(user); }} />
-                );
-            } else {
-                return '';
-            }
-        }
+        const refreshButton = (this.state.loading ? (<CircularProgress />) : (<IconButton icon="refresh" onClick={this.getUsers}/>))
         return (
             <div>
                 <TopAppBar>
@@ -124,37 +114,23 @@ export class Users extends React.Component {
                                     <DataTableHeadCell>Email</DataTableHeadCell>
                                     <DataTableHeadCell>Editor</DataTableHeadCell>
                                     <DataTableHeadCell>Admin</DataTableHeadCell>
+                                    <DataTableHeadCell>Save</DataTableHeadCell>
                                     <DataTableHeadCell>Delete</DataTableHeadCell>
+                                    <DataTableHeadCell className="icon-cell">
+                                        {refreshButton}
+                                    </DataTableHeadCell>
                                 </DataTableRow>
                             </DataTableHead>
                             <DataTableBody>
                                 {
                                     this.state.users.map((user, index) => {
                                         return (
-                                            <DataTableRow key={index}>
-                                                <DataTableCell className="user-cell">
-                                                    <div className="user">
-                                                        <div className="avatar" style={{ backgroundImage: 'url(' + user.photoURL + ')' }} />
-                                                        {user.displayName}
-                                                    </div>
-                                                </DataTableCell>
-                                                <DataTableCell>{user.email}</DataTableCell>
-                                                <DataTableCell className="checkbox-cell">
-                                                    <Checkbox checked={user.editor} />
-                                                </DataTableCell>
-                                                <DataTableCell className="checkbox-cell">
-                                                    <Checkbox checked={user.admin} />
-                                                </DataTableCell>
-                                                <DataTableCell className="icon-cell">
-                                                    {deleteButton(user)}
-                                                </DataTableCell>
-                                            </DataTableRow>
+                                            <UserRow user={user} currentUser={this.props.user} delete={this.openDeleteDialog} getUsers={this.getUsers} snackbarQueue={this.props.snackbarQueue} key={index} />
                                         );
                                     })
                                 }
                             </DataTableBody>
                         </DataTableContent>
-                        <LinearProgress className={this.state.loading ? 'visible' : ''} />
                     </DataTable>
                 </div>
                 <Dialog open={this.state.deleteDialogOpen}>

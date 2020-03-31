@@ -47,6 +47,9 @@ $overlay-values: (
     .mdc-button {
         @include mdc-button-ink-color(map-get($variables, primary));
         @include mdc-states(map-get($variables, primary));
+        &:disabled {
+            color: map-get($variables, text-disabled);
+        }
         &.mdc-button--raised {
             @include mdc-button-container-fill-color(map-get($variables, primary));
             @include mdc-button-ink-color(map-get($variables, on-primary));
@@ -56,6 +59,7 @@ $overlay-values: (
             @include mdc-button-ink-color(map-get($variables, error));
             @include mdc-states(map-get($variables, error));
         }
+
     }
     
     .mdc-card {
@@ -90,6 +94,20 @@ $overlay-values: (
         @include mdc-states(map-get($variables, on-surface));
         &.mdc-checkbox--selected {
             @include mdc-states(map-get($variables, secondary));
+        }
+        .mdc-checkbox__native-control[disabled] ~ .mdc-checkbox__background {
+            border-color: rgba(map-get($variables, on-surface), 0.26);
+            background-color: transparent;
+            .mdc-checkbox__checkmark {
+                color: black;
+            }
+        }
+        .mdc-checkbox__native-control[disabled]:checked ~ .mdc-checkbox__background, .mdc-checkbox__native-control[disabled]:indeterminate ~ .mdc-checkbox__background {
+            border-color: transparent;
+            background-color: rgba(map-get($variables, on-surface), 0.26);
+            .mdc-checkbox__checkmark {
+                color: black;
+            }
         }
         .mdc-checkbox__checkmark {
             color: map-get($variables, on-secondary);
@@ -339,6 +357,10 @@ $overlay-values: (
             @include mdc-states(map-get($variables, if($dark, on-surface, on-primary)));
         }
     }
+    
+    .rmwc-circular-progress {
+        color: map-get($variables, primary);
+    }
 
     .rmwc-data-table {
         color: map-get($variables, text-primary);
@@ -351,6 +373,9 @@ $overlay-values: (
             .mdc-icon-button {
                 color: map-get($variables, text-secondary);
                 @include mdc-states(map-get($variables, on-surface));
+                &.disabled {
+                    color: map-get($variables, text-disabled);
+                }
             }
         }
         &__head-cell {
