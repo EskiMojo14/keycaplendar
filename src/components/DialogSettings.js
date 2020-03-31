@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from "./firebase";
+import { Link } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
 import { Typography } from '@rmwc/typography';
 import { List, ListItem, ListItemGraphic, ListItemMeta } from '@rmwc/list';
@@ -51,14 +52,14 @@ export class DialogSettings extends React.Component {
         const bottomNav = (this.props.changeBottomNav ? (
             <div className="group">
                 <Typography use="subtitle2" tag="h3">UI</Typography>
-                <Switch label="Bottom navigation" checked={this.state.bottomNav} onChange={ evt => this.changeBottomNav(evt.currentTarget.checked)}/>    
+                <Switch label="Bottom navigation" checked={this.state.bottomNav} onChange={evt => this.changeBottomNav(evt.currentTarget.checked)} />
             </div>
-        ) : '')
+        ) : '');
         const user = (this.props.user.name ? (
             <div className="group">
                 <Typography use="subtitle2" tag="h3">Account</Typography>
                 <div className="account">
-                    <div className="avatar" style={{backgroundImage: 'url(' + this.props.user.avatar + ')'}}></div>
+                    <div className="avatar" style={{ backgroundImage: 'url(' + this.props.user.avatar + ')' }}></div>
                     <div className="text">
                         <Typography use="subtitle1" className="primary">{this.props.user.name}</Typography>
                         <Typography use="body2" className="secondary">{this.props.user.email}</Typography>
@@ -66,6 +67,16 @@ export class DialogSettings extends React.Component {
                     <div className="button">
                         <Button raised label="Log out" onClick={this.signOut} />
                     </div>
+                </div>
+            </div>
+        ) : '');
+        const admin = (this.props.user.isAdmin ? (
+            <div className="group">
+                <Typography use="subtitle2" tag="h3">Admin</Typography>
+                <div className="button">
+                    <Link to="/users">
+                        <Button label="Manage users" />
+                    </Link>
                 </div>
             </div>
         ) : '')
@@ -110,6 +121,7 @@ export class DialogSettings extends React.Component {
                     </div>
                     {bottomNav}
                     {user}
+                    {admin}
                 </DialogContent>
                 <DialogActions>
                     <DialogButton action="close" onClick={this.props.close} isDefaultAction>Cancel</DialogButton>

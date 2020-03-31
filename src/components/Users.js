@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from "./firebase";
-import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarFixedAdjust } from '@rmwc/top-app-bar';
+import { Link } from 'react-router-dom';
+import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon, TopAppBarFixedAdjust } from '@rmwc/top-app-bar';
 import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHeadCell, DataTableBody } from '@rmwc/data-table';
 import { IconButton } from '@rmwc/icon-button';
 import { CircularProgress } from '@rmwc/circular-progress';
@@ -100,6 +101,9 @@ export class Users extends React.Component {
                 <TopAppBar>
                     <TopAppBarRow>
                         <TopAppBarSection>
+                            <Link to="/">
+                                <TopAppBarNavigationIcon icon="arrow_back" />
+                            </Link>
                             <TopAppBarTitle>Users</TopAppBarTitle>
                         </TopAppBarSection>
                     </TopAppBarRow>
