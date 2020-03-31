@@ -75,18 +75,18 @@
     .content-grid {
         flex-grow: 1;
         flex-shrink: 0;
-    }
+    } 
     &::before {
         content: "";
         position: absolute;
-        top: $mdc-top-app-bar-row-height;
+        top: 0;
         width: 100%;
         height: 0;
         transition: height 250ms $mdc-animation-standard-curve-timing-function;
         z-index: -1;
     }
     &.card::before {
-        height: 256px - $mdc-top-app-bar-row-height;
+        height: 256px;
     }
 }
 .bottomNav + .main.card::before {
@@ -110,12 +110,6 @@
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
     .modal-drawer-open.mdc-drawer-app-content, .content-container .main {
         max-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
-    }
-    .main::before {
-        top: $mdc-top-app-bar-mobile-row-height;
-    }
-    .main.card::before {
-        height: 256px - $mdc-top-app-bar-mobile-row-height;
     }
 };
 

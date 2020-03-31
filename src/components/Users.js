@@ -98,7 +98,7 @@ export class Users extends React.Component {
         const refreshButton = (this.state.loading ? (<CircularProgress />) : (<IconButton icon="refresh" onClick={this.getUsers}/>))
         return (
             <div>
-                <TopAppBar>
+                <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection>
                             <Link to="/">
