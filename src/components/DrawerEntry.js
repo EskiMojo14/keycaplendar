@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from "./firebase";
+import { ImageUpload } from './ImageUpload';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { TextField } from '@rmwc/textfield';
 import { Typography } from '@rmwc/typography';
@@ -16,7 +17,7 @@ export class DrawerCreate extends React.Component {
             designer: [],
             icDate: '',
             details: '',
-            image: '',
+            image: null,
             gbLaunch: '',
             gbEnd: '',
             vendors: []
@@ -32,10 +33,16 @@ export class DrawerCreate extends React.Component {
             designer: [],
             icDate: '',
             details: '',
-            image: '',
+            image: null,
             gbLaunch: '',
             gbEnd: '',
             vendors: []
+        });
+    }
+
+    setImage = (image) => {
+        this.setState({
+            image: image
         });
     }
 
@@ -61,14 +68,14 @@ export class DrawerCreate extends React.Component {
             vendors: vendors
         });
     };
-
+    
     addVendor = () => {
         let vendors = this.state.vendors;
         const emptyVendor = {
             name: '',
             region: '',
             storeLink: ''
-        } 
+        }
         vendors.push(emptyVendor);
         this.setState({
             vendors: vendors
@@ -77,7 +84,7 @@ export class DrawerCreate extends React.Component {
 
     removeVendor = (index) => {
         let vendors = this.state.vendors;
-        vendors.splice(index,1);
+        vendors.splice(index, 1);
         this.setState({
             vendors: vendors
         });
@@ -152,7 +159,7 @@ export class DrawerCreate extends React.Component {
                             )
                         }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                         <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
-                        <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: (this.state.image.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
+                        <ImageUpload image={this.state.image} setImage={this.setImage} desktop />
                         <TextField icon={{
                             icon: (
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -164,7 +171,7 @@ export class DrawerCreate extends React.Component {
                             )
                         }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                         {this.state.vendors.map((vendor, index) => {
-                            const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => {e.preventDefault(); this.moveVendor(index);}}/> : '');
+                            const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
                                 <Card key={index} outlined className="vendor-container">
                                     <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
@@ -173,25 +180,26 @@ export class DrawerCreate extends React.Component {
                                             icon: (
                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" /><path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" /></svg>
                                             )
-                                        }} required outlined label="Name" value={vendor.name} name={'name' + index } onChange={this.handleChangeVendor} />
+                                        }} required outlined label="Name" value={vendor.name} name={'name' + index} onChange={this.handleChangeVendor} />
                                         <TextField icon={{
                                             icon: (
                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z" opacity=".3" /><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" /></svg>
                                             )
-                                        }} required outlined label="Region" value={vendor.region} name={ 'region' + index } onChange={this.handleChangeVendor} />
-                                        <TextField icon="link" outlined label="Store link" pattern="https?://.+" value={vendor.storeLink} name={ 'storeLink' + index } onChange={this.handleChangeVendor} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
+                                        }} required outlined label="Region" value={vendor.region} name={'region' + index} onChange={this.handleChangeVendor} />
+                                        <TextField icon="link" outlined label="Store link" pattern="https?://.+" value={vendor.storeLink} name={'storeLink' + index} onChange={this.handleChangeVendor} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
                                     </div>
 
                                     <CardActions className="remove-button">
                                         <CardActionButtons>
-                                            <CardActionButton label="Remove" onClick={(e) => {e.preventDefault(); this.removeVendor(index);}}/>
+                                            <CardActionButton label="Remove" onClick={(e) => { e.preventDefault(); this.removeVendor(index); }} />
                                             {moveUp}
                                         </CardActionButtons>
                                     </CardActions>
                                 </Card>
-                            )})}
+                            )
+                        })}
                         <div className="add-button">
-                            <Button outlined label="Add vendor" onClick={(e) => {e.preventDefault(); this.addVendor();}} />
+                            <Button outlined label="Add vendor" onClick={(e) => { e.preventDefault(); this.addVendor(); }} />
                         </div>
                     </form>
                 </DrawerContent>
@@ -287,7 +295,7 @@ export class DrawerEdit extends React.Component {
             name: '',
             region: '',
             storeLink: ''
-        } 
+        }
         vendors.push(emptyVendor);
         this.setState({
             vendors: vendors
@@ -296,7 +304,7 @@ export class DrawerEdit extends React.Component {
 
     removeVendor = (index) => {
         let vendors = this.state.vendors;
-        vendors.splice(index,1);
+        vendors.splice(index, 1);
         this.setState({
             vendors: vendors
         });
@@ -334,15 +342,15 @@ export class DrawerEdit extends React.Component {
             gbEnd: this.state.gbEnd,
             vendors: this.state.vendors
         })
-        .then(function (docRef) {
-            console.log("Document updated with ID: ", docRef.id);
-            this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
-            this.props.getData();
-        })
-        .catch(function (error) {
-            console.error("Error editing document: ", error);
-            this.props.snackbarQueue.notify({ title: "Error editing document: " + error });
-        });
+            .then(function (docRef) {
+                console.log("Document updated with ID: ", docRef.id);
+                this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
+                this.props.getData();
+            })
+            .catch(function (error) {
+                console.error("Error editing document: ", error);
+                this.props.snackbarQueue.notify({ title: "Error editing document: " + error });
+            });
         this.closeDrawer();
     };
 
@@ -381,7 +389,7 @@ export class DrawerEdit extends React.Component {
                             )
                         }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                         {this.state.vendors.map((vendor, index) => {
-                            const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => {e.preventDefault(); this.moveVendor(index);}}/> : '');
+                            const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
                                 <Card key={index} outlined className="vendor-container">
                                     <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
@@ -390,25 +398,26 @@ export class DrawerEdit extends React.Component {
                                             icon: (
                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" /><path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" /></svg>
                                             )
-                                        }} required outlined label="Name" value={vendor.name} name={'name' + index } onChange={this.handleChangeVendor} />
+                                        }} required outlined label="Name" value={vendor.name} name={'name' + index} onChange={this.handleChangeVendor} />
                                         <TextField icon={{
                                             icon: (
                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z" opacity=".3" /><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" /></svg>
                                             )
-                                        }} required outlined label="Region" value={vendor.region} name={ 'region' + index } onChange={this.handleChangeVendor} />
-                                        <TextField icon="link" outlined label="Store link" pattern="https?://.+" value={vendor.storeLink} name={ 'storeLink' + index } onChange={this.handleChangeVendor} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
+                                        }} required outlined label="Region" value={vendor.region} name={'region' + index} onChange={this.handleChangeVendor} />
+                                        <TextField icon="link" outlined label="Store link" pattern="https?://.+" value={vendor.storeLink} name={'storeLink' + index} onChange={this.handleChangeVendor} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
                                     </div>
 
                                     <CardActions className="remove-button">
                                         <CardActionButtons>
-                                            <CardActionButton label="Remove" onClick={(e) => {e.preventDefault(); this.removeVendor(index);}}/>
+                                            <CardActionButton label="Remove" onClick={(e) => { e.preventDefault(); this.removeVendor(index); }} />
                                             {moveUp}
                                         </CardActionButtons>
                                     </CardActions>
                                 </Card>
-                            )})}
+                            )
+                        })}
                         <div className="add-button">
-                            <Button outlined label="Add vendor" onClick={(e) => {e.preventDefault(); this.addVendor();}} />
+                            <Button outlined label="Add vendor" onClick={(e) => { e.preventDefault(); this.addVendor(); }} />
                         </div>
                     </form>
                 </DrawerContent>

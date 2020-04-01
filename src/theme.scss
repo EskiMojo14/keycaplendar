@@ -146,14 +146,8 @@ $overlay-values: (
         }
         .mdc-card {
             @include mdc-card-fill-color(transparent);
-            .vendor-title, .image-title {
+            .vendor-title {
                 color: map-get($variables, text-secondary);
-            }
-            .image-display {
-                fill: map-get($variables, text-secondary);
-                &-caption {
-                    color: map-get($variables, text-secondary);
-                }
             }
         }
         &__content {
@@ -461,6 +455,23 @@ $overlay-values: (
         .mdc-card {
             @include mdc-card-fill-color(transparent);
             .vendor-title, .image-title {
+                color: map-get($variables, text-secondary);
+            }
+        }
+    }
+    .image-upload {
+        &-title {
+            color: map-get($variables, text-secondary);
+        }
+        .image-display {
+            fill: map-get($variables, text-secondary);
+            &::before {
+                background-color: map-get($variables, on-surface);
+            }
+            &.over {
+                border-color: map-get($variables, primary);
+            }
+            .caption {
                 color: map-get($variables, text-secondary);
             }
         }

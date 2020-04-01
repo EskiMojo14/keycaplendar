@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from "./firebase";
 import './DialogEntry.scss';
+import { ImageUpload } from './ImageUpload';
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from '@rmwc/top-app-bar';
 import { Typography } from '@rmwc/typography';
 import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
@@ -20,7 +21,7 @@ export class DialogCreate extends React.Component {
             designer: [],
             icDate: '',
             details: '',
-            image: '',
+            image: null,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -58,7 +59,7 @@ export class DialogCreate extends React.Component {
             designer: [],
             icDate: '',
             details: '',
-            image: '',
+            image: null,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -68,6 +69,12 @@ export class DialogCreate extends React.Component {
             this.props.close();
             this.setState({ open: false, closing: false });
         }, 400);
+    }
+
+    setImage = (image) => {
+        this.setState({
+            image: image
+        });
     }
 
     handleChange = e => {
@@ -149,12 +156,12 @@ export class DialogCreate extends React.Component {
         })
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
-                this.props.snackbarQueue.notify({ title: "Entry written successfully."});
+                this.props.snackbarQueue.notify({ title: "Entry written successfully." });
                 this.props.getData();
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);
-                this.props.snackbarQueue.notify({ title: "Error adding entry: ", error});
+                this.props.snackbarQueue.notify({ title: "Error adding entry: ", error });
             });
         this.closeDialog();
     };
@@ -190,7 +197,7 @@ export class DialogCreate extends React.Component {
                                 )
                             }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                             <TextField icon="link" outlined label="Details" required pattern="https?://.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
-                            <TextField icon="link" outlined label="Image" required pattern="https?://.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: (this.state.image.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
+                            <ImageUpload image={this.state.image} setImage={this.setImage} />
                             <TextField icon={{
                                 icon: (
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -402,15 +409,15 @@ export class DialogEdit extends React.Component {
             vendors: this.state.vendors,
             storeLink: this.state.storeLink
         })
-        .then((docRef) => {
-            console.log("Document updated with ID: ", docRef.id);
-            this.props.snackbarQueue.notify({ title: "Entry edited successfully."})
-            this.props.getData();
-        })
-        .catch((error) => {
-            console.error("Error editing document: ", error);
-            this.props.snackbarQueue.notify({ title: "Error editing document: " + error})
-        });
+            .then((docRef) => {
+                console.log("Document updated with ID: ", docRef.id);
+                this.props.snackbarQueue.notify({ title: "Entry edited successfully." })
+                this.props.getData();
+            })
+            .catch((error) => {
+                console.error("Error editing document: ", error);
+                this.props.snackbarQueue.notify({ title: "Error editing document: " + error })
+            });
         this.closeDialog();
     };
 
