@@ -148,7 +148,7 @@ export class DrawerCreate extends React.Component {
                             <div>
                                 <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
                             </div>
-                            <div>
+                            <div className="field-container">
                                 <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                             </div>
                         </div>
@@ -366,7 +366,7 @@ export class DrawerEdit extends React.Component {
                             <div>
                                 <TextField className="select" outlined required label="Profile" value={this.state.profile} name='profile' helpText={{ persistent: false, validationMsg: true, children: 'Enter a profile' }} onChange={this.handleChange} />
                             </div>
-                            <div>
+                            <div className="field-container">
                                 <TextField className="field" outlined required label="Colorway" value={this.state.colorway} name='colorway' helpText={{ persistent: false, validationMsg: true, children: 'Enter a name' }} onChange={this.handleChange} />
                             </div>
                         </div>
