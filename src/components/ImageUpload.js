@@ -100,16 +100,16 @@ export class ImageUpload extends React.Component {
 
     componentDidMount() {
         let dropArea = document.getElementById('drop-area')
-        dropArea.addEventListener('dragenter', (e) => {if (!this.state.imageFromURL && this.state.desktop) {this.dragEnter(e)}}, false);
-        dropArea.addEventListener('dragleave', (e) => {if (!this.state.imageFromURL && this.state.desktop) {this.dragLeave(e)}}, false);
-        dropArea.addEventListener('dragover', (e) => {if (!this.state.imageFromURL && this.state.desktop) {this.dragOver(e)}}, false);
-        dropArea.addEventListener('drop', (e) => {if (!this.state.imageFromURL && this.state.desktop) {this.onDrop(e)}}, false);
+        dropArea.addEventListener('dragenter', (e) => {if (!this.state.imageFromURL) {this.dragEnter(e)}}, false);
+        dropArea.addEventListener('dragleave', (e) => {if (!this.state.imageFromURL) {this.dragLeave(e)}}, false);
+        dropArea.addEventListener('dragover', (e) => {if (!this.state.imageFromURL) {this.dragOver(e)}}, false);
+        dropArea.addEventListener('drop', (e) => {if (!this.state.imageFromURL) {this.onDrop(e)}}, false);
     }
     render() {
         const imageTextField = (this.state.imageFromURL ? (
             <TextField icon="link" outlined label="Image link" pattern="https?://.+" name="imageLink" value={this.state.imageLink} onChange={this.handleChange} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
         ) : '')
-        const dragLabel = (this.state.hasImage ? (
+        const areaInner = (this.state.hasImage ? (
             <img className="image-display-image" src={this.state.imageBase64} alt="Render" />
         ) : (this.state.loading ? '' : (this.props.desktop && !this.state.imageFromURL ? (
             <div className="drag-label">
@@ -147,9 +147,9 @@ export class ImageUpload extends React.Component {
             <Card outlined className="image-upload">
                 <Typography use="caption" tag="h3" className="image-upload-title">Image*</Typography>
                 <div className="image-upload-form">
-                    {loadingIndicator}
                     <div id="drop-area" className={"image-display" + (this.state.dragOver ? ' over' : '') + (this.state.hasImage ? ' image' : '')}>
-                        {dragLabel}
+                        {loadingIndicator}
+                        {areaInner}
                     </div>
                     {imageTextField}
                 </div>
