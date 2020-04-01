@@ -47,6 +47,7 @@
             user-select: none;
             overflow: hidden;
             transition: border-color 150ms $mdc-animation-standard-curve-timing-function;
+            margin: 1px 0;
             &-image {
                 position: absolute;
                 top: 0;
@@ -84,6 +85,7 @@
             }
             &.over {
                 border-width: 2px;
+                margin: 0;
                 &::before {
                     opacity: 0.04;
                 }
