@@ -146,8 +146,14 @@ $overlay-values: (
         }
         .mdc-card {
             @include mdc-card-fill-color(transparent);
-            .vendor-title {
+            .vendor-title, .image-title {
                 color: map-get($variables, text-secondary);
+            }
+            .image-display {
+                fill: map-get($variables, text-secondary);
+                &-caption {
+                    color: map-get($variables, text-secondary);
+                }
             }
         }
         &__content {
@@ -228,8 +234,8 @@ $overlay-values: (
         @include mdc-snackbar-fill-color(mix(map-get($variables, on-surface), map-get($variables, surface), 80%));
         @include mdc-snackbar-label-ink-color(map-get($variables, surface));
         &__action:not(:disabled) {
-            color: map-get($variables, secondary);
-            @include mdc-states(map-get($variables, secondary));
+            color: if($dark,darken(map-get($variables, primary),25%),map-get($variables, primary));
+            @include mdc-states(if($dark,darken(map-get($variables, primary),25%),map-get($variables, primary)));
         }
     }
 
@@ -451,7 +457,7 @@ $overlay-values: (
         }
         .mdc-card {
             @include mdc-card-fill-color(transparent);
-            .vendor-title {
+            .vendor-title, .image-title {
                 color: map-get($variables, text-secondary);
             }
         }
