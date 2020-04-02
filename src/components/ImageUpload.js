@@ -11,7 +11,7 @@ export class ImageUpload extends React.Component {
         this.state = {
             imageBase64: '',
             imageLink: '',
-            imageFromURL: false,
+            imageFromURL: true,
             dragOver: false,
             loading: false,
             hasImage: false
