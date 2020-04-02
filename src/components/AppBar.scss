@@ -27,17 +27,12 @@
     .mdc-linear-progress {
         position: absolute;
         bottom: 0;
-        max-height: 4px;
-        transition: max-height 150ms $mdc-animation-standard-curve-timing-function;
         z-index: 4;
         .mdc-linear-progress__buffering-dots {
             display: none;
         }
         .mdc-linear-progress__buffer {
             background-color: var(--divider-color);
-        }
-        &.hidden {
-            max-height: 0;
         }
     }
     .mdc-icon-button {

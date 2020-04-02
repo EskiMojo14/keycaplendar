@@ -78,7 +78,7 @@ export class DesktopAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                         </TopAppBarSection>
                     </TopAppBarRow>
-                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
+                    <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -168,7 +168,7 @@ export class TabletAppBar extends React.Component {
                             </div>
                         </TopAppBarSection>
                     </TopAppBarRow>
-                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
+                    <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -278,7 +278,7 @@ export class MobileAppBar extends React.Component {
                             </div>
                         </TopAppBarSection>
                     </TopAppBarRow>
-                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
+                    <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -386,7 +386,7 @@ export class BottomAppBar extends React.Component {
                             </div>
                         </TopAppBarSection>
                     </TopAppBarRow>
-                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
+                    <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div>
@@ -469,7 +469,7 @@ export class BottomAppBarIndent extends React.Component {
                             </MenuSurfaceAnchor>
                         </TopAppBarSection>
                     </TopAppBarRow>
-                    <LinearProgress className={(this.props.loading ? '' : 'hidden')} />
+                    <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
                 <TopAppBarFixedAdjust />
             </div >
