@@ -116,7 +116,10 @@ export class ImageUpload extends React.Component {
     }
 
     fromFile = () => {
-        this.setState({ imageFromURL: false });
+        this.setState({ 
+            imageFromURL: false,
+            imageLink: '' 
+        });
     }
 
     componentDidMount() {
