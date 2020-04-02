@@ -50,7 +50,25 @@ export class ImageUpload extends React.Component {
         this.setState({
             [e.target.name]: e.target.value
         });
+        const regex = RegExp('https?://.+.(?:jpg|jpeg|png)');
+        if (regex.test(e.target.value)) {
+            this.getImageFromURL(e.target.value);
+        }
     };
+
+    getImageFromURL = (url) => {
+        this.setState({ loading: true });
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.responseType = 'blob';
+
+        xhr.onload = () => {
+            this.props.setImage(xhr.response);
+        };
+
+        xhr.send();
+    }
 
     dragEnter = (e) => {
         e.preventDefault();
@@ -110,7 +128,7 @@ export class ImageUpload extends React.Component {
     }
     render() {
         const imageTextField = (this.state.imageFromURL ? (
-            <TextField icon="link" outlined label="Image link" pattern="https?://.+" name="imageLink" value={this.state.imageLink} onChange={this.handleChange} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
+            <TextField icon="link" outlined label="Image link" pattern="https?://.+\.(?:jpg|jpeg|png)" name="imageLink" value={this.state.imageLink} onChange={this.handleChange} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
         ) : '')
         const areaInner = (this.state.hasImage ? (
             <img className="image-display-image" src={this.state.imageBase64} alt="Render" />
