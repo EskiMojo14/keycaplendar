@@ -92,6 +92,7 @@
             }
             &.image {
                 border-width: 0;
+                margin: 0;
                 &.over::before {
                     opacity: 0.25;
                 }

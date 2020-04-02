@@ -70,12 +70,15 @@ export class ImageUpload extends React.Component {
     }
 
     onDrop = (e) => {
-        if (!this.state.imageFromURL) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.setState({ loading: true });
-            let dt = e.dataTransfer;
-            let file = dt.files[0];
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({ loading: true });
+        let dt = e.dataTransfer;
+        let file = dt.files[0];
+        if (file.type.indexOf('image') === -1) {
+            this.props.snackbarQueue.notify({ 'title': 'Error: file is not an image.' });
+            this.setState({ dragOver: false, loading: false });
+        } else {
             this.props.setImage(file);
             this.setState({ dragOver: false });
         }
@@ -100,10 +103,10 @@ export class ImageUpload extends React.Component {
 
     componentDidMount() {
         let dropArea = document.getElementById('drop-area')
-        dropArea.addEventListener('dragenter', (e) => {if (!this.state.imageFromURL) {this.dragEnter(e)}}, false);
-        dropArea.addEventListener('dragleave', (e) => {if (!this.state.imageFromURL) {this.dragLeave(e)}}, false);
-        dropArea.addEventListener('dragover', (e) => {if (!this.state.imageFromURL) {this.dragOver(e)}}, false);
-        dropArea.addEventListener('drop', (e) => {if (!this.state.imageFromURL) {this.onDrop(e)}}, false);
+        dropArea.addEventListener('dragenter', (e) => { if (!this.state.imageFromURL) { this.dragEnter(e) } }, false);
+        dropArea.addEventListener('dragleave', (e) => { if (!this.state.imageFromURL) { this.dragLeave(e) } }, false);
+        dropArea.addEventListener('dragover', (e) => { if (!this.state.imageFromURL) { this.dragOver(e) } }, false);
+        dropArea.addEventListener('drop', (e) => { if (!this.state.imageFromURL) { this.onDrop(e) } }, false);
     }
     render() {
         const imageTextField = (this.state.imageFromURL ? (
