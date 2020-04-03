@@ -114,16 +114,5 @@
             display: flex;
             justify-content: stretch;
         }
-        &-icon {
-            width: 48px;
-            height: 100%;
-            flex-grow: 0;
-            flex-shrink: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-right: var(--divider-color) 1px solid;
-            user-select: none;
-        }
     }
 }

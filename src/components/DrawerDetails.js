@@ -1,7 +1,6 @@
 import React from 'react';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { IconButton } from '@rmwc/icon-button';
-import { Icon } from '@rmwc/icon';
 import { Chip, ChipSet } from '@rmwc/chip';
 import { Tooltip } from '@rmwc/tooltip';
 import { Button } from '@rmwc/button';
@@ -159,12 +158,11 @@ export class DesktopDrawerDetails extends React.Component {
                 </DrawerContent>
                 {editorButtons}
                 <div className="search-chips-container">
-                    <div className="search-chips-icon"><Icon icon="search" /></div>
                     <div className="search-chips">
                         <ChipSet id="chip-set" choice>
                             {chips.map((value) => {
                                 return (
-                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
+                                    <Chip icon="search" label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
                                 )
                             })}
                         </ChipSet>
@@ -327,12 +325,11 @@ export class TabletDrawerDetails extends React.Component {
                 </DrawerContent>
                 {editorButtons}
                 <div className="search-chips-container">
-                    <div className="search-chips-icon"><Icon icon="search" /></div>
                     <div className="search-chips">
                         <ChipSet choice>
                             {chips.map((value) => {
                                 return (
-                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => { this.props.setSearch(value); this.props.close(); }} />
+                                    <Chip icon="search" label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => { this.props.setSearch(value); this.props.close(); }} />
                                 )
                             })}
                         </ChipSet>
