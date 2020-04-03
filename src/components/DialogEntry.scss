@@ -68,7 +68,7 @@ $exit-time: 400ms;
     .mdc-top-app-bar {
         flex-shrink: 0;
         flex-grow: 0;
-        position: static;
+        position: relative;
         @include mdc-elevation(4);
     }
     &-content {

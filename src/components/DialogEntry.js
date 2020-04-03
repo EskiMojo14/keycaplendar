@@ -4,6 +4,7 @@ import './DialogEntry.scss';
 import { ImageUpload } from './ImageUpload';
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from '@rmwc/top-app-bar';
 import { Typography } from '@rmwc/typography';
+import { LinearProgress } from '@rmwc/linear-progress';
 import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
 import { Button } from '@rmwc/button';
 import { TextField } from '@rmwc/textfield';
@@ -25,7 +26,9 @@ export class DialogCreate extends React.Component {
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
-            storeLink: ''
+            loading: false,
+            imageUploadProgress: 0,
+            imageURL: ''
         };
         this.openDialog = this.openDialog.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
@@ -63,7 +66,9 @@ export class DialogCreate extends React.Component {
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
-            storeLink: ''
+            loading: false,
+            imageUploadProgress: 0,
+            imageURL: ''
         });
         setTimeout(() => {
             this.props.close();
@@ -72,9 +77,29 @@ export class DialogCreate extends React.Component {
     }
 
     setImage = (image) => {
-        this.setState({
-            image: image
-        });
+        //resize image to 480px height
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = event => {
+            const img = new Image();
+            img.src = reader.result;
+            img.onload = () => {
+                const elem = document.createElement('canvas');
+                const width = img.width * (480 / img.height);
+                const height = 480;
+                elem.width = width;
+                elem.height = height;
+                const ctx = elem.getContext('2d');
+                // img.width and img.height will contain the original dimensions
+                ctx.drawImage(img, 0, 0, width, height);
+                ctx.canvas.toBlob((blob) => {
+                    this.setState({
+                        image: blob
+                    });
+                }, 'image/png');
+                reader.onerror = error => this.props.snackbarQueue.notify({ title: 'Failed to set image:' + error });
+            };
+        }
     }
 
     handleChange = e => {
@@ -139,6 +164,44 @@ export class DialogCreate extends React.Component {
         });
     };
 
+    uploadImage = e => {
+        e.preventDefault();
+        this.setState({ loading: true });
+        const storageRef = firebase.storage().ref();
+        const keysetsRef = storageRef.child('keysets');
+        const fileName = this.state.profile.toLowerCase() + this.state.colorway.replace(/\W+(.)/g, function (match, chr) {
+            return chr.toUpperCase();
+        });
+        const imageRef = keysetsRef.child(fileName + '.png');
+        const uploadTask = imageRef.put(this.state.image);
+        uploadTask.on('state_changed', (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.setState({ imageUploadProgress: progress });
+        }, (error) => {
+            // Handle unsuccessful uploads
+            this.props.snackbarQueue.notify({ title: 'Failed to upload image: ' + error });
+            this.setState({ loading: false });
+        }, () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            this.props.snackbarQueue.notify({ title: 'Successfully uploaded image.' });
+            imageRef.getDownloadURL().then((downloadURL) => {
+                this.setState({
+                    imageURL: downloadURL,
+                    loading: false
+                });
+                this.createEntry();
+            }).catch((error) => {
+                this.props.snackbarQueue.notify({ title: 'Failed to get URL: ' + error });
+                this.setState({
+                    loading: false
+                });
+            });
+        });
+    }
+
     createEntry = e => {
         e.preventDefault();
         const db = firebase.firestore();
@@ -157,15 +220,16 @@ export class DialogCreate extends React.Component {
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
                 this.props.snackbarQueue.notify({ title: "Entry written successfully." });
+                this.closeDialog();
                 this.props.getData();
             })
             .catch((error) => {
                 console.error("Error adding document: ", error);
                 this.props.snackbarQueue.notify({ title: "Error adding entry: ", error });
             });
-        this.closeDialog();
     };
     render() {
+        const formFilled = (this.state.profile !== '' && this.state.colorway !== '' && this.state.designer !== [] && this.state.icDate !== '' && this.state.details !== '' && this.state.image);
         return (
             <div className="full-screen-dialog-container">
                 <div className={"full-screen-dialog create-dialog " + (this.state.open ? 'full-screen-dialog--open ' : '') + (this.state.opening ? 'full-screen-dialog--opening ' : '') + (this.state.closing ? 'full-screen-dialog--closing ' : '') + (this.state.animate ? 'full-screen-dialog--animate' : '')}>
@@ -176,9 +240,10 @@ export class DialogCreate extends React.Component {
                                 <TopAppBarTitle>Create Entry</TopAppBarTitle>
                             </TopAppBarSection>
                             <TopAppBarSection alignEnd>
-                                <Button label="Save" onClick={this.createEntry} />
+                                <Button label="Save" onClick={(e) => { if (formFilled) { this.uploadImage(e) } }} disabled={!formFilled} />
                             </TopAppBarSection>
                         </TopAppBarRow>
+                        <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
                     </TopAppBar>
                     <div className="full-screen-dialog-content">
                         <form className="form">
@@ -197,7 +262,7 @@ export class DialogCreate extends React.Component {
                                 )
                             }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                             <TextField icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
-                            <ImageUpload image={this.state.image} setImage={this.setImage} />
+                            <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
                             <TextField icon={{
                                 icon: (
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
@@ -266,7 +331,10 @@ export class DialogEdit extends React.Component {
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
-            storeLink: ''
+            loading: false,
+            imageUploadProgress: 0,
+            imageURL: '',
+            newImage: false
         };
         this.openDialog = this.openDialog.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
@@ -296,7 +364,6 @@ export class DialogEdit extends React.Component {
     closeDialog() {
         this.setState({
             closing: true,
-            newProfile: false,
             id: '',
             profile: '',
             colorway: '',
@@ -306,17 +373,20 @@ export class DialogEdit extends React.Component {
             image: '',
             gbLaunch: '',
             gbEnd: '',
-            vendor: '',
-            storeLink: ''
+            vendors: [],
+            loading: false,
+            imageUploadProgress: 0,
+            imageURL: '',
+            newImage: false
         });
         setTimeout(() => {
             this.props.close();
             this.setState({ open: false, closing: false });
         }, 400);
     }
+
     setValues() {
         this.setState({
-            newProfile: false,
             id: this.props.set.id,
             profile: this.props.set.profile,
             colorway: this.props.set.colorway,
@@ -324,11 +394,39 @@ export class DialogEdit extends React.Component {
             icDate: this.props.set.icDate,
             details: this.props.set.details,
             image: this.props.set.image,
+            imageURL: this.props.set.image,
             gbLaunch: this.props.set.gbLaunch,
             gbEnd: this.props.set.gbEnd,
             vendors: this.props.set.vendors,
             storeLink: this.props.set.storeLink
         });
+    }
+
+    setImage = (image) => {
+        //resize image to 480px height
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = event => {
+            const img = new Image();
+            img.src = reader.result;
+            img.onload = () => {
+                const elem = document.createElement('canvas');
+                const width = img.width * (480 / img.height);
+                const height = 480;
+                elem.width = width;
+                elem.height = height;
+                const ctx = elem.getContext('2d');
+                // img.width and img.height will contain the original dimensions
+                ctx.drawImage(img, 0, 0, width, height);
+                ctx.canvas.toBlob((blob) => {
+                    this.setState({
+                        image: blob,
+                        newImage: true
+                    });
+                }, 'image/png');
+                reader.onerror = error => this.props.snackbarQueue.notify({ title: 'Failed to set image: ' + error });;
+            };
+        }
     }
 
     handleChange = e => {
@@ -393,8 +491,44 @@ export class DialogEdit extends React.Component {
         });
     };
 
-    editEntry = e => {
-        e.preventDefault();
+    uploadImage = () => {
+        this.setState({ loading: true });
+        const storageRef = firebase.storage().ref();
+        const keysetsRef = storageRef.child('keysets');
+        const fileName = this.state.profile.toLowerCase() + this.state.colorway.replace(/\W+(.)/g, function (match, chr) {
+            return chr.toUpperCase();
+        });
+        const imageRef = keysetsRef.child(fileName + '.png');
+        const uploadTask = imageRef.put(this.state.image);
+        uploadTask.on('state_changed', (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.setState({ imageUploadProgress: progress });
+        }, (error) => {
+            // Handle unsuccessful uploads
+            this.props.snackbarQueue.notify({ title: 'Failed to upload image: ' + error });
+            this.setState({ loading: false });
+        }, () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            this.props.snackbarQueue.notify({ title: 'Successfully uploaded image.' });
+            imageRef.getDownloadURL().then((downloadURL) => {
+                this.setState({
+                    imageURL: downloadURL,
+                    loading: false
+                });
+                this.editEntry();
+            }).catch((error) => {
+                this.props.snackbarQueue.notify({ title: 'Failed to get URL: ' + error });
+                this.setState({
+                    loading: false
+                });
+            });
+        });
+    }
+
+    editEntry = () => {
         const db = firebase.firestore();
         db.collection('keysets').doc(this.state.id).update({
             profile: this.state.profile,
@@ -402,26 +536,23 @@ export class DialogEdit extends React.Component {
             designer: this.state.designer,
             icDate: this.state.icDate,
             details: this.state.details,
-            image: this.state.image,
+            image: this.state.imageURL,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
-            vendor: firebase.firestore.FieldValue.delete(),
-            vendors: this.state.vendors,
-            storeLink: this.state.storeLink
+            vendors: this.state.vendors
         })
             .then((docRef) => {
-                console.log("Document updated with ID: ", docRef.id);
                 this.props.snackbarQueue.notify({ title: "Entry edited successfully." })
+                this.closeDialog();
                 this.props.getData();
             })
             .catch((error) => {
-                console.error("Error editing document: ", error);
                 this.props.snackbarQueue.notify({ title: "Error editing document: " + error })
             });
-        this.closeDialog();
     };
 
     render() {
+        const formFilled = (this.state.profile !== '' && this.state.colorway !== '' && this.state.designer !== [] && this.state.icDate !== '' && this.state.details !== '' && this.state.image);
         return (
             <div className="full-screen-dialog-container">
                 <div className={"full-screen-dialog edit-dialog " + (this.state.open ? 'full-screen-dialog--open ' : '') + (this.state.opening ? 'full-screen-dialog--opening ' : '') + (this.state.closing ? 'full-screen-dialog--closing ' : '') + (this.state.animate ? 'full-screen-dialog--animate' : '')}>
@@ -432,9 +563,11 @@ export class DialogEdit extends React.Component {
                                 <TopAppBarTitle>Edit Entry</TopAppBarTitle>
                             </TopAppBarSection>
                             <TopAppBarSection alignEnd>
-                                <Button label="Save" onClick={this.editEntry} />
+                                <Button label="Save" onClick={(e) => { if (formFilled) { if (this.state.newImage) { e.preventDefault(); this.uploadImage();} else { e.preventDefault(); this.editEntry(); } } }} disabled={!formFilled} />
                             </TopAppBarSection>
                         </TopAppBarRow>
+                        
+                        <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
                     </TopAppBar>
                     <div className="full-screen-dialog-content">
                         <div className="form-container">
@@ -454,7 +587,7 @@ export class DialogEdit extends React.Component {
                                     )
                                 }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                                 <TextField icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
-                                <TextField icon="link" outlined label="Image" required pattern="https?:\/\/.+" value={this.state.image} name='image' helpText={{ persistent: false, validationMsg: true, children: (this.state.image.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
+                                <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
                                 <TextField icon={{
                                     icon: (
                                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>

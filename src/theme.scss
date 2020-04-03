@@ -358,6 +358,9 @@ $overlay-values: (
         .mdc-button {
             color: map-get($variables, if($dark, text-primary, on-primary));
             @include mdc-states(map-get($variables, if($dark, on-surface, on-primary)));
+            &[disabled] {
+                color: rgba(map-get($variables, if($dark, text-primary, on-primary)),0.38);
+            }
         }
     }
     

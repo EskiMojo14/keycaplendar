@@ -84,6 +84,13 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        position: relative;
+        .mdc-linear-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
         .mdc-button {
             margin-left: 16px;
         }

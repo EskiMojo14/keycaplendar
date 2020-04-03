@@ -20,7 +20,14 @@ export class ImageUpload extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.image !== prevProps.image) {
             if (this.props.image) {
-                this.previewImage(this.props.image);
+                if (typeof this.props.image === 'string' || this.props.image instanceof String) {
+                    this.setState({
+                        imageBase64: this.props.image,
+                        hasImage: true
+                    });
+                } else {
+                    this.previewImage(this.props.image);
+                }
             } else {
                 this.setState({
                     imageBase64: '',
