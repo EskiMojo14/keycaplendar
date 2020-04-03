@@ -85,11 +85,22 @@ export class DesktopDrawerDetails extends React.Component {
         }
         const gbLine = (gb ? <Typography use="body2" tag="p">{gb}</Typography> : '');
         if (set.vendors) {
+            const sortedVendors = set.vendors.sort((a, b) => {
+                var regionA = a.region.toLowerCase();
+                var regionB = b.region.toLowerCase();
+                if (regionA < regionB) {
+                    return -1;
+                }
+                if (regionA > regionB) {
+                    return 1;
+                }
+                return 0;
+            })
             vendorList = (
                 <div className="details-list">
                     <Typography className="subheader" use="caption" tag="h4">Vendors</Typography>
                     <List twoLine>
-                        {set.vendors.map((vendor, index) => {
+                        {sortedVendors.map((vendor, index) => {
                             if (vendor.storeLink !== '') {
                                 return (
                                     <ListItem key={index} tag='a' href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
@@ -113,36 +124,6 @@ export class DesktopDrawerDetails extends React.Component {
                         })}
                     </List>
                 </div>)
-        } else {
-            if (set.storeLink) {
-                vendorList = (
-                    <div className="details-list">
-                        <Typography className="subheader" use="caption" tag="h4">Vendors</Typography>
-                        <List>
-                            <ListItem tag='a' href={set.storeLink} target="_blank" rel="noopener noreferrer">
-                                <ListItemText>
-                                    <ListItemPrimaryText>{(set.vendor ? set.vendor : '')}</ListItemPrimaryText>
-                                </ListItemText>
-                                <ListItemMeta icon="launch" />
-                            </ListItem>
-                        </List>
-                    </div>
-                );
-
-            } else {
-                vendorList = (
-                    <div className="details-list">
-                        <Typography className="subheader" use="caption" tag="h4">Vendors</Typography>
-                        <List>
-                            <ListItem disabled>
-                                <ListItemText>
-                                    <ListItemPrimaryText>{(set.vendor ? set.vendor : '')}</ListItemPrimaryText>
-                                </ListItemText>
-                            </ListItem>
-                        </List>
-                    </div>
-                )
-            }
         }
         const editorButtons = (this.props.editor ? (
             <div className="editor-buttons">
@@ -351,7 +332,7 @@ export class TabletDrawerDetails extends React.Component {
                         <ChipSet choice>
                             {chips.map((value) => {
                                 return (
-                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => {this.props.setSearch(value); this.props.close();}} />
+                                    <Chip label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => { this.props.setSearch(value); this.props.close(); }} />
                                 )
                             })}
                         </ChipSet>
