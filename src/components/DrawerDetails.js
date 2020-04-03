@@ -44,6 +44,17 @@ export class DesktopDrawerDetails extends React.Component {
         let ic;
         let gb;
         let vendorList;
+        const sortedVendors = (set.vendors ? set.vendors.sort((a, b) => {
+            var regionA = a.region.toLowerCase();
+            var regionB = b.region.toLowerCase();
+            if (regionA < regionB) {
+                return -1;
+            }
+            if (regionA > regionB) {
+                return 1;
+            }
+            return 0;
+        }) : '');
         let chips = [];
         const chipsContent = ['profile', 'colorway', 'designer', 'vendors'];
         if (set.icDate) {
@@ -71,7 +82,7 @@ export class DesktopDrawerDetails extends React.Component {
             }
             chipsContent.forEach(prop => {
                 if (prop === 'vendors') {
-                    set.vendors.forEach((vendor) => {
+                    sortedVendors.forEach((vendor) => {
                         chips.push(vendor.name);
                     })
                 } else {
@@ -85,17 +96,6 @@ export class DesktopDrawerDetails extends React.Component {
         }
         const gbLine = (gb ? <Typography use="body2" tag="p">{gb}</Typography> : '');
         if (set.vendors) {
-            const sortedVendors = set.vendors.sort((a, b) => {
-                var regionA = a.region.toLowerCase();
-                var regionB = b.region.toLowerCase();
-                if (regionA < regionB) {
-                    return -1;
-                }
-                if (regionA > regionB) {
-                    return 1;
-                }
-                return 0;
-            })
             vendorList = (
                 <div className="details-list">
                     <Typography className="subheader" use="caption" tag="h4">Vendors</Typography>
