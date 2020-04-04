@@ -236,6 +236,7 @@ $overlay-values: (
     }
 
     .mdc-switch {
+        @include mdc-switch-toggled-off-track-color(map-get($variables, on-surface));
         @include mdc-switch-toggled-off-thumb-color(if($dark,#BDBDBD,#FAFAFA));
         @include mdc-switch-toggled-on-color(map-get($variables, secondary));
     }
