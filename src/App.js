@@ -16,7 +16,7 @@ const queue = createSnackbarQueue();
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { device: 'desktop', theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
+    this.state = { device: 'desktop', theme: 'light', bottomNav: false, page: 'calendar', view: 'list', transition: false, sort: 'date', allVendors: [], allRegions: [], vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -110,7 +110,9 @@ class App extends React.Component {
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
     let pageSets = [];
+    let allRegions = [];
     let allVendors = [];
+    let usVendors = [];
     let allProfiles = [];
     let groups = [];
 
@@ -158,11 +160,28 @@ class App extends React.Component {
     // vendor list
     sets.forEach((set) => {
       if (set.vendors[0]) {
-        if (!allVendors.includes(set.vendors[0].name)) {
-          allVendors.push(set.vendors[0].name);
+        if (!usVendors.includes(set.vendors[0].name)) {
+          usVendors.push(set.vendors[0].name);
         }
+        set.vendors.forEach((vendor) => {
+          if (!allVendors.includes(vendor.name)) {
+            allVendors.push(vendor.name);
+          }
+          if (!allRegions.includes(vendor.region)) {
+            allRegions.push(vendor.region);
+          }
+        })
       }
     });
+
+    usVendors.sort(function (a, b) {
+      var x = a.toLowerCase();
+      var y = b.toLowerCase();
+      if (x < y) { return -1; }
+      if (x > y) { return 1; }
+      return 0;
+    });
+
     allVendors.sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
@@ -259,7 +278,9 @@ class App extends React.Component {
     // set states
     this.setState({
       filteredSets: searchedSets,
-      vendors: allVendors,
+      allRegions: allRegions,
+      allVendors: allVendors,
+      vendors: usVendors,
       profiles: allProfiles,
       groups: groups,
       content: (searchedSets.length > 0 ? true : false),
@@ -367,11 +388,11 @@ class App extends React.Component {
     const device = this.state.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
+      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     } else if (device === 'tablet') {
-      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
+      content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     } else {
-      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
+      content = <MobileContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} bottomNav={this.state.bottomNav} changeBottomNav={this.changeBottomNav} setWhitelist={this.setWhitelist} snackbarQueue={queue} />;
     }
     return (
       <Router>

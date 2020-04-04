@@ -84,7 +84,7 @@ $exit-time: 400ms;
             box-sizing: border-box;
             &-double {
                 display: flex;
-                .select {
+                .select-container {
                     width: 112px;
                     flex-grow: 0;
                     flex-shrink: 0;
@@ -126,7 +126,6 @@ $exit-time: 400ms;
             }
             
             .vendor-container {
-                overflow: hidden;
                 margin-bottom: 16px;
                 .vendor-title {
                     margin: 0;
@@ -148,6 +147,8 @@ $exit-time: 400ms;
                 flex-grow: 0;
             }
         }
-        
+        .mdc-menu-surface--anchor .mdc-text-field {
+            width: 100%;
+        }
     }
 }

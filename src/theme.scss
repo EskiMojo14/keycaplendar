@@ -150,6 +150,11 @@ $overlay-values: (
                 color: map-get($variables, text-secondary);
             }
         }
+
+        .mdc-menu {
+            background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+        }
+
         &__content {
             .mdc-list-item {
                 @include mdc-states(map-get($variables, on-surface));
@@ -169,9 +174,6 @@ $overlay-values: (
             .mdc-typography--headline4, .mdc-typography--body2, .mdc-form-field {
                 color: map-get($variables, text-primary);
             }
-        }
-        .search-chips-icon {
-            color: map-get($variables, text-disabled);
         }
     }
 
@@ -460,6 +462,9 @@ $overlay-values: (
             .vendor-title, .image-title {
                 color: map-get($variables, text-secondary);
             }
+        }
+        .mdc-menu {
+            background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
         }
     }
     .image-upload {

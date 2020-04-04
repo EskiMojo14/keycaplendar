@@ -152,8 +152,8 @@ export class DesktopContent extends React.Component {
     const editorElements = (this.props.editor ? (
       <div>
         <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
-        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
-        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <SnackbarDeleted open={this.state.deleteSnackbarOpen} close={this.closeDeleteSnackbar} set={this.state.deleteSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
       </div>
@@ -315,8 +315,8 @@ export class TabletContent extends React.Component {
     const editorElements = (this.props.editor ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
-        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
-        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DrawerEdit open={this.state.editDrawerOpen} close={this.closeEditDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <SnackbarDeleted open={this.state.deleteSnackbarOpen} close={this.closeDeleteSnackbar} set={this.state.deleteSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
       </div>
@@ -480,8 +480,8 @@ export class MobileContent extends React.Component {
     const editorElements = (this.props.editor ? (
       <div>
         <Fab className={'create-fab' + (this.props.bottomNav ? ' middle' : '')} icon="add" onClick={this.openCreateDialog} />
-        <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
-        <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog} profiles={this.props.profiles} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
+        <DialogEdit open={this.state.editDialogOpen} close={this.closeEditDialog} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} set={this.state.editSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <DialogDelete open={this.state.deleteDialogOpen} close={this.closeDeleteDialog} set={this.state.deleteSet} openSnackbar={this.openDeleteSnackbar} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
         <SnackbarDeleted open={this.state.deleteSnackbarOpen} close={this.closeDeleteSnackbar} set={this.state.deleteSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
       </div>

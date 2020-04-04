@@ -21,7 +21,7 @@
         flex-direction: column;
         &-double {
             display: flex;
-            .select {
+            .select-container {
                 width: 112px;
                 flex-grow: 0;
                 flex-shrink: 0;
@@ -69,7 +69,6 @@
             }
         }
         .vendor-container {
-            overflow: hidden;
             margin-bottom: 16px;
             .vendor-title {
                 margin: 0;
@@ -89,6 +88,9 @@
             justify-content: flex-end;
             flex-grow: 0;
         }
+    }
+    .mdc-menu-surface--anchor .mdc-text-field {
+        width: 100%;
     }
     .drawer-footer {
         height: 64px;

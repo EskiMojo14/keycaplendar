@@ -1,0 +1,11 @@
+.autocomplete.mdc-menu {
+    margin-top: -16px;
+    border-radius: 0 0 4px 4px;
+    max-height: 160px !important;
+    width: 100%;
+    .mdc-list-item {
+        margin: 0;
+        border-radius: 0;
+        height: 48px;
+    }
+}
