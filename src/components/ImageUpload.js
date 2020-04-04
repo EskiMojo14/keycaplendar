@@ -32,7 +32,7 @@ export class ImageUpload extends React.Component {
                 this.setState({
                     imageBase64: '',
                     imageLink: '',
-                    imageFromURL: false,
+                    imageFromURL: true,
                     dragOver: false,
                     loading: false,
                     hasImage: false
