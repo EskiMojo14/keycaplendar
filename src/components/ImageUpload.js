@@ -138,7 +138,7 @@ export class ImageUpload extends React.Component {
     }
     render() {
         const imageTextField = (this.state.imageFromURL ? (
-            <TextField icon="link" outlined label="Image link" pattern="https?://.+\.(?:jpg|jpeg|png)" name="imageLink" value={this.state.imageLink} onChange={this.handleChange} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
+            <TextField autoComplete="off" icon="link" outlined label="Image link" pattern="https?://.+\.(?:jpg|jpeg|png)" name="imageLink" value={this.state.imageLink} onChange={this.handleChange} helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} />
         ) : '')
         const areaInner = (this.state.hasImage ? (
             <div className="image-display-image" style={{ backgroundImage: 'url(' + this.state.imageBase64 + ')' }} />
