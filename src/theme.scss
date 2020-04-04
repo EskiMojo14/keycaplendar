@@ -384,6 +384,7 @@ $overlay-values: (
                 @include mdc-states(map-get($variables, on-surface));
                 &.disabled {
                     color: map-get($variables, text-disabled);
+                    @include mdc-states(transparent);
                 }
             }
         }
