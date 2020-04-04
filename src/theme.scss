@@ -459,7 +459,7 @@ $overlay-values: (
         }
         .mdc-card {
             @include mdc-card-fill-color(transparent);
-            .vendor-title, .image-title {
+            .vendor-title, .image-title, .date-title {
                 color: map-get($variables, text-secondary);
             }
         }
