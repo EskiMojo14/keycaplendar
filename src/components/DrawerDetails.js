@@ -22,6 +22,9 @@ export class DesktopDrawerDetails extends React.Component {
         if (this.props.search !== prevProps.search || this.props.set !== prevProps.set) {
             this.setScroll();
         }
+        if (this.props.set !== prevProps.set) {
+            document.querySelector('.details-drawer .mdc-drawer__content').scrollTop = 0;
+        }
     }
     render() {
         const set = this.props.set;

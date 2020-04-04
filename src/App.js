@@ -29,6 +29,7 @@ class App extends React.Component {
     if (view !== this.state.view) {
       this.setState({ transition: true });
       setTimeout(function () {
+        document.documentElement.scrollTop = 0;
         this.setState({ view: view })
       }.bind(this), 90);
       setTimeout(function () {
@@ -53,6 +54,7 @@ class App extends React.Component {
           this.setState({ sort: 'date' });
         }
         this.filterData(page);
+        document.documentElement.scrollTop = 0;
       }.bind(this), 90);
       setTimeout(function () {
         this.setState({ transition: false })
@@ -67,6 +69,7 @@ class App extends React.Component {
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
   }
   changeBottomNav = (value) => {
+    document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
   }
   toggleLoading() {
@@ -289,6 +292,7 @@ class App extends React.Component {
   }
   setSort(sortBy) {
     const sort = ['vendor', 'date', 'profile'];
+    document.documentElement.scrollTop = 0;
     this.setState({ sort: sort[sortBy] });
     this.filterData(this.state.page, this.state.sets, sort[sortBy]);
   }
@@ -308,6 +312,7 @@ class App extends React.Component {
     this.setState({
       whitelist: whitelistCopy
     });
+    document.documentElement.scrollTop = 0;
     this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
   }
   setDevice = () => {
