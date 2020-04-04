@@ -471,6 +471,7 @@ export class MobileContent extends React.Component {
   }
   openSearchBar() {
     this.setState({ searchBarOpen: true });
+    document.getElementById('search').focus();
   }
   closeSearchBar() {
     this.setState({ searchBarOpen: false });
