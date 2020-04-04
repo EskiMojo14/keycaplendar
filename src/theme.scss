@@ -187,8 +187,8 @@ $overlay-values: (
 
     .mdc-image-list {
         .mdc-image-list__item {
-            .secondary {
-                color: map-get($variables, text-secondary);
+            .container::before {
+                background-color: map-get($variables, primary);
             }
             .time-indicator {
                 fill: map-get($variables, secondary);
@@ -196,6 +196,9 @@ $overlay-values: (
             .live-indicator {
                 background-color: map-get($variables, secondary);
                 color: map-get($variables, on-secondary);
+            }
+            &.selected {
+                @include mdc-states(map-get($variables, primary));
             }
         }
     }
