@@ -36,7 +36,7 @@
             align-items: center;
             .mdc-typography--overline {
                 margin: 0;
-                flex-shrink: 0;
+                flex-shrink: 1;
                 flex-grow: 1;
             }
             .live-indicator {
@@ -47,6 +47,7 @@
                 padding: 0 12px;
                 border-radius: 16px;
                 flex-grow: 0;
+                flex-shrink: 0;
             }
         }
         .title {
