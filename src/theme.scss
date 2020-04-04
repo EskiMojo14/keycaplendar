@@ -187,7 +187,6 @@ $overlay-values: (
 
     .mdc-image-list {
         .mdc-image-list__item {
-            background-color: map-get($variables, primary);
             .secondary {
                 color: map-get($variables, text-secondary);
             }
