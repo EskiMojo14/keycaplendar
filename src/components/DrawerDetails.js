@@ -165,9 +165,9 @@ export class DesktopDrawerDetails extends React.Component {
                 <div className="search-chips-container">
                     <div className="search-chips">
                         <ChipSet id="chip-set" choice>
-                            {chips.map((value) => {
+                            {chips.map((value, index) => {
                                 return (
-                                    <Chip icon="search" label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
+                                    <Chip icon="search" label={value} key={value.toLowerCase() + index} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => this.props.setSearch(value)} />
                                 )
                             })}
                         </ChipSet>
@@ -334,9 +334,9 @@ export class TabletDrawerDetails extends React.Component {
                 <div className="search-chips-container">
                     <div className="search-chips">
                         <ChipSet choice>
-                            {chips.map((value) => {
+                            {chips.map((value, index) => {
                                 return (
-                                    <Chip icon="search" label={value} key={value.toLowerCase()} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => { this.props.setSearch(value); this.props.close(); }} />
+                                    <Chip icon="search" label={value} key={value.toLowerCase() + index} selected={(this.props.search.toLowerCase() === value.toLowerCase())} onClick={() => { this.props.setSearch(value); this.props.close(); }} />
                                 )
                             })}
                         </ChipSet>
