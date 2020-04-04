@@ -52,10 +52,7 @@
         flex-grow: 0;
         flex-shrink: 0;
         width: 0;
-        .filter-drawer-open & {
-            width: 256px;
-        }
-        .details-drawer-open & {
+        .filter-drawer-open &, .details-drawer-open & {
             width: 320px;
         }
         transition-property: width;
@@ -130,10 +127,7 @@
         transition-timing-function: $mdc-animation-standard-curve-timing-function;
         transition-duration: 280ms, $mdc-drawer-animation-enter;
     }
-    .filter-drawer-open + div & {
-        right: 24px + 256px;
-    }
-    .details-drawer-open + div & {
+    .filter-drawer-open + div &, .details-drawer-open + div & {
         right: 24px + 320px;
     }
 }

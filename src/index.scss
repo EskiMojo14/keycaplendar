@@ -8,6 +8,7 @@
     border-left-style: solid;
     left: initial;
     right: 0;
+    width: 320px;
     &.mdc-drawer--animate, &.mdc-drawer--closing {
         transform: translateX(100%);
     }

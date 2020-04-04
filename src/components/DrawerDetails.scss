@@ -1,7 +1,6 @@
 @import '@material/typography/mixins';
 
 .mdc-drawer.details-drawer {
-    width: 320px;
     justify-content: stretch;
     &.mdc-drawer--dismissible {
         z-index: 2;
