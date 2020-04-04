@@ -12,6 +12,7 @@ export class ViewImageList extends React.Component {
                     const icDate = new Date(set.icDate);
                     const today = new Date();
                     const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const fullMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     const nth = function(d) {
                         if (d > 3 && d < 21) return 'th';
                         switch (d % 10) {
@@ -27,6 +28,8 @@ export class ViewImageList extends React.Component {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' - ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'Expected ' + gbLaunch;
+                    } else if (set.gbMonth) {
+                        subtitle = 'Expected ' + fullMonth[gbLaunch.getMonth()];
                     } else if (set.gbLaunch) {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()];
                     } else {

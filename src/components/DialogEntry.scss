@@ -69,6 +69,7 @@ $exit-time: 400ms;
         flex-shrink: 0;
         flex-grow: 0;
         position: relative;
+        top: 0 !important;
         @include mdc-elevation(4);
     }
     &-content {
@@ -107,11 +108,26 @@ $exit-time: 400ms;
                 }
             }
             
+            .date-container {
+                overflow: hidden;
+                margin-bottom: 16px;
+                .date-title {
+                    margin: 0;
+                    padding: 16px;
+                }
+                .date-form {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0 16px;
+                    .mdc-text-field-helper-line:last-of-type {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+            
             .vendor-container {
                 overflow: hidden;
-                &:not(:last-of-type) {
-                    margin-bottom: 16px;
-                }
+                margin-bottom: 16px;
                 .vendor-title {
                     margin: 0;
                     padding: 16px;
@@ -120,13 +136,13 @@ $exit-time: 400ms;
                     display: flex;
                     flex-direction: column;
                     padding: 0 16px;
-                    .mdc-text-field-helper-line {
+                    .mdc-text-field-helper-line:last-of-type {
                         margin-bottom: 0;
                     }
                 }
             }
+
             .add-button {
-                padding-top: 16px;
                 display: flex;
                 justify-content: flex-end;
                 flex-grow: 0;

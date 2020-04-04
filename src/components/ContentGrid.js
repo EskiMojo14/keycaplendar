@@ -29,13 +29,9 @@ export class ContentGrid extends React.Component {
             }
         });
         filteredSets.sort((a, b) => {
-            if (page === 'timeline') {
-                const aMonth = new Date(a).getMonth();
-                const aYear = new Date(a).getFullYear();
-                const bMonth = new Date(b).getMonth();
-                const bYear = new Date(b).getFullYear();
-                const aDate = aYear + '' + aMonth;
-                const bDate = bYear + '' + bMonth;
+            if (sort === 'date' || page === 'timeline') {
+                const aDate = new Date(a.gbLaunch);
+                const bDate = new Date(b.gbLaunch);
                 if (aDate < bDate) { return -1; }
                 if (aDate > bDate) { return 1; }
             } else {

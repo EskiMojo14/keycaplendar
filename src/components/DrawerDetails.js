@@ -74,6 +74,8 @@ export class DesktopDrawerDetails extends React.Component {
                 gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + (gbEnd.getFullYear() !== today.getFullYear() ? ' ' + gbEnd.getFullYear() : '') + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
+            } else if (set.gbMonth) {
+                gb = 'Expected ' + month[gbLaunch.getMonth()] + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '')) {
                 gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + '.';
             } else {
@@ -214,6 +216,8 @@ export class TabletDrawerDetails extends React.Component {
                 gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()] + (gbEnd.getFullYear() !== today.getFullYear() ? ' ' + gbEnd.getFullYear() : '') + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
+            } else if (set.gbMonth) {
+                gb = 'Expected ' + month[gbLaunch.getMonth()] + '.';
             } else if ((set.gbLaunch ? set.gbLaunch : '')) {
                 gb = verb + ' from ' + gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + (gbLaunch.getFullYear() !== today.getFullYear() && gbLaunch.getFullYear() !== gbEnd.getFullYear() ? ' ' + gbLaunch.getFullYear() : '') + '.';
             } else {

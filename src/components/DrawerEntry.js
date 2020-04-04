@@ -19,6 +19,7 @@ export class DrawerCreate extends React.Component {
             icDate: '',
             details: '',
             image: null,
+            gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -38,6 +39,7 @@ export class DrawerCreate extends React.Component {
             icDate: '',
             details: '',
             image: null,
+            gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -95,6 +97,12 @@ export class DrawerCreate extends React.Component {
             vendors: vendors
         });
     };
+
+    toggleDate = () => {
+        this.setState({
+            gbMonth: !this.state.gbMonth
+        });
+    }
 
     addVendor = () => {
         let vendors = this.state.vendors;
@@ -182,6 +190,7 @@ export class DrawerCreate extends React.Component {
                 icDate: this.state.icDate,
                 details: this.state.details,
                 image: this.state.imageURL,
+                gbMonth: this.state.gbMonth,
                 gbLaunch: this.state.gbLaunch,
                 gbEnd: this.state.gbEnd,
                 vendors: this.state.vendors
@@ -201,6 +210,44 @@ export class DrawerCreate extends React.Component {
 
     render() {
         const formFilled = (this.state.profile !== '' && this.state.colorway !== '' && this.state.designer !== [] && this.state.icDate !== '' && this.state.details !== '' && this.state.image);
+        const dateCard = (this.state.gbMonth ? (
+            <Card outlined className="date-container">
+                <Typography use="caption" tag="h3" className="date-title">Month</Typography>
+                <div className="date-form">
+                    <TextField icon={{
+                        icon: (
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                        )
+                    }} outlined label="GB month" pattern="^\d{4}-\d{1,2}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM' }} onChange={this.handleChange} />
+                </div>
+                <CardActions>
+                    <CardActionButtons>
+                        <CardActionButton label="Date" onClick={(e) => { e.preventDefault(); this.toggleDate(); }} />
+                    </CardActionButtons>
+                </CardActions>
+            </Card>
+        ) : (
+                <Card outlined className="date-container">
+                    <Typography use="caption" tag="h3" className="date-title">Date</Typography>
+                    <div className="date-form">
+                        <TextField icon={{
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                            )
+                        }} outlined label="GB launch" pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD or Q1-4 YYYY' }} onChange={this.handleChange} />
+                        <TextField icon={{
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                            )
+                        }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
+                    </div>
+                    <CardActions>
+                        <CardActionButtons>
+                            <CardActionButton label="Month" onClick={(e) => { e.preventDefault(); this.toggleDate(); }} />
+                        </CardActionButtons>
+                    </CardActions>
+                </Card>
+            ));
         return (
             <Drawer modal open={this.props.open} onClose={this.closeDrawer} className="entry-drawer drawer-right">
                 <DrawerHeader>
@@ -224,16 +271,7 @@ export class DrawerCreate extends React.Component {
                         }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                         <TextField icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                         <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} desktop />
-                        <TextField icon={{
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
-                            )
-                        }} outlined label="GB launch" pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD or Q1-4 YYYY' }} onChange={this.handleChange} />
-                        <TextField icon={{
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
-                            )
-                        }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
+                        {dateCard}
                         {this.state.vendors.map((vendor, index) => {
                             const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
@@ -287,6 +325,7 @@ export class DrawerEdit extends React.Component {
             icDate: '',
             details: '',
             image: '',
+            gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -300,6 +339,20 @@ export class DrawerEdit extends React.Component {
     }
 
     setValues() {
+        let gbLaunch = '';
+        if (this.props.set.gbMonth) {
+            const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
+            const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
+            if (twoNumRegExp.test(this.props.set.gbLaunch)) {
+                gbLaunch = this.props.set.gbLaunch.slice(0, -3)
+            } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
+                gbLaunch = this.props.set.gbLaunch.slice(0, -2);
+            } else {
+                gbLaunch = this.props.set.gbLaunch;
+            }
+        } else {
+            gbLaunch = this.props.set.gbLaunch;
+        }
         this.setState({
             id: this.props.set.id,
             profile: this.props.set.profile,
@@ -309,7 +362,8 @@ export class DrawerEdit extends React.Component {
             details: this.props.set.details,
             image: this.props.set.image,
             imageURL: this.props.set.image,
-            gbLaunch: this.props.set.gbLaunch,
+            gbMonth: this.props.set.gbMonth,
+            gbLaunch: gbLaunch,
             gbEnd: this.props.set.gbEnd,
             vendors: this.props.set.vendors
         });
@@ -329,6 +383,7 @@ export class DrawerEdit extends React.Component {
             icDate: '',
             details: '',
             image: '',
+            gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
             vendors: [],
@@ -388,6 +443,12 @@ export class DrawerEdit extends React.Component {
             vendors: vendors
         });
     };
+
+    toggleDate = () => {
+        this.setState({
+            gbMonth: !this.state.gbMonth
+        });
+    }
 
     addVendor = () => {
         let vendors = this.state.vendors;
@@ -474,6 +535,7 @@ export class DrawerEdit extends React.Component {
             icDate: this.state.icDate,
             details: this.state.details,
             image: this.state.imageURL,
+            gbMonth: this.state.gbMonth,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
             vendors: this.state.vendors
@@ -490,6 +552,44 @@ export class DrawerEdit extends React.Component {
 
     render() {
         const formFilled = (this.state.profile !== '' && this.state.colorway !== '' && this.state.designer !== [] && this.state.icDate !== '' && this.state.details !== '' && this.state.image);
+        const dateCard = (this.state.gbMonth ? (
+            <Card outlined className="date-container">
+                <Typography use="caption" tag="h3" className="date-title">Month</Typography>
+                <div className="date-form">
+                    <TextField icon={{
+                        icon: (
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                        )
+                    }} outlined label="GB month" pattern="^\d{4}-\d{1,2}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM' }} onChange={this.handleChange} />
+                </div>
+                <CardActions>
+                    <CardActionButtons>
+                        <CardActionButton label="Date" onClick={(e) => { e.preventDefault(); this.toggleDate(); }} />
+                    </CardActionButtons>
+                </CardActions>
+            </Card>
+        ) : (
+                <Card outlined className="date-container">
+                    <Typography use="caption" tag="h3" className="date-title">Date</Typography>
+                    <div className="date-form">
+                        <TextField icon={{
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                            )
+                        }} outlined label="GB launch" pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD or Q1-4 YYYY' }} onChange={this.handleChange} />
+                        <TextField icon={{
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
+                            )
+                        }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
+                    </div>
+                    <CardActions>
+                        <CardActionButtons>
+                            <CardActionButton label="Month" onClick={(e) => { e.preventDefault(); this.toggleDate(); }} />
+                        </CardActionButtons>
+                    </CardActions>
+                </Card>
+            ));
         return (
             <Drawer modal open={this.props.open} onClose={this.props.close} className="entry-drawer drawer-right">
                 <DrawerHeader>
@@ -513,16 +613,7 @@ export class DrawerEdit extends React.Component {
                         }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
                         <TextField icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                         <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} desktop />
-                        <TextField icon={{
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
-                            )
-                        }} outlined label="GB launch" pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$" value={this.state.gbLaunch} name='gbLaunch' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD or Q1-4 YYYY' }} onChange={this.handleChange} />
-                        <TextField icon={{
-                            icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
-                            )
-                        }} outlined label="GB end" pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.gbEnd} name='gbEnd' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} />
+                        {dateCard}
                         {this.state.vendors.map((vendor, index) => {
                             const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
@@ -558,7 +649,7 @@ export class DrawerEdit extends React.Component {
                 </DrawerContent>
                 <div className="drawer-footer">
                     <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
-                    <Button outlined label="Save" onClick={(e) => { if (formFilled) { if (this.state.newImage) { e.preventDefault(); this.uploadImage();} else { e.preventDefault(); this.editEntry(); } } }} disabled={!formFilled} />
+                    <Button outlined label="Save" onClick={(e) => { if (formFilled) { if (this.state.newImage) { e.preventDefault(); this.uploadImage(); } else { e.preventDefault(); this.editEntry(); } } }} disabled={!formFilled} />
                 </div>
             </Drawer>
         );

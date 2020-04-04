@@ -79,6 +79,11 @@ class App extends React.Component {
     db.collection("keysets").get().then((querySnapshot) => {
       let sets = [];
       querySnapshot.forEach((doc) => {
+        const gbLaunchDate = new Date(doc.data().gbLaunch);
+        const lastOfMonth = new Date(gbLaunchDate.getFullYear(), gbLaunchDate.getMonth() + 1, 0);
+        const gbLaunch = (doc.data().gbMonth ? (
+          doc.data().gbLaunch + '-' + lastOfMonth.getDate()
+        ) : doc.data().gbLaunch);
         sets.push({
           id: doc.id,
           profile: doc.data().profile,
@@ -87,9 +92,10 @@ class App extends React.Component {
           icDate: doc.data().icDate,
           details: doc.data().details,
           image: doc.data().image,
-          gbLaunch: doc.data().gbLaunch,
+          gbMonth: doc.data().gbMonth,
+          gbLaunch: gbLaunch,
           gbEnd: doc.data().gbEnd,
-          vendors: (doc.data().vendor ? [{ name: doc.data().vendor, region: '', storeLink: doc.data().storeLink }] : doc.data().vendors)
+          vendors: doc.data().vendors
         });
       });
       this.setState({
@@ -237,7 +243,6 @@ class App extends React.Component {
         if (page === 'previous') {
           if (aDate < bDate) { return 1; }
           if (aDate > bDate) { return -1; }
-
         } else {
           if (aDate < bDate) { return -1; }
           if (aDate > bDate) { return 1; }

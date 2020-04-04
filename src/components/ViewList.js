@@ -28,6 +28,8 @@ export class ViewList extends React.Component {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'GB expected ' + gbLaunch;
+                    } else if (set.gbMonth) {
+                        subtitle = 'GB expected ' + month[gbLaunch.getMonth()];
                     } else if (set.gbLaunch) {
                         subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()];
                     } else {
