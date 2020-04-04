@@ -13,13 +13,13 @@
         border-radius: 16px;
         flex-grow: 0;
         margin-left: auto;
-        & + .time-indicator {
-            margin-left: 16px;
-        }
     }
     .time-indicator {
         overflow: hidden;
         height: 24px;
+        & + .live-indicator {
+            margin-left: 16px;
+        }
     }
 }
 

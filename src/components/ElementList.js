@@ -22,8 +22,8 @@ export class ElementList extends React.Component {
                         </ListItemPrimaryText>
                         <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
                     </ListItemText>
-                    {liveIndicator}
                     {timeIndicator}
+                    {liveIndicator}
                 </ListItem>
         )
     }
