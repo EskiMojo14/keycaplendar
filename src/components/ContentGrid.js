@@ -19,8 +19,10 @@ export class ContentGrid extends React.Component {
                     filteredSets.push(set);
                 }
             } else if (sort === 'vendor') {
-                if (set.vendors[0].name === group) {
-                    filteredSets.push(set);
+                if (set.vendors[0]) {
+                    if (set.vendors[0].name === group) {
+                        filteredSets.push(set);
+                    }
                 }
             } else {
                 if (set[sort] === group) {
