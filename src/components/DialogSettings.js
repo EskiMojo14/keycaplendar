@@ -75,7 +75,7 @@ export class DialogSettings extends React.Component {
                 <Typography use="subtitle2" tag="h3">Admin</Typography>
                 <div className="button">
                     <Link to="/users">
-                        <Button label="Manage users" />
+                        <Button label="Manage users" onClick={this.props.close} />
                     </Link>
                 </div>
             </div>
