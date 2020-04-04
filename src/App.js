@@ -16,7 +16,7 @@ const queue = createSnackbarQueue();
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { device: 'desktop', theme: 'light', bottomNav: false, page: 'calendar', view: 'list', transition: false, sort: 'date', allVendors: [], allRegions: [], vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
+    this.state = { device: 'desktop', theme: 'light', bottomNav: false, page: 'calendar', view: 'card', transition: false, sort: 'date', allVendors: [], allRegions: [], vendors: [], sets: [], profiles: [], filteredSets: [], groups: [], loading: false, content: true, search: '', user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false }, whitelist: { vendors: [], profiles: [], edited: false } };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
     this.getData = this.getData.bind(this);
@@ -322,6 +322,9 @@ class App extends React.Component {
       device = 'mobile';
     };
     this.setState({ device: device });
+    if (device === 'mobile') {
+      this.setState({ view: 'list' });
+    }
   }
   componentDidMount() {
     this.setDevice();
