@@ -76,16 +76,12 @@ $overlay-values: (
         }
         .mdc-typography--headline5 {
             color: map-get($variables, text-primary);
-            .time-indicator {
-                fill: map-get($variables, secondary);
-            }
-        }
-        .mdc-typography--overline, .mdc-typography--subtitle2 {
-            color: map-get($variables, text-secondary);
         }
         .live-indicator {
-            background-color: rgba(map-get($variables, secondary), if($dark, 0.75, 0.5));
-            color: map-get($variables, on-secondary);
+            fill: map-get($variables, text-secondary);
+        }
+        .overline, .mdc-typography--subtitle2 {
+            color: map-get($variables, text-secondary);
         }
     }
 
@@ -190,13 +186,6 @@ $overlay-values: (
             .container::before {
                 background-color: map-get($variables, primary);
             }
-            .time-indicator {
-                fill: map-get($variables, secondary);
-            }
-            .live-indicator {
-                background-color: map-get($variables, secondary);
-                color: map-get($variables, on-secondary);
-            }
             &.selected {
                 @include mdc-states(map-get($variables, primary));
             }
@@ -214,13 +203,16 @@ $overlay-values: (
             @include mdc-list-item-secondary-text-ink-color(map-get($variables, primary));
             @include mdc-list-item-graphic-ink-color(map-get($variables, primary));
             @include mdc-states(map-get($variables, primary));
+            .mdc-list-item__meta {
+                fill: map-get($variables, primary);
+            }
         }
-        .live-indicator {
-            background-color: rgba(map-get($variables, secondary), if($dark, 0.75, 0.5));
-            color: map-get($variables, on-secondary);
+        .mdc-list-item__meta {
+            fill: map-get($variables, text-secondary);
         }
         .time-indicator {
-            fill: map-get($variables, secondary);
+            background-color: mix(map-get($variables, on-surface), map-get($variables, surface), 80%);
+            color: map-get($variables, surface);
         }
     }
 

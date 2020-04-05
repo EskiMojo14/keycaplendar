@@ -4,7 +4,7 @@
 @import '@material/theme/mixins';
 
 .mdc-list .mdc-list-item {
-    .live-indicator {
+    .time-indicator {
         display: inline-flex;
         align-items: center;
         margin: 0;
@@ -12,14 +12,16 @@
         padding: 0 12px;
         border-radius: 16px;
         flex-grow: 0;
+        flex-shrink: 0;
         margin-left: auto;
-    }
-    .time-indicator {
-        overflow: hidden;
-        height: 24px;
         & + .live-indicator {
             margin-left: 16px;
         }
+    }
+    .live-indicator {
+        overflow: hidden;
+        height: 24px;
+        flex-shrink: 0;
     }
 }
 

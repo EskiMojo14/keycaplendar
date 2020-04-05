@@ -35,13 +35,15 @@ export class ViewCard extends React.Component {
                         subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
                     }
                     const designer = set.designer.toString().replace(/,/g, " + ");
-                    const thisWeek = (((gbEnd.getTime() - (7 * 24 * 60 * 60 * 1000)) < today.getTime()) && gbEnd.getTime() > today.getTime());
+                    const oneDay = 24 * 60 * 60 * 1000;
+                    const thisWeek = (((gbEnd.getTime() - (7 * oneDay)) < today.getTime()) && gbEnd.getTime() > today.getTime());
+                    const daysLeft = Math.round(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
                         live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
                     }
                     return (
-                        <ElementCard page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} live={live} key={index}/>
+                        <ElementCard page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} daysLeft={daysLeft} live={live} key={index}/>
                     )
                 })}
             </div>

@@ -22,6 +22,25 @@
             z-index: 2;
             transition: opacity 150ms $mdc-animation-standard-curve-timing-function;
         }
+        .media-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            .time-indicator {
+                position: absolute;
+                bottom: 64px + 8px;
+                left: 8px;
+                display: flex;
+                align-items: center;
+                margin: 0;
+                height: 24px;
+                padding: 0 12px;
+                border-radius: 16px;
+                z-index: 3;
+                background-color: #333333;
+                color: white;
+            }
+        }
     }
     .mdc-image-list__supporting {
         height: 64px;
@@ -58,23 +77,11 @@
                     color: rgba(white,0.6);
                 }
             }
-            .time-indicator {
-                height: 24px;
-                margin-left: 8px;
-                overflow: hidden;
-                & + .live-indicator {
-                    display: none;
-                }
-            }
             .live-indicator {
-                display: flex;
-                align-items: center;
-                margin: 0;
                 height: 24px;
-                padding: 0 12px;
-                border-radius: 16px;
-                flex-grow: 0;
+                flex-shrink: 0;
                 margin-left: 8px;
+                fill: white;
             }
         }
     }
