@@ -25,15 +25,15 @@ export class ViewImageList extends React.Component {
                     const title = set.profile + ' ' + set.colorway;
                     let subtitle;
                     if (set.gbLaunch && set.gbEnd) {
-                        subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' - ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
+                        subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + ' - ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'Expected ' + gbLaunch;
                     } else if (set.gbMonth) {
-                        subtitle = 'Expected ' + fullMonth[gbLaunch.getMonth()];
+                        subtitle = 'Expected ' + fullMonth[gbLaunch.getUTCMonth()];
                     } else if (set.gbLaunch) {
-                        subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()];
+                        subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()];
                     } else {
-                        subtitle = 'IC ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '') ;
+                        subtitle = 'IC ' + icDate.getUTCDate() + nth(icDate.getUTCDate()) + '\xa0' + month[icDate.getUTCMonth()] + (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + icDate.getUTCFullYear() : '') ;
                     }
                     
                     const oneDay = 24 * 60 * 60 * 1000;

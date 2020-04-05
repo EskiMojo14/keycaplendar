@@ -14,7 +14,7 @@ export class ContentGrid extends React.Component {
                 const query = (page === 'live' ? 'gbEnd' : 'gbLaunch');
                 const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 const setDate = new Date(set[query]);
-                let setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
+                let setMonth = month[setDate.getUTCMonth()] + ' ' + setDate.getUTCFullYear();
                 if (setMonth === group) {
                     filteredSets.push(set);
                 }

@@ -24,15 +24,15 @@ export class ViewCard extends React.Component {
                     const title = set.profile + ' ' + set.colorway;
                     let subtitle;
                     if (set.gbLaunch && set.gbEnd) {
-                        subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()] + ' until ' + gbEnd.getDate() + nth(gbEnd.getDate()) + '\xa0' + month[gbEnd.getMonth()];
+                        subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + ' until ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'GB expected ' + gbLaunch;
                     } else if (set.gbMonth) {
-                        subtitle = 'GB expected ' + month[gbLaunch.getMonth()];
+                        subtitle = 'GB expected ' + month[gbLaunch.getUTCMonth()];
                     } else if (set.gbLaunch) {
-                        subtitle = gbLaunch.getDate() + nth(gbLaunch.getDate()) + '\xa0' + month[gbLaunch.getMonth()];
+                        subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()];
                     } else {
-                        subtitle = 'IC posted ' + icDate.getDate() + nth(icDate.getDate()) + '\xa0' + month[icDate.getMonth()] + (icDate.getFullYear() !== today.getFullYear() ? ' ' + icDate.getFullYear() : '');
+                        subtitle = 'IC posted ' + icDate.getUTCDate() + nth(icDate.getUTCDate()) + '\xa0' + month[icDate.getUTCMonth()] + (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + icDate.getUTCFullYear() : '');
                     }
                     const designer = set.designer.toString().replace(/,/g, " + ");
                     const oneDay = 24 * 60 * 60 * 1000;

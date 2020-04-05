@@ -83,9 +83,9 @@ class App extends React.Component {
       let sets = [];
       querySnapshot.forEach((doc) => {
         const gbLaunchDate = new Date(doc.data().gbLaunch);
-        const lastOfMonth = new Date(gbLaunchDate.getFullYear(), gbLaunchDate.getMonth() + 1, 0);
+        const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
         const gbLaunch = (doc.data().gbMonth ? (
-          doc.data().gbLaunch + '-' + lastOfMonth.getDate()
+          doc.data().gbLaunch + '-' + lastOfMonth.getUTCDate()
         ) : doc.data().gbLaunch);
         sets.push({
           id: doc.id,
@@ -238,7 +238,7 @@ class App extends React.Component {
       if (sort === 'date') {
         const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
-        let setMonth = month[setDate.getMonth()] + ' ' + setDate.getFullYear();
+        let setMonth = month[setDate.getUTCMonth()] + ' ' + setDate.getUTCFullYear();
         if (!groups.includes(setMonth) && setMonth !== 'undefined NaN') {
           groups.push(setMonth);
         }
@@ -256,10 +256,10 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === 'date') {
-        const aMonth = new Date(a).getMonth();
-        const aYear = new Date(a).getFullYear();
-        const bMonth = new Date(b).getMonth();
-        const bYear = new Date(b).getFullYear();
+        const aMonth = new Date(a).getUTCMonth();
+        const aYear = new Date(a).getUTCFullYear();
+        const bMonth = new Date(b).getUTCMonth();
+        const bYear = new Date(b).getUTCFullYear();
         const aDate = aYear + '' + aMonth;
         const bDate = bYear + '' + bMonth;
         if (page === 'previous') {
