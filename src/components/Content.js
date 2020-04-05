@@ -129,13 +129,9 @@ export class DesktopContent extends React.Component {
   closeEditDrawer() {
     this.closeModal();
     this.setState({
-      editDrawerOpen: false
+      editDrawerOpen: false,
+      editSet: {}
     });
-    setTimeout(() => {
-      this.setState({
-        editSet: {}
-      });
-    }, 200);
   }
   openSettingsDialog() {
     this.openModal();
@@ -245,13 +241,9 @@ export class TabletContent extends React.Component {
   closeEditDrawer() {
     this.closeModal();
     this.setState({
-      editDrawerOpen: false
+      editDrawerOpen: false,
+      editSet: {}
     });
-    setTimeout(() => {
-      this.setState({
-        editSet: {}
-      });
-    }, 200);
   }
   openDeleteDialog(set) {
     this.closeDetailsDrawer();
@@ -291,13 +283,9 @@ export class TabletContent extends React.Component {
   closeDetailsDrawer() {
     this.closeModal();
     this.setState({
-      detailsDrawerOpen: false
+      detailsDrawerOpen: false,
+      detailSet: {}
     });
-    setTimeout(() => {
-      this.setState({
-        detailSet: {}
-      });
-    }, 200);
   }
   openSettingsDialog() {
     this.openModal();
@@ -453,13 +441,9 @@ export class MobileContent extends React.Component {
   closeDetailsDrawer() {
     this.closeModal();
     this.setState({
-      detailsDrawerOpen: false
+      detailsDrawerOpen: false,
+      detailSet: {}
     });
-    setTimeout(() => {
-      this.setState({
-        detailSet: {}
-      });
-    }, 200);
   }
   openSettingsDialog() {
     this.openModal();
