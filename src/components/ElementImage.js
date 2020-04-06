@@ -13,7 +13,7 @@ export class ElementImage extends React.Component {
             </div>
         ) : '');
         const timeIndicator = (this.props.thisWeek ? (
-        <div className="time-indicator"><Typography use="overline" className="live-indicator-text">{this.props.daysLeft} days</Typography></div>) : '');
+        <div className="time-indicator"><Typography use="overline" className="live-indicator-text">{this.props.daysLeft} day{(this.props.daysLeft > 1 ? 's' : '')}</Typography></div>) : '');
         return (
             <Ripple>
                 <ImageListItem onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())} key={this.props.image} className={"image-list-item" + (this.props.selected ? ' selected' : '')}>
