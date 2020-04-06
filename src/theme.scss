@@ -498,6 +498,10 @@ $overlay-values: (
     .subheader {
         color: map-get($variables, text-secondary);
     }
+    
+    .main.card .outer-container:first-of-type .subheader {
+        color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+    }
 
     .users-container::before {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
