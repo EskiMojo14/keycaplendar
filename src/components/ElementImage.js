@@ -1,4 +1,5 @@
 import React from 'react';
+import Twemoji from 'react-twemoji';
 import { ImageListItem, ImageListImageAspectContainer, ImageListImage, ImageListSupporting, ImageListLabel } from '@rmwc/image-list';
 import { Ripple } from '@rmwc/ripple';
 import { Typography } from '@rmwc/typography';
@@ -27,7 +28,7 @@ export class ElementImage extends React.Component {
                             <ImageListLabel>
                                 <div className="text-container">
                                     <div className="primary-text">
-                                        <div className="primary-text-text">{this.props.title}</div>
+                                        <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
                                     </div>
                                     <div className="secondary-text">{this.props.subtitle}</div>
                                 </div>

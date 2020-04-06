@@ -1,4 +1,5 @@
 import React from 'react';
+import Twemoji from 'react-twemoji';
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from '@rmwc/list';
 import { Typography } from '@rmwc/typography';
 import './ElementList.scss';
@@ -18,7 +19,7 @@ export class ElementList extends React.Component {
                 </div>
                 <ListItemText>
                     <ListItemPrimaryText>
-                        {this.props.title}
+                        <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
                     </ListItemPrimaryText>
                     <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
                 </ListItemText>

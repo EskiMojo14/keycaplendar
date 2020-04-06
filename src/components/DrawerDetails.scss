@@ -40,8 +40,18 @@
                 .mdc-typography--overline {
                     margin: 0;
                 }
-                .mdc-typography--headline4, .mdc-typography--body2 {
-                    margin: 8px 0px;
+                .mdc-typography--headline4 {
+                    &, .mdc-typography--body2 {
+                        margin: 8px 0px;
+                    }
+                    div {
+                        display: inline-flex;
+                        align-items: center;
+                        .twemoji {
+                            height: 2.25rem;
+                            margin-left: 0.75rem;
+                        }
+                    }
                 }
             }
             &-button {

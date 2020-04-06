@@ -1,4 +1,5 @@
 import React from 'react';
+import Twemoji from 'react-twemoji';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { IconButton } from '@rmwc/icon-button';
 import { Chip, ChipSet } from '@rmwc/chip';
@@ -151,7 +152,7 @@ export class DesktopDrawerDetails extends React.Component {
                         <div className="details-image" style={{ backgroundImage: 'url(' + set.image + ')' }}></div>
                         <div className="details-text">
                             <Typography use="overline" tag="h3">Designed by {(set.designer ? set.designer.toString().replace(/,/g, " + ") : '')}</Typography>
-                            <Typography use="headline4" tag="h1">{(set.profile ? set.profile : '') + ' ' + (set.colorway ? set.colorway : '')}</Typography>
+                            <Typography use="headline4" tag="h1"><Twemoji options={{ className: "twemoji" }}>{(set.profile ? set.profile : '') + ' ' + (set.colorway ? set.colorway : '')}</Twemoji></Typography>
                             {gbLine}
                             <Typography use="body2" tag="p">{ic}</Typography>
                         </div>

@@ -17,6 +17,7 @@
     "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-twemoji": "^0.2.3",
     "rmwc": "^5.7.2"
   },
   "scripts": {

@@ -61,13 +61,14 @@
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    &-text {
-                        flex-grow: 1;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
+                    div {
+                        display: flex;
+                        align-items: center;
+                        .twemoji {
+                            height: 1.0625rem;
+                            margin-left: 0.35rem;
+                        }
                     }
-
                 }
                 .secondary-text {
                     @include mdc-typography(body2);

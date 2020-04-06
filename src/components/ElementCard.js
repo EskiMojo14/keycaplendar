@@ -1,4 +1,5 @@
 import React from 'react';
+import Twemoji from 'react-twemoji';
 import { Typography } from '@rmwc/typography';
 import { Card, CardMedia, CardPrimaryAction } from '@rmwc/card';
 import './ElementCard.scss';
@@ -27,7 +28,7 @@ export class ElementCard extends React.Component {
                                 </div>
                                 <div className="title">
                                     <Typography use="headline5" tag="h2">
-                                        <span>{this.props.title}</span>
+                                        <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
                                     </Typography>
                                 </div>
                                 <Typography use="subtitle2" tag="p">{this.props.subtitle}</Typography>

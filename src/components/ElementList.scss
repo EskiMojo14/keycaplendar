@@ -4,6 +4,16 @@
 @import '@material/theme/mixins';
 
 .mdc-list .mdc-list-item {
+    &__primary-text {
+        div {
+            display: inline-flex;
+            align-items: center;
+            .twemoji {
+                height: 1.0625rem;
+                margin-left: 0.25rem;
+            }
+        }
+    }
     .time-indicator {
         display: inline-flex;
         align-items: center;

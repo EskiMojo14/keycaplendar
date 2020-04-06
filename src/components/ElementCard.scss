@@ -65,12 +65,14 @@
             width: 100%;
             .mdc-typography--headline5 {
                 margin: 0;
-                display: flex;
-                justify-content: stretch;
-                align-items: center;
                 width: 100%;
-                span {
-                    flex-grow: 1;
+                div {
+                    display: inline-flex;
+                    align-items: center;
+                    .twemoji {
+                        height: 1.5625rem;
+                        margin-left: 0.5rem;
+                    }
                 }
             }
         }
