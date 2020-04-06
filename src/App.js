@@ -26,7 +26,7 @@ class App extends React.Component {
     this.setSearch = this.setSearch.bind(this);
   }
   changeView(view) {
-    if (view !== this.state.view) {
+    if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(function () {
         document.documentElement.scrollTop = 0;
@@ -38,7 +38,7 @@ class App extends React.Component {
     }
   }
   changePage(page) {
-    if (page !== this.state.page) {
+    if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(function () {
         this.setState({ page: page })
@@ -73,8 +73,7 @@ class App extends React.Component {
     this.setState({ bottomNav: value });
   }
   toggleLoading() {
-    let newState = (this.state.loading ? false : true);
-    this.setState({ loading: newState });
+    this.setState({ loading: !this.state.loading });
   }
   getData() {
     this.setState({ loading: true });
@@ -160,7 +159,7 @@ class App extends React.Component {
       });
     }
 
-    // vendor list
+    // lists
     sets.forEach((set) => {
       if (set.vendors[0]) {
         if (!usVendors.includes(set.vendors[0].name)) {
@@ -174,6 +173,9 @@ class App extends React.Component {
             allRegions.push(vendor.region);
           }
         })
+      }
+      if (!allProfiles.includes(set.profile)) {
+        allProfiles.push(set.profile);
       }
     });
 
@@ -193,12 +195,14 @@ class App extends React.Component {
       return 0;
     });
 
-    // profile list
-    sets.forEach((set) => {
-      if (!allProfiles.includes(set.profile)) {
-        allProfiles.push(set.profile);
-      }
+    allRegions.sort(function (a, b) {
+      var x = a.toLowerCase();
+      var y = b.toLowerCase();
+      if (x < y) { return -1; }
+      if (x > y) { return 1; }
+      return 0;
     });
+
     allProfiles.sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
@@ -256,12 +260,8 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === 'date') {
-        const aMonth = new Date(a).getUTCMonth();
-        const aYear = new Date(a).getUTCFullYear();
-        const bMonth = new Date(b).getUTCMonth();
-        const bYear = new Date(b).getUTCFullYear();
-        const aDate = aYear + '' + aMonth;
-        const bDate = bYear + '' + bMonth;
+        const aDate = new Date(a);
+        const bDate = new Date(b);
         if (page === 'previous') {
           if (aDate < bDate) { return 1; }
           if (aDate > bDate) { return -1; }
