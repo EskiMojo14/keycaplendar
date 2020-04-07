@@ -32,12 +32,12 @@ export class DesktopDrawerFilter extends React.Component {
                 <DrawerContent>
                     <div>
                         <div className="subheader">
-                            <Typography use="caption">Vendor</Typography>
+                            <Typography use="caption">Profile</Typography>
                         </div>
-                        <div id="vendorList" className="checkbox-list">
-                            {this.props.vendors.map((value) => {
+                        <div id="profileList" className="checkbox-list">
+                            {this.props.profiles.map((value) => {
                                 return (
-                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
@@ -46,12 +46,12 @@ export class DesktopDrawerFilter extends React.Component {
                     </div>
                     <div>
                         <div className="subheader">
-                            <Typography use="caption">Profile</Typography>
+                            <Typography use="caption">Vendor</Typography>
                         </div>
-                        <div id="profileList" className="checkbox-list">
-                            {this.props.profiles.map((value) => {
+                        <div id="vendorList" className="checkbox-list">
+                            {this.props.vendors.map((value) => {
                                 return (
-                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
@@ -89,12 +89,12 @@ export class TabletDrawerFilter extends React.Component {
                 <DrawerContent>
                     <div>
                         <div className="subheader">
-                            <Typography use="caption">Vendor</Typography>
+                            <Typography use="caption">Profile</Typography>
                         </div>
-                        <div id="vendorList" className="checkbox-list">
-                            {this.props.vendors.map((value) => {
+                        <div id="profileList" className="checkbox-list">
+                            {this.props.profiles.map((value) => {
                                 return (
-                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
@@ -103,12 +103,12 @@ export class TabletDrawerFilter extends React.Component {
                     </div>
                     <div>
                         <div className="subheader">
-                            <Typography use="caption">Profile</Typography>
+                            <Typography use="caption">Vendor</Typography>
                         </div>
-                        <div id="profileList" className="checkbox-list">
-                            {this.props.profiles.map((value) => {
+                        <div id="vendorList" className="checkbox-list">
+                            {this.props.vendors.map((value) => {
                                 return (
-                                    <FormField key={'profile-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
+                                    <FormField key={'vendor-' + value.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}>
                                         <CheckboxFilter label={value} onChange={this.handleChange} />
                                     </FormField>
                                 )
