@@ -188,6 +188,15 @@ $overlay-values: (
             }
             &.selected {
                 @include mdc-states(map-get($variables, primary));
+                .mdc-image-list__supporting {
+                    background-color: rgba(map-get($variables, on-primary),0.75);
+                    .primary-text, .secondary-text {
+                        color: map-get($variables, primary);
+                    }
+                    .live-indicator {
+                        fill: map-get($variables, primary);
+                    }
+                }
             }
         }
     }
