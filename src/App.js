@@ -158,7 +158,7 @@ class App extends React.Component {
         return (set.gbLaunch !== '' && !set.gbLaunch.includes('Q'));
       });
     }
-
+    
     // lists
     sets.forEach((set) => {
       if (set.vendors[0]) {
@@ -222,7 +222,7 @@ class App extends React.Component {
       if (set.vendors.length > 0) {
         return whitelist.vendors.indexOf(set.vendors[0].name) > -1 && whitelist.profiles.indexOf(set.profile) > -1;
       } else {
-        return true;
+        return whitelist.profiles.indexOf(set.profile) > -1;
       }
     });
 
