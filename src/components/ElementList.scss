@@ -6,11 +6,14 @@
 .mdc-list .mdc-list-item {
     &__primary-text {
         div {
-            display: inline-flex;
-            align-items: center;
+            display: inline;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             .twemoji {
                 height: 1.0625rem;
-                margin-left: 0.25rem;
+                margin-left: 0.15rem;
+                margin-bottom: -0.15rem;
             }
         }
     }
