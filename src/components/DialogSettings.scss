@@ -51,6 +51,19 @@
                         }
                     }
                 }
+                .ocean {
+                    background-color: #36526c;
+                    &:not(.mdc-list-item--selected) {
+                        color: rgba(white,0.87);
+                        @include mdc-states(white);
+                        .mdc-list-item__graphic {
+                            fill: rgba(white,0.6);
+                        }
+                        .mdc-list-item__meta {
+                            color: $material-color-teal-200;
+                        }
+                    }
+                }
                 .deep {
                     background-color: #3d3a4a;
                     &:not(.mdc-list-item--selected) {

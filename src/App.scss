@@ -85,6 +85,21 @@ $mdc-theme-on-surface: #000;
     @include theme($theme, true);
 }
 
+.ocean {
+    $theme: (
+        primary: $material-color-teal-200,
+        secondary: $material-color-deep-orange-200,
+        on-primary: black,
+        on-secondary: black,
+        background: #1b2936,
+        error: #cf6679,
+        on-error: black,
+        surface: #1b2936,
+        on-surface: #fff
+    );
+    @include theme($theme, true);
+}
+
 .deep {
     $theme: (
         primary: $material-color-teal-200,
