@@ -133,8 +133,13 @@
                     flex-shrink: 0;
                 }
             }
-            .button a {
-                text-decoration: none;
+            .buttons {
+                .mdc-button {
+                    margin-right: 8px;
+                }
+                a {
+                    text-decoration: none;
+                }
             }
         }
 

@@ -73,10 +73,11 @@ export class DialogSettings extends React.Component {
         const admin = (this.props.user.isAdmin ? (
             <div className="group">
                 <Typography use="subtitle2" tag="h3">Admin</Typography>
-                <div className="button">
+                <div className="buttons">
                     <Link to="/users">
                         <Button label="Manage users" onClick={this.props.close} />
                     </Link>
+                    <Button label="Refresh data" onClick={this.props.getData} />
                 </div>
             </div>
         ) : '')

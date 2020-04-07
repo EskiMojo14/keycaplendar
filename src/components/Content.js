@@ -171,7 +171,7 @@ export class DesktopContent extends React.Component {
           </div>
         </DrawerAppContent>
         {editorElements}
-        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} snackbarQueue={this.props.snackbarQueue} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} snackbarQueue={this.props.snackbarQueue} getData={this.props.getData} />
       </div>
     );
   }
@@ -320,7 +320,7 @@ export class TabletContent extends React.Component {
         {editorElements}
         <TabletDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <TabletDrawerFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} setWhitelist={this.props.setWhitelist} />
-        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} snackbarQueue={this.props.snackbarQueue} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} snackbarQueue={this.props.snackbarQueue} getData={this.props.getData} />
       </div>
     );
   }
@@ -499,7 +499,7 @@ export class MobileContent extends React.Component {
         {editorElements}
         <TabletDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDialog} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <DialogFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDialogOpen} onClose={this.closeFilterDialog} filterBy={this.state.filterBy} setWhitelist={this.props.setWhitelist} />
-        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} bottomNav={this.props.bottomNav} changeBottomNav={this.props.changeBottomNav} snackbarQueue={this.props.snackbarQueue} />
+        <DialogSettings user={this.props.user} setUser={this.props.setUser} open={this.state.settingsDialogOpen} close={this.closeSettingsDialog} theme={this.props.theme} changeTheme={this.props.changeTheme} bottomNav={this.props.bottomNav} changeBottomNav={this.props.changeBottomNav} snackbarQueue={this.props.snackbarQueue} getData={this.props.getData} />
       </div>
     );
   }
