@@ -63,11 +63,13 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     div {
-                        display: flex;
-                        align-items: center;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                         .twemoji {
                             height: 1.0625rem;
                             margin-left: 0.35rem;
+                            margin-bottom: -0.15rem;
                         }
                     }
                 }
