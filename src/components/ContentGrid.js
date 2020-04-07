@@ -73,7 +73,7 @@ export class ContentGrid extends React.Component {
                     return (
                         <div className="outer-container" key={index}>
                             <div className="subheader">
-                                <Typography use="caption" key={index}>{value}</Typography>
+                                <Typography use="caption" key={index}>{value} <b>({filteredSets.length})</b></Typography>
                             </div>
                             {this.createGroup(filteredSets)}
                         </div>
