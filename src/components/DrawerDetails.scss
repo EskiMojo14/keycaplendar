@@ -40,10 +40,10 @@
                 .mdc-typography--overline {
                     margin: 0;
                 }
+                .mdc-typography--headline4, .mdc-typography--body2 {
+                    margin: 8px 0px;
+                }
                 .mdc-typography--headline4 {
-                    &, .mdc-typography--body2 {
-                        margin: 8px 0px;
-                    }
                     div {
                         display: inline-flex;
                         align-items: center;
@@ -57,7 +57,7 @@
             &-button {
                 display: flex;
                 justify-content: stretch;
-                padding: 16px;
+                padding: 0 16px 16px;
                 .mdc-button {
                     flex-grow: 1;
                 }
@@ -65,8 +65,7 @@
             &-list {
                 .subheader {
                     margin: 0;
-                    padding: 16px;
-                    height: 56px;
+                    padding: 0 16px 16px;
                     box-sizing: border-box;
                 }
                 .mdc-list {

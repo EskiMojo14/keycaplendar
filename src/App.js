@@ -97,6 +97,7 @@ class App extends React.Component {
           gbMonth: doc.data().gbMonth,
           gbLaunch: gbLaunch,
           gbEnd: doc.data().gbEnd,
+          shipped: doc.data().shipped,
           vendors: doc.data().vendors
         });
       });

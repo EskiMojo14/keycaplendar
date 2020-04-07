@@ -5,6 +5,7 @@ import { Autocomplete } from './Autocomplete';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { TextField } from '@rmwc/textfield';
 import { Typography } from '@rmwc/typography';
+import { Checkbox } from '@rmwc/checkbox';
 import { LinearProgress } from '@rmwc/linear-progress';
 import { MenuSurfaceAnchor } from '@rmwc/menu';
 import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
@@ -24,6 +25,7 @@ export class DrawerCreate extends React.Component {
             gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -45,6 +47,7 @@ export class DrawerCreate extends React.Component {
             gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -114,11 +117,14 @@ export class DrawerCreate extends React.Component {
             this.setState({
                 [e.target.name]: e.target.value.split(', ')
             });
+        } else if (e.target.name === 'shipped') {
+            this.setState({
+                [e.target.name]: e.target.checked
+            });
         } else {
             this.setState({
                 [e.target.name]: e.target.value
             });
-
         }
     };
 
@@ -223,6 +229,7 @@ export class DrawerCreate extends React.Component {
                 designer: this.state.designer,
                 icDate: this.state.icDate,
                 details: this.state.details,
+                shipped: this.state.shipped,
                 image: this.state.imageURL,
                 gbMonth: this.state.gbMonth,
                 gbLaunch: this.state.gbLaunch,
@@ -306,9 +313,10 @@ export class DrawerCreate extends React.Component {
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" /><path d="M4 5.01h16V8H4z" opacity=".3" /></svg>
                             )
                         }} outlined label="IC date" required pattern="^\d{4}-\d{1,2}-\d{1,2}$" value={this.state.icDate} name='icDate' helpText={{ persistent: true, validationMsg: true, children: 'Format: YYYY-MM-DD' }} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur} />
-                        <TextField autoComplete="off" icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur} />
+                        <TextField autoComplete="off" icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: 'Must be valid link' }} onChange={this.handleChange} onFocus={this.handleFocus} onBlur={this.handleBlur} />
                         <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} desktop />
                         {dateCard}
+                        <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange}/>
                         {this.state.vendors.map((vendor, index) => {
                             const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
@@ -371,6 +379,7 @@ export class DrawerEdit extends React.Component {
             gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -409,6 +418,7 @@ export class DrawerEdit extends React.Component {
             gbMonth: this.props.set.gbMonth,
             gbLaunch: gbLaunch,
             gbEnd: this.props.set.gbEnd,
+            shipped: (this.props.set.shipped ? this.props.set.shipped : false),
             vendors: this.props.set.vendors
         });
     }
@@ -430,6 +440,7 @@ export class DrawerEdit extends React.Component {
             gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -501,6 +512,10 @@ export class DrawerEdit extends React.Component {
         if (e.target.name === 'designer') {
             this.setState({
                 [e.target.name]: e.target.value.split(', ')
+            });
+        } else if (e.target.name === 'shipped') {
+            this.setState({
+                [e.target.name]: e.target.checked
             });
         } else {
             this.setState({
@@ -613,6 +628,7 @@ export class DrawerEdit extends React.Component {
             gbMonth: this.state.gbMonth,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
+            shipped: this.state.shipped,
             vendors: this.state.vendors
         })
             .then((docRef) => {
@@ -692,6 +708,7 @@ export class DrawerEdit extends React.Component {
                         <TextField autoComplete="off" icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                         <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} desktop />
                         {dateCard}
+                        <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange}/>
                         {this.state.vendors.map((vendor, index) => {
                             const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                             return (
@@ -732,7 +749,7 @@ export class DrawerEdit extends React.Component {
                 </DrawerContent>
                 <div className="drawer-footer">
                     <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
-                    <Button outlined label="Save" onClick={(e) => { if (formFilled) { if (this.state.newImage) { e.preventDefault(); this.uploadImage(); } else { e.preventDefault(); this.editEntry(); } } }} disabled={!formFilled} />
+                    <Button outlined label="Save" onClick={(e) => { if (formFilled) { e.preventDefault(); if (this.state.newImage) { this.uploadImage(); } else { this.editEntry(); } } }} disabled={!formFilled} />
                 </div>
             </Drawer>
         );

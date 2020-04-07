@@ -47,6 +47,7 @@ export class DesktopDrawerDetails extends React.Component {
         let ic;
         let gb;
         let vendorList;
+        let shippedLine;
         const sortedVendors = (set.vendors ? set.vendors.sort((a, b) => {
             var regionA = a.region.toLowerCase();
             var regionB = b.region.toLowerCase();
@@ -98,6 +99,7 @@ export class DesktopDrawerDetails extends React.Component {
                     }
                 }
             });
+            shippedLine = (gbEnd <= today ? (this.props.set.shipped ? <Typography use="body2" tag="p">This set has shipped.</Typography> : <Typography use="body2" tag="p">This set has not shipped.</Typography>) : '');
         }
         const gbLine = (gb ? <Typography use="body2" tag="p">{gb}</Typography> : '');
         if (set.vendors) {
@@ -154,6 +156,7 @@ export class DesktopDrawerDetails extends React.Component {
                             <Typography use="overline" tag="h3">Designed by {(set.designer ? set.designer.toString().replace(/,/g, " + ") : '')}</Typography>
                             <Typography use="headline4" tag="h1"><Twemoji options={{ className: "twemoji" }}>{(set.profile ? set.profile : '') + ' ' + (set.colorway ? set.colorway : '')}</Twemoji></Typography>
                             {gbLine}
+                            {shippedLine}
                             <Typography use="body2" tag="p">{ic}</Typography>
                         </div>
                         <div className="details-button">
@@ -200,6 +203,7 @@ export class TabletDrawerDetails extends React.Component {
         let ic;
         let gb;
         let vendorList;
+        let shippedLine;
         let chips = [];
         const chipsContent = ['profile', 'colorway', 'designer', 'vendors'];
         if (set.icDate) {
@@ -240,6 +244,7 @@ export class TabletDrawerDetails extends React.Component {
                     }
                 }
             });
+            shippedLine = (gbEnd <= today ? (this.props.set.shipped ? <Typography use="body2" tag="p">This set has shipped.</Typography> : <Typography use="body2" tag="p">This set has not shipped.</Typography>) : '');
         }
         const gbLine = (gb ? <Typography use="body2" tag="p">{gb}</Typography> : '');
         if (set.vendors) {
@@ -324,6 +329,7 @@ export class TabletDrawerDetails extends React.Component {
                         <Typography use="overline" tag="h3">Designed by {(set.designer ? set.designer.toString().replace(/,/g, " + ") : '')}</Typography>
                         <Typography use="headline4" tag="h1">{(set.profile ? set.profile : '') + ' ' + (set.colorway ? set.colorway : '')}</Typography>
                         {gbLine}
+                        {shippedLine}
                         <Typography use="body2" tag="p">{ic}</Typography>
                     </div>
                     <div className="details-button">

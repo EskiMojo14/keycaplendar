@@ -7,6 +7,7 @@ import { Typography } from '@rmwc/typography';
 import { LinearProgress } from '@rmwc/linear-progress';
 import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
 import { Button } from '@rmwc/button';
+import { Checkbox } from '@rmwc/checkbox';
 import { TextField } from '@rmwc/textfield';
 import { MenuSurfaceAnchor } from '@rmwc/menu';
 import { Autocomplete } from './Autocomplete';
@@ -28,6 +29,7 @@ export class DialogCreate extends React.Component {
             gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -70,6 +72,7 @@ export class DialogCreate extends React.Component {
             gbMonth: true,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -150,6 +153,10 @@ export class DialogCreate extends React.Component {
             this.setState({
                 [e.target.name]: e.target.value.split(', ')
             });
+        } else if (e.target.name === 'shipped') {
+            this.setState({
+                [e.target.name]: e.target.checked
+            });
         } else {
             this.setState({
                 [e.target.name]: e.target.value
@@ -207,8 +214,7 @@ export class DialogCreate extends React.Component {
         });
     };
 
-    uploadImage = e => {
-        e.preventDefault();
+    uploadImage = () => {
         this.setState({ loading: true });
         const storageRef = firebase.storage().ref();
         const keysetsRef = storageRef.child('keysets');
@@ -245,8 +251,7 @@ export class DialogCreate extends React.Component {
         });
     }
 
-    createEntry = e => {
-        e.preventDefault();
+    createEntry = () => {
         const db = firebase.firestore();
         db.collection('keysets').add({
             profile: this.state.profile,
@@ -258,6 +263,7 @@ export class DialogCreate extends React.Component {
             gbMonth: this.state.gbMonth,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
+            shipped: this.state.shipped,
             vendors: this.state.vendors,
             storeLink: this.state.storeLink
         })
@@ -322,7 +328,7 @@ export class DialogCreate extends React.Component {
                                 <TopAppBarTitle>Create Entry</TopAppBarTitle>
                             </TopAppBarSection>
                             <TopAppBarSection alignEnd>
-                                <Button label="Save" onClick={(e) => { if (formFilled) { this.uploadImage(e) } }} disabled={!formFilled} />
+                                <Button label="Save" onClick={(e) => { if (formFilled) { e.preventDefault(); this.uploadImage() } }} disabled={!formFilled} />
                             </TopAppBarSection>
                         </TopAppBarRow>
                         <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
@@ -349,6 +355,7 @@ export class DialogCreate extends React.Component {
                             <TextField autoComplete="off" icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                             <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
                             {dateCard}
+                            <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange}/>
                             {this.state.vendors.map((vendor, index) => {
                                 const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                 return (
@@ -413,6 +420,7 @@ export class DialogEdit extends React.Component {
             gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -458,6 +466,7 @@ export class DialogEdit extends React.Component {
             gbMonth: false,
             gbLaunch: '',
             gbEnd: '',
+            shipped: false,
             vendors: [],
             loading: false,
             imageUploadProgress: 0,
@@ -529,6 +538,7 @@ export class DialogEdit extends React.Component {
             gbMonth: this.props.set.gbMonth,
             gbLaunch: gbLaunch,
             gbEnd: this.props.set.gbEnd,
+            shipped: (this.props.set.shipped ? this.props.set.shipped : false),
             vendors: this.props.set.vendors,
             storeLink: this.props.set.storeLink
         });
@@ -565,6 +575,10 @@ export class DialogEdit extends React.Component {
         if (e.target.name === 'designer') {
             this.setState({
                 [e.target.name]: e.target.value.split(', ')
+            });
+        } else if (e.target.name === 'shipped') {
+            this.setState({
+                [e.target.name]: e.target.checked
             });
         } else {
             this.setState({
@@ -678,6 +692,7 @@ export class DialogEdit extends React.Component {
             gbMonth: this.state.gbMonth,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
+            shipped: this.state.shipped,
             vendors: this.state.vendors
         })
             .then((docRef) => {
@@ -740,7 +755,7 @@ export class DialogEdit extends React.Component {
                                 <TopAppBarTitle>Edit Entry</TopAppBarTitle>
                             </TopAppBarSection>
                             <TopAppBarSection alignEnd>
-                                <Button label="Save" onClick={(e) => { if (formFilled) { if (this.state.newImage) { e.preventDefault(); this.uploadImage(); } else { e.preventDefault(); this.editEntry(); } } }} disabled={!formFilled} />
+                                <Button label="Save" onClick={(e) => { e.preventDefault(); if (formFilled) { if (this.state.newImage) { this.uploadImage(); } else { this.editEntry(); } } }} disabled={!formFilled} />
                             </TopAppBarSection>
                         </TopAppBarRow>
 
@@ -769,6 +784,7 @@ export class DialogEdit extends React.Component {
                                 <TextField autoComplete="off" icon="link" outlined label="Details" required pattern="https?:\/\/.+" value={this.state.details} name='details' helpText={{ persistent: false, validationMsg: true, children: (this.state.details.length > 0 ? 'Must be valid link' : 'Enter a link') }} onChange={this.handleChange} />
                                 <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
                                 {dateCard}
+                                <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange}/>
                                 {this.state.vendors.map((vendor, index) => {
                                     const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                     return (
