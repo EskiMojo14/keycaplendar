@@ -70,6 +70,21 @@ $mdc-theme-on-surface: #000;
     @include theme($theme);
 }
 
+.grey {
+    $theme: (
+        primary: $material-color-teal-200,
+        secondary: $material-color-deep-orange-200,
+        on-primary: black,
+        on-secondary: black,
+        background: #202125,
+        error: #cf6679,
+        on-error: black,
+        surface: #202125,
+        on-surface: #fff
+    );
+    @include theme($theme, true);
+}
+
 .deep {
     $theme: (
         primary: $material-color-teal-200,
