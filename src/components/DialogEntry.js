@@ -264,8 +264,7 @@ export class DialogCreate extends React.Component {
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
             shipped: this.state.shipped,
-            vendors: this.state.vendors,
-            storeLink: this.state.storeLink
+            vendors: this.state.vendors
         })
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
