@@ -23,13 +23,13 @@ export class ViewCard extends React.Component {
                     };
                     const title = set.profile + ' ' + set.colorway;
                     let subtitle;
-                    if (set.gbLaunch && set.gbEnd) {
+                    if (set.gbLaunch !== '' && set.gbEnd) {
                         subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + ' until ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'GB expected ' + gbLaunch;
-                    } else if (set.gbMonth) {
+                    } else if (set.gbMonth && set.gbLaunch !== '') {
                         subtitle = 'GB expected ' + month[gbLaunch.getUTCMonth()];
-                    } else if (set.gbLaunch) {
+                    } else if (set.gbLaunch !== '') {
                         subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()];
                     } else {
                         subtitle = 'IC posted ' + icDate.getUTCDate() + nth(icDate.getUTCDate()) + '\xa0' + month[icDate.getUTCMonth()] + (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + icDate.getUTCFullYear() : '');

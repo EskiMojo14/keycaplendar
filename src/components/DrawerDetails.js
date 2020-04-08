@@ -75,13 +75,13 @@ export class DesktopDrawerDetails extends React.Component {
             } else {
                 verb = 'Runs';
             };
-            if (set.gbLaunch && set.gbEnd) {
+            if (set.gbLaunch !== '' && set.gbEnd) {
                 gb = verb + ' from ' + gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear() ? ' ' + gbLaunch.getUTCFullYear() : '') + ' until ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()] + (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + gbEnd.getUTCFullYear() : '') + '.';
-            } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
+            } else if (set.gbLaunch.includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
-            } else if (set.gbMonth) {
+            } else if (set.gbMonth && set.gbLaunch !== '') {
                 gb = 'Expected ' + month[gbLaunch.getUTCMonth()] + '.';
-            } else if ((set.gbLaunch ? set.gbLaunch : '')) {
+            } else if ((set.gbLaunch !== '')) {
                 gb = verb + ' from ' + gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear() ? ' ' + gbLaunch.getUTCFullYear() : '') + '.';
             } else {
                 gb = false;
@@ -220,13 +220,13 @@ export class TabletDrawerDetails extends React.Component {
             } else {
                 verb = 'Runs';
             };
-            if (set.gbLaunch && set.gbEnd) {
+            if (set.gbLaunch !== '' && set.gbEnd) {
                 gb = verb + ' from ' + gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear() ? ' ' + gbLaunch.getUTCFullYear() : '') + ' until ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()] + (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + gbEnd.getUTCFullYear() : '') + '.';
-            } else if ((set.gbLaunch ? set.gbLaunch : '').includes('Q')) {
+            } else if (set.gbLaunch.includes('Q')) {
                 gb = 'GB expected ' + gbLaunch + '.';
-            } else if (set.gbMonth) {
+            } else if (set.gbMonth && set.gbLaunch !== '') {
                 gb = 'Expected ' + month[gbLaunch.getUTCMonth()] + '.';
-            } else if ((set.gbLaunch ? set.gbLaunch : '')) {
+            } else if ((set.gbLaunch !== '')) {
                 gb = verb + ' from ' + gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear() ? ' ' + gbLaunch.getUTCFullYear() : '') + '.';
             } else {
                 gb = false;

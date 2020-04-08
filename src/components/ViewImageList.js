@@ -24,13 +24,13 @@ export class ViewImageList extends React.Component {
                       };
                     const title = set.profile + ' ' + set.colorway;
                     let subtitle;
-                    if (set.gbLaunch && set.gbEnd) {
+                    if (set.gbLaunch !== '' && set.gbEnd) {
                         subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()] + ' - ' + gbEnd.getUTCDate() + nth(gbEnd.getUTCDate()) + '\xa0' + month[gbEnd.getUTCMonth()];
                     } else if (set.gbLaunch.includes('Q')) {
                         subtitle = 'Expected ' + gbLaunch;
-                    } else if (set.gbMonth) {
+                    } else if (set.gbMonth && set.gbLaunch !== '') {
                         subtitle = 'Expected ' + fullMonth[gbLaunch.getUTCMonth()];
-                    } else if (set.gbLaunch) {
+                    } else if (set.gbLaunch !== '') {
                         subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + '\xa0' + month[gbLaunch.getUTCMonth()];
                     } else {
                         subtitle = 'IC ' + icDate.getUTCDate() + nth(icDate.getUTCDate()) + '\xa0' + month[icDate.getUTCMonth()] + (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ' ' + icDate.getUTCFullYear() : '') ;

@@ -83,9 +83,7 @@ class App extends React.Component {
       querySnapshot.forEach((doc) => {
         const gbLaunchDate = new Date(doc.data().gbLaunch);
         const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
-        const gbLaunch = (doc.data().gbMonth ? (
-          doc.data().gbLaunch + '-' + lastOfMonth.getUTCDate()
-        ) : doc.data().gbLaunch);
+        const gbLaunch = (doc.data().gbMonth && doc.data().gbLaunch !== '' ? ( doc.data().gbLaunch + '-' + lastOfMonth.getUTCDate() ) : doc.data().gbLaunch);
         sets.push({
           id: doc.id,
           profile: doc.data().profile,
@@ -101,6 +99,15 @@ class App extends React.Component {
           vendors: doc.data().vendors
         });
       });
+
+      sets.sort(function (a, b) {
+        var x = a.colorway.toLowerCase();
+        var y = b.colorway.toLowerCase();
+        if (x < y) { return -1; }
+        if (x > y) { return 1; }
+        return 0;
+      });
+      
       this.setState({
         sets: sets
       })
