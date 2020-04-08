@@ -259,7 +259,7 @@ export class DialogCreate extends React.Component {
             designer: this.state.designer,
             icDate: this.state.icDate,
             details: this.state.details,
-            image: this.state.image,
+            image: this.state.imageURL, 
             gbMonth: this.state.gbMonth,
             gbLaunch: this.state.gbLaunch,
             gbEnd: this.state.gbEnd,
