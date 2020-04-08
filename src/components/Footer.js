@@ -22,7 +22,7 @@ export class Footer extends React.Component {
                     <Tooltip align="top" content="eskimojo#0014" showArrow><span className="bold">Discord</span></Tooltip>
                     &nbsp;or&nbsp;
                     <Tooltip align="top" content="keycaplendar@gmail.com" showArrow><a href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change" target="_blank" rel="noopener noreferrer" className="bold">Email</a></Tooltip>
-                    .
+                    . Please note that for your IC to be included, it needs a render of the keyset on a board (not rendered by keycaprenders.com).
                 </Typography>
             </div>
         )
