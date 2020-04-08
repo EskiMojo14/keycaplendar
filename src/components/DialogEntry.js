@@ -360,7 +360,7 @@ export class DialogCreate extends React.Component {
                                 const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                 return (
                                     <Card key={index} outlined className="vendor-container">
-                                        <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
+                                        <Typography use="caption" tag="h3" className="vendor-title">{index > 0 ? 'Vendor ' + (index + 1) : 'Main vendor (typically US)'}</Typography>
                                         <div className="vendor-form">
                                             <MenuSurfaceAnchor>
                                                 <TextField autoComplete="off" icon={{
@@ -789,7 +789,7 @@ export class DialogEdit extends React.Component {
                                     const moveUp = (index !== 0 ? <CardActionButton label="Move Up" onClick={(e) => { e.preventDefault(); this.moveVendor(index); }} /> : '');
                                     return (
                                         <Card key={index} outlined className="vendor-container">
-                                            <Typography use="caption" tag="h3" className="vendor-title">Vendor {index + 1}</Typography>
+                                            <Typography use="caption" tag="h3" className="vendor-title">{index > 0 ? 'Vendor ' + (index + 1) : 'Main vendor (typically US)'}</Typography>
                                             <div className="vendor-form">
                                                 <MenuSurfaceAnchor>
                                                     <TextField autoComplete="off" icon={{
