@@ -37,7 +37,7 @@ export class ViewCard extends React.Component {
                     const designer = set.designer.toString().replace(/,/g, " + ");
                     const oneDay = 24 * 60 * 60 * 1000;
                     const thisWeek = (((gbEnd.getTime() - (7 * oneDay)) < today.getTime()) && gbEnd.getTime() > today.getTime());
-                    const daysLeft = Math.round(Math.abs((gbEnd - today) / oneDay));
+                    const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
                         live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
