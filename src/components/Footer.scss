@@ -8,15 +8,32 @@
     flex-direction: column;
     p {
         margin: 0;
-        &:first-of-type {
+        &:not(:last-of-type) {
             margin-bottom: 16px;
         }
         .bold {
             font-weight: bold;
         }
         .link {
-            margin-left: 16px;
+            margin-right: 16px;
             font-weight: bold;
+        }
+    }
+    .sponsors {
+        margin-top: 16px;
+        display: flex;
+        &-container {
+            margin-bottom: 16px;
+        }
+        a {
+            display: flex;
+            div {
+                background-position: center;
+                background-size: contain;
+            }
+            .cannonkeys, .prototypist {
+                height: 64px;
+            }
         }
     }
 }

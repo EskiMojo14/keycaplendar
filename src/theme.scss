@@ -515,4 +515,12 @@ $overlay-values: (
     .users-container::before {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }
+    .sponsors {
+        .cannonkeys {
+            fill: if($dark,white,#060D44);
+        }
+        .prototypist {
+            fill: if($dark,white,#3F6B6B);
+        }
+    }
 }
