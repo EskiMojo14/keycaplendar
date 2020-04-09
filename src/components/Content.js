@@ -160,7 +160,7 @@ export class DesktopContent extends React.Component {
         <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
-            <main className={"main " + this.props.view}>
+            <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
               {content}
               <Footer />
             </main>
@@ -313,7 +313,7 @@ export class TabletContent extends React.Component {
       <div className={this.props.className}>
         <MobileDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
         <TabletAppBar page={this.props.page} loading={this.props.loading} openNav={this.openNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
-        <main className={"main " + this.props.view}>
+        <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
           {content}
           <Footer />
         </main>
@@ -492,7 +492,7 @@ export class MobileContent extends React.Component {
       <div className={this.props.className + 'app-container' + (this.props.bottomNav && this.props.editor ? ' offset-snackbar' : '')}>
         {search}
         {nav}
-        <main className={"main " + this.props.view}>
+        <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
           {content}
           <Footer />
         </main>
