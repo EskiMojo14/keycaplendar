@@ -164,6 +164,9 @@ export class Footer extends React.Component {
                     <Tooltip align="top" content="keycaplendar@gmail.com" showArrow><a href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change" target="_blank" rel="noopener noreferrer" className="bold">Email</a></Tooltip>
                     . Please note that for your IC to be included, it needs a render of the keyset on a board (not rendered by keycaprenders.com).
                 </Typography>
+				<Typography use="body2" tag="p">
+					Please direct bug reports or feature requests to this project's <a href="https://github.com/EskiMojo14/keycaplendar/issues" target="_blank" rel="noopener noreferrer">Github issues</a> page.
+                </Typography>
 				<div className="sponsors-container">
 					<Typography use="body2" tag="p"><span className="bold">Kindly sponsored by:</span></Typography>
 					<div className="sponsors">
