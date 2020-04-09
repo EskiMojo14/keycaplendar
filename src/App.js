@@ -41,7 +41,8 @@ class App extends React.Component {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(function () {
-        this.setState({ page: page })
+        this.setState({ page: page });
+        this.setSearch('');
         if (page === 'calendar') {
           this.setState({ sort: 'date' });
         } else if (page === 'live') {
