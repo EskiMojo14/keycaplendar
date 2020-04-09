@@ -165,7 +165,7 @@ export class Footer extends React.Component {
                     . Please note that for your IC to be included, it needs a render of the keyset on a board (not rendered by keycaprenders.com).
                 </Typography>
 				<Typography use="body2" tag="p">
-					Please direct bug reports or feature requests to this project's <a href="https://github.com/EskiMojo14/keycaplendar/issues" target="_blank" rel="noopener noreferrer">Github issues</a> page.
+					Please direct bug reports or feature requests to this project's <span className="bold"><a href="https://github.com/EskiMojo14/keycaplendar/issues" target="_blank" rel="noopener noreferrer">Github issues</a></span> page.
                 </Typography>
 				<div className="sponsors-container">
 					<Typography use="body2" tag="p"><span className="bold">Kindly sponsored by:</span></Typography>
