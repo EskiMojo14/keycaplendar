@@ -22,6 +22,7 @@
     .sponsors {
         margin-top: 16px;
         display: flex;
+        flex-wrap: wrap;
         &-container {
             margin-bottom: 16px;
         }
