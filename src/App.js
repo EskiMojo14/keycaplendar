@@ -25,6 +25,30 @@ class App extends React.Component {
     this.setSort = this.setSort.bind(this);
     this.setSearch = this.setSearch.bind(this);
   }
+  getURLQuery = () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('page')) {
+      const pageQuery = params.get('page');
+      const pages = ['calendar', 'live', 'ic', 'previous', 'timeline'];
+      if (pages.indexOf(pageQuery) > -1) {
+        this.setState({ page: pageQuery});
+        if (pageQuery === 'calendar') {
+          this.setState({ sort: 'date' });
+        } else if (pageQuery === 'live') {
+          this.setState({ sort: 'vendor' });
+        } else if (pageQuery === 'ic') {
+          this.setState({ sort: 'profile' });
+        } else if (pageQuery === 'previous') {
+          this.setState({ sort: 'date' });
+        } else if (pageQuery === 'timeline') {
+          this.setState({ sort: 'date' });
+        }
+      }
+      this.getData();
+    } else {
+      this.getData();
+    }
+  }
   changeView(view) {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
@@ -62,6 +86,9 @@ class App extends React.Component {
       }.bind(this), 300);
       const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
       document.title = 'KeycapLendar: ' + title[page];
+      window.history.pushState({
+        page: page
+      }, 'KeycapLendar: ' + title[page], '?page=' + page);
     }
   }
   changeTheme = (theme) => {
@@ -84,7 +111,7 @@ class App extends React.Component {
       querySnapshot.forEach((doc) => {
         const gbLaunchDate = new Date(doc.data().gbLaunch);
         const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
-        const gbLaunch = (doc.data().gbMonth && doc.data().gbLaunch !== '' ? ( doc.data().gbLaunch + '-' + lastOfMonth.getUTCDate() ) : doc.data().gbLaunch);
+        const gbLaunch = (doc.data().gbMonth && doc.data().gbLaunch !== '' ? (doc.data().gbLaunch + '-' + lastOfMonth.getUTCDate()) : doc.data().gbLaunch);
         sets.push({
           id: doc.id,
           profile: doc.data().profile,
@@ -108,14 +135,14 @@ class App extends React.Component {
         if (x > y) { return 1; }
         return 0;
       });
-      
+
       this.setState({
         sets: sets
       })
       this.filterData(this.state.page, sets);
     }).catch((error) => {
       console.log('Error getting data: ' + error);
-      queue.notify({ title: 'Error getting data: ' + error});
+      queue.notify({ title: 'Error getting data: ' + error });
     });
   }
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
@@ -167,7 +194,7 @@ class App extends React.Component {
         return (set.gbLaunch !== '' && !set.gbLaunch.includes('Q'));
       });
     }
-    
+
     // lists
     sets.forEach((set) => {
       if (set.vendors[0]) {
@@ -342,10 +369,10 @@ class App extends React.Component {
   }
   componentDidMount() {
     this.setDevice();
+    this.getURLQuery();
     window.addEventListener("resize", this.setDevice);
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
-    this.getData();
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
       (user) => {
         if (user) {
