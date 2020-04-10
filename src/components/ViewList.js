@@ -12,6 +12,8 @@ export class ViewList extends React.Component {
                     const gbEnd = new Date(set.gbEnd);
                     const icDate = new Date(set.icDate);
                     const today = new Date();
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
                     const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     const nth = function (d) {
                         if (d > 3 && d < 21) return 'th';
@@ -40,7 +42,7 @@ export class ViewList extends React.Component {
                     const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
-                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
+                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > yesterday.getTime());
                     }
                     return (
                         <ElementList page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} store={set.storeLink} thisWeek={thisWeek} daysLeft={daysLeft} live={live} key={index} />

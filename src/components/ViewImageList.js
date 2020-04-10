@@ -11,6 +11,8 @@ export class ViewImageList extends React.Component {
                     const gbEnd = new Date(set.gbEnd);
                     const icDate = new Date(set.icDate);
                     const today = new Date();
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
                     const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     const fullMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                     const nth = function(d) {
@@ -41,7 +43,7 @@ export class ViewImageList extends React.Component {
                     const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
-                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > today.getTime());
+                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > yesterday.getTime());
                     }
                     return (
                         <ElementImage page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} title={title} subtitle={subtitle} image={set.image} set={set} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} daysLeft={daysLeft} live={live} key={index}/>
