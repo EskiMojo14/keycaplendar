@@ -165,7 +165,7 @@ class App extends React.Component {
         endDate.setMinutes(59);
         endDate.setSeconds(59);
         endDate.setMilliseconds(999);
-        return startDate > today || (startDate <= today && endDate >= yesterday);
+        return startDate > today || (startDate <= today && (endDate >= yesterday || set.gbEnd === ''));
       })
     } else if (page === 'live') {
       pageSets = sets.filter(set => {
@@ -175,7 +175,7 @@ class App extends React.Component {
         endDate.setMinutes(59);
         endDate.setSeconds(59);
         endDate.setMilliseconds(999);
-        return startDate <= today && endDate >= yesterday;
+        return startDate <= today && (endDate >= yesterday || set.gbEnd === '');
       })
     } else if (page === 'ic') {
       pageSets = sets.filter(set => {
