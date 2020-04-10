@@ -336,6 +336,7 @@ class App extends React.Component {
     this.setState({
       search: query
     })
+    document.documentElement.scrollTop = 0;
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   }
   setUser = (user) => {
