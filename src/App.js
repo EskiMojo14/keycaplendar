@@ -147,6 +147,8 @@ class App extends React.Component {
   }
   filterData(page = this.state.page, sets = this.state.sets, sort = this.state.sort, search = this.state.search, whitelist = this.state.whitelist) {
     const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
     let pageSets = [];
     let allRegions = [];
     let allVendors = [];
@@ -163,7 +165,7 @@ class App extends React.Component {
         endDate.setMinutes(59);
         endDate.setSeconds(59);
         endDate.setMilliseconds(999);
-        return startDate > today || (startDate <= today && endDate >= today);
+        return startDate > yesterday || (startDate <= yesterday && endDate >= yesterday);
       })
     } else if (page === 'live') {
       pageSets = sets.filter(set => {
@@ -173,7 +175,7 @@ class App extends React.Component {
         endDate.setMinutes(59);
         endDate.setSeconds(59);
         endDate.setMilliseconds(999);
-        return startDate <= today && endDate >= today;
+        return startDate <= yesterday && endDate >= yesterday;
       })
     } else if (page === 'ic') {
       pageSets = sets.filter(set => {
@@ -187,7 +189,7 @@ class App extends React.Component {
         endDate.setMinutes(59);
         endDate.setSeconds(59);
         endDate.setMilliseconds(999);
-        return endDate <= today;
+        return endDate <= yesterday;
       })
     } else if (page === 'timeline') {
       pageSets = sets.filter(set => {
