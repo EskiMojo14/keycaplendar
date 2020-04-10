@@ -42,7 +42,7 @@ export class ViewCard extends React.Component {
                     const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
-                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > yesterday.getTime());
+                        live = (gbLaunch.getTime() < today.getTime() && (gbEnd.getTime() > yesterday.getTime() || set.gbEnd === ''));
                     }
                     return (
                         <ElementCard page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} cardWidth={Math.round(1/this.props.sets.length)} set={set} title={title} subtitle={subtitle} designer={designer} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} thisWeek={thisWeek} daysLeft={daysLeft} live={live} key={index}/>

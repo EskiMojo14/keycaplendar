@@ -42,7 +42,7 @@ export class ViewList extends React.Component {
                     const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
                     let live = false;
                     if (Object.prototype.toString.call(gbLaunch) === '[object Date]') {
-                        live = (gbLaunch.getTime() < today.getTime() && gbEnd.getTime() > yesterday.getTime());
+                        live = (gbLaunch.getTime() < today.getTime() && (gbEnd.getTime() > yesterday.getTime() || set.gbEnd === ''));
                     }
                     return (
                         <ElementList page={this.props.page} selected={(this.props.detailSet === set || this.props.editSet === set)} set={set} title={title} subtitle={subtitle} image={set.image} details={this.props.details} closeDetails={this.props.closeDetails} store={set.storeLink} thisWeek={thisWeek} daysLeft={daysLeft} live={live} key={index} />
