@@ -180,8 +180,7 @@ export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { navDrawerOpen: false, filterDrawerOpen: false, detailsDrawerOpen: false, detailSet: {}, createDrawerOpen: false, editDrawerOpen: false, editSet: {}, deleteDialogOpen: false, deleteSnackbarOpen: false, deleteSet: {}, settingsDialogOpen: false };
-    this.openNavDrawer = this.openNavDrawer.bind(this);
-    this.closeNavDrawer = this.closeNavDrawer.bind(this);
+    this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.openCreateDrawer = this.openCreateDrawer.bind(this);
     this.closeCreateDrawer = this.closeCreateDrawer.bind(this);
     this.openFilterDrawer = this.openFilterDrawer.bind(this);
@@ -207,13 +206,8 @@ export class TabletContent extends React.Component {
     setTimeout(() => { document.querySelector('body').classList.remove('scrolled'); }, 20);
     bodyScroll.enable();
   }
-  openNavDrawer() {
-    this.openModal();
+  toggleNavDrawer() {
     this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
-  }
-  closeNavDrawer() {
-    this.closeModal();
-    this.setState({ navDrawerOpen: false });
   }
   openCreateDrawer() {
     this.openModal();
@@ -311,12 +305,14 @@ export class TabletContent extends React.Component {
     ) : '');
     return (
       <div className={this.props.className}>
-        <MobileDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
-        <TabletAppBar page={this.props.page} loading={this.props.loading} openNav={this.openNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
-        <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
-          {content}
-          <Footer />
-        </main>
+        <DesktopDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.toggleNavDrawer} openSettings={this.openSettingsDialog} />
+        <DrawerAppContent>
+          <TabletAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
+          <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
+            {content}
+            <Footer />
+          </main>
+        </DrawerAppContent>
         {editorElements}
         <TabletDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
         <TabletDrawerFilter vendors={this.props.vendors} profiles={this.props.profiles} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} setWhitelist={this.props.setWhitelist} whitelist={this.props.whitelist} />

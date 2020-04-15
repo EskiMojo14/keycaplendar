@@ -9,7 +9,7 @@ export class DesktopDrawerNav extends React.Component {
     render() {
         const filledIcons = false;
         return (
-            <Drawer className="nav" dismissible open={this.props.open}>
+            <Drawer className={"nav" + (this.props.open ? '' : ' collapsed')} dismissible open={this.props.open}>
                 <DrawerHeader>
                     <img className="logo" src={logo} alt="logo" />
                     <DrawerTitle>KeycapLendar</DrawerTitle>

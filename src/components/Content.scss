@@ -5,20 +5,20 @@
 .mdc-drawer-app-content {
     transition-property: margin;
     transition-timing-function: $mdc-animation-standard-curve-timing-function;
-    .mdc-drawer--animate:not(.mdc-drawer--closing) + &{
+    .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
         transition-duration: $mdc-drawer-animation-enter;
     }
-    .mdc-drawer--closing + &{
+    .mdc-drawer--closing + & {
         transition-duration: $mdc-drawer-animation-exit;
     }
     .mdc-top-app-bar {
         right: 0;
         transition-property:  box-shadow, width;
         transition-timing-function: linear, $mdc-animation-standard-curve-timing-function;
-        .mdc-drawer--animate:not(.mdc-drawer--closing) + &{
+        .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
             transition-duration: 200ms, $mdc-drawer-animation-enter;
         }
-        .mdc-drawer--closing + &{
+        .mdc-drawer--closing + & {
             transition-duration: 200ms, $mdc-drawer-animation-exit;
         }
         .mdc-top-app-bar__navigation-icon {
@@ -30,7 +30,15 @@
     }
 }
 
-.mdc-drawer--open + .mdc-drawer-app-content .mdc-top-app-bar {
+.nav.mdc-drawer + .mdc-drawer-app-content {
+    margin-left: 56px;
+    .mdc-top-app-bar {
+        right: 0;
+        width: calc(100% - 56px);
+    }
+}
+
+.nav.mdc-drawer.mdc-drawer--open + .mdc-drawer-app-content .mdc-top-app-bar {
     width: calc(100% - 256px);
     .mdc-top-app-bar__navigation-icon {
         width: 0;
@@ -38,8 +46,8 @@
     }
 }
 
-.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
-    width: 100%;
+.nav.mdc-drawer.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
+    width: calc(100% - 56px);
     .mdc-top-app-bar__navigation-icon {
         width: 48px;
         padding: 12px;
@@ -72,7 +80,7 @@
     .content-grid {
         flex-grow: 1;
         flex-shrink: 0;
-    } 
+    }
     &::before {
         content: "";
         position: absolute;
@@ -111,7 +119,7 @@
     .main::before {
         top: $mdc-top-app-bar-mobile-row-height;
     }
-    .main.card::before {
+    .main.content.card::before {
         height: 256px - $mdc-top-app-bar-mobile-row-height;
     }
 };

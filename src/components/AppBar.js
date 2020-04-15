@@ -137,7 +137,7 @@ export class TabletAppBar extends React.Component {
                 <TopAppBar fixed>
                     <TopAppBarRow>
                         <TopAppBarSection alignStart>
-                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
+                            <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
                         <TopAppBarSection alignEnd>

@@ -65,6 +65,40 @@
                 transform: translateY(101%);
             }
         }
+        &.mdc-drawer--dismissible {
+            display: flex;
+            transition-property: width;
+            width: 56px;
+            transform: none !important;
+            .mdc-list-item {
+                width: 100%;
+                color: transparent;
+                transition: color 150ms linear, width 1ms 150ms linear;
+                white-space: nowrap;
+            }
+            &.mdc-drawer--open {
+                width: 256px;
+            }
+            &.mdc-drawer--animate {
+                width: 56px;
+            }
+            &.mdc-drawer--opening {
+                width: 256px;
+            }
+            &.mdc-drawer--closing {
+                width: 56px;
+            }
+            .mdc-drawer__header, .mdc-drawer__content {
+                width: 256px;
+            }
+            &.collapsed {
+                .mdc-list-item {
+                    width: 56px;
+                    height: 56px;
+                    box-sizing: border-box;
+                }
+            }
+        }
     }
 }
 
