@@ -12,6 +12,10 @@
     .mdc-drawer:not(.mdc-drawer--dismissible) {
         width: calc(100% - 56px);
     };
+    .mdc-drawer .mdc-drawer__header {
+        height: $mdc-top-app-bar-mobile-row-height; 
+        min-height: auto;
+    }
 };
 
 .mdc-drawer {
@@ -28,6 +32,7 @@
             align-items: center;
             border-bottom: 1px solid var(--divider-color);
             padding: 0 8px 4px;
+            box-sizing: border-box;
             .mdc-drawer__title {
                 margin-bottom: 0;
                 font-family: "Roboto Slab", serif;
