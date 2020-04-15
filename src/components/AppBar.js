@@ -251,8 +251,8 @@ export class MobileAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
                                 <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
-                                    <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
+                                    <MenuItem>Vendor</MenuItem>
                                 </Menu>
                                 <Tooltip enterDelay={500} content="Filter" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
@@ -359,8 +359,8 @@ export class BottomAppBar extends React.Component {
                             </MenuSurfaceAnchor>
                             <MenuSurfaceAnchor>
                                 <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
-                                    <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
+                                    <MenuItem>Vendor</MenuItem>
                                 </Menu>
                                 <Tooltip enterDelay={500} content="Filter" align="bottom">
                                     <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
@@ -453,8 +453,8 @@ export class BottomAppBarIndent extends React.Component {
                             <MenuSurfaceAnchor>
                                 <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
                                 <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
-                                    <MenuItem>Vendor</MenuItem>
                                     <MenuItem>Profile</MenuItem>
+                                    <MenuItem>Vendor</MenuItem>
                                 </Menu>
                                 <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
                                 <Menu anchorCorner="bottomLeft" open={this.state.moreMenuOpen} onClose={this.closeMoreMenu}>

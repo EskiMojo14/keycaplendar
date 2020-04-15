@@ -4,6 +4,9 @@
         top: 0;
     }
     .subheader {
+        display: flex;
+        justify-content: stretch;
+        align-items: center;
         padding: 16px;
         height: 56px;
         box-sizing: border-box;
@@ -21,13 +24,21 @@
             flex-shrink: 0;
         }
     }
-    .checkbox-list {
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        padding-top: 0;
-        .mdc-form-field {
-            height: 48px;
+    .group {
+        border-bottom: 1px solid var(--divider-color);
+        margin-bottom: 16px;
+        .select-all {
+            padding: 0 16px;
+        }
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            padding-top: 0;
+            margin-left: 32px;
+            .mdc-form-field {
+                height: 48px;
+            }
         }
     }
 }

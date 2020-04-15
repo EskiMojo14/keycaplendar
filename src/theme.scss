@@ -108,6 +108,9 @@ $overlay-values: (
         .mdc-checkbox__checkmark {
             color: map-get($variables, on-secondary);
         }
+        .mdc-checkbox__mixedmark {
+            border-color: map-get($variables, on-secondary);
+        }
     }
 
     .mdc-dialog {
@@ -496,8 +499,12 @@ $overlay-values: (
             color: map-get($variables, primary);
         }
     }
-    .main::before {
-        background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+
+    .banner {
+        background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
+        &-text {
+            color: map-get($variables, text-primary);
+        }
     }
 
     .list .content-grid {
