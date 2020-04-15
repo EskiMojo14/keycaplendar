@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from "./firebase";
 import { Link } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from '@rmwc/dialog';
+import { Dialog, DialogTitle, DialogContent } from '@rmwc/dialog';
 import { Typography } from '@rmwc/typography';
 import { List, ListItem, ListItemGraphic, ListItemMeta } from '@rmwc/list';
 import { Button } from '@rmwc/button';
@@ -9,30 +9,6 @@ import { Switch } from '@rmwc/switch';
 import './DialogSettings.scss';
 
 export class DialogSettings extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { theme: 'light', bottomNav: false, account: '' }
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props.open !== prevProps.open) {
-            if (this.props.theme !== this.state.theme) {
-                this.setState({ theme: this.props.theme });
-            }
-        }
-    }
-    changeTheme = (theme) => {
-        this.setState({ theme: theme });
-    }
-    changeBottomNav = (value) => {
-        this.setState({ bottomNav: value });
-    }
-    applySettings = () => {
-        this.props.changeTheme(this.state.theme);
-        if (this.props.changeBottomNav) {
-            this.props.changeBottomNav(this.state.bottomNav);
-        }
-        this.props.close();
-    }
     signOut = () => {
         firebase.auth().signOut()
             .then(() => {
@@ -52,7 +28,7 @@ export class DialogSettings extends React.Component {
         const bottomNav = (this.props.changeBottomNav ? (
             <div className="group">
                 <Typography use="subtitle2" tag="h3">UI</Typography>
-                <Switch label="Bottom navigation" checked={this.state.bottomNav} onChange={evt => this.changeBottomNav(evt.currentTarget.checked)} />
+                <Switch label="Bottom navigation" checked={this.props.bottomNav} onChange={evt => this.props.changeBottomNav(evt.currentTarget.checked)} />
             </div>
         ) : '');
         const user = (this.props.user.name ? (
@@ -82,13 +58,13 @@ export class DialogSettings extends React.Component {
             </div>
         ) : '')
         return (
-            <Dialog open={this.props.open} className="settings-dialog">
+            <Dialog open={this.props.open} onClose={this.props.close} className="settings-dialog">
                 <DialogTitle>Settings</DialogTitle>
                 <DialogContent>
                     <div className="group">
                         <Typography use="subtitle2" tag="h3">Theme</Typography>
                         <List>
-                            <ListItem onClick={() => this.changeTheme('light')} className="light">
+                            <ListItem onClick={() => this.props.changeTheme('light')} className="light">
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -96,9 +72,9 @@ export class DialogSettings extends React.Component {
                                     )
                                 }} />
                                 Light
-                                {(this.state.theme === 'light' ? <ListItemMeta icon="check" /> : '')}
+                                {(this.props.theme === 'light' ? <ListItemMeta icon="check" /> : '')}
                             </ListItem>
-                            <ListItem onClick={() => this.changeTheme('grey')} className="grey">
+                            <ListItem onClick={() => this.props.changeTheme('grey')} className="grey">
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -106,9 +82,9 @@ export class DialogSettings extends React.Component {
                                     )
                                 }} />
                                 Grey
-                                {(this.state.theme === 'grey' ? <ListItemMeta icon="check" /> : '')}
+                                {(this.props.theme === 'grey' ? <ListItemMeta icon="check" /> : '')}
                             </ListItem>
-                            <ListItem onClick={() => this.changeTheme('ocean')} className="ocean">
+                            <ListItem onClick={() => this.props.changeTheme('ocean')} className="ocean">
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -116,9 +92,9 @@ export class DialogSettings extends React.Component {
                                     )
                                 }} />
                                 Ocean
-                                {(this.state.theme === 'ocean' ? <ListItemMeta icon="check" /> : '')}
+                                {(this.props.theme === 'ocean' ? <ListItemMeta icon="check" /> : '')}
                             </ListItem>
-                            <ListItem onClick={() => this.changeTheme('deep')} className="deep">
+                            <ListItem onClick={() => this.props.changeTheme('deep')} className="deep">
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -126,9 +102,9 @@ export class DialogSettings extends React.Component {
                                     )
                                 }} />
                                 Deep
-                                {(this.state.theme === 'deep' ? <ListItemMeta icon="check" /> : '')}
+                                {(this.props.theme === 'deep' ? <ListItemMeta icon="check" /> : '')}
                             </ListItem>
-                            <ListItem onClick={() => this.changeTheme('dark')} className="dark">
+                            <ListItem onClick={() => this.props.changeTheme('dark')} className="dark">
                                 <ListItemGraphic icon={{
                                     strategy: 'component',
                                     icon: (
@@ -136,7 +112,7 @@ export class DialogSettings extends React.Component {
                                     )
                                 }} />
                                 Dark
-                                {(this.state.theme === 'dark' ? <ListItemMeta icon="check" /> : '')}
+                                {(this.props.theme === 'dark' ? <ListItemMeta icon="check" /> : '')}
                             </ListItem>
                         </List>
                     </div>
@@ -144,10 +120,6 @@ export class DialogSettings extends React.Component {
                     {user}
                     {admin}
                 </DialogContent>
-                <DialogActions>
-                    <DialogButton action="close" onClick={this.props.close} isDefaultAction>Cancel</DialogButton>
-                    <DialogButton action="accept" onClick={this.applySettings}>Apply</DialogButton>
-                </DialogActions>
             </Dialog>
         );
     }
