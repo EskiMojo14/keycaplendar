@@ -43,7 +43,10 @@ $overlay-values: (
     body {
         background-color: map-get($variables, background);
     }
-
+    ::selection {
+        background: rgba(map-get($variables, secondary), 0.45);
+        color: inherit;
+    }
     .mdc-button {
         @include mdc-button-ink-color(map-get($variables, primary));
         @include mdc-states(map-get($variables, primary));
