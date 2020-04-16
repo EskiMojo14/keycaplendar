@@ -355,25 +355,34 @@ class App extends React.Component {
     this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
   }
   setDevice = () => {
+    let i = 0;
     let device;
-    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-
-    if (vw >= 840) {
-      device = 'desktop';
-    } else if (vw < 840 && vw >= 480) {
-      device = 'tablet';
-    } else {
-      device = 'mobile';
-    };
-    this.setState({ device: device });
-    if (device === 'mobile') {
-      this.setState({ view: 'list' });
+    let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const calculate = () => {
+      const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      if (vw !== lastWidth || i === 0) {
+        if (vw >= 840) {
+          device = 'desktop';
+        } else if (vw < 840 && vw >= 480) {
+          device = 'tablet';
+        } else {
+          device = 'mobile';
+        };
+        if (device === 'mobile' && this.state.device !== 'mobile') {
+          this.setState({ view: 'list' });
+        }
+        this.setState({ device: device });
+        lastWidth = vw;
+        i++;
+      }
     }
+    calculate();
+    window.addEventListener("resize", calculate);
   }
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
-    window.addEventListener("resize", this.setDevice);
+    this.setDevice();
     document.querySelector("meta[name=theme-color]").setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue('--meta-color'));
     document.querySelector('html').classList = this.state.theme;
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged(
