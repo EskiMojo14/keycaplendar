@@ -485,7 +485,7 @@ export class MobileContent extends React.Component {
       <SearchAppBar open={this.state.searchBarOpen} openBar={this.openSearchBar} close={this.closeSearchBar} search={this.props.search} setSearch={this.props.setSearch} />
     ) : (<div></div>))
     return (
-      <div className={this.props.className + 'app-container' + (this.props.bottomNav && this.props.editor ? ' offset-snackbar' : '')}>
+      <div className={this.props.className + 'app-container' + (this.props.editor ? ' offset-snackbar' : '')+ (this.props.bottomNav ? ' bottom-nav' : '')}>
         {search}
         {nav}
         <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>

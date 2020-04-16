@@ -190,6 +190,15 @@
     will-change: transform, opacity;
 }
 
+.offset-snackbar {
+    & + .mdc-snackbar, .mdc-snackbar  {
+        bottom: 56px + 16px;
+    }
+    &.bottom-nav + .mdc-snackbar, &.bottom-nav .mdc-snackbar  {
+        bottom: 84px;
+    }
+}
+
 @keyframes fade-out {
     from {opacity: 1;}
     to {opacity:0;} 

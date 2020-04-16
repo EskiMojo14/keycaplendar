@@ -49,12 +49,6 @@ $mdc-theme-on-surface: #000;
     transition-duration: 100ms !important;
 }
 
-.offset-snackbar {
-    & + .mdc-snackbar, .mdc-snackbar  {
-        bottom: 84px;
-    }
-}
-
 .light {
     $theme: (
         primary: $material-color-teal-500,
@@ -80,7 +74,7 @@ $mdc-theme-on-surface: #000;
         error: #cf6679,
         on-error: black,
         surface: #202125,
-        on-surface: #fff
+        on-surface: white
     );
     @include theme($theme, true);
 }
@@ -95,7 +89,7 @@ $mdc-theme-on-surface: #000;
         error: #cf6679,
         on-error: black,
         surface: #1b2936,
-        on-surface: #fff
+        on-surface: white
     );
     @include theme($theme, true);
 }
@@ -110,7 +104,7 @@ $mdc-theme-on-surface: #000;
         error: #cf6679,
         on-error: black,
         surface:#17161c,
-        on-surface: #fff,
+        on-surface: white
     );
     @include theme($theme, true);
 }
@@ -125,7 +119,7 @@ $mdc-theme-on-surface: #000;
         error: #cf6679,
         on-error: black,
         surface: #121212,
-        on-surface: #fff
+        on-surface: white
     );
     @include theme($theme, true);
 }
