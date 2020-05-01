@@ -260,7 +260,11 @@ class App extends React.Component {
       if (set.vendors.length > 0) {
         return whitelist.vendors.indexOf(set.vendors[0].name) > -1 && whitelist.profiles.indexOf(set.profile) > -1;
       } else {
-        return whitelist.profiles.indexOf(set.profile) > -1;
+        if (whitelist.vendors.length === 1) {
+          return false;
+        } else {
+          return whitelist.profiles.indexOf(set.profile) > -1;
+        }
       }
     });
 
