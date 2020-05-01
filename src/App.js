@@ -276,11 +276,11 @@ class App extends React.Component {
     const searchedSets = (search !== '' ? searchSets(search) : filteredSets);
 
     // group display
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     searchedSets.forEach((set) => {
       if (sort === 'date') {
-        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const setDate = new Date((page === 'live' ? set.gbEnd : set.gbLaunch));
-        let setMonth = month[setDate.getUTCMonth()] + ' ' + setDate.getUTCFullYear();
+        let setMonth = months[setDate.getUTCMonth()] + ' ' + setDate.getUTCFullYear();
         if (!groups.includes(setMonth) && setMonth !== 'undefined NaN') {
           groups.push(setMonth);
         }
@@ -298,8 +298,8 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === 'date') {
-        const aDate = new Date(a);
-        const bDate = new Date(b);
+        const aDate = new Date(`${a.slice(-4)}-${months.indexOf(a.slice(0, -5)) + 1}-01`);
+        const bDate = new Date(`${b.slice(-4)}-${months.indexOf(b.slice(0, -5)) + 1}-01`);
         if (page === 'previous') {
           if (aDate < bDate) { return 1; }
           if (aDate > bDate) { return -1; }
