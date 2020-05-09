@@ -29,7 +29,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has('page')) {
       const pageQuery = params.get('page');
-      const pages = ['calendar', 'live', 'ic', 'previous', 'timeline'];
+      const pages = ['calendar', 'live', 'ic', 'previous', 'timeline', 'statistics'];
       if (pages.indexOf(pageQuery) > -1) {
         this.setState({ page: pageQuery});
         if (pageQuery === 'calendar') {
@@ -84,7 +84,7 @@ class App extends React.Component {
       setTimeout(function () {
         this.setState({ transition: false })
       }.bind(this), 300);
-      const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
+      const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline', statistics: 'Statistics' };
       document.title = 'KeycapLendar: ' + title[page];
       window.history.pushState({
         page: page
@@ -448,7 +448,7 @@ class App extends React.Component {
     const device = this.state.device;
     let content;
     if (device === 'desktop') {
-      content = <DesktopContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} whitelist={this.state.whitelist} snackbarQueue={queue} />;
+      content = <DesktopContent allSets={this.state.sets} user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} whitelist={this.state.whitelist} snackbarQueue={queue} />;
     } else if (device === 'tablet') {
       content = <TabletContent user={this.state.user} setUser={this.setUser} getData={this.getData} className={(this.state.transition ? 'view-transition' : '')} page={this.state.page} changePage={this.changePage} view={this.state.view} changeView={this.changeView} profiles={this.state.profiles} vendors={this.state.vendors} allVendors={this.state.allVendors} allRegions={this.state.allRegions} sets={this.state.filteredSets} groups={this.state.groups} loading={this.state.loading} sort={this.state.sort} setSort={this.setSort} content={this.state.content} editor={this.state.user.isEditor} search={this.state.search} setSearch={this.setSearch} theme={this.state.theme} changeTheme={this.changeTheme} setWhitelist={this.setWhitelist} whitelist={this.state.whitelist} snackbarQueue={queue} />;
     } else {

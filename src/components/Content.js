@@ -5,6 +5,7 @@ import { DrawerAppContent } from '@rmwc/drawer';
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from './DrawerNav';
 import { Fab } from '@rmwc/fab';
 import { ContentEmpty } from './ContentEmpty';
+import { ContentStatistics } from './ContentStatistics';
 import { ContentGrid } from './ContentGrid';
 import { DialogFilter } from './DialogFilter';
 import { DialogDelete } from './DialogDelete';
@@ -141,11 +142,25 @@ export class DesktopContent extends React.Component {
     this.closeModal();
     this.setState({ settingsDialogOpen: false });
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.page !== prevProps.page && this.props.page === 'statistics') {
+      if (this.state.filterDrawerOpen) {
+        this.closeFilterDrawer();
+      }
+      if (this.state.detailsDrawerOpen) {
+        this.closeDetailsDrawer();
+      }
+    }
+  }
   render() {
     const content = (this.props.content ? (
       <ContentGrid maxColumns={6} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
-    ) : <ContentEmpty />);
-    const editorElements = (this.props.editor ? (
+    ) : (this.props.page === 'statistics' ? (
+        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+      ) : (
+        <ContentEmpty />
+    )));
+    const editorElements = (this.props.editor && this.props.page !== 'statistics' ? (
       <div>
         <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
@@ -160,7 +175,7 @@ export class DesktopContent extends React.Component {
         <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
-            <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
+            <main className={"main " + this.props.view + (this.props.content || this.props.page === 'statistics' ? ' content' : '')}>
               {content}
               <Footer />
             </main>

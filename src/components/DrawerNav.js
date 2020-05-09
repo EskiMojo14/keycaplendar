@@ -52,6 +52,10 @@ export class DesktopDrawerNav extends React.Component {
                             <ListItemGraphic icon="timeline" />
                             Timeline
                         </ListItem>
+                        <ListItem onClick={(e) => this.props.changePage('statistics')} activated={(this.props.page === 'statistics' ? true : false)}>
+                            <ListItemGraphic icon="bar_chart" />
+                            Statistics
+                        </ListItem>
                     </List>
                 </DrawerContent>
                 <div className="drawer-footer">

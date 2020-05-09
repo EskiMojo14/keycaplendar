@@ -1,0 +1,79 @@
+@import '@material/typography/mdc-typography';
+@import '@material/ripple/mdc-ripple';
+.stats-grid {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px;
+    .mdc-card {
+        padding: 16px;
+        &.fullwidth {
+            grid-column: span 2;
+            padding: 0;
+            overflow: hidden;
+            .rmwc-data-table {
+                border: none;
+                .right-border {
+                    border-right: 1px solid var(--divider-color);
+                }
+                &__content {
+                    width: 100%;
+                }
+                &__head .rmwc-data-table__row {
+                    height: 56px;
+                    .rmwc-data-table__head-cell {
+                        @include mdc-typography(subtitle2);
+                        vertical-align: middle;
+                    }
+                }
+                &__body .rmwc-data-table__row {
+                    height: 52px;
+                    .rmwc-data-table__cell {
+                        @include mdc-typography(body2);
+                        &::before {
+                            transition: opacity 100ms;
+                        }
+                        .svg-container {
+                            position: relative;
+                            @include mdc-ripple-surface;
+                            @include mdc-ripple-radius-unbounded;
+                            &.disabled {
+                                cursor: default;
+                            }
+                        }
+                    }
+                }
+                .user-cell {
+                    padding: 0 16px;
+                    .user {
+                        display: flex;
+                        align-items: center;
+                        .avatar {
+                            height: 40px;
+                            width: 40px;
+                            border-radius: 20px;
+                            margin-right: 12px;
+                            background-size: cover;
+                            background-position: center;
+                        }
+                    }
+                }
+                .checkbox-cell {
+                    padding: 0 16px;
+                    .mdc-checkbox {
+                        margin: 0 auto;
+                    }
+                }
+                .icon-cell {
+                    padding: 0 16px;
+                    .mdc-icon-button {
+                        margin: 0 auto;
+                    }
+                }
+                .rmwc-circular-progress {
+                    padding: 12px;
+                }
+            }
+        }
+    }
+}
