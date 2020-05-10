@@ -148,7 +148,7 @@ export class DesktopDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select All" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
+                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
                             </FormField>
                         </div>
                         <div id="vendorList" className="checkbox-list">
@@ -308,7 +308,7 @@ export class TabletDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select All" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
+                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
                             </FormField>
                         </div>
                         <div id="vendorList" className="checkbox-list">
