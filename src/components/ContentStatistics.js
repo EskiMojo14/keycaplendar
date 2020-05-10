@@ -36,6 +36,11 @@ export class ContentStatistics extends React.Component {
             months: months
         });
     }
+    componentDidUpdate(prevProps) {
+        if (this.props.navOpen !== prevProps.navOpen) {
+            setTimeout(() => {this.forceUpdate(); console.log('test')}, 400);
+        }
+    }
     render() {
         function camelize(str) {
             return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {

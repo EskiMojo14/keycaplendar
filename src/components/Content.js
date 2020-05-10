@@ -156,7 +156,7 @@ export class DesktopContent extends React.Component {
     const content = (this.props.content ? (
       <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
     ) : (this.props.page === 'statistics' ? (
-        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} desktop/>
+        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} navOpen={this.state.navDrawerOpen} desktop/>
       ) : (
         <ContentEmpty />
     )));
