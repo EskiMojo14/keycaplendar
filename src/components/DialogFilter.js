@@ -60,6 +60,16 @@ export class DialogFilter extends React.Component {
         });
         this.checkValues();
     }
+    uncheckAll = () => {
+        const valuesCopy = this.state.values;
+        Object.keys(valuesCopy).forEach((key) => {
+            valuesCopy[key].checked = false;
+        });
+        this.setState({
+            values: valuesCopy
+        });
+        this.checkValues();
+    }
     checkValues = (values = this.state.values) => {
         let allChecked = true;
         Object.keys(values).forEach((key) => {
@@ -85,7 +95,7 @@ export class DialogFilter extends React.Component {
                 <DialogContent>
                     <div className="select-all">
                         <FormField>
-                            <Checkbox label="Select all" checked={this.state.allChecked} indeterminate={(!this.state.allChecked && !this.state.allUnchecked)} onClick={() => { if (!this.state.allChecked) {this.checkAll()}}} />
+                            <Checkbox label="Select all" checked={this.state.allChecked} indeterminate={(!this.state.allChecked && !this.state.allUnchecked)} onClick={() => { if (!this.state.allChecked) {this.checkAll()} else {this.uncheckAll()}}} />
                         </FormField>
                     </div>
                     <div id="checkboxList" className="checkbox-list">

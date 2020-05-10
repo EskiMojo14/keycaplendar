@@ -80,6 +80,17 @@ export class DesktopDrawerFilter extends React.Component {
         this.changeWhitelist(prop);
         this.checkValues();
     }
+    uncheckAll = (prop) => {
+        const propCopy = this.state[prop];
+        Object.keys(propCopy).forEach((key) => {
+            propCopy[key].checked = false;
+        });
+        this.setState({
+            [prop]: propCopy
+        });
+        this.changeWhitelist(prop);
+        this.checkValues();
+    }
     checkValues = () => {
         const profiles = this.state.profiles;
         const vendors = this.state.vendors;
@@ -128,7 +139,7 @@ export class DesktopDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select all" checked={this.state.allProfilesChecked} indeterminate={(!this.state.allProfilesChecked && !this.state.allProfilesUnchecked)} onClick={() => { if (!this.state.allProfilesChecked) { this.checkAll('profiles') } }} />
+                                <Checkbox label="Select all" checked={this.state.allProfilesChecked} indeterminate={(!this.state.allProfilesChecked && !this.state.allProfilesUnchecked)} onClick={() => { if (!this.state.allProfilesChecked) { this.checkAll('profiles') } else { this.uncheckAll('profiles') } }} />
                             </FormField>
                         </div>
                         <div id="profileList" className="checkbox-list">
@@ -148,7 +159,7 @@ export class DesktopDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
+                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } else { this.uncheckAll('vendors') } }} />
                             </FormField>
                         </div>
                         <div id="vendorList" className="checkbox-list">
@@ -241,6 +252,17 @@ export class TabletDrawerFilter extends React.Component {
         this.changeWhitelist(prop);
         this.checkValues();
     }
+    uncheckAll = (prop) => {
+        const propCopy = this.state[prop];
+        Object.keys(propCopy).forEach((key) => {
+            propCopy[key].checked = false;
+        });
+        this.setState({
+            [prop]: propCopy
+        });
+        this.changeWhitelist(prop);
+        this.checkValues();
+    }
     checkValues = () => {
         const profiles = this.state.profiles;
         const vendors = this.state.vendors;
@@ -288,7 +310,7 @@ export class TabletDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select all" checked={this.state.allProfilesChecked} indeterminate={(!this.state.allProfilesChecked && !this.state.allProfilesUnchecked)} onClick={() => { if (!this.state.allProfilesChecked) { this.checkAll('profiles') } }} />
+                                <Checkbox label="Select all" checked={this.state.allProfilesChecked} indeterminate={(!this.state.allProfilesChecked && !this.state.allProfilesUnchecked)} onClick={() => { if (!this.state.allProfilesChecked) { this.checkAll('profiles') } else { this.uncheckAll('profiles') } }} />
                             </FormField>
                         </div>
                         <div id="profileList" className="checkbox-list">
@@ -308,7 +330,7 @@ export class TabletDrawerFilter extends React.Component {
                         </div>
                         <div className="select-all">
                             <FormField>
-                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } }} />
+                                <Checkbox label="Select all" checked={this.state.allVendorsChecked} indeterminate={(!this.state.allVendorsChecked && !this.state.allVendorsUnchecked)} onClick={() => { if (!this.state.allVendorsChecked) { this.checkAll('vendors') } else { this.uncheckAll('vendor') } }} />
                             </FormField>
                         </div>
                         <div id="vendorList" className="checkbox-list">
