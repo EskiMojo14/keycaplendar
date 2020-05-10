@@ -8,6 +8,7 @@ export class MenuView extends React.Component {
               <MenuItem selected={(this.props.view === 'card' ? true : false)}>Card</MenuItem>
               <MenuItem selected={(this.props.view === 'list' ? true : false)}>List</MenuItem>
               <MenuItem selected={(this.props.view === 'imageList' ? true : false)}>Image List</MenuItem>
+              <MenuItem selected={(this.props.view === 'compact' ? true : false)}>Compact</MenuItem>
             </Menu>
         );
     }

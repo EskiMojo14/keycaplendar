@@ -1,0 +1,42 @@
+
+@import '@material/theme/variables';
+@import '@material/ripple/mixins';
+@import '@material/theme/mixins';
+
+.mdc-list .mdc-list-item {
+    &__primary-text {
+        div {
+            display: inline;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            .twemoji {
+                height: 1.0625rem;
+                margin-left: 0.15rem;
+                margin-bottom: -0.15rem;
+            }
+        }
+    }
+    .live-indicator {
+        overflow: hidden;
+        height: 24px;
+        flex-shrink: 0;
+        margin: 0;
+        & + .mdc-list-item__text {
+            margin-left: 16px;
+        }
+    }
+    .link {
+        margin-left: auto;
+        width: 48px;
+        height: 48px;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        outline: none;
+    }
+}
+.mdc-list div:last-child .mdc-list-item + .mdc-list-divider {
+    display: none;
+}

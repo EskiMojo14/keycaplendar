@@ -1,6 +1,6 @@
 .group-container {
     display: grid;
-    grid-gap: var(--mdc-layout-grid-gutter-desktop, 24px);
+    grid-gap: 16px;
     grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
@@ -25,7 +25,6 @@
 @media (min-width: 480px) and (max-width: 839px) {
     .group-container {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-gap: var(--mdc-layout-grid-gutter-mobile, 16px);
     }
 }
 

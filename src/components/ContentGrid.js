@@ -3,6 +3,7 @@ import { Typography } from '@rmwc/typography';
 import { ViewCard } from './ViewCard';
 import { ViewList } from './ViewList';
 import { ViewImageList } from './ViewImageList';
+import { ViewCompact } from './ViewCompact';
 
 import './ContentGrid.scss';
 
@@ -48,11 +49,13 @@ export class ContentGrid extends React.Component {
     }
     createGroup = (sets) => {
         if (this.props.view === 'card') {
-            return (<ViewCard sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
+            return (<ViewCard sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'list') {
-            return (<ViewList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
+            return (<ViewList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         } else if (this.props.view === 'imageList') {
-            return (<ViewImageList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} editSet={this.props.editSet} />);
+            return (<ViewImageList sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
+        } else if (this.props.view === 'compact') {
+            return (<ViewCompact sets={sets} page={this.props.page} details={this.props.details} closeDetails={this.props.closeDetails} detailSet={this.props.detailSet} />);
         }
     }
     render() {

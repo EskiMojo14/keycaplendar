@@ -90,15 +90,16 @@
         transition: height 250ms $mdc-animation-standard-curve-timing-function;
         z-index: -1;
     }
-    &.content.card::before {
+    &.content.card::before, &.content.compact::before {
         height: 256px - $mdc-top-app-bar-row-height;
     }
 }
-.bottomNav + .main.card::before {
+.bottomNav + .main.card::before, .bottomNav + .main.compact::before {
     content: none;
 }
 
-.filter-drawer-open .main.card::before, .details-drawer-open .main.card::before {
+.filter-drawer-open .main.card::before, .details-drawer-open .main.card::before,
+.filter-drawer-open .main.compact::before, .details-drawer-open .main.compact::before {
     height: 0;
 }
 
@@ -119,7 +120,7 @@
     .main::before {
         top: $mdc-top-app-bar-mobile-row-height;
     }
-    .main.content.card::before {
+    .main.content.card::before, .main.content.compact::before {
         height: 256px - $mdc-top-app-bar-mobile-row-height;
     }
 };

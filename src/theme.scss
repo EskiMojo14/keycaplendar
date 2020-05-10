@@ -269,17 +269,27 @@ $overlay-values: (
         @include mdc-list-item-graphic-ink-color(map-get($variables, text-secondary));
         @include mdc-list-item-meta-ink-color(map-get($variables, text-secondary));
         @include mdc-states(map-get($variables, on-surface));
-        &--activated, &--selected {
+        &.mdc-list-item--activated, &.mdc-list-item--selected {
             @include mdc-list-item-primary-text-ink-color(map-get($variables, primary));
             @include mdc-list-item-secondary-text-ink-color(map-get($variables, primary));
             @include mdc-list-item-graphic-ink-color(map-get($variables, primary));
             @include mdc-states(map-get($variables, primary));
-            .mdc-list-item__meta {
+            .mdc-list-item__graphic, .mdc-list-item__meta {
                 fill: map-get($variables, primary);
             }
+            .mdc-icon-button {
+                color: map-get($variables, primary);
+                fill: map-get($variables, primary);
+                @include mdc-states(map-get($variables, primary));  
+            }
         }
-        .mdc-list-item__meta {
+        .mdc-list-item__graphic, .mdc-list-item__meta {
             fill: map-get($variables, text-secondary);
+        }
+        .mdc-icon-button {
+            color: map-get($variables, text-secondary);
+            fill: map-get($variables, text-secondary);
+            @include mdc-states(map-get($variables, on-surface));
         }
         .time-indicator {
             background-color: mix(map-get($variables, on-surface), map-get($variables, surface), 80%);
@@ -611,8 +621,14 @@ $overlay-values: (
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }
 
-    .main.card .outer-container:first-of-type .subheader {
+    .main.card .outer-container:first-of-type .subheader, .main.compact .outer-container:first-of-type .subheader {
         color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+    }
+
+    @media (min-width: 840px) {
+        .main.compact .outer-container:nth-child(-n+4) .subheader {
+            color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+        }
     }
 
     .users-container::before {
