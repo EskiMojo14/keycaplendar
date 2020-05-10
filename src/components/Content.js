@@ -154,7 +154,7 @@ export class DesktopContent extends React.Component {
   }
   render() {
     const content = (this.props.content ? (
-      <ContentGrid maxColumns={6} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
+      <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
     ) : (this.props.page === 'statistics' ? (
         <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
       ) : (
@@ -308,7 +308,7 @@ export class TabletContent extends React.Component {
     this.setState({ loading: !this.state.loading });
   }
   render() {
-    const content = (this.props.content ? <ContentGrid maxColumns={2} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} /> : <ContentEmpty />);
+    const content = (this.props.content ? <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} /> : <ContentEmpty />);
     const editorElements = (this.props.editor ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
@@ -472,7 +472,7 @@ export class MobileContent extends React.Component {
     this.setState({ searchBarOpen: false });
   }
   render() {
-    const content = (this.props.content ? <ContentGrid maxColumns={(this.props.view === 'imageList' ? 2 : 1)} groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
+    const content = (this.props.content ? <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
     const editorElements = (this.props.editor ? (
       <div>
         <Fab className={'create-fab' + (this.props.bottomNav ? ' middle' : '')} icon="add" onClick={this.openCreateDialog} />

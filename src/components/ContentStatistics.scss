@@ -33,45 +33,7 @@
                         &::before {
                             transition: opacity 100ms;
                         }
-                        .svg-container {
-                            position: relative;
-                            @include mdc-ripple-surface;
-                            @include mdc-ripple-radius-unbounded;
-                            &.disabled {
-                                cursor: default;
-                            }
-                        }
                     }
-                }
-                .user-cell {
-                    padding: 0 16px;
-                    .user {
-                        display: flex;
-                        align-items: center;
-                        .avatar {
-                            height: 40px;
-                            width: 40px;
-                            border-radius: 20px;
-                            margin-right: 12px;
-                            background-size: cover;
-                            background-position: center;
-                        }
-                    }
-                }
-                .checkbox-cell {
-                    padding: 0 16px;
-                    .mdc-checkbox {
-                        margin: 0 auto;
-                    }
-                }
-                .icon-cell {
-                    padding: 0 16px;
-                    .mdc-icon-button {
-                        margin: 0 auto;
-                    }
-                }
-                .rmwc-circular-progress {
-                    padding: 12px;
                 }
             }
         }
