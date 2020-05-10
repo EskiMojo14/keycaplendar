@@ -35,7 +35,7 @@ class App extends React.Component {
         if (pageQuery === 'calendar') {
           this.setState({ sort: 'date' });
         } else if (pageQuery === 'live') {
-          this.setState({ sort: 'vendor' });
+          this.setState({ sort: 'profile' });
         } else if (pageQuery === 'ic') {
           this.setState({ sort: 'profile' });
         } else if (pageQuery === 'previous') {
@@ -70,7 +70,7 @@ class App extends React.Component {
         if (page === 'calendar') {
           this.setState({ sort: 'date' });
         } else if (page === 'live') {
-          this.setState({ sort: 'vendor' });
+          this.setState({ sort: 'profile' });
         } else if (page === 'ic') {
           this.setState({ sort: 'profile' });
         } else if (page === 'previous') {
