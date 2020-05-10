@@ -14,6 +14,8 @@
 @import '@material/textfield/icon/mixins';
 @import '@material/textfield/helper-text/mixins';
 
+@import '@material/theme/color-palette';
+
 $overlay-values: (
     1: 5%,   // card, switch
     2: 7%,   // contained button
@@ -40,6 +42,47 @@ $overlay-values: (
     $variables: map-merge($theme, $text-colors);
     --meta-color: #{if($dark, darken(overlay-elevation(map-get($variables, surface), 4),10%), darken(map-get($variables, primary),10%))};
     --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
+    $graph-colors: (
+        $material-color-red-500, 
+        $material-color-deep-orange-500, 
+        $material-color-amber-500, 
+        $material-color-yellow-500, 
+        $material-color-lime-500, 
+        $material-color-light-green-500, 
+        $material-color-green-500, 
+        $material-color-teal-500, 
+        $material-color-cyan-500, 
+        $material-color-light-blue-500, 
+        $material-color-blue-500, 
+        $material-color-indigo-500, 
+        $material-color-deep-purple-500, 
+        $material-color-purple-500, 
+        $material-color-pink-500, 
+        $material-color-blue-grey-500, 
+        $material-color-grey-500, 
+        $material-color-brown-500
+    );
+    $graph-colors-dark: (
+        $material-color-red-300, 
+        $material-color-deep-orange-300, 
+        $material-color-amber-300, 
+        $material-color-yellow-300, 
+        $material-color-lime-300, 
+        $material-color-light-green-300, 
+        $material-color-green-300, 
+        $material-color-teal-300, 
+        $material-color-cyan-300, 
+        $material-color-light-blue-300, 
+        $material-color-blue-300, 
+        $material-color-indigo-300, 
+        $material-color-deep-purple-300, 
+        $material-color-purple-300, 
+        $material-color-pink-300, 
+        $material-color-blue-grey-300, 
+        $material-color-grey-300, 
+        $material-color-brown-300
+    );
+    $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r); 
     body {
         background-color: map-get($variables, background);
     }
@@ -453,6 +496,39 @@ $overlay-values: (
             border-bottom-color: map-get($variables, on-surface);
             &-inner {
                 border-bottom-color: map-get($variables, surface);
+            }
+        }
+    }
+    .ct-chart {
+        .ct-label {
+            fill: map-get($variables, text-secondary);
+            color: map-get($variables, text-secondary);
+        }
+    }
+
+    @each $letter in $letters {
+        $color: if($dark, nth($graph-colors-dark, index($letters, $letter)), nth($graph-colors, index($letters, $letter)));
+        .ct-series-#{$letter} {
+            .ct-point, .ct-line, .ct-bar, .ct-slice-donut {
+                stroke: $color;
+            }
+            .ct-slice-pie, .ct-donut-solid, .ct-area {
+                fill: $color;
+            }
+        }
+        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.title-#{$letter}::before,
+        .rmwc-data-table .rmwc-data-table__row:hover .rmwc-data-table__cell.title-#{$letter}::before {
+            background-color: $color;
+        }
+    }
+
+    .count-graph {
+        .ct-series-a {
+            .ct-point, .ct-line, .ct-bar, .ct-slice-donut {
+                stroke: map-get($variables, secondary);
+            }
+            .ct-slice-pie, .ct-donut-solid, .ct-area {
+                fill: map-get($variables, secondary);
             }
         }
     }

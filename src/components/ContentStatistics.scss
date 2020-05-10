@@ -5,8 +5,32 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 16px;
+    margin: 0 auto;
+    max-width: 2000px;
+    width: 100%;
+    box-sizing: border-box;
     .mdc-card {
+        grid-column: span 1;
         padding: 16px;
+        .mdc-typography--headline5 {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .ct-chart {
+            .ct-grid {
+                stroke: var(--divider-color);
+                stroke-dasharray: 4px;
+            }
+        }
+        &.profile-graph {
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            .mdc-typography--headline5 {
+                flex-grow: 0;
+                flex-shrink: 0;
+            }
+        }
         &.fullwidth {
             grid-column: span 2;
             padding: 0;
@@ -25,6 +49,24 @@
                         @include mdc-typography(subtitle2);
                         vertical-align: middle;
                         font-family: 'Lato', sans-serif;
+                        &.profile-title {
+                            padding: 0;
+                            position: relative;
+                            div {
+                                padding: 0.75rem 1rem;
+                                padding-bottom: 0.5rem;
+                            }
+                            &::before {
+                                content: '';
+                                height: 4px;
+                                width: calc(100% - 4px);
+                                opacity: 1;
+                                position: absolute;
+                                top: auto;
+                                right: 2px;
+                                left: 2px;
+                            }
+                        }
                     }
                 }
                 &__body .rmwc-data-table__row {
@@ -38,6 +80,15 @@
                     }
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 1080px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        .mdc-card, .mdc-card.fullwidth {
+            grid-column: span 1;
         }
     }
 }

@@ -172,7 +172,7 @@ export class DesktopContent extends React.Component {
     return (
       <div className={this.props.className}>
         <DesktopDrawerNav open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} openSettings={this.openSettingsDialog} />
-        <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '')}>
+        <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '') + (this.props.page === 'statistics' ? 'statistics ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
             <main className={"main " + this.props.view + (this.props.content || this.props.page === 'statistics' ? ' content' : '')}>

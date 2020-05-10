@@ -82,7 +82,7 @@ $mdc-theme-on-surface: #000;
 .ocean {
     $theme: (
         primary: $material-color-teal-200,
-        secondary: $material-color-deep-orange-200,
+        secondary: $material-color-teal-200,
         on-primary: black,
         on-secondary: black,
         background: #1b2936,
@@ -138,4 +138,4 @@ $mdc-theme-on-surface: #000;
     @include theme($theme);
 }
 
-//@import 'dark-theme';
+@import 'chartist/dist/scss/chartist';

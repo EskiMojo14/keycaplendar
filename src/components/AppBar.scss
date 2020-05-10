@@ -68,13 +68,6 @@
     display: none;
 }
 
-.mdc-top-app-bar:not(.mdc-top-app-bar--short) .logo {
-    padding-left: 20px;
-    & + .mdc-top-app-bar__title {
-        padding-left: 8px;
-    }
-}
-
 @keyframes appear {
     from {opacity: 0;}
     to {opacity: 1;}

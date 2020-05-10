@@ -1,5 +1,8 @@
 import React from 'react';
+//import Chartist from 'chartist';
+import ChartistGraph from 'react-chartist';
 import { Card } from '@rmwc/card';
+import { Typography } from '@rmwc/typography';
 import { DataTable, DataTableContent, DataTableHead, DataTableRow, DataTableHeadCell, DataTableBody, DataTableCell } from '@rmwc/data-table';
 import './ContentStatistics.scss';
 
@@ -41,7 +44,18 @@ export class ContentStatistics extends React.Component {
         }
         let monthData = {};
         const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let countData = [];
+        let shortMonths = [];
+        let profileCount = {};
+        let profileCountData = [];
+        this.props.profiles.forEach((profile) => {
+            profileCount[camelize(profile)] = [];
+        });
+
         this.state.months.forEach((month) => {
+            const monthSlice = month.slice(0, -4);
+            const year = month.slice(-2);
+            shortMonths.push(monthSlice + year);
             let filteredSets = this.props.sets.filter((set) => {
                 if (set.gbLaunch && set.gbLaunch.indexOf('Q') === -1) {
                     const launchDate = new Date(set.gbLaunch);
@@ -53,15 +67,57 @@ export class ContentStatistics extends React.Component {
             });
             monthData[camelize(month)] = {};
             monthData[camelize(month)].count = filteredSets.length;
+            countData.push(filteredSets.length);
             this.props.profiles.forEach((profile) => {
                 const profileSets = filteredSets.filter((set) => {
                     return set.profile === profile;
                 });
+                profileCount[camelize(profile)].push(profileSets.length);
                 monthData[camelize(month)][camelize(profile)] = ( profileSets.length > 0 ? profileSets.length : '' );
             });
         })
+
+        this.props.profiles.forEach((profile) => {
+            profileCountData.push(profileCount[camelize(profile)]);
+        });
+
+        const countChartData = {
+            labels: shortMonths,
+            series: [
+                countData
+            ]
+        }
+        const countChartOptions = {
+            low: 0,
+            axisY: {
+                onlyInteger: true
+            }
+        }
+
+        const profileChartData = {
+            labels: shortMonths,
+            series: profileCountData
+        }
+
+        const profileChartOptions = {
+            stackBars: true,
+            low: 0,
+            axisY: {
+                onlyInteger: true
+            }
+        }
+        const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
         return (
             <div className="stats-grid">
+                <Card className="count-graph">
+                    <Typography use="headline5" tag="h1">Sets per Month</Typography>
+                    <ChartistGraph className="ct-minor-seventh" data={countChartData} options={countChartOptions} type={'Line'} />
+                </Card>
+                <Card className="profile-graph">
+                    <Typography use="headline5" tag="h1">Profile Breakdown</Typography>
+                    <ChartistGraph className="ct-minor-seventh" data={profileChartData} options={profileChartOptions} type={'Bar'} />
+                </Card>
                 <Card className="fullwidth">
                     <DataTable>
                         <DataTableContent>
@@ -69,9 +125,9 @@ export class ContentStatistics extends React.Component {
                                 <DataTableRow>
                                     <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
                                     <DataTableHeadCell className="right-border" alignEnd>Sets</DataTableHeadCell>
-                                    {this.props.profiles.map((profile) => {
+                                    {this.props.profiles.map((profile, index) => {
                                         return (
-                                            <DataTableHeadCell alignEnd key={profile}>{profile}</DataTableHeadCell>
+                                            <DataTableHeadCell alignEnd key={profile} className={'profile-title title-' + letters[index]} ><div className="profile-title">{profile}</div></DataTableHeadCell>
                                         );
                                     })}
                                 </DataTableRow>
