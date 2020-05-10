@@ -137,6 +137,10 @@ export class MobileDrawerNav extends React.Component {
                             <ListItemGraphic icon="timeline" />
                             Timeline
                         </ListItem>
+                        <ListItem onClick={(e) => {this.props.changePage('statistics'); this.props.close()}} activated={(this.props.page === 'statistics' ? true : false)}>
+                            <ListItemGraphic icon="bar_chart" />
+                            Statistics
+                        </ListItem>
                     </List>
                 </DrawerContent>
                 <div className="drawer-footer">
@@ -216,6 +220,10 @@ export class BottomDrawerNav extends React.Component {
                         <ListItem onClick={(e) => {this.props.changePage('timeline'); this.props.close()}} activated={(this.props.page === 'timeline' ? true : false)}>
                             <ListItemGraphic icon="timeline" />
                             Timeline
+                        </ListItem>
+                        <ListItem onClick={(e) => {this.props.changePage('statistics'); this.props.close()}} activated={(this.props.page === 'statistics' ? true : false)}>
+                            <ListItemGraphic icon="bar_chart" />
+                            Statistics
                         </ListItem>
                     </List>
                 </DrawerContent>

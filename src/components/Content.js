@@ -156,7 +156,7 @@ export class DesktopContent extends React.Component {
     const content = (this.props.content ? (
       <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
     ) : (this.props.page === 'statistics' ? (
-        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} desktop/>
       ) : (
         <ContentEmpty />
     )));
@@ -175,7 +175,7 @@ export class DesktopContent extends React.Component {
         <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '') + (this.props.page === 'statistics' ? 'statistics ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
-            <main className={"main " + this.props.view + (this.props.content || this.props.page === 'statistics' ? ' content' : '')}>
+            <main className={"main " + this.props.view + (this.props.content ? ' content' : '') + (this.props.page === 'statistics' ? ' card content' : '')}>
               {content}
               <Footer />
             </main>
@@ -308,8 +308,14 @@ export class TabletContent extends React.Component {
     this.setState({ loading: !this.state.loading });
   }
   render() {
-    const content = (this.props.content ? <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} /> : <ContentEmpty />);
-    const editorElements = (this.props.editor ? (
+    const content = (this.props.content ? (
+      <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} editSet={this.state.editSet} />
+      ) : (this.props.page === 'statistics' ? (
+        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+        ) : (
+        <ContentEmpty />
+    )));
+    const editorElements = (this.props.editor && this.props.page !== 'statistics' ? (
       <div>
         <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
         <DrawerCreate open={this.state.createDrawerOpen} close={this.closeCreateDrawer} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
@@ -323,7 +329,7 @@ export class TabletContent extends React.Component {
         <DesktopDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.toggleNavDrawer} openSettings={this.openSettingsDialog} />
         <DrawerAppContent>
           <TabletAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.openFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
-          <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
+          <main className={"main " + this.props.view + (this.props.content ? ' content' : '') + (this.props.page === 'statistics' ? ' card content' : '')}>
             {content}
             <Footer />
           </main>
@@ -472,8 +478,14 @@ export class MobileContent extends React.Component {
     this.setState({ searchBarOpen: false });
   }
   render() {
-    const content = (this.props.content ? <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} /> : <ContentEmpty />);
-    const editorElements = (this.props.editor ? (
+    const content = (this.props.content ? (
+      <ContentGrid groups={this.props.groups} sets={this.props.sets} sort={this.props.sort} page={this.props.page} view={this.props.view} editor={this.props.editor} details={this.openDetailsDrawer} closeDetails={this.closeDetailsDrawer} detailSet={this.state.detailSet} />
+      ) : (this.props.page === 'statistics' ? (
+        <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+        ) : (
+        <ContentEmpty />
+    )));
+    const editorElements = (this.props.editor && this.props.page !== 'statistics' ? (
       <div>
         <Fab className={'create-fab' + (this.props.bottomNav ? ' middle' : '')} icon="add" onClick={this.openCreateDialog} />
         <DialogCreate open={this.state.createDialogOpen} close={this.closeCreateDialog} profiles={this.props.profiles} allVendors={this.props.allVendors} allRegions={this.props.allRegions} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
@@ -485,7 +497,7 @@ export class MobileContent extends React.Component {
     const nav = (this.props.bottomNav ? (
       <div className="bottomNav">
         <BottomDrawerNav open={this.state.navDrawerOpen} page={this.props.page} changePage={this.props.changePage} close={this.closeNavDrawer} openSettings={this.openSettingsDialog} />
-        {(this.props.editor ? (
+        {(this.props.editor && this.props.page !== 'statistics' ? (
           <BottomAppBarIndent page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} openSearch={this.openSearchBar} />) : (
             <BottomAppBar page={this.props.page} loading={this.props.loading} openFilter={this.openFilterDialog} openNav={this.openNavDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           ))}
@@ -503,7 +515,7 @@ export class MobileContent extends React.Component {
       <div className={this.props.className + 'app-container' + (this.props.editor ? ' offset-snackbar' : '')+ (this.props.bottomNav ? ' bottom-nav' : '')}>
         {search}
         {nav}
-        <main className={"main " + this.props.view + (this.props.content ? ' content' : '')}>
+        <main className={"main " + this.props.view + (this.props.content ? ' content' : '') + (this.props.page === 'statistics' ? ' card content' : '')}>
           {content}
           <Footer />
         </main>

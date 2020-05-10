@@ -134,7 +134,36 @@ export class TabletAppBar extends React.Component {
         } else {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" /><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" /></svg>;
         }
-        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
+        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline', statistics: 'Statistics' };
+        const buttons = (this.props.page === 'statistics' ? '' : (
+            <TopAppBarSection alignEnd>
+                <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                    <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
+                    <Tooltip enterDelay={500} content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                        <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <Tooltip enterDelay={500} content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
+                <MenuSurfaceAnchor>
+                    <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                    <Tooltip content="View" align="bottom">
+                        <div onClick={this.openViewMenu}>
+                            <Ripple unbounded>
+                                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                    {viewIcon}
+                                </div>
+                            </Ripple>
+                        </div>
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <div>
+                    <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
+                    <Tooltip enterDelay={500} content="Search" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
+                    </Tooltip>
+                </div>
+            </TopAppBarSection>
+        ));
         return (
             <div>
                 <TopAppBar fixed>
@@ -143,33 +172,7 @@ export class TabletAppBar extends React.Component {
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.toggleNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
-                        <TopAppBarSection alignEnd>
-                            <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
-                                <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip enterDelay={500} content="Sort" align="bottom" className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
-                                    <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <Tooltip enterDelay={500} content="Filter" align="bottom"><TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.props.toggleFilter} /></Tooltip>
-                            <MenuSurfaceAnchor>
-                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
-                                <Tooltip content="View" align="bottom">
-                                    <div onClick={this.openViewMenu}>
-                                        <Ripple unbounded>
-                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
-                                                {viewIcon}
-                                            </div>
-                                        </Ripple>
-                                    </div>
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <div>
-                                <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
-                                <Tooltip enterDelay={500} content="Search" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
-                                </Tooltip>
-                            </div>
-                        </TopAppBarSection>
+                        {buttons}
                     </TopAppBarRow>
                     <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
@@ -236,7 +239,44 @@ export class MobileAppBar extends React.Component {
         } else {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" /><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" /></svg>;
         }
-        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline' };
+        const title = { calendar: 'Calendar', live: 'Live GBs', ic: 'IC Tracker', previous: 'Previous Sets', account: 'Account', timeline: 'Timeline', statistics: 'Statistics' };
+        const buttons = (this.props.page === 'statistics' ? '' : (
+            <TopAppBarSection alignEnd className="actions">
+                <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                    <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
+                    <Tooltip enterDelay={500} className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <MenuSurfaceAnchor>
+                    <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
+                        <MenuItem>Profile</MenuItem>
+                        <MenuItem>Vendor</MenuItem>
+                    </Menu>
+                    <Tooltip enterDelay={500} content="Filter" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <MenuSurfaceAnchor>
+                    <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                    <Tooltip enterDelay={500} content="View" align="bottom">
+                        <div onClick={this.openViewMenu}>
+                            <Ripple unbounded>
+                                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                    {viewIcon}
+                                </div>
+                            </Ripple>
+                        </div>
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <div>
+                    <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
+                    <Tooltip enterDelay={500} content="Search" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
+                    </Tooltip>
+                </div>
+            </TopAppBarSection>
+        ));
         return (
             <div>
                 <TopAppBar fixed>
@@ -245,41 +285,7 @@ export class MobileAppBar extends React.Component {
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
                             <TopAppBarTitle>{title[this.props.page]}</TopAppBarTitle>
                         </TopAppBarSection>
-                        <TopAppBarSection alignEnd className="actions">
-                            <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
-                                <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip enterDelay={500} className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <MenuSurfaceAnchor>
-                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
-                                    <MenuItem>Profile</MenuItem>
-                                    <MenuItem>Vendor</MenuItem>
-                                </Menu>
-                                <Tooltip enterDelay={500} content="Filter" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <MenuSurfaceAnchor>
-                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
-                                <Tooltip enterDelay={500} content="View" align="bottom">
-                                    <div onClick={this.openViewMenu}>
-                                        <Ripple unbounded>
-                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
-                                                {viewIcon}
-                                            </div>
-                                        </Ripple>
-                                    </div>
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <div>
-                                <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
-                                <Tooltip enterDelay={500} content="Search" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
-                                </Tooltip>
-                            </div>
-                        </TopAppBarSection>
+                        {buttons}
                     </TopAppBarRow>
                     <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>
@@ -346,6 +352,43 @@ export class BottomAppBar extends React.Component {
         } else {
             viewIcon = <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" /><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" /></svg>;
         }
+        const buttons = (this.props.page === 'statistics' ? '' : (
+            <TopAppBarSection alignEnd className="actions">
+                <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
+                    <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
+                    <Tooltip enterDelay={500} className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <MenuSurfaceAnchor>
+                    <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
+                        <MenuItem>Profile</MenuItem>
+                        <MenuItem>Vendor</MenuItem>
+                    </Menu>
+                    <Tooltip enterDelay={500} content="Filter" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <MenuSurfaceAnchor>
+                    <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
+                    <Tooltip enterDelay={500} content="View" align="bottom">
+                        <div onClick={this.openViewMenu}>
+                            <Ripple unbounded>
+                                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
+                                    {viewIcon}
+                                </div>
+                            </Ripple>
+                        </div>
+                    </Tooltip>
+                </MenuSurfaceAnchor>
+                <div>
+                    <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
+                    <Tooltip enterDelay={500} content="Search" align="bottom">
+                        <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
+                    </Tooltip>
+                </div>
+            </TopAppBarSection>
+        ));
         return (
             <div>
                 <TopAppBar className="bottom-app-bar">
@@ -353,41 +396,7 @@ export class BottomAppBar extends React.Component {
                         <TopAppBarSection alignStart className="nav-icon">
                             <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
                         </TopAppBarSection>
-                        <TopAppBarSection alignEnd className="actions">
-                            <MenuSurfaceAnchor className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')}>
-                                <MenuSort sort={this.props.sort} open={this.state.sortMenuOpen} onSelect={evt => this.props.setSort(evt.detail.index)} onClose={this.closeSortMenu} />
-                                <Tooltip enterDelay={500} className={(this.props.page === 'calendar' || this.props.page === 'ic' ? 'hidden' : '')} content="Sort" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 1 }} icon="sort" onClick={this.openSortMenu} />
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <MenuSurfaceAnchor>
-                                <Menu anchorCorner="bottomLeft" open={this.state.filterMenuOpen} onSelect={evt => this.props.openFilter(evt.detail.index)} onClose={this.closeFilterMenu}>
-                                    <MenuItem>Profile</MenuItem>
-                                    <MenuItem>Vendor</MenuItem>
-                                </Menu>
-                                <Tooltip enterDelay={500} content="Filter" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 2 }} icon="filter_list" onClick={this.openFilterMenu} />
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <MenuSurfaceAnchor>
-                                <MenuView view={this.props.view} open={this.state.viewMenuOpen} onSelect={evt => this.changeView(evt.detail.index)} onClose={this.closeViewMenu} />
-                                <Tooltip enterDelay={500} content="View" align="bottom">
-                                    <div onClick={this.openViewMenu}>
-                                        <Ripple unbounded>
-                                            <div tabIndex="0" className="svg-container mdc-icon-button" style={{ '--animation-delay': 3 }}>
-                                                {viewIcon}
-                                            </div>
-                                        </Ripple>
-                                    </div>
-                                </Tooltip>
-                            </MenuSurfaceAnchor>
-                            <div>
-                                <SearchBarModal open={this.state.searchOpen} close={this.closeSearch} search={this.props.search} setSearch={this.props.setSearch} />
-                                <Tooltip enterDelay={500} content="Search" align="bottom">
-                                    <TopAppBarActionItem style={{ '--animation-delay': 4 }} icon="search" onClick={this.openSearch} />
-                                </Tooltip>
-                            </div>
-                        </TopAppBarSection>
+                        {buttons}
                     </TopAppBarRow>
                     <LinearProgress closed={!this.props.loading} />
                 </TopAppBar>

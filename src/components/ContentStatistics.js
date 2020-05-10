@@ -14,7 +14,7 @@ export class ContentStatistics extends React.Component {
         };
     }
     componentDidMount() {
-        const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthName = (this.props.desktop ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] : ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]);
         let months = [];
         this.props.sets.forEach((set) => {
             if (set.gbLaunch && set.gbLaunch.indexOf('Q') === -1) {
@@ -43,7 +43,7 @@ export class ContentStatistics extends React.Component {
             }).replace(/\s+/g, '');
         }
         let monthData = {};
-        const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthName = (this.props.desktop ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] : ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]);
         let countData = [];
         let shortMonths = [];
         let profileCount = {};
@@ -107,7 +107,58 @@ export class ContentStatistics extends React.Component {
             }
         }
         const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-
+        const tableCard = (this.props.desktop ? (
+            <Card className="fullwidth">
+                <DataTable>
+                    <DataTableContent>
+                        <DataTableHead>
+                            <DataTableRow>
+                                <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
+                                <DataTableHeadCell className="right-border" alignEnd>Sets</DataTableHeadCell>
+                                {this.props.profiles.map((profile, index) => {
+                                    return (
+                                        <DataTableHeadCell alignEnd key={profile} className={'profile-title title-' + letters[index]} ><div className="profile-title">{profile}</div></DataTableHeadCell>
+                                    );
+                                })}
+                            </DataTableRow>
+                        </DataTableHead>
+                        <DataTableBody>
+                            {this.state.months.map((month) => {
+                                return (
+                                    <DataTableRow key={month}>
+                                        <DataTableCell className="right-border">{month}</DataTableCell>
+                                        <DataTableCell className="right-border" alignEnd>
+                                            {monthData[camelize(month)].count}
+                                        </DataTableCell>
+                                        {this.props.profiles.map((profile) => {
+                                            return (
+                                                <DataTableCell alignEnd key={profile}>{monthData[camelize(month)][camelize(profile)]}</DataTableCell>
+                                            );
+                                        })}
+                                    </DataTableRow>
+                                );
+                            })}
+                        </DataTableBody>
+                    </DataTableContent>
+                </DataTable>
+            </Card>
+        ) : (
+            <Card className="fullwidth">
+                <DataTable>
+                    <DataTableContent>
+                        <DataTableHead>
+                            <DataTableRow>
+                                {this.props.profiles.map((profile, index) => {
+                                    return (
+                                        <DataTableHeadCell alignEnd key={profile} className={'profile-title title-' + letters[index]} ><div className="profile-title">{profile}</div></DataTableHeadCell>
+                                    );
+                                })}
+                            </DataTableRow>
+                        </DataTableHead>
+                    </DataTableContent>
+                </DataTable>
+            </Card>
+        ));
         return (
             <div className="stats-grid">
                 <Card className="count-graph">
@@ -118,40 +169,7 @@ export class ContentStatistics extends React.Component {
                     <Typography use="headline5" tag="h1">Profile Breakdown</Typography>
                     <ChartistGraph className="ct-minor-seventh" data={profileChartData} options={profileChartOptions} type={'Bar'} />
                 </Card>
-                <Card className="fullwidth">
-                    <DataTable>
-                        <DataTableContent>
-                            <DataTableHead>
-                                <DataTableRow>
-                                    <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
-                                    <DataTableHeadCell className="right-border" alignEnd>Sets</DataTableHeadCell>
-                                    {this.props.profiles.map((profile, index) => {
-                                        return (
-                                            <DataTableHeadCell alignEnd key={profile} className={'profile-title title-' + letters[index]} ><div className="profile-title">{profile}</div></DataTableHeadCell>
-                                        );
-                                    })}
-                                </DataTableRow>
-                            </DataTableHead>
-                            <DataTableBody>
-                                {this.state.months.map((month) => {
-                                    return (
-                                        <DataTableRow key={month}>
-                                            <DataTableCell className="right-border">{month}</DataTableCell>
-                                            <DataTableCell className="right-border" alignEnd>
-                                                {monthData[camelize(month)].count}
-                                            </DataTableCell>
-                                            {this.props.profiles.map((profile) => {
-                                                return (
-                                                    <DataTableCell alignEnd key={profile}>{monthData[camelize(month)][camelize(profile)]}</DataTableCell>
-                                                );
-                                            })}
-                                        </DataTableRow>
-                                    );
-                                })}
-                            </DataTableBody>
-                        </DataTableContent>
-                    </DataTable>
-                </Card>
+                {tableCard}
             </div>
         )
     }
