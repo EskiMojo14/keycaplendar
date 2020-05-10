@@ -31,26 +31,16 @@ export class ContentGrid extends React.Component {
             }
         });
         filteredSets.sort((a, b) => {
-            if (sort === 'date' || page === 'timeline') {
-                const aDate = new Date(a.gbLaunch);
-                const bDate = new Date(b.gbLaunch);
-                if (aDate < bDate) { return -1; }
-                if (aDate > bDate) { return 1; }
-                const aName = a.profile + ' ' + a.colorway;
-                const bName = b.profile + ' ' + b.colorway;
-                if (aName > bName) {
-                    return 1;
-                } else if (aName < bName) {
-                    return -1;
-                }
-            } else {
-                const aName = a.profile + ' ' + a.colorway;
-                const bName = b.profile + ' ' + b.colorway;
-                if (aName > bName) {
-                    return 1;
-                } else if (aName < bName) {
-                    return -1;
-                }
+            const aDate = new Date(a.gbLaunch);
+            const bDate = new Date(b.gbLaunch);
+            if (aDate < bDate) { return -1; }
+            if (aDate > bDate) { return 1; }
+            const aName = a.profile + ' ' + a.colorway;
+            const bName = b.profile + ' ' + b.colorway;
+            if (aName > bName) {
+                return 1;
+            } else if (aName < bName) {
+                return -1;
             }
             return 0;
         })

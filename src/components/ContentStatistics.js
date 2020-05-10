@@ -38,7 +38,7 @@ export class ContentStatistics extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.navOpen !== prevProps.navOpen) {
-            setTimeout(() => {this.forceUpdate(); console.log('test')}, 400);
+            setTimeout(() => {this.forceUpdate();}, 400);
         }
     }
     render() {
