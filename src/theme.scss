@@ -621,16 +621,6 @@ $overlay-values: (
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }
 
-    .main.card .outer-container:first-of-type .subheader, .main.compact .outer-container:first-of-type .subheader {
-        color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
-    }
-
-    @media (min-width: 840px) {
-        .main.compact .outer-container:nth-child(-n+4) .subheader {
-            color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
-        }
-    }
-
     .users-container::before {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }

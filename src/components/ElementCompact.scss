@@ -3,7 +3,7 @@
 @import '@material/ripple/mixins';
 @import '@material/theme/mixins';
 
-.mdc-list .mdc-list-item {
+.compact .mdc-list .mdc-list-item {
     &__primary-text {
         div {
             display: inline;
