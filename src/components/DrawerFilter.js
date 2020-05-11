@@ -20,6 +20,36 @@ export class DesktopDrawerFilter extends React.Component {
             allVendorsUnchecked: false
         }
     }
+    componentDidMount() {
+        if (!this.state.edited && this.props.profiles.length > 0) {
+            let profiles = {};
+            this.props.profiles.forEach((profile) => {
+                profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+                    name: profile,
+                    checked: (this.props.whitelist.profiles.indexOf(profile) > -1 ? true : false)
+                }
+            });
+            this.setState({
+                edited: true,
+                profiles: profiles
+            });
+            this.checkValues();
+        }
+        if (!this.state.edited && this.props.vendors.length > 0) {
+            let vendors = {};
+            this.props.vendors.forEach((vendor) => {
+                vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+                    name: vendor,
+                    checked: (this.props.whitelist.vendors.indexOf(vendor) > -1 ? true : false)
+                }
+            });
+            this.setState({
+                edited: true,
+                vendors: vendors
+            });
+            this.checkValues();
+        }
+    }
     componentDidUpdate(prevProps) {
         if (this.props.profiles !== prevProps.profiles && !this.state.edited && prevProps.profiles.length > 0) {
             let profiles = {};
@@ -190,6 +220,36 @@ export class TabletDrawerFilter extends React.Component {
             allProfilesUnchecked: false,
             allVendorsChecked: true,
             allVendorsUnchecked: false
+        }
+    }
+    componentDidMount() {
+        if (!this.state.edited && this.props.profiles.length > 0) {
+            let profiles = {};
+            this.props.profiles.forEach((profile) => {
+                profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+                    name: profile,
+                    checked: (this.props.whitelist.profiles.indexOf(profile) > -1 ? true : false)
+                }
+            });
+            this.setState({
+                edited: true,
+                profiles: profiles
+            });
+            this.checkValues();
+        }
+        if (!this.state.edited && this.props.vendors.length > 0) {
+            let vendors = {};
+            this.props.vendors.forEach((vendor) => {
+                vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+                    name: vendor,
+                    checked: (this.props.whitelist.vendors.indexOf(vendor) > -1 ? true : false)
+                }
+            });
+            this.setState({
+                edited: true,
+                vendors: vendors
+            });
+            this.checkValues();
         }
     }
     componentDidUpdate(prevProps) {

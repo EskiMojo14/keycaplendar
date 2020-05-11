@@ -169,20 +169,28 @@ export class DesktopContent extends React.Component {
         <SnackbarDeleted open={this.state.deleteSnackbarOpen} close={this.closeDeleteSnackbar} set={this.state.deleteSet} getData={this.props.getData} snackbarQueue={this.props.snackbarQueue} />
       </div>
     ) : '');
+    const drawers = (this.props.view === 'compact' ? (
+      <div>
+        <TabletDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
+        <TabletDrawerFilter profiles={this.props.profiles} vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} setWhitelist={this.props.setWhitelist} whitelist={this.props.whitelist} />
+      </div>
+    ) : (
+      <div className="drawer-container">
+        <DesktopDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
+        <DesktopDrawerFilter profiles={this.props.profiles} vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} setWhitelist={this.props.setWhitelist} whitelist={this.props.whitelist} />
+      </div>
+    ))
     return (
       <div className={this.props.className}>
         <DesktopDrawerNav open={this.state.navDrawerOpen} close={this.toggleNavDrawer} page={this.props.page} changePage={this.props.changePage} openSettings={this.openSettingsDialog} />
-        <DrawerAppContent className={(this.state.detailsDrawerOpen ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen ? 'filter-drawer-open ' : '') + (this.props.page === 'statistics' ? 'statistics ' : '')}>
+        <DrawerAppContent className={(this.state.detailsDrawerOpen && this.props.view !== 'compact' ? 'details-drawer-open ' : '') + (this.state.filterDrawerOpen && this.props.view !== 'compact' ? 'filter-drawer-open ' : '') + (this.props.page === 'statistics' ? 'statistics ' : '')}>
           <DesktopAppBar page={this.props.page} loading={this.props.loading} toggleNav={this.toggleNavDrawer} toggleFilter={this.toggleFilterDrawer} view={this.props.view} changeView={this.props.changeView} sort={this.props.sort} setSort={this.props.setSort} search={this.props.search} setSearch={this.props.setSearch} />
           <div className="content-container">
             <main className={"main " + this.props.view + (this.props.content ? ' content' : '') + (this.props.page === 'statistics' ? ' card content' : '')}>
               {content}
               <Footer />
             </main>
-            <div className="drawer-container">
-              <DesktopDrawerDetails editor={this.props.editor} set={this.state.detailSet} open={this.state.detailsDrawerOpen} close={this.closeDetailsDrawer} edit={this.openEditDrawer} delete={this.openDeleteDialog} search={this.props.search} setSearch={this.props.setSearch} />
-              <DesktopDrawerFilter profiles={this.props.profiles} vendors={this.props.vendors} open={this.state.filterDrawerOpen} close={this.closeFilterDrawer} setWhitelist={this.props.setWhitelist} whitelist={this.props.whitelist} />
-            </div>
+            {drawers}
           </div>
         </DrawerAppContent>
         {editorElements}
