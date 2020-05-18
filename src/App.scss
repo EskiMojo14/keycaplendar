@@ -45,6 +45,10 @@ $mdc-theme-on-surface: #000;
     border-color: var(--divider-color);
 }
 
+.mdc-drawer .mdc-list-item {
+    border-radius: 0;
+}
+
 .mdc-ripple-upgraded::before {
     transition-duration: 100ms !important;
 }
