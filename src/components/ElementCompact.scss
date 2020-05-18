@@ -3,8 +3,16 @@
 @import '@material/ripple/mixins';
 @import '@material/theme/mixins';
 
-.compact .mdc-list .mdc-list-item {
+.compact .mdc-list.mdc-list--two-line .mdc-list-item {
+    height: 64px;
+    &__text {
+        align-self: unset;
+    }
     &__primary-text {
+        margin-bottom: 0;
+        &::before, &::after {
+            content: none;
+        }
         div {
             display: inline;
             white-space: nowrap;
