@@ -112,6 +112,12 @@ class App extends React.Component {
           this.changeView(view);
         }, 0);
       }
+      const bottomNav = this.getCookie("bottomNav");
+      if (bottomNav !== "") {
+        setTimeout(() => {
+          this.changeBottomNav(bottomNav);
+        }, 0);
+      }
     } else {
       this.clearCookies();
     }
@@ -200,6 +206,9 @@ class App extends React.Component {
   changeBottomNav = (value) => {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
+    if (this.state.cookies) {
+      this.setCookie("bottomNav", value, 365);
+    }
   };
   toggleLoading() {
     this.setState({ loading: !this.state.loading });
