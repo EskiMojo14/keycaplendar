@@ -7,6 +7,7 @@ import { Login } from "./components/Login";
 import { Users } from "./components/Users";
 import "./App.scss";
 import { PrivacyPolicy, TermsOfService } from "./components/Legal";
+import { SnackbarCookies } from "./components/SnackbarCookies";
 
 const queue = createSnackbarQueue();
 class App extends React.Component {
@@ -32,6 +33,7 @@ class App extends React.Component {
       search: "",
       user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false },
       whitelist: { vendors: [], profiles: [], edited: false },
+      cookies: true,
     };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -65,6 +67,55 @@ class App extends React.Component {
       this.getData();
     }
   };
+  acceptCookies = () => {
+    this.setState({ cookies: true });
+    this.setCookie("accepted", true, 356);
+  };
+  clearCookies = () => {
+    this.setState({ cookies: false });
+    this.setCookie("accepted", false, -1);
+  };
+  setCookie(cname, cvalue, exdays) {
+    let d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+  getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) === " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+  checkCookies = () => {
+    const accepted = this.getCookie("accepted");
+    if (accepted !== "" && accepted) {
+      this.setState({ cookies: true });
+      const theme = this.getCookie("theme");
+      if (theme !== "") {
+        setTimeout(() => {
+          this.changeTheme(theme);
+        }, 0);
+      }
+      const view = this.getCookie("view");
+      if (view !== "") {
+        setTimeout(() => {
+          this.changeView(view);
+        }, 0);
+      }
+    } else {
+      this.clearCookies();
+    }
+  };
   changeView(view) {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
@@ -81,6 +132,11 @@ class App extends React.Component {
         }.bind(this),
         300
       );
+    } else {
+      this.setState({ view: view });
+    }
+    if (this.state.cookies) {
+      this.setCookie("view", view, 365);
     }
   }
   changePage(page) {
@@ -137,6 +193,9 @@ class App extends React.Component {
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+    if (this.state.cookies) {
+      this.setCookie("theme", theme, 365);
+    }
   };
   changeBottomNav = (value) => {
     document.documentElement.scrollTop = 0;
@@ -494,7 +553,7 @@ class App extends React.Component {
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
-    this.setDevice();
+    this.checkCookies();
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -679,6 +738,7 @@ class App extends React.Component {
             <div className="app">
               {content}
               <SnackbarQueue messages={queue.messages} />
+              <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
             </div>
           </Route>
         </Switch>

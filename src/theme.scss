@@ -236,7 +236,8 @@ $overlay-values: (
     }
 
     .mdc-fab {
-        @include mdc-fab-accessible(map-get($variables, secondary));
+        @include mdc-fab-container-color(map-get($variables, secondary));
+        @include mdc-fab-ink-color(map-get($variables, on-secondary));
     }
 
     .mdc-form-field {
@@ -599,13 +600,6 @@ $overlay-values: (
         color: map-get($variables, text-primary);
         a {
             color: map-get($variables, primary);
-        }
-    }
-
-    .banner {
-        background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
-        &-text {
-            color: map-get($variables, text-primary);
         }
     }
 
