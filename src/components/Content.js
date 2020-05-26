@@ -71,25 +71,40 @@ export class DesktopContent extends React.Component {
     if (this.state.detailsDrawerOpen) {
       this.closeDetailsDrawer();
       setTimeout(() => {
+        if (this.props.view === 'compact') {
+          this.openModal();
+        }
         this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
       }, 400);
     } else {
+      if (this.props.view === 'compact') {
+        this.openModal();
+      }
       this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
     }
   }
   closeFilterDrawer() {
+    if (this.props.view === 'compact') {
+      this.closeModal();
+    }
     this.setState({ filterDrawerOpen: false });
   }
   openDetailsDrawer(set) {
     if (this.state.filterDrawerOpen) {
       this.closeFilterDrawer();
       setTimeout(() => {
+        if (this.props.view === 'compact') {
+          this.openModal();
+        }
         this.setState({
           detailsDrawerOpen: true,
           detailSet: set,
         });
       }, 400);
     } else {
+      if (this.props.view === 'compact') {
+        this.openModal();
+      }
       this.setState({
         detailsDrawerOpen: true,
         detailSet: set,
@@ -97,6 +112,9 @@ export class DesktopContent extends React.Component {
     }
   }
   closeDetailsDrawer() {
+    if (this.props.view === 'compact') {
+      this.closeModal();
+    }
     this.setState({
       detailsDrawerOpen: false,
     });

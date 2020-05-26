@@ -17,6 +17,7 @@
 @import '@material/theme/color-palette';
 
 $overlay-values: (
+    0: 0%,
     1: 5%,   // card, switch
     2: 7%,   // contained button
     3: 8%,   // refresh indicator
