@@ -203,7 +203,6 @@ export class DesktopContent extends React.Component {
         profiles={this.props.profiles}
         sets={this.props.allSets}
         navOpen={this.state.navDrawerOpen}
-        desktop
       />
     ) : (
       <ContentEmpty />

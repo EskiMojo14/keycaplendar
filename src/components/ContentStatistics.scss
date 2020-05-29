@@ -2,9 +2,6 @@
 @import '@material/ripple/mdc-ripple';
 .stats-grid {
     padding: 16px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 16px;
     margin: 0 auto;
     max-width: 2000px;
     width: 100%;
@@ -12,14 +9,24 @@
     .mdc-card {
         grid-column: span 1;
         padding: 16px;
+        overflow: hidden;
+        margin-top: 16px;
+        &:first-of-type {
+            margin-top: 0;
+        }
         .mdc-typography--headline5 {
             margin-top: 0;
             margin-bottom: 16px;
         }
-        .ct-chart {
-            .ct-grid {
-                stroke: var(--divider-color);
-                stroke-dasharray: 4px;
+        .graph-container {
+            max-width: 100%;
+            overflow: auto;
+            .ct-chart {
+                min-width: 1024px;
+                .ct-grid {
+                    stroke: var(--divider-color);
+                    stroke-dasharray: 4px;
+                }
             }
         }
         &.profile-graph {
@@ -32,7 +39,7 @@
             }
         }
         &.fullwidth {
-            grid-column: span 2;
+            grid-column: span 1;
             padding: 0;
             overflow: hidden;
             .rmwc-data-table {

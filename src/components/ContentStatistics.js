@@ -1,6 +1,7 @@
 import React from "react";
-//import Chartist from 'chartist';
+//import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
+import moment from "moment";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -22,29 +23,47 @@ export class ContentStatistics extends React.Component {
     };
   }
   componentDidMount() {
-    const monthName = this.props.desktop
-      ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-      : ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
     let months = [];
     this.props.sets.forEach((set) => {
       if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
         const launchDate = new Date(set.gbLaunch);
-        const month = monthName[launchDate.getUTCMonth()] + " " + launchDate.getUTCFullYear();
+        const leadingZeroMonth = "0" + (launchDate.getUTCMonth() + 1);
+        const month = launchDate.getUTCFullYear() + "-" + leadingZeroMonth.slice(-2);
         if (months.indexOf(month) === -1) {
           months.push(month);
         }
       }
     });
     months.sort(function (a, b) {
-      const aDate = new Date(`${a.slice(-4)}-${monthName.indexOf(a.slice(0, -5)) + 1}-01`);
-      const bDate = new Date(`${b.slice(-4)}-${monthName.indexOf(b.slice(0, -5)) + 1}-01`);
-      if (aDate < bDate) {
+      if (a < b) {
         return -1;
       }
-      if (aDate > bDate) {
+      if (a > b) {
         return 1;
       }
       return 0;
+    });
+    const monthDiff = (dateFrom, dateTo) => {
+      return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
+    };
+    const length = monthDiff(moment(months[0]), moment(months[months.length - 1])) + 1;
+    let i;
+    let allMonths = [];
+    for (i = 0; i < length; i++) {
+      allMonths.push(moment(months[0]).add(i, "M").format("YYYY-MM"));
+    }
+    allMonths.sort(function (a, b) {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    });
+    months = [];
+    allMonths.forEach((month) => {
+      months.push(moment(month).format("MMM YY"));
     });
     this.setState({
       months: months,
@@ -66,48 +85,40 @@ export class ContentStatistics extends React.Component {
         .replace(/\s+/g, "");
     }
     let monthData = {};
-    const monthName = this.props.desktop
-      ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-      : ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
     let countData = [];
-    let shortMonths = [];
     let profileCount = {};
     let profileCountData = [];
     this.props.profiles.forEach((profile) => {
       profileCount[camelize(profile)] = [];
     });
-
     this.state.months.forEach((month) => {
-      const monthSlice = month.slice(0, -4);
-      const year = month.slice(-2);
-      shortMonths.push(monthSlice + year);
       let filteredSets = this.props.sets.filter((set) => {
         if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
           const launchDate = new Date(set.gbLaunch);
-          const setMonth = monthName[launchDate.getUTCMonth()] + " " + launchDate.getUTCFullYear();
+          const leadingZeroMonth = "0" + (launchDate.getUTCMonth() + 1);
+          const setMonth = moment(launchDate.getUTCFullYear() + "-" + leadingZeroMonth.slice(-2)).format("MMM YY");
           return setMonth === month;
         } else {
           return false;
         }
       });
-      monthData[camelize(month)] = {};
-      monthData[camelize(month)].count = filteredSets.length;
+      monthData[month] = {};
+      monthData[month].count = filteredSets.length;
       countData.push(filteredSets.length);
       this.props.profiles.forEach((profile) => {
         const profileSets = filteredSets.filter((set) => {
           return set.profile === profile;
         });
         profileCount[camelize(profile)].push(profileSets.length);
-        monthData[camelize(month)][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
+        monthData[month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
       });
     });
 
     this.props.profiles.forEach((profile) => {
       profileCountData.push(profileCount[camelize(profile)]);
     });
-
     const countChartData = {
-      labels: shortMonths,
+      labels: this.state.months,
       series: [countData],
     };
     const countChartOptions = {
@@ -118,7 +129,7 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: shortMonths,
+      labels: this.state.months,
       series: profileCountData,
     };
 
@@ -157,86 +168,74 @@ export class ContentStatistics extends React.Component {
       "y",
       "z",
     ];
-    const tableCard = this.props.desktop ? (
-      <Card className="fullwidth">
-        <DataTable>
-          <DataTableContent>
-            <DataTableHead>
-              <DataTableRow>
-                <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
-                <DataTableHeadCell className="right-border" alignEnd>
-                  Sets
-                </DataTableHeadCell>
-                {this.props.profiles.map((profile, index) => {
-                  return (
-                    <DataTableHeadCell alignEnd key={profile} className={"profile-title title-" + letters[index]}>
-                      <div className="profile-title">{profile}</div>
-                    </DataTableHeadCell>
-                  );
-                })}
-              </DataTableRow>
-            </DataTableHead>
-            <DataTableBody>
-              {this.state.months.map((month) => {
-                return (
-                  <DataTableRow key={month}>
-                    <DataTableCell className="right-border">{month}</DataTableCell>
-                    <DataTableCell className="right-border" alignEnd>
-                      {monthData[camelize(month)].count}
-                    </DataTableCell>
-                    {this.props.profiles.map((profile) => {
-                      return (
-                        <DataTableCell alignEnd key={profile}>
-                          {monthData[camelize(month)][camelize(profile)]}
-                        </DataTableCell>
-                      );
-                    })}
-                  </DataTableRow>
-                );
-              })}
-            </DataTableBody>
-          </DataTableContent>
-        </DataTable>
-      </Card>
-    ) : (
-      <Card className="fullwidth">
-        <DataTable>
-          <DataTableContent>
-            <DataTableHead>
-              <DataTableRow>
-                {this.props.profiles.map((profile, index) => {
-                  return (
-                    <DataTableHeadCell alignEnd key={profile} className={"profile-title title-" + letters[index]}>
-                      <div className="profile-title">{profile}</div>
-                    </DataTableHeadCell>
-                  );
-                })}
-              </DataTableRow>
-            </DataTableHead>
-          </DataTableContent>
-        </DataTable>
-      </Card>
-    );
     return (
       <div className="stats-grid">
         <Card className="count-graph">
           <Typography use="headline5" tag="h1">
             Sets per Month
           </Typography>
-          <ChartistGraph className="ct-minor-seventh" data={countChartData} options={countChartOptions} type={"Line"} />
+          <div className="graph-container">
+            <ChartistGraph
+              className="ct-double-octave"
+              data={countChartData}
+              options={countChartOptions}
+              type={"Line"}
+            />
+          </div>
         </Card>
         <Card className="profile-graph">
           <Typography use="headline5" tag="h1">
             Profile Breakdown
           </Typography>
-          <ChartistGraph
-            className="ct-minor-seventh"
-            data={profileChartData}
-            options={profileChartOptions}
-            type={"Bar"}
-          />
+          <div className="graph-container">
+            <ChartistGraph
+              className="ct-double-octave"
+              data={profileChartData}
+              options={profileChartOptions}
+              type={"Bar"}
+            />
+          </div>
         </Card>
-        {tableCard}
+        <Card className="fullwidth">
+          <DataTable>
+            <DataTableContent>
+              <DataTableHead>
+                <DataTableRow>
+                  <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
+                  <DataTableHeadCell className="right-border" alignEnd>
+                    Sets
+                  </DataTableHeadCell>
+                  {this.props.profiles.map((profile, index) => {
+                    return (
+                      <DataTableHeadCell alignEnd key={profile} className={"profile-title title-" + letters[index]}>
+                        <div className="profile-title">{profile}</div>
+                      </DataTableHeadCell>
+                    );
+                  })}
+                </DataTableRow>
+              </DataTableHead>
+              <DataTableBody>
+                {this.state.months.map((month) => {
+                  return (
+                    <DataTableRow key={month}>
+                      <DataTableCell className="right-border">{month}</DataTableCell>
+                      <DataTableCell className="right-border" alignEnd>
+                        {monthData[month].count}
+                      </DataTableCell>
+                      {this.props.profiles.map((profile) => {
+                        return (
+                          <DataTableCell alignEnd key={profile}>
+                            {monthData[month][camelize(profile)]}
+                          </DataTableCell>
+                        );
+                      })}
+                    </DataTableRow>
+                  );
+                })}
+              </DataTableBody>
+            </DataTableContent>
+          </DataTable>
+        </Card>
       </div>
     );
   }
