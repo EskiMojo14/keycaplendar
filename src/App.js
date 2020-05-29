@@ -113,9 +113,10 @@ class App extends React.Component {
         }, 0);
       }
       const bottomNav = this.getCookie("bottomNav");
+      const bottomNavBool = (bottomNav === 'true');
       if (bottomNav !== "") {
         setTimeout(() => {
-          this.changeBottomNav(bottomNav);
+          this.changeBottomNav(bottomNavBool);
         }, 0);
       }
     } else {
