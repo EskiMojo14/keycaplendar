@@ -28,12 +28,25 @@
         }
         a {
             display: flex;
+            text-decoration: none;
             div {
                 background-position: center;
                 background-size: contain;
             }
-            .cannonkeys, .prototypist {
+            .cannonkeys, .prototypist, .deskhero {
                 height: 64px;
+            }
+            .deskhero {
+                display: flex;
+                align-items: center;
+                font-family: 'Lexend Zetta';
+                text-transform: uppercase;
+                font-size: 1.5rem;
+                padding-left: 16px;
+                white-space: nowrap;
+                .accent {
+                    color: #fc0d1c;
+                }
             }
         }
     }

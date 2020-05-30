@@ -627,5 +627,8 @@ $overlay-values: (
         .prototypist {
             fill: if($dark,white,#3F6B6B);
         }
+        .deskhero {
+            color: map-get($variables, on-surface);
+        }
     }
 }

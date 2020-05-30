@@ -265,6 +265,11 @@ export class Footer extends React.Component {
             <a href="https://prototypist.net/" target="_blank" rel="noopener noreferrer">
               {prototypistLogo}
             </a>
+            <a href="https://www.deskhero.ca/" target="_blank" rel="noopener noreferrer">
+              <div className="deskhero">
+                Desk<span className="accent">[H]</span>ero
+              </div>
+            </a>
           </div>
         </div>
         <Typography use="body2" tag="p">
