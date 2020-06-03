@@ -467,8 +467,10 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === "date") {
-        const aDate = new Date(`${a.slice(-4)}-${months.indexOf(a.slice(0, -5)) + 1}-01`);
-        const bDate = new Date(`${b.slice(-4)}-${months.indexOf(b.slice(0, -5)) + 1}-01`);
+        const aMonth = "0" + (months.indexOf(a.slice(0, -5)) + 1);
+        const bMonth = "0" + (months.indexOf(b.slice(0, -5)) + 1);
+        const aDate = `${a.slice(-4)}-${aMonth.slice(-2)}-01`;
+        const bDate = `${b.slice(-4)}-${bMonth.slice(-2)}-01`;
         if (page === "previous") {
           if (aDate < bDate) {
             return 1;

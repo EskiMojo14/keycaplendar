@@ -45,12 +45,10 @@ export class ContentGrid extends React.Component {
       }
     });
     filteredSets.sort((a, b) => {
-      const aDate = new Date(a.gbLaunch);
-      const bDate = new Date(b.gbLaunch);
-      if (aDate < bDate) {
+      if (a.gbLaunch < b.gbLaunch) {
         return -1;
       }
-      if (aDate > bDate) {
+      if (a.gbLaunch > b.gbLaunch) {
         return 1;
       }
       const aName = a.profile + " " + a.colorway;
