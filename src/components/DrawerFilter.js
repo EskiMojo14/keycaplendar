@@ -462,7 +462,7 @@ export class TabletDrawerFilter extends React.Component {
                     if (!this.state.allVendorsChecked) {
                       this.checkAll("vendors");
                     } else {
-                      this.uncheckAll("vendor");
+                      this.uncheckAll("vendors");
                     }
                   }}
                 />
