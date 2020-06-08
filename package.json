@@ -22,7 +22,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-twemoji": "^0.2.3",
-    "rmwc": "^5.7.2"
+    "rmwc": "^5.7.2",
+    "websocket-extensions": "^0.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
