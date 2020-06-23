@@ -1,42 +1,44 @@
 .group-container {
-    display: grid;
-    grid-gap: 16px;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 @media (min-width: 840px) and (max-width: 1499px) {
-    .group-container {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  .group-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 840px) and (max-width: 1149px) {
-    .filter-drawer-open .group-container, .details-drawer-open .group-container {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .filter-drawer-open .group-container,
+  .details-drawer-open .group-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 840px) and (max-width: 999px) {
-    .mdc-drawer--open + .mdc-drawer-app-content .filter-drawer-open .group-container, .details-drawer-open .group-container {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
+  .mdc-drawer--open + .mdc-drawer-app-content .filter-drawer-open .group-container,
+  .details-drawer-open .group-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 480px) and (max-width: 839px) {
-    .group-container {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .group-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 480px) and (max-width: 659px) {
-    .mdc-drawer--open + .mdc-drawer-app-content .group-container {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
+  .mdc-drawer--open + .mdc-drawer-app-content .group-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 479px) {
-    .group-container {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-        grid-gap: var(--mdc-layout-grid-gutter-mobile, 16px);
-    }
+  .group-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-gap: var(--mdc-layout-grid-gutter-mobile, 16px);
+  }
 }

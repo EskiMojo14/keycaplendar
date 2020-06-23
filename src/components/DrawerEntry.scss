@@ -1,116 +1,115 @@
 .mdc-drawer.drawer-right.entry-drawer {
-    width: 360px;
-    &.mdc-drawer--modal {
-        top: 0;
+  width: 360px;
+  &.mdc-drawer--modal {
+    top: 0;
+  }
+  .mdc-drawer__header {
+    border-bottom: 1px solid var(--divider-color);
+    .mdc-drawer__title {
+      &::before {
+        height: 42px;
+      }
+      &::after {
+        content: none;
+      }
     }
-    .mdc-drawer__header {
-        border-bottom: 1px solid var(--divider-color);
-        .mdc-drawer__title{
-            &::before {
-                height: 42px;
-            }
-            &::after {
-                content: none;
-            }
+  }
+  .form {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    &-double {
+      display: flex;
+      .select-container {
+        width: 112px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin-right: 16px;
+      }
+      .field {
+        flex: auto 1;
+        &-container {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
         }
-
+      }
+      .half {
+        &:first-child {
+          margin-right: 8px;
+        }
+        &:last-child {
+          margin-left: 8px;
+        }
+      }
     }
-    .form {
+    .mdc-text-field {
+      margin-bottom: 16px;
+      & + .mdc-text-field-helper-line {
+        margin-top: -16px;
+        margin-bottom: 16px;
+      }
+    }
+    .mdc-form-field {
+      margin-bottom: 16px;
+    }
+    .date-container {
+      overflow: hidden;
+      margin-bottom: 16px;
+      .date-title {
+        margin: 0;
         padding: 16px;
+      }
+      .date-form {
         display: flex;
         flex-direction: column;
-        &-double {
-            display: flex;
-            .select-container {
-                width: 112px;
-                flex-grow: 0;
-                flex-shrink: 0;
-                margin-right: 16px;
-            }
-            .field {
-                flex: auto 1;
-                &-container {
-                    flex-grow: 1;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-            }
-            .half {
-                &:first-child {
-                    margin-right: 8px;
-                }
-                &:last-child {
-                    margin-left: 8px;
-                }
-            }
-        } 
-        .mdc-text-field {
-            margin-bottom: 16px;
-            & + .mdc-text-field-helper-line {
-                margin-top: -16px;
-                margin-bottom: 16px;
-            }
+        padding: 0 16px;
+        .mdc-text-field-helper-line:last-of-type {
+          margin-bottom: 0;
         }
-        .mdc-form-field {
-            margin-bottom: 16px;
-        }
-        .date-container {
-            overflow: hidden;
-            margin-bottom: 16px;
-            .date-title {
-                margin: 0;
-                padding: 16px;
-            }
-            .date-form {
-                display: flex;
-                flex-direction: column;
-                padding: 0 16px;
-                .mdc-text-field-helper-line:last-of-type {
-                    margin-bottom: 0;
-                }
-            }
-        }
-        .vendor-container {
-            margin-bottom: 16px;
-            .vendor-title {
-                margin: 0;
-                padding: 16px;
-            }
-            .vendor-form {
-                display: flex;
-                flex-direction: column;
-                padding: 0 16px;
-                .mdc-text-field-helper-line:last-of-type {
-                    margin-bottom: 0;
-                }
-            }
-        }
-        .add-button {
-            display: flex;
-            justify-content: flex-end;
-            flex-grow: 0;
-        }
+      }
     }
-    .mdc-menu-surface--anchor .mdc-text-field {
-        width: 100%;
-    }
-    .drawer-footer {
-        height: 64px;
-        padding: 8px;
-        box-sizing: border-box;
+    .vendor-container {
+      margin-bottom: 16px;
+      .vendor-title {
+        margin: 0;
+        padding: 16px;
+      }
+      .vendor-form {
         display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        position: relative;
-        .mdc-linear-progress {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        flex-direction: column;
+        padding: 0 16px;
+        .mdc-text-field-helper-line:last-of-type {
+          margin-bottom: 0;
         }
-        .mdc-button {
-            margin-left: 16px;
-        }
+      }
     }
+    .add-button {
+      display: flex;
+      justify-content: flex-end;
+      flex-grow: 0;
+    }
+  }
+  .mdc-menu-surface--anchor .mdc-text-field {
+    width: 100%;
+  }
+  .drawer-footer {
+    height: 64px;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    .mdc-linear-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    .mdc-button {
+      margin-left: 16px;
+    }
+  }
 }

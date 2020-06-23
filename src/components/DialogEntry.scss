@@ -1,156 +1,156 @@
-@import '@material/animation/variables';
-@import '@material/theme/variables';
-@import '@material/elevation/mixins';
-@import '@material/ripple/mixins';
-@import '@material/select/mixins';
+@import "@material/animation/variables";
+@import "@material/theme/variables";
+@import "@material/elevation/mixins";
+@import "@material/ripple/mixins";
+@import "@material/select/mixins";
 
 $enter-time: 450ms;
 $exit-time: 400ms;
 
 .full-screen-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 7;
+  @include mdc-elevation(16);
+  flex-direction: column;
+  justify-content: stretch;
+  overflow: hidden;
+  transition-property: transform;
+  transition-timing-function: $mdc-animation-standard-curve-timing-function;
+  display: none;
+  &--animate {
+    transform: translateY(101%);
+  }
+  &--opening {
+    transform: translateY(0);
+    transition-duration: $enter-time;
+  }
+  &--closing {
+    transform: translateY(101%);
+    transition-duration: $exit-time;
+  }
+  &--open {
+    display: flex;
+  }
+  &-scrim {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 7;
-    @include mdc-elevation(16);
-    flex-direction: column;
-    justify-content: stretch;
-    overflow: hidden;
-    transition-property: transform;
+    opacity: 0;
+    z-index: 6;
+    transition-property: opacity;
     transition-timing-function: $mdc-animation-standard-curve-timing-function;
     display: none;
-    &--animate {
-        transform: translateY(101%);
+
+    .full-screen-dialog--open + & {
+      display: block;
     }
-    &--opening {
-        transform: translateY(0);
-        transition-duration: $enter-time;
+
+    .full-screen-dialog--animate + & {
+      opacity: 0;
     }
-    &--closing {
-        transform: translateY(101%);
-        transition-duration: $exit-time;
+
+    .full-screen-dialog--opening + & {
+      transition-duration: $enter-time;
+      opacity: 1;
     }
-    &--open {
+
+    .full-screen-dialog--closing + & {
+      transition-duration: $exit-time;
+      opacity: 0;
+    }
+  }
+  .mdc-top-app-bar {
+    flex-shrink: 0;
+    flex-grow: 0;
+    position: relative;
+    top: 0 !important;
+    @include mdc-elevation(4);
+  }
+  &-content {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    .form {
+      width: 100%;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      &-double {
         display: flex;
-    }
-    &-scrim {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        z-index: 6;
-        transition-property: opacity;
-        transition-timing-function: $mdc-animation-standard-curve-timing-function;
-        display: none;
+        .select-container {
+          width: 112px;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin-right: 16px;
+        }
+        .field {
+          width: 100%;
+          &-container {
+            flex-grow: 1;
+          }
+        }
+      }
+      &-container {
+        overflow: auto;
+      }
+      .mdc-text-field {
+        margin-bottom: 16px;
+        & + .mdc-text-field-helper-line {
+          margin-top: -16px;
+          margin-bottom: 16px;
+        }
+      }
+      .mdc-form-field {
+        margin-bottom: 16px;
+      }
+      .date-container {
+        overflow: hidden;
+        margin-bottom: 16px;
+        .date-title {
+          margin: 0;
+          padding: 16px;
+        }
+        .date-form {
+          display: flex;
+          flex-direction: column;
+          padding: 0 16px;
+          .mdc-text-field-helper-line:last-of-type {
+            margin-bottom: 0;
+          }
+        }
+      }
 
-        .full-screen-dialog--open + & {
-            display: block;
+      .vendor-container {
+        margin-bottom: 16px;
+        .vendor-title {
+          margin: 0;
+          padding: 16px;
         }
-    
-        .full-screen-dialog--animate + & {
-            opacity: 0;
+        .vendor-form {
+          display: flex;
+          flex-direction: column;
+          padding: 0 16px;
+          .mdc-text-field-helper-line:last-of-type {
+            margin-bottom: 0;
+          }
         }
-    
-        .full-screen-dialog--opening + & {
-            transition-duration: $enter-time;
-            opacity: 1;
-        }
-    
-        .full-screen-dialog--closing + & {
-            transition-duration: $exit-time;
-            opacity: 0;
-        }
-    }
-    .mdc-top-app-bar {
-        flex-shrink: 0;
+      }
+
+      .add-button {
+        display: flex;
+        justify-content: flex-end;
         flex-grow: 0;
-        position: relative;
-        top: 0 !important;
-        @include mdc-elevation(4);
+      }
     }
-    &-content {
-        width: 100%;
-        height: 100%;
-        overflow-y: auto;
-        .form {
-            width: 100%;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-            &-double {
-                display: flex;
-                .select-container {
-                    width: 112px;
-                    flex-grow: 0;
-                    flex-shrink: 0;
-                    margin-right: 16px;
-                }
-                .field {
-                    width: 100%;
-                    &-container {
-                        flex-grow: 1;
-                    }
-                }
-            }
-            &-container {
-                overflow: auto;
-            }
-            .mdc-text-field {
-                margin-bottom: 16px;
-                & + .mdc-text-field-helper-line {
-                    margin-top: -16px;
-                    margin-bottom: 16px;
-                }
-            }
-            .mdc-form-field {
-                margin-bottom: 16px;
-            }
-            .date-container {
-                overflow: hidden;
-                margin-bottom: 16px;
-                .date-title {
-                    margin: 0;
-                    padding: 16px;
-                }
-                .date-form {
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0 16px;
-                    .mdc-text-field-helper-line:last-of-type {
-                        margin-bottom: 0;
-                    }
-                }
-            }
-            
-            .vendor-container {
-                margin-bottom: 16px;
-                .vendor-title {
-                    margin: 0;
-                    padding: 16px;
-                }
-                .vendor-form {
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0 16px;
-                    .mdc-text-field-helper-line:last-of-type {
-                        margin-bottom: 0;
-                    }
-                }
-            }
-
-            .add-button {
-                display: flex;
-                justify-content: flex-end;
-                flex-grow: 0;
-            }
-        }
-        .mdc-menu-surface--anchor .mdc-text-field {
-            width: 100%;
-        }
+    .mdc-menu-surface--anchor .mdc-text-field {
+      width: 100%;
     }
+  }
 }

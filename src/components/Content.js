@@ -71,20 +71,20 @@ export class DesktopContent extends React.Component {
     if (this.state.detailsDrawerOpen) {
       this.closeDetailsDrawer();
       setTimeout(() => {
-        if (this.props.view === 'compact') {
+        if (this.props.view === "compact") {
           this.openModal();
         }
         this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
       }, 400);
     } else {
-      if (this.props.view === 'compact') {
+      if (this.props.view === "compact") {
         this.openModal();
       }
       this.setState({ filterDrawerOpen: !this.state.filterDrawerOpen });
     }
   }
   closeFilterDrawer() {
-    if (this.props.view === 'compact') {
+    if (this.props.view === "compact") {
       this.closeModal();
     }
     this.setState({ filterDrawerOpen: false });
@@ -93,7 +93,7 @@ export class DesktopContent extends React.Component {
     if (this.state.filterDrawerOpen) {
       this.closeFilterDrawer();
       setTimeout(() => {
-        if (this.props.view === 'compact') {
+        if (this.props.view === "compact") {
           this.openModal();
         }
         this.setState({
@@ -102,7 +102,7 @@ export class DesktopContent extends React.Component {
         });
       }, 400);
     } else {
-      if (this.props.view === 'compact') {
+      if (this.props.view === "compact") {
         this.openModal();
       }
       this.setState({
@@ -112,7 +112,7 @@ export class DesktopContent extends React.Component {
     }
   }
   closeDetailsDrawer() {
-    if (this.props.view === 'compact') {
+    if (this.props.view === "compact") {
       this.closeModal();
     }
     this.setState({
@@ -199,11 +199,7 @@ export class DesktopContent extends React.Component {
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics
-        profiles={this.props.profiles}
-        sets={this.props.allSets}
-        navOpen={this.state.navDrawerOpen}
-      />
+      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} navOpen={this.state.navDrawerOpen} />
     ) : (
       <ContentEmpty />
     );

@@ -1,90 +1,89 @@
-
-@import '@material/animation/variables';
-@import '@material/animation/functions';
-@import '@material/elevation/mixins';
-@import '@material/ripple/mixins';
+@import "@material/animation/variables";
+@import "@material/animation/functions";
+@import "@material/elevation/mixins";
+@import "@material/ripple/mixins";
 
 .card-container .mdc-card {
+  height: 100%;
+  transition: box-shadow 250ms;
+  &:hover {
+    @include mdc-elevation(4);
+  }
+  &.selected {
+    @include mdc-elevation(8);
+  }
+  &__primary-action {
     height: 100%;
-    transition: box-shadow 250ms;
-    &:hover {
-        @include mdc-elevation(4);
+  }
+  .media-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    .time-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      height: 24px;
+      padding: 0 12px;
+      border-radius: 16px;
+      z-index: 3;
+      background-color: #333333;
+      color: white;
     }
-    &.selected {
-        @include mdc-elevation(8);
-    }
-    &__primary-action {
-        height: 100%;
-    }
-    .media-container {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        .time-indicator {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            display: flex;
-            align-items: center;
-            margin: 0;
-            height: 24px;
-            padding: 0 12px;
-            border-radius: 16px;
-            z-index: 3;
-            background-color: #333333;
-            color: white;
-        }
-    }
+  }
 }
 
 .text-row {
+  display: flex;
+  .text-container {
+    flex: auto 1 1;
+    padding: 8px 16px 16px 16px;
     display: flex;
-    .text-container {
-        flex: auto 1 1;
-        padding: 8px 16px 16px 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        .overline {
-            width: 100%;
-            display: flex;
-            justify-content: stretch;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            .mdc-typography--overline {
-                margin: 0;
-                flex-shrink: 1;
-                flex-grow: 1;
-            }
-        }
-        .title {
-            padding-bottom: 8px;
-            display: flex;
-            width: 100%;
-            .mdc-typography--headline5 {
-                margin: 0;
-                width: 100%;
-                div {
-                    display: inline-flex;
-                    align-items: center;
-                    .twemoji {
-                        height: 1.5625rem;
-                        margin-left: 0.5rem;
-                    }
-                }
-            }
-        }
-        .mdc-typography--subtitle2 {
-            margin: 0;
-        }
-        .live-indicator {
-            padding-left: 8px;
-            flex-shrink: 0;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-        }
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    .overline {
+      width: 100%;
+      display: flex;
+      justify-content: stretch;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      .mdc-typography--overline {
+        margin: 0;
+        flex-shrink: 1;
+        flex-grow: 1;
+      }
     }
+    .title {
+      padding-bottom: 8px;
+      display: flex;
+      width: 100%;
+      .mdc-typography--headline5 {
+        margin: 0;
+        width: 100%;
+        div {
+          display: inline-flex;
+          align-items: center;
+          .twemoji {
+            height: 1.5625rem;
+            margin-left: 0.5rem;
+          }
+        }
+      }
+    }
+    .mdc-typography--subtitle2 {
+      margin: 0;
+    }
+    .live-indicator {
+      padding-left: 8px;
+      flex-shrink: 0;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
 }

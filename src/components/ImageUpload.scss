@@ -1,120 +1,119 @@
-
-@import '@material/animation/variables';
+@import "@material/animation/variables";
 
 .image-upload {
-    overflow: hidden;
-    margin-bottom: 16px;
-    &-title {
-        margin: 0;
-        padding: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  &-title {
+    margin: 0;
+    padding: 16px;
+  }
+  &-form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+    position: relative;
+    .loading-indicator {
+      border-radius: 4px;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      cursor: default;
+      pointer-events: none;
+      overflow: hidden;
+      .rmwc-circular-progress {
+        position: absolute;
+      }
+      &.image {
+        background-color: rgba(0, 0, 0, 0.25);
+        .rmwc-circular-progress {
+          color: white;
+        }
+      }
     }
-    &-form {
+    .image-display {
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto;
+      height: 0;
+      padding-top: 100% * 9/16;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px dashed var(--divider-color);
+      user-select: none;
+      overflow: hidden;
+      transition: border-color 150ms $mdc-animation-standard-curve-timing-function;
+      margin: 1px 0;
+      &-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        pointer-events: none;
+      }
+      &.filled {
+        border-color: transparent;
+      }
+      .drag-label {
+        position: absolute;
+        top: 0;
         display: flex;
         flex-direction: column;
-        padding: 0 16px;
-        position: relative;
-        .loading-indicator {
-            border-radius: 4px;
-            position: absolute;
-            top: 0;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-            cursor: default;
-            pointer-events: none;
-            overflow: hidden;
-            .rmwc-circular-progress {
-                position: absolute;
-            }
-            &.image {
-                background-color: rgba(0,0,0,0.25);
-                .rmwc-circular-progress {
-                    color: white;
-                }
-            }
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        height: 100%;
+        width: 100%;
+        .caption {
+          margin-bottom: 0;
+          margin-top: 16px;
         }
-        .image-display {
-            position: relative;
-            max-width: 480px;
-            margin: 0 auto;
-            height: 0;
-            padding-top: 100% * 9/16;
-            box-sizing: border-box;
-            border-radius: 4px;
-            border: 1px dashed var(--divider-color);
-            user-select: none;
-            overflow: hidden;
-            transition: border-color 150ms $mdc-animation-standard-curve-timing-function;
-            margin: 1px 0;
-            &-image {
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-                pointer-events: none;
-            }
-            &.filled {
-                border-color: transparent;
-            }
-            .drag-label {
-                position: absolute;
-                top: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                pointer-events: none;
-                height: 100%;
-                width: 100%;
-                .caption {
-                    margin-bottom: 0;
-                    margin-top: 16px;
-                }
-            }
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                height: 100%;
-                width: 100%;
-                border-radius: 2px;
-                opacity: 0;
-                transition: opacity 150ms $mdc-animation-standard-curve-timing-function;
-                pointer-events: none;
-            }
-            &.over {
-                border-width: 2px;
-                margin: 0;
-                &::before {
-                    opacity: 0.04;
-                }
-            }
-            &.image {
-                border-width: 0;
-                margin: 0;
-                &.over::before {
-                    opacity: 0.25;
-                }
-            }
+      }
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        border-radius: 2px;
+        opacity: 0;
+        transition: opacity 150ms $mdc-animation-standard-curve-timing-function;
+        pointer-events: none;
+      }
+      &.over {
+        border-width: 2px;
+        margin: 0;
+        &::before {
+          opacity: 0.04;
         }
-        .mdc-text-field {
-            margin-top: 16px;
-            &-helper-line {
-                margin-bottom: 0;
-            }
+      }
+      &.image {
+        border-width: 0;
+        margin: 0;
+        &.over::before {
+          opacity: 0.25;
         }
+      }
     }
-    .file-input {
-        input {
-            display: none;
-        }
+    .mdc-text-field {
+      margin-top: 16px;
+      &-helper-line {
+        margin-bottom: 0;
+      }
     }
+  }
+  .file-input {
+    input {
+      display: none;
+    }
+  }
 }

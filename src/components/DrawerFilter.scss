@@ -1,44 +1,44 @@
 .mdc-drawer.filter-drawer {
-    user-select: none;
-    &.mdc-drawer--modal {
-        top: 0;
+  user-select: none;
+  &.mdc-drawer--modal {
+    top: 0;
+  }
+  .subheader {
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    padding: 16px;
+    height: 56px;
+    box-sizing: border-box;
+  }
+  .mdc-drawer__header {
+    display: flex;
+    align-items: center;
+    .mdc-drawer__title {
+      flex: auto 1;
+      flex-shrink: 0;
+      margin-bottom: 0;
     }
-    .subheader {
-        display: flex;
-        justify-content: stretch;
-        align-items: center;
-        padding: 16px;
-        height: 56px;
-        box-sizing: border-box;
+    .close-icon {
+      flex-grow: 0;
+      flex-shrink: 0;
     }
-    .mdc-drawer__header {
-        display: flex;
-        align-items: center;
-        .mdc-drawer__title {
-            flex: auto 1;
-            flex-shrink: 0;
-            margin-bottom: 0;
-        }
-        .close-icon {
-            flex-grow: 0;
-            flex-shrink: 0;
-        }
+  }
+  .group {
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 16px;
+    .select-all {
+      padding: 0 16px;
     }
-    .group {
-        border-bottom: 1px solid var(--divider-color);
-        margin-bottom: 16px;
-        .select-all {
-            padding: 0 16px;
-        }
-        .checkbox-list {
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            padding-top: 0;
-            margin-left: 32px;
-            .mdc-form-field {
-                height: 48px;
-            }
-        }
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      padding-top: 0;
+      margin-left: 32px;
+      .mdc-form-field {
+        height: 48px;
+      }
     }
+  }
 }
