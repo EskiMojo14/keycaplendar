@@ -316,6 +316,7 @@ export class DesktopContent extends React.Component {
             setSort={this.props.setSort}
             search={this.props.search}
             setSearch={this.props.setSearch}
+            sets={this.props.sets}
           />
           <div className="content-container">
             <main
@@ -559,6 +560,7 @@ export class TabletContent extends React.Component {
             setSort={this.props.setSort}
             search={this.props.search}
             setSearch={this.props.setSearch}
+            sets={this.props.sets}
           />
           <main
             className={
@@ -853,6 +855,7 @@ export class MobileContent extends React.Component {
             setSort={this.props.setSort}
             search={this.props.search}
             setSearch={this.props.setSearch}
+            sets={this.props.sets}
           />
         )}
       </div>
@@ -876,6 +879,7 @@ export class MobileContent extends React.Component {
           setSort={this.props.setSort}
           search={this.props.search}
           setSearch={this.props.setSearch}
+          sets={this.props.sets}
         />
       </div>
     );
@@ -887,6 +891,7 @@ export class MobileContent extends React.Component {
           close={this.closeSearchBar}
           search={this.props.search}
           setSearch={this.props.setSearch}
+          sets={this.props.sets}
         />
       ) : (
         <div></div>

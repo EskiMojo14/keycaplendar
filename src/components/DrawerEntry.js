@@ -400,11 +400,12 @@ export class DrawerCreate extends React.Component {
                     onBlur={this.handleBlur}
                   />
                   <Autocomplete
-                    open={this.state.focused === "profile" && this.state.profile !== ""}
+                    open={this.state.focused === "profile"}
                     array={this.props.profiles}
                     query={this.state.profile}
                     prop="profile"
                     select={this.selectValue}
+                    minChars={1}
                   />
                 </MenuSurfaceAnchor>
               </div>
@@ -528,11 +529,12 @@ export class DrawerCreate extends React.Component {
                         onBlur={this.handleBlur}
                       />
                       <Autocomplete
-                        open={this.state.focused === "name" + index && this.state.vendors[index].name !== ""}
+                        open={this.state.focused === "name" + index}
                         array={this.props.allVendors}
                         query={this.state.vendors[index].name}
                         prop={"name" + index}
                         select={this.selectVendor}
+                        minChars={1}
                       />
                     </MenuSurfaceAnchor>
                     <MenuSurfaceAnchor>
@@ -560,11 +562,12 @@ export class DrawerCreate extends React.Component {
                         onBlur={this.handleBlur}
                       />
                       <Autocomplete
-                        open={this.state.focused === "region" + index && this.state.vendors[index].region !== ""}
+                        open={this.state.focused === "region" + index}
                         array={this.props.allRegions}
                         query={this.state.vendors[index].region}
                         prop={"region" + index}
                         select={this.selectVendor}
+                        minChars={1}
                       />
                     </MenuSurfaceAnchor>
                     <TextField
@@ -1042,11 +1045,12 @@ export class DrawerEdit extends React.Component {
                     onBlur={this.handleBlur}
                   />
                   <Autocomplete
-                    open={this.state.focused === "profile" && this.state.profile !== ""}
+                    open={this.state.focused === "profile"}
                     array={this.props.profiles}
                     query={this.state.profile}
                     prop="profile"
                     select={this.selectValue}
+                    minChars={1}
                   />
                 </MenuSurfaceAnchor>
               </div>
@@ -1168,11 +1172,12 @@ export class DrawerEdit extends React.Component {
                         onBlur={this.handleBlur}
                       />
                       <Autocomplete
-                        open={this.state.focused === "name" + index && this.state.vendors[index].name !== ""}
+                        open={this.state.focused === "name" + index}
                         array={this.props.allVendors}
                         query={this.state.vendors[index].name}
                         prop={"name" + index}
                         select={this.selectVendor}
+                        minChars={1}
                       />
                     </MenuSurfaceAnchor>
                     <MenuSurfaceAnchor>
@@ -1200,11 +1205,12 @@ export class DrawerEdit extends React.Component {
                         onBlur={this.handleBlur}
                       />
                       <Autocomplete
-                        open={this.state.focused === "region" + index && this.state.vendors[index].region !== ""}
+                        open={this.state.focused === "region" + index}
                         array={this.props.allRegions}
                         query={this.state.vendors[index].region}
                         prop={"region" + index}
                         select={this.selectVendor}
+                        minChars={1}
                       />
                     </MenuSurfaceAnchor>
                     <TextField

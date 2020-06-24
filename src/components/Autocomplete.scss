@@ -1,5 +1,7 @@
+@import "@material/animation/variables";
+@import "@material/top-app-bar/variables";
+
 .autocomplete.mdc-menu {
-  margin-top: -16px;
   border-radius: 0 0 4px 4px;
   max-height: 160px !important;
   width: 100%;
@@ -7,9 +9,57 @@
     margin: 0;
     border-radius: 0;
     height: 48px;
-    white-space: nowrap;
+    white-space: pre;
     .highlight {
       font-weight: bold;
+      display: inline;
     }
   }
+}
+
+.autocomplete-mobile, .bottom-nav .search-app-bar .autocomplete-mobile {
+  min-height: 0;
+  max-height: 0;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  z-index: 0;
+  top: $mdc-top-app-bar-row-height;
+  transition: min-height 250ms $mdc-animation-standard-curve-timing-function, max-height 250ms $mdc-animation-standard-curve-timing-function;
+  &--open {
+    min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    max-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    overflow: auto;
+  }
+  .mdc-list-item {
+    margin: 0;
+    border-radius: 0;
+    height: 48px;
+    white-space: pre;
+    .highlight {
+      font-weight: bold;
+      display: inline;
+    }
+  }
+}
+
+.bottom-nav .autocomplete-mobile {
+  top: calc(-100vh + #{$mdc-top-app-bar-row-height});
+}
+
+@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+  .autocomplete-mobile, .bottom-nav .search-app-bar .autocomplete-mobile {
+    top: $mdc-top-app-bar-mobile-row-height;
+    &--open {
+      min-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
+      max-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
+    }
+  }
+  .bottom-nav .autocomplete-mobile {
+    top: calc(-100vh + #{$mdc-top-app-bar-mobile-row-height});
+  }
+};
+
+.mdc-drawer .autocomplete.mdc-menu {
+  margin-top: -16px;
 }

@@ -38,13 +38,6 @@
     animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
     animation-delay: calc(var(--animation-delay) * 75ms);
   }
-  .mdc-menu-surface--anchor {
-    .mdc-menu-surface--anchor {
-      width: auto;
-    }
-    width: 48px;
-    transition: width 150ms 150ms $mdc-animation-standard-curve-timing-function;
-  }
   .hidden {
     .mdc-menu {
       display: none;

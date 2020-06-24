@@ -1,5 +1,6 @@
 @import "@material/animation/variables";
 @import "@material/elevation/mixins";
+@import "@material/ripple/mixins";
 
 $enter-time: 250ms;
 $exit-time: 200ms;
@@ -7,7 +8,6 @@ $exit-time: 200ms;
 .search-bar {
   &--persistent {
     height: 40px;
-    margin-right: 8px;
     .search-bar-field.mdc-text-field {
       border-radius: 4px;
       height: 100%;
@@ -16,6 +16,9 @@ $exit-time: 200ms;
       &--with-leading-icon .mdc-text-field__icon,
       &--with-trailing-icon .mdc-text-field__icon {
         bottom: 8px;
+        &:focus {
+          outline: none;
+        }
       }
       &--focused {
         width: 256px;
@@ -50,14 +53,31 @@ $exit-time: 200ms;
         transform 150ms $mdc-animation-standard-curve-timing-function;
       outline: none;
     }
-    .search-bar-field.mdc-text-field {
-      flex-grow: 1;
-      border-radius: 0;
-      .mdc-notched-outline {
-        display: none;
+    .search-bar-field-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: stretch;
+      align-items: center;
+      z-index: 4;
+      position: relative;
+      @include mdc-elevation(4);
+      .search-bar-field.mdc-text-field {
+        flex-grow: 1;
+        border-radius: 0;
+        &--with-leading-icon .mdc-text-field__icon,
+        &--with-trailing-icon .mdc-text-field__icon {
+          &:focus {
+            outline: none;
+          }
+        }
+        .mdc-notched-outline {
+          display: none;
+        }
       }
+
     }
-    &.search-bar--animate {
+    &.search-bar--animate .search-bar-field-container {
       opacity: 0;
       width: 64px;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
@@ -65,7 +85,7 @@ $exit-time: 200ms;
         opacity: 0;
       }
     }
-    &.search-bar--opening {
+    &.search-bar--opening .search-bar-field-container {
       opacity: 1;
       width: 100%;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
@@ -74,7 +94,7 @@ $exit-time: 200ms;
       }
       transition-duration: $enter-time;
     }
-    &.search-bar--closing {
+    &.search-bar--closing .search-bar-field-container {
       opacity: 0;
       width: 64px;
       transition-duration: $exit-time;

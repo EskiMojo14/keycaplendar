@@ -103,7 +103,11 @@ export class DesktopAppBar extends React.Component {
         ""
       ) : (
         <TopAppBarSection alignEnd>
-          <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch} />
+          <SearchBarPersistent
+            search={this.props.search}
+            setSearch={this.props.setSearch}
+            sets={this.props.sets}
+          />
           <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
             <MenuSort
               sort={this.props.sort}
@@ -194,6 +198,7 @@ export class TabletAppBar extends React.Component {
   }
   openSearch() {
     this.setState({ searchOpen: true });
+    document.documentElement.scrollTop = 0;
   }
   closeSearch() {
     this.setState({ searchOpen: false });
@@ -304,6 +309,7 @@ export class TabletAppBar extends React.Component {
               close={this.closeSearch}
               search={this.props.search}
               setSearch={this.props.setSearch}
+              sets={this.props.sets}
             />
             <Tooltip enterDelay={500} content="Search" align="bottom">
               <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={this.openSearch} />
@@ -492,6 +498,7 @@ export class MobileAppBar extends React.Component {
               close={this.closeSearch}
               search={this.props.search}
               setSearch={this.props.setSearch}
+              sets={this.props.sets}
             />
             <Tooltip enterDelay={500} content="Search" align="bottom">
               <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={this.openSearch} />
@@ -671,6 +678,7 @@ export class BottomAppBar extends React.Component {
               close={this.closeSearch}
               search={this.props.search}
               setSearch={this.props.setSearch}
+              sets={this.props.sets}
             />
             <Tooltip enterDelay={500} content="Search" align="bottom">
               <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={this.openSearch} />

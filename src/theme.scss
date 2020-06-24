@@ -544,6 +544,9 @@ $overlay-values: (
             }
         }
     }
+    .autocomplete-mobile {
+        background-color: map-get($variables, background);
+    }
 
     .empty-container, .login-container {
         .title {
