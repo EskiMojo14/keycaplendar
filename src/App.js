@@ -551,9 +551,6 @@ class App extends React.Component {
         } else {
           device = "mobile";
         }
-        if (device === "mobile" && this.state.device !== "mobile") {
-          this.setState({ view: "list" });
-        }
         this.setState({ device: device });
         lastWidth = vw;
         i++;
