@@ -29,9 +29,9 @@ $overlay-values: (
     24: 16%  // dialog
 );
 
-@function overlay-elevation($on-surface, $color, $elevation : 0) {
+@function overlay-elevation($color, $elevation : 0) {
     $use-color: mdc-theme-prop-value($color);
-    @return mix($on-surface, $use-color, map-get($overlay-values, $elevation));
+    @return lighten($use-color, map-get($overlay-values, $elevation));
 };
 
 @mixin theme($theme, $dark: false) {
@@ -41,7 +41,7 @@ $overlay-values: (
         text-disabled: rgba(map-get($theme, on-surface), 0.38)
     );
     $variables: map-merge($theme, $text-colors);
-    --meta-color: #{if($dark, darken(overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4),10%), darken(map-get($variables, primary),10%))};
+    --meta-color: #{if($dark, darken(overlay-elevation(map-get($variables, surface), 4),10%), darken(map-get($variables, primary),10%))};
     --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
     $graph-colors: (
         $material-color-red-500, 
@@ -110,11 +110,11 @@ $overlay-values: (
     }
     
     .mdc-card {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 1), map-get($variables, surface));
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
         @if ($dark) {
             transition-property: box-shadow, background-color;
             &.selected {
-                background-color: overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 8);
+                background-color: overlay-elevation(map-get($variables, surface), 8);
             }
 
         }
@@ -161,7 +161,7 @@ $overlay-values: (
     }
 
     .mdc-dialog {
-        @include mdc-dialog-container-fill-color(if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables,surface), 24), map-get($variables,surface)));
+        @include mdc-dialog-container-fill-color(if($dark, overlay-elevation(map-get($variables,surface), 24), map-get($variables,surface)));
         @include mdc-dialog-scrim-color(map-get($variables, on-surface), 0.32);
         @include mdc-dialog-title-ink-color(map-get($variables, text-primary));
         @include mdc-dialog-content-ink-color(map-get($variables, text-secondary));
@@ -171,14 +171,14 @@ $overlay-values: (
     }
 
     .mdc-drawer {
-        @include mdc-drawer-fill-color-accessible(if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables,surface), 16), map-get($variables,surface)));
+        @include mdc-drawer-fill-color-accessible(if($dark, overlay-elevation(map-get($variables,surface), 16), map-get($variables,surface)));
         @include mdc-drawer-item-activated-icon-ink-color(map-get($variables,primary));
         @include mdc-drawer-item-activated-text-ink-color(map-get($variables,primary));
         @include mdc-drawer-scrim-fill-color(rgba(map-get($variables, on-surface), 0.32));
         &.mdc-drawer--dismissible {
-            @include mdc-drawer-surface-fill-color(if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables,surface), 1), map-get($variables,surface)));
+            @include mdc-drawer-surface-fill-color(if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface)));
             .mdc-chip {
-                @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 1), map-get($variables, surface)), 12%));
+                @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)), 12%));
                 @include mdc-chip-selected-ink-color(map-get($variables,primary));
             }
             &.nav.mdc-drawer--open, &.nav.mdc-drawer--opening {
@@ -196,7 +196,7 @@ $overlay-values: (
             }   
         }
         .mdc-chip {
-            @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 16), map-get($variables, surface)), 12%));
+            @include mdc-chip-fill-color-accessible(mix(map-get($variables, on-surface), if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface)), 12%));
             @include mdc-chip-selected-ink-color(map-get($variables,primary));
         }
         .mdc-icon-button {
@@ -211,7 +211,7 @@ $overlay-values: (
         }
 
         .mdc-menu {
-            background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 24), map-get($variables, surface));
+            background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
         }
 
         &__content {
@@ -300,7 +300,7 @@ $overlay-values: (
     }
 
     .mdc-menu {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 12), map-get($variables, surface));
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 12), map-get($variables, surface));
     }
 
     .mdc-snackbar {
@@ -369,7 +369,7 @@ $overlay-values: (
     
 
     .mdc-top-app-bar {
-        @include mdc-top-app-bar-fill-color(if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4), map-get($variables, primary)));
+        @include mdc-top-app-bar-fill-color(if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary)));
         @include mdc-top-app-bar-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
         @include mdc-top-app-bar-icon-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
         @if ($dark != true) {
@@ -404,7 +404,7 @@ $overlay-values: (
                 }
             }
             &--modal {
-                background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 8), map-get($variables, surface));
+                background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
                 .search-bar-field.mdc-text-field {
                     .mdc-text-field__input {
                         &::placeholder {
@@ -425,10 +425,10 @@ $overlay-values: (
         }
         &.bottom-app-bar {
             .mdc-top-app-bar__section:not(.indent) {
-                background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4), map-get($variables, primary));
+                background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
             }
             .indent {
-                fill: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4), map-get($variables, primary));
+                fill: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
             }
         }
         .svg-container {
@@ -451,7 +451,7 @@ $overlay-values: (
     .rmwc-data-table {
         color: map-get($variables, text-primary);
         &__content {
-            background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables,surface), 1), map-get($variables,surface));
+            background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
         }
         &__cell {
             background-color: transparent;
@@ -568,7 +568,7 @@ $overlay-values: (
     }
 
     .full-screen-dialog {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface),16), map-get($variables, surface));
+        background-color: if($dark, overlay-elevation(map-get($variables, surface),16), map-get($variables, surface));
         &-scrim {
             background-color: rgba(map-get($variables, on-surface), 0.32);
         }
@@ -579,7 +579,7 @@ $overlay-values: (
             }
         }
         .mdc-menu {
-            background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 24), map-get($variables, surface));
+            background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
         }
     }
     .image-upload {
@@ -608,7 +608,7 @@ $overlay-values: (
     }
 
     .list .content-grid {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables,surface), 1), map-get($variables,surface));
+        background-color: if($dark, overlay-elevation(map-get($variables,surface), 1), map-get($variables,surface));
     }
 
     .subheader {
@@ -616,11 +616,11 @@ $overlay-values: (
     }
     
     .main::before {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4), map-get($variables, primary));
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }
 
     .users-container::before {
-        background-color: if($dark, overlay-elevation(map-get($variables, on-surface), map-get($variables, surface), 4), map-get($variables, primary));
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
     }
 
     .sponsors {
