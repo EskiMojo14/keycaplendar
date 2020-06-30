@@ -1,4 +1,4 @@
-@import '@material/theme/color-palette';
+@import "@material/theme/color-palette";
 
 /*
 $mdc-theme-primary: $material-color-teal-500;
@@ -10,136 +10,139 @@ $mdc-theme-surface: white;
 $mdc-theme-on-surface: #000;
 */
 
-@import 'typography-variables';
-@import 'theme';
+@import "typography-variables";
+@import "theme";
 
-@import '@material/button/mdc-button';
-@import '@material/card/mdc-card';
-@import '@material/checkbox/mdc-checkbox';
-@import '@material/chips/mdc-chips';
-@import '@material/data-table/mdc-data-table';
-@import '@material/dialog/mdc-dialog';
-@import '@material/drawer/mdc-drawer';
-@import '@material/fab/mdc-fab';
-@import '@material/floating-label/mdc-floating-label';
-@import '@material/form-field/mdc-form-field';
-@import '@material/icon-button/mdc-icon-button';
-@import '@material/image-list/mdc-image-list';
-@import '@material/line-ripple/mdc-line-ripple';
-@import '@material/linear-progress/mdc-linear-progress';
-@import '@material/list/mdc-list';
-@import '@material/menu-surface/mdc-menu-surface';
-@import '@material/menu/mdc-menu';
-@import '@material/notched-outline/mdc-notched-outline';
-@import '@material/select/mdc-select';
-@import '@material/snackbar/mdc-snackbar';
-@import '@material/switch/mdc-switch';
-@import '@material/textfield/mdc-text-field';
-@import '@material/top-app-bar/mdc-top-app-bar';
-@import '@material/typography/mdc-typography';
-@import '@rmwc/data-table/data-table';
-@import '@rmwc/circular-progress/circular-progress';
-@import '@rmwc/tooltip/tooltip';
+@import "@material/button/mdc-button";
+@import "@material/card/mdc-card";
+@import "@material/checkbox/mdc-checkbox";
+@import "@material/chips/mdc-chips";
+@import "@material/data-table/mdc-data-table";
+@import "@material/dialog/mdc-dialog";
+@import "@material/drawer/mdc-drawer";
+@import "@material/fab/mdc-fab";
+@import "@material/floating-label/mdc-floating-label";
+@import "@material/form-field/mdc-form-field";
+@import "@material/icon-button/mdc-icon-button";
+@import "@material/image-list/mdc-image-list";
+@import "@material/line-ripple/mdc-line-ripple";
+@import "@material/linear-progress/mdc-linear-progress";
+@import "@material/list/mdc-list";
+@import "@material/menu-surface/mdc-menu-surface";
+@import "@material/menu/mdc-menu";
+@import "@material/notched-outline/mdc-notched-outline";
+@import "@material/select/mdc-select";
+@import "@material/snackbar/mdc-snackbar";
+@import "@material/switch/mdc-switch";
+@import "@material/textfield/mdc-text-field";
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/typography/mdc-typography";
+@import "@rmwc/data-table/data-table";
+@import "@rmwc/circular-progress/circular-progress";
+@import "@rmwc/tooltip/tooltip";
 
-.mdc-button.mdc-button--outlined, .mdc-card.mdc-card--outlined, .mdc-drawer, .mdc-list-divider {
-    border-color: var(--divider-color);
+.mdc-button.mdc-button--outlined,
+.mdc-card.mdc-card--outlined,
+.mdc-drawer,
+.mdc-list-divider {
+  border-color: var(--divider-color);
 }
 
 .mdc-drawer .mdc-list-item {
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .mdc-ripple-upgraded::before {
-    transition-duration: 100ms !important;
+  transition-duration: 100ms !important;
 }
 
 .light {
-    $theme: (
-        primary: $material-color-teal-500,
-        secondary: $material-color-deep-orange-200,
-        on-primary: black,
-        on-secondary: black,
-        background: $material-color-grey-200,
-        error: #b00020,
-        on-error: white,
-        surface: white,
-        on-surface: black
-    );
-    @include theme($theme);
+  $theme: (
+    primary: $material-color-teal-500,
+    secondary: $material-color-deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: $material-color-grey-200,
+    error: #b00020,
+    on-error: white,
+    surface: white,
+    on-surface: black,
+  );
+  @include theme($theme);
 }
 
 .grey {
-    $theme: (
-        primary: $material-color-teal-200,
-        secondary: $material-color-deep-orange-200,
-        on-primary: black,
-        on-secondary: black,
-        background: #202125,
-        error: #cf6679,
-        on-error: black,
-        surface: #202125,
-        on-surface: white
-    );
-    @include theme($theme, true);
+  $theme: (
+    primary: $material-color-teal-200,
+    secondary: $material-color-deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #202125,
+    error: #cf6679,
+    on-error: black,
+    surface: #202125,
+    on-surface: white,
+  );
+  @include theme($theme, true);
 }
 
 .ocean {
-    $theme: (
-        primary: $material-color-teal-200,
-        secondary: $material-color-teal-200,
-        on-primary: black,
-        on-secondary: black,
-        background: #1b2936,
-        error: #cf6679,
-        on-error: black,
-        surface: #1b2936,
-        on-surface: white
-    );
-    @include theme($theme, true);
+  $theme: (
+    primary: $material-color-teal-200,
+    secondary: $material-color-teal-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #1b2936,
+    error: #cf6679,
+    on-error: black,
+    surface: #1b2936,
+    on-surface: white,
+  );
+  @include theme($theme, true);
 }
 
 .deep {
-    $theme: (
-        primary: $material-color-teal-200,
-        secondary: $material-color-deep-orange-200,
-        on-primary: black,
-        on-secondary: black,
-        background: #17161c,
-        error: #cf6679,
-        on-error: black,
-        surface:#17161c,
-        on-surface: white
-    );
-    @include theme($theme, true);
+  $theme: (
+    primary: $material-color-teal-200,
+    secondary: $material-color-deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #17161c,
+    error: #cf6679,
+    on-error: black,
+    surface: #17161c,
+    on-surface: white,
+  );
+  @include theme($theme, true);
 }
 
 .dark {
-    $theme: (
-        primary: $material-color-teal-200,
-        secondary: $material-color-deep-orange-200,
-        on-primary: black,
-        on-secondary: black,
-        background: #121212,
-        error: #cf6679,
-        on-error: black,
-        surface: #121212,
-        on-surface: white
-    );
-    @include theme($theme, true);
+  $theme: (
+    primary: $material-color-teal-200,
+    secondary: $material-color-deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #121212,
+    error: #cf6679,
+    on-error: black,
+    surface: #121212,
+    on-surface: white,
+  );
+  @include theme($theme, true);
 }
 
 .lich {
-    $theme: (
-        primary: #514163,
-        secondary: #EFC06E,
-        on-primary: #EFC06E,
-        on-secondary: #403845,
-        background: #DECDE7,
-        error: #b00020,
-        surface: lighten(#DECDE7,5%),
-        on-surface: black
-    );
-    @include theme($theme);
+  $theme: (
+    primary: #514163,
+    secondary: #efc06e,
+    on-primary: #efc06e,
+    on-secondary: #403845,
+    background: #decde7,
+    error: #b00020,
+    surface: lighten(#decde7, 5%),
+    on-surface: black,
+  );
+  @include theme($theme);
 }
 
-@import 'chartist/dist/scss/chartist';
+@import "chartist/dist/scss/chartist";
