@@ -61,7 +61,6 @@ $exit-time: 200ms;
       align-items: center;
       z-index: 4;
       position: relative;
-      @include mdc-elevation(4);
       .search-bar-field.mdc-text-field {
         flex-grow: 1;
         border-radius: 0;
@@ -75,7 +74,6 @@ $exit-time: 200ms;
           display: none;
         }
       }
-
     }
     &.search-bar--animate .search-bar-field-container {
       opacity: 0;
@@ -110,12 +108,17 @@ $exit-time: 200ms;
 }
 
 .mdc-top-app-bar.search-app-bar {
-  box-shadow: none;
-  transition: box-shadow 200ms linear, top 200ms $mdc-animation-standard-curve-timing-function;
+  @include mdc-elevation(0);
+  transition: top 200ms $mdc-animation-standard-curve-timing-function;
   top: -56px;
+  .search-bar-field-container {
+    transition: box-shadow 200ms linear;
+  }
   &--open {
-    @include mdc-elevation(4);
     top: 0;
+    .search-bar-field-container {
+      @include mdc-elevation(4);
+    }
   }
   & + .mdc-top-app-bar--fixed-adjust {
     padding-top: 0;
