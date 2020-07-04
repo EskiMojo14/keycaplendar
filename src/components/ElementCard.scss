@@ -5,12 +5,15 @@
 
 .card-container .mdc-card {
   height: 100%;
-  transition: box-shadow 250ms;
+  transition: mdc-elevation-transition-value();
   &:hover {
     @include mdc-elevation(4);
   }
   &.selected {
     @include mdc-elevation(8);
+    .mdc-card__primary-action::before {
+      opacity: 0.08;
+    }
   }
   &__primary-action {
     height: 100%;

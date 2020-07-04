@@ -13,13 +13,12 @@
   }
   .mdc-top-app-bar {
     right: 0;
-    transition-property: box-shadow, width;
-    transition-timing-function: linear, $mdc-animation-standard-curve-timing-function;
+    transition: mdc-elevation-transition-value(), width $mdc-animation-standard-curve-timing-function;
     .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
-      transition-duration: 200ms, $mdc-drawer-animation-enter;
+      transition-duration: 280ms, $mdc-drawer-animation-enter;
     }
     .mdc-drawer--closing + & {
-      transition-duration: 200ms, $mdc-drawer-animation-exit;
+      transition-duration: 280ms, $mdc-drawer-animation-exit;
     }
     .mdc-top-app-bar__navigation-icon {
       transition-property: width, height, padding;
