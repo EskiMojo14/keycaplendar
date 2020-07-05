@@ -339,8 +339,16 @@ export class DesktopContent extends React.Component {
           setUser={this.props.setUser}
           open={this.state.settingsDialogOpen}
           close={this.closeSettingsDialog}
-          theme={this.props.theme}
-          changeTheme={this.props.changeTheme}
+          applyTheme={this.props.applyTheme}
+          changeApplyTheme={this.props.changeApplyTheme}
+          darkTheme={this.props.darkTheme}
+          setDarkTheme={this.props.setDarkTheme}
+          manualTheme={this.props.manualTheme}
+          setManualTheme={this.props.setManualTheme}
+          fromTimeTheme={this.props.fromTimeTheme}
+          setFromTimeTheme={this.props.setFromTimeTheme}
+          toTimeTheme={this.props.toTimeTheme}
+          setToTimeTheme={this.props.setToTimeTheme}
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
@@ -598,8 +606,16 @@ export class TabletContent extends React.Component {
           setUser={this.props.setUser}
           open={this.state.settingsDialogOpen}
           close={this.closeSettingsDialog}
-          theme={this.props.theme}
-          changeTheme={this.props.changeTheme}
+          applyTheme={this.props.applyTheme}
+          changeApplyTheme={this.props.changeApplyTheme}
+          darkTheme={this.props.darkTheme}
+          setDarkTheme={this.props.setDarkTheme}
+          manualTheme={this.props.manualTheme}
+          setManualTheme={this.props.setManualTheme}
+          fromTimeTheme={this.props.fromTimeTheme}
+          setFromTimeTheme={this.props.setFromTimeTheme}
+          toTimeTheme={this.props.toTimeTheme}
+          setToTimeTheme={this.props.setToTimeTheme}
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
@@ -943,8 +959,16 @@ export class MobileContent extends React.Component {
           setUser={this.props.setUser}
           open={this.state.settingsDialogOpen}
           close={this.closeSettingsDialog}
-          theme={this.props.theme}
-          changeTheme={this.props.changeTheme}
+          applyTheme={this.props.applyTheme}
+          changeApplyTheme={this.props.changeApplyTheme}
+          darkTheme={this.props.darkTheme}
+          setDarkTheme={this.props.setDarkTheme}
+          manualTheme={this.props.manualTheme}
+          setManualTheme={this.props.setManualTheme}
+          fromTimeTheme={this.props.fromTimeTheme}
+          setFromTimeTheme={this.props.setFromTimeTheme}
+          toTimeTheme={this.props.toTimeTheme}
+          setToTimeTheme={this.props.setToTimeTheme}
           bottomNav={this.props.bottomNav}
           changeBottomNav={this.props.changeBottomNav}
           snackbarQueue={this.props.snackbarQueue}

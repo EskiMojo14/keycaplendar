@@ -15,7 +15,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       device: "desktop",
-      theme: "light",
       bottomNav: false,
       page: "calendar",
       view: "card",
@@ -34,6 +33,11 @@ class App extends React.Component {
       user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false },
       whitelist: { vendors: [], profiles: [], edited: false },
       cookies: true,
+      applyTheme: "manual",
+      darkTheme: "deep",
+      manualTheme: false,
+      fromTimeTheme: "21:00",
+      toTimeTheme: "06:00",
     };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -100,25 +104,41 @@ class App extends React.Component {
     const accepted = this.getCookie("accepted");
     if (accepted !== "" && accepted) {
       this.setState({ cookies: true });
-      const theme = this.getCookie("theme");
-      if (theme !== "") {
-        setTimeout(() => {
-          this.changeTheme(theme);
-        }, 0);
+      const checkCookie = (key, setFunction) => {
+        const cookie = this.getCookie(key);
+        if (cookie !== "") {
+          if (cookie !== "true" && cookie !== "false") {
+            setTimeout(() => {
+              setFunction(cookie);
+            }, 0);
+          } else {
+            const cookieBool = cookie === "true";
+            setTimeout(() => {
+              setFunction(cookieBool);
+            }, 0);
+          }
+        }
+      };
+
+      // legacy theme cookie conversion
+
+      const legacyTheme = this.getCookie("theme");
+      if (legacyTheme !== "") {
+        if (legacyTheme === "light") {
+          this.setManualTheme(false);
+        } else {
+          this.setManualTheme(true);
+          this.setDarkTheme(legacyTheme);
+        }
+        this.setCookie("theme", legacyTheme, -1);
       }
-      const view = this.getCookie("view");
-      if (view !== "") {
-        setTimeout(() => {
-          this.changeView(view);
-        }, 0);
-      }
-      const bottomNav = this.getCookie("bottomNav");
-      const bottomNavBool = bottomNav === "true";
-      if (bottomNav !== "") {
-        setTimeout(() => {
-          this.changeBottomNav(bottomNavBool);
-        }, 0);
-      }
+      checkCookie("view", this.changeView);
+      checkCookie("bottomNav", this.changeBottomNav);
+      checkCookie("applyTheme", this.changeApplyTheme);
+      checkCookie("darkTheme", this.setDarkTheme);
+      checkCookie("manualTheme", this.setManualTheme);
+      checkCookie("fromTimeTheme", this.setFromTimeTheme);
+      checkCookie("toTimeTheme", this.setToTimeTheme);
     } else {
       this.clearCookies();
     }
@@ -194,14 +214,93 @@ class App extends React.Component {
       );
     }
   }
-  changeTheme = (theme) => {
-    this.setState({ theme: theme });
-    document.querySelector("html").classList = theme;
+  isDarkTheme = () => {
+    const manualBool = this.state.applyTheme === "manual" && this.state.manualTheme;
+    const systemBool =
+      this.state.applyTheme === "system" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    const currentDay = new Date();
+    const fromArray = this.state.fromTimeTheme.split(":");
+    const fromTime = new Date(
+      currentDay.getFullYear(),
+      currentDay.getMonth(),
+      currentDay.getDate(),
+      parseInt(fromArray[0]),
+      parseInt(fromArray[1]),
+      "00"
+    );
+    const toArray = this.state.toTimeTheme.split(":");
+    const toTime = new Date(
+      currentDay.getFullYear(),
+      currentDay.getMonth(),
+      currentDay.getDate(),
+      parseInt(toArray[0]),
+      parseInt(toArray[1]),
+      "00"
+    );
+    const timedBool = this.state.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
+    return manualBool || systemBool || timedBool;
+  };
+  checkTheme = async () => {
+    const themeBool = await this.isDarkTheme();
+    document.querySelector("html").classList =
+      themeBool === true || themeBool === "true" ? this.state.darkTheme : "light";
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+  };
+  changeApplyTheme = (applyTheme) => {
+    this.setState({
+      applyTheme: applyTheme,
+    });
+    if (applyTheme === "system") {
+      setTimeout(this.checkTheme, 1);
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+        e.preventDefault();
+        this.checkTheme();
+      });
+    } else if (applyTheme === "timed") {
+      setTimeout(this.checkTheme, 1);
+      setInterval(this.checkTheme, 1000 * 60);
+    } else {
+      setTimeout(this.checkTheme, 1);
+    }
+    if (applyTheme !== "timed") {
+      clearInterval(this.checkTheme);
+    }
     if (this.state.cookies) {
-      this.setCookie("theme", theme, 365);
+      this.setCookie("applyTheme", applyTheme, 365);
+    }
+  };
+  setDarkTheme = (theme) => {
+    this.setState({ darkTheme: theme });
+    setTimeout(this.checkTheme, 1);
+    if (this.state.cookies) {
+      this.setCookie("darkTheme", theme, 365);
+    }
+  };
+  setManualTheme = (bool) => {
+    this.setState({ manualTheme: bool });
+    setTimeout(this.checkTheme, 1);
+    if (this.state.cookies) {
+      this.setCookie("manualTheme", bool, 365);
+    }
+  };
+  setFromTimeTheme = (time) => {
+    this.setState({ fromTimeTheme: time });
+    setTimeout(this.checkTheme, 1);
+    if (this.state.cookies) {
+      this.setCookie("fromTimeTheme", time, 365);
+    }
+  };
+  setToTimeTheme = (time) => {
+    this.setState({ toTimeTheme: time });
+    setTimeout(this.checkTheme, 1);
+    setTimeout(this.checkTheme, 1);
+    if (this.state.cookies) {
+      this.setCookie("toTimeTheme", time, 365);
     }
   };
   changeBottomNav = (value) => {
@@ -563,6 +662,7 @@ class App extends React.Component {
     this.setDevice();
     this.getURLQuery();
     this.checkCookies();
+    this.checkTheme();
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -651,8 +751,16 @@ class App extends React.Component {
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
-          theme={this.state.theme}
-          changeTheme={this.changeTheme}
+          applyTheme={this.state.applyTheme}
+          changeApplyTheme={this.changeApplyTheme}
+          darkTheme={this.state.darkTheme}
+          setDarkTheme={this.setDarkTheme}
+          manualTheme={this.state.manualTheme}
+          setManualTheme={this.setManualTheme}
+          fromTimeTheme={this.state.fromTimeTheme}
+          setFromTimeTheme={this.setFromTimeTheme}
+          toTimeTheme={this.state.toTimeTheme}
+          setToTimeTheme={this.setToTimeTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
           snackbarQueue={queue}
@@ -683,8 +791,16 @@ class App extends React.Component {
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
-          theme={this.state.theme}
-          changeTheme={this.changeTheme}
+          applyTheme={this.state.applyTheme}
+          changeApplyTheme={this.changeApplyTheme}
+          darkTheme={this.state.darkTheme}
+          setDarkTheme={this.setDarkTheme}
+          manualTheme={this.state.manualTheme}
+          setManualTheme={this.setManualTheme}
+          fromTimeTheme={this.state.fromTimeTheme}
+          setFromTimeTheme={this.setFromTimeTheme}
+          toTimeTheme={this.state.toTimeTheme}
+          setToTimeTheme={this.setToTimeTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
           snackbarQueue={queue}
@@ -715,8 +831,16 @@ class App extends React.Component {
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
-          theme={this.state.theme}
-          changeTheme={this.changeTheme}
+          applyTheme={this.state.applyTheme}
+          changeApplyTheme={this.changeApplyTheme}
+          darkTheme={this.state.darkTheme}
+          setDarkTheme={this.setDarkTheme}
+          manualTheme={this.state.manualTheme}
+          setManualTheme={this.setManualTheme}
+          fromTimeTheme={this.state.fromTimeTheme}
+          setFromTimeTheme={this.setFromTimeTheme}
+          toTimeTheme={this.state.toTimeTheme}
+          setToTimeTheme={this.setToTimeTheme}
           bottomNav={this.state.bottomNav}
           changeBottomNav={this.changeBottomNav}
           setWhitelist={this.setWhitelist}

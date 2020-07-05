@@ -3,9 +3,13 @@ import firebase from "./firebase";
 import { Link } from "react-router-dom";
 import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
 import { Typography } from "@rmwc/typography";
-import { List, ListItem, ListItemGraphic, ListItemMeta } from "@rmwc/list";
+import { List, ListItem } from "@rmwc/list";
 import { Button } from "@rmwc/button";
 import { Switch } from "@rmwc/switch";
+import { Select } from "@rmwc/select";
+import { FormField } from "@rmwc/formfield";
+import { TextField } from "@rmwc/textfield";
+import { Radio } from "@rmwc/radio";
 import "./DialogSettings.scss";
 
 export class DialogSettings extends React.Component {
@@ -25,6 +29,10 @@ export class DialogSettings extends React.Component {
         console.log("Error signing out: " + error);
         this.props.snackbarQueue.notify({ title: "Error signing out: " + error });
       });
+  };
+  setApplyTheme = (e) => {
+    const applyThemeOptions = ["manual", "timed", "system"];
+    this.props.changeApplyTheme(applyThemeOptions[e.detail.index]);
   };
   render() {
     const bottomNav = this.props.changeBottomNav ? (
@@ -79,109 +87,129 @@ export class DialogSettings extends React.Component {
     ) : (
       ""
     );
+    const themeOptions =
+      this.props.applyTheme === "system" ? (
+        ""
+      ) : this.props.applyTheme === "timed" ? (
+        <FormField className="theme-form-field theme-form-field--flex">
+          <div className="theme-form-field__text">
+            <Typography use="body2">From</Typography>
+            <div>
+              <TextField
+                outlined
+                icon={{
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.25 12.15L11 13V7h1.5v5.25l4.5 2.67-.75 1.23z"
+                        opacity=".3"
+                      />
+                      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                    </svg>
+                  ),
+                }}
+                pattern="^\d{2}:\d{2}"
+                placeholder="--:--"
+                helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
+                type="time"
+                value={this.props.fromTimeTheme}
+                onChange={(e) => {
+                  this.props.setFromTimeTheme(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <div className="theme-form-field__text">
+            <Typography use="body2">to</Typography>
+            <div>
+              <TextField
+                outlined
+                icon={{
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path
+                        d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.25 12.15L11 13V7h1.5v5.25l4.5 2.67-.75 1.23z"
+                        opacity=".3"
+                      />
+                      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                    </svg>
+                  ),
+                }}
+                pattern="^\d{2}:\d{2}"
+                placeholder="--:--"
+                helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
+                type="time"
+                value={this.props.toTimeTheme}
+                onChange={(e) => {
+                  this.props.setToTimeTheme(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+        </FormField>
+      ) : (
+        <FormField className="theme-form-field">
+          <Typography use="body2" tag="label" htmlFor="manualTheme">
+            Dark theme
+          </Typography>
+          <Switch
+            id="manualTheme"
+            checked={this.props.manualTheme}
+            onChange={(e) => {
+              this.props.setManualTheme(e.target.checked);
+            }}
+          />
+        </FormField>
+      );
     return (
       <Dialog open={this.props.open} onClose={this.props.close} className="settings-dialog">
         <DialogTitle>Settings</DialogTitle>
         <DialogContent>
           <div className="group">
             <Typography use="subtitle2" tag="h3">
-              Theme
+              Dark theme
             </Typography>
+            <FormField className="theme-form-field">
+              <Typography use="body2">Apply dark theme</Typography>
+              <Select
+                enhanced
+                outlined
+                value={
+                  this.props.applyTheme === "system" ? "System" : this.props.applyTheme === "timed" ? "Timed" : "Manual"
+                }
+                options={["Manual", "Timed", "System"]}
+                onChange={(e) => {
+                  this.setApplyTheme(e);
+                }}
+              />
+            </FormField>
+            {themeOptions}
             <List>
-              <ListItem onClick={() => this.props.changeTheme("light")} className="light">
-                <ListItemGraphic
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
-                        <path d="M24 0H0v24h24V0z" fill="none" />
-                        <path
-                          d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z"
-                          opacity=".3"
-                        />
-                        <path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" />
-                      </svg>
-                    ),
-                  }}
-                />
-                Light
-                {this.props.theme === "light" ? <ListItemMeta icon="check" /> : ""}
+              <ListItem onClick={() => this.props.setDarkTheme("grey")} className="grey">
+                <FormField>
+                  <Radio tabIndex="-1" checked={this.props.darkTheme === "grey"} readOnly />
+                  Grey
+                </FormField>
               </ListItem>
-              <ListItem onClick={() => this.props.changeTheme("grey")} className="grey">
-                <ListItemGraphic
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
-                        <path d="M24 0H0v24h24V0z" fill="none" />
-                        <path
-                          d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z"
-                          opacity=".3"
-                        />
-                        <path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" />
-                      </svg>
-                    ),
-                  }}
-                />
-                Grey
-                {this.props.theme === "grey" ? <ListItemMeta icon="check" /> : ""}
+              <ListItem onClick={() => this.props.setDarkTheme("ocean")} className="ocean">
+                <FormField>
+                  <Radio tabIndex="-1" checked={this.props.darkTheme === "ocean"} readOnly />
+                  Ocean
+                </FormField>
               </ListItem>
-              <ListItem onClick={() => this.props.changeTheme("ocean")} className="ocean">
-                <ListItemGraphic
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
-                        <path d="M24 0H0v24h24V0z" fill="none" />
-                        <path
-                          d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z"
-                          opacity=".3"
-                        />
-                        <path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" />
-                      </svg>
-                    ),
-                  }}
-                />
-                Ocean
-                {this.props.theme === "ocean" ? <ListItemMeta icon="check" /> : ""}
+              <ListItem onClick={() => this.props.setDarkTheme("deep")} className="deep">
+                <FormField>
+                  <Radio tabIndex="-1" checked={this.props.darkTheme === "deep"} readOnly />
+                  Deep
+                </FormField>
               </ListItem>
-              <ListItem onClick={() => this.props.changeTheme("deep")} className="deep">
-                <ListItemGraphic
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
-                        <path d="M24 0H0v24h24V0z" fill="none" />
-                        <path
-                          d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z"
-                          opacity=".3"
-                        />
-                        <path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" />
-                      </svg>
-                    ),
-                  }}
-                />
-                Deep
-                {this.props.theme === "deep" ? <ListItemMeta icon="check" /> : ""}
-              </ListItem>
-              <ListItem onClick={() => this.props.changeTheme("dark")} className="dark">
-                <ListItemGraphic
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
-                        <path d="M24 0H0v24h24V0z" fill="none" />
-                        <path
-                          d="M6 13.59c0 1.6.62 3.1 1.76 4.24 1.13 1.14 2.64 1.76 4.24 1.76V5.1L7.76 9.35C6.62 10.48 6 11.99 6 13.59z"
-                          opacity=".3"
-                        />
-                        <path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58s4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z" />
-                      </svg>
-                    ),
-                  }}
-                />
-                Dark
-                {this.props.theme === "dark" ? <ListItemMeta icon="check" /> : ""}
+              <ListItem onClick={() => this.props.setDarkTheme("dark")} className="dark">
+                <FormField>
+                  <Radio tabIndex="-1" checked={this.props.darkTheme === "dark"} readOnly />
+                  Dark
+                </FormField>
               </ListItem>
             </List>
           </div>

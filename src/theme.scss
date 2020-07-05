@@ -6,8 +6,10 @@
 @import "@material/drawer/mixins";
 @import "@material/fab/mixins";
 @import "@material/list/mixins";
+@import "@material/radio/mixins";
 @import "@material/ripple/mixins";
 @import "@material/snackbar/mixins";
+@import "@material/select/mixins";
 @import "@material/switch/mixins";
 @import "@material/top-app-bar/mixins";
 @import "@material/textfield/mixins";
@@ -337,6 +339,28 @@ $overlay-values: (
 
   .mdc-menu {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 12), map-get($variables, surface));
+  }
+
+  .mdc-radio {
+    @include mdc-radio-unchecked-stroke-color(map-get($variables, text-secondary));
+    @include mdc-radio-checked-stroke-color(map-get($variables, secondary));
+    @include mdc-radio-ink-color(map-get($variables, secondary));
+    @include mdc-states(map-get($variables, secondary));
+  }
+
+  .mdc-select {
+    @include mdc-select-ink-color(map-get($variables, text-primary));
+    @include mdc-select-label-color(map-get($variables, text-secondary));
+    @include mdc-select-focused-label-color(map-get($variables, text-secondary));
+    @include mdc-select-outline-color(rgba(map-get($variables, on-surface),0.38));
+    @include mdc-select-hover-outline-color(map-get($variables, text-primary));
+    @include mdc-select-focused-outline-color(map-get($variables, primary));
+    .mdc-select__dropdown-icon {
+      @include mdc-select-dd-arrow-svg-bg_(unquote('#' + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),0.6);
+    }
+    &.mdc-select--focused .mdc-select__dropdown-icon {
+      @include mdc-select-dd-arrow-svg-bg_(map-get($variables, primary),1);
+    }
   }
 
   .mdc-snackbar {

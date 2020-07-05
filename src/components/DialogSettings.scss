@@ -1,10 +1,11 @@
 @import "@material/theme/color-palette";
+@import "@material/radio/mixins";
 @import "@material/ripple/mixins";
 
 .settings-dialog {
   user-select: none;
   .mdc-dialog__content {
-    overflow: hidden;
+    overflow-x: hidden;
     .group {
       display: flex;
       flex-direction: column;
@@ -13,82 +14,98 @@
         padding: 8px 0;
         margin: 0;
       }
+      .theme-form-field {
+        justify-content: stretch;
+        margin-bottom: 16px;
+        .mdc-typography--body2 {
+          flex-grow: 1;
+        }
+        &--flex {
+          flex-wrap: wrap;
+          justify-items: stretch;
+          margin-bottom: 0;
+          margin-left: -8px;
+        }
+        &__text {
+          display: flex;
+          justify-content: stretch;
+          margin-left: 8px;
+          flex-grow: 1;
+          .mdc-typography--body2 {
+            flex-grow: 1;
+            line-height: 56px;
+            margin-right: 8px;
+          }
+          &:last-of-type {
+            margin-right: 0;
+          }
+        }
+        .mdc-select {
+          margin-left: 16px;
+          .mdc-select__selected-text {
+            min-width: 0;
+            width: 112px;
+          }
+        }
+        .mdc-text-field {
+          min-width: 160px;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator {
+          background: none;
+        }
+      }
       .mdc-list {
         flex-grow: 1;
         padding: 0;
         border-radius: 4px;
         overflow: hidden;
         border: 1px solid var(--divider-color);
-        &-item--selected {
-          font-weight: bold;
+        .mdc-radio {
+          margin-left: -8px;
+          margin-right: 24px;
         }
-        &-item__graphic {
-          margin-right: 16px;
+        .mdc-form-field {
+          color: inherit;
         }
         .light {
           background-color: white;
-          &:not(.mdc-list-item--selected) {
-            color: rgba(black, 0.87);
-            @include mdc-states(black);
-            .mdc-list-item__graphic {
-              fill: rgba(black, 0.6);
-            }
-            .mdc-list-item__meta {
-              color: $material-color-teal-500;
-            }
-          }
+          color: rgba(black, 0.87);
+          @include mdc-radio-unchecked-stroke-color(rgba(black, 0.6));
+          @include mdc-radio-checked-stroke-color($material-color-deep-orange-200);
+          @include mdc-radio-ink-color($material-color-deep-orange-200);
+          @include mdc-states(black);
         }
         .grey {
           background-color: #464851;
-          &:not(.mdc-list-item--selected) {
-            color: rgba(white, 0.87);
-            @include mdc-states(white);
-            .mdc-list-item__graphic {
-              fill: rgba(white, 0.6);
-            }
-            .mdc-list-item__meta {
-              color: $material-color-teal-200;
-            }
-          }
+          color: rgba(white, 0.87);
+          @include mdc-radio-unchecked-stroke-color(rgba(white, 0.6));
+          @include mdc-radio-checked-stroke-color($material-color-deep-orange-200);
+          @include mdc-radio-ink-color($material-color-deep-orange-200);
+          @include mdc-states(white);
         }
         .ocean {
           background-color: #36526c;
-          &:not(.mdc-list-item--selected) {
-            color: rgba(white, 0.87);
-            @include mdc-states(white);
-            .mdc-list-item__graphic {
-              fill: rgba(white, 0.6);
-            }
-            .mdc-list-item__meta {
-              color: $material-color-teal-200;
-            }
-          }
+          color: rgba(white, 0.87);
+          @include mdc-radio-unchecked-stroke-color(rgba(white, 0.6));
+          @include mdc-radio-checked-stroke-color($material-color-teal-200);
+          @include mdc-radio-ink-color($material-color-teal-200);
+          @include mdc-states(white);
         }
         .deep {
           background-color: #3d3a4a;
-          &:not(.mdc-list-item--selected) {
-            color: rgba(white, 0.87);
-            @include mdc-states(white);
-            .mdc-list-item__graphic {
-              fill: rgba(white, 0.6);
-            }
-            .mdc-list-item__meta {
-              color: $material-color-teal-200;
-            }
-          }
+          color: rgba(white, 0.87);
+          @include mdc-radio-unchecked-stroke-color(rgba(white, 0.6));
+          @include mdc-radio-checked-stroke-color($material-color-deep-orange-200);
+          @include mdc-radio-ink-color($material-color-deep-orange-200);
+          @include mdc-states(white);
         }
         .dark {
           background-color: #3b3b3b;
-          &:not(.mdc-list-item--selected) {
-            color: rgba(white, 0.87);
-            @include mdc-states(white);
-            .mdc-list-item__graphic {
-              fill: rgba(white, 0.6);
-            }
-            .mdc-list-item__meta {
-              color: $material-color-teal-200;
-            }
-          }
+          color: rgba(white, 0.87);
+          @include mdc-radio-unchecked-stroke-color(rgba(white, 0.6));
+          @include mdc-radio-checked-stroke-color($material-color-deep-orange-200);
+          @include mdc-radio-ink-color($material-color-deep-orange-200);
+          @include mdc-states(white);
         }
       }
       .mdc-form-field {
