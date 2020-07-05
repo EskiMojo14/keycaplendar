@@ -247,10 +247,6 @@ $overlay-values: (
 
     &__content {
       .mdc-list-item {
-        @include mdc-states(map-get($variables, on-surface));
-        &.mdc-list-item--activated {
-          @include mdc-states(map-get($variables, primary));
-        }
         &__secondary-text {
           color: map-get($variables, text-secondary);
         }
@@ -305,12 +301,13 @@ $overlay-values: (
     @include mdc-list-item-graphic-ink-color(map-get($variables, text-secondary));
     @include mdc-list-item-meta-ink-color(map-get($variables, text-secondary));
     @include mdc-states(map-get($variables, on-surface));
+    @include mdc-states-activated(map-get($variables, primary));
+    @include mdc-states-selected(map-get($variables, primary));
     &.mdc-list-item--activated,
     &.mdc-list-item--selected {
       @include mdc-list-item-primary-text-ink-color(map-get($variables, primary));
       @include mdc-list-item-secondary-text-ink-color(map-get($variables, primary));
       @include mdc-list-item-graphic-ink-color(map-get($variables, primary));
-      @include mdc-states(map-get($variables, primary));
       .mdc-list-item__graphic,
       .mdc-list-item__meta {
         fill: map-get($variables, primary);
