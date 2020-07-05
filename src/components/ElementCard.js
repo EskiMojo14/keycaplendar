@@ -1,7 +1,7 @@
 import React from "react";
 import Twemoji from "react-twemoji";
 import { Typography } from "@rmwc/typography";
-import { Card, CardMedia, CardPrimaryAction } from "@rmwc/card";
+import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardActionIcon } from "@rmwc/card";
 import "./ElementCard.scss";
 
 export class ElementCard extends React.Component {
@@ -30,11 +30,23 @@ export class ElementCard extends React.Component {
     );
     return (
       <div className="card-container">
-        <Card
-          className={this.props.selected ? "mdc-card--selected" : ""}
-          onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
-        >
-          <CardPrimaryAction className={this.props.selected ? "mdc-card__primary-action--selected" : ""}>
+        <Card className={this.props.selected ? "mdc-card--selected" : ""}>
+          <CardActions className="hover-button">
+            <CardActionIcons>
+              <CardActionIcon
+                icon="open_in_new"
+                tag="a"
+                href={this.props.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                label={"Link to " + this.props.title}
+              />
+            </CardActionIcons>
+          </CardActions>
+          <CardPrimaryAction
+            className={this.props.selected ? "mdc-card__primary-action--selected" : ""}
+            onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
+          >
             <div className="media-container">
               <CardMedia sixteenByNine style={{ backgroundImage: "url(" + this.props.image + ")" }} />
               {timeIndicator}

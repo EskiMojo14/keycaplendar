@@ -86,6 +86,7 @@ export class ViewCard extends React.Component {
               subtitle={subtitle}
               designer={designer}
               image={set.image}
+              link={set.details}
               details={this.props.details}
               closeDetails={this.props.closeDetails}
               thisWeek={thisWeek}

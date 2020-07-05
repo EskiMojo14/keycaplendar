@@ -1,6 +1,7 @@
 import React from "react";
 import Twemoji from "react-twemoji";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
+import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import "./ElementList.scss";
 
@@ -48,6 +49,15 @@ export class ElementList extends React.Component {
         </ListItemText>
         {timeIndicator}
         {liveIndicator}
+        <div className="link-icon">
+          <IconButton
+            tag="a"
+            href={this.props.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="open_in_new"
+          />
+        </div>
       </ListItem>
     );
   }

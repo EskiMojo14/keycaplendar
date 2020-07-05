@@ -1,16 +1,42 @@
 @import "@material/animation/variables";
 @import "@material/animation/functions";
 @import "@material/elevation/mixins";
+@import "@material/icon-button/mixins";
 @import "@material/ripple/mixins";
 
 .card-container .mdc-card {
   height: 100%;
   transition: mdc-elevation-transition-value();
+  position: relative;
+  overflow: hidden;
   &:hover {
     @include mdc-elevation(4);
   }
   &--selected {
     @include mdc-elevation(8);
+  }
+  .hover-button {
+    position: absolute;
+    z-index: 4;
+    width: 100%;
+    height: 64px;
+    &::before {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      right: 0;
+      top: 0;
+      content: "";
+      background: linear-gradient(rgba(black,0.4),transparent);
+      opacity: 0;
+      transition: opacity 250ms $mdc-animation-standard-curve-timing-function;
+    }
+    .mdc-icon-button {
+      opacity: 0;
+      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+      @include mdc-icon-button-ink-color(white);
+    }
   }
   &__primary-action {
     height: 100%;
@@ -32,6 +58,19 @@
       z-index: 3;
       background-color: #333333;
       color: white;
+    }
+  }
+}
+
+@media (min-width: 840px) {
+  .mdc-card:hover {
+    .hover-button {
+      &::before {
+        opacity: 1;
+      }
+      .mdc-icon-button {
+        animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+      }
     }
   }
 }

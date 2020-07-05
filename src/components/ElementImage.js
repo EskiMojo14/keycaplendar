@@ -7,6 +7,7 @@ import {
   ImageListSupporting,
   ImageListLabel,
 } from "@rmwc/image-list";
+import { IconButton } from "@rmwc/icon-button";
 import { Ripple } from "@rmwc/ripple";
 import { Typography } from "@rmwc/typography";
 import "./ElementImage.scss";
@@ -45,6 +46,9 @@ export class ElementImage extends React.Component {
           className={"image-list-item" + (this.props.selected ? " selected" : "")}
         >
           <div className="container">
+            <div className="link-icon-container">
+              <IconButton className="link-icon" icon="open_in_new" tag="a" href={this.props.link} target="_blank" rel="noopener noreferrer" />
+            </div>
             <div className="media-container">
               {timeIndicator}
               <ImageListImageAspectContainer style={{ paddingBottom: "calc(100% / 1)" }}>

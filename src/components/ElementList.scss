@@ -34,6 +34,31 @@
     overflow: hidden;
     height: 24px;
     flex-shrink: 0;
+    animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+  }
+  .link-icon {
+    position: absolute;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    right: 0;
+    padding: 0 4px;
+    .mdc-icon-button {
+      height: 48px;
+      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+    }
+  }
+}
+
+@media (min-width: 840px) {
+  .mdc-list .mdc-list-item:hover {
+    .live-indicator {
+      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+    }
+    .link-icon .mdc-icon-button {
+      animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+    }
   }
 }
 

@@ -84,6 +84,7 @@ export class ViewImageList extends React.Component {
               title={title}
               subtitle={subtitle}
               image={set.image}
+              link={set.details}
               set={set}
               details={this.props.details}
               closeDetails={this.props.closeDetails}
