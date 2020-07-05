@@ -9,11 +9,8 @@
   &:hover {
     @include mdc-elevation(4);
   }
-  &.selected {
+  &--selected {
     @include mdc-elevation(8);
-    .mdc-card__primary-action::before {
-      opacity: 0.08;
-    }
   }
   &__primary-action {
     height: 100%;

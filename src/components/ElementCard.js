@@ -31,10 +31,10 @@ export class ElementCard extends React.Component {
     return (
       <div className="card-container">
         <Card
-          className={this.props.selected ? "selected" : ""}
+          className={this.props.selected ? "mdc-card--selected" : ""}
           onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
         >
-          <CardPrimaryAction>
+          <CardPrimaryAction className={this.props.selected ? "mdc-card__primary-action--selected" : ""}>
             <div className="media-container">
               <CardMedia sixteenByNine style={{ backgroundImage: "url(" + this.props.image + ")" }} />
               {timeIndicator}

@@ -116,12 +116,14 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     @if ($dark) {
       transition-property: box-shadow, background-color;
-      &.selected {
+      &--selected {
         background-color: overlay-elevation(map-get($variables, surface), 8);
       }
     }
     &__primary-action {
       @include mdc-states(map-get($variables, on-surface));
+      @include mdc-states-selected(map-get($variables, on-surface));
+      @include mdc-states-activated(map-get($variables, on-surface));
     }
     .mdc-typography--headline5 {
       color: map-get($variables, text-primary);
