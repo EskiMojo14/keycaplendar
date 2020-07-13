@@ -267,6 +267,16 @@ export class DrawerCreate extends React.Component {
     }
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.open !== prevProps.open) {
+      if (this.props.user.isEditor === false && this.props.user.isDesigner) {
+        this.setState({
+          designer: [this.props.user.nickname],
+        });
+      }
+    }
+  }
+
   render() {
     const formFilled =
       this.state.profile !== "" &&
@@ -443,6 +453,7 @@ export class DrawerCreate extends React.Component {
                 onChange={this.handleChange}
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
+                disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
               />
               <Autocomplete
                 open={this.state.focused === "designer"}
@@ -1096,6 +1107,7 @@ export class DrawerEdit extends React.Component {
                 onChange={this.handleChange}
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
+                disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
               />
               <Autocomplete
                 open={this.state.focused === "designer"}

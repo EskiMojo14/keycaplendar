@@ -90,11 +90,10 @@
     justify-content: stretch;
     .edit {
       flex-grow: 1;
-      margin-right: 8px;
     }
     .delete {
       flex-grow: 0;
-      margin-left: 8px;
+      margin-left: 16px;
     }
   }
   .search-chips {

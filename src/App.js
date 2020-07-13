@@ -31,7 +31,7 @@ class App extends React.Component {
       loading: false,
       content: true,
       search: "",
-      user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false },
+      user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false, nickname: "", isDesigner: false },
       whitelist: { vendors: [], profiles: [], edited: false },
       cookies: true,
       applyTheme: "manual",
@@ -689,40 +689,27 @@ class App extends React.Component {
     document.querySelector("html").classList = this.state.theme;
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const isEditorFn = firebase.functions().httpsCallable("isEditor");
-        isEditorFn()
+        const getClaimsFn = firebase.functions().httpsCallable("getClaims");
+        getClaimsFn()
           .then((result) => {
-            const isEditor = result.data;
-            const isAdminFn = firebase.functions().httpsCallable("isAdmin");
-            isAdminFn()
-              .then((result) => {
-                this.setUser({
-                  email: user.email,
-                  name: user.displayName,
-                  avatar: user.photoURL,
-                  isEditor: isEditor,
-                  isAdmin: result.data,
-                });
-              })
-              .catch((error) => {
-                console.log("Error verifying admin access: " + error);
-                queue.notify({ title: "Error verifying admin access: " + error });
-                this.setUser({
-                  email: user.email,
-                  name: user.displayName,
-                  avatar: user.photoURL,
-                  isEditor: isEditor,
-                  isAdmin: false,
-                });
-              });
-          })
-          .catch((error) => {
-            console.log("Error verifying editor access: " + error);
-            queue.notify({ title: "Error verifying editor access: " + error });
             this.setUser({
               email: user.email,
               name: user.displayName,
               avatar: user.photoURL,
+              nickname: result.data.nickname,
+              isDesigner: result.data.designer,
+              isEditor: result.data.editor,
+              isAdmin: result.data.admin,
+            });
+          })
+          .catch((error) => {
+            queue.notify({ title: "Error verifying custom claims: " + error });
+            this.setUser({
+              email: user.email,
+              name: user.displayName,
+              avatar: user.photoURL,
+              nickname: "",
+              isDesigner: false,
               isEditor: false,
               isAdmin: false,
             });
@@ -877,7 +864,12 @@ class App extends React.Component {
         <Switch>
           <Route path="/users">
             <div>
-              <Users admin={this.state.user.isAdmin} user={this.state.user} snackbarQueue={queue} />
+              <Users
+                admin={this.state.user.isAdmin}
+                user={this.state.user}
+                snackbarQueue={queue}
+                allDesigners={this.state.allDesigners}
+              />
               <SnackbarQueue messages={queue.messages} />
             </div>
           </Route>

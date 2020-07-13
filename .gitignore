@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 firebase-debug.log
 .firebase/*.cache
+logo.ai
+keycaplendar.xd

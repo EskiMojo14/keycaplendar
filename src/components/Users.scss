@@ -1,6 +1,7 @@
 @import "@material/animation/variables";
 @import "@material/elevation/mixins";
 @import "@material/ripple/mixins";
+@import "@material/textfield/mixins";
 @import "@material/typography/mixins";
 
 .users-container {
@@ -16,16 +17,19 @@
     z-index: -1;
   }
   .rmwc-data-table {
+    overflow: visible;
     border: none;
     border-radius: 4px;
     @include mdc-elevation(1);
     &__content {
       width: 100%;
+      background-color: transparent;
     }
     &__head .rmwc-data-table__row {
       height: 56px;
       .rmwc-data-table__head-cell {
         @include mdc-typography(subtitle2);
+        font-family: inherit;
         vertical-align: middle;
       }
     }
@@ -33,6 +37,7 @@
       height: 52px;
       .rmwc-data-table__cell {
         @include mdc-typography(body2);
+        font-family: inherit;
         &::before {
           transition: opacity 100ms;
         }
@@ -44,20 +49,20 @@
             cursor: default;
           }
         }
-      }
-    }
-    .user-cell {
-      padding: 0 16px;
-      .user {
-        display: flex;
-        align-items: center;
-        .avatar {
+        .nickname {
+          height: 32px;
+          width: 200px;
+          .mdc-text-field__input { 
+            padding: 0 12px;
+            @include mdc-typography(body2);
+            font-family: inherit;
+          }
+        }
+        .autocomplete.mdc-menu .mdc-list-item {
+          padding: 0 12px;
           height: 40px;
-          width: 40px;
-          border-radius: 20px;
-          margin-right: 12px;
-          background-size: cover;
-          background-position: center;
+          @include mdc-typography(body2);
+          font-family: inherit;
         }
       }
     }

@@ -17,12 +17,8 @@
     ],
     "rewrites": [
       {
-        "source": "/api/isEditor",
-        "function": "isEditor"
-      },
-      {
-        "source": "/api/isAdmin",
-        "function": "isAdmin"
+        "source": "/api/getClaims",
+        "function": "getClaims"
       },
       {
         "source": "/api/listUsers",

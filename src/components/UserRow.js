@@ -1,15 +1,20 @@
 import React from "react";
 import firebase from "./firebase";
-import { DataTableRow, DataTableCell } from "@rmwc/data-table";
-import { Ripple } from "@rmwc/ripple";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
+import { DataTableRow, DataTableCell } from "@rmwc/data-table";
+import { MenuSurfaceAnchor } from "@rmwc/menu";
+import { Ripple } from "@rmwc/ripple";
+import { TextField } from "@rmwc/textfield";
+import { Autocomplete } from "./Autocomplete";
 
 export class UserRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: {
+        nickname: "",
+        designer: false,
         editor: false,
         admin: false,
       },
@@ -36,11 +41,39 @@ export class UserRow extends React.Component {
       edited: true,
     });
   };
+  handleFocus = (e) => {
+    this.setState({
+      focused: e.target.name,
+    });
+  };
+  handleBlur = () => {
+    this.setState({
+      focused: "",
+    });
+  };
+  handleTextChange = (e) => {
+    const newUser = this.state.user;
+    newUser[e.target.name] = e.target.value;
+    this.setState({
+      user: newUser,
+      edited: true,
+    });
+  };
+  selectValue = (prop, value) => {
+    const newUser = this.state.user;
+    newUser[prop] = value;
+    this.setState({
+      user: newUser,
+      edited: true,
+    });
+  };
   setRoles = () => {
     this.setState({ loading: true });
     const setRolesFn = firebase.functions().httpsCallable("setRoles");
     setRolesFn({
       email: this.state.user.email,
+      nickname: this.state.user.nickname,
+      designer: this.state.user.designer,
       editor: this.state.user.editor,
       admin: this.state.user.admin,
     }).then((result) => {
@@ -57,26 +90,8 @@ export class UserRow extends React.Component {
   };
   render() {
     const user = this.state.user;
-    const editorCheckbox = (
-      <Checkbox
-        name="editor"
-        checked={user.editor}
-        onChange={this.handleChange}
-        disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
-      />
-    );
-    const adminCheckbox = (
-      <Checkbox
-        name="admin"
-        checked={user.admin}
-        onChange={this.handleChange}
-        disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
-      />
-    );
     const saveButton = this.state.loading ? (
       <CircularProgress />
-    ) : user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? (
-      ""
     ) : (
       <div
         onClick={() => {
@@ -121,15 +136,48 @@ export class UserRow extends React.Component {
       );
     return (
       <DataTableRow>
-        <DataTableCell className="user-cell">
-          <div className="user">
-            <div className="avatar" style={{ backgroundImage: "url(" + user.photoURL + ")" }} />
-            {user.displayName}
-          </div>
-        </DataTableCell>
+        <DataTableCell>{user.displayName}</DataTableCell>
         <DataTableCell>{user.email}</DataTableCell>
-        <DataTableCell className="checkbox-cell">{editorCheckbox}</DataTableCell>
-        <DataTableCell className="checkbox-cell">{adminCheckbox}</DataTableCell>
+        <DataTableCell>
+          <MenuSurfaceAnchor>
+            <TextField
+              outlined
+              className="nickname"
+              name="nickname"
+              onChange={this.handleTextChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              value={this.state.user.nickname}
+            />
+            <Autocomplete
+              open={this.state.focused === "nickname"}
+              array={this.props.allDesigners}
+              query={this.state.user.nickname}
+              prop="nickname"
+              select={this.selectValue}
+              minChars={2}
+            />
+          </MenuSurfaceAnchor>
+        </DataTableCell>
+        <DataTableCell className="checkbox-cell">
+          <Checkbox name="designer" checked={user.designer} onChange={this.handleChange} />
+        </DataTableCell>
+        <DataTableCell className="checkbox-cell">
+          <Checkbox
+            name="editor"
+            checked={user.editor}
+            onChange={this.handleChange}
+            disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+          />
+        </DataTableCell>
+        <DataTableCell className="checkbox-cell">
+          <Checkbox
+            name="admin"
+            checked={user.admin}
+            onChange={this.handleChange}
+            disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+          />
+        </DataTableCell>
         <DataTableCell className="icon-cell">{saveButton}</DataTableCell>
         <DataTableCell className="icon-cell">{deleteButton}</DataTableCell>
         <DataTableCell></DataTableCell>

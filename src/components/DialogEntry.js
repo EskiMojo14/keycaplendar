@@ -50,6 +50,13 @@ export class DialogCreate extends React.Component {
         this.closeDialog();
       }
     }
+    if (this.props.open !== prevProps.open) {
+      if (this.props.user.isEditor === false && this.props.user.isDesigner) {
+        this.setState({
+          designer: [this.props.user.nickname],
+        });
+      }
+    }
   }
   openDialog() {
     this.setState({ open: true, animate: true });
@@ -482,6 +489,7 @@ export class DialogCreate extends React.Component {
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
+                  disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
                 />
                 <Autocomplete
                   open={this.state.focused === "designer"}
@@ -1175,6 +1183,7 @@ export class DialogEdit extends React.Component {
                     onChange={this.handleChange}
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
+                    disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
                   />
                   <Autocomplete
                     open={this.state.focused === "designer"}

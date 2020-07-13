@@ -136,35 +136,40 @@ export class Users extends React.Component {
         </TopAppBar>
         <TopAppBarFixedAdjust />
         <div className="users-container">
-          <DataTable>
-            <DataTableContent>
-              <DataTableHead>
-                <DataTableRow>
-                  <DataTableHeadCell>User</DataTableHeadCell>
-                  <DataTableHeadCell>Email</DataTableHeadCell>
-                  <DataTableHeadCell>Editor</DataTableHeadCell>
-                  <DataTableHeadCell>Admin</DataTableHeadCell>
-                  <DataTableHeadCell>Save</DataTableHeadCell>
-                  <DataTableHeadCell>Delete</DataTableHeadCell>
-                  <DataTableHeadCell className="icon-cell">{refreshButton}</DataTableHeadCell>
-                </DataTableRow>
-              </DataTableHead>
-              <DataTableBody>
-                {this.state.users.map((user, index) => {
-                  return (
-                    <UserRow
-                      user={user}
-                      currentUser={this.props.user}
-                      delete={this.openDeleteDialog}
-                      getUsers={this.getUsers}
-                      snackbarQueue={this.props.snackbarQueue}
-                      key={index}
-                    />
-                  );
-                })}
-              </DataTableBody>
-            </DataTableContent>
-          </DataTable>
+          <div className="table-container">
+            <DataTable>
+              <DataTableContent>
+                <DataTableHead>
+                  <DataTableRow>
+                    <DataTableHeadCell>User</DataTableHeadCell>
+                    <DataTableHeadCell>Email</DataTableHeadCell>
+                    <DataTableHeadCell>Nickname</DataTableHeadCell>
+                    <DataTableHeadCell>Designer</DataTableHeadCell>
+                    <DataTableHeadCell>Editor</DataTableHeadCell>
+                    <DataTableHeadCell>Admin</DataTableHeadCell>
+                    <DataTableHeadCell>Save</DataTableHeadCell>
+                    <DataTableHeadCell>Delete</DataTableHeadCell>
+                    <DataTableHeadCell className="icon-cell">{refreshButton}</DataTableHeadCell>
+                  </DataTableRow>
+                </DataTableHead>
+                <DataTableBody>
+                  {this.state.users.map((user, index) => {
+                    return (
+                      <UserRow
+                        user={user}
+                        currentUser={this.props.user}
+                        delete={this.openDeleteDialog}
+                        getUsers={this.getUsers}
+                        snackbarQueue={this.props.snackbarQueue}
+                        key={index}
+                        allDesigners={this.props.allDesigners}
+                      />
+                    );
+                  })}
+                </DataTableBody>
+              </DataTableContent>
+            </DataTable>
+          </div>
         </div>
         <Dialog open={this.state.deleteDialogOpen}>
           <DialogTitle>Delete User</DialogTitle>

@@ -192,7 +192,6 @@ export class DesktopContent extends React.Component {
         sort={this.props.sort}
         page={this.props.page}
         view={this.props.view}
-        editor={this.props.editor}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
@@ -204,12 +203,13 @@ export class DesktopContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      this.props.editor && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
         <div>
           <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
           <DrawerCreate
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -220,6 +220,7 @@ export class DesktopContent extends React.Component {
           <DrawerEdit
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -228,21 +229,27 @@ export class DesktopContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          <DialogDelete
-            open={this.state.deleteDialogOpen}
-            close={this.closeDeleteDialog}
-            set={this.state.deleteSet}
-            openSnackbar={this.openDeleteSnackbar}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
-          <SnackbarDeleted
-            open={this.state.deleteSnackbarOpen}
-            close={this.closeDeleteSnackbar}
-            set={this.state.deleteSet}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
+          {this.props.user.isEditor ? (
+            <div>
+              <DialogDelete
+                open={this.state.deleteDialogOpen}
+                close={this.closeDeleteDialog}
+                set={this.state.deleteSet}
+                openSnackbar={this.openDeleteSnackbar}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+              <SnackbarDeleted
+                open={this.state.deleteSnackbarOpen}
+                close={this.closeDeleteSnackbar}
+                set={this.state.deleteSet}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       ) : (
         ""
@@ -251,7 +258,7 @@ export class DesktopContent extends React.Component {
       this.props.view === "compact" ? (
         <div>
           <TabletDrawerDetails
-            editor={this.props.editor}
+            user={this.props.user}
             set={this.state.detailSet}
             open={this.state.detailsDrawerOpen}
             close={this.closeDetailsDrawer}
@@ -272,7 +279,7 @@ export class DesktopContent extends React.Component {
       ) : (
         <div className="drawer-container">
           <DesktopDrawerDetails
-            editor={this.props.editor}
+            user={this.props.user}
             set={this.state.detailSet}
             open={this.state.detailsDrawerOpen}
             close={this.closeDetailsDrawer}
@@ -496,7 +503,6 @@ export class TabletContent extends React.Component {
         sort={this.props.sort}
         page={this.props.page}
         view={this.props.view}
-        editor={this.props.editor}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
@@ -508,12 +514,13 @@ export class TabletContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      this.props.editor && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
         <div>
           <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
           <DrawerCreate
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -524,6 +531,7 @@ export class TabletContent extends React.Component {
           <DrawerEdit
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -532,21 +540,27 @@ export class TabletContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          <DialogDelete
-            open={this.state.deleteDialogOpen}
-            close={this.closeDeleteDialog}
-            set={this.state.deleteSet}
-            openSnackbar={this.openDeleteSnackbar}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
-          <SnackbarDeleted
-            open={this.state.deleteSnackbarOpen}
-            close={this.closeDeleteSnackbar}
-            set={this.state.deleteSet}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
+          {this.props.user.isEditor ? (
+            <div>
+              <DialogDelete
+                open={this.state.deleteDialogOpen}
+                close={this.closeDeleteDialog}
+                set={this.state.deleteSet}
+                openSnackbar={this.openDeleteSnackbar}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+              <SnackbarDeleted
+                open={this.state.deleteSnackbarOpen}
+                close={this.closeDeleteSnackbar}
+                set={this.state.deleteSet}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       ) : (
         ""
@@ -588,7 +602,7 @@ export class TabletContent extends React.Component {
         </DrawerAppContent>
         {editorElements}
         <TabletDrawerDetails
-          editor={this.props.editor}
+          user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
           close={this.closeDetailsDrawer}
@@ -786,7 +800,6 @@ export class MobileContent extends React.Component {
         sort={this.props.sort}
         page={this.props.page}
         view={this.props.view}
-        editor={this.props.editor}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
@@ -797,7 +810,7 @@ export class MobileContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      this.props.editor && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
         <div>
           <Fab
             className={"create-fab" + (this.props.bottomNav ? " middle" : "")}
@@ -807,6 +820,7 @@ export class MobileContent extends React.Component {
           <DialogCreate
             open={this.state.createDialogOpen}
             close={this.closeCreateDialog}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -817,6 +831,7 @@ export class MobileContent extends React.Component {
           <DialogEdit
             open={this.state.editDialogOpen}
             close={this.closeEditDialog}
+            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -825,21 +840,27 @@ export class MobileContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          <DialogDelete
-            open={this.state.deleteDialogOpen}
-            close={this.closeDeleteDialog}
-            set={this.state.deleteSet}
-            openSnackbar={this.openDeleteSnackbar}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
-          <SnackbarDeleted
-            open={this.state.deleteSnackbarOpen}
-            close={this.closeDeleteSnackbar}
-            set={this.state.deleteSet}
-            getData={this.props.getData}
-            snackbarQueue={this.props.snackbarQueue}
-          />
+          {this.props.user.isEditor ? (
+            <div>
+              <DialogDelete
+                open={this.state.deleteDialogOpen}
+                close={this.closeDeleteDialog}
+                set={this.state.deleteSet}
+                openSnackbar={this.openDeleteSnackbar}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+              <SnackbarDeleted
+                open={this.state.deleteSnackbarOpen}
+                close={this.closeDeleteSnackbar}
+                set={this.state.deleteSet}
+                getData={this.props.getData}
+                snackbarQueue={this.props.snackbarQueue}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       ) : (
         ""
@@ -853,7 +874,7 @@ export class MobileContent extends React.Component {
           close={this.closeNavDrawer}
           openSettings={this.openSettingsDialog}
         />
-        {this.props.editor && this.props.page !== "statistics" ? (
+        {(this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
           <BottomAppBarIndent
             page={this.props.page}
             loading={this.props.loading}
@@ -906,7 +927,7 @@ export class MobileContent extends React.Component {
       </div>
     );
     const search =
-      this.props.bottomNav && this.props.editor ? (
+      this.props.bottomNav && (this.props.user.isEditor || this.props.user.isDesigner) ? (
         <SearchAppBar
           open={this.state.searchBarOpen}
           openBar={this.openSearchBar}
@@ -923,7 +944,7 @@ export class MobileContent extends React.Component {
         className={
           this.props.className +
           "app-container" +
-          (this.props.editor ? " offset-snackbar" : "") +
+          (this.props.user.isEditor || this.props.user.isDesigner ? " offset-snackbar" : "") +
           (this.props.bottomNav ? " bottom-nav" : "")
         }
       >
@@ -942,7 +963,7 @@ export class MobileContent extends React.Component {
         </main>
         {editorElements}
         <TabletDrawerDetails
-          editor={this.props.editor}
+          user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
           close={this.closeDetailsDrawer}
