@@ -422,6 +422,14 @@ $overlay-values: (
         color: map-get($variables, primary);
       }
     }
+    &.mdc-text-field--disabled {
+      .mdc-text-field__input, .mdc-floating-label {
+        color: map-get($variables, text-disabled);
+      }
+      .mdc-notched-outline__leading, .mdc-notched-outline__notch, .mdc-notched-outline__trailing {
+        border-color: rgba(map-get($variables, on-surface),0.06);
+      }
+    }
   }
   .mdc-linear-progress {
     &__bar-inner {
