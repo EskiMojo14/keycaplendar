@@ -20,6 +20,7 @@ class App extends React.Component {
       view: "card",
       transition: false,
       sort: "date",
+      allDesigners: [],
       allVendors: [],
       allRegions: [],
       vendors: [],
@@ -380,6 +381,7 @@ class App extends React.Component {
     let allVendors = [];
     let usVendors = [];
     let allProfiles = [];
+    let allDesigners = [];
     let groups = [];
 
     // page logic
@@ -438,6 +440,11 @@ class App extends React.Component {
           }
         });
       }
+      set.designer.forEach((designer) => {
+        if (!allDesigners.includes(designer)) {
+          allDesigners.push(designer);
+        }
+      });
       if (!allProfiles.includes(set.profile)) {
         allProfiles.push(set.profile);
       }
@@ -480,6 +487,18 @@ class App extends React.Component {
     });
 
     allProfiles.sort(function (a, b) {
+      var x = a.toLowerCase();
+      var y = b.toLowerCase();
+      if (x < y) {
+        return -1;
+      }
+      if (x > y) {
+        return 1;
+      }
+      return 0;
+    });
+
+    allDesigners.sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
       if (x < y) {
@@ -603,6 +622,7 @@ class App extends React.Component {
       filteredSets: searchedSets,
       allRegions: allRegions,
       allVendors: allVendors,
+      allDesigners: allDesigners,
       vendors: usVendors,
       profiles: allProfiles,
       groups: groups,
@@ -740,6 +760,7 @@ class App extends React.Component {
           changeView={this.changeView}
           profiles={this.state.profiles}
           vendors={this.state.vendors}
+          allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}
           sets={this.state.filteredSets}
@@ -780,6 +801,7 @@ class App extends React.Component {
           changeView={this.changeView}
           profiles={this.state.profiles}
           vendors={this.state.vendors}
+          allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}
           sets={this.state.filteredSets}
@@ -820,6 +842,7 @@ class App extends React.Component {
           changeView={this.changeView}
           profiles={this.state.profiles}
           vendors={this.state.vendors}
+          allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}
           sets={this.state.filteredSets}

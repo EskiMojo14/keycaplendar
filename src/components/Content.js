@@ -211,6 +211,7 @@ export class DesktopContent extends React.Component {
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             getData={this.props.getData}
@@ -220,6 +221,7 @@ export class DesktopContent extends React.Component {
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             set={this.state.editSet}
@@ -513,6 +515,7 @@ export class TabletContent extends React.Component {
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             getData={this.props.getData}
@@ -522,6 +525,7 @@ export class TabletContent extends React.Component {
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             set={this.state.editSet}
@@ -804,6 +808,7 @@ export class MobileContent extends React.Component {
             open={this.state.createDialogOpen}
             close={this.closeCreateDialog}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             getData={this.props.getData}
@@ -813,6 +818,7 @@ export class MobileContent extends React.Component {
             open={this.state.editDialogOpen}
             close={this.closeEditDialog}
             profiles={this.props.profiles}
+            allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
             allRegions={this.props.allRegions}
             set={this.state.editSet}

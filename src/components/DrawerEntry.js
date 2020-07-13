@@ -389,7 +389,6 @@ export class DrawerCreate extends React.Component {
                 <MenuSurfaceAnchor>
                   <TextField
                     autoComplete="off"
-                    className="select"
                     outlined
                     required
                     label="Profile"
@@ -424,26 +423,36 @@ export class DrawerCreate extends React.Component {
                 />
               </div>
             </div>
-            <TextField
-              autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              pattern="(\w+)[^\s](,\s*.+)*"
-              value={this.state.designer.toString().replace(/,/g, ", ")}
-              name="designer"
-              helpText={{
-                persistent: false,
-                validationMsg: true,
-                children:
-                  this.state.designer[0] && this.state.designer[0].indexOf(" ") >= 0
-                    ? "Separate multiple designers with a comma"
-                    : "",
-              }}
-              onChange={this.handleChange}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
-            />
+            <MenuSurfaceAnchor>
+              <TextField
+                autoComplete="off"
+                outlined
+                label="Designer"
+                required
+                pattern="(\w+)[^\s](,\s*.+)*"
+                value={this.state.designer.toString().replace(/,/g, ", ")}
+                name="designer"
+                helpText={{
+                  persistent: false,
+                  validationMsg: true,
+                  children:
+                    this.state.designer[0] && this.state.designer[0].indexOf(" ") >= 0
+                      ? "Separate multiple designers with a comma"
+                      : "",
+                }}
+                onChange={this.handleChange}
+                onFocus={this.handleFocus}
+                onBlur={this.handleBlur}
+              />
+              <Autocomplete
+                open={this.state.focused === "designer"}
+                array={this.props.allDesigners}
+                query={this.state.designer.toString().replace(/,/g, ", ")}
+                prop="designer"
+                select={this.selectValue}
+                minChars={2}
+              />
+            </MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
               icon={{
@@ -1034,7 +1043,6 @@ export class DrawerEdit extends React.Component {
                 <MenuSurfaceAnchor>
                   <TextField
                     autoComplete="off"
-                    className="select"
                     outlined
                     required
                     label="Profile"
@@ -1068,25 +1076,36 @@ export class DrawerEdit extends React.Component {
                 />
               </div>
             </div>
-            <TextField
-              autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              pattern="(\w+)[^\s](,\s*.+)*"
-              value={this.state.designer.toString().replace(/,/g, ", ")}
-              name="designer"
-              helpText={{
-                persistent: false,
-                validationMsg: true,
-                children: this.state.designer[0]
-                  ? this.state.designer[0].indexOf(" ") >= 0
-                    ? "Separate multiple designers with a comma"
-                    : "Enter a name"
-                  : "Enter a name",
-              }}
-              onChange={this.handleChange}
-            />
+            <MenuSurfaceAnchor>
+              <TextField
+                autoComplete="off"
+                outlined
+                label="Designer"
+                required
+                pattern="(\w+)[^\s](,\s*.+)*"
+                value={this.state.designer.toString().replace(/,/g, ", ")}
+                name="designer"
+                helpText={{
+                  persistent: false,
+                  validationMsg: true,
+                  children:
+                    this.state.designer[0] && this.state.designer[0].indexOf(" ") >= 0
+                      ? "Separate multiple designers with a comma"
+                      : "",
+                }}
+                onChange={this.handleChange}
+                onFocus={this.handleFocus}
+                onBlur={this.handleBlur}
+              />
+              <Autocomplete
+                open={this.state.focused === "designer"}
+                array={this.props.allDesigners}
+                query={this.state.designer.toString().replace(/,/g, ", ")}
+                prop="designer"
+                select={this.selectValue}
+                minChars={2}
+              />
+            </MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
               icon={{

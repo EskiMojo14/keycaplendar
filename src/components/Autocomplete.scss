@@ -62,7 +62,11 @@
   }
 }
 
-.mdc-drawer .autocomplete.mdc-menu,
-.full-screen-dialog .autocomplete.mdc-menu {
-  margin-top: -16px;
+.mdc-drawer .mdc-text-field, .full-screen-dialog .mdc-text-field {
+  & + .autocomplete.mdc-menu {
+    margin-top: -16px;
+  }
+  & + .mdc-text-field-helper-line + .autocomplete.mdc-menu {
+    margin-top: -35px;
+  }
 }
