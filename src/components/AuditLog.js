@@ -31,7 +31,6 @@ import {
   DataTableCell,
   DataTableBody,
 } from "@rmwc/data-table";
-import { Tooltip } from "@rmwc/tooltip";
 import { Checkbox } from "@rmwc/checkbox";
 import "./AuditLog.scss";
 
@@ -143,11 +142,9 @@ export class AuditLog extends React.Component {
                               ? data.after.profile + " " + data.after.colorway
                               : data.before.profile + " " + data.before.colorway}
                           </ListItemPrimaryText>
-                          <Tooltip content={data.user.email} align="bottom" showArrow>
-                            <ListItemSecondaryText>
-                              {data.user.nickname + ", " + timestamp.format("Do MMM YYYY HH:mm")}
-                            </ListItemSecondaryText>
-                          </Tooltip>
+                          <ListItemSecondaryText>
+                            {data.user.nickname + ", " + timestamp.format("Do MMM YYYY HH:mm")}
+                          </ListItemSecondaryText>
                         </ListItemText>
                         <ListItemMeta icon="expand_more" />
                       </ListItem>
@@ -448,7 +445,11 @@ export class AuditLog extends React.Component {
                           })}
                           <DataTableRow>
                             <DataTableCell>documentId</DataTableCell>
-                            <DataTableCell rowSpan={2}>{data.documentId}</DataTableCell>
+                            <DataTableCell colSpan={2}>{data.documentId}</DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell>userEmail</DataTableCell>
+                            <DataTableCell colSpan={2}>{data.user.email}</DataTableCell>
                           </DataTableRow>
                         </DataTableBody>
                       </DataTableContent>
