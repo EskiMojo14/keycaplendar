@@ -33,9 +33,11 @@ export class SearchBarPersistent extends React.Component {
     });
   };
   handleBlur = () => {
-    this.setState({
-      focused: false,
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: false,
+      });
+    }, 150)
   };
   createSearchTerms = () => {
     let searchTerms = [];
@@ -196,9 +198,11 @@ export class SearchBarModal extends React.Component {
     bodyScroll.disable();
   };
   handleBlur = () => {
-    this.setState({
-      focused: false,
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: false,
+      });
+    }, 150)
     bodyScroll.enable();
   };
   createSearchTerms = () => {
@@ -329,9 +333,11 @@ export class SearchAppBar extends React.Component {
     bodyScroll.disable();
   };
   handleBlur = () => {
-    this.setState({
-      focused: false,
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: false,
+      });
+    }, 150)
     bodyScroll.enable();
   };
   createSearchTerms = () => {

@@ -89,9 +89,11 @@ export class DrawerCreate extends React.Component {
   };
 
   handleBlur = () => {
-    this.setState({
-      focused: "",
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: "",
+      });
+    }, 150)
   };
 
   selectValue = (prop, value) => {
@@ -771,9 +773,11 @@ export class DrawerEdit extends React.Component {
   };
 
   handleBlur = () => {
-    this.setState({
-      focused: "",
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: "",
+      });
+    }, 150)
   };
 
   selectValue = (prop, value) => {

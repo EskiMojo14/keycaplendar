@@ -20,6 +20,7 @@ export class UserRow extends React.Component {
       },
       edited: false,
       loading: false,
+      focused: ""
     };
   }
   componentDidMount() {
@@ -47,9 +48,11 @@ export class UserRow extends React.Component {
     });
   };
   handleBlur = () => {
-    this.setState({
-      focused: "",
-    });
+    setTimeout(() => {
+      this.setState({
+        focused: "",
+      });
+    }, 150)
   };
   handleTextChange = (e) => {
     const newUser = this.state.user;
