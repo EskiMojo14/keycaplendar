@@ -3,6 +3,8 @@ const functions = require("firebase-functions");
 
 const app = admin.initializeApp();
 
+const db = admin.firestore();
+
 exports.getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
     return {
@@ -10,6 +12,7 @@ exports.getClaims = functions.https.onCall((data, context) => {
       designer: context.auth.token.designer ? context.auth.token.designer : false,
       editor: context.auth.token.editor ? context.auth.token.editor : false,
       admin: context.auth.token.admin ? context.auth.token.admin : false,
+      id: context.auth.uid,
     };
   }
   return {
@@ -17,7 +20,32 @@ exports.getClaims = functions.https.onCall((data, context) => {
     designer: false,
     editor: false,
     admin: false,
+    id: null,
   };
+});
+
+exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWrite(async (change, context) => {
+  const user = await admin.auth().getUser(change.after.data().latestEditor);
+  db.collection("changelog")
+    .add({
+      documentId: context.params.keysetId,
+      before: change.before.data(),
+      after: change.after.data(),
+      timestamp: context.timestamp,
+      user: {
+        displayName: user.displayName,
+        email: user.email,
+        nickname: user.customClaims.nickname
+      }
+    })
+    .then((docRef) => {
+      console.log("Changelog written with ID: ", docRef.id);
+      return null;
+    })
+    .catch((error) => {
+      console.error("Error adding changelog: ", error);
+      return null;
+    });
 });
 
 exports.listUsers = functions.https.onCall(async (data, context) => {

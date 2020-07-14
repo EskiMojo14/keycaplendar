@@ -281,6 +281,7 @@ export class DialogCreate extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
+        latestEditor: this.props.user.id,
       })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
@@ -805,7 +806,6 @@ export class DialogEdit extends React.Component {
       gbEnd: this.props.set.gbEnd,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
       vendors: this.props.set.vendors,
-      storeLink: this.props.set.storeLink,
     });
   }
 
@@ -970,6 +970,7 @@ export class DialogEdit extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
+        latestEditor: this.props.user.id,
       })
       .then((docRef) => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });

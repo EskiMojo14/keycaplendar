@@ -253,6 +253,7 @@ export class DrawerCreate extends React.Component {
           gbLaunch: this.state.gbLaunch,
           gbEnd: this.state.gbEnd,
           vendors: this.state.vendors,
+          latestEditor: this.props.user.id,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -927,6 +928,7 @@ export class DrawerEdit extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
+        latestEditor: this.props.user.id,
       })
       .then((docRef) => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });

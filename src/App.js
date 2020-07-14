@@ -31,7 +31,16 @@ class App extends React.Component {
       loading: false,
       content: true,
       search: "",
-      user: { email: null, name: null, avatar: null, isEditor: false, isAdmin: false, nickname: "", isDesigner: false },
+      user: {
+        email: null,
+        name: null,
+        avatar: null,
+        isEditor: false,
+        isAdmin: false,
+        nickname: "",
+        isDesigner: false,
+        id: null,
+      },
       whitelist: { vendors: [], profiles: [], edited: false },
       cookies: true,
       applyTheme: "manual",
@@ -700,6 +709,7 @@ class App extends React.Component {
               isDesigner: result.data.designer,
               isEditor: result.data.editor,
               isAdmin: result.data.admin,
+              id: result.data.id,
             });
           })
           .catch((error) => {
@@ -712,6 +722,7 @@ class App extends React.Component {
               isDesigner: false,
               isEditor: false,
               isAdmin: false,
+              id: null,
             });
           });
       } else {
