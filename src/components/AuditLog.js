@@ -255,43 +255,51 @@ export class AuditLog extends React.Component {
 
                                   return true;
                                 }
+                                const moreVendors =
+                                  afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                                 const buildRows = () => {
                                   let rows = [];
-                                  afterVendors.forEach((vendor, index) => {
-                                    if (!objectCompare(vendor, beforeVendors[index])) {
+                                  moreVendors.forEach((vendor, index) => {
+                                    const beforeVendor = beforeVendors[index]
+                                      ? beforeVendors[index]
+                                      : { name: "", region: "", storeLink: "" };
+                                    const afterVendor = afterVendors[index]
+                                      ? afterVendors[index]
+                                      : { name: "", region: "", storeLink: "" };
+                                    if (!objectCompare(afterVendor, beforeVendor)) {
                                       rows.push(
-                                        <DataTableRow key={vendor.name + index}>
+                                        <DataTableRow key={afterVendor.name + index}>
                                           <DataTableCell>{property + index}</DataTableCell>
                                           <DataTableCell className="before">
                                             <div>
                                               <span
-                                                className={vendor.name !== beforeVendors[index].name ? "highlight" : ""}
+                                                className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}
                                               >
-                                                Name: {beforeVendors[index].name}
+                                                Name: {beforeVendor.name}
                                               </span>
                                             </div>
                                             <div>
                                               <span
                                                 className={
-                                                  vendor.region !== beforeVendors[index].region ? "highlight" : ""
+                                                  afterVendor.region !== beforeVendor.region ? "highlight" : ""
                                                 }
                                               >
-                                                Region: {beforeVendors[index].region}
+                                                Region: {beforeVendor.region}
                                               </span>
                                             </div>
                                             <div>
                                               <span
                                                 className={
-                                                  vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""
+                                                  afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""
                                                 }
                                               >
                                                 Link:{" "}
                                                 <a
-                                                  href={beforeVendors[index].storeLink}
+                                                  href={beforeVendor.storeLink}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
                                                 >
-                                                  {beforeVendors[index].storeLink.match(domain)}
+                                                  {beforeVendor.storeLink.match(domain)}
                                                 </a>
                                               </span>
                                             </div>
@@ -299,29 +307,33 @@ export class AuditLog extends React.Component {
                                           <DataTableCell className="after">
                                             <div>
                                               <span
-                                                className={vendor.name !== beforeVendors[index].name ? "highlight" : ""}
+                                                className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}
                                               >
-                                                Name: {vendor.name}
+                                                Name: {afterVendor.name}
                                               </span>
                                             </div>
                                             <div>
                                               <span
                                                 className={
-                                                  vendor.region !== beforeVendors[index].region ? "highlight" : ""
+                                                  afterVendor.region !== beforeVendor.region ? "highlight" : ""
                                                 }
                                               >
-                                                Region: {vendor.region}
+                                                Region: {afterVendor.region}
                                               </span>
                                             </div>
                                             <div>
                                               <span
                                                 className={
-                                                  vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""
+                                                  afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""
                                                 }
                                               >
                                                 Link:{" "}
-                                                <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                                  {vendor.storeLink.match(domain)}
+                                                <a
+                                                  href={afterVendor.storeLink}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {afterVendor.storeLink.match(domain)}
                                                 </a>
                                               </span>
                                             </div>
