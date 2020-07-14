@@ -29,6 +29,7 @@
       height: 56px;
       .rmwc-data-table__head-cell {
         @include mdc-typography(subtitle2);
+        font-weight: bold;
         font-family: inherit;
         vertical-align: middle;
       }

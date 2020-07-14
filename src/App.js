@@ -5,9 +5,10 @@ import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/Login";
 import { Users } from "./components/Users";
-import "./App.scss";
+import { AuditLog } from "./components/AuditLog";
 import { PrivacyPolicy, TermsOfService } from "./components/Legal";
 import { SnackbarCookies } from "./components/SnackbarCookies";
+import "./App.scss";
 
 const queue = createSnackbarQueue();
 class App extends React.Component {
@@ -892,6 +893,12 @@ class App extends React.Component {
           </Route>
           <Route path="/terms">
             <TermsOfService />
+          </Route>
+          <Route path="/audit">
+            <div>
+              <AuditLog snackbarQueue={queue} />
+              <SnackbarQueue messages={queue.messages} />
+            </div>
           </Route>
           <Route path="/">
             <div className="app">

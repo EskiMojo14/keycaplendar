@@ -41,6 +41,7 @@ $mdc-theme-on-surface: #000;
 @import "@rmwc/data-table/data-table";
 @import "@rmwc/circular-progress/circular-progress";
 @import "@rmwc/tooltip/tooltip";
+@import "@rmwc/list/collapsible-list";
 
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
@@ -55,6 +56,10 @@ $mdc-theme-on-surface: #000;
 
 .mdc-ripple-upgraded::before {
   transition-duration: 100ms !important;
+}
+
+.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta {
+  transform: rotate(180deg);
 }
 
 .light {

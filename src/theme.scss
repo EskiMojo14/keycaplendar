@@ -727,8 +727,28 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
   }
 
-  .users-container::before {
+  .users-container::before, .log-container::before {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+  }
+
+  .log {
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    .mdc-icon-button {
+      color: map-get($variables, text-secondary);
+      @include mdc-states(map-get($variables, on-surface));
+    }
+    .before, .after {
+      color: map-get($variables, text-disabled);
+      a {
+        color: rgba(map-get($variables, primary),0.38);
+      }
+      .highlight {
+        color: map-get($variables, text-primary);
+        a {
+          color: map-get($variables, primary);
+        }
+      }
+    }
   }
 
   .sponsors {

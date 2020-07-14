@@ -1,0 +1,83 @@
+@import "@material/elevation/mixins";
+@import "@material/typography/mixins";
+@import "@material/theme/color-palette";
+
+.log-container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  padding: 16px;
+  box-sizing: border-box;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 128px;
+    z-index: -1;
+  }
+  .log {
+    border-radius: 4px;
+    @include mdc-elevation(1);
+    width: 768px;
+    max-width: calc(100vw - 32px);
+    &-actions {
+      height: 64px;
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    .rmwc-collapsible-list {
+      border-bottom: 1px solid var(--divider-color);
+      &__children-inner {
+        padding: 16px;
+      }
+    }
+    .rmwc-data-table {
+      width: 100%;
+      border: 1px solid var(--divider-color);
+      border-radius: 4px;
+      box-sizing: border-box;
+      &__content {
+        width: 100%;
+        background-color: transparent;
+      }
+      &__head .rmwc-data-table__row {
+        height: 56px;
+        .rmwc-data-table__head-cell {
+          @include mdc-typography(subtitle2);
+          font-family: inherit;
+          font-weight: bold;
+          vertical-align: middle;
+        }
+      }
+      &__body .rmwc-data-table__row {
+        height: 52px;
+        .rmwc-data-table__cell {
+          @include mdc-typography(body2);
+          font-family: inherit;
+          &::before {
+            content: none;
+          }
+          &.before {
+            border-left: 1px solid var(--divider-color);
+            border-right: 1px solid var(--divider-color);
+            .highlight {
+              background-color: rgba($material-color-red-200,0.2);
+              font-weight: bold;
+            }
+          }
+          &.after {
+            .highlight {
+              background-color: rgba($material-color-green-200,0.2);
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }
+}
