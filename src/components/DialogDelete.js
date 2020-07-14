@@ -8,7 +8,9 @@ export class DialogDelete extends React.Component {
     const db = firebase.firestore();
     db.collection("keysets")
       .doc(this.props.set.id)
-      .delete()
+      .set({
+        latestEditor: this.props.user.id,
+      })
       .then((docRef) => {
         this.props.openSnackbar();
         this.props.getData();

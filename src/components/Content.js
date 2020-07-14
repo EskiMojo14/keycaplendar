@@ -238,6 +238,7 @@ export class DesktopContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
               <SnackbarDeleted
                 open={this.state.deleteSnackbarOpen}
@@ -549,6 +550,7 @@ export class TabletContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
               <SnackbarDeleted
                 open={this.state.deleteSnackbarOpen}
@@ -849,6 +851,7 @@ export class MobileContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
               <SnackbarDeleted
                 open={this.state.deleteSnackbarOpen}

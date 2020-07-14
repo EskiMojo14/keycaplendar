@@ -20,6 +20,7 @@ import {
   ListItemText,
   ListItemPrimaryText,
   ListItemSecondaryText,
+  ListItemGraphic,
 } from "@rmwc/list";
 import {
   DataTable,
@@ -31,6 +32,7 @@ import {
   DataTableBody,
 } from "@rmwc/data-table";
 import { Tooltip } from "@rmwc/tooltip";
+import { Checkbox } from "@rmwc/checkbox";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -92,6 +94,7 @@ export class AuditLog extends React.Component {
       "designer",
       "icDate",
       "details",
+      "gbMonth",
       "gbLaunch",
       "gbEnd",
       "image",
@@ -122,8 +125,24 @@ export class AuditLog extends React.Component {
                   <CollapsibleList
                     handle={
                       <ListItem>
+                        <ListItemGraphic
+                          icon={
+                            data.before
+                              ? data.after.profile
+                                ? "update"
+                                : "remove_circle_outline"
+                              : "add_circle_outline"
+                          }
+                        />
                         <ListItemText>
-                          <ListItemPrimaryText>{data.after.profile + " " + data.after.colorway}</ListItemPrimaryText>
+                          <div className="overline">
+                            {data.before ? (data.after.profile ? "Updated" : "Deleted") : "Created"}
+                          </div>
+                          <ListItemPrimaryText>
+                            {data.after.profile
+                              ? data.after.profile + " " + data.after.colorway
+                              : data.before.profile + " " + data.before.colorway}
+                          </ListItemPrimaryText>
                           <Tooltip content={data.user.email} align="bottom" showArrow>
                             <ListItemSecondaryText>
                               {data.user.nickname + ", " + timestamp.format("Do MMM YYYY HH:mm")}
@@ -140,14 +159,26 @@ export class AuditLog extends React.Component {
                         <DataTableHead>
                           <DataTableRow>
                             <DataTableHeadCell>Property</DataTableHeadCell>
-                            <DataTableHeadCell>Before</DataTableHeadCell>
-                            <DataTableHeadCell>After</DataTableHeadCell>
+                            {data.before && data.after.profile ? (
+                              <DataTableHeadCell>Before</DataTableHeadCell>
+                            ) : (
+                              <DataTableHeadCell>Data</DataTableHeadCell>
+                            )}
+                            {data.before && data.after.profile ? <DataTableHeadCell>After</DataTableHeadCell> : null}
                           </DataTableRow>
                         </DataTableHead>
                         <DataTableBody>
                           {properties.map((property, index) => {
-                            if (data.before[property] !== data.after[property]) {
-                              if (property !== "designer" && property !== "vendors") {
+                            const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                            if (data.before && data.after.profile && data.before[property] !== data.after[property]) {
+                              // updated
+                              if (
+                                property !== "designer" &&
+                                property !== "vendors" &&
+                                property !== "image" &&
+                                property !== "gbMonth" &&
+                                property !== "shipped"
+                              ) {
                                 return (
                                   <DataTableRow key={property + index}>
                                     <DataTableCell>{property}</DataTableCell>
@@ -229,7 +260,6 @@ export class AuditLog extends React.Component {
                                 }
                                 const buildRows = () => {
                                   let rows = [];
-                                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
                                   afterVendors.forEach((vendor, index) => {
                                     if (!objectCompare(vendor, beforeVendors[index])) {
                                       rows.push(
@@ -245,16 +275,27 @@ export class AuditLog extends React.Component {
                                             </div>
                                             <div>
                                               <span
-                                                className={vendor.region !== beforeVendors[index].region ? "highlight" : ""}
+                                                className={
+                                                  vendor.region !== beforeVendors[index].region ? "highlight" : ""
+                                                }
                                               >
                                                 Region: {beforeVendors[index].region}
                                               </span>
                                             </div>
                                             <div>
                                               <span
-                                                className={vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""}
+                                                className={
+                                                  vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""
+                                                }
                                               >
-                                                Link: <a href={beforeVendors[index].storeLink} target="_blank" rel="noopener noreferrer">{beforeVendors[index].storeLink.match(domain)}</a>
+                                                Link:{" "}
+                                                <a
+                                                  href={beforeVendors[index].storeLink}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {beforeVendors[index].storeLink.match(domain)}
+                                                </a>
                                               </span>
                                             </div>
                                           </DataTableCell>
@@ -268,16 +309,23 @@ export class AuditLog extends React.Component {
                                             </div>
                                             <div>
                                               <span
-                                                className={vendor.region !== beforeVendors[index].region ? "highlight" : ""}
+                                                className={
+                                                  vendor.region !== beforeVendors[index].region ? "highlight" : ""
+                                                }
                                               >
                                                 Region: {vendor.region}
                                               </span>
                                             </div>
                                             <div>
                                               <span
-                                                className={vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""}
+                                                className={
+                                                  vendor.storeLink !== beforeVendors[index].storeLink ? "highlight" : ""
+                                                }
                                               >
-                                                Link: <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">{vendor.storeLink.match(domain)}</a>
+                                                Link:{" "}
+                                                <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                                                  {vendor.storeLink.match(domain)}
+                                                </a>
                                               </span>
                                             </div>
                                           </DataTableCell>
@@ -288,11 +336,120 @@ export class AuditLog extends React.Component {
                                   return rows;
                                 };
                                 return buildRows();
+                              } else if (property === "image") {
+                                return (
+                                  <DataTableRow key={property + index} className="image-row">
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell className="before">
+                                      <span className="highlight">{data.before.image.match(domain)}</span>
+                                    </DataTableCell>
+                                    <DataTableCell className="after">
+                                      <span className="highlight">{data.before.image.match(domain)}</span>
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
+                              } else if (property === "gbMonth" || property === "shipped") {
+                                return (
+                                  <DataTableRow key={property + index} className="image-row">
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell className="before">
+                                      <Checkbox checked={data.before[property]} disabled />
+                                    </DataTableCell>
+                                    <DataTableCell className="after">
+                                      <Checkbox checked={data.after[property]} disabled />
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
                               }
                               return null;
+                            } else if (!data.before || !data.after.profile) {
+                              //created or deleted
+                              const docData = !data.before ? data.after : data.before;
+                              // updated
+                              if (
+                                property !== "designer" &&
+                                property !== "vendors" &&
+                                property !== "image" &&
+                                property !== "gbMonth" &&
+                                property !== "shipped"
+                              ) {
+                                return (
+                                  <DataTableRow key={property + index}>
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell className={!data.before ? "after" : "before"}>
+                                      <span className="highlight">{docData[property]}</span>
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
+                              } else if (property === "designer") {
+                                return (
+                                  <DataTableRow key={property + index}>
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell className={!data.before ? "after" : "before"}>
+                                      <span className="highlight">{docData[property].join(", ")}</span>
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
+                              } else if (property === "vendors") {
+                                const buildRows = () => {
+                                  let rows = [];
+                                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                                  docData.vendors.forEach((vendor, index) => {
+                                    rows.push(
+                                      <DataTableRow key={vendor.name + index}>
+                                        <DataTableCell>{property + index}</DataTableCell>
+                                        <DataTableCell className={!data.before ? "after" : "before"}>
+                                          <div>
+                                            <span className="highlight">Name: {docData.vendors[index].name}</span>
+                                          </div>
+                                          <div>
+                                            <span className="highlight">Region: {docData.vendors[index].region}</span>
+                                          </div>
+                                          <div>
+                                            <span className="highlight">
+                                              Link:{" "}
+                                              <a
+                                                href={docData.vendors[index].storeLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {docData.vendors[index].storeLink.match(domain)}
+                                              </a>
+                                            </span>
+                                          </div>
+                                        </DataTableCell>
+                                      </DataTableRow>
+                                    );
+                                  });
+                                  return rows;
+                                };
+                                return buildRows();
+                              } else if (property === "image") {
+                                return (
+                                  <DataTableRow key={property + index}>
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell className={!data.before ? "after" : "before"}>
+                                      <span className="highlight">{docData.image.match(domain)}</span>
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
+                              } else if (property === "gbMonth" || property === "shipped") {
+                                return (
+                                  <DataTableRow key={property + index} className="image-row">
+                                    <DataTableCell>{property}</DataTableCell>
+                                    <DataTableCell>
+                                      <Checkbox checked={docData[property]} disabled />
+                                    </DataTableCell>
+                                  </DataTableRow>
+                                );
+                              }
                             }
                             return null;
                           })}
+                          <DataTableRow>
+                            <DataTableCell>documentId</DataTableCell>
+                            <DataTableCell rowSpan={2}>{data.documentId}</DataTableCell>
+                          </DataTableRow>
                         </DataTableBody>
                       </DataTableContent>
                     </DataTable>

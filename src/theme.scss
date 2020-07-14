@@ -737,6 +737,9 @@ $overlay-values: (
       color: map-get($variables, text-secondary);
       @include mdc-states(map-get($variables, on-surface));
     }
+    .overline {
+      color: map-get($variables, text-secondary);
+    }
     .before, .after {
       color: map-get($variables, text-disabled);
       a {

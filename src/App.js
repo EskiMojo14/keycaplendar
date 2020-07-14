@@ -332,26 +332,28 @@ class App extends React.Component {
       .then((querySnapshot) => {
         let sets = [];
         querySnapshot.forEach((doc) => {
-          const gbLaunchDate = new Date(doc.data().gbLaunch);
-          const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
-          const gbLaunch =
-            doc.data().gbMonth && doc.data().gbLaunch !== ""
-              ? doc.data().gbLaunch + "-" + lastOfMonth.getUTCDate()
-              : doc.data().gbLaunch;
-          sets.push({
-            id: doc.id,
-            profile: doc.data().profile,
-            colorway: doc.data().colorway,
-            designer: doc.data().designer,
-            icDate: doc.data().icDate,
-            details: doc.data().details,
-            image: doc.data().image,
-            gbMonth: doc.data().gbMonth,
-            gbLaunch: gbLaunch,
-            gbEnd: doc.data().gbEnd,
-            shipped: doc.data().shipped,
-            vendors: doc.data().vendors,
-          });
+          if (doc.data().profile) {
+            const gbLaunchDate = new Date(doc.data().gbLaunch);
+            const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
+            const gbLaunch =
+              doc.data().gbMonth && doc.data().gbLaunch !== ""
+                ? doc.data().gbLaunch + "-" + lastOfMonth.getUTCDate()
+                : doc.data().gbLaunch;
+            sets.push({
+              id: doc.id,
+              profile: doc.data().profile,
+              colorway: doc.data().colorway,
+              designer: doc.data().designer,
+              icDate: doc.data().icDate,
+              details: doc.data().details,
+              image: doc.data().image,
+              gbMonth: doc.data().gbMonth,
+              gbLaunch: gbLaunch,
+              gbEnd: doc.data().gbEnd,
+              shipped: doc.data().shipped,
+              vendors: doc.data().vendors,
+            });
+          }
         });
 
         sets.sort(function (a, b) {

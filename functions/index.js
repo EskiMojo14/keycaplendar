@@ -25,27 +25,44 @@ exports.getClaims = functions.https.onCall((data, context) => {
 });
 
 exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWrite(async (change, context) => {
-  const user = await admin.auth().getUser(change.after.data().latestEditor);
-  db.collection("changelog")
-    .add({
-      documentId: context.params.keysetId,
-      before: change.before.data(),
-      after: change.after.data(),
-      timestamp: context.timestamp,
-      user: {
-        displayName: user.displayName,
-        email: user.email,
-        nickname: user.customClaims.nickname
-      }
-    })
-    .then((docRef) => {
-      console.log("Changelog written with ID: ", docRef.id);
+  if (!change.before.data()) {
+    console.log("Document created")
+  }
+  if (change.after.data() && change.after.data().latestEditor) {
+    const user = await admin.auth().getUser(change.after.data().latestEditor);
+    db.collection("changelog")
+      .add({
+        documentId: context.params.keysetId,
+        before: (change.before.data() ? change.before.data() : null),
+        after: (change.after.data() ? change.after.data() : null),
+        timestamp: context.timestamp,
+        user: {
+          displayName: user.displayName,
+          email: user.email,
+          nickname: user.customClaims.nickname
+        }
+      })
+      .then((docRef) => {
+        console.log("Changelog written with ID: ", docRef.id);
+        return null;
+      })
+      .catch((error) => {
+        console.error("Error adding changelog: ", error);
+        return null;
+      });
+  } else {
+    console.error("No user ID attached to action.");
+  }
+  if (change.after.data() && !change.after.data().profile) {
+    console.log("Document deleted")
+    db.collection("keysets").doc(context.params.keysetId).delete().then(() => {
+      console.error("Removed document " + context.params.keysetId + ".")
+      return null;
+    }).catch((error) => {
+      console.error("Error removing document " + context.params.keysetId + ": " + error)
       return null;
     })
-    .catch((error) => {
-      console.error("Error adding changelog: ", error);
-      return null;
-    });
+  }
 });
 
 exports.listUsers = functions.https.onCall(async (data, context) => {
