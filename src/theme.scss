@@ -338,7 +338,13 @@ $overlay-values: (
   }
 
   .mdc-menu {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 12), map-get($variables, surface));
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
+  }
+
+  @media (max-width: 840px) {
+    .mdc-menu.mdc-select__menu.mdc-menu-surface.mdc-menu-surface--fixed {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+    }
   }
 
   .mdc-radio {

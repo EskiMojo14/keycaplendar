@@ -8,9 +8,9 @@ import {
   TopAppBarSection,
   TopAppBarTitle,
   TopAppBarNavigationIcon,
+  TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { IconButton } from "@rmwc/icon-button";
 import { CircularProgress } from "@rmwc/circular-progress";
 import {
   List,
@@ -32,6 +32,10 @@ import {
   DataTableBody,
 } from "@rmwc/data-table";
 import { Checkbox } from "@rmwc/checkbox";
+import { Select } from "@rmwc/select";
+import { IconButton } from "@rmwc/icon-button";
+import { Drawer, DrawerHeader, DrawerTitle, DrawerContent, DrawerAppContent } from "@rmwc/drawer";
+import { ContentEmpty } from "./ContentEmpty";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -39,9 +43,34 @@ export class AuditLog extends React.Component {
     super(props);
     this.state = {
       actions: [],
+      actionsFiltered: [],
       loading: false,
+      filterAction: "none",
+      filterUser: "all",
+      filterDrawerOpen: false,
     };
   }
+  toggleFilterDrawer = () => {
+    this.setState({
+      filterDrawerOpen: !this.state.filterDrawerOpen,
+    });
+  };
+  closeFilterDrawer = () => {
+    this.setState({
+      filterDrawerOpen: false,
+    });
+  };
+  handleFilterChange = (e, prop) => {
+    this.setState({
+      [prop]: e.target.value,
+    });
+
+    this.filterActions(
+      this.state.action,
+      prop === "filterAction" ? e.target.value : this.state.filterAction,
+      prop === "filterUser" ? e.target.value : this.state.filterUser
+    );
+  };
   getActions = () => {
     this.setState({ loading: true });
     const db = firebase.firestore();
@@ -49,16 +78,19 @@ export class AuditLog extends React.Component {
       .get()
       .then((querySnapshot) => {
         let actions = [];
+        let users = [{ label: "All", value: "all" }];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          actions.push({
-            data,
-          });
+          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          actions.push(data);
+          if (users.filter(e => e.value === data.user.nickname).length === 0) {
+            users.push({ label: data.user.nickname, value: data.user.nickname });
+          }
         });
 
         actions.sort(function (a, b) {
-          var x = a.data.timestamp.toLowerCase();
-          var y = b.data.timestamp.toLowerCase();
+          var x = a.timestamp.toLowerCase();
+          var y = b.timestamp.toLowerCase();
           if (x < y) {
             return 1;
           }
@@ -67,16 +99,42 @@ export class AuditLog extends React.Component {
           }
           return 0;
         });
-
         this.setState({
           actions: actions,
+          users: users,
         });
-        this.setState({ loading: false });
+
+        this.filterActions(actions);
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
         this.setState({ loading: false });
       });
+  };
+
+  filterActions = (
+    actions = this.state.actions,
+    filterAction = this.state.filterAction,
+    filterUser = this.state.filterUser
+  ) => {
+    let filteredActions = actions;
+
+    if (filterAction !== "none") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.action === filterAction;
+      });
+    }
+
+    if (filterUser !== "all") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.user.nickname === filterUser;
+      });
+    }
+
+    this.setState({
+      actionsFiltered: filteredActions,
+      loading: false,
+    });
   };
   componentDidMount() {
     this.getActions();
@@ -85,7 +143,7 @@ export class AuditLog extends React.Component {
     const refreshButton = this.state.loading ? (
       <CircularProgress />
     ) : (
-      <IconButton icon="refresh" onClick={this.getActions} />
+      <TopAppBarActionItem icon="refresh" onClick={this.getActions} />
     );
     const properties = [
       "profile",
@@ -100,6 +158,10 @@ export class AuditLog extends React.Component {
       "shipped",
       "vendors",
     ];
+    const closeButton =
+      this.props.device === "desktop" ? (
+        <IconButton className="close-icon" icon="close" onClick={this.closeFilterDrawer} />
+      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -110,367 +172,432 @@ export class AuditLog extends React.Component {
               </Link>
               <TopAppBarTitle>Audit Log</TopAppBarTitle>
             </TopAppBarSection>
+            <TopAppBarSection alignEnd>
+              <TopAppBarActionItem icon="filter_list" onClick={this.toggleFilterDrawer} />
+              {refreshButton}
+            </TopAppBarSection>
           </TopAppBarRow>
         </TopAppBar>
         <TopAppBarFixedAdjust />
-        <div className="log-container">
-          <div className="log">
-            <div className="log-actions">{refreshButton}</div>
-            <List twoLine>
-              {this.state.actions.map((action, index) => {
-                const data = action.data;
-                const timestamp = moment.utc(data.timestamp);
-                return (
-                  <CollapsibleList
-                    handle={
-                      <ListItem>
-                        <ListItemGraphic
-                          icon={
-                            data.before
-                              ? data.after.profile
-                                ? "update"
-                                : "remove_circle_outline"
-                              : "add_circle_outline"
+        <div className="content-container">
+          <Drawer
+            open={this.state.filterDrawerOpen}
+            dismissible={this.props.device === "desktop"}
+            modal={this.props.device !== "desktop"}
+            className="drawer-right filter-drawer"
+            onClose={this.closeFilterDrawer}
+          >
+            <DrawerHeader>
+              <DrawerTitle>Filters</DrawerTitle>
+              {closeButton}
+            </DrawerHeader>
+            <DrawerContent>
+              <Select
+                outlined
+                enhanced={{ fixed: true }}
+                label="Action"
+                options={[
+                  { label: "None", value: "none" },
+                  { label: "Created", value: "created" },
+                  { label: "Updated", value: "updated" },
+                  { label: "Deleted", value: "deleted" },
+                ]}
+                value={this.state.filterAction}
+                className="action-select"
+                onChange={(e) => {
+                  this.handleFilterChange(e, "filterAction");
+                }}
+              />
+              <Select
+                outlined
+                enhanced={{ fixed: true }}
+                label="User"
+                options={this.state.users}
+                value={this.state.filterUser}
+                className="user-select"
+                onChange={(e) => {
+                  this.handleFilterChange(e, "filterUser");
+                }}
+              />
+            </DrawerContent>
+          </Drawer>
+          <DrawerAppContent>
+            {this.state.actionsFiltered.length > 0 && !this.state.loading ? (
+              <div
+                className={
+                  "log-container" + (this.state.filterDrawerOpen && this.props.device === "desktop" ? "" : " extended")
+                }
+              >
+                <div className="log">
+                  <List twoLine>
+                    {this.state.actionsFiltered.map((action, index) => {
+                      const timestamp = moment.utc(action.timestamp);
+                      return (
+                        <CollapsibleList
+                          handle={
+                            <ListItem>
+                              <ListItemGraphic
+                                icon={
+                                  action.action !== "created"
+                                    ? action.action === "updated"
+                                      ? "update"
+                                      : "remove_circle_outline"
+                                    : "add_circle_outline"
+                                }
+                              />
+                              <ListItemText>
+                                <div className="overline">{action.action}</div>
+                                <ListItemPrimaryText>
+                                  {action.action !== "deleted"
+                                    ? action.after.profile + " " + action.after.colorway
+                                    : action.before.profile + " " + action.before.colorway}
+                                </ListItemPrimaryText>
+                                <ListItemSecondaryText>
+                                  {action.user.nickname + ", " + timestamp.format("Do MMM YYYY HH:mm")}
+                                </ListItemSecondaryText>
+                              </ListItemText>
+                              <ListItemMeta icon="expand_more" />
+                            </ListItem>
                           }
-                        />
-                        <ListItemText>
-                          <div className="overline">
-                            {data.before ? (data.after.profile ? "Updated" : "Deleted") : "Created"}
-                          </div>
-                          <ListItemPrimaryText>
-                            {data.after.profile
-                              ? data.after.profile + " " + data.after.colorway
-                              : data.before.profile + " " + data.before.colorway}
-                          </ListItemPrimaryText>
-                          <ListItemSecondaryText>
-                            {data.user.nickname + ", " + timestamp.format("Do MMM YYYY HH:mm")}
-                          </ListItemSecondaryText>
-                        </ListItemText>
-                        <ListItemMeta icon="expand_more" />
-                      </ListItem>
-                    }
-                    key={index + data.timestamp}
-                  >
-                    <DataTable>
-                      <DataTableContent>
-                        <DataTableHead>
-                          <DataTableRow>
-                            <DataTableHeadCell>Property</DataTableHeadCell>
-                            {data.before && data.after.profile ? (
-                              <DataTableHeadCell>Before</DataTableHeadCell>
-                            ) : (
-                              <DataTableHeadCell>Data</DataTableHeadCell>
-                            )}
-                            {data.before && data.after.profile ? <DataTableHeadCell>After</DataTableHeadCell> : null}
-                          </DataTableRow>
-                        </DataTableHead>
-                        <DataTableBody>
-                          {properties.map((property, index) => {
-                            const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-                            if (data.before && data.after.profile && data.before[property] !== data.after[property]) {
-                              // updated
-                              if (
-                                property !== "designer" &&
-                                property !== "vendors" &&
-                                property !== "image" &&
-                                property !== "gbMonth" &&
-                                property !== "shipped"
-                              ) {
-                                return (
-                                  <DataTableRow key={property + index}>
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className="before">
-                                      <span className="highlight">{data.before[property]}</span>
-                                    </DataTableCell>
-                                    <DataTableCell className="after">
-                                      <span className="highlight">{data.after[property]}</span>
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              } else if (property === "designer") {
-                                const arrayCompare = (before, after) => {
-                                  return !(
-                                    before.length === after.length &&
-                                    before.sort().every(function (value, index) {
-                                      return value === after.sort()[index];
-                                    })
-                                  );
-                                };
-                                if (arrayCompare(data.before[property], data.after[property])) {
-                                  return (
-                                    <DataTableRow key={property + index}>
-                                      <DataTableCell>{property}</DataTableCell>
-                                      <DataTableCell className="before">
-                                        <span className="highlight">{data.before[property].join(", ")}</span>
-                                      </DataTableCell>
-                                      <DataTableCell className="after">
-                                        <span className="highlight">{data.after[property].join(", ")}</span>
-                                      </DataTableCell>
-                                    </DataTableRow>
-                                  );
-                                }
-                                return null;
-                              } else if (property === "vendors") {
-                                const beforeVendors = data.before.vendors;
-
-                                beforeVendors.sort(function (a, b) {
-                                  var x = a.region.toLowerCase();
-                                  var y = b.region.toLowerCase();
-                                  if (x < y) {
-                                    return -1;
-                                  }
-                                  if (x > y) {
-                                    return 1;
-                                  }
-                                  return 0;
-                                });
-
-                                const afterVendors = data.after.vendors;
-
-                                afterVendors.sort(function (a, b) {
-                                  var x = a.region.toLowerCase();
-                                  var y = b.region.toLowerCase();
-                                  if (x < y) {
-                                    return -1;
-                                  }
-                                  if (x > y) {
-                                    return 1;
-                                  }
-                                  return 0;
-                                });
-
-                                function objectCompare(object1, object2) {
-                                  const keys1 = Object.keys(object1);
-                                  const keys2 = Object.keys(object2);
-
-                                  if (keys1.length !== keys2.length) {
-                                    return false;
-                                  }
-
-                                  for (let key of keys1) {
-                                    if (object1[key] !== object2[key]) {
-                                      return false;
-                                    }
-                                  }
-
-                                  return true;
-                                }
-                                const moreVendors =
-                                  afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
-                                const buildRows = () => {
-                                  let rows = [];
-                                  moreVendors.forEach((vendor, index) => {
-                                    const beforeVendor = beforeVendors[index]
-                                      ? beforeVendors[index]
-                                      : { name: "", region: "", storeLink: "" };
-                                    const afterVendor = afterVendors[index]
-                                      ? afterVendors[index]
-                                      : { name: "", region: "", storeLink: "" };
-                                    if (!objectCompare(afterVendor, beforeVendor)) {
-                                      rows.push(
-                                        <DataTableRow key={afterVendor.name + index}>
-                                          <DataTableCell>{property + index}</DataTableCell>
+                          key={index + action.timestamp}
+                        >
+                          <DataTable>
+                            <DataTableContent>
+                              <DataTableHead>
+                                <DataTableRow>
+                                  <DataTableHeadCell>Property</DataTableHeadCell>
+                                  {action.action === "updated" ? (
+                                    <DataTableHeadCell>Before</DataTableHeadCell>
+                                  ) : (
+                                    <DataTableHeadCell>Data</DataTableHeadCell>
+                                  )}
+                                  {action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+                                </DataTableRow>
+                              </DataTableHead>
+                              <DataTableBody>
+                                {properties.map((property, index) => {
+                                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                                  if (
+                                    action.action === "updated" &&
+                                    action.before[property] !== action.after[property]
+                                  ) {
+                                    if (
+                                      property !== "designer" &&
+                                      property !== "vendors" &&
+                                      property !== "image" &&
+                                      property !== "gbMonth" &&
+                                      property !== "shipped"
+                                    ) {
+                                      return (
+                                        <DataTableRow key={property + index}>
+                                          <DataTableCell>{property}</DataTableCell>
                                           <DataTableCell className="before">
-                                            <div>
-                                              <span
-                                                className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}
-                                              >
-                                                Name: {beforeVendor.name}
-                                              </span>
-                                            </div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  afterVendor.region !== beforeVendor.region ? "highlight" : ""
-                                                }
-                                              >
-                                                Region: {beforeVendor.region}
-                                              </span>
-                                            </div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""
-                                                }
-                                              >
-                                                Link:{" "}
-                                                <a
-                                                  href={beforeVendor.storeLink}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  {beforeVendor.storeLink.match(domain)}
-                                                </a>
-                                              </span>
-                                            </div>
+                                            <span className="highlight">{action.before[property]}</span>
                                           </DataTableCell>
                                           <DataTableCell className="after">
-                                            <div>
-                                              <span
-                                                className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}
-                                              >
-                                                Name: {afterVendor.name}
-                                              </span>
-                                            </div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  afterVendor.region !== beforeVendor.region ? "highlight" : ""
-                                                }
-                                              >
-                                                Region: {afterVendor.region}
-                                              </span>
-                                            </div>
-                                            <div>
-                                              <span
-                                                className={
-                                                  afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""
-                                                }
-                                              >
-                                                Link:{" "}
-                                                <a
-                                                  href={afterVendor.storeLink}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  {afterVendor.storeLink.match(domain)}
-                                                </a>
-                                              </span>
-                                            </div>
+                                            <span className="highlight">{action.after[property]}</span>
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    } else if (property === "designer") {
+                                      const arrayCompare = (before, after) => {
+                                        return !(
+                                          before.length === after.length &&
+                                          before.sort().every(function (value, index) {
+                                            return value === after.sort()[index];
+                                          })
+                                        );
+                                      };
+                                      if (arrayCompare(action.before[property], action.after[property])) {
+                                        return (
+                                          <DataTableRow key={property + index}>
+                                            <DataTableCell>{property}</DataTableCell>
+                                            <DataTableCell className="before">
+                                              <span className="highlight">{action.before[property].join(", ")}</span>
+                                            </DataTableCell>
+                                            <DataTableCell className="after">
+                                              <span className="highlight">{action.after[property].join(", ")}</span>
+                                            </DataTableCell>
+                                          </DataTableRow>
+                                        );
+                                      }
+                                      return null;
+                                    } else if (property === "vendors") {
+                                      const beforeVendors = action.before.vendors;
+
+                                      beforeVendors.sort(function (a, b) {
+                                        var x = a.region.toLowerCase();
+                                        var y = b.region.toLowerCase();
+                                        if (x < y) {
+                                          return -1;
+                                        }
+                                        if (x > y) {
+                                          return 1;
+                                        }
+                                        return 0;
+                                      });
+
+                                      const afterVendors = action.after.vendors;
+
+                                      afterVendors.sort(function (a, b) {
+                                        var x = a.region.toLowerCase();
+                                        var y = b.region.toLowerCase();
+                                        if (x < y) {
+                                          return -1;
+                                        }
+                                        if (x > y) {
+                                          return 1;
+                                        }
+                                        return 0;
+                                      });
+
+                                      function objectCompare(object1, object2) {
+                                        const keys1 = Object.keys(object1);
+                                        const keys2 = Object.keys(object2);
+
+                                        if (keys1.length !== keys2.length) {
+                                          return false;
+                                        }
+
+                                        for (let key of keys1) {
+                                          if (object1[key] !== object2[key]) {
+                                            return false;
+                                          }
+                                        }
+
+                                        return true;
+                                      }
+                                      const moreVendors =
+                                        afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
+                                      const buildRows = () => {
+                                        let rows = [];
+                                        moreVendors.forEach((vendor, index) => {
+                                          const beforeVendor = beforeVendors[index]
+                                            ? beforeVendors[index]
+                                            : { name: "", region: "", storeLink: "" };
+                                          const afterVendor = afterVendors[index]
+                                            ? afterVendors[index]
+                                            : { name: "", region: "", storeLink: "" };
+                                          if (!objectCompare(afterVendor, beforeVendor)) {
+                                            rows.push(
+                                              <DataTableRow key={afterVendor.name + index}>
+                                                <DataTableCell>{property + index}</DataTableCell>
+                                                <DataTableCell className="before">
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.name !== beforeVendor.name ? "highlight" : ""
+                                                      }
+                                                    >
+                                                      Name: {beforeVendor.name}
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.region !== beforeVendor.region ? "highlight" : ""
+                                                      }
+                                                    >
+                                                      Region: {beforeVendor.region}
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.storeLink !== beforeVendor.storeLink
+                                                          ? "highlight"
+                                                          : ""
+                                                      }
+                                                    >
+                                                      Link:{" "}
+                                                      <a
+                                                        href={beforeVendor.storeLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                      >
+                                                        {beforeVendor.storeLink.match(domain)}
+                                                      </a>
+                                                    </span>
+                                                  </div>
+                                                </DataTableCell>
+                                                <DataTableCell className="after">
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.name !== beforeVendor.name ? "highlight" : ""
+                                                      }
+                                                    >
+                                                      Name: {afterVendor.name}
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.region !== beforeVendor.region ? "highlight" : ""
+                                                      }
+                                                    >
+                                                      Region: {afterVendor.region}
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    <span
+                                                      className={
+                                                        afterVendor.storeLink !== beforeVendor.storeLink
+                                                          ? "highlight"
+                                                          : ""
+                                                      }
+                                                    >
+                                                      Link:{" "}
+                                                      <a
+                                                        href={afterVendor.storeLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                      >
+                                                        {afterVendor.storeLink.match(domain)}
+                                                      </a>
+                                                    </span>
+                                                  </div>
+                                                </DataTableCell>
+                                              </DataTableRow>
+                                            );
+                                          }
+                                        });
+                                        return rows;
+                                      };
+                                      return buildRows();
+                                    } else if (property === "image") {
+                                      return (
+                                        <DataTableRow key={property + index} className="image-row">
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className="before">
+                                            <span className="highlight">{action.before.image.match(domain)}</span>
+                                          </DataTableCell>
+                                          <DataTableCell className="after">
+                                            <span className="highlight">{action.before.image.match(domain)}</span>
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    } else if (property === "gbMonth" || property === "shipped") {
+                                      return (
+                                        <DataTableRow key={property + index} className="image-row">
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className="before">
+                                            <Checkbox checked={action.before[property]} disabled />
+                                          </DataTableCell>
+                                          <DataTableCell className="after">
+                                            <Checkbox checked={action.after[property]} disabled />
                                           </DataTableCell>
                                         </DataTableRow>
                                       );
                                     }
-                                  });
-                                  return rows;
-                                };
-                                return buildRows();
-                              } else if (property === "image") {
-                                return (
-                                  <DataTableRow key={property + index} className="image-row">
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className="before">
-                                      <span className="highlight">{data.before.image.match(domain)}</span>
-                                    </DataTableCell>
-                                    <DataTableCell className="after">
-                                      <span className="highlight">{data.before.image.match(domain)}</span>
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              } else if (property === "gbMonth" || property === "shipped") {
-                                return (
-                                  <DataTableRow key={property + index} className="image-row">
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className="before">
-                                      <Checkbox checked={data.before[property]} disabled />
-                                    </DataTableCell>
-                                    <DataTableCell className="after">
-                                      <Checkbox checked={data.after[property]} disabled />
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              }
-                              return null;
-                            } else if (!data.before || !data.after.profile) {
-                              //created or deleted
-                              const docData = !data.before ? data.after : data.before;
-                              // updated
-                              if (
-                                property !== "designer" &&
-                                property !== "vendors" &&
-                                property !== "image" &&
-                                property !== "gbMonth" &&
-                                property !== "shipped"
-                              ) {
-                                return (
-                                  <DataTableRow key={property + index}>
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className={!data.before ? "after" : "before"}>
-                                      <span className="highlight">{docData[property]}</span>
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              } else if (property === "designer") {
-                                return (
-                                  <DataTableRow key={property + index}>
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className={!data.before ? "after" : "before"}>
-                                      <span className="highlight">{docData[property].join(", ")}</span>
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              } else if (property === "vendors") {
-                                const buildRows = () => {
-                                  let rows = [];
-                                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-                                  docData.vendors.forEach((vendor, index) => {
-                                    rows.push(
-                                      <DataTableRow key={vendor.name + index}>
-                                        <DataTableCell>{property + index}</DataTableCell>
-                                        <DataTableCell className={!data.before ? "after" : "before"}>
-                                          <div>
-                                            <span className="highlight">Name: {docData.vendors[index].name}</span>
-                                          </div>
-                                          <div>
-                                            <span className="highlight">Region: {docData.vendors[index].region}</span>
-                                          </div>
-                                          <div>
-                                            <span className="highlight">
-                                              Link:{" "}
-                                              <a
-                                                href={docData.vendors[index].storeLink}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                    return null;
+                                  } else if (action.action === "created" || action.action === "deleted") {
+                                    const docData = action.action === "created" ? action.after : action.before;
+                                    if (
+                                      property !== "designer" &&
+                                      property !== "vendors" &&
+                                      property !== "image" &&
+                                      property !== "gbMonth" &&
+                                      property !== "shipped"
+                                    ) {
+                                      return (
+                                        <DataTableRow key={property + index}>
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                                            <span className="highlight">{docData[property]}</span>
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    } else if (property === "designer") {
+                                      return (
+                                        <DataTableRow key={property + index}>
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                                            <span className="highlight">{docData[property].join(", ")}</span>
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    } else if (property === "vendors") {
+                                      const buildRows = () => {
+                                        let rows = [];
+                                        const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                                        docData.vendors.forEach((vendor, index) => {
+                                          rows.push(
+                                            <DataTableRow key={vendor.name + index}>
+                                              <DataTableCell>{property + index}</DataTableCell>
+                                              <DataTableCell
+                                                className={action.action === "created" ? "after" : "before"}
                                               >
-                                                {docData.vendors[index].storeLink.match(domain)}
-                                              </a>
-                                            </span>
-                                          </div>
-                                        </DataTableCell>
-                                      </DataTableRow>
-                                    );
-                                  });
-                                  return rows;
-                                };
-                                return buildRows();
-                              } else if (property === "image") {
-                                return (
-                                  <DataTableRow key={property + index}>
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell className={!data.before ? "after" : "before"}>
-                                      <span className="highlight">{docData.image.match(domain)}</span>
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              } else if (property === "gbMonth" || property === "shipped") {
-                                return (
-                                  <DataTableRow key={property + index} className="image-row">
-                                    <DataTableCell>{property}</DataTableCell>
-                                    <DataTableCell>
-                                      <Checkbox checked={docData[property]} disabled />
-                                    </DataTableCell>
-                                  </DataTableRow>
-                                );
-                              }
-                            }
-                            return null;
-                          })}
-                          <DataTableRow>
-                            <DataTableCell>documentId</DataTableCell>
-                            <DataTableCell colSpan={2}>{data.documentId}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell>userEmail</DataTableCell>
-                            <DataTableCell colSpan={2}>{data.user.email}</DataTableCell>
-                          </DataTableRow>
-                        </DataTableBody>
-                      </DataTableContent>
-                    </DataTable>
-                  </CollapsibleList>
-                );
-              })}
-            </List>
-          </div>
+                                                <div>
+                                                  <span className="highlight">Name: {docData.vendors[index].name}</span>
+                                                </div>
+                                                <div>
+                                                  <span className="highlight">
+                                                    Region: {docData.vendors[index].region}
+                                                  </span>
+                                                </div>
+                                                <div>
+                                                  <span className="highlight">
+                                                    Link:{" "}
+                                                    <a
+                                                      href={docData.vendors[index].storeLink}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                    >
+                                                      {docData.vendors[index].storeLink.match(domain)}
+                                                    </a>
+                                                  </span>
+                                                </div>
+                                              </DataTableCell>
+                                            </DataTableRow>
+                                          );
+                                        });
+                                        return rows;
+                                      };
+                                      return buildRows();
+                                    } else if (property === "image") {
+                                      return (
+                                        <DataTableRow key={property + index}>
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                                            <span className="highlight">{docData.image.match(domain)}</span>
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    } else if (property === "gbMonth" || property === "shipped") {
+                                      return (
+                                        <DataTableRow key={property + index} className="image-row">
+                                          <DataTableCell>{property}</DataTableCell>
+                                          <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                                            <Checkbox checked={docData[property]} disabled />
+                                          </DataTableCell>
+                                        </DataTableRow>
+                                      );
+                                    }
+                                  }
+                                  return null;
+                                })}
+                                <DataTableRow>
+                                  <DataTableCell>documentId</DataTableCell>
+                                  <DataTableCell colSpan={2}>{action.documentId}</DataTableCell>
+                                </DataTableRow>
+                                <DataTableRow>
+                                  <DataTableCell>userEmail</DataTableCell>
+                                  <DataTableCell colSpan={2}>{action.user.email}</DataTableCell>
+                                </DataTableRow>
+                              </DataTableBody>
+                            </DataTableContent>
+                          </DataTable>
+                        </CollapsibleList>
+                      );
+                    })}
+                  </List>
+                </div>
+              </div>
+            ) : (
+              <ContentEmpty />
+            )}
+          </DrawerAppContent>
         </div>
       </div>
     );

@@ -1,6 +1,33 @@
+@import "@material/animation/variables";
 @import "@material/elevation/mixins";
 @import "@material/typography/mixins";
+@import "@material/top-app-bar/variables";
 @import "@material/theme/color-palette";
+
+.mdc-top-app-bar {
+  .rmwc-circular-progress {
+    padding: 12px;
+  }
+}
+
+.mdc-drawer.filter-drawer {
+  .mdc-drawer__content {
+    padding: 16px;
+    .mdc-select {
+      width: 320px - 32px;
+      margin-bottom: 16px;
+    }
+  }
+
+}
+
+.mdc-menu.mdc-select__menu.mdc-menu-surface.mdc-menu-surface--fixed {
+  width: 320px - 32px;
+}
+
+.mdc-drawer-app-content {
+  flex-grow: 1;
+}
 
 .log-container {
   display: flex;
@@ -12,25 +39,23 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: 128px;
+    height: 0;
     z-index: -1;
+    transition: height 250ms $mdc-animation-standard-curve-timing-function;
+  }
+  &.extended::before {
+    height: 128px;
   }
   .log {
     border-radius: 4px;
     @include mdc-elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
-    &-actions {
-      height: 64px;
-      padding: 16px;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      border-bottom: 1px solid var(--divider-color);
-    }
     .rmwc-collapsible-list {
       border-bottom: 1px solid var(--divider-color);
+      &:last-child {
+        border-bottom: none;
+      }
       .mdc-list-item {
         height: 88px;
         &__text {

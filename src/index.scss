@@ -15,6 +15,10 @@
   &.mdc-drawer--opening {
     transform: translateX(0);
   }
+  &.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content {
+    margin-left: 0;
+    margin-right: 320px;
+  }
 }
 
 .mdc-drawer__content {

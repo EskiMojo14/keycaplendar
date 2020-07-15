@@ -902,7 +902,7 @@ class App extends React.Component {
           </Route>
           <Route path="/audit">
             <div>
-              <AuditLog snackbarQueue={queue} />
+              <AuditLog device={this.state.device} snackbarQueue={queue} />
               <SnackbarQueue messages={queue.messages} />
             </div>
           </Route>
