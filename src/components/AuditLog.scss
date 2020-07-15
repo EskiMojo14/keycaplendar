@@ -5,9 +5,8 @@
 .log-container {
   display: flex;
   justify-content: center;
-  position: relative;
   padding: 16px;
-  box-sizing: border-box;
+  position: relative;
   &::before {
     content: "";
     position: absolute;

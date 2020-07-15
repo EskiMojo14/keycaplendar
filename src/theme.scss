@@ -26,9 +26,9 @@ $overlay-values: (
   4: 9%,   /* app bar */
   6: 11%,  /* FAB, snackbar */
   8: 12%,  /* menu, side sheet */
-  12: 14%, 
+  12: 14%,
   16: 15%, /* nav drawer, modal side sheet */
-  24: 16%  /* dialog */
+  24: 16%, /* dialog */
 );
 
 @function overlay-elevation($color, $elevation: 0) {
@@ -352,14 +352,17 @@ $overlay-values: (
     @include mdc-select-ink-color(map-get($variables, text-primary));
     @include mdc-select-label-color(map-get($variables, text-secondary));
     @include mdc-select-focused-label-color(map-get($variables, text-secondary));
-    @include mdc-select-outline-color(rgba(map-get($variables, on-surface),0.38));
+    @include mdc-select-outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include mdc-select-hover-outline-color(map-get($variables, text-primary));
     @include mdc-select-focused-outline-color(map-get($variables, primary));
     .mdc-select__dropdown-icon {
-      @include mdc-select-dd-arrow-svg-bg_(unquote('#' + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),0.6);
+      @include mdc-select-dd-arrow-svg-bg_(
+        unquote("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),
+        0.6
+      );
     }
     &.mdc-select--focused .mdc-select__dropdown-icon {
-      @include mdc-select-dd-arrow-svg-bg_(map-get($variables, primary),1);
+      @include mdc-select-dd-arrow-svg-bg_(map-get($variables, primary), 1);
     }
   }
 
@@ -423,11 +426,14 @@ $overlay-values: (
       }
     }
     &.mdc-text-field--disabled {
-      .mdc-text-field__input, .mdc-floating-label {
+      .mdc-text-field__input,
+      .mdc-floating-label {
         color: map-get($variables, text-disabled);
       }
-      .mdc-notched-outline__leading, .mdc-notched-outline__notch, .mdc-notched-outline__trailing {
-        border-color: rgba(map-get($variables, on-surface),0.06);
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: rgba(map-get($variables, on-surface), 0.06);
       }
     }
   }
@@ -653,6 +659,10 @@ $overlay-values: (
     background-color: map-get($variables, background);
   }
 
+  .banner-text {
+    color: map-get($variables, text-secondary);
+  }
+
   .empty-container,
   .login-container {
     .title {
@@ -708,13 +718,6 @@ $overlay-values: (
     }
   }
 
-  .legal-container {
-    color: map-get($variables, text-primary);
-    a {
-      color: map-get($variables, primary);
-    }
-  }
-
   .list .content-grid {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
   }
@@ -727,12 +730,33 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
   }
 
-  .users-container::before, .log-container::before {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+  .users,
+  .log,
+  .legal,
+  .guide {
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    color: map-get($variables, text-primary);
+    a {
+      color: map-get($variables, primary);
+    }
+    .mdc-typography--button {
+      color: map-get($variables, primary);
+      &.delete {
+        color: map-get($variables, error);
+      }
+    }
+    .secondary {
+      color: map-get($variables, text-secondary);
+      .bold {
+        color: map-get($variables, text-primary);
+      }
+    }
+    &-container::before {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+    }
   }
 
   .log {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
       @include mdc-states(map-get($variables, on-surface));
@@ -740,10 +764,11 @@ $overlay-values: (
     .overline {
       color: map-get($variables, text-secondary);
     }
-    .before, .after {
+    .before,
+    .after {
       color: map-get($variables, text-disabled);
       a {
-        color: rgba(map-get($variables, primary),0.38);
+        color: rgba(map-get($variables, primary), 0.38);
       }
       .highlight {
         color: map-get($variables, text-primary);

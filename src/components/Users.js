@@ -136,7 +136,7 @@ export class Users extends React.Component {
         </TopAppBar>
         <TopAppBarFixedAdjust />
         <div className="users-container">
-          <div className="table-container">
+          <div className="users">
             <DataTable>
               <DataTableContent>
                 <DataTableHead>

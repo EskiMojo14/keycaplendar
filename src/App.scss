@@ -46,7 +46,10 @@ $mdc-theme-on-surface: #000;
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
 .mdc-drawer,
-.mdc-list-divider {
+.mdc-list-divider,
+.rmwc-data-table,
+.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
+.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);
 }
 
@@ -60,6 +63,28 @@ $mdc-theme-on-surface: #000;
 
 .rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta {
   transform: rotate(180deg);
+}
+
+.banner {
+  height: 54px;
+  display: flex;
+  justify-content: stretch;
+  border-bottom: 1px solid var(--divider-color);
+  &-text {
+    @include mdc-typography(body2);
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    padding-left: 16px;
+  }
+  &-button {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 16px;
+    a {
+      text-decoration: none;
+    }
+  }
 }
 
 .light {

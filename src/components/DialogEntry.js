@@ -99,11 +99,9 @@ export class DialogCreate extends React.Component {
   };
 
   handleBlur = () => {
-    setTimeout(() => {
-      this.setState({
-        focused: "",
-      });
-    }, 150)
+    this.setState({
+      focused: "",
+    });
   };
 
   selectValue = (prop, value) => {
@@ -433,6 +431,14 @@ export class DialogCreate extends React.Component {
             <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
           </TopAppBar>
           <div className="full-screen-dialog-content">
+            <div className="banner">
+              <div className="banner-text">Make sure to read the entry guide.</div>
+              <div className="banner-button">
+                <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+                  <Button label="guide" />
+                </a>
+              </div>
+            </div>
             <form className="form">
               <div className="form-double">
                 <div className="select-container">
@@ -756,11 +762,9 @@ export class DialogEdit extends React.Component {
   };
 
   handleBlur = () => {
-    setTimeout(() => {
-      this.setState({
-        focused: "",
-      });
-    }, 150)
+    this.setState({
+      focused: "",
+    });
   };
 
   selectValue = (prop, value) => {
@@ -1128,6 +1132,14 @@ export class DialogEdit extends React.Component {
             <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
           </TopAppBar>
           <div className="full-screen-dialog-content">
+            <div className="banner">
+              <div className="banner-text">Make sure to read the entry guide.</div>
+              <div className="banner-button">
+                <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+                  <Button label="guide" />
+                </a>
+              </div>
+            </div>
             <div className="form-container">
               <form className="form">
                 <div className="form-double">

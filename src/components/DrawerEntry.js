@@ -89,11 +89,9 @@ export class DrawerCreate extends React.Component {
   };
 
   handleBlur = () => {
-    setTimeout(() => {
-      this.setState({
-        focused: "",
-      });
-    }, 150)
+    this.setState({
+      focused: "",
+    });
   };
 
   selectValue = (prop, value) => {
@@ -396,6 +394,14 @@ export class DrawerCreate extends React.Component {
           <DrawerTitle>Create Entry</DrawerTitle>
         </DrawerHeader>
         <DrawerContent>
+          <div className="banner">
+            <div className="banner-text">Make sure to read the entry guide.</div>
+            <div className="banner-button">
+              <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+                <Button label="guide" />
+              </a>
+            </div>
+          </div>
           <form className="form">
             <div className="form-double">
               <div className="select-container">
@@ -773,11 +779,9 @@ export class DrawerEdit extends React.Component {
   };
 
   handleBlur = () => {
-    setTimeout(() => {
-      this.setState({
-        focused: "",
-      });
-    }, 150)
+    this.setState({
+      focused: "",
+    });
   };
 
   selectValue = (prop, value) => {
@@ -1054,6 +1058,14 @@ export class DrawerEdit extends React.Component {
           <DrawerTitle>Edit Entry</DrawerTitle>
         </DrawerHeader>
         <DrawerContent>
+          <div className="banner">
+            <div className="banner-text">Make sure to read the entry guide.</div>
+            <div className="banner-button">
+              <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+                <Button label="guide" />
+              </a>
+            </div>
+          </div>
           <form className="form">
             <div className="form-double">
               <div className="select-container">

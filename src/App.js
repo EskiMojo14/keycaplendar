@@ -6,6 +6,7 @@ import { DesktopContent, TabletContent, MobileContent } from "./components/Conte
 import { Login } from "./components/Login";
 import { Users } from "./components/Users";
 import { AuditLog } from "./components/AuditLog";
+import { EntryGuide } from "./components/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/Legal";
 import { SnackbarCookies } from "./components/SnackbarCookies";
 import "./App.scss";
@@ -895,6 +896,9 @@ class App extends React.Component {
           </Route>
           <Route path="/terms">
             <TermsOfService />
+          </Route>
+          <Route path="/guide/entries">
+            <EntryGuide />
           </Route>
           <Route path="/audit">
             <div>
