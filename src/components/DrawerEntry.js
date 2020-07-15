@@ -95,10 +95,17 @@ export class DrawerCreate extends React.Component {
   };
 
   selectValue = (prop, value) => {
-    this.setState({
-      [prop]: value,
-      focused: "",
-    });
+    if (prop === "designer") {
+      this.setState({
+        [prop]: [value],
+        focused: "",
+      });
+    } else {
+      this.setState({
+        [prop]: value,
+        focused: "",
+      });
+    }
   };
 
   selectVendor = (prop, value) => {
@@ -785,10 +792,17 @@ export class DrawerEdit extends React.Component {
   };
 
   selectValue = (prop, value) => {
-    this.setState({
-      [prop]: value,
-      focused: "",
-    });
+    if (prop === "designer") {
+      this.setState({
+        [prop]: [value],
+        focused: "",
+      });
+    } else {
+      this.setState({
+        [prop]: value,
+        focused: "",
+      });
+    }
   };
 
   selectVendor = (prop, value) => {
