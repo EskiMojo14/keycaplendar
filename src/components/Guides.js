@@ -334,7 +334,7 @@ export class EntryGuide extends React.Component {
                 for China. In this case, enter the Chinese link as a separate vendor, named zFrontier (CN).
               </Typography>
               <Typography use="subtitle1" tag="h4">
-                Store link*
+                Store link
               </Typography>
               <Typography use="body2" tag="p">
               The link to the store product. 
