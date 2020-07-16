@@ -12,12 +12,6 @@
   &:hover {
     @include mdc-elevation(4);
   }
-  &--selected {
-    @include mdc-elevation(8);
-    &:hover {
-      @include mdc-elevation(12);
-    }
-  }
   .hover-button {
     position: absolute;
     z-index: 3;

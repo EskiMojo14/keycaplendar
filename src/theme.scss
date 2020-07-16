@@ -117,16 +117,28 @@ $overlay-values: (
 
   .mdc-card {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    &.mdc-card--selected {
+      .mdc-typography--headline5 {
+        color: map-get($variables, primary);
+      }
+      .live-indicator {
+        fill: map-get($variables, primary);
+      }
+      .overline,
+      .mdc-typography--subtitle2 {
+        color: map-get($variables, primary);
+      }
+    }
     @if ($dark) {
       transition-property: box-shadow, background-color;
-      &--selected {
-        background-color: overlay-elevation(map-get($variables, surface), 8);
+      &:hover {
+        background-color: overlay-elevation(map-get($variables, surface), 4);
       }
     }
     &__primary-action {
       @include mdc-states(map-get($variables, on-surface));
-      @include mdc-states-selected(map-get($variables, on-surface));
-      @include mdc-states-activated(map-get($variables, on-surface));
+      @include mdc-states-selected(map-get($variables, primary));
+      @include mdc-states-activated(map-get($variables, primary));
     }
     .mdc-typography--headline5 {
       color: map-get($variables, text-primary);
