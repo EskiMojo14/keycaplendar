@@ -23,7 +23,6 @@
   .users {
     border-radius: 4px;
     @include mdc-elevation(1);
-    margin: 8px;
     .rmwc-data-table {
       overflow: visible;
       border: none;
@@ -79,7 +78,7 @@
   }
   .user {
     &-container {
-      margin: -8px;
+      margin: -16px;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
