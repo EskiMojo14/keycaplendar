@@ -78,7 +78,7 @@
   }
   .user {
     &-container {
-      margin: -16px;
+      margin: -8px;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
@@ -87,7 +87,7 @@
     }
     width: 512px;
     max-width: calc(100vw - 32px);
-    margin: 16px;
+    margin: 8px;
     .rmwc-collapsible-list {
       border-bottom: 1px solid var(--divider-color);
       &__handle > .mdc-list-item {
