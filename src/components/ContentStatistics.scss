@@ -51,11 +51,7 @@
           width: 100%;
         }
         &__head .rmwc-data-table__row {
-          height: 56px;
           .rmwc-data-table__head-cell {
-            @include mdc-typography(subtitle2);
-            vertical-align: middle;
-            font-family: "Lato", sans-serif;
             &.profile-title {
               padding: 0;
               position: relative;
@@ -73,16 +69,6 @@
                 right: 2px;
                 left: 2px;
               }
-            }
-          }
-        }
-        &__body .rmwc-data-table__row {
-          height: 52px;
-          .rmwc-data-table__cell {
-            @include mdc-typography(body2);
-            font-family: "Lato", sans-serif;
-            &::before {
-              transition: opacity 100ms;
             }
           }
         }

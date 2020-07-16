@@ -1,4 +1,5 @@
 @import "@material/top-app-bar/variables";
+@import "@material/typography/mixins";
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;
@@ -32,5 +33,27 @@
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
   .content-container .mdc-drawer.mdc-drawer--dismissible {
     height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+  }
+}
+
+.rmwc-data-table {
+  &__head .rmwc-data-table__row {
+    height: 56px;
+    .rmwc-data-table__head-cell {
+      @include mdc-typography(subtitle2);
+      font-family: inherit;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+  }
+  &__body .rmwc-data-table__row {
+    height: 52px;
+    .rmwc-data-table__cell {
+      @include mdc-typography(body2);
+      font-family: inherit;
+      &::before {
+        transition: opacity 100ms;
+      }
+    }
   }
 }

@@ -109,23 +109,8 @@
         width: 100%;
         background-color: transparent;
       }
-      &__head .rmwc-data-table__row {
-        height: 56px;
-        .rmwc-data-table__head-cell {
-          @include mdc-typography(subtitle2);
-          font-family: inherit;
-          font-weight: bold;
-          vertical-align: middle;
-        }
-      }
       &__body .rmwc-data-table__row {
-        height: 52px;
         .rmwc-data-table__cell {
-          @include mdc-typography(body2);
-          font-family: inherit;
-          &::before {
-            content: none;
-          }
           &.before {
             .highlight {
               background-color: rgba($material-color-red-200, 0.2);
@@ -137,9 +122,6 @@
               background-color: rgba($material-color-green-200, 0.2);
               font-weight: bold;
             }
-          }
-          .image {
-            height: 64px;
           }
           .mdc-checkbox {
             padding: 0;
