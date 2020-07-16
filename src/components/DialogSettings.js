@@ -3,13 +3,14 @@ import firebase from "./firebase";
 import { Link } from "react-router-dom";
 import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
 import { Typography } from "@rmwc/typography";
-import { List, ListItem } from "@rmwc/list";
+import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
 import { Button } from "@rmwc/button";
 import { Switch } from "@rmwc/switch";
 import { Select } from "@rmwc/select";
 import { FormField } from "@rmwc/formfield";
 import { TextField } from "@rmwc/textfield";
 import { Radio } from "@rmwc/radio";
+import { Avatar } from "@rmwc/avatar";
 import "./DialogSettings.scss";
 
 export class DialogSettings extends React.Component {
@@ -46,32 +47,25 @@ export class DialogSettings extends React.Component {
           onChange={(evt) => this.props.changeBottomNav(evt.currentTarget.checked)}
         />
       </div>
-    ) : (
-      ""
-    );
+    ) : null;
     const user = this.props.user.name ? (
       <div className="group">
         <Typography use="subtitle2" tag="h3">
           Account
         </Typography>
-        <div className="account">
-          <div className="avatar" style={{ backgroundImage: "url(" + this.props.user.avatar + ")" }}></div>
-          <div className="text">
-            <Typography use="subtitle1" className="primary">
-              {this.props.user.name}
-            </Typography>
-            <Typography use="body2" className="secondary">
-              {this.props.user.email}
-            </Typography>
-          </div>
+        <ListItem className="account">
+          <Avatar src={this.props.user.avatar} size="xlarge" />
+          <ListItemText>
+            <div className="overline">{this.props.user.nickname}</div>
+            <ListItemPrimaryText>{this.props.user.name}</ListItemPrimaryText>
+            <ListItemSecondaryText>{this.props.user.email}</ListItemSecondaryText>
+          </ListItemText>
           <div className="button">
             <Button raised label="Log out" onClick={this.signOut} />
           </div>
-        </div>
+        </ListItem>
       </div>
-    ) : (
-      ""
-    );
+    ) : null;
     const admin = this.props.user.isAdmin ? (
       <div className="group">
         <Typography use="subtitle2" tag="h3">
@@ -87,13 +81,9 @@ export class DialogSettings extends React.Component {
           <Button label="Refresh data" onClick={this.props.getData} />
         </div>
       </div>
-    ) : (
-      ""
-    );
+    ) : null;
     const themeOptions =
-      this.props.applyTheme === "system" ? (
-        ""
-      ) : this.props.applyTheme === "timed" ? (
+      this.props.applyTheme === "system" ? null : this.props.applyTheme === "timed" ? (
         <FormField className="theme-form-field theme-form-field--flex">
           <div className="theme-form-field__text">
             <Typography use="body2">From</Typography>

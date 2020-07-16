@@ -1,6 +1,7 @@
 @import "@material/theme/color-palette";
 @import "@material/radio/mixins";
 @import "@material/ripple/mixins";
+@import "@material/typography/mixins";
 
 .settings-dialog {
   user-select: none;
@@ -118,35 +119,50 @@
         }
       }
       .account {
-        display: flex;
-        justify-content: stretch;
-        align-items: center;
-        height: 64px;
-        .avatar {
-          background-color: var(--divider-color);
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
-          height: 40px;
-          width: 40px;
-          border-radius: 20px;
-          margin-right: 16px;
-          flex-shrink: 0;
+        padding: 0;
+        height: 88px;
+        cursor: default;
+        &::before, &::after {
+          content: none;
         }
-        .text {
+        .rmwc-avatar {
+          margin-right: 16px;
+        }
+        .mdc-list-item__text {
+          align-self: unset;
+          height: 100%;
           display: flex;
           flex-direction: column;
-          flex-grow: 1;
-          margin-right: 16px;
-          overflow: hidden;
-          span {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+          justify-content: stretch;
+          .overline {
+            @include mdc-typography(overline);
+            font-family: inherit;
+            line-height: 1rem;
+            padding-top: calc(28px - 1rem);
+            flex-grow: 0;
+            flex-shrink: 0;
+          }
+          .mdc-list-item__primary-text {
+            flex-grow: 1;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            &::before,
+            &::after {
+              content: none;
+            }
+          }
+          .mdc-list-item__secondary-text {
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding-bottom: calc(28px - 1rem);
+            &::before {
+              content: none;
+            }
           }
         }
         .button {
-          flex-shrink: 0;
+          margin-left: auto;
         }
       }
       .buttons {
