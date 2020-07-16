@@ -27,6 +27,9 @@
     }
     &__body .rmwc-data-table__row {
       .rmwc-data-table__cell {
+        .rmwc-avatar {
+          margin-right: 16px;
+        }
         .svg-container {
           position: relative;
           @include mdc-ripple-surface;

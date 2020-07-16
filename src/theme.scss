@@ -599,6 +599,11 @@ $overlay-values: (
     }
   }
 
+  .rmwc-avatar {
+    background-color: mix(map-get($variables, on-surface), map-get( $variables, surface), 4%);
+    color: map-get($variables, text-disabled);
+  }
+
   .rmwc-tooltip {
     &-inner {
       background-color: map-get($variables, on-surface);

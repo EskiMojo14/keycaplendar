@@ -1,5 +1,6 @@
 import React from "react";
 import firebase from "./firebase";
+import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DataTableRow, DataTableCell } from "@rmwc/data-table";
@@ -137,7 +138,10 @@ export class UserRow extends React.Component {
       );
     return (
       <DataTableRow>
-        <DataTableCell>{user.displayName}</DataTableCell>
+        <DataTableCell>
+          <Avatar src={user.photoURL} name={user.displayName} size="large"/>
+          {user.displayName}
+        </DataTableCell>
         <DataTableCell>{user.email}</DataTableCell>
         <DataTableCell>
           <MenuSurfaceAnchor>
