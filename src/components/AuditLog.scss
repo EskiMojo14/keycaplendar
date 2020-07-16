@@ -51,6 +51,10 @@
     @include mdc-elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
+    position: relative;
+    &.placeholder {
+      height: 100vh;
+    }
     .rmwc-collapsible-list {
       border-bottom: 1px solid var(--divider-color);
       &:last-child {

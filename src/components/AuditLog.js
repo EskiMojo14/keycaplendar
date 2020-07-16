@@ -83,7 +83,7 @@ export class AuditLog extends React.Component {
           const data = doc.data();
           data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
           actions.push(data);
-          if (users.filter(e => e.value === data.user.nickname).length === 0) {
+          if (users.filter((e) => e.value === data.user.nickname).length === 0) {
             users.push({ label: data.user.nickname, value: data.user.nickname });
           }
         });
@@ -222,13 +222,17 @@ export class AuditLog extends React.Component {
             </DrawerContent>
           </Drawer>
           <DrawerAppContent>
-            {this.state.actionsFiltered.length > 0 && !this.state.loading ? (
+            {this.state.actionsFiltered.length > 0 || this.state.loading ? (
               <div
                 className={
                   "log-container" + (this.state.filterDrawerOpen && this.props.device === "desktop" ? "" : " extended")
                 }
               >
-                <div className="log">
+                <div
+                  className={
+                    "log" + (this.state.actionsFiltered.length === 0 && this.state.loading ? " placeholder" : "")
+                  }
+                >
                   <List twoLine>
                     {this.state.actionsFiltered.map((action, index) => {
                       const timestamp = moment.utc(action.timestamp);
