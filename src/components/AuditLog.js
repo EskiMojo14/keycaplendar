@@ -289,6 +289,7 @@ export class AuditLog extends React.Component {
                                       property !== "designer" &&
                                       property !== "vendors" &&
                                       property !== "image" &&
+                                      property !== "details" &&
                                       property !== "gbMonth" &&
                                       property !== "shipped"
                                     ) {
@@ -469,21 +470,37 @@ export class AuditLog extends React.Component {
                                         return rows;
                                       };
                                       return buildRows();
-                                    } else if (property === "image") {
+                                    } else if (property === "image" || property === "details") {
                                       return (
-                                        <DataTableRow key={property + index} className="image-row">
+                                        <DataTableRow key={property + index}>
                                           <DataTableCell>{property}</DataTableCell>
                                           <DataTableCell className="before">
-                                            <span className="highlight">{action.before.image.match(domain)}</span>
+                                            <span className="highlight">
+                                              <a
+                                                href={action.before[property]}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {action.before[property].match(domain)}
+                                              </a>
+                                            </span>
                                           </DataTableCell>
                                           <DataTableCell className="after">
-                                            <span className="highlight">{action.before.image.match(domain)}</span>
+                                            <span className="highlight">
+                                              <a
+                                                href={action.after[property]}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {action.after[property].match(domain)}
+                                              </a>
+                                            </span>
                                           </DataTableCell>
                                         </DataTableRow>
                                       );
                                     } else if (property === "gbMonth" || property === "shipped") {
                                       return (
-                                        <DataTableRow key={property + index} className="image-row">
+                                        <DataTableRow key={property + index}>
                                           <DataTableCell>{property}</DataTableCell>
                                           <DataTableCell className="before">
                                             <Checkbox checked={action.before[property]} disabled />
@@ -501,6 +518,7 @@ export class AuditLog extends React.Component {
                                       property !== "designer" &&
                                       property !== "vendors" &&
                                       property !== "image" &&
+                                      property !== "details" &&
                                       property !== "gbMonth" &&
                                       property !== "shipped"
                                     ) {
@@ -559,18 +577,22 @@ export class AuditLog extends React.Component {
                                         return rows;
                                       };
                                       return buildRows();
-                                    } else if (property === "image") {
+                                    } else if (property === "image" || property === "details") {
                                       return (
                                         <DataTableRow key={property + index}>
                                           <DataTableCell>{property}</DataTableCell>
                                           <DataTableCell className={action.action === "created" ? "after" : "before"}>
-                                            <span className="highlight">{docData.image.match(domain)}</span>
+                                            <span className="highlight">
+                                              <a href={docData[property]} target="_blank" rel="noopener noreferrer">
+                                                {docData[property].match(domain)}
+                                              </a>
+                                            </span>
                                           </DataTableCell>
                                         </DataTableRow>
                                       );
                                     } else if (property === "gbMonth" || property === "shipped") {
                                       return (
-                                        <DataTableRow key={property + index} className="image-row">
+                                        <DataTableRow key={property + index}>
                                           <DataTableCell>{property}</DataTableCell>
                                           <DataTableCell className={action.action === "created" ? "after" : "before"}>
                                             <Checkbox checked={docData[property]} disabled />
