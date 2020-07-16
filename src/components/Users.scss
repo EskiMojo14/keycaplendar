@@ -16,14 +16,15 @@
     height: 128px;
     z-index: -1;
   }
+  .users {
+    border-radius: 4px;
+    @include mdc-elevation(1);
+  }
   .rmwc-data-table {
     overflow: visible;
     border: none;
-    border-radius: 4px;
-    @include mdc-elevation(1);
     &__content {
       width: 100%;
-      background-color: transparent;
     }
     &__body .rmwc-data-table__row {
       .rmwc-data-table__cell {

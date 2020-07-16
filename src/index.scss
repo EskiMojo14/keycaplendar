@@ -37,6 +37,9 @@
 }
 
 .rmwc-data-table {
+  &__content {
+    background-color: transparent;
+  }
   &__head .rmwc-data-table__row {
     height: 56px;
     .rmwc-data-table__head-cell {

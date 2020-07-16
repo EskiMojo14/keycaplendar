@@ -573,9 +573,6 @@ $overlay-values: (
 
   .rmwc-data-table {
     color: map-get($variables, text-primary);
-    &__content {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
-    }
     &__cell {
       background-color: transparent;
       border-color: var(--divider-color);
