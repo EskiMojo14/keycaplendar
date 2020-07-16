@@ -181,7 +181,6 @@ export class UserRow extends React.Component {
         </DataTableCell>
         <DataTableCell className="icon-cell">{saveButton}</DataTableCell>
         <DataTableCell className="icon-cell">{deleteButton}</DataTableCell>
-        <DataTableCell></DataTableCell>
       </DataTableRow>
     );
   }

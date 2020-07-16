@@ -8,6 +8,7 @@ import {
   TopAppBarTitle,
   TopAppBarNavigationIcon,
   TopAppBarFixedAdjust,
+  TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import {
   DataTable,
@@ -17,7 +18,6 @@ import {
   DataTableHeadCell,
   DataTableBody,
 } from "@rmwc/data-table";
-import { IconButton } from "@rmwc/icon-button";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { UserRow } from "./UserRow";
@@ -120,7 +120,7 @@ export class Users extends React.Component {
     const refreshButton = this.state.loading ? (
       <CircularProgress />
     ) : (
-      <IconButton icon="refresh" onClick={this.getUsers} />
+      <TopAppBarActionItem icon="refresh" onClick={this.getUsers} />
     );
     return (
       <div>
@@ -131,6 +131,9 @@ export class Users extends React.Component {
                 <TopAppBarNavigationIcon icon="arrow_back" />
               </Link>
               <TopAppBarTitle>Users</TopAppBarTitle>
+            </TopAppBarSection>
+            <TopAppBarSection alignEnd>
+              {refreshButton}
             </TopAppBarSection>
           </TopAppBarRow>
         </TopAppBar>
@@ -149,7 +152,6 @@ export class Users extends React.Component {
                     <DataTableHeadCell>Admin</DataTableHeadCell>
                     <DataTableHeadCell>Save</DataTableHeadCell>
                     <DataTableHeadCell>Delete</DataTableHeadCell>
-                    <DataTableHeadCell className="icon-cell">{refreshButton}</DataTableHeadCell>
                   </DataTableRow>
                 </DataTableHead>
                 <DataTableBody>
