@@ -8,6 +8,10 @@
   padding: 16px;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  max-width: 100vw;
+  overflow: hidden;
   &::before {
     content: "";
     position: absolute;
@@ -19,57 +23,150 @@
   .users {
     border-radius: 4px;
     @include mdc-elevation(1);
-  }
-  .rmwc-data-table {
-    overflow: visible;
-    border: none;
-    &__content {
-      width: 100%;
-    }
-    &__body .rmwc-data-table__row {
-      .rmwc-data-table__cell {
-        .rmwc-avatar {
-          margin-right: 16px;
-        }
-        .svg-container {
-          position: relative;
-          @include mdc-ripple-surface;
-          @include mdc-ripple-radius-unbounded;
-          &.disabled {
-            cursor: default;
+    margin: 8px;
+    .rmwc-data-table {
+      overflow: visible;
+      border: none;
+      &__content {
+        width: 100%;
+      }
+      &__body .rmwc-data-table__row {
+        .rmwc-data-table__cell {
+          .rmwc-avatar {
+            margin-right: 16px;
           }
-        }
-        .nickname {
-          height: 32px;
-          width: 200px;
-          .mdc-text-field__input {
+          .svg-container {
+            position: relative;
+            @include mdc-ripple-surface;
+            @include mdc-ripple-radius-unbounded;
+            &.disabled {
+              cursor: default;
+            }
+          }
+          .nickname {
+            height: 32px;
+            width: 200px;
+            .mdc-text-field__input {
+              padding: 0 12px;
+              @include mdc-typography(body2);
+              font-family: inherit;
+            }
+          }
+          .autocomplete.mdc-menu .mdc-list-item {
             padding: 0 12px;
+            height: 40px;
             @include mdc-typography(body2);
             font-family: inherit;
           }
         }
-        .autocomplete.mdc-menu .mdc-list-item {
-          padding: 0 12px;
-          height: 40px;
-          @include mdc-typography(body2);
-          font-family: inherit;
+      }
+      .checkbox-cell {
+        padding: 0 16px;
+        .mdc-checkbox {
+          margin: 0 auto;
+        }
+      }
+      .icon-cell {
+        padding: 0 16px;
+        .mdc-icon-button {
+          margin: 0 auto;
+        }
+      }
+      .rmwc-circular-progress {
+        padding: 12px;
+      }
+    }
+  }
+  .user {
+    &-container {
+      margin: -8px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 1088px;
+      max-width: 100vw;
+    }
+    width: 512px;
+    max-width: calc(100vw - 32px);
+    margin: 16px;
+    .rmwc-collapsible-list {
+      border-bottom: 1px solid var(--divider-color);
+      &__handle > .mdc-list-item {
+        height: 88px;
+        .rmwc-avatar.mdc-list-item__graphic {
+          width: 48px;
+          height: 48px;
+        }
+        .mdc-list-item__text {
+          align-self: unset;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: stretch;
+          .overline {
+            @include mdc-typography(overline);
+            font-family: inherit;
+            line-height: 1rem;
+            padding-top: calc(28px - 1rem);
+            flex-grow: 0;
+            flex-shrink: 0;
+          }
+          .mdc-list-item__primary-text {
+            flex-grow: 1;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            &::before,
+            &::after {
+              content: none;
+            }
+          }
+          .mdc-list-item__secondary-text {
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding-bottom: calc(28px - 1rem);
+            &::before {
+              content: none;
+            }
+          }
+        }
+      }
+      &__children-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: stretch;
+        align-items: center;
+        .text-field-container {
+          padding: 16px;
+          flex-grow: 1;
+          display: flex;
+        }
+        .roles-form {
+          padding: 16px;
+          padding-top: 0;
+          .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            .mdc-form-field {
+              margin-right: 8px;
+              &:last-child {
+                margin-right: 0;
+              }
+            }
+          }
         }
       }
     }
-    .checkbox-cell {
-      padding: 0 16px;
-      .mdc-checkbox {
-        margin: 0 auto;
+    .mdc-card__actions { 
+      justify-content: flex-end;
+      .svg-container {
+        &.disabled {
+          &::before {
+            content: none;
+          }
+          cursor: default;
+        }
       }
-    }
-    .icon-cell {
-      padding: 0 16px;
-      .mdc-icon-button {
-        margin: 0 auto;
-      }
-    }
-    .rmwc-circular-progress {
-      padding: 12px;
     }
   }
 }

@@ -1,9 +1,6 @@
 @import "@material/top-app-bar/variables";
 @import "@material/elevation/mixins";
 
-.subheader {
-  padding-bottom: 16px;
-}
 
 .content-grid {
   padding: 16px;
@@ -18,6 +15,9 @@
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+  .subheader {
+    padding-bottom: 16px;
+  }
 }
 
 .outer-container {

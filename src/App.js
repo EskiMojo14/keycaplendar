@@ -884,6 +884,7 @@ class App extends React.Component {
                 user={this.state.user}
                 snackbarQueue={queue}
                 allDesigners={this.state.allDesigners}
+                device={this.state.device}
               />
               <SnackbarQueue messages={queue.messages} />
             </div>

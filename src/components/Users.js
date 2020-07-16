@@ -19,8 +19,11 @@ import {
   DataTableBody,
 } from "@rmwc/data-table";
 import { CircularProgress } from "@rmwc/circular-progress";
+import { Ripple } from "@rmwc/ripple";
+import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { UserRow } from "./UserRow";
+import { UserCard } from "./UserCard";
 import "./Users.scss";
 export class Users extends React.Component {
   constructor(props) {
@@ -30,6 +33,8 @@ export class Users extends React.Component {
       deleteDialogOpen: false,
       deletedUser: { displayName: "" },
       loading: false,
+      view: "card",
+      viewMenuOpen: false,
     };
   }
   getUsers = () => {
@@ -90,6 +95,22 @@ export class Users extends React.Component {
       });
     }, 75);
   };
+  openViewMenu = () => {
+    this.setState({
+      viewMenuOpen: true,
+    });
+  };
+  closeViewMenu = () => {
+    this.setState({
+      viewMenuOpen: false,
+    });
+  };
+  setView = (index) => {
+    const views = ["card", "table"];
+    this.setState({
+      view: views[index],
+    });
+  };
   deleteUser = (user) => {
     this.closeDeleteDialog();
     this.setState({ loading: true });
@@ -122,6 +143,39 @@ export class Users extends React.Component {
     ) : (
       <TopAppBarActionItem icon="refresh" onClick={this.getUsers} />
     );
+    const viewButton =
+      this.props.device === "desktop" ? (
+        <MenuSurfaceAnchor>
+          <Menu
+            open={this.state.viewMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={this.closeViewMenu}
+            onSelect={(e) => this.setView(e.detail.index)}
+          >
+            <MenuItem selected={this.state.view === "card"}>Card</MenuItem>
+            <MenuItem selected={this.state.view === "table"}>Table</MenuItem>
+          </Menu>
+          <div onClick={this.openViewMenu}>
+            <Ripple unbounded>
+              <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                {this.state.view === "card" ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
+                    <path d="M10 7h5v9h-5z" opacity=".3" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
+                    <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
+                    <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
+                  </svg>
+                )}
+              </div>
+            </Ripple>
+          </div>
+        </MenuSurfaceAnchor>
+      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -133,44 +187,66 @@ export class Users extends React.Component {
               <TopAppBarTitle>Users</TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
+              {viewButton}
               {refreshButton}
             </TopAppBarSection>
           </TopAppBarRow>
         </TopAppBar>
         <TopAppBarFixedAdjust />
-        <div className="users-container">
-          <div className="users">
-            <DataTable>
-              <DataTableContent>
-                <DataTableHead>
-                  <DataTableRow>
-                    <DataTableHeadCell>User</DataTableHeadCell>
-                    <DataTableHeadCell>Email</DataTableHeadCell>
-                    <DataTableHeadCell>Nickname</DataTableHeadCell>
-                    <DataTableHeadCell>Designer</DataTableHeadCell>
-                    <DataTableHeadCell>Editor</DataTableHeadCell>
-                    <DataTableHeadCell>Admin</DataTableHeadCell>
-                    <DataTableHeadCell>Save</DataTableHeadCell>
-                    <DataTableHeadCell>Delete</DataTableHeadCell>
-                  </DataTableRow>
-                </DataTableHead>
-                <DataTableBody>
-                  {this.state.users.map((user, index) => {
-                    return (
-                      <UserRow
+        <div className="users-container-container">
+          <div className="users-container">
+            {this.state.view === "table" && this.props.device === "desktop" ? (
+              <div className="users">
+                <DataTable>
+                  <DataTableContent>
+                    <DataTableHead>
+                      <DataTableRow>
+                        <DataTableHeadCell>User</DataTableHeadCell>
+                        <DataTableHeadCell>Email</DataTableHeadCell>
+                        <DataTableHeadCell>Nickname</DataTableHeadCell>
+                        <DataTableHeadCell>Designer</DataTableHeadCell>
+                        <DataTableHeadCell>Editor</DataTableHeadCell>
+                        <DataTableHeadCell>Admin</DataTableHeadCell>
+                        <DataTableHeadCell>Save</DataTableHeadCell>
+                        <DataTableHeadCell>Delete</DataTableHeadCell>
+                      </DataTableRow>
+                    </DataTableHead>
+                    <DataTableBody>
+                      {this.state.users.map((user, index) => {
+                        return (
+                          <UserRow
+                            user={user}
+                            currentUser={this.props.user}
+                            delete={this.openDeleteDialog}
+                            getUsers={this.getUsers}
+                            snackbarQueue={this.props.snackbarQueue}
+                            key={index}
+                            allDesigners={this.props.allDesigners}
+                          />
+                        );
+                      })}
+                    </DataTableBody>
+                  </DataTableContent>
+                </DataTable>
+              </div>
+            ) : (
+              <div className="user-container">
+                {this.state.users.map((user, index) => {
+                  return (
+                    <div key={index}>
+                      <UserCard
                         user={user}
                         currentUser={this.props.user}
                         delete={this.openDeleteDialog}
                         getUsers={this.getUsers}
                         snackbarQueue={this.props.snackbarQueue}
-                        key={index}
                         allDesigners={this.props.allDesigners}
                       />
-                    );
-                  })}
-                </DataTableBody>
-              </DataTableContent>
-            </DataTable>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
         <Dialog open={this.state.deleteDialogOpen}>

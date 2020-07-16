@@ -129,16 +129,18 @@ $overlay-values: (
         color: map-get($variables, primary);
       }
     }
-    @if ($dark) {
-      transition-property: box-shadow, background-color;
-      &:hover {
-        background-color: overlay-elevation(map-get($variables, surface), 4);
-      }
-    }
     &__primary-action {
       @include mdc-states(map-get($variables, on-surface));
       @include mdc-states-selected(map-get($variables, primary));
       @include mdc-states-activated(map-get($variables, primary));
+    }
+    &__action--icon {
+      &:not(:disabled) {
+        color: map-get($variables, text-secondary);
+      }
+      &:disabled {
+        color: map-get($variables, text-disabled);
+      }
     }
     .mdc-typography--headline5 {
       color: map-get($variables, text-primary);
@@ -149,6 +151,12 @@ $overlay-values: (
     .overline,
     .mdc-typography--subtitle2 {
       color: map-get($variables, text-secondary);
+    }
+  }
+  @if ($dark) {
+    transition-property: box-shadow, background-color;
+    .card-container .mdc-card:hover {
+      background-color: overlay-elevation(map-get($variables, surface), 4);
     }
   }
 
@@ -311,8 +319,10 @@ $overlay-values: (
       }
     }
   }
-
-  .mdc-list .mdc-list-item {
+  :not(.mdc-list--non-interactive) > :not(.mdc-list-item--disabled).mdc-list-item {
+    @include mdc-states(map-get($variables, on-surface));
+  }
+  .mdc-list .mdc-list-item, .mdc-list-item {
     @include mdc-list-item-primary-text-ink-color(map-get($variables, text-primary));
     @include mdc-list-item-secondary-text-ink-color(map-get($variables, text-secondary));
     @include mdc-list-item-graphic-ink-color(map-get($variables, text-secondary));
@@ -780,6 +790,15 @@ $overlay-values: (
     }
     &-container::before {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+    }
+  }
+
+  .user {
+    .mdc-card__action--icon.disabled {
+      color: map-get($variables, text-disabled);
+    }
+    .overline {
+      color: map-get($variables, text-secondary);
     }
   }
 
