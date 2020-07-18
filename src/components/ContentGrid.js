@@ -45,11 +45,13 @@ export class ContentGrid extends React.Component {
       }
     });
     filteredSets.sort((a, b) => {
-      if (a.gbLaunch < b.gbLaunch) {
-        return -1;
-      }
-      if (a.gbLaunch > b.gbLaunch) {
-        return 1;
+      if (page !== "ic") {
+        if (a.gbLaunch < b.gbLaunch) {
+          return -1;
+        }
+        if (a.gbLaunch > b.gbLaunch) {
+          return 1;
+        }
       }
       const aName = a.profile + " " + a.colorway;
       const bName = b.profile + " " + b.colorway;
