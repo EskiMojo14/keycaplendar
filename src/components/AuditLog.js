@@ -138,6 +138,10 @@ export class AuditLog extends React.Component {
   };
   componentDidMount() {
     this.getActions();
+    document.body.classList.add("audit");
+  }
+  componentWillUnmount() {
+    document.body.classList.remove("audit");
   }
   render() {
     const refreshButton = this.state.loading ? (

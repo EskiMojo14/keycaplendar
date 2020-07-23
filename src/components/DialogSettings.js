@@ -167,7 +167,7 @@ export class DialogSettings extends React.Component {
             <FormField className="theme-form-field">
               <Typography use="body2">Apply dark theme</Typography>
               <Select
-                enhanced
+                enhanced={{ fixed: true }}
                 outlined
                 value={
                   this.props.applyTheme === "system" ? "System" : this.props.applyTheme === "timed" ? "Timed" : "Manual"
@@ -176,6 +176,7 @@ export class DialogSettings extends React.Component {
                 onChange={(e) => {
                   this.setApplyTheme(e);
                 }}
+                
               />
             </FormField>
             {themeOptions}
