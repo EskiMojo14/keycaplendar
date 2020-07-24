@@ -265,9 +265,10 @@ export class Users extends React.Component {
                   <DataTableContent>
                     <DataTableHead>
                       <DataTableRow>
+                        <DataTableHeadCell></DataTableHeadCell>
                         <DataTableHeadCell
                           className={
-                            "user-title action" +
+                            "action" +
                             (this.state.sort === "displayName" ? " sorted" : "") +
                             (this.state.reverseSort ? " reverse" : "")
                           }

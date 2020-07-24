@@ -140,6 +140,8 @@ export class UserRow extends React.Component {
       <DataTableRow>
         <DataTableCell>
           <Avatar src={user.photoURL} name={user.displayName} size="large"/>
+        </DataTableCell>
+        <DataTableCell>
           {user.displayName}
         </DataTableCell>
         <DataTableCell>{user.email}</DataTableCell>
