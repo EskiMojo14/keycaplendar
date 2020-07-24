@@ -33,9 +33,9 @@ export class Users extends React.Component {
       deleteDialogOpen: false,
       deletedUser: { displayName: "" },
       loading: false,
-      view: "card",
+      view: "table",
       viewMenuOpen: false,
-      sort: "email",
+      sort: "nickname",
       sortMenuOpen: false,
       reverseSort: false,
     };
@@ -77,6 +77,18 @@ export class Users extends React.Component {
         if (x > y) {
           return reverseSort ? -1 : 1;
         }
+        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
+          return 1;
+        }
+        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
+          return -1;
+        }
+        if (a.email.toLowerCase() > b.email.toLowerCase()) {
+          return 1;
+        }
+        if (a.email.toLowerCase() < b.email.toLowerCase()) {
+          return -1;
+        }
         return 0;
       } else {
         const x = a[sort];
@@ -86,6 +98,18 @@ export class Users extends React.Component {
         }
         if (x > y) {
           return reverseSort ? 1 : -1;
+        }
+        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
+          return 1;
+        }
+        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
+          return -1;
+        }
+        if (a.email.toLowerCase() > b.email.toLowerCase()) {
+          return 1;
+        }
+        if (a.email.toLowerCase() < b.email.toLowerCase()) {
+          return -1;
         }
         return 0;
       }
