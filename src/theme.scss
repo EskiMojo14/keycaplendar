@@ -598,6 +598,9 @@ $overlay-values: (
     }
     &__head-cell {
       color: map-get($variables, text-primary);
+      &.sorted::before {
+        color: map-get($variables, text-secondary);
+      }
     }
     &__row:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated) .rmwc-data-table__cell::before,
     &__row:hover:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated)
