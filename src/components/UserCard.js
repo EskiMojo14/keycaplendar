@@ -200,6 +200,7 @@ export class UserCard extends React.Component {
                       checked={user[role]}
                       name={role}
                       onClick={this.handleChange}
+                      disabled={(user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com") && role !== "designer" }
                     />
                   </FormField>
                 );
