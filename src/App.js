@@ -338,7 +338,7 @@ class App extends React.Component {
             const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch !== ""
-                ? doc.data().gbLaunch + "-" + lastOfMonth.getUTCDate()
+                ? doc.data().gbLaunch + "-" + (lastOfMonth.getUTCDate() + 1)
                 : doc.data().gbLaunch;
             sets.push({
               id: doc.id,

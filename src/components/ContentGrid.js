@@ -52,9 +52,15 @@ export class ContentGrid extends React.Component {
         if (a.gbLaunch > b.gbLaunch) {
           return 1;
         }
+        if (!a.gbMonth && b.gbMonth) {
+          return -1;
+        }
+        if (a.gbMonth && !b.gbMonth) {
+          return 1;
+        }
       }
-      const aName = a.profile + " " + a.colorway;
-      const bName = b.profile + " " + b.colorway;
+      const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
+      const bName = b.profile.toLowerCase() + " " + b.colorway.toLowerCase();
       if (aName > bName) {
         return 1;
       } else if (aName < bName) {
