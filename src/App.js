@@ -1,5 +1,6 @@
 import React from "react";
 import firebase from "./components/firebase";
+import moment from "moment";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
@@ -334,11 +335,10 @@ class App extends React.Component {
         let sets = [];
         querySnapshot.forEach((doc) => {
           if (doc.data().profile) {
-            const gbLaunchDate = new Date(doc.data().gbLaunch);
-            const lastOfMonth = new Date(gbLaunchDate.getUTCFullYear(), gbLaunchDate.getUTCMonth() + 1, 0);
+            const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch !== ""
-                ? doc.data().gbLaunch + "-" + (lastOfMonth.getUTCDate() + 1)
+                ? doc.data().gbLaunch + "-" + lastOfMonth
                 : doc.data().gbLaunch;
             sets.push({
               id: doc.id,

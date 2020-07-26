@@ -1,5 +1,4 @@
 import React from "react";
-//import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import moment from "moment";
 import { Card } from "@rmwc/card";
@@ -26,9 +25,7 @@ export class ContentStatistics extends React.Component {
     let months = [];
     this.props.sets.forEach((set) => {
       if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
-        const launchDate = new Date(set.gbLaunch);
-        const leadingZeroMonth = "0" + (launchDate.getUTCMonth() + 1);
-        const month = launchDate.getUTCFullYear() + "-" + leadingZeroMonth.slice(-2);
+        const month = moment(set.gbLaunch).format("YYYY-MM");
         if (months.indexOf(month) === -1) {
           months.push(month);
         }
@@ -94,9 +91,7 @@ export class ContentStatistics extends React.Component {
     this.state.months.forEach((month) => {
       let filteredSets = this.props.sets.filter((set) => {
         if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
-          const launchDate = new Date(set.gbLaunch);
-          const leadingZeroMonth = "0" + (launchDate.getUTCMonth() + 1);
-          const setMonth = moment(launchDate.getUTCFullYear() + "-" + leadingZeroMonth.slice(-2)).format("MMM YY");
+          const setMonth = moment(set.gbLaunch).format("MMM YY");
           return setMonth === month;
         } else {
           return false;
