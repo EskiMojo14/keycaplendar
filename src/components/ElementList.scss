@@ -34,7 +34,7 @@
     overflow: hidden;
     height: 24px;
     flex-shrink: 0;
-    animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+    animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
   }
   .link-icon {
     position: absolute;
@@ -57,7 +57,7 @@
       animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
     }
     .link-icon .mdc-icon-button {
-      animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
     }
   }
 }
@@ -68,8 +68,9 @@
     width: 100px;
     margin-right: 16px;
     flex-shrink: 0;
-    background-color: var(--divider-color);
+    animation: placeholder 2s ease infinite;
   }
+  animation: fade-in 500ms $mdc-animation-standard-curve-timing-function forwards;
   height: 56px;
   width: 100px;
   background-size: cover;

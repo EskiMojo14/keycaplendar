@@ -189,7 +189,7 @@
 
 .view-transition .content-grid {
   animation: fade-out 90ms $mdc-animation-acceleration-curve-timing-function,
-    fade-in 210ms 90ms $mdc-animation-deceleration-curve-timing-function;
+    fade-in-scale 210ms 90ms $mdc-animation-deceleration-curve-timing-function;
   will-change: transform, opacity;
 }
 
@@ -212,7 +212,7 @@
     opacity: 0;
   }
 }
-@keyframes fade-in {
+@keyframes fade-in-scale {
   from {
     transform: scale(0.92);
     opacity: 0;
@@ -220,5 +220,25 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes placeholder {
+  from {
+    background-color: var(--lighter-color);
+  }
+  50% {
+    background-color: var(--divider-color);
+  }
+  to {
+    background-color: var(--lighter-color);
   }
 }

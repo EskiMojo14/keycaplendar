@@ -42,13 +42,14 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    background-color: var(--divider-color);
+    animation: placeholder 2s ease infinite;
     .lazy-load {
       display: flex;
       flex-direction: column;
       margin-top: 56.25%;
       .mdc-card__media {
         margin-top: -56.25%;
+        animation: fade-in 500ms $mdc-animation-standard-curve-timing-function forwards;
       }
     }
     .time-indicator {
@@ -75,7 +76,7 @@
         opacity: 1;
       }
       .mdc-icon-button {
-        animation: fade-in 150ms $mdc-animation-standard-curve-timing-function forwards;
+        animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
       }
     }
   }

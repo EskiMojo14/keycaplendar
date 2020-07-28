@@ -50,6 +50,7 @@ $overlay-values: (
       darken(map-get($variables, primary), 10%)
     )};
   --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
+  --lighter-color: #{rgba(map-get($variables, on-surface), 0.06)};
   $graph-colors: (
     $material-color-red-500,
     $material-color-deep-orange-500,
