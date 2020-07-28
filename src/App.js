@@ -33,6 +33,7 @@ class App extends React.Component {
       groups: [],
       loading: false,
       content: true,
+      failed: false,
       search: "",
       user: {
         email: null,
@@ -377,6 +378,7 @@ class App extends React.Component {
       .catch((error) => {
         console.log("Error getting data: " + error);
         queue.notify({ title: "Error getting data: " + error });
+        this.setState({ loading: false, content: false, failed: true });
       });
   }
   filterData(
@@ -771,6 +773,7 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
+          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
@@ -812,6 +815,7 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
+          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
@@ -853,6 +857,7 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
+          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}

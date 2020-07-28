@@ -24,6 +24,9 @@
     margin: 0;
     text-align: center;
   }
+  .mdc-button {
+    margin-top: 8px;
+  }
 }
 
 @media (max-width: $mdc-top-app-bar-mobile-breakpoint) {

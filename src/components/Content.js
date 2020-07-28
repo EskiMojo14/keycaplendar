@@ -4,7 +4,7 @@ import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIn
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./DrawerNav";
 import { Fab } from "@rmwc/fab";
-import { ContentEmpty } from "./ContentEmpty";
+import { ContentEmpty, ContentFailed } from "./ContentEmpty";
 import { ContentStatistics } from "./ContentStatistics";
 import { ContentGrid } from "./ContentGrid";
 import { DialogFilter } from "./DialogFilter";
@@ -199,6 +199,8 @@ export class DesktopContent extends React.Component {
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} navOpen={this.state.navDrawerOpen} />
+    ) : this.props.failed ? (
+      <ContentFailed getData={this.props.getData} />
     ) : (
       <ContentEmpty />
     );
@@ -511,6 +513,8 @@ export class TabletContent extends React.Component {
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+    ) : this.props.failed ? (
+      <ContentFailed getData={this.props.getData} />
     ) : (
       <ContentEmpty />
     );
@@ -808,6 +812,8 @@ export class MobileContent extends React.Component {
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+    ) : this.props.failed ? (
+      <ContentFailed getData={this.props.getData} />
     ) : (
       <ContentEmpty />
     );
