@@ -1,5 +1,6 @@
 import React from "react";
 import Twemoji from "react-twemoji";
+import LazyLoad from "react-lazy-load";
 import { Typography } from "@rmwc/typography";
 import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardActionIcon } from "@rmwc/card";
 import "./ElementCard.scss";
@@ -48,7 +49,9 @@ export class ElementCard extends React.Component {
             onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
           >
             <div className="media-container">
-              <CardMedia sixteenByNine style={{ backgroundImage: "url(" + this.props.image + ")" }} />
+              <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
+                <CardMedia sixteenByNine style={{ backgroundImage: "url(" + this.props.image + ")" }} />
+              </LazyLoad>
               {timeIndicator}
             </div>
             <div className="text-row" onClick={this.toggleExpand}>

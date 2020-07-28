@@ -1,5 +1,6 @@
 import React from "react";
 import Twemoji from "react-twemoji";
+import LazyLoad from "react-lazy-load";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
@@ -40,7 +41,10 @@ export class ElementList extends React.Component {
         selected={this.props.selected}
         onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
       >
-        <div className="list-image" style={{ backgroundImage: "url(" + this.props.image + ")" }}></div>
+        
+        <LazyLoad debounce={false} offsetVertical={480} className="list-image-container">
+          <div className="list-image" style={{ backgroundImage: "url(" + this.props.image + ")" }}></div>
+        </LazyLoad>
         <ListItemText>
           <ListItemPrimaryText>
             <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>

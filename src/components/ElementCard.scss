@@ -42,6 +42,15 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    background-color: var(--divider-color);
+    .lazy-load {
+      display: flex;
+      flex-direction: column;
+      margin-top: 56.25%;
+      .mdc-card__media {
+        margin-top: -56.25%;
+      }
+    }
     .time-indicator {
       position: absolute;
       bottom: 8px;

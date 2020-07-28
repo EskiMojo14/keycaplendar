@@ -55,6 +55,7 @@
       flex-direction: column;
       position: relative;
       transition: filter 150ms $mdc-animation-standard-curve-timing-function;
+      background-color: var(--divider-color);
       .time-indicator {
         position: absolute;
         bottom: 64px + 8px;

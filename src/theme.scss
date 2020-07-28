@@ -149,7 +149,8 @@ $overlay-values: (
       fill: map-get($variables, text-secondary);
     }
     .overline,
-    .mdc-typography--subtitle2 {
+    .mdc-typography--subtitle2,
+    .mdc-typography--caption {
       color: map-get($variables, text-secondary);
     }
   }
@@ -319,10 +320,12 @@ $overlay-values: (
       }
     }
   }
-  :not(.mdc-list--non-interactive) > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated) {
+  :not(.mdc-list--non-interactive)
+    > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated) {
     @include mdc-states(map-get($variables, on-surface));
   }
-  .mdc-list .mdc-list-item, .mdc-list-item {
+  .mdc-list .mdc-list-item,
+  .mdc-list-item {
     @include mdc-list-item-primary-text-ink-color(map-get($variables, text-primary));
     @include mdc-list-item-secondary-text-ink-color(map-get($variables, text-secondary));
     @include mdc-list-item-graphic-ink-color(map-get($variables, text-secondary));
@@ -610,7 +613,6 @@ $overlay-values: (
   }
 
   .rmwc-avatar {
-    background-color: mix(map-get($variables, on-surface), map-get( $variables, surface), 4%);
     color: map-get($variables, text-disabled);
   }
 

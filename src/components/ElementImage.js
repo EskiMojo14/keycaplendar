@@ -1,5 +1,6 @@
 import React from "react";
 import Twemoji from "react-twemoji";
+import LazyLoad from "react-lazy-load";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
@@ -52,7 +53,9 @@ export class ElementImage extends React.Component {
             <div className="media-container">
               {timeIndicator}
               <ImageListImageAspectContainer style={{ paddingBottom: "calc(100% / 1)" }}>
-                <ImageListImage tag="div" style={{ backgroundImage: "url(" + this.props.image + ")" }} />
+                <LazyLoad debounce={false} offsetVertical={480}>
+                  <ImageListImage tag="div" style={{ backgroundImage: "url(" + this.props.image + ")" }} />
+                </LazyLoad>
               </ImageListImageAspectContainer>
             </div>
             <ImageListSupporting>

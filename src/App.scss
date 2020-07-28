@@ -66,6 +66,10 @@ $mdc-theme-on-surface: #000;
   transform: rotate(180deg);
 }
 
+.rmwc-avatar {
+  background-color: var(--divider-color);
+}
+
 .banner {
   height: 54px;
   display: flex;
