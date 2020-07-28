@@ -177,6 +177,9 @@ export class ContentStatistics extends React.Component {
               type={"Line"}
             />
           </div>
+          <Typography use="caption" tag="p">
+            Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
+          </Typography>
         </Card>
         <Card className="profile-graph">
           <Typography use="headline5" tag="h1">

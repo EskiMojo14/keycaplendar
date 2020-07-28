@@ -18,11 +18,15 @@
       margin-top: 0;
       margin-bottom: 16px;
     }
+    .mdc-typography--caption {
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
     .graph-container {
       max-width: 100%;
       overflow: auto;
       .ct-chart {
-        min-width: 1024px;
+        min-width: 1280px;
         .ct-grid {
           stroke: var(--divider-color);
           stroke-dasharray: 4px;
