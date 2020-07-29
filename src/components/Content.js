@@ -198,7 +198,12 @@ export class DesktopContent extends React.Component {
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} navOpen={this.state.navDrawerOpen} />
+      <ContentStatistics
+        profiles={this.props.profiles}
+        sets={this.props.allSets}
+        navOpen={this.state.navDrawerOpen}
+        statistics={this.props.statistics}
+      />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
     ) : (
@@ -329,6 +334,8 @@ export class DesktopContent extends React.Component {
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
+            statistics={this.props.statistics}
+            setStatistics={this.props.setStatistics}
           />
           <div className="content-container">
             <main
@@ -512,7 +519,7 @@ export class TabletContent extends React.Component {
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} statistics={this.props.statistics} />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
     ) : (
@@ -593,6 +600,8 @@ export class TabletContent extends React.Component {
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
+            statistics={this.props.statistics}
+            setStatistics={this.props.setStatistics}
           />
           <main
             className={
@@ -811,7 +820,7 @@ export class MobileContent extends React.Component {
         detailSet={this.state.detailSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} />
+      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} statistics={this.props.statistics} />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
     ) : (
@@ -894,6 +903,8 @@ export class MobileContent extends React.Component {
             sort={this.props.sort}
             setSort={this.props.setSort}
             openSearch={this.openSearchBar}
+            statistics={this.props.statistics}
+            setStatistics={this.props.setStatistics}
           />
         ) : (
           <BottomAppBar
@@ -908,6 +919,8 @@ export class MobileContent extends React.Component {
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
+            statistics={this.props.statistics}
+            setStatistics={this.props.setStatistics}
           />
         )}
       </div>
@@ -932,6 +945,8 @@ export class MobileContent extends React.Component {
           search={this.props.search}
           setSearch={this.props.setSearch}
           sets={this.props.sets}
+          statistics={this.props.statistics}
+          setStatistics={this.props.setStatistics}
         />
       </div>
     );

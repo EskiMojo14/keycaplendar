@@ -20,16 +20,15 @@
 
 $overlay-values: (
   0: 0%,
-  1: 5%,
-  /* card, switch */ 2: 7%,
-  /* contained button */ 3: 8%,
-  /* refresh indicator */ 4: 9%,
-  /* app bar */ 6: 11%,
-  /* FAB, snackbar */ 8: 12%,
-  /* menu, side sheet */ 12: 14%,
-  16: 15%,
-  /* nav drawer, modal side sheet */ 24: 16%,
-  /* dialog */
+  1: 5%,   // card, switch
+  2: 7%,   // contained button
+  3: 8%,   // refresh indicator
+  4: 9%,   // app bar
+  6: 11%,  // FAB, snackbar
+  8: 12%,  // menu, side sheet
+  12: 14%,
+  16: 15%, // nav drawer, modal side sheet
+  24: 16%, // dialog
 );
 
 @function overlay-elevation($color, $elevation: 0) {
@@ -487,6 +486,36 @@ $overlay-values: (
     @if ($dark != true) {
       .mdc-linear-progress__bar-inner {
         background-color: map-get($variables, secondary);
+      }
+    }
+
+    .mdc-select {
+      background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)), 0.15);
+      @include mdc-select-ink-color(if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87)));
+      @include mdc-select-label-color(if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6)));
+      @include mdc-select-focused-label-color(
+        if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary),0.6))
+      );
+      @include mdc-select-outline-color(if($dark, map-get($variables, text-disabled), rgba(map-get($variables, on-primary),0.38)));
+      @include mdc-select-hover-outline-color(
+        if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary),0.6))
+      );
+      @include mdc-select-focused-outline-color(
+        if($dark, map-get($variables, primary), map-get($variables, on-primary))
+      );
+      .mdc-select__dropdown-icon {
+        @include mdc-select-dd-arrow-svg-bg_(
+          unquote(
+            "#" + str_slice(ie_hex_str(if($dark, map-get($variables, on-surface), map-get($variables, on-primary))), 4)
+          ),
+          0.6
+        );
+      }
+      &.mdc-select--focused .mdc-select__dropdown-icon {
+        @include mdc-select-dd-arrow-svg-bg_(
+          if($dark, map-get($variables, primary), map-get($variables, on-primary)),
+          1
+        );
       }
     }
     .search-bar {

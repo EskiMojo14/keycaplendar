@@ -10,6 +10,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Tooltip } from "@rmwc/tooltip";
 import { Ripple } from "@rmwc/ripple";
+import { Select } from "@rmwc/select";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
 import { MenuView } from "./MenuView";
@@ -100,14 +101,23 @@ export class DesktopAppBar extends React.Component {
     };
     const buttons =
       this.props.page === "statistics" ? (
-        ""
+        <TopAppBarSection alignEnd>
+          <Select
+            outlined
+            value={this.props.statistics}
+            onChange={(e) => {
+              this.props.setStatistics(e.target.value);
+            }}
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "GBs", value: "gbLaunch" },
+              { label: "ICs", value: "icDate" },
+            ]}
+          />
+        </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd>
-          <SearchBarPersistent
-            search={this.props.search}
-            setSearch={this.props.setSearch}
-            sets={this.props.sets}
-          />
+          <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch} sets={this.props.sets} />
           <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
             <MenuSort
               sort={this.props.sort}
@@ -260,7 +270,20 @@ export class TabletAppBar extends React.Component {
     };
     const buttons =
       this.props.page === "statistics" ? (
-        ""
+        <TopAppBarSection alignEnd>
+          <Select
+            outlined
+            value={this.props.statistics}
+            onChange={(e) => {
+              this.props.setStatistics(e.target.value);
+            }}
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "GBs", value: "gbLaunch" },
+              { label: "ICs", value: "icDate" },
+            ]}
+          />
+        </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd>
           <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
@@ -438,7 +461,20 @@ export class MobileAppBar extends React.Component {
     };
     const buttons =
       this.props.page === "statistics" ? (
-        ""
+        <TopAppBarSection alignEnd>
+          <Select
+            outlined
+            value={this.props.statistics}
+            onChange={(e) => {
+              this.props.setStatistics(e.target.value);
+            }}
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "GBs", value: "gbLaunch" },
+              { label: "ICs", value: "icDate" },
+            ]}
+          />
+        </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">
           <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
@@ -618,7 +654,20 @@ export class BottomAppBar extends React.Component {
     }
     const buttons =
       this.props.page === "statistics" ? (
-        ""
+        <TopAppBarSection alignEnd>
+          <Select
+            outlined
+            value={this.props.statistics}
+            onChange={(e) => {
+              this.props.setStatistics(e.target.value);
+            }}
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "GBs", value: "gbLaunch" },
+              { label: "ICs", value: "icDate" },
+            ]}
+          />
+        </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">
           <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
@@ -745,6 +794,58 @@ export class BottomAppBarIndent extends React.Component {
     this.props.changeView(views[index]);
   }
   render() {
+    const buttons =
+      this.props.page === "statistics" ? (
+        <TopAppBarSection alignEnd>
+          <Select
+            outlined
+            value={this.props.statistics}
+            onChange={(e) => {
+              this.props.setStatistics(e.target.value);
+            }}
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "GBs", value: "gbLaunch" },
+              { label: "ICs", value: "icDate" },
+            ]}
+          />
+        </TopAppBarSection>
+      ) : (
+        <TopAppBarSection alignEnd className="actions">
+          <MenuSurfaceAnchor>
+            <MenuSort
+              sort={this.props.sort}
+              open={this.state.sortMenuOpen}
+              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onClose={this.closeSortMenu}
+            />
+            <Menu
+              anchorCorner="bottomLeft"
+              open={this.state.filterMenuOpen}
+              onSelect={(evt) => this.props.openFilter(evt.detail.index)}
+              onClose={this.closeFilterMenu}
+            >
+              <MenuItem>Profile</MenuItem>
+              <MenuItem>Vendor</MenuItem>
+            </Menu>
+            <MenuView
+              view={this.props.view}
+              open={this.state.viewMenuOpen}
+              onSelect={(evt) => this.changeView(evt.detail.index)}
+              onClose={this.closeViewMenu}
+            />
+            <Menu anchorCorner="bottomLeft" open={this.state.moreMenuOpen} onClose={this.closeMoreMenu}>
+              <MenuItem onClick={this.props.openSearch}>Search</MenuItem>
+              <MenuItem onClick={this.openSortMenu}>Sort</MenuItem>
+              <MenuItem onClick={this.openFilterMenu}>Filter</MenuItem>
+              <MenuItem onClick={this.openViewMenu}>View</MenuItem>
+            </Menu>
+            <Tooltip enterDelay={500} content="More" align="top">
+              <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="more_vert" onClick={this.openMoreMenu} />
+            </Tooltip>
+          </MenuSurfaceAnchor>
+        </TopAppBarSection>
+      );
     return (
       <div>
         <TopAppBar className="bottom-app-bar bottom-app-bar--indent">
@@ -761,44 +862,7 @@ export class BottomAppBarIndent extends React.Component {
               </svg>
               <div className="fill"></div>
             </TopAppBarSection>
-            <TopAppBarSection alignEnd className="actions">
-              <MenuSurfaceAnchor>
-                <MenuSort
-                  sort={this.props.sort}
-                  open={this.state.sortMenuOpen}
-                  onSelect={(evt) => this.props.setSort(evt.detail.index)}
-                  onClose={this.closeSortMenu}
-                />
-                <Menu
-                  anchorCorner="bottomLeft"
-                  open={this.state.filterMenuOpen}
-                  onSelect={(evt) => this.props.openFilter(evt.detail.index)}
-                  onClose={this.closeFilterMenu}
-                >
-                  <MenuItem>Profile</MenuItem>
-                  <MenuItem>Vendor</MenuItem>
-                </Menu>
-                <MenuView
-                  view={this.props.view}
-                  open={this.state.viewMenuOpen}
-                  onSelect={(evt) => this.changeView(evt.detail.index)}
-                  onClose={this.closeViewMenu}
-                />
-                <Menu anchorCorner="bottomLeft" open={this.state.moreMenuOpen} onClose={this.closeMoreMenu}>
-                  <MenuItem onClick={this.props.openSearch}>Search</MenuItem>
-                  <MenuItem onClick={this.openSortMenu}>Sort</MenuItem>
-                  <MenuItem onClick={this.openFilterMenu}>Filter</MenuItem>
-                  <MenuItem onClick={this.openViewMenu}>View</MenuItem>
-                </Menu>
-                <Tooltip enterDelay={500} content="More" align="top">
-                  <TopAppBarActionItem
-                    style={{ "--animation-delay": 1 }}
-                    icon="more_vert"
-                    onClick={this.openMoreMenu}
-                  />
-                </Tooltip>
-              </MenuSurfaceAnchor>
-            </TopAppBarSection>
+            {buttons}
           </TopAppBarRow>
           <LinearProgress closed={!this.props.loading} />
         </TopAppBar>

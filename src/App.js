@@ -52,6 +52,7 @@ class App extends React.Component {
       manualTheme: false,
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
+      statistics: "gbLaunch"
     };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -661,6 +662,9 @@ class App extends React.Component {
   setUser = (user) => {
     this.setState({ user: user });
   };
+  setStatistics = (prop) => {
+    this.setState({ statistics: prop });
+  };
   setWhitelist = (property, values) => {
     let whitelistCopy = this.state.whitelist;
     whitelistCopy[property] = values;
@@ -789,6 +793,8 @@ class App extends React.Component {
           setToTimeTheme={this.setToTimeTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
+          statistics={this.state.statistics}
+          setStatistics={this.setStatistics}
           snackbarQueue={queue}
         />
       );
@@ -831,6 +837,8 @@ class App extends React.Component {
           setToTimeTheme={this.setToTimeTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
+          statistics={this.state.statistics}
+          setStatistics={this.setStatistics}
           snackbarQueue={queue}
         />
       );
@@ -875,6 +883,8 @@ class App extends React.Component {
           changeBottomNav={this.changeBottomNav}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
+          statistics={this.state.statistics}
+          setStatistics={this.setStatistics}
           snackbarQueue={queue}
         />
       );

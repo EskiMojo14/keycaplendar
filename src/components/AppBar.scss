@@ -53,6 +53,19 @@
       animation-delay: 0;
     }
   }
+  .mdc-select {
+    height: 40px;
+    width: 112px;
+    .mdc-select__dropdown-icon {
+      bottom: 8px;
+    }
+    .mdc-select__selected-text {
+      padding-top: 6px;
+      padding-bottom: 4px;
+      height: 40px;
+      min-width: 112px;
+    }
+  }
 }
 
 .rmwc-tooltip.hidden {

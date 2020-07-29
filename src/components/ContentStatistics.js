@@ -21,11 +21,11 @@ export class ContentStatistics extends React.Component {
       months: [],
     };
   }
-  componentDidMount() {
+  createData = () => {
     let months = [];
     this.props.sets.forEach((set) => {
-      if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
-        const month = moment(set.gbLaunch).format("YYYY-MM");
+      if (set[this.props.statistics] && set[this.props.statistics].indexOf("Q") === -1) {
+        const month = moment(set[this.props.statistics]).format("YYYY-MM");
         if (months.indexOf(month) === -1) {
           months.push(month);
         }
@@ -66,11 +66,17 @@ export class ContentStatistics extends React.Component {
       months: months,
     });
   }
+  componentDidMount() {
+    this.createData();
+  }
   componentDidUpdate(prevProps) {
     if (this.props.navOpen !== prevProps.navOpen) {
       setTimeout(() => {
         this.forceUpdate();
       }, 400);
+    }
+    if (this.props.statistics !== prevProps.statistics) {
+      this.createData();
     }
   }
   render() {
@@ -90,8 +96,8 @@ export class ContentStatistics extends React.Component {
     });
     this.state.months.forEach((month) => {
       let filteredSets = this.props.sets.filter((set) => {
-        if (set.gbLaunch && set.gbLaunch.indexOf("Q") === -1) {
-          const setMonth = moment(set.gbLaunch).format("MMM YY");
+        if (set[this.props.statistics] && set[this.props.statistics].indexOf("Q") === -1) {
+          const setMonth = moment(set[this.props.statistics]).format("MMM YY");
           return setMonth === month;
         } else {
           return false;
