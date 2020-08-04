@@ -53,6 +53,7 @@ $overlay-values: (
   $graph-colors: (
     $material-color-red-500,
     $material-color-deep-orange-500,
+    $material-color-orange-500,
     $material-color-amber-500,
     $material-color-yellow-500,
     $material-color-lime-500,
@@ -73,6 +74,7 @@ $overlay-values: (
   $graph-colors-dark: (
     $material-color-red-300,
     $material-color-deep-orange-300,
+    $material-color-orange-300,
     $material-color-amber-300,
     $material-color-yellow-300,
     $material-color-lime-300,
@@ -90,7 +92,7 @@ $overlay-values: (
     $material-color-grey-300,
     $material-color-brown-300
   );
-  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r);
+  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   body {
     background-color: map-get($variables, background);
   }
