@@ -227,11 +227,11 @@ export class Footer extends React.Component {
           .
         </Typography>
         <Typography use="body2" tag="p">
-          Something to add/adjust? Contact me via&nbsp;
-          <Tooltip align="top" content="eskimojo#0014" showArrow>
-            <span className="bold">Discord</span>
-          </Tooltip>
-          &nbsp;or&nbsp;
+          Something to add/adjust? Join my{" "}
+          <a href="https://discord.gg/zrcN3qF" target="_blank" rel="noopener noreferrer" className="bold">
+            Discord server
+          </a>{" "}
+          and let us know, or contact me via{" "}
           <Tooltip align="top" content="keycaplendar@gmail.com" showArrow>
             <a
               href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change"
@@ -242,16 +242,19 @@ export class Footer extends React.Component {
               Email
             </a>
           </Tooltip>
-          . Please note that for your IC to be included, it needs a render of the keyset on a board (not rendered by
-          keycaprenders.com).
+          . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not
+          rendered by keycaprenders.com).
         </Typography>
         <Typography use="body2" tag="p">
           Please direct bug reports or feature requests to this project's{" "}
-          <span className="bold">
-            <a href="https://github.com/EskiMojo14/keycaplendar/issues" target="_blank" rel="noopener noreferrer">
-              Github issues
-            </a>
-          </span>{" "}
+          <a
+            href="https://github.com/EskiMojo14/keycaplendar/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bold"
+          >
+            Github issues
+          </a>{" "}
           page.
         </Typography>
         <div className="sponsors-container">

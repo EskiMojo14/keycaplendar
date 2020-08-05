@@ -749,7 +749,7 @@ $overlay-values: (
 
   .footer p {
     color: map-get($variables, text-secondary);
-    a {
+    a, a.bold {
       color: map-get($variables, primary);
     }
     .bold {
