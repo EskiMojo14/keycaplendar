@@ -2,7 +2,7 @@
 @import "@material/ripple/mixins";
 @import "@material/theme/mixins";
 
-.mdc-list .mdc-list-item {
+.list .mdc-list .mdc-list-item {
   &__primary-text {
     div {
       display: inline;
@@ -52,7 +52,7 @@
 }
 
 @media (min-width: 840px) {
-  .mdc-list .mdc-list-item:hover {
+  .list .mdc-list .mdc-list-item:hover {
     .live-indicator {
       animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
     }
