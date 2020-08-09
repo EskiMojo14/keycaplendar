@@ -48,7 +48,14 @@ export class ElementImage extends React.Component {
         >
           <div className="container">
             <div className="link-icon-container">
-              <IconButton className="link-icon" icon="open_in_new" tag="a" href={this.props.link} target="_blank" rel="noopener noreferrer" />
+              <IconButton
+                className="link-icon"
+                icon="open_in_new"
+                tag="a"
+                href={this.props.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
             </div>
             <div className="media-container">
               {timeIndicator}

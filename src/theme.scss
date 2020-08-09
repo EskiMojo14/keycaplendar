@@ -312,7 +312,8 @@ $overlay-values: (
         .mdc-image-list__supporting {
           background-color: rgba(map-get($variables, on-primary), 0.75);
           .primary-text,
-          .secondary-text {
+          .secondary-text, 
+          .overline {
             color: map-get($variables, primary);
           }
           .live-indicator {
@@ -340,6 +341,9 @@ $overlay-values: (
       @include mdc-list-item-primary-text-ink-color(map-get($variables, primary));
       @include mdc-list-item-secondary-text-ink-color(map-get($variables, primary));
       @include mdc-list-item-graphic-ink-color(map-get($variables, primary));
+      .overline {
+        color: map-get($variables, primary);
+      }
       .mdc-list-item__graphic,
       .mdc-list-item__meta {
         fill: map-get($variables, primary);
@@ -362,6 +366,9 @@ $overlay-values: (
     .time-indicator {
       background-color: mix(map-get($variables, on-surface), map-get($variables, surface), 80%);
       color: map-get($variables, surface);
+    }
+    .overline {
+      color: map-get($variables, text-secondary);
     }
   }
 

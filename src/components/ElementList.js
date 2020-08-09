@@ -41,11 +41,13 @@ export class ElementList extends React.Component {
         selected={this.props.selected}
         onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
       >
-        
         <LazyLoad debounce={false} offsetVertical={480} className="list-image-container">
           <div className="list-image" style={{ backgroundImage: "url(" + this.props.image + ")" }}></div>
         </LazyLoad>
         <ListItemText>
+          <Typography use="overline" className="overline">
+            {this.props.set.designer.join(" + ")}
+          </Typography>
           <ListItemPrimaryText>
             <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
           </ListItemPrimaryText>
@@ -54,13 +56,7 @@ export class ElementList extends React.Component {
         {timeIndicator}
         {liveIndicator}
         <div className="link-icon">
-          <IconButton
-            tag="a"
-            href={this.props.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            icon="open_in_new"
-          />
+          <IconButton tag="a" href={this.props.link} target="_blank" rel="noopener noreferrer" icon="open_in_new" />
         </div>
       </ListItem>
     );
