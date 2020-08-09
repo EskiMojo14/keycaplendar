@@ -794,6 +794,9 @@ export class BottomAppBarIndent extends React.Component {
     this.props.changeView(views[index]);
   }
   render() {
+    const sortOption = this.props.page !== "calendar" && this.props.page !== "ic" ? (
+      <MenuItem onClick={this.openSortMenu}>Sort</MenuItem>
+    ) : null;
     const buttons =
       this.props.page === "statistics" ? (
         <TopAppBarSection alignEnd>
@@ -836,7 +839,7 @@ export class BottomAppBarIndent extends React.Component {
             />
             <Menu anchorCorner="bottomLeft" open={this.state.moreMenuOpen} onClose={this.closeMoreMenu}>
               <MenuItem onClick={this.props.openSearch}>Search</MenuItem>
-              <MenuItem onClick={this.openSortMenu}>Sort</MenuItem>
+              {sortOption}
               <MenuItem onClick={this.openFilterMenu}>Filter</MenuItem>
               <MenuItem onClick={this.openViewMenu}>View</MenuItem>
             </Menu>
