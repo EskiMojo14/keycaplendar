@@ -38,6 +38,10 @@ export class ContentGrid extends React.Component {
             filteredSets.push(set);
           }
         }
+      } else if (sort === "designer") {
+        if (set.designer.indexOf(group) > -1) {
+          filteredSets.push(set);
+        }
       } else {
         if (set[sort] === group) {
           filteredSets.push(set);

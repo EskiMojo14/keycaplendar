@@ -2,17 +2,22 @@ import React from "react";
 import { Menu, MenuItem } from "@rmwc/menu";
 
 export class MenuSort extends React.Component {
+  selectSort = (e) => {
+    const options = ["date","profile","designer","vendor"];
+    this.props.onSelect(options[e.detail.index])
+  }
   render() {
     return (
       <Menu
         anchorCorner="bottomLeft"
         open={this.props.open}
-        onSelect={this.props.onSelect}
+        onSelect={(e) => this.selectSort(e)}
         onClose={this.props.onClose}
       >
-        <MenuItem selected={this.props.sort === "vendor" ? true : false}>Vendor</MenuItem>
         <MenuItem selected={this.props.sort === "date" ? true : false}>Date</MenuItem>
         <MenuItem selected={this.props.sort === "profile" ? true : false}>Profile</MenuItem>
+        <MenuItem selected={this.props.sort === "designer" ? true : false}>Designer</MenuItem>
+        <MenuItem selected={this.props.sort === "vendor" ? true : false}>Vendor</MenuItem>
       </Menu>
     );
   }

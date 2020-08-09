@@ -122,7 +122,7 @@ export class DesktopAppBar extends React.Component {
             <MenuSort
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
-              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onSelect={this.props.setSort}
               onClose={this.closeSortMenu}
             />
             <Tooltip
@@ -290,7 +290,7 @@ export class TabletAppBar extends React.Component {
             <MenuSort
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
-              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onSelect={this.props.setSort}
               onClose={this.closeSortMenu}
             />
             <Tooltip
@@ -481,7 +481,7 @@ export class MobileAppBar extends React.Component {
             <MenuSort
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
-              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onSelect={this.props.setSort}
               onClose={this.closeSortMenu}
             />
             <Tooltip
@@ -674,7 +674,7 @@ export class BottomAppBar extends React.Component {
             <MenuSort
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
-              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onSelect={this.props.setSort}
               onClose={this.closeSortMenu}
             />
             <Tooltip
@@ -819,7 +819,7 @@ export class BottomAppBarIndent extends React.Component {
             <MenuSort
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
-              onSelect={(evt) => this.props.setSort(evt.detail.index)}
+              onSelect={this.props.setSort}
               onClose={this.closeSortMenu}
             />
             <Menu

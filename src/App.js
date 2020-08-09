@@ -593,6 +593,14 @@ class App extends React.Component {
             groups.push(set.vendors[0].name);
           }
         }
+      } else if (sort === "designer") {
+        if (set.designer[0]) {
+          set.designer.forEach((designer) => {
+            if (!groups.includes(designer)) {
+              groups.push(designer);
+            }
+          })
+        }
       } else {
         if (!groups.includes(set[sort])) {
           groups.push(set[sort]);
@@ -647,10 +655,9 @@ class App extends React.Component {
     });
   }
   setSort(sortBy) {
-    const sort = ["vendor", "date", "profile"];
     document.documentElement.scrollTop = 0;
-    this.setState({ sort: sort[sortBy] });
-    this.filterData(this.state.page, this.state.sets, sort[sortBy]);
+    this.setState({ sort: sortBy });
+    this.filterData(this.state.page, this.state.sets, sortBy);
   }
   setSearch(query) {
     this.setState({
