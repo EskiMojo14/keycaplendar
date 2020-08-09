@@ -118,8 +118,9 @@ export class DesktopAppBar extends React.Component {
       ) : (
         <TopAppBarSection alignEnd>
           <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch} sets={this.props.sets} />
-          <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
+          <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
             <MenuSort
+              page={this.props.page}
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
               onSelect={this.props.setSort}
@@ -129,7 +130,7 @@ export class DesktopAppBar extends React.Component {
               enterDelay={500}
               content="Sort"
               align="bottom"
-              className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}
+              className={this.props.page === "calendar" ? "hidden" : ""}
             >
               <TopAppBarActionItem icon="sort" style={{ "--animation-delay": 1 }} onClick={this.openSortMenu} />
             </Tooltip>
@@ -286,8 +287,9 @@ export class TabletAppBar extends React.Component {
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd>
-          <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
+          <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
             <MenuSort
+              page={this.props.page}
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
               onSelect={this.props.setSort}
@@ -297,7 +299,7 @@ export class TabletAppBar extends React.Component {
               enterDelay={500}
               content="Sort"
               align="bottom"
-              className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}
+              className={this.props.page === "calendar" ? "hidden" : ""}
             >
               <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={this.openSortMenu} />
             </Tooltip>
@@ -477,8 +479,9 @@ export class MobileAppBar extends React.Component {
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">
-          <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
+          <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
             <MenuSort
+              page={this.props.page}
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
               onSelect={this.props.setSort}
@@ -486,7 +489,7 @@ export class MobileAppBar extends React.Component {
             />
             <Tooltip
               enterDelay={500}
-              className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}
+              className={this.props.page === "calendar" ? "hidden" : ""}
               content="Sort"
               align="bottom"
             >
@@ -670,8 +673,9 @@ export class BottomAppBar extends React.Component {
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">
-          <MenuSurfaceAnchor className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}>
+          <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
             <MenuSort
+              page={this.props.page}
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
               onSelect={this.props.setSort}
@@ -679,7 +683,7 @@ export class BottomAppBar extends React.Component {
             />
             <Tooltip
               enterDelay={500}
-              className={this.props.page === "calendar" || this.props.page === "ic" ? "hidden" : ""}
+              className={this.props.page === "calendar" ? "hidden" : ""}
               content="Sort"
               align="bottom"
             >
@@ -817,6 +821,7 @@ export class BottomAppBarIndent extends React.Component {
         <TopAppBarSection alignEnd className="actions">
           <MenuSurfaceAnchor>
             <MenuSort
+              page={this.props.page}
               sort={this.props.sort}
               open={this.state.sortMenuOpen}
               onSelect={this.props.setSort}
