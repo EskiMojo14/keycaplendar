@@ -57,7 +57,7 @@ export class EntryGuide extends React.Component {
                 Designers are only able to create entries with their manually set nickname.
               </Typography>
               <Typography use="body2" tag="p" className="secondary">
-                Please contact Eskimojo if you wish for your nickname to be changed, or if a set should have multiple
+                Please contact Eskimojo if you wish for your nickname to be changed, or an editor via the <a href="https://discord.gg/zrcN3qF" target="_blank" rel="noopener noreferrer">Discord server</a> if a set should have multiple
                 designers.
               </Typography>
               <div className="demo">
@@ -114,7 +114,7 @@ export class EntryGuide extends React.Component {
                 Designers are not able to delete sets.
               </Typography>
               <Typography use="body2" tag="p" className="secondary">
-                Please contact Eskimojo if you believe an entry should be deleted.
+                Please contact an editor via the <a href="https://discord.gg/zrcN3qF" target="_blank" rel="noopener noreferrer">Discord server</a> if you believe an entry should be deleted.
               </Typography>
               <div className="demo">
                 <Button className="delete" outlined label="Delete" />
