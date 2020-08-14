@@ -1,41 +1,61 @@
 $mdc-typography-font-family: unquote("Lato, sans-serif");
-
+$headline-font: unquote("Roboto Slab, serif");
+$body-font: unquote("Lato, sans-serif");
 $mdc-typography-styles-headline1: (
-  font-size: 6.3125rem,
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: 6rem,
 );
 $mdc-typography-styles-headline2: (
-  font-size: 3.9375rem,
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: 3.75rem,
 );
 $mdc-typography-styles-headline3: (
-  font-size: 3.125rem,
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: 3rem,
 );
 $mdc-typography-styles-headline4: (
-  font-size: 2.25rem,
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: 2.125rem,
 );
 $mdc-typography-styles-headline5: (
-  font-size: 1.5625rem,
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: 1.5rem,
 );
 $mdc-typography-styles-headline6: (
+  font-family: $body-font,
+  font-feature-settings: "lnum",
   font-size: 1.3125rem,
 );
 $mdc-typography-styles-body1: (
+  font-family: $body-font,
   font-size: 1.0625rem,
 );
 $mdc-typography-styles-body2: (
+  font-family: $body-font,
   font-size: 0.9375rem,
 );
 $mdc-typography-styles-subtitle1: (
+  font-family: $body-font,
   font-size: 1.0625rem,
 );
 $mdc-typography-styles-subtitle2: (
+  font-family: $body-font,
   font-size: 0.9375rem,
 );
 $mdc-typography-styles-button: (
+  font-family: $body-font,
   font-size: 0.9375rem,
 );
 $mdc-typography-styles-overline: (
+  font-family: $body-font,
   font-size: 0.625rem,
 );
 $mdc-typography-styles-caption: (
+  font-family: $body-font,
   font-size: 0.8125rem,
 );
