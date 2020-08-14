@@ -547,7 +547,9 @@ export class TabletDrawerDetails extends React.Component {
               Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
             </Typography>
             <Typography use="headline4" tag="h1">
-              {(set.profile ? set.profile : "") + " " + (set.colorway ? set.colorway : "")}
+                <Twemoji options={{ className: "twemoji" }}>
+                  {(set.profile ? set.profile : "") + " " + (set.colorway ? set.colorway : "")}
+                </Twemoji>
             </Typography>
             {gbLine}
             {shippedLine}
