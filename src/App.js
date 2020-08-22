@@ -22,7 +22,7 @@ class App extends React.Component {
       page: "calendar",
       view: "card",
       transition: false,
-      sort: "date",
+      sort: "gbLaunch",
       allDesigners: [],
       allVendors: [],
       allRegions: [],
@@ -70,15 +70,15 @@ class App extends React.Component {
       if (pages.indexOf(pageQuery) > -1) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
-          this.setState({ sort: "date" });
+          this.setState({ sort: "gbLaunch" });
         } else if (pageQuery === "live") {
           this.setState({ sort: "profile" });
         } else if (pageQuery === "ic") {
           this.setState({ sort: "profile" });
         } else if (pageQuery === "previous") {
-          this.setState({ sort: "date" });
+          this.setState({ sort: "gbLaunch" });
         } else if (pageQuery === "timeline") {
-          this.setState({ sort: "date" });
+          this.setState({ sort: "gbLaunch" });
         }
       }
       this.getData();
@@ -189,15 +189,15 @@ class App extends React.Component {
           this.setState({ page: page });
           this.setSearch("");
           if (page === "calendar") {
-            this.setState({ sort: "date" });
+            this.setState({ sort: "gbLaunch" });
           } else if (page === "live") {
             this.setState({ sort: "profile" });
           } else if (page === "ic") {
             this.setState({ sort: "profile" });
           } else if (page === "previous") {
-            this.setState({ sort: "date" });
+            this.setState({ sort: "gbLaunch" });
           } else if (page === "timeline") {
-            this.setState({ sort: "date" });
+            this.setState({ sort: "gbLaunch" });
           }
           this.filterData(page);
           document.documentElement.scrollTop = 0;
@@ -581,8 +581,8 @@ class App extends React.Component {
       "December",
     ];
     searchedSets.forEach((set) => {
-      if (sort === "date") {
-        const setDate = new Date(page === "live" ? set.gbEnd : page === "ic" ? set.icDate : set.gbLaunch);
+      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
+        const setDate = new Date(set[sort]);
         let setMonth = months[setDate.getUTCMonth()] + " " + setDate.getUTCFullYear();
         if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
@@ -608,7 +608,7 @@ class App extends React.Component {
       }
     });
     groups.sort(function (a, b) {
-      if (sort === "date") {
+      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const aMonth = "0" + (months.indexOf(a.slice(0, -5)) + 1);
         const bMonth = "0" + (months.indexOf(b.slice(0, -5)) + 1);
         const aDate = `${a.slice(-4)}-${aMonth.slice(-2)}-01`;

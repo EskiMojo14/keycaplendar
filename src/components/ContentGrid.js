@@ -11,8 +11,7 @@ export class ContentGrid extends React.Component {
   filterSets = (sets, group, sort, page) => {
     let filteredSets = [];
     sets.forEach((set) => {
-      if (sort === "date") {
-        const query = page === "live" ? "gbEnd" : page === "ic" ? "icDate" : "gbLaunch";
+      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const month = [
           "January",
           "February",
@@ -27,7 +26,7 @@ export class ContentGrid extends React.Component {
           "November",
           "December",
         ];
-        const setDate = new Date(set[query]);
+        const setDate = new Date(set[sort]);
         let setMonth = month[setDate.getUTCMonth()] + " " + setDate.getUTCFullYear();
         if (setMonth === group) {
           filteredSets.push(set);
@@ -49,7 +48,14 @@ export class ContentGrid extends React.Component {
       }
     });
     filteredSets.sort((a, b) => {
-      if (page !== "ic") {
+      if (sort === "icDate") {
+        if (a.icDate < b.icDate) {
+          return (page === "ic" ? 1 : -1);
+        }
+        if (a.icDate > b.icDate) {
+          return (page === "ic" ? -1 : 1);
+        }
+      } else if (sort === "gbLaunch") {
         if (a.gbLaunch < b.gbLaunch) {
           return -1;
         }
@@ -62,12 +68,12 @@ export class ContentGrid extends React.Component {
         if (a.gbMonth && !b.gbMonth) {
           return 1;
         }
-      } else if (sort === "date") {
-        if (a.icDate < b.icDate) {
-          return 1;
-        }
-        if (a.icDate > b.icDate) {
+      } else if (sort === "gbEnd") {
+        if (a.gbEnd < b.gbEnd) {
           return -1;
+        }
+        if (a.gbEnd > b.gbEnd) {
+          return 1;
         }
       }
       const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
