@@ -36,6 +36,10 @@
   }
 }
 
+.rmwc-tooltip { 
+  @include mdc-typography(caption);
+}
+
 .rmwc-data-table {
   &__content {
     background-color: transparent;
