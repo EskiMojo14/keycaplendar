@@ -296,6 +296,7 @@ $overlay-values: (
   .mdc-fab {
     @include mdc-fab-container-color(map-get($variables, secondary));
     @include mdc-fab-ink-color(map-get($variables, on-secondary));
+    @include mdc-states(map-get($variables, on-secondary));
   }
 
   .mdc-form-field {
