@@ -12,7 +12,7 @@ export class ContentGrid extends React.Component {
     let filteredSets = [];
     sets.forEach((set) => {
       if (sort === "date") {
-        const query = page === "live" ? "gbEnd" : "gbLaunch";
+        const query = page === "live" ? "gbEnd" : page === "ic" ? "icDate" : "gbLaunch";
         const month = [
           "January",
           "February",
@@ -61,6 +61,13 @@ export class ContentGrid extends React.Component {
         }
         if (a.gbMonth && !b.gbMonth) {
           return 1;
+        }
+      } else if (sort === "date") {
+        if (a.icDate < b.icDate) {
+          return 1;
+        }
+        if (a.icDate > b.icDate) {
+          return -1;
         }
       }
       const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();

@@ -52,7 +52,7 @@ class App extends React.Component {
       manualTheme: false,
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
-      statistics: "gbLaunch"
+      statistics: "gbLaunch",
     };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -582,7 +582,7 @@ class App extends React.Component {
     ];
     searchedSets.forEach((set) => {
       if (sort === "date") {
-        const setDate = new Date(page === "live" ? set.gbEnd : set.gbLaunch);
+        const setDate = new Date(page === "live" ? set.gbEnd : page === "ic" ? set.icDate : set.gbLaunch);
         let setMonth = months[setDate.getUTCMonth()] + " " + setDate.getUTCFullYear();
         if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
@@ -599,7 +599,7 @@ class App extends React.Component {
             if (!groups.includes(designer)) {
               groups.push(designer);
             }
-          })
+          });
         }
       } else {
         if (!groups.includes(set[sort])) {
@@ -613,7 +613,7 @@ class App extends React.Component {
         const bMonth = "0" + (months.indexOf(b.slice(0, -5)) + 1);
         const aDate = `${a.slice(-4)}-${aMonth.slice(-2)}-01`;
         const bDate = `${b.slice(-4)}-${bMonth.slice(-2)}-01`;
-        if (page === "previous") {
+        if (page === "previous" || page === "ic") {
           if (aDate < bDate) {
             return 1;
           }
