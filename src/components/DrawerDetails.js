@@ -65,7 +65,7 @@ export class DesktopDrawerDetails extends React.Component {
     let gb;
     let vendorList;
     let shippedLine;
-    const sortedVendors = set.vendors
+    const sortedVendors = set.vendors && set.vendors[0]
       ? set.vendors.sort((a, b) => {
           var regionA = a.region.toLowerCase();
           var regionB = b.region.toLowerCase();
@@ -77,7 +77,7 @@ export class DesktopDrawerDetails extends React.Component {
           }
           return 0;
         })
-      : "";
+      : [];
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
     if (set.icDate) {
@@ -337,6 +337,19 @@ export class TabletDrawerDetails extends React.Component {
     let gb;
     let vendorList;
     let shippedLine;
+    const sortedVendors = set.vendors && set.vendors[0]
+      ? set.vendors.sort((a, b) => {
+          var regionA = a.region.toLowerCase();
+          var regionB = b.region.toLowerCase();
+          if (regionA < regionB) {
+            return -1;
+          }
+          if (regionA > regionB) {
+            return 1;
+          }
+          return 0;
+        })
+      : [];
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
     if (set.icDate) {
@@ -399,7 +412,7 @@ export class TabletDrawerDetails extends React.Component {
       }
       chipsContent.forEach((prop) => {
         if (prop === "vendors") {
-          set.vendors.forEach((vendor) => {
+          sortedVendors.forEach((vendor) => {
             chips.push(vendor.name);
           });
         } else {
@@ -441,7 +454,7 @@ export class TabletDrawerDetails extends React.Component {
             Vendors
           </Typography>
           <List twoLine>
-            {set.vendors.map((vendor, index) => {
+            {sortedVendors.map((vendor, index) => {
               if (vendor.storeLink !== "") {
                 return (
                   <ListItem key={index} tag="a" href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
