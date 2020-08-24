@@ -49,17 +49,37 @@ export class ViewImageList extends React.Component {
               nth(gbLaunch.getUTCDate()) +
               "\xa0" +
               month[gbLaunch.getUTCMonth()] +
+              ((gbLaunch.getUTCFullYear() !== today.getUTCFullYear() &&
+                gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()) ||
+              gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
+                ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
+                : "") +
               " - " +
               gbEnd.getUTCDate() +
               nth(gbEnd.getUTCDate()) +
               "\xa0" +
-              month[gbEnd.getUTCMonth()];
+              month[gbEnd.getUTCMonth()] +
+              (gbEnd.getUTCFullYear() !== today.getUTCFullYear() || gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
+                ? " " + gbEnd.getUTCFullYear().toString().slice(-2)
+                : "");
           } else if (set.gbLaunch.includes("Q")) {
             subtitle = "Expected " + gbLaunch;
           } else if (set.gbMonth && set.gbLaunch !== "") {
-            subtitle = "Expected " + fullMonth[gbLaunch.getUTCMonth()];
+            subtitle =
+              "Expected " +
+              fullMonth[gbLaunch.getUTCMonth()] +
+              (gbLaunch.getUTCFullYear() !== today.getUTCFullYear()
+                ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
+                : "");
           } else if (set.gbLaunch !== "") {
-            subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + "\xa0" + month[gbLaunch.getUTCMonth()];
+            subtitle =
+              gbLaunch.getUTCDate() +
+              nth(gbLaunch.getUTCDate()) +
+              "\xa0" +
+              month[gbLaunch.getUTCMonth()] +
+              (gbLaunch.getUTCFullYear() !== today.getUTCFullYear()
+                ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
+                : "");
           } else {
             subtitle =
               "IC " +

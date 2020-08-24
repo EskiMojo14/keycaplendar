@@ -48,17 +48,33 @@ export class ViewCard extends React.Component {
               nth(gbLaunch.getUTCDate()) +
               "\xa0" +
               month[gbLaunch.getUTCMonth()] +
+              ((gbLaunch.getUTCFullYear() !== today.getUTCFullYear() &&
+                gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()) ||
+              gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
+                ? " " + gbLaunch.getUTCFullYear()
+                : "") +
               " until " +
               gbEnd.getUTCDate() +
               nth(gbEnd.getUTCDate()) +
               "\xa0" +
-              month[gbEnd.getUTCMonth()];
+              month[gbEnd.getUTCMonth()] +
+              (gbEnd.getUTCFullYear() !== today.getUTCFullYear() || gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
+                ? " " + gbEnd.getUTCFullYear()
+                : "");
           } else if (set.gbLaunch.includes("Q")) {
             subtitle = "GB expected " + gbLaunch;
           } else if (set.gbMonth && set.gbLaunch !== "") {
-            subtitle = "GB expected " + month[gbLaunch.getUTCMonth()];
+            subtitle =
+              "GB expected " +
+              month[gbLaunch.getUTCMonth()] +
+              (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
           } else if (set.gbLaunch !== "") {
-            subtitle = gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate()) + "\xa0" + month[gbLaunch.getUTCMonth()];
+            subtitle =
+              gbLaunch.getUTCDate() +
+              nth(gbLaunch.getUTCDate()) +
+              "\xa0" +
+              month[gbLaunch.getUTCMonth()] +
+              (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
           } else {
             subtitle =
               "IC posted " +
