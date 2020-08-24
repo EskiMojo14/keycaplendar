@@ -57,10 +57,10 @@ export class ContentGrid extends React.Component {
         }
       } else if (sort === "gbLaunch") {
         if (a.gbLaunch < b.gbLaunch) {
-          return -1;
+          return (page === "previous" ? 1 : -1);
         }
         if (a.gbLaunch > b.gbLaunch) {
-          return 1;
+          return (page === "previous" ? -1 : 1);
         }
         if (!a.gbMonth && b.gbMonth) {
           return -1;
@@ -70,10 +70,25 @@ export class ContentGrid extends React.Component {
         }
       } else if (sort === "gbEnd") {
         if (a.gbEnd < b.gbEnd) {
-          return -1;
+          return (page === "previous" ? 1 : -1);
         }
         if (a.gbEnd > b.gbEnd) {
-          return 1;
+          return (page === "previous" ? -1 : 1);
+        }
+      }
+      if (a.gbLaunch && b.gbLaunch) {
+        if (a.gbLaunch < b.gbLaunch) {
+          return (page === "previous" ? 1 : -1);
+        }
+        if (a.gbLaunch > b.gbLaunch) {
+          return (page === "previous" ? -1 : 1);
+        }
+      } else {
+        if (a.icDate < b.icDate) {
+          return (page === "ic" ? 1 : -1);
+        }
+        if (a.icDate > b.icDate) {
+          return (page === "ic" ? -1 : 1);
         }
       }
       const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
