@@ -6,7 +6,6 @@ import {
   ListItemPrimaryText,
   ListItemSecondaryText,
   ListItemGraphic,
-  ListDivider,
 } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./ElementCompact.scss";
@@ -35,29 +34,26 @@ export class ElementCompact extends React.Component {
         ""
       );
     return (
-      <div>
-        <ListItem
-          selected={this.props.selected}
-          onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
-        >
-          {liveIndicator}
-          <ListItemText>
-            <ListItemPrimaryText>
-              <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
-            </ListItemPrimaryText>
-            <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
-          </ListItemText>
-          <IconButton
-            tag="a"
-            className="link"
-            href={this.props.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            icon="open_in_new"
-          ></IconButton>
-        </ListItem>
-        <ListDivider />
-      </div>
+      <ListItem
+        selected={this.props.selected}
+        onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
+      >
+        {liveIndicator}
+        <ListItemText>
+          <ListItemPrimaryText>
+            <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
+          </ListItemPrimaryText>
+          <ListItemSecondaryText>{this.props.subtitle}</ListItemSecondaryText>
+        </ListItemText>
+        <IconButton
+          tag="a"
+          className="link"
+          href={this.props.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          icon="open_in_new"
+        ></IconButton>
+      </ListItem>
     );
   }
 }

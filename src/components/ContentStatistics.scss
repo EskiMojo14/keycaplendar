@@ -83,7 +83,7 @@
 
 @media (max-width: 1080px) {
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     .mdc-card,
     .mdc-card.fullwidth {
       grid-column: span 1;

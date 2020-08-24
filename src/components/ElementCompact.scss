@@ -5,6 +5,8 @@
 .compact {
   .mdc-list.mdc-list--two-line .mdc-list-item {
     height: 64px;
+    border-bottom: 1px solid var(--divider-color);
+    box-sizing: border-box;
     &__text {
       align-self: unset;
       margin-right: 16px;
@@ -47,7 +49,7 @@
       outline: none;
     }
   }
-  .mdc-list div:last-child .mdc-list-item + .mdc-list-divider {
-    display: none;
+  .mdc-list .mdc-list-item:last-child {
+    border-bottom: none;
   }
 }
