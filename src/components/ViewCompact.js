@@ -54,7 +54,7 @@ export class ViewCompact extends React.Component {
                 ((gbLaunch.getUTCFullYear() !== today.getUTCFullYear() &&
                   gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()) ||
                 gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-                  ? " " + gbLaunch.getUTCFullYear()
+                  ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
                   : "") +
                 " until " +
                 gbEnd.getUTCDate() +
@@ -63,7 +63,7 @@ export class ViewCompact extends React.Component {
                 month[gbEnd.getUTCMonth()] +
                 (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ||
                 gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-                  ? " " + gbEnd.getUTCFullYear()
+                  ? " " + gbEnd.getUTCFullYear().toString().slice(-2)
                   : "");
             } else if (set.gbLaunch.includes("Q")) {
               subtitle = "GB expected " + gbLaunch;
@@ -71,14 +71,18 @@ export class ViewCompact extends React.Component {
               subtitle =
                 "GB expected " +
                 month[gbLaunch.getUTCMonth()] +
-                (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
+                (gbLaunch.getUTCFullYear() !== today.getUTCFullYear()
+                  ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
+                  : "");
             } else if (set.gbLaunch !== "") {
               subtitle =
                 gbLaunch.getUTCDate() +
                 nth(gbLaunch.getUTCDate()) +
                 "\xa0" +
                 month[gbLaunch.getUTCMonth()] +
-                (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
+                (gbLaunch.getUTCFullYear() !== today.getUTCFullYear()
+                  ? " " + gbLaunch.getUTCFullYear().toString().slice(-2)
+                  : "");
             } else {
               subtitle =
                 "IC posted " +
@@ -86,7 +90,9 @@ export class ViewCompact extends React.Component {
                 nth(icDate.getUTCDate()) +
                 "\xa0" +
                 month[icDate.getUTCMonth()] +
-                (icDate.getUTCFullYear() !== today.getUTCFullYear() ? " " + icDate.getUTCFullYear() : "");
+                (icDate.getUTCFullYear() !== today.getUTCFullYear()
+                  ? " " + icDate.getUTCFullYear().toString().slice(-2)
+                  : "");
             }
             let live = false;
             if (Object.prototype.toString.call(gbLaunch) === "[object Date]") {
