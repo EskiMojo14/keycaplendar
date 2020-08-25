@@ -72,7 +72,7 @@ class App extends React.Component {
         if (pageQuery === "calendar") {
           this.setState({ sort: "gbLaunch" });
         } else if (pageQuery === "live") {
-          this.setState({ sort: "profile" });
+          this.setState({ sort: "gbEnd" });
         } else if (pageQuery === "ic") {
           this.setState({ sort: "profile" });
         } else if (pageQuery === "previous") {
@@ -191,7 +191,7 @@ class App extends React.Component {
           if (page === "calendar") {
             this.setState({ sort: "gbLaunch" });
           } else if (page === "live") {
-            this.setState({ sort: "profile" });
+            this.setState({ sort: "gbEnd" });
           } else if (page === "ic") {
             this.setState({ sort: "profile" });
           } else if (page === "previous") {
