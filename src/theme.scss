@@ -393,7 +393,7 @@ $overlay-values: (
   .mdc-select {
     @include mdc-select-ink-color(map-get($variables, text-primary));
     @include mdc-select-label-color(map-get($variables, text-secondary));
-    @include mdc-select-focused-label-color(map-get($variables, text-secondary));
+    @include mdc-select-focused-label-color(rgba(map-get($variables, primary),0.87));
     @include mdc-select-outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include mdc-select-hover-outline-color(map-get($variables, text-primary));
     @include mdc-select-focused-outline-color(map-get($variables, primary));
