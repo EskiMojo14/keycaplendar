@@ -7,9 +7,9 @@ service cloud.firestore {
       allow delete: if request.auth.token.editor == true;
     }
     match /changelog/{action} {
-      allow read: if request.auth.token.admin == true;
+      allow read, delete: if request.auth.token.admin == true;
       allow create: if true;
-      allow update, delete: if false;
+      allow update: if false;
     }
   }
 }

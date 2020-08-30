@@ -12,6 +12,7 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { CircularProgress } from "@rmwc/circular-progress";
+import { Button } from "@rmwc/button";
 import {
   List,
   CollapsibleList,
@@ -36,6 +37,7 @@ import { Select } from "@rmwc/select";
 import { IconButton } from "@rmwc/icon-button";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent, DrawerAppContent } from "@rmwc/drawer";
 import { ContentEmpty } from "./ContentEmpty";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -49,8 +51,30 @@ export class AuditLog extends React.Component {
       filterUser: "all",
       filterDrawerOpen: false,
       filterLength: 25,
+      deleteDialogOpen: false,
+      deleteAction: {
+        changelogId: "",
+      },
     };
   }
+  openDeleteDialog = (action) => {
+    this.setState({
+      deleteDialogOpen: true,
+      deleteAction: action,
+    });
+  };
+  closeDeleteDialog = () => {
+    this.setState({
+      deleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        deleteAction: {
+          changelogId: "",
+        },
+      });
+    }, 100);
+  };
   toggleFilterDrawer = () => {
     this.setState({
       filterDrawerOpen: !this.state.filterDrawerOpen,
@@ -72,11 +96,8 @@ export class AuditLog extends React.Component {
       prop === "filterUser" ? e.target.value : this.state.filterUser
     );
   };
-  getActions = (num) => {
+  getActions = (num = this.state.filterLength) => {
     this.setState({ loading: true, filterLength: num });
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
-    console.log(startDate);
     const db = firebase.firestore();
     db.collection("changelog")
       .orderBy("timestamp", "desc")
@@ -88,6 +109,7 @@ export class AuditLog extends React.Component {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.changelogId = doc.id;
           actions.push(data);
           if (users.filter((e) => e.value === data.user.nickname).length === 0) {
             users.push({ label: data.user.nickname, value: data.user.nickname });
@@ -141,6 +163,21 @@ export class AuditLog extends React.Component {
       actionsFiltered: filteredActions,
       loading: false,
     });
+  };
+  deleteAction = (action) => {
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .doc(action.changelogId)
+      .delete()
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        this.getActions();
+        this.closeDeleteDialog();
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        this.closeDeleteDialog();
+      });
   };
   componentDidMount() {
     this.getActions(25);
@@ -634,12 +671,25 @@ export class AuditLog extends React.Component {
                                   <DataTableCell colSpan={2}>{action.documentId}</DataTableCell>
                                 </DataTableRow>
                                 <DataTableRow>
+                                  <DataTableCell>changelogId</DataTableCell>
+                                  <DataTableCell colSpan={2}>{action.changelogId}</DataTableCell>
+                                </DataTableRow>
+                                <DataTableRow>
                                   <DataTableCell>userEmail</DataTableCell>
                                   <DataTableCell colSpan={2}>{action.user.email}</DataTableCell>
                                 </DataTableRow>
                               </DataTableBody>
                             </DataTableContent>
                           </DataTable>
+                          <div className="button-list">
+                            <Button
+                              label="delete"
+                              className="delete"
+                              onClick={() => {
+                                this.openDeleteDialog(action);
+                              }}
+                            />
+                          </div>
                         </CollapsibleList>
                       );
                     })}
@@ -649,6 +699,26 @@ export class AuditLog extends React.Component {
             ) : (
               <ContentEmpty />
             )}
+            <Dialog open={this.state.deleteDialogOpen}>
+              <DialogTitle>Delete Action</DialogTitle>
+              <DialogContent>
+                Are you sure you want to delete the changelog entry with the ID {this.state.deleteAction.changelogId}?
+              </DialogContent>
+              <DialogActions>
+                <DialogButton action="close" onClick={this.closeDeleteDialog} isDefaultAction>
+                  Cancel
+                </DialogButton>
+                <DialogButton
+                  action="accept"
+                  className="delete"
+                  onClick={() => {
+                    this.deleteAction(this.state.deleteAction);
+                  }}
+                >
+                  Delete
+                </DialogButton>
+              </DialogActions>
+            </Dialog>
           </DrawerAppContent>
         </div>
       </div>
