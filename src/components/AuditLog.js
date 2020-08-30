@@ -48,6 +48,7 @@ export class AuditLog extends React.Component {
       filterAction: "none",
       filterUser: "all",
       filterDrawerOpen: false,
+      filterLength: 25,
     };
   }
   toggleFilterDrawer = () => {
@@ -71,10 +72,15 @@ export class AuditLog extends React.Component {
       prop === "filterUser" ? e.target.value : this.state.filterUser
     );
   };
-  getActions = () => {
-    this.setState({ loading: true });
+  getActions = (num) => {
+    this.setState({ loading: true, filterLength: num });
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    console.log(startDate);
     const db = firebase.firestore();
     db.collection("changelog")
+      .orderBy("timestamp", "desc")
+      .limit(parseInt(num))
       .get()
       .then((querySnapshot) => {
         let actions = [];
@@ -137,7 +143,7 @@ export class AuditLog extends React.Component {
     });
   };
   componentDidMount() {
-    this.getActions();
+    this.getActions(25);
     document.body.classList.add("audit");
   }
   componentWillUnmount() {
@@ -221,6 +227,22 @@ export class AuditLog extends React.Component {
                 className="user-select"
                 onChange={(e) => {
                   this.handleFilterChange(e, "filterUser");
+                }}
+              />
+              <Select
+                outlined
+                enhanced={{ fixed: true }}
+                label="Length"
+                options={[
+                  { label: "25", value: 25 },
+                  { label: "50", value: 50 },
+                  { label: "100", value: 100 },
+                  { label: "200", value: 200 },
+                ]}
+                value={this.state.filterLength}
+                className="action-select"
+                onChange={(e) => {
+                  this.getActions(e.currentTarget.value);
                 }}
               />
             </DrawerContent>
