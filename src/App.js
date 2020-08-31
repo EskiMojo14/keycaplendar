@@ -554,6 +554,8 @@ class App extends React.Component {
           " " +
           set.colorway +
           " " +
+          set.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'') +
+          " " +
           set.vendors.map((vendor) => {
             return " " + vendor.name + " " + vendor.region;
           }) +
