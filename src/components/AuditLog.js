@@ -55,6 +55,7 @@ export class AuditLog extends React.Component {
       deleteAction: {
         changelogId: "",
       },
+      users: [{ label: "All", value: "all" }],
     };
   }
   openDeleteDialog = (action) => {
