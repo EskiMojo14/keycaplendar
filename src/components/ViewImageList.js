@@ -103,7 +103,7 @@ export class ViewImageList extends React.Component {
               selected={this.props.detailSet === set || this.props.editSet === set}
               title={title}
               subtitle={subtitle}
-              image={set.image}
+              image={set.image.replace("keysets","image-list")}
               link={set.details}
               set={set}
               details={this.props.details}

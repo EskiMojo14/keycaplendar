@@ -13,8 +13,11 @@
     "node": "10"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.3.0",
     "firebase-admin": "^8.6.0",
-    "firebase-functions": "^3.9.0",
+    "firebase-functions": "^3.11.0",
+    "mime-types": "^2.1.27",
+    "sharp": "^0.26.0",
     "websocket-extensions": "^0.1.4"
   },
   "devDependencies": {

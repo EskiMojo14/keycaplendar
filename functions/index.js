@@ -1,9 +1,208 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
+const { Storage } = require("@google-cloud/storage");
+const path = require("path");
+const sharp = require("sharp");
+const { Stream } = require("stream");
 
 const app = admin.initializeApp();
 
 const db = admin.firestore();
+
+const storage = new Storage();
+
+exports.createThumbsAuto = functions.storage.object().onFinalize(async (object) => {
+  const fileBucket = object.bucket; // The Storage bucket that contains the file.
+  const filePath = object.name; // File path in the bucket.
+  const contentType = object.contentType; // File content type.
+  // Exit if this is triggered on a file that is not an image.
+  if (!contentType.startsWith("image/")) {
+    return null;
+  }
+  const fileName = path.basename(filePath);
+  if (!filePath.startsWith("keysets/")) {
+    return null;
+  }
+
+  // Download file from bucket.
+  const bucket = storage.bucket(fileBucket);
+
+  const metadata = {
+    contentType: contentType,
+  };
+
+  const cardFilePath = path.join("card/", fileName);
+  // Create write stream for uploading thumbnail
+  const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
+
+  // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+  const cardPipeline = sharp();
+  cardPipeline.resize(320, 180).pipe(cardUploadStream);
+
+  bucket.file(filePath).createReadStream().pipe(cardPipeline);
+
+  cardUploadStream
+    .on("finish", () => {
+      console.log("Created card thumbnail for " + fileName);
+    })
+    .on("error", (err) => {
+      console.log("Failed to create card thumbnail for " + fileName + ": " + err);
+    });
+
+  const listFilePath = path.join("list/", fileName);
+  // Create write stream for uploading thumbnail
+  const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
+
+  // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+  const listPipeline = sharp();
+  listPipeline.resize(100, 56).pipe(listUploadStream);
+
+  bucket.file(filePath).createReadStream().pipe(listPipeline);
+
+  listUploadStream
+    .on("finish", () => {
+      console.log("Created list thumbnail for " + fileName);
+    })
+    .on("error", (err) => {
+      console.log("Failed to create list thumbnail for " + fileName + ": " + err);
+    });
+
+  const imageListFilePath = path.join("image-list/", fileName);
+  // Create write stream for uploading thumbnail
+  const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
+
+  // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+  const imageListPipeline = sharp();
+  imageListPipeline.resize(320, 320).pipe(imageListUploadStream);
+
+  bucket.file(filePath).createReadStream().pipe(imageListPipeline);
+
+  imageListUploadStream
+    .on("finish", () => {
+      console.log("Created image list thumbnail for " + fileName);
+    })
+    .on("error", (err) => {
+      console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
+    });
+
+  const streams = [cardUploadStream, listUploadStream, imageListUploadStream];
+
+  //return new Promise((resolve, reject) => imageListUploadStream.on("finish", resolve).on("error", reject));
+  return await Promise.all(
+    streams.map((stream) => {
+      return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
+    })
+  );
+});
+
+const runtimeOpts = {
+  timeoutSeconds: 540,
+  memory: "2GB",
+};
+
+exports.createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
+  if (!context.auth || context.auth.token.admin !== true) {
+    return {
+      error: "Current user is not an admin. Access is not permitted.",
+    };
+  }
+
+  console.log("Creating thumbnails");
+
+  // Download file from bucket.
+  const bucket = storage.bucket("keycaplendar.appspot.com");
+  const [files] = await bucket.getFiles({ prefix: "keysets/" });
+  const metadata = {
+    contentType: "image/png",
+  };
+
+  const filesPromise = new Promise(async (resolve, reject) => {
+    let filesProcessed = 0;
+    const increase = () => filesProcessed++;
+    for (const file of files) {
+      const fileName = path.basename(file.name);
+      console.log(fileName);
+      const cardPromise = new Promise((resolve, reject) => {
+        const cardFilePath = path.join("card/", fileName);
+        // Create write stream for uploading thumbnail
+        const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
+
+        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+        const cardPipeline = sharp();
+        cardPipeline.resize(320, 180).pipe(cardUploadStream);
+
+        file.createReadStream().pipe(cardPipeline);
+
+        cardUploadStream
+          .on("finish", () => {
+            console.log("Created card thumbnail for " + fileName);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.log("Failed to create card thumbnail for " + fileName + ": " + err);
+            reject(err);
+          });
+      });
+
+      const listPromise = new Promise((resolve, reject) => {
+        const listFilePath = path.join("list/", fileName);
+        // Create write stream for uploading thumbnail
+        const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
+
+        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+        const listPipeline = sharp();
+        listPipeline.resize(100, 56).pipe(listUploadStream);
+
+        file.createReadStream().pipe(listPipeline);
+
+        listUploadStream
+          .on("finish", () => {
+            console.log("Created list thumbnail for " + fileName);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.log("Failed to create list thumbnail for " + fileName + ": " + err);
+            reject(err);
+          });
+      });
+
+      const imageListPromise = new Promise((resolve, reject) => {
+        const imageListFilePath = path.join("image-list/", fileName);
+        // Create write stream for uploading thumbnail
+        const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
+
+        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+        const imageListPipeline = sharp();
+        imageListPipeline.resize(320, 320).pipe(imageListUploadStream);
+
+        file.createReadStream().pipe(imageListPipeline);
+
+        imageListUploadStream
+          .on("finish", () => {
+            console.log("Created image list thumbnail for " + fileName);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
+            reject(err);
+          });
+      });
+      const thumbnailPromises = [cardPromise, listPromise, imageListPromise];
+      Promise.all(thumbnailPromises)
+        .then(() => {
+          increase();
+          return false;
+        })
+        .catch((err) => {
+          console.log("Failed to create thumbnails for" + fileName + ": " + err);
+        });
+      if (filesProcessed === files.length) {
+        resolve();
+      }
+    }
+  });
+  return filesPromise;
+});
 
 exports.getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
@@ -26,21 +225,21 @@ exports.getClaims = functions.https.onCall((data, context) => {
 
 exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWrite(async (change, context) => {
   if (!change.before.data()) {
-    console.log("Document created")
+    console.log("Document created");
   }
   if (change.after.data() && change.after.data().latestEditor) {
     const user = await admin.auth().getUser(change.after.data().latestEditor);
     db.collection("changelog")
       .add({
         documentId: context.params.keysetId,
-        before: (change.before.data() ? change.before.data() : null),
-        after: (change.after.data() ? change.after.data() : null),
+        before: change.before.data() ? change.before.data() : null,
+        after: change.after.data() ? change.after.data() : null,
         timestamp: context.timestamp,
         user: {
           displayName: user.displayName,
           email: user.email,
-          nickname: user.customClaims.nickname
-        }
+          nickname: user.customClaims.nickname,
+        },
       })
       .then((docRef) => {
         console.log("Changelog written with ID: ", docRef.id);
@@ -54,14 +253,18 @@ exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWr
     console.error("No user ID attached to action.");
   }
   if (change.after.data() && !change.after.data().profile) {
-    console.log("Document deleted")
-    db.collection("keysets").doc(context.params.keysetId).delete().then(() => {
-      console.error("Removed document " + context.params.keysetId + ".")
-      return null;
-    }).catch((error) => {
-      console.error("Error removing document " + context.params.keysetId + ": " + error)
-      return null;
-    })
+    console.log("Document deleted");
+    db.collection("keysets")
+      .doc(context.params.keysetId)
+      .delete()
+      .then(() => {
+        console.error("Removed document " + context.params.keysetId + ".");
+        return null;
+      })
+      .catch((error) => {
+        console.error("Error removing document " + context.params.keysetId + ": " + error);
+        return null;
+      });
   }
 });
 

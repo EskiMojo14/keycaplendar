@@ -21,6 +21,10 @@
         "function": "getClaims"
       },
       {
+        "source": "/api/createThumbs",
+        "function": "createThumbs"
+      },
+      {
         "source": "/api/listUsers",
         "function": "listUsers"
       },

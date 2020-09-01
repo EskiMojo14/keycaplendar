@@ -99,7 +99,7 @@ export class ViewList extends React.Component {
               set={set}
               title={title}
               subtitle={subtitle}
-              image={set.image}
+              image={set.image.replace("keysets","list")}
               link={set.details}
               details={this.props.details}
               closeDetails={this.props.closeDetails}

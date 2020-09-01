@@ -101,7 +101,7 @@ export class ViewCard extends React.Component {
               title={title}
               subtitle={subtitle}
               designer={designer}
-              image={set.image}
+              image={set.image.replace("keysets","card")}
               link={set.details}
               details={this.props.details}
               closeDetails={this.props.closeDetails}

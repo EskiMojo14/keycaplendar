@@ -28,7 +28,10 @@ export class DesktopDrawerDetails extends React.Component {
     }
   }
   render() {
-    const set = this.props.set;
+    let set = this.props.set;
+    if (!set.image) {
+      set.image = "";
+    }
     const today = new Date();
     const month = [
       "January",
@@ -65,19 +68,20 @@ export class DesktopDrawerDetails extends React.Component {
     let gb;
     let vendorList;
     let shippedLine;
-    const sortedVendors = set.vendors && set.vendors[0]
-      ? set.vendors.sort((a, b) => {
-          var regionA = a.region.toLowerCase();
-          var regionB = b.region.toLowerCase();
-          if (regionA < regionB) {
-            return -1;
-          }
-          if (regionA > regionB) {
-            return 1;
-          }
-          return 0;
-        })
-      : [];
+    const sortedVendors =
+      set.vendors && set.vendors[0]
+        ? set.vendors.sort((a, b) => {
+            var regionA = a.region.toLowerCase();
+            var regionB = b.region.toLowerCase();
+            if (regionA < regionB) {
+              return -1;
+            }
+            if (regionA > regionB) {
+              return 1;
+            }
+            return 0;
+          })
+        : [];
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
     if (set.icDate) {
@@ -253,7 +257,7 @@ export class DesktopDrawerDetails extends React.Component {
         </DrawerHeader>
         <DrawerContent>
           <div>
-            <div className="details-image" style={{ backgroundImage: "url(" + set.image + ")" }}></div>
+            <div className="details-image" style={{ backgroundImage: "url(" + set.image.replace('keysets','card') + ")" }}></div>
             <div className="details-text">
               <Typography use="overline" tag="h3">
                 Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
@@ -300,7 +304,10 @@ export class DesktopDrawerDetails extends React.Component {
 
 export class TabletDrawerDetails extends React.Component {
   render() {
-    const set = this.props.set;
+    let set = this.props.set;
+    if (!set.image) {
+      set.image = "";
+    }
     const today = new Date();
     const month = [
       "January",
@@ -337,19 +344,20 @@ export class TabletDrawerDetails extends React.Component {
     let gb;
     let vendorList;
     let shippedLine;
-    const sortedVendors = set.vendors && set.vendors[0]
-      ? set.vendors.sort((a, b) => {
-          var regionA = a.region.toLowerCase();
-          var regionB = b.region.toLowerCase();
-          if (regionA < regionB) {
-            return -1;
-          }
-          if (regionA > regionB) {
-            return 1;
-          }
-          return 0;
-        })
-      : [];
+    const sortedVendors =
+      set.vendors && set.vendors[0]
+        ? set.vendors.sort((a, b) => {
+            var regionA = a.region.toLowerCase();
+            var regionB = b.region.toLowerCase();
+            if (regionA < regionB) {
+              return -1;
+            }
+            if (regionA > regionB) {
+              return 1;
+            }
+            return 0;
+          })
+        : [];
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
     if (set.icDate) {
@@ -560,9 +568,9 @@ export class TabletDrawerDetails extends React.Component {
               Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
             </Typography>
             <Typography use="headline4" tag="h1">
-                <Twemoji options={{ className: "twemoji" }}>
-                  {(set.profile ? set.profile : "") + " " + (set.colorway ? set.colorway : "")}
-                </Twemoji>
+              <Twemoji options={{ className: "twemoji" }}>
+                {(set.profile ? set.profile : "") + " " + (set.colorway ? set.colorway : "")}
+              </Twemoji>
             </Typography>
             {gbLine}
             {shippedLine}

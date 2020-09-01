@@ -35,6 +35,20 @@ export class DialogSettings extends React.Component {
     const applyThemeOptions = ["manual", "timed", "system"];
     this.props.changeApplyTheme(applyThemeOptions[e.detail.index]);
   };
+  createThumbs = () => {
+    const createThumbsFn = firebase.functions().httpsCallable("createThumbs");
+    createThumbsFn()
+      .then((result) => {
+        if (result.data.error) {
+          this.props.snackbarQueue.notify({ title: "Error creating thumbs: " + result.data.error });
+        }
+        console.log(result.data);
+        this.props.snackbarQueue.notify({ title: "Successfully created thumbs." });
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error creating thumbs: " + error });
+      });
+  };
   render() {
     const bottomNav = this.props.changeBottomNav ? (
       <div className="group">
@@ -79,6 +93,7 @@ export class DialogSettings extends React.Component {
             <Button label="Manage users" onClick={this.props.close} />
           </Link>
           <Button label="Refresh data" onClick={this.props.getData} />
+          <Button label="Create thumbnails" onClick={this.createThumbs} />
         </div>
       </div>
     ) : null;
@@ -176,7 +191,6 @@ export class DialogSettings extends React.Component {
                 onChange={(e) => {
                   this.setApplyTheme(e);
                 }}
-                
               />
             </FormField>
             {themeOptions}
