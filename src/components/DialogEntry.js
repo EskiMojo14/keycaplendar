@@ -232,7 +232,7 @@ export class DialogCreate extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.replace(/\W+(.)/g, function (match, chr) {
+      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
         return chr.toUpperCase();
       });
     const imageRef = keysetsRef.child(fileName + ".png");
@@ -935,7 +935,7 @@ export class DialogEdit extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.replace(/\W+(.)/g, function (match, chr) {
+      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
         return chr.toUpperCase();
       });
     const imageRef = keysetsRef.child(fileName + ".png");
