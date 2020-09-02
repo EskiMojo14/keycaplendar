@@ -191,7 +191,7 @@ export class AuditLog extends React.Component {
     const refreshButton = this.state.loading ? (
       <CircularProgress />
     ) : (
-      <TopAppBarActionItem icon="refresh" onClick={this.getActions} />
+      <TopAppBarActionItem icon="refresh" onClick={() => {this.getActions(this.state.filterLength)}} />
     );
     const properties = [
       "profile",
