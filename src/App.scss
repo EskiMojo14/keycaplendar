@@ -92,6 +92,36 @@ $mdc-theme-on-surface: #000;
   }
 }
 
+
+.toggle-group {
+  display: flex;
+  height: 36px;
+  .mdc-button {
+    border-radius: 0;
+    margin-right: -1px;
+    min-width: 0;
+    &:not(.mdc-button--selected) {
+      border-right-color: var(--lighter-color);
+    }
+    .mdc-button__icon {
+      margin: 0;
+    }
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+      margin-right: 0;
+      &:not(.mdc-button--selected) {
+        border-right-color: var(--divider-color);
+      }
+    }
+    &--selected {
+      z-index: 1;
+    }
+  }
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;

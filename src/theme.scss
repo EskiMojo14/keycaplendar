@@ -884,4 +884,19 @@ $overlay-values: (
       color: map-get($variables, on-surface);
     }
   }
+
+  .toggle-group {
+    .mdc-button {
+      @include mdc-button-ink-color(map-get($variables, text-secondary));
+      @include mdc-states(map-get($variables, on-surface));
+      @include mdc-states-selected(map-get($variables, primary));
+      &--selected {
+        @include mdc-button-ink-color(map-get($variables, primary));
+        @include mdc-button-outline-color(map-get($variables, primary));
+      }
+      &:disabled {
+        color: map-get($variables, text-disabled);
+      }
+    }
+  }
 }
