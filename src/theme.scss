@@ -501,34 +501,21 @@ $overlay-values: (
         background-color: map-get($variables, secondary);
       }
     }
-
-    .mdc-select {
-      background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)), 0.15);
-      @include mdc-select-ink-color(if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87)));
-      @include mdc-select-label-color(if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6)));
-      @include mdc-select-focused-label-color(
-        if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary),0.6))
-      );
-      @include mdc-select-outline-color(if($dark, map-get($variables, text-disabled), rgba(map-get($variables, on-primary),0.38)));
-      @include mdc-select-hover-outline-color(
-        if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary),0.6))
-      );
-      @include mdc-select-focused-outline-color(
-        if($dark, map-get($variables, primary), map-get($variables, on-primary))
-      );
-      .mdc-select__dropdown-icon {
-        @include mdc-select-dd-arrow-svg-bg_(
-          unquote(
-            "#" + str_slice(ie_hex_str(if($dark, map-get($variables, on-surface), map-get($variables, on-primary))), 4)
-          ),
-          0.6
-        );
-      }
-      &.mdc-select--focused .mdc-select__dropdown-icon {
-        @include mdc-select-dd-arrow-svg-bg_(
-          if($dark, map-get($variables, primary), map-get($variables, on-primary)),
-          1
-        );
+    @if ($dark == false) {
+      .toggle-group {
+        .mdc-button {
+          @include mdc-button-ink-color(rgba(map-get($variables, on-primary),0.6));
+          @include mdc-button-outline-color(rgba(map-get($variables, on-primary),0.38));
+          @include mdc-states(map-get($variables, on-primary));
+          @include mdc-states-selected(map-get($variables, on-primary));
+          &--selected {
+            @include mdc-button-ink-color(map-get($variables, on-primary));
+            @include mdc-button-outline-color(map-get($variables, on-primary));
+          }
+          &:disabled {
+            color: map-get($variables, text-disabled);
+          }
+        }
       }
     }
     .search-bar {

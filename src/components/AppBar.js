@@ -10,7 +10,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Tooltip } from "@rmwc/tooltip";
 import { Ripple } from "@rmwc/ripple";
-import { Select } from "@rmwc/select";
+import { Button } from "@rmwc/button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
 import { MenuView } from "./MenuView";
@@ -102,18 +102,24 @@ export class DesktopAppBar extends React.Component {
     const buttons =
       this.props.page === "statistics" ? (
         <TopAppBarSection alignEnd>
-          <Select
-            outlined
-            value={this.props.statistics}
-            onChange={(e) => {
-              this.props.setStatistics(e.target.value);
-            }}
-            enhanced={{ fixed: true }}
-            options={[
-              { label: "GBs", value: "gbLaunch" },
-              { label: "ICs", value: "icDate" },
-            ]}
-          />
+          <div className="toggle-group">
+            <Button
+              outlined
+              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("icDate");
+              }}
+              label="IC"
+            />
+            <Button
+              outlined
+              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("gbLaunch");
+              }}
+              label="GB"
+            />
+          </div>
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd>
@@ -272,18 +278,24 @@ export class TabletAppBar extends React.Component {
     const buttons =
       this.props.page === "statistics" ? (
         <TopAppBarSection alignEnd>
-          <Select
-            outlined
-            value={this.props.statistics}
-            onChange={(e) => {
-              this.props.setStatistics(e.target.value);
-            }}
-            enhanced={{ fixed: true }}
-            options={[
-              { label: "GBs", value: "gbLaunch" },
-              { label: "ICs", value: "icDate" },
-            ]}
-          />
+          <div className="toggle-group">
+            <Button
+              outlined
+              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("icDate");
+              }}
+              label="IC"
+            />
+            <Button
+              outlined
+              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("gbLaunch");
+              }}
+              label="GB"
+            />
+          </div>
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd>
@@ -464,18 +476,24 @@ export class MobileAppBar extends React.Component {
     const buttons =
       this.props.page === "statistics" ? (
         <TopAppBarSection alignEnd>
-          <Select
-            outlined
-            value={this.props.statistics}
-            onChange={(e) => {
-              this.props.setStatistics(e.target.value);
-            }}
-            enhanced={{ fixed: true }}
-            options={[
-              { label: "GBs", value: "gbLaunch" },
-              { label: "ICs", value: "icDate" },
-            ]}
-          />
+          <div className="toggle-group">
+            <Button
+              outlined
+              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("icDate");
+              }}
+              label="IC"
+            />
+            <Button
+              outlined
+              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("gbLaunch");
+              }}
+              label="GB"
+            />
+          </div>
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">
@@ -658,18 +676,24 @@ export class BottomAppBar extends React.Component {
     const buttons =
       this.props.page === "statistics" ? (
         <TopAppBarSection alignEnd>
-          <Select
-            outlined
-            value={this.props.statistics}
-            onChange={(e) => {
-              this.props.setStatistics(e.target.value);
-            }}
-            enhanced={{ fixed: true }}
-            options={[
-              { label: "GBs", value: "gbLaunch" },
-              { label: "ICs", value: "icDate" },
-            ]}
-          />
+          <div className="toggle-group">
+            <Button
+              outlined
+              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("icDate");
+              }}
+              label="IC"
+            />
+            <Button
+              outlined
+              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
+              onClick={() => {
+                this.props.setStatistics("gbLaunch");
+              }}
+              label="GB"
+            />
+          </div>
         </TopAppBarSection>
       ) : (
         <TopAppBarSection alignEnd className="actions">

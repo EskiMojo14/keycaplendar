@@ -53,20 +53,6 @@
       animation-delay: 0;
     }
   }
-  .mdc-select {
-    height: 40px;
-    width: 112px;
-    margin-right: 4px;
-    .mdc-select__dropdown-icon {
-      bottom: 8px;
-    }
-    .mdc-select__selected-text {
-      padding-top: 6px;
-      padding-bottom: 4px;
-      height: 40px;
-      min-width: 112px;
-    }
-  }
 }
 
 .rmwc-tooltip.hidden {
@@ -112,11 +98,5 @@
     & + .mdc-top-app-bar--fixed-adjust {
       padding-top: 48px;
     }
-  }
-}
-
-@media (max-width: 599px) {
-  .mdc-top-app-bar .mdc-select {
-    margin-right: 12px;
   }
 }
