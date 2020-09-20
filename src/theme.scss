@@ -123,7 +123,8 @@ $overlay-values: (
       .mdc-typography--headline5 {
         color: map-get($variables, primary);
       }
-      .live-indicator {
+      .live-indicator,
+      .ship-indicator {
         fill: map-get($variables, primary);
       }
       .overline,
@@ -147,7 +148,8 @@ $overlay-values: (
     .mdc-typography--headline5 {
       color: map-get($variables, text-primary);
     }
-    .live-indicator {
+    .live-indicator,
+    .ship-indicator {
       fill: map-get($variables, text-secondary);
     }
     .overline,
@@ -317,7 +319,8 @@ $overlay-values: (
           .overline {
             color: map-get($variables, primary);
           }
-          .live-indicator {
+          .live-indicator,
+          .ship-indicator {
             fill: map-get($variables, primary);
           }
         }

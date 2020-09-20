@@ -29,7 +29,8 @@
         }
       }
     }
-    .live-indicator {
+    .live-indicator,
+    .ship-indicator {
       overflow: hidden;
       height: 24px;
       flex-shrink: 0;

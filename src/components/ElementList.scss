@@ -14,7 +14,7 @@
       line-height: 1rem;
     }
     .mdc-list-item__primary-text {
-      margin: 2px 0; 
+      margin: 2px 0;
       display: flex;
       align-items: center;
       &::before,
@@ -51,11 +51,13 @@
     flex-grow: 0;
     flex-shrink: 0;
     margin-left: auto;
-    & + .live-indicator {
+    & + .live-indicator,
+    & + .ship-indicator {
       margin-left: 16px;
     }
   }
-  .live-indicator {
+  .live-indicator,
+  .ship-indicator {
     overflow: hidden;
     height: 24px;
     flex-shrink: 0;
@@ -78,7 +80,8 @@
 
 @media (min-width: 840px) {
   .list .mdc-list .mdc-list-item:hover {
-    .live-indicator {
+    .live-indicator,
+    .ship-indicator {
       animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
     }
     .link-icon .mdc-icon-button {
