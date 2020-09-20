@@ -53,6 +53,9 @@
       animation-delay: 0;
     }
   }
+  .toggle-group {
+    margin-right: 4px;
+  }
 }
 
 .rmwc-tooltip.hidden {
@@ -97,6 +100,14 @@
     }
     & + .mdc-top-app-bar--fixed-adjust {
       padding-top: 48px;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .mdc-top-app-bar {
+    .toggle-group {
+      margin-right: 12px;
     }
   }
 }
