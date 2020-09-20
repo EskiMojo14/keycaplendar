@@ -101,6 +101,7 @@ $mdc-theme-on-surface: #000;
     margin-right: -1px;
     min-width: 0;
     &:not(.mdc-button--selected) {
+      border-left-color: var(--lighter-color);
       border-right-color: var(--lighter-color);
     }
     .mdc-button__icon {
@@ -108,6 +109,9 @@ $mdc-theme-on-surface: #000;
     }
     &:first-child {
       border-radius: 4px 0 0 4px;
+      &:not(.mdc-button--selected) {
+        border-left-color: var(--divider-color);
+      }
     }
     &:last-child {
       border-radius: 0 4px 4px 0;
