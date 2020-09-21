@@ -634,10 +634,13 @@ $overlay-values: (
       &.sorted::before {
         color: map-get($variables, text-secondary);
       }
+      &.profile-title {
+        @include mdc-states(map-get($variables, on-surface));
+      }
     }
     &__row:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated) .rmwc-data-table__cell::before,
     &__row:hover:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated)
-      .rmwc-data-table__cell::before {
+      .rmwc-data-table__cell:not(.rmwc-data-table__head-cell)::before {
       background-color: map-get($variables, on-surface);
     }
   }
@@ -706,9 +709,11 @@ $overlay-values: (
         fill: $color;
       }
     }
-    .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.title-#{$letter}::before,
-    .rmwc-data-table .rmwc-data-table__row:hover .rmwc-data-table__cell.title-#{$letter}::before {
-      background-color: $color;
+    .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} {
+      @include mdc-states($color);
+      .profile-indicator {
+        background-color: $color;
+      }
     }
     .focused {
       &:not(.series-#{$letter}) {
@@ -725,8 +730,7 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.title-#{$letter}::before,
-        .rmwc-data-table .rmwc-data-table__row:hover .rmwc-data-table__cell.title-#{$letter}::before {
+        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
           background-color: rgba($color, 0.1);
         }
         .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {

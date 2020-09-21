@@ -87,19 +87,21 @@
               //@include mdc-typography(button);
               //text-align: center;
               cursor: pointer;
-              div {
-                padding: 0.75rem 1rem;
-                padding-bottom: 0.5rem;
-              }
-              &::before {
+              padding: 0.75rem 1rem;
+              padding-bottom: 0.5rem;
+              @include mdc-ripple-surface();
+              @include mdc-ripple-radius-bounded();
+              //border-radius: 4px;
+              .profile-indicator {
                 content: "";
                 height: 4px;
                 width: calc(100% - 4px);
                 opacity: 1;
                 position: absolute;
                 top: auto;
-                right: 2px;
+                bottom: 0;
                 left: 2px;
+                right: 2px;
                 transition: background-color 200ms $mdc-animation-standard-curve-timing-function;
               }
             }

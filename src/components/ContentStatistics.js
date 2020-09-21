@@ -3,6 +3,7 @@ import ChartistGraph from "react-chartist";
 import moment from "moment";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
+import { Ripple } from "@rmwc/ripple";
 import { Button } from "@rmwc/button";
 import {
   DataTable,
@@ -258,16 +259,18 @@ export class ContentStatistics extends React.Component {
                   </DataTableHeadCell>
                   {this.props.profiles.map((profile, index) => {
                     return (
-                      <DataTableHeadCell
-                        alignEnd
-                        key={profile}
-                        className={"profile-title title-" + letters[index]}
-                        onClick={() => {
-                          this.setFocus(letters[index]);
-                        }}
-                      >
-                        <div className="profile-title">{profile}</div>
-                      </DataTableHeadCell>
+                      <Ripple key={profile}>
+                        <DataTableHeadCell
+                          alignEnd
+                          className={"profile-title title-" + letters[index]}
+                          onClick={() => {
+                            this.setFocus(letters[index]);
+                          }}
+                        >
+                          {profile}
+                          <div className="profile-indicator"></div>
+                        </DataTableHeadCell>
+                      </Ripple>
                     );
                   })}
                 </DataTableRow>
