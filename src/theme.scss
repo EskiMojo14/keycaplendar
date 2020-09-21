@@ -315,7 +315,7 @@ $overlay-values: (
         .mdc-image-list__supporting {
           background-color: rgba(map-get($variables, on-primary), 0.75);
           .primary-text,
-          .secondary-text, 
+          .secondary-text,
           .overline {
             color: map-get($variables, primary);
           }
@@ -396,7 +396,7 @@ $overlay-values: (
   .mdc-select {
     @include mdc-select-ink-color(map-get($variables, text-primary));
     @include mdc-select-label-color(map-get($variables, text-secondary));
-    @include mdc-select-focused-label-color(rgba(map-get($variables, primary),0.87));
+    @include mdc-select-focused-label-color(rgba(map-get($variables, primary), 0.87));
     @include mdc-select-outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include mdc-select-hover-outline-color(map-get($variables, text-primary));
     @include mdc-select-focused-outline-color(map-get($variables, primary));
@@ -504,8 +504,8 @@ $overlay-values: (
     @if ($dark == false) {
       .toggle-group {
         .mdc-button {
-          @include mdc-button-ink-color(rgba(map-get($variables, on-primary),0.6));
-          @include mdc-button-outline-color(rgba(map-get($variables, on-primary),0.38));
+          @include mdc-button-ink-color(rgba(map-get($variables, on-primary), 0.6));
+          @include mdc-button-outline-color(rgba(map-get($variables, on-primary), 0.38));
           @include mdc-states(map-get($variables, on-primary));
           @include mdc-states-selected(map-get($variables, on-primary));
           &--selected {
@@ -710,6 +710,30 @@ $overlay-values: (
     .rmwc-data-table .rmwc-data-table__row:hover .rmwc-data-table__cell.title-#{$letter}::before {
       background-color: $color;
     }
+    .focused {
+      &:not(.series-#{$letter}) {
+        .ct-series-#{$letter} {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: rgba($color, 0.1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: rgba($color, 0.1);
+          }
+        }
+        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.title-#{$letter}::before,
+        .rmwc-data-table .rmwc-data-table__row:hover .rmwc-data-table__cell.title-#{$letter}::before {
+          background-color: rgba($color, 0.1);
+        }
+        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {
+          color: map-get($variables, text-disabled);
+        }
+      }
+    }
   }
 
   .count-graph {
@@ -747,11 +771,11 @@ $overlay-values: (
 
   .footer p {
     color: map-get($variables, text-secondary);
-    a, a.bold {
-      color: map-get($variables, primary);
-    }
     .bold {
       color: map-get($variables, text-primary);
+    }
+    a, a.bold {
+      color: map-get($variables, primary);
     }
   }
 

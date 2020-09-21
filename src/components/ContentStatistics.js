@@ -21,6 +21,7 @@ export class ContentStatistics extends React.Component {
     this.state = {
       months: [],
       profileChartType: "bar",
+      focused: "",
     };
   }
   createData = () => {
@@ -70,6 +71,13 @@ export class ContentStatistics extends React.Component {
   };
   setProfileChartType = (type) => {
     this.setState({ profileChartType: type });
+  };
+  setFocus = (letter) => {
+    if (letter === this.state.focused) {
+      this.setState({ focused: "" });
+    } else {
+      this.setState({ focused: letter });
+    }
   };
   componentDidMount() {
     this.createData();
@@ -146,34 +154,7 @@ export class ContentStatistics extends React.Component {
         onlyInteger: true,
       },
     };
-    const letters = [
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "l",
-      "m",
-      "n",
-      "o",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-    ];
+    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
     const barGraph =
       this.state.profileChartType === "bar" ? (
         <ChartistGraph
@@ -251,12 +232,14 @@ export class ContentStatistics extends React.Component {
               />
             </div>
           </div>
-          <div className="graph-container">
+          <div
+            className={"graph-container" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}
+          >
             {barGraph}
             {lineGraph}
           </div>
         </Card>
-        <Card className="fullwidth">
+        <Card className={"fullwidth" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}>
           <DataTable>
             <DataTableContent>
               <DataTableHead>
@@ -267,7 +250,14 @@ export class ContentStatistics extends React.Component {
                   </DataTableHeadCell>
                   {this.props.profiles.map((profile, index) => {
                     return (
-                      <DataTableHeadCell alignEnd key={profile} className={"profile-title title-" + letters[index]}>
+                      <DataTableHeadCell
+                        alignEnd
+                        key={profile}
+                        className={"profile-title title-" + letters[index]}
+                        onClick={() => {
+                          this.setFocus(letters[index]);
+                        }}
+                      >
                         <div className="profile-title">{profile}</div>
                       </DataTableHeadCell>
                     );
@@ -282,9 +272,9 @@ export class ContentStatistics extends React.Component {
                       <DataTableCell className="right-border" alignEnd>
                         {monthData[month].count}
                       </DataTableCell>
-                      {this.props.profiles.map((profile) => {
+                      {this.props.profiles.map((profile, index) => {
                         return (
-                          <DataTableCell alignEnd key={profile}>
+                          <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
                             {monthData[month][camelize(profile)]}
                           </DataTableCell>
                         );

@@ -1,5 +1,7 @@
 @import "@material/typography/mdc-typography";
 @import "@material/ripple/mdc-ripple";
+@import "@material/animation/variables";
+
 .stats-grid {
   padding: 16px;
   margin: 0 auto;
@@ -52,9 +54,21 @@
           margin-bottom: 12px;
         }
       }
+      .ct-chart {
+        .ct-point,
+        .ct-line,
+        .ct-bar,
+        .ct-slice-donut {
+          transition: stroke 200ms $mdc-animation-standard-curve-timing-function;
+        }
+        .ct-slice-pie,
+        .ct-donut-solid,
+        .ct-area {
+          transition: fill 200ms $mdc-animation-standard-curve-timing-function;
+        }
+      }
     }
     &.fullwidth {
-      grid-column: span 1;
       padding: 0;
       overflow: hidden;
       .rmwc-data-table {
@@ -70,6 +84,9 @@
             &.profile-title {
               padding: 0;
               position: relative;
+              //@include mdc-typography(button);
+              //text-align: center;
+              cursor: pointer;
               div {
                 padding: 0.75rem 1rem;
                 padding-bottom: 0.5rem;
@@ -83,9 +100,13 @@
                 top: auto;
                 right: 2px;
                 left: 2px;
+                transition: background-color 200ms $mdc-animation-standard-curve-timing-function;
               }
             }
           }
+        }
+        &__body .rmwc-data-table__row .rmwc-data-table__cell {
+          transition: color 200ms $mdc-animation-standard-curve-timing-function;
         }
       }
     }
