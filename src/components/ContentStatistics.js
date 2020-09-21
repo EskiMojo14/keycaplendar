@@ -15,58 +15,107 @@ import {
 } from "@rmwc/data-table";
 import "./ContentStatistics.scss";
 
+function camelize(str) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, "");
+}
+
 export class ContentStatistics extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      months: [],
+      months: { icDate: [], gbLaunch: [] },
+      monthData: { icDate: {}, gbLaunch: {} },
+      countData: { icDate: [], gbLaunch: [] },
+      profileCount: { icDate: {}, gbLaunch: {} },
+      profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
       focused: "",
     };
   }
   createData = () => {
-    let months = [];
-    this.props.sets.forEach((set) => {
-      if (set[this.props.statistics] && set[this.props.statistics].indexOf("Q") === -1) {
-        const month = moment(set[this.props.statistics]).format("YYYY-MM");
-        if (months.indexOf(month) === -1) {
-          months.push(month);
+    const properties = ["icDate", "gbLaunch"];
+    let months = { icDate: [], gbLaunch: [] };
+    let monthData = { icDate: {}, gbLaunch: {} };
+    let countData = { icDate: [], gbLaunch: [] };
+    let profileCount = { icDate: {}, gbLaunch: {} };
+    let profileCountData = { icDate: [], gbLaunch: [] };
+    properties.forEach((property) => {
+      this.props.sets.forEach((set) => {
+        if (set[property] && set[property].indexOf("Q") === -1) {
+          const month = moment(set[property]).format("YYYY-MM");
+          if (months[property].indexOf(month) === -1) {
+            months[property].push(month);
+          }
         }
+      });
+      months[property].sort(function (a, b) {
+        if (a < b) {
+          return -1;
+        }
+        if (a > b) {
+          return 1;
+        }
+        return 0;
+      });
+      const monthDiff = (dateFrom, dateTo) => {
+        return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
+      };
+      const length = monthDiff(moment(months[property][0]), moment(months[property][months[property].length - 1])) + 1;
+      let i;
+      let allMonths = [];
+      for (i = 0; i < length; i++) {
+        allMonths.push(moment(months[property][0]).add(i, "M").format("YYYY-MM"));
       }
-    });
-    months.sort(function (a, b) {
-      if (a < b) {
-        return -1;
-      }
-      if (a > b) {
-        return 1;
-      }
-      return 0;
-    });
-    const monthDiff = (dateFrom, dateTo) => {
-      return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
-    };
-    const length = monthDiff(moment(months[0]), moment(months[months.length - 1])) + 1;
-    let i;
-    let allMonths = [];
-    for (i = 0; i < length; i++) {
-      allMonths.push(moment(months[0]).add(i, "M").format("YYYY-MM"));
-    }
-    allMonths.sort(function (a, b) {
-      if (a < b) {
-        return -1;
-      }
-      if (a > b) {
-        return 1;
-      }
-      return 0;
-    });
-    months = [];
-    allMonths.forEach((month) => {
-      months.push(moment(month).format("MMM YY"));
+      allMonths.sort(function (a, b) {
+        if (a < b) {
+          return -1;
+        }
+        if (a > b) {
+          return 1;
+        }
+        return 0;
+      });
+      months[property] = [];
+      allMonths.forEach((month) => {
+        months[property].push(moment(month).format("MMM YY"));
+      });
+      this.props.profiles.forEach((profile) => {
+        profileCount[property][camelize(profile)] = [];
+      });
+      months[property].forEach((month) => {
+        let filteredSets = this.props.sets.filter((set) => {
+          if (set[property] && set[property].indexOf("Q") === -1) {
+            const setMonth = moment(set[property]).format("MMM YY");
+            return setMonth === month;
+          } else {
+            return false;
+          }
+        });
+        monthData[property][month] = {};
+        monthData[property][month].count = filteredSets.length;
+        countData[property].push(filteredSets.length);
+        this.props.profiles.forEach((profile) => {
+          const profileSets = filteredSets.filter((set) => {
+            return set.profile === profile;
+          });
+          profileCount[property][camelize(profile)].push(profileSets.length);
+          monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
+        });
+      });
+      this.props.profiles.forEach((profile) => {
+        profileCountData[property].push(profileCount[property][camelize(profile)]);
+      });
     });
     this.setState({
       months: months,
+      monthData: monthData,
+      countData: countData,
+      profileCount: profileCount,
+      profileCountData: profileCountData,
     });
   };
   setProfileChartType = (type) => {
@@ -88,52 +137,11 @@ export class ContentStatistics extends React.Component {
         this.forceUpdate();
       }, 400);
     }
-    if (this.props.statistics !== prevProps.statistics) {
-      this.createData();
-    }
   }
   render() {
-    function camelize(str) {
-      return str
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return index === 0 ? word.toLowerCase() : word.toUpperCase();
-        })
-        .replace(/\s+/g, "");
-    }
-    let monthData = {};
-    let countData = [];
-    let profileCount = {};
-    let profileCountData = [];
-    this.props.profiles.forEach((profile) => {
-      profileCount[camelize(profile)] = [];
-    });
-    this.state.months.forEach((month) => {
-      let filteredSets = this.props.sets.filter((set) => {
-        if (set[this.props.statistics] && set[this.props.statistics].indexOf("Q") === -1) {
-          const setMonth = moment(set[this.props.statistics]).format("MMM YY");
-          return setMonth === month;
-        } else {
-          return false;
-        }
-      });
-      monthData[month] = {};
-      monthData[month].count = filteredSets.length;
-      countData.push(filteredSets.length);
-      this.props.profiles.forEach((profile) => {
-        const profileSets = filteredSets.filter((set) => {
-          return set.profile === profile;
-        });
-        profileCount[camelize(profile)].push(profileSets.length);
-        monthData[month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
-      });
-    });
-
-    this.props.profiles.forEach((profile) => {
-      profileCountData.push(profileCount[camelize(profile)]);
-    });
     const countChartData = {
-      labels: this.state.months,
-      series: [countData],
+      labels: this.state.months[this.props.statistics],
+      series: [this.state.countData[this.props.statistics]],
     };
     const countChartOptions = {
       low: 0,
@@ -143,8 +151,8 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: this.state.months,
-      series: profileCountData,
+      labels: this.state.months[this.props.statistics],
+      series: this.state.profileCountData[this.props.statistics],
     };
 
     const profileChartOptions = {
@@ -265,17 +273,17 @@ export class ContentStatistics extends React.Component {
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
-                {this.state.months.map((month) => {
+                {this.state.months[this.props.statistics].map((month) => {
                   return (
                     <DataTableRow key={month}>
                       <DataTableCell className="right-border">{month}</DataTableCell>
                       <DataTableCell className="right-border" alignEnd>
-                        {monthData[month].count}
+                        {this.state.monthData[this.props.statistics][month].count}
                       </DataTableCell>
                       {this.props.profiles.map((profile, index) => {
                         return (
                           <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
-                            {monthData[month][camelize(profile)]}
+                            {this.state.monthData[this.props.statistics][month][camelize(profile)]}
                           </DataTableCell>
                         );
                       })}
