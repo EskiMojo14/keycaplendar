@@ -13,6 +13,7 @@ import { Ripple } from "@rmwc/ripple";
 import { Button } from "@rmwc/button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
+import { TabBar, Tab } from "@rmwc/tabs";
 import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal } from "./SearchBar";
@@ -101,26 +102,57 @@ export class DesktopAppBar extends React.Component {
     };
     const buttons =
       this.props.page === "statistics" ? (
-        <TopAppBarSection alignEnd>
-          <div className="toggle-group">
-            <Button
-              outlined
-              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("icDate");
-              }}
-              label="IC"
-            />
-            <Button
-              outlined
-              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("gbLaunch");
-              }}
-              label="GB"
-            />
-          </div>
-        </TopAppBarSection>
+        this.props.statisticsTab === "timeline" ? (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "icDate");
+                }}
+                label="IC"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "gbLaunch");
+                }}
+                label="GB"
+              />
+            </div>
+          </TopAppBarSection>
+        ) : (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "profile");
+                }}
+                label="Profile"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "designer");
+                }}
+                label="Designer"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "vendor");
+                }}
+                label="Vendor"
+              />
+            </div>
+          </TopAppBarSection>
+        )
       ) : (
         <TopAppBarSection alignEnd>
           <SearchBarPersistent search={this.props.search} setSearch={this.props.setSearch} sets={this.props.sets} />
@@ -167,6 +199,21 @@ export class DesktopAppBar extends React.Component {
           </MenuSurfaceAnchor>
         </TopAppBarSection>
       );
+    const tabs = ["timeline", "shipped"];
+    const statsTabs =
+      this.props.page === "statistics" ? (
+        <TopAppBarRow className="tab-row">
+          <TopAppBarSection alignStart>
+            <TabBar
+              activeTabIndex={tabs.indexOf(this.props.statisticsTab)}
+              onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
+            >
+              <Tab>Timeline</Tab>
+              <Tab>Shipped</Tab>
+            </TabBar>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -177,6 +224,7 @@ export class DesktopAppBar extends React.Component {
             </TopAppBarSection>
             {buttons}
           </TopAppBarRow>
+          {statsTabs}
           <LinearProgress closed={!this.props.loading} />
         </TopAppBar>
         <TopAppBarFixedAdjust />
@@ -273,30 +321,61 @@ export class TabletAppBar extends React.Component {
       previous: "Previous Sets",
       account: "Account",
       timeline: "Timeline",
-      statistics: "Statistics",
+      statistics: this.props.statisticsTab === "shipped" ? "" : "Statistics",
     };
     const buttons =
       this.props.page === "statistics" ? (
-        <TopAppBarSection alignEnd>
-          <div className="toggle-group">
-            <Button
-              outlined
-              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("icDate");
-              }}
-              label="IC"
-            />
-            <Button
-              outlined
-              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("gbLaunch");
-              }}
-              label="GB"
-            />
-          </div>
-        </TopAppBarSection>
+        this.props.statisticsTab === "timeline" ? (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "icDate");
+                }}
+                label="IC"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "gbLaunch");
+                }}
+                label="GB"
+              />
+            </div>
+          </TopAppBarSection>
+        ) : (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "profile");
+                }}
+                label="Profile"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "designer");
+                }}
+                label="Designer"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "vendor");
+                }}
+                label="Vendor"
+              />
+            </div>
+          </TopAppBarSection>
+        )
       ) : (
         <TopAppBarSection alignEnd>
           <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
@@ -354,6 +433,21 @@ export class TabletAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
+    const tabs = ["timeline", "shipped"];
+    const statsTabs =
+      this.props.page === "statistics" ? (
+        <TopAppBarRow className="tab-row">
+          <TopAppBarSection alignStart>
+            <TabBar
+              activeTabIndex={tabs.indexOf(this.props.statisticsTab)}
+              onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
+            >
+              <Tab>Timeline</Tab>
+              <Tab>Shipped</Tab>
+            </TabBar>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -364,6 +458,7 @@ export class TabletAppBar extends React.Component {
             </TopAppBarSection>
             {buttons}
           </TopAppBarRow>
+          {statsTabs}
           <LinearProgress closed={!this.props.loading} />
         </TopAppBar>
         <TopAppBarFixedAdjust />
@@ -471,30 +566,61 @@ export class MobileAppBar extends React.Component {
       previous: "Previous Sets",
       account: "Account",
       timeline: "Timeline",
-      statistics: "Statistics",
+      statistics: this.props.statisticsTab === "shipped" ? "" : "Statistics",
     };
     const buttons =
       this.props.page === "statistics" ? (
-        <TopAppBarSection alignEnd>
-          <div className="toggle-group">
-            <Button
-              outlined
-              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("icDate");
-              }}
-              label="IC"
-            />
-            <Button
-              outlined
-              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("gbLaunch");
-              }}
-              label="GB"
-            />
-          </div>
-        </TopAppBarSection>
+        this.props.statisticsTab === "timeline" ? (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "icDate");
+                }}
+                label="IC"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "gbLaunch");
+                }}
+                label="GB"
+              />
+            </div>
+          </TopAppBarSection>
+        ) : (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "profile");
+                }}
+                label="Profile"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "designer");
+                }}
+                label="Designer"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "vendor");
+                }}
+                label="Vendor"
+              />
+            </div>
+          </TopAppBarSection>
+        )
       ) : (
         <TopAppBarSection alignEnd className="actions">
           <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
@@ -563,6 +689,21 @@ export class MobileAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
+    const tabs = ["timeline", "shipped"];
+    const statsTabs =
+      this.props.page === "statistics" ? (
+        <TopAppBarRow className="tab-row">
+          <TopAppBarSection alignStart>
+            <TabBar
+              activeTabIndex={tabs.indexOf(this.props.statisticsTab)}
+              onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
+            >
+              <Tab>Timeline</Tab>
+              <Tab>Shipped</Tab>
+            </TabBar>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -573,6 +714,7 @@ export class MobileAppBar extends React.Component {
             </TopAppBarSection>
             {buttons}
           </TopAppBarRow>
+          {statsTabs}
           <LinearProgress closed={!this.props.loading} />
         </TopAppBar>
         <TopAppBarFixedAdjust />
@@ -675,26 +817,57 @@ export class BottomAppBar extends React.Component {
     }
     const buttons =
       this.props.page === "statistics" ? (
-        <TopAppBarSection alignEnd>
-          <div className="toggle-group">
-            <Button
-              outlined
-              className={this.props.statistics === "icDate" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("icDate");
-              }}
-              label="IC"
-            />
-            <Button
-              outlined
-              className={this.props.statistics === "gbLaunch" ? "mdc-button--selected" : ""}
-              onClick={() => {
-                this.props.setStatistics("gbLaunch");
-              }}
-              label="GB"
-            />
-          </div>
-        </TopAppBarSection>
+        this.props.statisticsTab === "timeline" ? (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "icDate");
+                }}
+                label="IC"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("timeline", "gbLaunch");
+                }}
+                label="GB"
+              />
+            </div>
+          </TopAppBarSection>
+        ) : (
+          <TopAppBarSection alignEnd>
+            <div className="toggle-group">
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "profile");
+                }}
+                label="Profile"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "designer");
+                }}
+                label="Designer"
+              />
+              <Button
+                outlined
+                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                onClick={() => {
+                  this.props.setStatistics("shipped", "vendor");
+                }}
+                label="Vendor"
+              />
+            </div>
+          </TopAppBarSection>
+        )
       ) : (
         <TopAppBarSection alignEnd className="actions">
           <MenuSurfaceAnchor className={this.props.page === "calendar" ? "hidden" : ""}>
@@ -763,9 +936,25 @@ export class BottomAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
+    const tabs = ["timeline", "shipped"];
+    const statsTabs =
+      this.props.page === "statistics" ? (
+        <TopAppBarRow className="tab-row">
+          <TopAppBarSection alignStart>
+            <TabBar
+              activeTabIndex={tabs.indexOf(this.props.statisticsTab)}
+              onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
+            >
+              <Tab>Timeline</Tab>
+              <Tab>Shipped</Tab>
+            </TabBar>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      ) : null;
     return (
       <div>
         <TopAppBar className="bottom-app-bar">
+          {statsTabs}
           <TopAppBarRow>
             <TopAppBarSection alignStart className="nav-icon">
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />

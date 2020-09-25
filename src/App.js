@@ -52,7 +52,8 @@ class App extends React.Component {
       manualTheme: false,
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
-      statistics: "gbLaunch",
+      statistics: { timeline: "gbLaunch", shipped: "profile" },
+      statisticsTab: "timeline",
     };
     this.changeView = this.changeView.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -554,7 +555,7 @@ class App extends React.Component {
           " " +
           set.colorway +
           " " +
-          set.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'') +
+          set.colorway.normalize("NFD").replace(/[^a-zA-Z0-9]/g, "") +
           " " +
           set.vendors.map((vendor) => {
             return " " + vendor.name + " " + vendor.region;
@@ -671,8 +672,14 @@ class App extends React.Component {
   setUser = (user) => {
     this.setState({ user: user });
   };
-  setStatistics = (prop) => {
-    this.setState({ statistics: prop });
+  setStatistics = (prop, query) => {
+    let objectCopy = this.state.statistics;
+    objectCopy[prop] = query;
+    this.setState({ statistics: objectCopy });
+  };
+  setStatisticsTab = (tab) => {
+    document.documentElement.scrollTop = 0;
+    this.setState({ statisticsTab: tab });
   };
   setWhitelist = (property, values) => {
     let whitelistCopy = this.state.whitelist;
@@ -804,6 +811,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsTab={this.state.statisticsTab}
+          setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}
         />
       );
@@ -848,6 +857,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsTab={this.state.statisticsTab}
+          setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}
         />
       );
@@ -894,6 +905,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsTab={this.state.statisticsTab}
+          setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}
         />
       );

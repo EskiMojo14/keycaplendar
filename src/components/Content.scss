@@ -4,6 +4,7 @@
 @import "@material/top-app-bar/variables";
 
 .mdc-drawer-app-content {
+  max-width: 100%;
   transition-property: margin;
   transition-timing-function: $mdc-animation-standard-curve-timing-function;
   .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
@@ -56,6 +57,7 @@
 
 .content-container {
   display: flex;
+  max-width: 100%;
   .drawer-container {
     flex-grow: 0;
     flex-shrink: 0;
@@ -78,6 +80,7 @@
   flex-direction: column;
   justify-content: stretch;
   min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+  max-width: 100%;
   .content-grid {
     flex-grow: 1;
     flex-shrink: 0;
@@ -181,6 +184,7 @@
 .app-container {
   display: flex;
   flex-direction: column;
+  max-width: 100%;
   .bottomNav {
     order: 999;
   }

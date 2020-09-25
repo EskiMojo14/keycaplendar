@@ -203,6 +203,9 @@ export class DesktopContent extends React.Component {
         sets={this.props.allSets}
         navOpen={this.state.navDrawerOpen}
         statistics={this.props.statistics}
+        statisticsTab={this.props.statisticsTab}
+        allDesigners={this.props.allDesigners}
+        allVendors={this.props.allVendors}
       />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
@@ -307,7 +310,7 @@ export class DesktopContent extends React.Component {
         </div>
       );
     return (
-      <div className={this.props.className}>
+      <div className={this.props.className + "app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           close={this.toggleNavDrawer}
@@ -336,6 +339,8 @@ export class DesktopContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsTab={this.props.statisticsTab}
+            setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
             <main
@@ -519,7 +524,14 @@ export class TabletContent extends React.Component {
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} statistics={this.props.statistics} />
+      <ContentStatistics
+        profiles={this.props.profiles}
+        sets={this.props.allSets}
+        statistics={this.props.statistics}
+        statisticsTab={this.props.statisticsTab}
+        allDesigners={this.props.allDesigners}
+        allVendors={this.props.allVendors}
+      />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
     ) : (
@@ -579,7 +591,7 @@ export class TabletContent extends React.Component {
         ""
       );
     return (
-      <div className={this.props.className}>
+      <div className={this.props.className + "app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -587,7 +599,7 @@ export class TabletContent extends React.Component {
           close={this.toggleNavDrawer}
           openSettings={this.openSettingsDialog}
         />
-        <DrawerAppContent>
+        <DrawerAppContent className={this.props.page === "statistics" ? "statistics" : ""}>
           <TabletAppBar
             page={this.props.page}
             loading={this.props.loading}
@@ -602,6 +614,8 @@ export class TabletContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsTab={this.props.statisticsTab}
+            setStatisticsTab={this.props.setStatisticsTab}
           />
           <main
             className={
@@ -820,7 +834,14 @@ export class MobileContent extends React.Component {
         detailSet={this.state.detailSet}
       />
     ) : this.props.page === "statistics" ? (
-      <ContentStatistics profiles={this.props.profiles} sets={this.props.allSets} statistics={this.props.statistics} />
+      <ContentStatistics
+        profiles={this.props.profiles}
+        sets={this.props.allSets}
+        statistics={this.props.statistics}
+        statisticsTab={this.props.statisticsTab}
+        allDesigners={this.props.allDesigners}
+        allVendors={this.props.allVendors}
+      />
     ) : this.props.failed ? (
       <ContentFailed getData={this.props.getData} />
     ) : (
@@ -884,7 +905,7 @@ export class MobileContent extends React.Component {
         ""
       );
     const nav = this.props.bottomNav ? (
-      <div className="bottomNav">
+      <div className={"bottomNav" + (this.props.page === "statistics" ? " statistics " : "")}>
         <BottomDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -903,8 +924,6 @@ export class MobileContent extends React.Component {
             sort={this.props.sort}
             setSort={this.props.setSort}
             openSearch={this.openSearchBar}
-            statistics={this.props.statistics}
-            setStatistics={this.props.setStatistics}
           />
         ) : (
           <BottomAppBar
@@ -921,11 +940,13 @@ export class MobileContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsTab={this.props.statisticsTab}
+            setStatisticsTab={this.props.setStatisticsTab}
           />
         )}
       </div>
     ) : (
-      <div>
+      <div className={this.props.page === "statistics" ? "statistics" : ""}>
         <MobileDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -947,6 +968,8 @@ export class MobileContent extends React.Component {
           sets={this.props.sets}
           statistics={this.props.statistics}
           setStatistics={this.props.setStatistics}
+          statisticsTab={this.props.statisticsTab}
+          setStatisticsTab={this.props.setStatisticsTab}
         />
       </div>
     );

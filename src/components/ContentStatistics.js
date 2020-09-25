@@ -34,6 +34,20 @@ export class ContentStatistics extends React.Component {
       profileCount: { icDate: {}, gbLaunch: {} },
       profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
+      shippedData: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
       focused: "",
     };
   }
@@ -44,6 +58,23 @@ export class ContentStatistics extends React.Component {
     let countData = { icDate: [], gbLaunch: [] };
     let profileCount = { icDate: {}, gbLaunch: {} };
     let profileCountData = { icDate: [], gbLaunch: [] };
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    let shippedData = {
+      profile: {
+        names: [],
+        data: [],
+      },
+      designer: {
+        names: [],
+        data: [],
+      },
+      vendor: {
+        names: [],
+        data: [],
+      },
+    };
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
         if (set[property] && set[property].indexOf("Q") === -1) {
@@ -111,12 +142,83 @@ export class ContentStatistics extends React.Component {
         profileCountData[property].push(profileCount[property][camelize(profile)]);
       });
     });
+    const pastSets = this.props.sets.filter((set) => {
+      const endDate = new Date(set.gbEnd);
+      endDate.setHours(23);
+      endDate.setMinutes(59);
+      endDate.setSeconds(59);
+      endDate.setMilliseconds(999);
+      return endDate <= yesterday;
+    });
+    pastSets.forEach((set) => {
+      if (shippedData.profile.names.indexOf(set.profile) === -1) {
+        shippedData.profile.names.push(set.profile);
+      }
+      set.designer.forEach((designer) => {
+        if (shippedData.designer.names.indexOf(designer) === -1) {
+          shippedData.designer.names.push(designer);
+        }
+      });
+      set.vendors.forEach((vendor) => {
+        if (shippedData.vendor.names.indexOf(vendor.name) === -1) {
+          shippedData.vendor.names.push(vendor.name);
+        }
+      });
+    });
+    Object.keys(shippedData).forEach((prop) => {
+      shippedData[prop].names.sort(function (a, b) {
+        var x = a.toLowerCase();
+        var y = b.toLowerCase();
+        if (x < y) {
+          return -1;
+        }
+        if (x > y) {
+          return 1;
+        }
+        return 0;
+      });
+      shippedData[prop].names.forEach((name) => {
+        const shippedSets = pastSets.filter((set) => {
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && set.shipped === true;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && set.shipped === true ? true : false;
+          } else {
+            return set[prop] === name && set.shipped === true ? true : false;
+          }
+        });
+        const unshippedSets = pastSets.filter((set) => {
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && set.shipped !== true;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && set.shipped !== true ? true : false;
+          } else {
+            return set[prop] === name && set.shipped !== true ? true : false;
+          }
+        });
+        shippedData[prop].data.push([
+          shippedSets.length,
+          unshippedSets.length,
+          shippedSets.length + unshippedSets.length,
+        ]);
+      });
+    });
+    console.log(shippedData);
     this.setState({
       months: months,
       monthData: monthData,
       countData: countData,
       profileCount: profileCount,
       profileCountData: profileCountData,
+      shippedData: shippedData,
     });
   };
   setProfileChartType = (type) => {
@@ -141,8 +243,8 @@ export class ContentStatistics extends React.Component {
   }
   render() {
     const countChartData = {
-      labels: this.state.months[this.props.statistics],
-      series: [this.state.countData[this.props.statistics]],
+      labels: this.state.months[this.props.statistics.timeline],
+      series: [this.state.countData[this.props.statistics.timeline]],
     };
     const countChartOptions = {
       low: 0,
@@ -152,8 +254,8 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: this.state.months[this.props.statistics],
-      series: this.state.profileCountData[this.props.statistics],
+      labels: this.state.months[this.props.statistics.timeline],
+      series: this.state.profileCountData[this.props.statistics.timeline],
     };
 
     const profileChartOptions = {
@@ -183,120 +285,184 @@ export class ContentStatistics extends React.Component {
         />
       ) : null;
     return (
-      <div className="stats-grid">
-        <Card className="count-graph">
-          <Typography use="headline5" tag="h1">
-            Sets per Month
-          </Typography>
-          <div className="graph-container">
-            <ChartistGraph
-              className="ct-double-octave"
-              data={countChartData}
-              options={countChartOptions}
-              type={"Line"}
-            />
-          </div>
-          <Typography use="caption" tag="p">
-            Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
-            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
-          </Typography>
-        </Card>
-        <Card className="profile-graph">
-          <div className="title-container">
+      <div className={"tab-container " + this.props.statisticsTab}>
+        <div className="stats-grid">
+          <Card className="count-graph">
             <Typography use="headline5" tag="h1">
-              Profile Breakdown
+              Sets per Month
             </Typography>
-            <div className="toggle-group">
-              <Button
-                outlined
-                icon={{
-                  strategy: "component",
-                  icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                    </svg>
-                  ),
-                }}
-                className={this.state.profileChartType === "bar" ? "mdc-button--selected" : ""}
-                onClick={() => {
-                  this.setProfileChartType("bar");
-                }}
-              />
-              <Button
-                outlined
-                icon={{
-                  strategy: "component",
-                  icon: (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                    </svg>
-                  ),
-                }}
-                className={this.state.profileChartType === "line" ? "mdc-button--selected" : ""}
-                onClick={() => {
-                  this.setProfileChartType("line");
-                }}
+            <div className="graph-container">
+              <ChartistGraph
+                className="ct-double-octave"
+                data={countChartData}
+                options={countChartOptions}
+                type={"Line"}
               />
             </div>
-          </div>
-          <div
-            className={"graph-container" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}
-          >
-            {barGraph}
-            {lineGraph}
-          </div>
-        </Card>
-        <Card className={"fullwidth" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}>
-          <DataTable>
-            <DataTableContent>
-              <DataTableHead>
-                <DataTableRow>
-                  <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
-                  <DataTableHeadCell className="right-border" alignEnd>
-                    Sets
-                  </DataTableHeadCell>
-                  {this.props.profiles.map((profile, index) => {
+            <Typography use="caption" tag="p">
+              Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
+              included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
+            </Typography>
+          </Card>
+          <Card className="profile-graph">
+            <div className="title-container">
+              <Typography use="headline5" tag="h1">
+                Profile Breakdown
+              </Typography>
+              <div className="toggle-group">
+                <Button
+                  outlined
+                  icon={{
+                    strategy: "component",
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
+                      </svg>
+                    ),
+                  }}
+                  className={this.state.profileChartType === "bar" ? "mdc-button--selected" : ""}
+                  onClick={() => {
+                    this.setProfileChartType("bar");
+                  }}
+                />
+                <Button
+                  outlined
+                  icon={{
+                    strategy: "component",
+                    icon: (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                      </svg>
+                    ),
+                  }}
+                  className={this.state.profileChartType === "line" ? "mdc-button--selected" : ""}
+                  onClick={() => {
+                    this.setProfileChartType("line");
+                  }}
+                />
+              </div>
+            </div>
+            <div
+              className={"graph-container" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}
+            >
+              {barGraph}
+              {lineGraph}
+            </div>
+          </Card>
+          <Card className={"fullwidth" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}>
+            <DataTable>
+              <DataTableContent>
+                <DataTableHead>
+                  <DataTableRow>
+                    <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
+                    <DataTableHeadCell className="right-border" alignEnd>
+                      Sets
+                    </DataTableHeadCell>
+                    {this.props.profiles.map((profile, index) => {
+                      return (
+                        <Ripple key={profile}>
+                          <DataTableHeadCell
+                            alignEnd
+                            className={"profile-title title-" + letters[index]}
+                            onClick={() => {
+                              this.setFocus(letters[index]);
+                            }}
+                          >
+                            {profile}
+                            <div className="profile-indicator"></div>
+                          </DataTableHeadCell>
+                        </Ripple>
+                      );
+                    })}
+                  </DataTableRow>
+                </DataTableHead>
+                <DataTableBody>
+                  {this.state.months[this.props.statistics.timeline].map((month) => {
                     return (
-                      <Ripple key={profile}>
-                        <DataTableHeadCell
-                          alignEnd
-                          className={"profile-title title-" + letters[index]}
-                          onClick={() => {
-                            this.setFocus(letters[index]);
-                          }}
-                        >
-                          {profile}
-                          <div className="profile-indicator"></div>
-                        </DataTableHeadCell>
-                      </Ripple>
+                      <DataTableRow key={month}>
+                        <DataTableCell className="right-border">{month}</DataTableCell>
+                        <DataTableCell className="right-border" alignEnd>
+                          {this.state.monthData[this.props.statistics.timeline][month].count}
+                        </DataTableCell>
+                        {this.props.profiles.map((profile, index) => {
+                          return (
+                            <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
+                              {this.state.monthData[this.props.statistics.timeline][month][camelize(profile)]}
+                            </DataTableCell>
+                          );
+                        })}
+                      </DataTableRow>
                     );
                   })}
-                </DataTableRow>
-              </DataTableHead>
-              <DataTableBody>
-                {this.state.months[this.props.statistics].map((month) => {
-                  return (
-                    <DataTableRow key={month}>
-                      <DataTableCell className="right-border">{month}</DataTableCell>
-                      <DataTableCell className="right-border" alignEnd>
-                        {this.state.monthData[this.props.statistics][month].count}
-                      </DataTableCell>
-                      {this.props.profiles.map((profile, index) => {
-                        return (
-                          <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
-                            {this.state.monthData[this.props.statistics][month][camelize(profile)]}
-                          </DataTableCell>
-                        );
-                      })}
-                    </DataTableRow>
-                  );
-                })}
-              </DataTableBody>
-            </DataTableContent>
-          </DataTable>
-        </Card>
+                </DataTableBody>
+              </DataTableContent>
+            </DataTable>
+          </Card>
+        </div>
+        <div className="stats-grid shipped">
+          {this.state.shippedData[this.props.statistics.shipped].names.map((name, index) => {
+            return (
+              <Card key={index} className="shipped-card">
+                <Typography use="headline5" tag="h1">
+                  {name}
+                </Typography>
+                <div className="shipped-container">
+                  <div className="table-container">
+                    <DataTable>
+                      <DataTableContent>
+                        <DataTableHead>
+                          <DataTableRow>
+                            <DataTableHeadCell>Status</DataTableHeadCell>
+                            <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
+                          </DataTableRow>
+                        </DataTableHead>
+                        <DataTableBody>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator shipped"></div>Shipped
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.shippedData[this.props.statistics.shipped].data[index][0]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator not-shipped"></div>Not shipped
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.shippedData[this.props.statistics.shipped].data[index][1]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell className="bold">Total</DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.shippedData[this.props.statistics.shipped].data[index][2]}
+                            </DataTableCell>
+                          </DataTableRow>
+                        </DataTableBody>
+                      </DataTableContent>
+                    </DataTable>
+                  </div>
+                  <div className="pie-container">
+                    <ChartistGraph
+                      className="ct-square"
+                      data={{
+                        series: [
+                          this.state.shippedData[this.props.statistics.shipped].data[index][1],
+                          this.state.shippedData[this.props.statistics.shipped].data[index][0],
+                        ],
+                        labels: [" ", " "],
+                      }}
+                      type={"Pie"}
+                    />
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     );
   }

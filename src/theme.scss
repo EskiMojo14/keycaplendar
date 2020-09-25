@@ -15,7 +15,8 @@
 @import "@material/textfield/mixins";
 @import "@material/textfield/icon/mixins";
 @import "@material/textfield/helper-text/mixins";
-
+@import "@material/tab/mixins";
+@import "@material/tab-indicator/mixins";
 @import "@material/theme/color-palette";
 
 $overlay-values: (
@@ -487,7 +488,19 @@ $overlay-values: (
       background-color: map-get($variables, primary);
     }
   }
-
+  .mdc-tab-bar {
+    .mdc-tab {
+      @include mdc-tab-text-label-color(map-get($variables, text-secondary));
+      @include mdc-tab-icon-color(map-get($variables, text-secondary));
+      @include mdc-tab-states-color(map-get($variables, on-surface));
+      @include mdc-tab-active-text-label-color(map-get($variables, primary));
+      @include mdc-tab-active-icon-color(map-get($variables, primary));
+      @include mdc-tab-active-states-color(map-get($variables, primary));
+      .mdc-tab-indicator {
+        @include mdc-tab-indicator-underline-color(map-get($variables, primary))
+      }
+    }
+  }
   .mdc-top-app-bar {
     @include mdc-top-app-bar-fill-color(
       if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary))
@@ -500,8 +513,6 @@ $overlay-values: (
       .mdc-linear-progress__bar-inner {
         background-color: map-get($variables, secondary);
       }
-    }
-    @if ($dark == false) {
       .toggle-group {
         .mdc-button {
           @include mdc-button-ink-color(rgba(map-get($variables, on-primary), 0.6));
@@ -514,6 +525,19 @@ $overlay-values: (
           }
           &:disabled {
             color: map-get($variables, text-disabled);
+          }
+        }
+      }
+      .mdc-tab-bar {
+        .mdc-tab {
+          @include mdc-tab-text-label-color(rgba(map-get($variables, on-primary), 0.6));
+          @include mdc-tab-icon-color(rgba(map-get($variables, on-primary), 0.6));
+          @include mdc-tab-states-color(map-get($variables, on-primary));
+          @include mdc-tab-active-text-label-color(map-get($variables, on-primary));
+          @include mdc-tab-active-icon-color(map-get($variables, on-primary));
+          @include mdc-tab-active-states-color(map-get($variables, on-primary));
+          .mdc-tab-indicator {
+            @include mdc-tab-indicator-underline-color(map-get($variables, on-primary))
           }
         }
       }
@@ -753,6 +777,26 @@ $overlay-values: (
       .ct-area {
         fill: map-get($variables, secondary);
       }
+    }
+  }
+  .shipped-card {
+    .ct-chart {
+      .ct-series.ct-series-b {
+        .ct-point,
+        .ct-line,
+        .ct-bar,
+        .ct-slice-donut {
+          stroke: map-get($variables, primary);
+        }
+        .ct-slice-pie,
+        .ct-donut-solid,
+        .ct-area {
+          fill: map-get($variables, primary);
+        }
+      }
+    }
+    .indicator.shipped {
+      background-color: map-get($variables, primary);
     }
   }
   .autocomplete-mobile {

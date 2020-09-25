@@ -14,6 +14,15 @@
   &__title {
     user-select: none;
   }
+  &__row.tab-row {
+    height: 48px;
+    .mdc-top-app-bar__section {
+      padding: 0;
+      .mdc-tab-bar {
+        width: auto;
+      }
+    }
+  }
   .svg-container {
     position: relative;
     @include mdc-ripple-surface;
@@ -24,7 +33,7 @@
   }
   .mdc-linear-progress {
     position: absolute;
-    bottom: 0;
+    top: $mdc-top-app-bar-row-height - 4px;
     z-index: 4;
     .mdc-linear-progress__buffering-dots {
       display: none;
@@ -91,6 +100,10 @@
       display: flex;
     }
   }
+  .mdc-linear-progress {
+    top: auto;
+    bottom: 0;
+  }
 }
 
 @media (min-width: 600px) {
@@ -110,4 +123,23 @@
       margin-right: 12px;
     }
   }
+  .mdc-linear-progress {
+    top: $mdc-top-app-bar-mobile-row-height - 4px;
+  }
+
+  .statistics .mdc-top-app-bar--fixed-adjust {
+    padding-top: $mdc-top-app-bar-mobile-row-height + 48px;
+  }
+}
+
+@media (max-width: 839px) {
+  .mdc-top-app-bar {
+    &__row.tab-row .mdc-top-app-bar__section .mdc-tab-bar {
+      width: 100%;
+    }
+  }
+}
+
+.statistics .mdc-top-app-bar--fixed-adjust {
+  padding-top: $mdc-top-app-bar-row-height + 48px;
 }
