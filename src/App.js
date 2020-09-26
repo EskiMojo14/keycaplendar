@@ -52,7 +52,7 @@ class App extends React.Component {
       manualTheme: false,
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
-      statistics: { timeline: "gbLaunch", shipped: "profile" },
+      statistics: { timeline: "gbLaunch", status: "profile", shipped: "profile" },
       statisticsTab: "timeline",
     };
     this.changeView = this.changeView.bind(this);
