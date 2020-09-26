@@ -34,6 +34,20 @@ export class ContentStatistics extends React.Component {
       profileCount: { icDate: {}, gbLaunch: {} },
       profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
+      statusData: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
       shippedData: {
         profile: {
           names: [],
@@ -61,6 +75,20 @@ export class ContentStatistics extends React.Component {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
+    let statusData = {
+      profile: {
+        names: [],
+        data: [],
+      },
+      designer: {
+        names: [],
+        data: [],
+      },
+      vendor: {
+        names: [],
+        data: [],
+      },
+    };
     let shippedData = {
       profile: {
         names: [],
@@ -75,6 +103,7 @@ export class ContentStatistics extends React.Component {
         data: [],
       },
     };
+    //timeline
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
         if (set[property] && set[property].indexOf("Q") === -1) {
@@ -142,6 +171,110 @@ export class ContentStatistics extends React.Component {
         profileCountData[property].push(profileCount[property][camelize(profile)]);
       });
     });
+    //status
+    this.props.sets.forEach((set) => {
+      if (statusData.profile.names.indexOf(set.profile) === -1) {
+        statusData.profile.names.push(set.profile);
+      }
+      set.designer.forEach((designer) => {
+        if (statusData.designer.names.indexOf(designer) === -1) {
+          statusData.designer.names.push(designer);
+        }
+      });
+      set.vendors.forEach((vendor) => {
+        if (statusData.vendor.names.indexOf(vendor.name) === -1) {
+          statusData.vendor.names.push(vendor.name);
+        }
+      });
+    });
+    Object.keys(statusData).forEach((prop) => {
+      statusData[prop].names.sort(function (a, b) {
+        var x = a.toLowerCase();
+        var y = b.toLowerCase();
+        if (x < y) {
+          return -1;
+        }
+        if (x > y) {
+          return 1;
+        }
+        return 0;
+      });
+      statusData[prop].names.forEach((name) => {
+        const icSets = this.props.sets.filter((set) => {
+          const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
+          const isIC = !startDate || startDate === "" || set.gbLaunch.includes("Q");
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isIC;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && isIC ? true : false;
+          } else {
+            return set[prop] === name && isIC ? true : false;
+          }
+        });
+        const preGbSets = this.props.sets.filter((set) => {
+          const startDate = new Date(set.gbLaunch);
+          const isPreGb = startDate > today;
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isPreGb;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && isPreGb ? true : false;
+          } else {
+            return set[prop] === name && isPreGb ? true : false;
+          }
+        });
+        const liveGbSets = this.props.sets.filter((set) => {
+          const startDate = new Date(set.gbLaunch);
+          const endDate = new Date(set.gbEnd);
+          const isLiveGb = startDate <= today && (endDate >= yesterday || set.gbEnd === "");
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isLiveGb;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && isLiveGb ? true : false;
+          } else {
+            return set[prop] === name && isLiveGb ? true : false;
+          }
+        });
+        const postGbSets = this.props.sets.filter((set) => {
+          const endDate = new Date(set.gbEnd);
+          endDate.setHours(23);
+          endDate.setMinutes(59);
+          endDate.setSeconds(59);
+          endDate.setMilliseconds(999);
+          const isPostGb = endDate <= yesterday;
+          if (prop === "vendor") {
+            return set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isPostGb;
+            }) !== -1
+              ? true
+              : false;
+          } else if (prop === "designer") {
+            return set.designer.indexOf(name) !== -1 && isPostGb ? true : false;
+          } else {
+            return set[prop] === name && isPostGb ? true : false;
+          }
+        });
+        statusData[prop].data.push([
+          icSets.length,
+          preGbSets.length,
+          liveGbSets.length,
+          postGbSets.length,
+          icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
+        ]);
+      });
+    });
+    //shipped
     const pastSets = this.props.sets.filter((set) => {
       const endDate = new Date(set.gbEnd);
       endDate.setHours(23);
@@ -211,13 +344,13 @@ export class ContentStatistics extends React.Component {
         ]);
       });
     });
-    console.log(shippedData);
     this.setState({
       months: months,
       monthData: monthData,
       countData: countData,
       profileCount: profileCount,
       profileCountData: profileCountData,
+      statusData: statusData,
       shippedData: shippedData,
     });
   };
@@ -286,7 +419,7 @@ export class ContentStatistics extends React.Component {
       ) : null;
     return (
       <div className={"tab-container " + this.props.statisticsTab}>
-        <div className="stats-grid timeline">
+        <div className="stats-tab timeline">
           <Card className="count-graph">
             <Typography use="headline5" tag="h1">
               Sets per Month
@@ -401,14 +534,94 @@ export class ContentStatistics extends React.Component {
             </DataTable>
           </Card>
         </div>
-        <div className="stats-grid shipped">
-          {this.state.shippedData[this.props.statistics.shipped].names.map((name, index) => {
+        <div className="stats-tab stats-grid status">
+          {this.state.statusData[this.props.statistics.status].names.map((name, index) => {
             return (
-              <Card key={index} className="shipped-card">
+              <Card key={index} className="pie-card">
                 <Typography use="headline5" tag="h1">
                   {name}
                 </Typography>
-                <div className="shipped-container">
+                <div className="pie-container">
+                  <div className="table-container">
+                    <DataTable>
+                      <DataTableContent>
+                        <DataTableHead>
+                          <DataTableRow>
+                            <DataTableHeadCell>Status</DataTableHeadCell>
+                            <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
+                          </DataTableRow>
+                        </DataTableHead>
+                        <DataTableBody>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator ic"></div>IC
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.statusData[this.props.statistics.status].data[index][0]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator pre-gb"></div>Pre GB
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.statusData[this.props.statistics.status].data[index][1]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator live-gb"></div>Live GB
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.statusData[this.props.statistics.status].data[index][2]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell>
+                              <div className="indicator post-gb"></div>Post GB
+                            </DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.statusData[this.props.statistics.status].data[index][3]}
+                            </DataTableCell>
+                          </DataTableRow>
+                          <DataTableRow>
+                            <DataTableCell className="bold">Total</DataTableCell>
+                            <DataTableCell alignEnd>
+                              {this.state.statusData[this.props.statistics.status].data[index][4]}
+                            </DataTableCell>
+                          </DataTableRow>
+                        </DataTableBody>
+                      </DataTableContent>
+                    </DataTable>
+                  </div>
+                  <div className="pie-chart-container status">
+                    <ChartistGraph
+                      className="ct-octave"
+                      data={{
+                        series: [
+                          this.state.statusData[this.props.statistics.status].data[index][0],
+                          this.state.statusData[this.props.statistics.status].data[index][1],
+                          this.state.statusData[this.props.statistics.status].data[index][2],
+                          this.state.statusData[this.props.statistics.status].data[index][3],
+                        ],
+                        labels: [" ", " ", " ", " "],
+                      }}
+                      type={"Pie"}
+                    />
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+        <div className="stats-tab stats-grid shipped">
+          {this.state.shippedData[this.props.statistics.shipped].names.map((name, index) => {
+            return (
+              <Card key={index} className="pie-card">
+                <Typography use="headline5" tag="h1">
+                  {name}
+                </Typography>
+                <div className="pie-container">
                   <div className="table-container">
                     <DataTable>
                       <DataTableContent>
@@ -445,7 +658,7 @@ export class ContentStatistics extends React.Component {
                       </DataTableContent>
                     </DataTable>
                   </div>
-                  <div className="pie-container">
+                  <div className="pie-chart-container shipped">
                     <ChartistGraph
                       className="ct-octave"
                       data={{

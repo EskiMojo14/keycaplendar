@@ -2,7 +2,7 @@
 @import "@material/ripple/mdc-ripple";
 @import "@material/animation/variables";
 
-.stats-grid {
+.stats-tab {
   padding: 16px;
   margin: 0 auto;
   max-width: 2000px;
@@ -113,15 +113,12 @@
       }
     }
   }
-  &.shipped {
+  &.stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 16px;
     .mdc-card {
       margin: 0;
-      &.full-span {
-        grid-column: span 4;
-      }
     }
   }
 }
@@ -132,27 +129,63 @@
   max-width: 100%;
   align-items: flex-start;
   &.timeline {
-    .stats-grid.shipped {
+    .stats-tab.status, .stats-tab.shipped {
+      max-height: 100vh;
+    }
+  }
+  &.status {
+    .stats-tab {
+      transform: translateX(-100%);
+    }
+    .stats-tab.timeline, .stats-tab.shipped {
       max-height: 100vh;
     }
   }
   &.shipped {
-    .stats-grid {
-      transform: translateX(-100%);
+    .stats-tab {
+      transform: translateX(-200%);
     }
-    .stats-grid.timeline {
+    .stats-tab.timeline, .stats-tab.status {
       max-height: 100vh;
     }
   }
 }
 
-.shipped-card {
-  .shipped-container {
+.pie-card {
+  .pie-container {
     display: flex;
     flex-direction: column;
-    .pie-container {
-      .ct-chart {
+    .pie-chart-container {
+      &.shipped .ct-chart {
         .ct-series {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+      &.status .ct-chart {
+        .ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--lighter-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--lighter-color);
+          }
+        }
+        .ct-series-b {
           .ct-point,
           .ct-line,
           .ct-bar,
@@ -186,8 +219,11 @@
               left: 0;
               top: 0;
               bottom: 0;
-              &.not-shipped {
+              &.not-shipped, &.pre-gb {
                 background-color: var(--divider-color);
+              }
+              &.ic {
+                background-color: var(--lighter-color);
               }
             }
           }
@@ -198,7 +234,7 @@
 }
 
 @media (max-width: 1199px) {
-  .stats-grid.shipped {
+  .stats-tab.stats-grid {
     grid-template-columns: repeat(3, 1fr);
     .mdc-card.full-span {
       grid-column: span 3;
@@ -207,7 +243,7 @@
 }
 
 @media (max-width: 839px) {
-  .stats-grid.shipped {
+  .stats-tab.stats-grid {
     grid-template-columns: repeat(2, 1fr);
     .mdc-card.full-span {
       grid-column: span 2;
@@ -216,19 +252,9 @@
 }
 
 @media (max-width: 479px) {
-  .stats-grid.shipped {
+  .stats-tab.stats-grid {
     grid-template-columns: repeat(1, 1fr);
     .mdc-card.full-span {
-      grid-column: span 1;
-    }
-  }
-}
-
-@media (max-width: 1080px) {
-  .stats-grid {
-    grid-template-columns: minmax(0, 1fr);
-    .mdc-card,
-    .mdc-card.fullwidth {
       grid-column: span 1;
     }
   }

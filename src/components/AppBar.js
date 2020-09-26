@@ -128,25 +128,25 @@ export class DesktopAppBar extends React.Component {
             <div className="toggle-group">
               <Button
                 outlined
-                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "profile" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "profile");
+                  this.props.setStatistics(this.props.statisticsTab, "profile");
                 }}
                 label="Profile"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "designer" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "designer");
+                  this.props.setStatistics(this.props.statisticsTab, "designer");
                 }}
                 label="Designer"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "vendor" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "vendor");
+                  this.props.setStatistics(this.props.statisticsTab, "vendor");
                 }}
                 label="Vendor"
               />
@@ -199,7 +199,7 @@ export class DesktopAppBar extends React.Component {
           </MenuSurfaceAnchor>
         </TopAppBarSection>
       );
-    const tabs = ["timeline", "shipped"];
+    const tabs = ["timeline","status","shipped"];
     const statsTabs =
       this.props.page === "statistics" ? (
         <TopAppBarRow className="tab-row">
@@ -209,6 +209,7 @@ export class DesktopAppBar extends React.Component {
               onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
             >
               <Tab>Timeline</Tab>
+              <Tab>Status</Tab>
               <Tab>Shipped</Tab>
             </TabBar>
           </TopAppBarSection>
@@ -321,7 +322,7 @@ export class TabletAppBar extends React.Component {
       previous: "Previous Sets",
       account: "Account",
       timeline: "Timeline",
-      statistics: this.props.statisticsTab === "shipped" ? "" : "Statistics",
+      statistics: this.props.statisticsTab !== "timeline" ? "" : "Statistics",
     };
     const buttons =
       this.props.page === "statistics" ? (
@@ -351,25 +352,25 @@ export class TabletAppBar extends React.Component {
             <div className="toggle-group">
               <Button
                 outlined
-                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "profile" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "profile");
+                  this.props.setStatistics(this.props.statisticsTab, "profile");
                 }}
                 label="Profile"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "designer" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "designer");
+                  this.props.setStatistics(this.props.statisticsTab, "designer");
                 }}
                 label="Designer"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "vendor" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "vendor");
+                  this.props.setStatistics(this.props.statisticsTab, "vendor");
                 }}
                 label="Vendor"
               />
@@ -433,7 +434,7 @@ export class TabletAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
-    const tabs = ["timeline", "shipped"];
+    const tabs = ["timeline","status","shipped"];
     const statsTabs =
       this.props.page === "statistics" ? (
         <TopAppBarRow className="tab-row">
@@ -443,6 +444,7 @@ export class TabletAppBar extends React.Component {
               onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
             >
               <Tab>Timeline</Tab>
+              <Tab>Status</Tab>
               <Tab>Shipped</Tab>
             </TabBar>
           </TopAppBarSection>
@@ -566,7 +568,7 @@ export class MobileAppBar extends React.Component {
       previous: "Previous Sets",
       account: "Account",
       timeline: "Timeline",
-      statistics: this.props.statisticsTab === "shipped" ? "" : "Statistics",
+      statistics: this.props.statisticsTab !== "timeline" ? "" : "Statistics",
     };
     const buttons =
       this.props.page === "statistics" ? (
@@ -596,25 +598,25 @@ export class MobileAppBar extends React.Component {
             <div className="toggle-group">
               <Button
                 outlined
-                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "profile" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "profile");
+                  this.props.setStatistics(this.props.statisticsTab, "profile");
                 }}
                 label="Profile"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "designer" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "designer");
+                  this.props.setStatistics(this.props.statisticsTab, "designer");
                 }}
                 label="Designer"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "vendor" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "vendor");
+                  this.props.setStatistics(this.props.statisticsTab, "vendor");
                 }}
                 label="Vendor"
               />
@@ -689,7 +691,7 @@ export class MobileAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
-    const tabs = ["timeline", "shipped"];
+    const tabs = ["timeline","status","shipped"];
     const statsTabs =
       this.props.page === "statistics" ? (
         <TopAppBarRow className="tab-row">
@@ -699,6 +701,7 @@ export class MobileAppBar extends React.Component {
               onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
             >
               <Tab>Timeline</Tab>
+              <Tab>Status</Tab>
               <Tab>Shipped</Tab>
             </TabBar>
           </TopAppBarSection>
@@ -843,25 +846,25 @@ export class BottomAppBar extends React.Component {
             <div className="toggle-group">
               <Button
                 outlined
-                className={this.props.statistics.shipped === "profile" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "profile" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "profile");
+                  this.props.setStatistics(this.props.statisticsTab, "profile");
                 }}
                 label="Profile"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "designer" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "designer" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "designer");
+                  this.props.setStatistics(this.props.statisticsTab, "designer");
                 }}
                 label="Designer"
               />
               <Button
                 outlined
-                className={this.props.statistics.shipped === "vendor" ? "mdc-button--selected" : ""}
+                className={this.props.statistics[this.props.statisticsTab] === "vendor" ? "mdc-button--selected" : ""}
                 onClick={() => {
-                  this.props.setStatistics("shipped", "vendor");
+                  this.props.setStatistics(this.props.statisticsTab, "vendor");
                 }}
                 label="Vendor"
               />
@@ -936,7 +939,7 @@ export class BottomAppBar extends React.Component {
           </div>
         </TopAppBarSection>
       );
-    const tabs = ["timeline", "shipped"];
+    const tabs = ["timeline","status","shipped"];
     const statsTabs =
       this.props.page === "statistics" ? (
         <TopAppBarRow className="tab-row">
@@ -946,6 +949,7 @@ export class BottomAppBar extends React.Component {
               onActivate={(e) => this.props.setStatisticsTab(tabs[e.detail.index])}
             >
               <Tab>Timeline</Tab>
+              <Tab>Status</Tab>
               <Tab>Shipped</Tab>
             </TabBar>
           </TopAppBarSection>

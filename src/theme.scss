@@ -779,24 +779,59 @@ $overlay-values: (
       }
     }
   }
-  .shipped-card {
-    .ct-chart {
-      .ct-series.ct-series-b {
-        .ct-point,
-        .ct-line,
-        .ct-bar,
-        .ct-slice-donut {
-          stroke: map-get($variables, primary);
+  .pie-card {
+    .pie-chart-container {
+      &.status .ct-chart {
+        .ct-series.ct-series-c {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, secondary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, secondary);
+          }
         }
-        .ct-slice-pie,
-        .ct-donut-solid,
-        .ct-area {
-          fill: map-get($variables, primary);
+        .ct-series.ct-series-d {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, primary);
+          }
+        }
+      }
+      &.shipped .ct-chart {
+        .ct-series.ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, primary);
+          }
         }
       }
     }
-    .indicator.shipped {
-      background-color: map-get($variables, primary);
+    .indicator {
+      &.shipped, &.post-gb {
+        background-color: map-get($variables, primary);
+      }
+      &.live-gb {
+        background-color: map-get($variables, secondary);
+      }
     }
   }
   .autocomplete-mobile {
