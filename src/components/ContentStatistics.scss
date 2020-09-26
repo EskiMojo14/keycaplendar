@@ -131,7 +131,7 @@
   overflow: hidden;
   max-width: 100%;
   align-items: flex-start;
-  &:not(.shipped) {
+  &.timeline {
     .stats-grid.shipped {
       max-height: 100vh;
     }
@@ -139,6 +139,9 @@
   &.shipped {
     .stats-grid {
       transform: translateX(-100%);
+    }
+    .stats-grid.timeline {
+      max-height: 100vh;
     }
   }
 }

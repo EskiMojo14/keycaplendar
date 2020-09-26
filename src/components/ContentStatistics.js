@@ -286,7 +286,7 @@ export class ContentStatistics extends React.Component {
       ) : null;
     return (
       <div className={"tab-container " + this.props.statisticsTab}>
-        <div className="stats-grid">
+        <div className="stats-grid timeline">
           <Card className="count-graph">
             <Typography use="headline5" tag="h1">
               Sets per Month
@@ -447,7 +447,7 @@ export class ContentStatistics extends React.Component {
                   </div>
                   <div className="pie-container">
                     <ChartistGraph
-                      className="ct-square"
+                      className="ct-octave"
                       data={{
                         series: [
                           this.state.shippedData[this.props.statistics.shipped].data[index][1],
