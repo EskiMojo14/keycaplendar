@@ -64,6 +64,12 @@
   }
   .toggle-group {
     margin-right: 4px;
+    & + .toggle-group {
+      margin-left: 4px;
+    }
+    & + .category-button {
+      margin-left: 4px;
+    }
   }
 }
 
@@ -122,9 +128,9 @@
     .toggle-group {
       margin-right: 12px;
     }
-  }
-  .mdc-linear-progress {
-    top: $mdc-top-app-bar-mobile-row-height - 4px;
+    .mdc-linear-progress {
+      top: $mdc-top-app-bar-mobile-row-height - 4px;
+    }
   }
 
   .statistics .mdc-top-app-bar--fixed-adjust {

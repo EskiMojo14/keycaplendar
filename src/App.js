@@ -53,6 +53,7 @@ class App extends React.Component {
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
       statistics: { timeline: "gbLaunch", status: "profile", shipped: "profile" },
+      statisticsSort: { status: "alphabetical", shipped: "alphabetical" },
       statisticsTab: "timeline",
     };
     this.changeView = this.changeView.bind(this);
@@ -673,9 +674,14 @@ class App extends React.Component {
     this.setState({ user: user });
   };
   setStatistics = (prop, query) => {
-    let objectCopy = this.state.statistics;
+    let objectCopy = Object.assign({},this.state.statistics);
     objectCopy[prop] = query;
     this.setState({ statistics: objectCopy });
+  };
+  setStatisticsSort = (prop, query) => {
+    let objectCopy = Object.assign({},this.state.statisticsSort);
+    objectCopy[prop] = query;
+    this.setState({ statisticsSort: objectCopy });
   };
   setStatisticsTab = (tab) => {
     document.documentElement.scrollTop = 0;
@@ -811,6 +817,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsSort={this.state.statisticsSort}
+          setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}
@@ -857,6 +865,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsSort={this.state.statisticsSort}
+          setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}
@@ -905,6 +915,8 @@ class App extends React.Component {
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
           setStatistics={this.setStatistics}
+          statisticsSort={this.state.statisticsSort}
+          setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
           snackbarQueue={queue}

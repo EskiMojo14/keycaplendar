@@ -66,7 +66,6 @@ export class ContentStatistics extends React.Component {
     };
   }
   createData = () => {
-    const properties = ["icDate", "gbLaunch"];
     let months = { icDate: [], gbLaunch: [] };
     let monthData = { icDate: {}, gbLaunch: {} };
     let countData = { icDate: [], gbLaunch: [] };
@@ -104,6 +103,7 @@ export class ContentStatistics extends React.Component {
       },
     };
     //timeline
+    const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
         if (set[property] && set[property].indexOf("Q") === -1) {
@@ -271,7 +271,19 @@ export class ContentStatistics extends React.Component {
           liveGbSets.length,
           postGbSets.length,
           icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
+          name,
         ]);
+      });
+      statusData[prop].data.sort((a, b) => {
+        var x = this.props.statisticsSort.status === "total" ? a[4] : a[5].toLowerCase();
+        var y = this.props.statisticsSort.status === "total" ? b[4] : a[5].toLowerCase();
+        if (x < y) {
+          return this.props.statisticsSort.status === "total" ? 1 : -1;
+        }
+        if (x > y) {
+          return this.props.statisticsSort.status === "total" ? -1 : 1;
+        }
+        return 0;
       });
     });
     //shipped
@@ -341,7 +353,19 @@ export class ContentStatistics extends React.Component {
           shippedSets.length,
           unshippedSets.length,
           shippedSets.length + unshippedSets.length,
+          name,
         ]);
+      });
+      shippedData[prop].data.sort((a, b) => {
+        var x = this.props.statisticsSort.shipped === "total" ? a[2] : a[3].toLowerCase();
+        var y = this.props.statisticsSort.shipped === "total" ? b[2] : a[3].toLowerCase();
+        if (x < y) {
+          return this.props.statisticsSort.shipped === "total" ? 1 : -1;
+        }
+        if (x > y) {
+          return this.props.statisticsSort.shipped === "total" ? -1 : 1;
+        }
+        return 0;
       });
     });
     this.setState({
@@ -352,6 +376,34 @@ export class ContentStatistics extends React.Component {
       profileCountData: profileCountData,
       statusData: statusData,
       shippedData: shippedData,
+    });
+  };
+  sortData = () => {
+    let data = Object.assign({},this.state[this.props.statisticsTab + "Data"]);
+    Object.keys(data).forEach((prop) => {
+      data[prop].data.sort((a, b) => {
+        var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a[(this.props.statisticsTab === 'status' ? 4 : 2)] : a[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
+        var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b[(this.props.statisticsTab === 'status' ? 4 : 2)] : b[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
+        var c = a[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
+        var d = b[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
+        if (x < y) {
+          return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
+        }
+        if (x > y) {
+          return this.props.statisticsSort[this.props.statisticsTab] === "total" ? -1 : 1;
+        }
+        if (c < d) {
+          return -1;
+        }
+        if (c > d) {
+          return 1;
+        }
+        return 0;
+      });
+    });
+    const key = this.props.statisticsTab + "Data";
+    this.setState({
+      [key]: data,
     });
   };
   setProfileChartType = (type) => {
@@ -372,6 +424,9 @@ export class ContentStatistics extends React.Component {
       setTimeout(() => {
         this.forceUpdate();
       }, 400);
+    }
+    if (this.props.statisticsSort !== prevProps.statisticsSort) {
+      this.sortData();
     }
   }
   render() {
@@ -535,11 +590,11 @@ export class ContentStatistics extends React.Component {
           </Card>
         </div>
         <div className="stats-tab stats-grid status">
-          {this.state.statusData[this.props.statistics.status].names.map((name, index) => {
+          {this.state.statusData[this.props.statistics.status].data.map((data, index) => {
             return (
               <Card key={index} className="pie-card">
                 <Typography use="headline5" tag="h1">
-                  {name}
+                  {data[5]}
                 </Typography>
                 <div className="pie-container">
                   <div className="table-container">
@@ -556,39 +611,29 @@ export class ContentStatistics extends React.Component {
                             <DataTableCell>
                               <div className="indicator ic"></div>IC
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.statusData[this.props.statistics.status].data[index][0]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[0]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell>
                               <div className="indicator pre-gb"></div>Pre GB
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.statusData[this.props.statistics.status].data[index][1]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[1]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell>
                               <div className="indicator live-gb"></div>Live GB
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.statusData[this.props.statistics.status].data[index][2]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[2]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell>
                               <div className="indicator post-gb"></div>Post GB
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.statusData[this.props.statistics.status].data[index][3]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[3]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell className="bold">Total</DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.statusData[this.props.statistics.status].data[index][4]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[4]}</DataTableCell>
                           </DataTableRow>
                         </DataTableBody>
                       </DataTableContent>
@@ -598,12 +643,7 @@ export class ContentStatistics extends React.Component {
                     <ChartistGraph
                       className="ct-octave"
                       data={{
-                        series: [
-                          this.state.statusData[this.props.statistics.status].data[index][0],
-                          this.state.statusData[this.props.statistics.status].data[index][1],
-                          this.state.statusData[this.props.statistics.status].data[index][2],
-                          this.state.statusData[this.props.statistics.status].data[index][3],
-                        ],
+                        series: [data[0], data[1], data[2], data[3]],
                         labels: [" ", " ", " ", " "],
                       }}
                       type={"Pie"}
@@ -615,11 +655,11 @@ export class ContentStatistics extends React.Component {
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
-          {this.state.shippedData[this.props.statistics.shipped].names.map((name, index) => {
+          {this.state.shippedData[this.props.statistics.shipped].data.map((data, index) => {
             return (
               <Card key={index} className="pie-card">
                 <Typography use="headline5" tag="h1">
-                  {name}
+                  {data[3]}
                 </Typography>
                 <div className="pie-container">
                   <div className="table-container">
@@ -636,23 +676,17 @@ export class ContentStatistics extends React.Component {
                             <DataTableCell>
                               <div className="indicator shipped"></div>Shipped
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.shippedData[this.props.statistics.shipped].data[index][0]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[0]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell>
                               <div className="indicator not-shipped"></div>Not shipped
                             </DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.shippedData[this.props.statistics.shipped].data[index][1]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[1]}</DataTableCell>
                           </DataTableRow>
                           <DataTableRow>
                             <DataTableCell className="bold">Total</DataTableCell>
-                            <DataTableCell alignEnd>
-                              {this.state.shippedData[this.props.statistics.shipped].data[index][2]}
-                            </DataTableCell>
+                            <DataTableCell alignEnd>{data[2]}</DataTableCell>
                           </DataTableRow>
                         </DataTableBody>
                       </DataTableContent>
@@ -662,10 +696,7 @@ export class ContentStatistics extends React.Component {
                     <ChartistGraph
                       className="ct-octave"
                       data={{
-                        series: [
-                          this.state.shippedData[this.props.statistics.shipped].data[index][1],
-                          this.state.shippedData[this.props.statistics.shipped].data[index][0],
-                        ],
+                        series: [data[1], data[0]],
                         labels: [" ", " "],
                       }}
                       type={"Pie"}

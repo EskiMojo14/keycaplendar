@@ -10,6 +10,7 @@ import { ContentGrid } from "./ContentGrid";
 import { DialogFilter } from "./DialogFilter";
 import { DialogDelete } from "./DialogDelete";
 import { DialogSettings } from "./DialogSettings";
+import { DialogStatistics } from "./DialogStatistics";
 import { DialogCreate, DialogEdit } from "./DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./DrawerDetails";
@@ -204,6 +205,8 @@ export class DesktopContent extends React.Component {
         navOpen={this.state.navDrawerOpen}
         statistics={this.props.statistics}
         statisticsTab={this.props.statisticsTab}
+        statisticsSort={this.props.statisticsSort}
+        setStatisticsSort={this.props.setStatisticsSort}
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
@@ -339,6 +342,8 @@ export class DesktopContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsSort={this.props.statisticsSort}
+            setStatisticsSort={this.props.setStatisticsSort}
             statisticsTab={this.props.statisticsTab}
             setStatisticsTab={this.props.setStatisticsTab}
           />
@@ -395,6 +400,7 @@ export class TabletContent extends React.Component {
       deleteSnackbarOpen: false,
       deleteSet: {},
       settingsDialogOpen: false,
+      statisticsDialogOpen: false,
     };
     this.toggleNavDrawer = this.toggleNavDrawer.bind(this);
     this.openCreateDrawer = this.openCreateDrawer.bind(this);
@@ -507,6 +513,14 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({ settingsDialogOpen: false });
   }
+  openStatisticsDialog = () => {
+    this.openModal();
+    this.setState({ statisticsDialogOpen: true });
+  };
+  closeStatisticsDialog = () => {
+    this.closeModal();
+    this.setState({ statisticsDialogOpen: false });
+  };
   toggleLoading() {
     this.setState({ loading: !this.state.loading });
   }
@@ -529,6 +543,8 @@ export class TabletContent extends React.Component {
         sets={this.props.allSets}
         statistics={this.props.statistics}
         statisticsTab={this.props.statisticsTab}
+        statisticsSort={this.props.statisticsSort}
+        setStatisticsSort={this.props.setStatisticsSort}
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
@@ -590,6 +606,16 @@ export class TabletContent extends React.Component {
       ) : (
         ""
       );
+    const statsDialog =
+      this.props.page === "statistics" ? (
+        <DialogStatistics
+          open={this.state.statisticsDialogOpen}
+          onClose={this.closeStatisticsDialog}
+          statistics={this.props.statistics}
+          setStatistics={this.props.setStatistics}
+          statisticsTab={this.props.statisticsTab}
+        />
+      ) : null;
     return (
       <div className={this.props.className + "app-container"}>
         <DesktopDrawerNav
@@ -614,8 +640,11 @@ export class TabletContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsSort={this.props.statisticsSort}
+            setStatisticsSort={this.props.setStatisticsSort}
             statisticsTab={this.props.statisticsTab}
             setStatisticsTab={this.props.setStatisticsTab}
+            openStatisticsDialog={this.openStatisticsDialog}
           />
           <main
             className={
@@ -666,6 +695,7 @@ export class TabletContent extends React.Component {
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
+        {statsDialog}
       </div>
     );
   }
@@ -687,6 +717,7 @@ export class MobileContent extends React.Component {
       deleteSnackbarOpen: false,
       deleteSet: {},
       settingsDialogOpen: false,
+      statisticsDialogOpen: false,
       searchBarOpen: false,
     };
     this.openNavDrawer = this.openNavDrawer.bind(this);
@@ -814,6 +845,14 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ settingsDialogOpen: false });
   }
+  openStatisticsDialog = () => {
+    this.openModal();
+    this.setState({ statisticsDialogOpen: true });
+  };
+  closeStatisticsDialog = () => {
+    this.closeModal();
+    this.setState({ statisticsDialogOpen: false });
+  };
   openSearchBar() {
     this.setState({ searchBarOpen: true });
     document.getElementById("search").focus();
@@ -839,6 +878,8 @@ export class MobileContent extends React.Component {
         sets={this.props.allSets}
         statistics={this.props.statistics}
         statisticsTab={this.props.statisticsTab}
+        statisticsSort={this.props.statisticsSort}
+        setStatisticsSort={this.props.setStatisticsSort}
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
@@ -940,8 +981,11 @@ export class MobileContent extends React.Component {
             sets={this.props.sets}
             statistics={this.props.statistics}
             setStatistics={this.props.setStatistics}
+            statisticsSort={this.props.statisticsSort}
+            setStatisticsSort={this.props.setStatisticsSort}
             statisticsTab={this.props.statisticsTab}
             setStatisticsTab={this.props.setStatisticsTab}
+            openStatisticsDialog={this.openStatisticsDialog}
           />
         )}
       </div>
@@ -968,11 +1012,24 @@ export class MobileContent extends React.Component {
           sets={this.props.sets}
           statistics={this.props.statistics}
           setStatistics={this.props.setStatistics}
+          statisticsSort={this.props.statisticsSort}
+          setStatisticsSort={this.props.setStatisticsSort}
+          openStatisticsDialog={this.openStatisticsDialog}
           statisticsTab={this.props.statisticsTab}
           setStatisticsTab={this.props.setStatisticsTab}
         />
       </div>
     );
+    const statsDialog =
+      this.props.page === "statistics" ? (
+        <DialogStatistics
+          open={this.state.statisticsDialogOpen}
+          onClose={this.closeStatisticsDialog}
+          statistics={this.props.statistics}
+          setStatistics={this.props.setStatistics}
+          statisticsTab={this.props.statisticsTab}
+        />
+      ) : null;
     const search =
       this.props.bottomNav && (this.props.user.isEditor || this.props.user.isDesigner) ? (
         <SearchAppBar
@@ -1048,6 +1105,7 @@ export class MobileContent extends React.Component {
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
+        {statsDialog}
       </div>
     );
   }
