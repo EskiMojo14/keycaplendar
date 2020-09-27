@@ -32,10 +32,9 @@ export class DrawerCreate extends React.Component {
       imageURL: "",
       focused: "",
     };
-    this.closeDrawer = this.closeDrawer.bind(this);
   }
 
-  closeDrawer() {
+  closeDrawer = () => {
     this.props.close();
     this.setState({
       profile: "",
@@ -54,7 +53,7 @@ export class DrawerCreate extends React.Component {
       imageURL: "",
       focused: "",
     });
-  }
+  };
 
   setImage = (image) => {
     //resize image to 480px height
@@ -196,9 +195,12 @@ export class DrawerCreate extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
-        return chr.toUpperCase();
-      });
+      this.state.colorway
+        .normalize("NFD")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/\W+(.)/g, function (match, chr) {
+          return chr.toUpperCase();
+        });
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -688,11 +690,9 @@ export class DrawerEdit extends React.Component {
       newImage: false,
       focused: "",
     };
-    this.closeDrawer = this.closeDrawer.bind(this);
-    this.setValues = this.setValues.bind(this);
   }
 
-  setValues() {
+  setValues = () => {
     let gbLaunch = "";
     if (this.props.set.gbMonth) {
       const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
@@ -722,14 +722,14 @@ export class DrawerEdit extends React.Component {
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
       vendors: this.props.set.vendors,
     });
-  }
+  };
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open && this.props.open) {
       this.setValues();
     }
   }
 
-  closeDrawer() {
+  closeDrawer = () => {
     this.setState({
       id: "",
       profile: "",
@@ -750,7 +750,7 @@ export class DrawerEdit extends React.Component {
       focused: "",
     });
     this.props.close();
-  }
+  };
 
   setImage = (image) => {
     //resize image to 480px height
@@ -893,9 +893,12 @@ export class DrawerEdit extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
-        return chr.toUpperCase();
-      });
+      this.state.colorway
+        .normalize("NFD")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/\W+(.)/g, function (match, chr) {
+          return chr.toUpperCase();
+        });
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(

@@ -36,8 +36,6 @@ export class DialogCreate extends React.Component {
       imageURL: "",
       focused: "",
     };
-    this.openDialog = this.openDialog.bind(this);
-    this.closeDialog = this.closeDialog.bind(this);
   }
   componentDidMount() {
     this.setState({ open: this.props.open });
@@ -58,7 +56,7 @@ export class DialogCreate extends React.Component {
       }
     }
   }
-  openDialog() {
+  openDialog = () => {
     this.setState({ open: true, animate: true });
     setTimeout(() => {
       this.setState({ opening: true });
@@ -66,8 +64,8 @@ export class DialogCreate extends React.Component {
     setTimeout(() => {
       this.setState({ animate: false, opening: false });
     }, 450);
-  }
-  closeDialog() {
+  };
+  closeDialog = () => {
     this.setState({
       closing: true,
       profile: "",
@@ -90,7 +88,7 @@ export class DialogCreate extends React.Component {
       this.props.close();
       this.setState({ open: false, closing: false });
     }, 400);
-  }
+  };
 
   handleFocus = (e) => {
     this.setState({
@@ -232,9 +230,12 @@ export class DialogCreate extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
-        return chr.toUpperCase();
-      });
+      this.state.colorway
+        .normalize("NFD")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/\W+(.)/g, function (match, chr) {
+          return chr.toUpperCase();
+        });
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -710,8 +711,6 @@ export class DialogEdit extends React.Component {
       newImage: false,
       focused: "",
     };
-    this.openDialog = this.openDialog.bind(this);
-    this.closeDialog = this.closeDialog.bind(this);
   }
   componentDidMount() {
     this.setState({ open: this.props.open });
@@ -726,7 +725,7 @@ export class DialogEdit extends React.Component {
       }
     }
   }
-  openDialog() {
+  openDialog = () => {
     this.setState({ open: true, animate: true });
     setTimeout(() => {
       this.setState({ opening: true });
@@ -734,8 +733,8 @@ export class DialogEdit extends React.Component {
     setTimeout(() => {
       this.setState({ animate: false, opening: false });
     }, 450);
-  }
-  closeDialog() {
+  };
+  closeDialog = () => {
     this.setState({
       closing: true,
       id: "",
@@ -760,7 +759,7 @@ export class DialogEdit extends React.Component {
       this.props.close();
       this.setState({ open: false, closing: false });
     }, 400);
-  }
+  };
 
   handleFocus = (e) => {
     this.setState({
@@ -935,9 +934,12 @@ export class DialogEdit extends React.Component {
     const keysetsRef = storageRef.child("keysets");
     const fileName =
       this.state.profile.toLowerCase() +
-      this.state.colorway.normalize('NFD').replace(/[^a-zA-Z0-9]/g,'').replace(/\W+(.)/g, function (match, chr) {
-        return chr.toUpperCase();
-      });
+      this.state.colorway
+        .normalize("NFD")
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/\W+(.)/g, function (match, chr) {
+          return chr.toUpperCase();
+        });
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(

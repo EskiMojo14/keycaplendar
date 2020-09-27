@@ -56,13 +56,6 @@ class App extends React.Component {
       statisticsSort: { status: "alphabetical", shipped: "alphabetical" },
       statisticsTab: "timeline",
     };
-    this.changeView = this.changeView.bind(this);
-    this.changePage = this.changePage.bind(this);
-    this.getData = this.getData.bind(this);
-    this.filterData = this.filterData.bind(this);
-    this.toggleLoading = this.toggleLoading.bind(this);
-    this.setSort = this.setSort.bind(this);
-    this.setSearch = this.setSearch.bind(this);
   }
   getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
@@ -160,58 +153,46 @@ class App extends React.Component {
       this.clearCookies();
     }
   };
-  changeView(view) {
+  changeView = (view) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
-      setTimeout(
-        function () {
-          document.documentElement.scrollTop = 0;
-          this.setState({ view: view });
-        }.bind(this),
-        90
-      );
-      setTimeout(
-        function () {
-          this.setState({ transition: false });
-        }.bind(this),
-        300
-      );
+      setTimeout(() => {
+        document.documentElement.scrollTop = 0;
+        this.setState({ view: view });
+      }, 90);
+      setTimeout(() => {
+        this.setState({ transition: false });
+      }, 300);
     } else {
       this.setState({ view: view });
     }
     if (this.state.cookies) {
       this.setCookie("view", view, 365);
     }
-  }
-  changePage(page) {
+  };
+  changePage = (page) => {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
-      setTimeout(
-        function () {
-          this.setState({ page: page });
-          this.setSearch("");
-          if (page === "calendar") {
-            this.setState({ sort: "gbLaunch" });
-          } else if (page === "live") {
-            this.setState({ sort: "gbEnd" });
-          } else if (page === "ic") {
-            this.setState({ sort: "profile" });
-          } else if (page === "previous") {
-            this.setState({ sort: "gbLaunch" });
-          } else if (page === "timeline") {
-            this.setState({ sort: "gbLaunch" });
-          }
-          this.filterData(page);
-          document.documentElement.scrollTop = 0;
-        }.bind(this),
-        90
-      );
-      setTimeout(
-        function () {
-          this.setState({ transition: false });
-        }.bind(this),
-        300
-      );
+      setTimeout(() => {
+        this.setState({ page: page });
+        this.setSearch("");
+        if (page === "calendar") {
+          this.setState({ sort: "gbLaunch" });
+        } else if (page === "live") {
+          this.setState({ sort: "gbEnd" });
+        } else if (page === "ic") {
+          this.setState({ sort: "profile" });
+        } else if (page === "previous") {
+          this.setState({ sort: "gbLaunch" });
+        } else if (page === "timeline") {
+          this.setState({ sort: "gbLaunch" });
+        }
+        this.filterData(page);
+        document.documentElement.scrollTop = 0;
+      }, 90);
+      setTimeout(() => {
+        this.setState({ transition: false });
+      }, 300);
       const title = {
         calendar: "Calendar",
         live: "Live GBs",
@@ -230,7 +211,7 @@ class App extends React.Component {
         "?page=" + page
       );
     }
-  }
+  };
   isDarkTheme = () => {
     const manualBool = this.state.applyTheme === "manual" && this.state.manualTheme;
     const systemBool =
@@ -327,10 +308,10 @@ class App extends React.Component {
       this.setCookie("bottomNav", value, 365);
     }
   };
-  toggleLoading() {
+  toggleLoading = () => {
     this.setState({ loading: !this.state.loading });
-  }
-  getData() {
+  };
+  getData = () => {
     this.setState({ loading: true });
     const db = firebase.firestore();
     db.collection("keysets")
@@ -383,14 +364,14 @@ class App extends React.Component {
         queue.notify({ title: "Error getting data: " + error });
         this.setState({ loading: false, content: false, failed: true });
       });
-  }
-  filterData(
+  };
+  filterData = (
     page = this.state.page,
     sets = this.state.sets,
     sort = this.state.sort,
     search = this.state.search,
     whitelist = this.state.whitelist
-  ) {
+  ) => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -657,29 +638,29 @@ class App extends React.Component {
       content: searchedSets.length > 0 ? true : false,
       loading: false,
     });
-  }
-  setSort(sortBy) {
+  };
+  setSort = (sortBy) => {
     document.documentElement.scrollTop = 0;
     this.setState({ sort: sortBy });
     this.filterData(this.state.page, this.state.sets, sortBy);
-  }
-  setSearch(query) {
+  };
+  setSearch = (query) => {
     this.setState({
       search: query,
     });
     document.documentElement.scrollTop = 0;
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
-  }
+  };
   setUser = (user) => {
     this.setState({ user: user });
   };
   setStatistics = (prop, query) => {
-    let objectCopy = Object.assign({},this.state.statistics);
+    let objectCopy = Object.assign({}, this.state.statistics);
     objectCopy[prop] = query;
     this.setState({ statistics: objectCopy });
   };
   setStatisticsSort = (prop, query) => {
-    let objectCopy = Object.assign({},this.state.statisticsSort);
+    let objectCopy = Object.assign({}, this.state.statisticsSort);
     objectCopy[prop] = query;
     this.setState({ statisticsSort: objectCopy });
   };

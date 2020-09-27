@@ -128,17 +128,12 @@ export class DesktopDrawerNav extends React.Component {
 }
 
 export class MobileDrawerNav extends React.Component {
-  constructor(props) {
-    super(props);
-    this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
-    this.changePage = this.changePage.bind(this);
-  }
 
-  toggleDrawerIcon() {
+  toggleDrawerIcon = () => {
     this.props.toggle();
   }
 
-  changePage(newPage) {
+  changePage = (newPage) => {
     this.props.changePage(newPage);
     this.props.close();
   }
@@ -289,17 +284,12 @@ export class MobileDrawerNav extends React.Component {
   }
 }
 export class BottomDrawerNav extends React.Component {
-  constructor(props) {
-    super(props);
-    this.toggleDrawerIcon = this.toggleDrawerIcon.bind(this);
-    this.changePage = this.changePage.bind(this);
-  }
 
-  toggleDrawerIcon() {
+  toggleDrawerIcon = () => {
     this.props.toggle();
   }
 
-  changePage(newPage) {
+  changePage = (newPage) => {
     this.props.changePage(newPage);
     this.props.close();
   }

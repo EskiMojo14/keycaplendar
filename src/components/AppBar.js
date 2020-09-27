@@ -23,28 +23,23 @@ export class DesktopAppBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = { sortMenuOpen: false, viewMenuOpen: false };
-    this.openSortMenu = this.openSortMenu.bind(this);
-    this.closeSortMenu = this.closeSortMenu.bind(this);
-    this.openViewMenu = this.openViewMenu.bind(this);
-    this.closeViewMenu = this.closeViewMenu.bind(this);
-    this.changeView = this.changeView.bind(this);
   }
-  openSortMenu() {
+  openSortMenu = () => {
     this.setState({ sortMenuOpen: true });
-  }
-  closeSortMenu() {
+  };
+  closeSortMenu = () => {
     this.setState({ sortMenuOpen: false });
-  }
-  openViewMenu() {
+  };
+  openViewMenu = () => {
     this.setState({ viewMenuOpen: true });
-  }
-  closeViewMenu() {
+  };
+  closeViewMenu = () => {
     this.setState({ viewMenuOpen: false });
-  }
-  changeView(index) {
+  };
+  changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
     this.props.changeView(views[index]);
-  }
+  };
   render() {
     let viewIcon;
     if (this.props.view === "card") {
@@ -276,37 +271,30 @@ export class TabletAppBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = { sortMenuOpen: false, viewMenuOpen: false, searchOpen: false };
-    this.openSortMenu = this.openSortMenu.bind(this);
-    this.closeSortMenu = this.closeSortMenu.bind(this);
-    this.openViewMenu = this.openViewMenu.bind(this);
-    this.closeViewMenu = this.closeViewMenu.bind(this);
-    this.changeView = this.changeView.bind(this);
-    this.openSearch = this.openSearch.bind(this);
-    this.closeSearch = this.closeSearch.bind(this);
   }
-  openSortMenu() {
+  openSortMenu = () => {
     this.setState({ sortMenuOpen: true });
-  }
-  closeSortMenu() {
+  };
+  closeSortMenu = () => {
     this.setState({ sortMenuOpen: false });
-  }
-  openViewMenu() {
+  };
+  openViewMenu = () => {
     this.setState({ viewMenuOpen: true });
-  }
-  closeViewMenu() {
+  };
+  closeViewMenu = () => {
     this.setState({ viewMenuOpen: false });
-  }
-  changeView(index) {
+  };
+  changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
     this.props.changeView(views[index]);
-  }
-  openSearch() {
+  };
+  openSearch = () => {
     this.setState({ searchOpen: true });
     document.documentElement.scrollTop = 0;
-  }
-  closeSearch() {
+  };
+  closeSearch = () => {
     this.setState({ searchOpen: false });
-  }
+  };
   render() {
     let viewIcon;
     if (this.props.view === "card") {
@@ -537,48 +525,39 @@ export class MobileAppBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false, searchOpen: false };
-    this.openSortMenu = this.openSortMenu.bind(this);
-    this.closeSortMenu = this.closeSortMenu.bind(this);
-    this.openFilterMenu = this.openFilterMenu.bind(this);
-    this.closeFilterMenu = this.closeFilterMenu.bind(this);
-    this.openViewMenu = this.openViewMenu.bind(this);
-    this.closeViewMenu = this.closeViewMenu.bind(this);
-    this.changeView = this.changeView.bind(this);
-    this.openSearch = this.openSearch.bind(this);
-    this.closeSearch = this.closeSearch.bind(this);
   }
-  openSortMenu() {
+  openSortMenu = () => {
     this.setState({ sortMenuOpen: true });
-  }
-  closeSortMenu() {
+  };
+  closeSortMenu = () => {
     this.setState({ sortMenuOpen: false });
-  }
-  openFilterMenu() {
+  };
+  openFilterMenu = () => {
     this.setState({ filterMenuOpen: true });
-  }
-  closeFilterMenu() {
+  };
+  closeFilterMenu = () => {
     this.setState({ filterMenuOpen: false });
-  }
-  openViewMenu() {
+  };
+  openViewMenu = () => {
     this.setState({ viewMenuOpen: true });
-  }
-  closeViewMenu() {
+  };
+  closeViewMenu = () => {
     this.setState({ viewMenuOpen: false });
-  }
-  changeView(index) {
+  };
+  changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
     this.props.changeView(views[index]);
-  }
-  openSearch() {
+  };
+  openSearch = () => {
     this.setState({ searchOpen: true });
     this.scrollTop();
-  }
-  closeSearch() {
+  };
+  closeSearch = () => {
     this.setState({ searchOpen: false });
-  }
-  scrollTop() {
+  };
+  scrollTop = () => {
     window.scrollTo(0, 0);
-  }
+  };
   render() {
     let viewIcon;
     if (this.props.view === "card") {
@@ -820,48 +799,39 @@ export class BottomAppBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false, searchOpen: false };
-    this.openSortMenu = this.openSortMenu.bind(this);
-    this.closeSortMenu = this.closeSortMenu.bind(this);
-    this.openFilterMenu = this.openFilterMenu.bind(this);
-    this.closeFilterMenu = this.closeFilterMenu.bind(this);
-    this.openViewMenu = this.openViewMenu.bind(this);
-    this.closeViewMenu = this.closeViewMenu.bind(this);
-    this.changeView = this.changeView.bind(this);
-    this.openSearch = this.openSearch.bind(this);
-    this.closeSearch = this.closeSearch.bind(this);
   }
-  openSortMenu() {
+  openSortMenu = () => {
     this.setState({ sortMenuOpen: true });
-  }
-  closeSortMenu() {
+  };
+  closeSortMenu = () => {
     this.setState({ sortMenuOpen: false });
-  }
-  openFilterMenu() {
+  };
+  openFilterMenu = () => {
     this.setState({ filterMenuOpen: true });
-  }
-  closeFilterMenu() {
+  };
+  closeFilterMenu = () => {
     this.setState({ filterMenuOpen: false });
-  }
-  openViewMenu() {
+  };
+  openViewMenu = () => {
     this.setState({ viewMenuOpen: true });
-  }
-  closeViewMenu() {
+  };
+  closeViewMenu = () => {
     this.setState({ viewMenuOpen: false });
-  }
-  changeView(index) {
+  };
+  changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
     this.props.changeView(views[index]);
-  }
-  openSearch() {
+  };
+  openSearch = () => {
     this.setState({ searchOpen: true });
     this.scrollTop();
-  }
-  closeSearch() {
+  };
+  closeSearch = () => {
     this.setState({ searchOpen: false });
-  }
-  scrollTop() {
+  };
+  scrollTop = () => {
     window.scrollTo(0, 0);
-  }
+  };
   render() {
     let viewIcon;
     if (this.props.view === "card") {
@@ -1092,36 +1062,29 @@ export class BottomAppBarIndent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { sortMenuOpen: false, filterMenuOpen: false, viewMenuOpen: false };
-    this.openSortMenu = this.openSortMenu.bind(this);
-    this.closeSortMenu = this.closeSortMenu.bind(this);
-    this.openFilterMenu = this.openFilterMenu.bind(this);
-    this.closeFilterMenu = this.closeFilterMenu.bind(this);
-    this.openViewMenu = this.openViewMenu.bind(this);
-    this.closeViewMenu = this.closeViewMenu.bind(this);
-    this.changeView = this.changeView.bind(this);
   }
-  openSortMenu() {
+  openSortMenu = () => {
     this.setState({ sortMenuOpen: true });
-  }
-  closeSortMenu() {
+  };
+  closeSortMenu = () => {
     this.setState({ sortMenuOpen: false });
-  }
-  openFilterMenu() {
+  };
+  openFilterMenu = () => {
     this.setState({ filterMenuOpen: true });
-  }
-  closeFilterMenu() {
+  };
+  closeFilterMenu = () => {
     this.setState({ filterMenuOpen: false });
-  }
-  openViewMenu() {
+  };
+  openViewMenu = () => {
     this.setState({ viewMenuOpen: true });
-  }
-  closeViewMenu() {
+  };
+  closeViewMenu = () => {
     this.setState({ viewMenuOpen: false });
-  }
-  changeView(index) {
+  };
+  changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
     this.props.changeView(views[index]);
-  }
+  };
   render() {
     let viewIcon;
     if (this.props.view === "card") {
