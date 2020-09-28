@@ -257,7 +257,10 @@ export class DesktopDrawerDetails extends React.Component {
         </DrawerHeader>
         <DrawerContent>
           <div>
-            <div className="details-image" style={{ backgroundImage: "url(" + set.image.replace('keysets','card') + ")" }}></div>
+            <div
+              className="details-image"
+              style={{ backgroundImage: "url(" + set.image.replace("keysets", "card") + ")" }}
+            ></div>
             <div className="details-text">
               <Typography use="overline" tag="h3">
                 Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
