@@ -3,7 +3,7 @@ import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
-import { Autocomplete, AutocompleteMobile } from "./Autocomplete";
+import { Autocomplete, AutocompleteMobile } from "../Autocomplete";
 import "./SearchBar.scss";
 
 const bodyScroll = require("body-scroll-toggle");

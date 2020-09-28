@@ -1,6 +1,6 @@
 import React from "react";
 import "./Content.scss";
-import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./AppBar";
+import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./DrawerNav";
 import { Fab } from "@rmwc/fab";
@@ -16,7 +16,7 @@ import { DesktopDrawerFilter, TabletDrawerFilter } from "./DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./DrawerEntry";
 import { SnackbarDeleted } from "./SnackbarDeleted";
-import { SearchAppBar } from "./SearchBar";
+import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./Footer";
 
 const bodyScroll = require("body-scroll-toggle");
