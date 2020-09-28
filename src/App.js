@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/admin/Login";
-import { Users } from "./components/Users";
+import { Users } from "./components/admin/users/Users";
 import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";

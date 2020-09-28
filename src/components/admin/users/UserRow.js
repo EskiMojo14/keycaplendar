@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "./firebase";
+import firebase from "../../firebase";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -7,7 +7,7 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "./common/Autocomplete";
+import { Autocomplete } from "../../common/Autocomplete";
 
 export class UserRow extends React.Component {
   constructor(props) {
