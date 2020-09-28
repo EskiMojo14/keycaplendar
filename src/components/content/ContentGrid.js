@@ -1,9 +1,9 @@
 import React from "react";
 import { Typography } from "@rmwc/typography";
-import { ViewCard } from "../ViewCard";
-import { ViewList } from "../ViewList";
-import { ViewImageList } from "../ViewImageList";
-import { ViewCompact } from "../ViewCompact";
+import { ViewCard } from "../views/card/ViewCard";
+import { ViewList } from "../views/list/ViewList";
+import { ViewImageList } from "../views/image-list/ViewImageList";
+import { ViewCompact } from "../views/compact/ViewCompact";
 
 import "./ContentGrid.scss";
 
