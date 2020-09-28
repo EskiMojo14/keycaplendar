@@ -4,13 +4,13 @@ import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIn
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
-import { ContentEmpty, ContentFailed } from "./ContentEmpty";
-import { ContentStatistics } from "./ContentStatistics";
-import { ContentGrid } from "./ContentGrid";
+import { ContentEmpty, ContentFailed } from "./content/ContentEmpty";
+import { ContentStatistics } from "./content/ContentStatistics";
+import { ContentGrid } from "./content/ContentGrid";
 import { DialogFilter } from "./DialogFilter";
 import { DialogDelete } from "./DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
-import { DialogStatistics } from "./DialogStatistics";
+import { DialogStatistics } from "./content/statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";

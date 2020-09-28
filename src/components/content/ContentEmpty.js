@@ -1,5 +1,5 @@
 import React from "react";
-import emptyImg from "../empty.svg";
+import emptyImg from "../../empty.svg";
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
 import "./ContentEmpty.scss";
