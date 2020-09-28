@@ -4,7 +4,7 @@ import firebase from "./firebase";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "./Footer";
+import { Footer } from "./common/Footer";
 import "./Login.scss";
 import peach from "../peach.svg";
 

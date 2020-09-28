@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "./firebase";
 import { ImageUpload } from "./ImageUpload";
-import { Autocomplete } from "./Autocomplete";
+import { Autocomplete } from "./common/Autocomplete";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";

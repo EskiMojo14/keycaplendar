@@ -3,7 +3,7 @@ import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
-import logo from "../logo.svg";
+import logo from "../../logo.svg";
 
 export class DesktopDrawerNav extends React.Component {
   render() {

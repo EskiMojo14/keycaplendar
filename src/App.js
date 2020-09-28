@@ -8,8 +8,8 @@ import { Login } from "./components/Login";
 import { Users } from "./components/Users";
 import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";
-import { PrivacyPolicy, TermsOfService } from "./components/Legal";
-import { SnackbarCookies } from "./components/SnackbarCookies";
+import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
+import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import "./App.scss";
 
 const queue = createSnackbarQueue();

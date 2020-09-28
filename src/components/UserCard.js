@@ -6,7 +6,7 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
 import { TextField } from "@rmwc/textfield";
 import { Avatar } from "@rmwc/avatar";
-import { Autocomplete } from "./Autocomplete";
+import { Autocomplete } from "./common/Autocomplete";
 import { Card, CardActions } from "@rmwc/card";
 import {
   CollapsibleList,

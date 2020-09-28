@@ -2,22 +2,22 @@ import React from "react";
 import "./Content.scss";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
-import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./DrawerNav";
+import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
 import { ContentEmpty, ContentFailed } from "./ContentEmpty";
 import { ContentStatistics } from "./ContentStatistics";
 import { ContentGrid } from "./ContentGrid";
 import { DialogFilter } from "./DialogFilter";
 import { DialogDelete } from "./DialogDelete";
-import { DialogSettings } from "./DialogSettings";
+import { DialogSettings } from "./common/DialogSettings";
 import { DialogStatistics } from "./DialogStatistics";
 import { DialogCreate, DialogEdit } from "./DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./DrawerFilter";
-import { DesktopDrawerDetails, TabletDrawerDetails } from "./DrawerDetails";
+import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./DrawerEntry";
 import { SnackbarDeleted } from "./SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
-import { Footer } from "./Footer";
+import { Footer } from "./common/Footer";
 
 const bodyScroll = require("body-scroll-toggle");
 
