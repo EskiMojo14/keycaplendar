@@ -8,14 +8,14 @@ import { ContentEmpty, ContentFailed } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
 import { DialogFilter } from "./filter/DialogFilter";
-import { DialogDelete } from "./DialogDelete";
+import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
 import { DialogStatistics } from "./content/statistics/DialogStatistics";
-import { DialogCreate, DialogEdit } from "./DialogEntry";
+import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./filter/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
-import { DrawerCreate, DrawerEdit } from "./DrawerEntry";
-import { SnackbarDeleted } from "./SnackbarDeleted";
+import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
+import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 

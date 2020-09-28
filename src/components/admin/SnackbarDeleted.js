@@ -1,6 +1,6 @@
 import React from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
-import firebase from "./firebase";
+import firebase from "../firebase";
 
 export class SnackbarDeleted extends React.Component {
   recreateEntry = (e) => {

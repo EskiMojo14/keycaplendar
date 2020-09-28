@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "./firebase";
+import firebase from "../firebase";
 import "./DialogEntry.scss";
 import { ImageUpload } from "./ImageUpload";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
@@ -10,7 +10,7 @@ import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { TextField } from "@rmwc/textfield";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Autocomplete } from "./common/Autocomplete";
+import { Autocomplete } from "../common/Autocomplete";
 
 export class DialogCreate extends React.Component {
   constructor(props) {

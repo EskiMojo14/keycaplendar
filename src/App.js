@@ -4,7 +4,7 @@ import moment from "moment";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
-import { Login } from "./components/Login";
+import { Login } from "./components/admin/Login";
 import { Users } from "./components/Users";
 import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";

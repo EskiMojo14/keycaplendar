@@ -1,12 +1,12 @@
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import firebase from "./firebase";
+import firebase from "../firebase";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "./common/Footer";
+import { Footer } from "../common/Footer";
 import "./Login.scss";
-import peach from "../peach.svg";
+import peach from "../../peach.svg";
 
 export class Login extends React.Component {
   uiConfig = {

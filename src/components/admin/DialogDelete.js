@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import firebase from "./firebase";
+import firebase from "../firebase";
 
 export class DialogDelete extends React.Component {
   deleteEntry = (e) => {
