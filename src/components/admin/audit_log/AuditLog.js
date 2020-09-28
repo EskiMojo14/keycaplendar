@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import firebase from "./firebase";
+import firebase from "../../firebase";
 import { Link } from "react-router-dom";
 import {
   TopAppBar,
@@ -36,7 +36,7 @@ import { Checkbox } from "@rmwc/checkbox";
 import { Select } from "@rmwc/select";
 import { IconButton } from "@rmwc/icon-button";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent, DrawerAppContent } from "@rmwc/drawer";
-import { ContentEmpty } from "./ContentEmpty";
+import { ContentEmpty } from "../../ContentEmpty";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./AuditLog.scss";
 

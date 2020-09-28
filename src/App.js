@@ -6,7 +6,7 @@ import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/Login";
 import { Users } from "./components/Users";
-import { AuditLog } from "./components/AuditLog";
+import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/Legal";
 import { SnackbarCookies } from "./components/SnackbarCookies";
