@@ -1,28 +1,26 @@
 import React from "react";
 import { Menu, MenuItem } from "@rmwc/menu";
 
-export class MenuView extends React.Component {
-  render() {
-    return (
-      <Menu
-        anchorCorner="bottomLeft"
-        open={this.props.open}
-        onSelect={this.props.onSelect}
-        onClose={this.props.onClose}
-        onMouseLeave={
-          this.props.cascading
-            ? this.props.onClose
-            : () => {
-                return;
-              }
-        }
-      >
-        <MenuItem selected={this.props.view === "card" ? true : false}>Card</MenuItem>
-        <MenuItem selected={this.props.view === "list" ? true : false}>List</MenuItem>
-        <MenuItem selected={this.props.view === "imageList" ? true : false}>Image List</MenuItem>
-        <MenuItem selected={this.props.view === "compact" ? true : false}>Compact</MenuItem>
-      </Menu>
-    );
-  }
-}
+export const MenuView = (props) => {
+  return (
+    <Menu
+      anchorCorner="bottomLeft"
+      open={props.open}
+      onSelect={props.onSelect}
+      onClose={props.onClose}
+      onMouseLeave={
+        props.cascading
+          ? props.onClose
+          : () => {
+              return;
+            }
+      }
+    >
+      <MenuItem selected={props.view === "card" ? true : false}>Card</MenuItem>
+      <MenuItem selected={props.view === "list" ? true : false}>List</MenuItem>
+      <MenuItem selected={props.view === "imageList" ? true : false}>Image List</MenuItem>
+      <MenuItem selected={props.view === "compact" ? true : false}>Compact</MenuItem>
+    </Menu>
+  );
+};
 export default MenuView;

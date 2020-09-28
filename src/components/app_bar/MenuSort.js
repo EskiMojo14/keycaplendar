@@ -1,54 +1,43 @@
 import React from "react";
 import { Menu, MenuItem } from "@rmwc/menu";
 
-export class MenuSort extends React.Component {
-  render() {
-    const icDate = (
-      <MenuItem selected={this.props.sort === "icDate" ? true : false} onClick={() => this.props.onSelect("icDate")}>
-        IC date
+export const MenuSort = (props) => {
+  const icDate = (
+    <MenuItem selected={props.sort === "icDate" ? true : false} onClick={() => props.onSelect("icDate")}>
+      IC date
+    </MenuItem>
+  );
+  const launchDate =
+    props.page !== "ic" ? (
+      <MenuItem selected={props.sort === "gbLaunch" ? true : false} onClick={() => props.onSelect("gbLaunch")}>
+        Start date
       </MenuItem>
-    );
-    const launchDate =
-      this.props.page !== "ic" ? (
-        <MenuItem
-          selected={this.props.sort === "gbLaunch" ? true : false}
-          onClick={() => this.props.onSelect("gbLaunch")}
-        >
-          Start date
-        </MenuItem>
-      ) : null;
-    const endDate =
-      this.props.page !== "ic" && this.props.page !== "timeline" ? (
-        <MenuItem selected={this.props.sort === "gbEnd" ? true : false} onClick={() => this.props.onSelect("gbEnd")}>
-          End date
-        </MenuItem>
-      ) : null;
-    const vendorOption =
-      this.props.page !== "ic" ? (
-        <MenuItem selected={this.props.sort === "vendor" ? true : false} onClick={() => this.props.onSelect("vendor")}>
-          Vendor
-        </MenuItem>
-      ) : null;
-    return (
-      <Menu anchorCorner="bottomLeft" open={this.props.open} onClose={this.props.onClose}>
-        <MenuItem
-          selected={this.props.sort === "profile" ? true : false}
-          onClick={() => this.props.onSelect("profile")}
-        >
-          Profile
-        </MenuItem>
-        <MenuItem
-          selected={this.props.sort === "designer" ? true : false}
-          onClick={() => this.props.onSelect("designer")}
-        >
-          Designer
-        </MenuItem>
-        {vendorOption}
-        {icDate}
-        {launchDate}
-        {endDate}
-      </Menu>
-    );
-  }
-}
+    ) : null;
+  const endDate =
+    props.page !== "ic" && props.page !== "timeline" ? (
+      <MenuItem selected={props.sort === "gbEnd" ? true : false} onClick={() => props.onSelect("gbEnd")}>
+        End date
+      </MenuItem>
+    ) : null;
+  const vendorOption =
+    props.page !== "ic" ? (
+      <MenuItem selected={props.sort === "vendor" ? true : false} onClick={() => props.onSelect("vendor")}>
+        Vendor
+      </MenuItem>
+    ) : null;
+  return (
+    <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
+      <MenuItem selected={props.sort === "profile" ? true : false} onClick={() => props.onSelect("profile")}>
+        Profile
+      </MenuItem>
+      <MenuItem selected={props.sort === "designer" ? true : false} onClick={() => props.onSelect("designer")}>
+        Designer
+      </MenuItem>
+      {vendorOption}
+      {icDate}
+      {launchDate}
+      {endDate}
+    </Menu>
+  );
+};
 export default MenuSort;

@@ -7,8 +7,8 @@ import { ViewCompact } from "../views/compact/ViewCompact";
 
 import "./ContentGrid.scss";
 
-export class ContentGrid extends React.Component {
-  filterSets = (sets, group, sort, page) => {
+export const ContentGrid = (props) => {
+  const filterSets = (sets, group, sort, page) => {
     let filteredSets = [];
     sets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
@@ -50,17 +50,17 @@ export class ContentGrid extends React.Component {
     filteredSets.sort((a, b) => {
       if (sort === "icDate") {
         if (a.icDate < b.icDate) {
-          return (page === "ic" ? 1 : -1);
+          return page === "ic" ? 1 : -1;
         }
         if (a.icDate > b.icDate) {
-          return (page === "ic" ? -1 : 1);
+          return page === "ic" ? -1 : 1;
         }
       } else if (sort === "gbLaunch") {
         if (a.gbLaunch < b.gbLaunch) {
-          return (page === "previous" ? 1 : -1);
+          return page === "previous" ? 1 : -1;
         }
         if (a.gbLaunch > b.gbLaunch) {
-          return (page === "previous" ? -1 : 1);
+          return page === "previous" ? -1 : 1;
         }
         if (!a.gbMonth && b.gbMonth) {
           return -1;
@@ -70,25 +70,25 @@ export class ContentGrid extends React.Component {
         }
       } else if (sort === "gbEnd") {
         if (a.gbEnd < b.gbEnd) {
-          return (page === "previous" ? 1 : -1);
+          return page === "previous" ? 1 : -1;
         }
         if (a.gbEnd > b.gbEnd) {
-          return (page === "previous" ? -1 : 1);
+          return page === "previous" ? -1 : 1;
         }
       }
       if (a.gbLaunch && b.gbLaunch) {
         if (a.gbLaunch < b.gbLaunch) {
-          return (page === "previous" ? 1 : -1);
+          return page === "previous" ? 1 : -1;
         }
         if (a.gbLaunch > b.gbLaunch) {
-          return (page === "previous" ? -1 : 1);
+          return page === "previous" ? -1 : 1;
         }
       } else {
         if (a.icDate < b.icDate) {
-          return (page === "ic" ? 1 : -1);
+          return page === "ic" ? 1 : -1;
         }
         if (a.icDate > b.icDate) {
-          return (page === "ic" ? -1 : 1);
+          return page === "ic" ? -1 : 1;
         }
       }
       const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
@@ -102,67 +102,65 @@ export class ContentGrid extends React.Component {
     });
     return filteredSets;
   };
-  createGroup = (sets) => {
-    if (this.props.view === "card") {
+  const createGroup = (sets) => {
+    if (props.view === "card") {
       return (
         <ViewCard
           sets={sets}
-          page={this.props.page}
-          details={this.props.details}
-          closeDetails={this.props.closeDetails}
-          detailSet={this.props.detailSet}
+          page={props.page}
+          details={props.details}
+          closeDetails={props.closeDetails}
+          detailSet={props.detailSet}
         />
       );
-    } else if (this.props.view === "list") {
+    } else if (props.view === "list") {
       return (
         <ViewList
           sets={sets}
-          page={this.props.page}
-          details={this.props.details}
-          closeDetails={this.props.closeDetails}
-          detailSet={this.props.detailSet}
+          page={props.page}
+          details={props.details}
+          closeDetails={props.closeDetails}
+          detailSet={props.detailSet}
         />
       );
-    } else if (this.props.view === "imageList") {
+    } else if (props.view === "imageList") {
       return (
         <ViewImageList
           sets={sets}
-          page={this.props.page}
-          details={this.props.details}
-          closeDetails={this.props.closeDetails}
-          detailSet={this.props.detailSet}
+          page={props.page}
+          details={props.details}
+          closeDetails={props.closeDetails}
+          detailSet={props.detailSet}
         />
       );
-    } else if (this.props.view === "compact") {
+    } else if (props.view === "compact") {
       return (
         <ViewCompact
           sets={sets}
-          page={this.props.page}
-          details={this.props.details}
-          closeDetails={this.props.closeDetails}
-          detailSet={this.props.detailSet}
+          page={props.page}
+          details={props.details}
+          closeDetails={props.closeDetails}
+          detailSet={props.detailSet}
         />
       );
     }
   };
-  render() {
-    return (
-      <div className="content-grid">
-        {this.props.groups.map((value, index) => {
-          const filteredSets = this.filterSets(this.props.sets, value, this.props.sort, this.props.page);
-          return (
-            <div className="outer-container" key={index}>
-              <div className="subheader">
-                <Typography use="caption" key={index}>
-                  {value} <b>({filteredSets.length})</b>
-                </Typography>
-              </div>
-              {this.createGroup(filteredSets)}
+  return (
+    <div className="content-grid">
+      {props.groups.map((value, index) => {
+        const filteredSets = filterSets(props.sets, value, props.sort, props.page);
+        return (
+          <div className="outer-container" key={index}>
+            <div className="subheader">
+              <Typography use="caption" key={index}>
+                {value} <b>({filteredSets.length})</b>
+              </Typography>
             </div>
-          );
-        })}
-      </div>
-    );
-  }
-}
+            {createGroup(filteredSets)}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 export default ContentGrid;

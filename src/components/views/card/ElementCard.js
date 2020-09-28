@@ -6,10 +6,9 @@ import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardA
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementCard.scss";
 
-export class ElementCard extends React.Component {
-  render() {
+export const ElementCard = (props) => {
     const liveIndicator =
-      this.props.live && this.props.page !== "live" ? (
+      props.live && props.page !== "live" ? (
         <Tooltip content="Live" align="bottom" enterDelay={500}>
           <div className="live-indicator">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -24,7 +23,7 @@ export class ElementCard extends React.Component {
         </Tooltip>
       ) : null;
     const shipIndicator =
-      this.props.set && this.props.set.shipped ? (
+      props.set && props.set.shipped ? (
         <Tooltip content="Shipped" align="bottom" enterDelay={500}>
           <div className="ship-indicator">
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -38,52 +37,52 @@ export class ElementCard extends React.Component {
           </div>
         </Tooltip>
       ) : null;
-    const timeIndicator = this.props.thisWeek ? (
+    const timeIndicator = props.thisWeek ? (
       <Typography use="overline" tag="h4" className="time-indicator">
-        {this.props.daysLeft} day{this.props.daysLeft > 1 ? "s" : ""}
+        {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
       </Typography>
     ) : null;
     return (
       <div className="card-container">
-        <Card className={this.props.selected ? "mdc-card--selected" : ""}>
+        <Card className={props.selected ? "mdc-card--selected" : ""}>
           <CardActions className="hover-button">
             <CardActionIcons>
               <CardActionIcon
                 icon="open_in_new"
                 tag="a"
-                href={this.props.link}
+                href={props.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                label={"Link to " + this.props.title}
+                label={"Link to " + props.title}
               />
             </CardActionIcons>
           </CardActions>
           <CardPrimaryAction
-            className={this.props.selected ? "mdc-card__primary-action--selected" : ""}
-            onClick={() => (!this.props.selected ? this.props.details(this.props.set) : this.props.closeDetails())}
+            className={props.selected ? "mdc-card__primary-action--selected" : ""}
+            onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
           >
             <div className="media-container">
               <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
-                <CardMedia sixteenByNine style={{ backgroundImage: "url(" + this.props.image + ")" }} />
+                <CardMedia sixteenByNine style={{ backgroundImage: "url(" + props.image + ")" }} />
               </LazyLoad>
               {timeIndicator}
             </div>
-            <div className="text-row" onClick={this.toggleExpand}>
+            <div className="text-row">
               <div className="text-container">
                 <div className="overline">
                   <Typography use="overline" tag="h3">
-                    {this.props.designer}
+                    {props.designer}
                   </Typography>
                   {liveIndicator}
                   {shipIndicator}
                 </div>
                 <div className="title">
                   <Typography use="headline5" tag="h2">
-                    <Twemoji options={{ className: "twemoji" }}>{this.props.title}</Twemoji>
+                    <Twemoji options={{ className: "twemoji" }}>{props.title}</Twemoji>
                   </Typography>
                 </div>
                 <Typography use="subtitle2" tag="p">
-                  {this.props.subtitle}
+                  {props.subtitle}
                 </Typography>
               </div>
             </div>
@@ -91,7 +90,6 @@ export class ElementCard extends React.Component {
         </Card>
       </div>
     );
-  }
 }
 
 export default ElementCard;

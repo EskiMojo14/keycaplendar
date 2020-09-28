@@ -2,43 +2,41 @@ import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import firebase from "../firebase";
 
-export class DialogDelete extends React.Component {
-  deleteEntry = (e) => {
+export const DialogDelete = (props) => {
+  const deleteEntry = (e) => {
     e.preventDefault();
     const db = firebase.firestore();
     db.collection("keysets")
-      .doc(this.props.set.id)
+      .doc(props.set.id)
       .set({
-        latestEditor: this.props.user.id,
+        latestEditor: props.user.id,
       })
       .then((docRef) => {
-        this.props.openSnackbar();
-        this.props.getData();
+        props.openSnackbar();
+        props.getData();
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);
-        this.props.snackbarQueue.notify({ title: "Error deleting document: " + error });
+        props.snackbarQueue.notify({ title: "Error deleting document: " + error });
       });
-    this.props.close();
+    props.close();
   };
-  render() {
-    return (
-      <Dialog open={this.props.open}>
-        <DialogTitle>Delete {this.props.set.profile + " " + this.props.set.colorway}</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete the entry for {this.props.set.profile + " " + this.props.set.colorway}?
-        </DialogContent>
-        <DialogActions>
-          <DialogButton action="close" onClick={this.props.close} isDefaultAction>
-            Cancel
-          </DialogButton>
-          <DialogButton action="accept" className="delete" onClick={this.deleteEntry}>
-            Delete
-          </DialogButton>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-}
+  return (
+    <Dialog open={props.open}>
+      <DialogTitle>Delete {props.set.profile + " " + props.set.colorway}</DialogTitle>
+      <DialogContent>
+        Are you sure you want to delete the entry for {props.set.profile + " " + props.set.colorway}?
+      </DialogContent>
+      <DialogActions>
+        <DialogButton action="close" onClick={props.close} isDefaultAction>
+          Cancel
+        </DialogButton>
+        <DialogButton action="accept" className="delete" onClick={deleteEntry}>
+          Delete
+        </DialogButton>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 export default DialogDelete;
