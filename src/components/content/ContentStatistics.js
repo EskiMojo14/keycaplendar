@@ -379,13 +379,19 @@ export class ContentStatistics extends React.Component {
     });
   };
   sortData = () => {
-    let data = Object.assign({},this.state[this.props.statisticsTab + "Data"]);
+    let data = Object.assign({}, this.state[this.props.statisticsTab + "Data"]);
     Object.keys(data).forEach((prop) => {
       data[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a[(this.props.statisticsTab === 'status' ? 4 : 2)] : a[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
-        var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b[(this.props.statisticsTab === 'status' ? 4 : 2)] : b[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
-        var c = a[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
-        var d = b[(this.props.statisticsTab === 'status' ? 5 : 3)].toLowerCase();
+        var x =
+          this.props.statisticsSort[this.props.statisticsTab] === "total"
+            ? a[this.props.statisticsTab === "status" ? 4 : 2]
+            : a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+        var y =
+          this.props.statisticsSort[this.props.statisticsTab] === "total"
+            ? b[this.props.statisticsTab === "status" ? 4 : 2]
+            : b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+        var c = a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+        var d = b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
         if (x < y) {
           return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
         }
