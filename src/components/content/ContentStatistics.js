@@ -4,16 +4,8 @@ import moment from "moment";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-  DataTableCell,
-} from "@rmwc/data-table";
 import { TimelineTable } from "../statistics/TimelineTable";
+import { StatusCard, ShippedCard } from "../statistics/PieCard";
 import "./ContentStatistics.scss";
 
 function camelize(str) {
@@ -557,118 +549,14 @@ export class ContentStatistics extends React.Component {
         <div className="stats-tab stats-grid status">
           {this.state.statusData[this.props.statistics.status].data.map((data, index) => {
             return (
-              <Card key={index} className="pie-card">
-                <Typography use="headline5" tag="h1">
-                  {data[5]}
-                </Typography>
-                <div className="pie-container">
-                  <div className="table-container">
-                    <DataTable>
-                      <DataTableContent>
-                        <DataTableHead>
-                          <DataTableRow>
-                            <DataTableHeadCell>Status</DataTableHeadCell>
-                            <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
-                          </DataTableRow>
-                        </DataTableHead>
-                        <DataTableBody>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator ic"></div>IC
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[0]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator pre-gb"></div>Pre GB
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[1]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator live-gb"></div>Live GB
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[2]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator post-gb"></div>Post GB
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[3]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell className="bold">Total</DataTableCell>
-                            <DataTableCell alignEnd>{data[4]}</DataTableCell>
-                          </DataTableRow>
-                        </DataTableBody>
-                      </DataTableContent>
-                    </DataTable>
-                  </div>
-                  <div className="pie-chart-container status">
-                    <ChartistGraph
-                      className="ct-octave"
-                      data={{
-                        series: [data[0], data[1], data[2], data[3]],
-                        labels: [" ", " ", " ", " "],
-                      }}
-                      type={"Pie"}
-                    />
-                  </div>
-                </div>
-              </Card>
+              <StatusCard key={index} data={data}/>
             );
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
           {this.state.shippedData[this.props.statistics.shipped].data.map((data, index) => {
             return (
-              <Card key={index} className="pie-card">
-                <Typography use="headline5" tag="h1">
-                  {data[3]}
-                </Typography>
-                <div className="pie-container">
-                  <div className="table-container">
-                    <DataTable>
-                      <DataTableContent>
-                        <DataTableHead>
-                          <DataTableRow>
-                            <DataTableHeadCell>Status</DataTableHeadCell>
-                            <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
-                          </DataTableRow>
-                        </DataTableHead>
-                        <DataTableBody>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator shipped"></div>Shipped
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[0]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell>
-                              <div className="indicator not-shipped"></div>Not shipped
-                            </DataTableCell>
-                            <DataTableCell alignEnd>{data[1]}</DataTableCell>
-                          </DataTableRow>
-                          <DataTableRow>
-                            <DataTableCell className="bold">Total</DataTableCell>
-                            <DataTableCell alignEnd>{data[2]}</DataTableCell>
-                          </DataTableRow>
-                        </DataTableBody>
-                      </DataTableContent>
-                    </DataTable>
-                  </div>
-                  <div className="pie-chart-container shipped">
-                    <ChartistGraph
-                      className="ct-octave"
-                      data={{
-                        series: [data[1], data[0]],
-                        labels: [" ", " "],
-                      }}
-                      type={"Pie"}
-                    />
-                  </div>
-                </div>
-              </Card>
+              <ShippedCard key={index} data={data}/>
             );
           })}
         </div>
