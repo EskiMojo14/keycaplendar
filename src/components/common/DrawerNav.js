@@ -16,7 +16,7 @@ export const DesktopDrawerNav = (props) => {
       </DrawerHeader>
       <DrawerContent>
         <List>
-          <ListItem onClick={(e) => props.changePage("calendar")} activated={props.page === "calendar" ? true : false}>
+          <ListItem onClick={(e) => props.changePage("calendar")} activated={props.page === "calendar"}>
             <ListItemGraphic
               icon={{
                 strategy: props.page === "calendar" && filledIcons ? "ligature" : "component",
@@ -34,7 +34,7 @@ export const DesktopDrawerNav = (props) => {
             />
             Calendar
           </ListItem>
-          <ListItem onClick={(e) => props.changePage("live")} activated={props.page === "live" ? true : false}>
+          <ListItem onClick={(e) => props.changePage("live")} activated={props.page === "live"}>
             <ListItemGraphic
               icon={{
                 strategy: props.page === "live" && filledIcons ? "ligature" : "component",
@@ -52,7 +52,7 @@ export const DesktopDrawerNav = (props) => {
             />
             Live GBs
           </ListItem>
-          <ListItem onClick={(e) => props.changePage("ic")} activated={props.page === "ic" ? true : false}>
+          <ListItem onClick={(e) => props.changePage("ic")} activated={props.page === "ic"}>
             <ListItemGraphic
               icon={{
                 strategy: props.page === "ic" && filledIcons ? "ligature" : "component",
@@ -70,17 +70,17 @@ export const DesktopDrawerNav = (props) => {
             />
             IC Tracker
           </ListItem>
-          <ListItem onClick={(e) => props.changePage("previous")} activated={props.page === "previous" ? true : false}>
+          <ListItem onClick={(e) => props.changePage("previous")} activated={props.page === "previous"}>
             <ListItemGraphic icon="history" />
             Previous Sets
           </ListItem>
-          <ListItem onClick={(e) => props.changePage("timeline")} activated={props.page === "timeline" ? true : false}>
+          <ListItem onClick={(e) => props.changePage("timeline")} activated={props.page === "timeline"}>
             <ListItemGraphic icon="timeline" />
             Timeline
           </ListItem>
           <ListItem
             onClick={(e) => props.changePage("statistics")}
-            activated={props.page === "statistics" ? true : false}
+            activated={props.page === "statistics"}
           >
             <ListItemGraphic icon="bar_chart" />
             Statistics
@@ -132,7 +132,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("calendar");
             }}
-            activated={props.page === "calendar" ? true : false}
+            activated={props.page === "calendar"}
           >
             <ListItemGraphic
               icon={{
@@ -155,7 +155,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("live");
             }}
-            activated={props.page === "live" ? true : false}
+            activated={props.page === "live"}
           >
             <ListItemGraphic
               icon={{
@@ -178,7 +178,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("ic");
             }}
-            activated={props.page === "ic" ? true : false}
+            activated={props.page === "ic"}
           >
             <ListItemGraphic
               icon={{
@@ -201,7 +201,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("previous");
             }}
-            activated={props.page === "previous" ? true : false}
+            activated={props.page === "previous"}
           >
             <ListItemGraphic icon="history" />
             Previous Sets
@@ -210,7 +210,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("timeline");
             }}
-            activated={props.page === "timeline" ? true : false}
+            activated={props.page === "timeline"}
           >
             <ListItemGraphic icon="timeline" />
             Timeline
@@ -219,7 +219,7 @@ export const MobileDrawerNav = (props) => {
             onClick={(e) => {
               changePage("statistics");
             }}
-            activated={props.page === "statistics" ? true : false}
+            activated={props.page === "statistics"}
           >
             <ListItemGraphic icon="bar_chart" />
             Statistics
@@ -275,7 +275,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("calendar");
             }}
-            activated={props.page === "calendar" ? true : false}
+            activated={props.page === "calendar"}
           >
             <ListItemGraphic
               icon={{
@@ -298,7 +298,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("live");
             }}
-            activated={props.page === "live" ? true : false}
+            activated={props.page === "live"}
           >
             <ListItemGraphic
               icon={{
@@ -321,7 +321,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("ic");
             }}
-            activated={props.page === "ic" ? true : false}
+            activated={props.page === "ic"}
           >
             <ListItemGraphic
               icon={{
@@ -344,7 +344,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("previous");
             }}
-            activated={props.page === "previous" ? true : false}
+            activated={props.page === "previous"}
           >
             <ListItemGraphic icon="history" />
             Previous Sets
@@ -353,7 +353,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("timeline");
             }}
-            activated={props.page === "timeline" ? true : false}
+            activated={props.page === "timeline"}
           >
             <ListItemGraphic icon="timeline" />
             Timeline
@@ -362,7 +362,7 @@ export const BottomDrawerNav = (props) => {
             onClick={(e) => {
               changePage("statistics");
             }}
-            activated={props.page === "statistics" ? true : false}
+            activated={props.page === "statistics"}
           >
             <ListItemGraphic icon="bar_chart" />
             Statistics

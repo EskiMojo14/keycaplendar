@@ -20,7 +20,7 @@ export class DialogFilter extends React.Component {
       this.props[this.props.filterBy].forEach((prop, index, array) => {
         values[prop.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: prop,
-          checked: this.props.whitelist[this.props.filterBy].indexOf(prop) > -1 ? true : false,
+          checked: this.props.whitelist[this.props.filterBy].indexOf(prop) > -1,
         };
         valuesProcessed++;
         if (valuesProcessed === array.length) {

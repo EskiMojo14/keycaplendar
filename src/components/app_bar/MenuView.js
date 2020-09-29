@@ -16,10 +16,10 @@ export const MenuView = (props) => {
             }
       }
     >
-      <MenuItem selected={props.view === "card" ? true : false}>Card</MenuItem>
-      <MenuItem selected={props.view === "list" ? true : false}>List</MenuItem>
-      <MenuItem selected={props.view === "imageList" ? true : false}>Image List</MenuItem>
-      <MenuItem selected={props.view === "compact" ? true : false}>Compact</MenuItem>
+      <MenuItem selected={props.view === "card"}>Card</MenuItem>
+      <MenuItem selected={props.view === "list"}>List</MenuItem>
+      <MenuItem selected={props.view === "imageList"}>Image List</MenuItem>
+      <MenuItem selected={props.view === "compact"}>Compact</MenuItem>
     </Menu>
   );
 };
