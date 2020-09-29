@@ -1,5 +1,3 @@
-@import "@material/typography/mdc-typography";
-@import "@material/ripple/mdc-ripple";
 @import "@material/animation/variables";
 
 .stats-tab {
@@ -73,44 +71,6 @@
     &.fullwidth {
       padding: 0;
       overflow: hidden;
-      .rmwc-data-table {
-        border: none;
-        .right-border {
-          border-right: 1px solid var(--divider-color);
-        }
-        &__content {
-          width: 100%;
-        }
-        &__head .rmwc-data-table__row {
-          .rmwc-data-table__head-cell {
-            &.profile-title {
-              padding: 0;
-              position: relative;
-              //@include mdc-typography(button);
-              //text-align: center;
-              cursor: pointer;
-              padding: 0.75rem 1rem;
-              padding-bottom: 0.5rem;
-              @include mdc-ripple-surface();
-              @include mdc-ripple-radius-bounded();
-              //border-radius: 4px;
-              .profile-indicator {
-                height: 4px;
-                width: calc(100% - 4px);
-                position: absolute;
-                top: auto;
-                bottom: 0;
-                left: 2px;
-                right: 2px;
-                transition: background-color 200ms $mdc-animation-standard-curve-timing-function;
-              }
-            }
-          }
-        }
-        &__body .rmwc-data-table__row .rmwc-data-table__cell {
-          transition: color 200ms $mdc-animation-standard-curve-timing-function;
-        }
-      }
     }
   }
   &.stats-grid {

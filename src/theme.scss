@@ -733,7 +733,7 @@ $overlay-values: (
         fill: $color;
       }
     }
-    .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} {
+    .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} {
       @include mdc-states($color);
       .profile-indicator {
         background-color: $color;
@@ -754,10 +754,10 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
+        .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
           background-color: rgba($color, 0.1);
         }
-        .rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {
+        .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {
           color: map-get($variables, text-disabled);
         }
       }

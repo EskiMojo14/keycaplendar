@@ -3,7 +3,6 @@ import ChartistGraph from "react-chartist";
 import moment from "moment";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
-import { Ripple } from "@rmwc/ripple";
 import { Button } from "@rmwc/button";
 import {
   DataTable,
@@ -14,6 +13,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { TimelineTable } from "../statistics/TimelineTable";
 import "./ContentStatistics.scss";
 
 function camelize(str) {
@@ -459,7 +459,6 @@ export class ContentStatistics extends React.Component {
         onlyInteger: true,
       },
     };
-    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
     const barGraph =
       this.state.profileChartType === "bar" ? (
         <ChartistGraph
@@ -546,53 +545,13 @@ export class ContentStatistics extends React.Component {
             </div>
           </Card>
           <Card className={"fullwidth" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}>
-            <DataTable>
-              <DataTableContent>
-                <DataTableHead>
-                  <DataTableRow>
-                    <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
-                    <DataTableHeadCell className="right-border" alignEnd>
-                      Sets
-                    </DataTableHeadCell>
-                    {this.props.profiles.map((profile, index) => {
-                      return (
-                        <Ripple key={profile}>
-                          <DataTableHeadCell
-                            alignEnd
-                            className={"profile-title title-" + letters[index]}
-                            onClick={() => {
-                              this.setFocus(letters[index]);
-                            }}
-                          >
-                            {profile}
-                            <div className="profile-indicator"></div>
-                          </DataTableHeadCell>
-                        </Ripple>
-                      );
-                    })}
-                  </DataTableRow>
-                </DataTableHead>
-                <DataTableBody>
-                  {this.state.months[this.props.statistics.timeline].map((month) => {
-                    return (
-                      <DataTableRow key={month}>
-                        <DataTableCell className="right-border">{month}</DataTableCell>
-                        <DataTableCell className="right-border" alignEnd>
-                          {this.state.monthData[this.props.statistics.timeline][month].count}
-                        </DataTableCell>
-                        {this.props.profiles.map((profile, index) => {
-                          return (
-                            <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
-                              {this.state.monthData[this.props.statistics.timeline][month][camelize(profile)]}
-                            </DataTableCell>
-                          );
-                        })}
-                      </DataTableRow>
-                    );
-                  })}
-                </DataTableBody>
-              </DataTableContent>
-            </DataTable>
+            <TimelineTable
+              profiles={this.props.profiles}
+              setFocus={this.setFocus}
+              months={this.state.months}
+              statistics={this.props.statistics}
+              monthData={this.state.monthData}
+            />
           </Card>
         </div>
         <div className="stats-tab stats-grid status">
