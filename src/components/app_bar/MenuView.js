@@ -9,13 +9,6 @@ export class MenuView extends React.Component {
         open={this.props.open}
         onSelect={this.props.onSelect}
         onClose={this.props.onClose}
-        onMouseLeave={
-          this.props.cascading
-            ? this.props.onClose
-            : () => {
-                return;
-              }
-        }
       >
         <MenuItem selected={this.props.view === "card" ? true : false}>Card</MenuItem>
         <MenuItem selected={this.props.view === "list" ? true : false}>List</MenuItem>
