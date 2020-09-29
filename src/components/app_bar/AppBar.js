@@ -17,6 +17,7 @@ import { TabBar, Tab } from "@rmwc/tabs";
 import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal } from "./SearchBar";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./AppBar.scss";
 
 export class DesktopAppBar extends React.Component {
@@ -99,29 +100,27 @@ export class DesktopAppBar extends React.Component {
       this.props.page === "statistics" ? (
         this.props.statisticsTab === "timeline" ? (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "icDate"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "icDate");
                 }}
                 label="IC"
               />
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "gbLaunch"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "gbLaunch");
                 }}
                 label="GB"
               />
-            </div>
+            </ToggleGroup>
           </TopAppBarSection>
         ) : (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
+            <ToggleGroup>
+              <ToggleGroupButton
                 outlined
                 className={
                   this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""
@@ -139,11 +138,8 @@ export class DesktopAppBar extends React.Component {
                   ),
                 }}
               />
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "total" ? "mdc-button--selected" : ""
-                }
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "total"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "total");
                 }}
@@ -157,33 +153,30 @@ export class DesktopAppBar extends React.Component {
                   ),
                 }}
               />
-            </div>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={this.props.statistics[this.props.statisticsTab] === "profile" ? "mdc-button--selected" : ""}
+            </ToggleGroup>
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statistics[this.props.statisticsTab] === "profile"}
                 onClick={() => {
                   this.props.setStatistics(this.props.statisticsTab, "profile");
                 }}
                 label="Profile"
               />
-              <Button
-                outlined
-                className={this.props.statistics[this.props.statisticsTab] === "designer" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics[this.props.statisticsTab] === "designer"}
                 onClick={() => {
                   this.props.setStatistics(this.props.statisticsTab, "designer");
                 }}
                 label="Designer"
               />
-              <Button
-                outlined
-                className={this.props.statistics[this.props.statisticsTab] === "vendor" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics[this.props.statisticsTab] === "vendor"}
                 onClick={() => {
                   this.props.setStatistics(this.props.statisticsTab, "vendor");
                 }}
                 label="Vendor"
               />
-            </div>
+            </ToggleGroup>
           </TopAppBarSection>
         )
       ) : (
@@ -354,33 +347,28 @@ export class TabletAppBar extends React.Component {
       this.props.page === "statistics" ? (
         this.props.statisticsTab === "timeline" ? (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "icDate"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "icDate");
                 }}
                 label="IC"
               />
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "gbLaunch"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "gbLaunch");
                 }}
                 label="GB"
               />
-            </div>
+            </ToggleGroup>
           </TopAppBarSection>
         ) : (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""
-                }
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "alphabetical");
                 }}
@@ -394,11 +382,8 @@ export class TabletAppBar extends React.Component {
                   ),
                 }}
               />
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "total" ? "mdc-button--selected" : ""
-                }
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "total"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "total");
                 }}
@@ -412,7 +397,7 @@ export class TabletAppBar extends React.Component {
                   ),
                 }}
               />
-            </div>
+            </ToggleGroup>
             <Tooltip enterDelay={500} content="Category" align="bottom">
               <div className="category-button" onClick={this.props.openStatisticsDialog}>
                 <Ripple unbounded>
@@ -617,33 +602,28 @@ export class MobileAppBar extends React.Component {
       this.props.page === "statistics" ? (
         this.props.statisticsTab === "timeline" ? (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "icDate"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "icDate");
                 }}
                 label="IC"
               />
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "gbLaunch"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "gbLaunch");
                 }}
                 label="GB"
               />
-            </div>
+            </ToggleGroup>
           </TopAppBarSection>
         ) : (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""
-                }
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "alphabetical");
                 }}
@@ -657,11 +637,8 @@ export class MobileAppBar extends React.Component {
                   ),
                 }}
               />
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "total" ? "mdc-button--selected" : ""
-                }
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "total"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "total");
                 }}
@@ -675,7 +652,7 @@ export class MobileAppBar extends React.Component {
                   ),
                 }}
               />
-            </div>
+            </ToggleGroup>
             <Tooltip enterDelay={500} content="Category" align="bottom">
               <div className="category-button" onClick={this.props.openStatisticsDialog}>
                 <Ripple unbounded>
@@ -882,33 +859,28 @@ export class BottomAppBar extends React.Component {
       this.props.page === "statistics" ? (
         this.props.statisticsTab === "timeline" ? (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "icDate" ? "mdc-button--selected" : ""}
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "icDate"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "icDate");
                 }}
                 label="IC"
               />
-              <Button
-                outlined
-                className={this.props.statistics.timeline === "gbLaunch" ? "mdc-button--selected" : ""}
+              <ToggleGroupButton
+                selected={this.props.statistics.timeline === "gbLaunch"}
                 onClick={() => {
                   this.props.setStatistics("timeline", "gbLaunch");
                 }}
                 label="GB"
               />
-            </div>
+            </ToggleGroup>
           </TopAppBarSection>
         ) : (
           <TopAppBarSection alignEnd>
-            <div className="toggle-group">
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""
-                }
+            <ToggleGroup>
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "alphabetical");
                 }}
@@ -922,11 +894,8 @@ export class BottomAppBar extends React.Component {
                   ),
                 }}
               />
-              <Button
-                outlined
-                className={
-                  this.props.statisticsSort[this.props.statisticsTab] === "total" ? "mdc-button--selected" : ""
-                }
+              <ToggleGroupButton
+                selected={this.props.statisticsSort[this.props.statisticsTab] === "total"}
                 onClick={() => {
                   this.props.setStatisticsSort(this.props.statisticsTab, "total");
                 }}
@@ -940,7 +909,7 @@ export class BottomAppBar extends React.Component {
                   ),
                 }}
               />
-            </div>
+            </ToggleGroup>
             <Tooltip enterDelay={500} content="Category" align="top">
               <div className="category-button" onClick={this.props.openStatisticsDialog}>
                 <Ripple unbounded>

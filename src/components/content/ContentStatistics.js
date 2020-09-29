@@ -3,9 +3,9 @@ import ChartistGraph from "react-chartist";
 import moment from "moment";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
-import { Button } from "@rmwc/button";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard, ShippedCard } from "../statistics/PieCard";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
 
 function camelize(str) {
@@ -494,9 +494,8 @@ export class ContentStatistics extends React.Component {
               <Typography use="headline5" tag="h1">
                 Profile Breakdown
               </Typography>
-              <div className="toggle-group">
-                <Button
-                  outlined
+              <ToggleGroup>
+                <ToggleGroupButton
                   icon={{
                     strategy: "component",
                     icon: (
@@ -506,13 +505,12 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  className={this.state.profileChartType === "bar" ? "mdc-button--selected" : ""}
+                  selected={this.state.profileChartType === "bar"}
                   onClick={() => {
                     this.setProfileChartType("bar");
                   }}
                 />
-                <Button
-                  outlined
+                <ToggleGroupButton
                   icon={{
                     strategy: "component",
                     icon: (
@@ -522,12 +520,12 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  className={this.state.profileChartType === "line" ? "mdc-button--selected" : ""}
+                  selected={this.state.profileChartType === "line"}
                   onClick={() => {
                     this.setProfileChartType("line");
                   }}
                 />
-              </div>
+              </ToggleGroup>
             </div>
             <div
               className={"graph-container" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}
@@ -548,16 +546,12 @@ export class ContentStatistics extends React.Component {
         </div>
         <div className="stats-tab stats-grid status">
           {this.state.statusData[this.props.statistics.status].data.map((data, index) => {
-            return (
-              <StatusCard key={index} data={data}/>
-            );
+            return <StatusCard key={index} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
           {this.state.shippedData[this.props.statistics.shipped].data.map((data, index) => {
-            return (
-              <ShippedCard key={index} data={data}/>
-            );
+            return <ShippedCard key={index} data={data} />;
           })}
         </div>
       </div>
