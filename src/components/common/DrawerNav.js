@@ -17,10 +17,7 @@ export class DesktopDrawerNav extends React.Component {
         </DrawerHeader>
         <DrawerContent>
           <List>
-            <ListItem
-              onClick={(e) => this.props.changePage("calendar")}
-              activated={this.props.page === "calendar" ? true : false}
-            >
+            <ListItem onClick={(e) => this.props.changePage("calendar")} activated={this.props.page === "calendar"}>
               <ListItemGraphic
                 icon={{
                   strategy: this.props.page === "calendar" && filledIcons ? "ligature" : "component",
@@ -38,10 +35,7 @@ export class DesktopDrawerNav extends React.Component {
               />
               Calendar
             </ListItem>
-            <ListItem
-              onClick={(e) => this.props.changePage("live")}
-              activated={this.props.page === "live" ? true : false}
-            >
+            <ListItem onClick={(e) => this.props.changePage("live")} activated={this.props.page === "live"}>
               <ListItemGraphic
                 icon={{
                   strategy: this.props.page === "live" && filledIcons ? "ligature" : "component",
@@ -59,7 +53,7 @@ export class DesktopDrawerNav extends React.Component {
               />
               Live GBs
             </ListItem>
-            <ListItem onClick={(e) => this.props.changePage("ic")} activated={this.props.page === "ic" ? true : false}>
+            <ListItem onClick={(e) => this.props.changePage("ic")} activated={this.props.page === "ic"}>
               <ListItemGraphic
                 icon={{
                   strategy: this.props.page === "ic" && filledIcons ? "ligature" : "component",
@@ -77,24 +71,15 @@ export class DesktopDrawerNav extends React.Component {
               />
               IC Tracker
             </ListItem>
-            <ListItem
-              onClick={(e) => this.props.changePage("previous")}
-              activated={this.props.page === "previous" ? true : false}
-            >
+            <ListItem onClick={(e) => this.props.changePage("previous")} activated={this.props.page === "previous"}>
               <ListItemGraphic icon="history" />
               Previous Sets
             </ListItem>
-            <ListItem
-              onClick={(e) => this.props.changePage("timeline")}
-              activated={this.props.page === "timeline" ? true : false}
-            >
+            <ListItem onClick={(e) => this.props.changePage("timeline")} activated={this.props.page === "timeline"}>
               <ListItemGraphic icon="timeline" />
               Timeline
             </ListItem>
-            <ListItem
-              onClick={(e) => this.props.changePage("statistics")}
-              activated={this.props.page === "statistics" ? true : false}
-            >
+            <ListItem onClick={(e) => this.props.changePage("statistics")} activated={this.props.page === "statistics"}>
               <ListItemGraphic icon="bar_chart" />
               Statistics
             </ListItem>
@@ -128,15 +113,14 @@ export class DesktopDrawerNav extends React.Component {
 }
 
 export class MobileDrawerNav extends React.Component {
-
   toggleDrawerIcon = () => {
     this.props.toggle();
-  }
+  };
 
   changePage = (newPage) => {
     this.props.changePage(newPage);
     this.props.close();
-  }
+  };
   render() {
     const filledIcons = false;
     return (
@@ -153,7 +137,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("calendar");
                 this.props.close();
               }}
-              activated={this.props.page === "calendar" ? true : false}
+              activated={this.props.page === "calendar"}
             >
               <ListItemGraphic
                 icon={{
@@ -177,7 +161,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("live");
                 this.props.close();
               }}
-              activated={this.props.page === "live" ? true : false}
+              activated={this.props.page === "live"}
             >
               <ListItemGraphic
                 icon={{
@@ -201,7 +185,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("ic");
                 this.props.close();
               }}
-              activated={this.props.page === "ic" ? true : false}
+              activated={this.props.page === "ic"}
             >
               <ListItemGraphic
                 icon={{
@@ -225,7 +209,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("previous");
                 this.props.close();
               }}
-              activated={this.props.page === "previous" ? true : false}
+              activated={this.props.page === "previous"}
             >
               <ListItemGraphic icon="history" />
               Previous Sets
@@ -235,7 +219,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("timeline");
                 this.props.close();
               }}
-              activated={this.props.page === "timeline" ? true : false}
+              activated={this.props.page === "timeline"}
             >
               <ListItemGraphic icon="timeline" />
               Timeline
@@ -245,7 +229,7 @@ export class MobileDrawerNav extends React.Component {
                 this.props.changePage("statistics");
                 this.props.close();
               }}
-              activated={this.props.page === "statistics" ? true : false}
+              activated={this.props.page === "statistics"}
             >
               <ListItemGraphic icon="bar_chart" />
               Statistics
@@ -284,15 +268,14 @@ export class MobileDrawerNav extends React.Component {
   }
 }
 export class BottomDrawerNav extends React.Component {
-
   toggleDrawerIcon = () => {
     this.props.toggle();
-  }
+  };
 
   changePage = (newPage) => {
     this.props.changePage(newPage);
     this.props.close();
-  }
+  };
   render() {
     const filledIcons = false;
     return (
@@ -309,7 +292,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("calendar");
                 this.props.close();
               }}
-              activated={this.props.page === "calendar" ? true : false}
+              activated={this.props.page === "calendar"}
             >
               <ListItemGraphic
                 icon={{
@@ -333,7 +316,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("live");
                 this.props.close();
               }}
-              activated={this.props.page === "live" ? true : false}
+              activated={this.props.page === "live"}
             >
               <ListItemGraphic
                 icon={{
@@ -357,7 +340,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("ic");
                 this.props.close();
               }}
-              activated={this.props.page === "ic" ? true : false}
+              activated={this.props.page === "ic"}
             >
               <ListItemGraphic
                 icon={{
@@ -381,7 +364,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("previous");
                 this.props.close();
               }}
-              activated={this.props.page === "previous" ? true : false}
+              activated={this.props.page === "previous"}
             >
               <ListItemGraphic icon="history" />
               Previous Sets
@@ -391,7 +374,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("timeline");
                 this.props.close();
               }}
-              activated={this.props.page === "timeline" ? true : false}
+              activated={this.props.page === "timeline"}
             >
               <ListItemGraphic icon="timeline" />
               Timeline
@@ -401,7 +384,7 @@ export class BottomDrawerNav extends React.Component {
                 this.props.changePage("statistics");
                 this.props.close();
               }}
-              activated={this.props.page === "statistics" ? true : false}
+              activated={this.props.page === "statistics"}
             >
               <ListItemGraphic icon="bar_chart" />
               Statistics

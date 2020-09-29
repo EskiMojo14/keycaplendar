@@ -210,9 +210,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isIC ? true : false;
+            return set.designer.indexOf(name) !== -1 && isIC;
           } else {
-            return set[prop] === name && isIC ? true : false;
+            return set[prop] === name && isIC;
           }
         });
         const preGbSets = this.props.sets.filter((set) => {
@@ -225,9 +225,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isPreGb ? true : false;
+            return set.designer.indexOf(name) !== -1 && isPreGb;
           } else {
-            return set[prop] === name && isPreGb ? true : false;
+            return set[prop] === name && isPreGb;
           }
         });
         const liveGbSets = this.props.sets.filter((set) => {
@@ -241,9 +241,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isLiveGb ? true : false;
+            return set.designer.indexOf(name) !== -1 && isLiveGb;
           } else {
-            return set[prop] === name && isLiveGb ? true : false;
+            return set[prop] === name && isLiveGb;
           }
         });
         const postGbSets = this.props.sets.filter((set) => {
@@ -260,9 +260,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isPostGb ? true : false;
+            return set.designer.indexOf(name) !== -1 && isPostGb;
           } else {
-            return set[prop] === name && isPostGb ? true : false;
+            return set[prop] === name && isPostGb;
           }
         });
         statusData[prop].data.push([
@@ -331,9 +331,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && set.shipped === true ? true : false;
+            return set.designer.indexOf(name) !== -1 && set.shipped === true;
           } else {
-            return set[prop] === name && set.shipped === true ? true : false;
+            return set[prop] === name && set.shipped === true;
           }
         });
         const unshippedSets = pastSets.filter((set) => {
@@ -344,9 +344,9 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && set.shipped !== true ? true : false;
+            return set.designer.indexOf(name) !== -1 && set.shipped !== true;
           } else {
-            return set[prop] === name && set.shipped !== true ? true : false;
+            return set[prop] === name && set.shipped !== true;
           }
         });
         shippedData[prop].data.push([

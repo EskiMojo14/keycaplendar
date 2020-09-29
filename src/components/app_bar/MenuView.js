@@ -10,10 +10,10 @@ export class MenuView extends React.Component {
         onSelect={this.props.onSelect}
         onClose={this.props.onClose}
       >
-        <MenuItem selected={this.props.view === "card" ? true : false}>Card</MenuItem>
-        <MenuItem selected={this.props.view === "list" ? true : false}>List</MenuItem>
-        <MenuItem selected={this.props.view === "imageList" ? true : false}>Image List</MenuItem>
-        <MenuItem selected={this.props.view === "compact" ? true : false}>Compact</MenuItem>
+        <MenuItem selected={this.props.view === "card"}>Card</MenuItem>
+        <MenuItem selected={this.props.view === "list"}>List</MenuItem>
+        <MenuItem selected={this.props.view === "imageList"}>Image List</MenuItem>
+        <MenuItem selected={this.props.view === "compact"}>Compact</MenuItem>
       </Menu>
     );
   }

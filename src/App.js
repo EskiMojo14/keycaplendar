@@ -635,7 +635,7 @@ class App extends React.Component {
       vendors: usVendors,
       profiles: allProfiles,
       groups: groups,
-      content: searchedSets.length > 0 ? true : false,
+      content: searchedSets.length > 0,
       loading: false,
     });
   };

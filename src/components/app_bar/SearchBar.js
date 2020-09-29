@@ -16,14 +16,14 @@ export class SearchBarPersistent extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.search !== prevProps.search) {
       this.setState({
-        expanded: this.props.search.length !== 0 ? true : false,
+        expanded: this.props.search.length !== 0,
       });
       this.createSearchTerms();
     }
   }
   handleChange = (e) => {
     this.setState({
-      expanded: e.target.value.length !== 0 ? true : false,
+      expanded: e.target.value.length !== 0,
     });
     this.props.setSearch(e.target.value);
   };
@@ -185,7 +185,7 @@ export class SearchBarModal extends React.Component {
   }
   handleChange = (e) => {
     this.setState({
-      expanded: e.target.value.length !== 0 ? true : false,
+      expanded: e.target.value.length !== 0,
     });
     this.props.setSearch(e.target.value);
   };
@@ -318,7 +318,7 @@ export class SearchAppBar extends React.Component {
   }
   handleChange = (e) => {
     this.setState({
-      expanded: e.target.value.length !== 0 ? true : false,
+      expanded: e.target.value.length !== 0,
     });
     this.props.setSearch(e.target.value);
   };
