@@ -10,7 +10,7 @@ import { ContentGrid } from "./content/ContentGrid";
 import { DialogFilter } from "./filter/DialogFilter";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
-import { DialogStatistics } from "./content/statistics/DialogStatistics";
+import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./filter/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
