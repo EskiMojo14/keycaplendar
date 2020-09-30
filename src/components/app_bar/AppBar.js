@@ -10,7 +10,6 @@ import {
 } from "@rmwc/top-app-bar";
 import { Tooltip } from "@rmwc/tooltip";
 import { Ripple } from "@rmwc/ripple";
-import { Button } from "@rmwc/button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
 import { TabBar, Tab } from "@rmwc/tabs";
