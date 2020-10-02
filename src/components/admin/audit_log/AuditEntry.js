@@ -19,6 +19,7 @@ import {
   DataTableBody,
 } from "@rmwc/data-table";
 import { Checkbox } from "@rmwc/checkbox";
+import "./AuditEntry.scss";
 
 export const AuditEntry = (props) => {
   return (

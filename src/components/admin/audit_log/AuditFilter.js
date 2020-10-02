@@ -2,12 +2,11 @@ import React from "react";
 import { Select } from "@rmwc/select";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
+import "./AuditFilter.scss";
 
 export const AuditFilter = (props) => {
   const closeButton =
-    props.device === "desktop" ? (
-      <IconButton className="close-icon" icon="close" onClick={props.close} />
-    ) : null;
+    props.device === "desktop" ? <IconButton className="close-icon" icon="close" onClick={props.close} /> : null;
   return (
     <Drawer
       open={props.open}
