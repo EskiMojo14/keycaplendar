@@ -24,7 +24,7 @@
     "react-scripts": "^3.4.3",
     "react-string-replace": "^0.4.4",
     "react-twemoji": "^0.2.3",
-    "rmwc": "^5.7.2",
+    "rmwc": "^6.1.4",
     "websocket-extensions": "^0.1.4"
   },
   "scripts": {
