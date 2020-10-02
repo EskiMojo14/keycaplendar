@@ -13,12 +13,11 @@ import {
 } from "@rmwc/top-app-bar";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { List } from "@rmwc/list";
-import { Select } from "@rmwc/select";
-import { IconButton } from "@rmwc/icon-button";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent, DrawerAppContent } from "@rmwc/drawer";
+import { DrawerAppContent } from "@rmwc/drawer";
 import { ContentEmpty } from "../../content/ContentEmpty";
 import { AuditEntry } from "./AuditEntry.js";
 import { DialogDelete } from "./DialogDelete.js";
+import { AuditFilter } from "./AuditFilter.js";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -192,10 +191,6 @@ export class AuditLog extends React.Component {
       "shipped",
       "vendors",
     ];
-    const closeButton =
-      this.props.device === "desktop" ? (
-        <IconButton className="close-icon" icon="close" onClick={this.closeFilterDrawer} />
-      ) : null;
     return (
       <div>
         <TopAppBar fixed>
@@ -214,63 +209,17 @@ export class AuditLog extends React.Component {
         </TopAppBar>
         <TopAppBarFixedAdjust />
         <div className="content-container">
-          <Drawer
+          <AuditFilter
             open={this.state.filterDrawerOpen}
-            dismissible={this.props.device === "desktop"}
-            modal={this.props.device !== "desktop"}
-            className="drawer-right filter-drawer"
-            onClose={this.closeFilterDrawer}
-          >
-            <DrawerHeader>
-              <DrawerTitle>Filters</DrawerTitle>
-              {closeButton}
-            </DrawerHeader>
-            <DrawerContent>
-              <Select
-                outlined
-                enhanced={{ fixed: true }}
-                label="Action"
-                options={[
-                  { label: "None", value: "none" },
-                  { label: "Created", value: "created" },
-                  { label: "Updated", value: "updated" },
-                  { label: "Deleted", value: "deleted" },
-                ]}
-                value={this.state.filterAction}
-                className="action-select"
-                onChange={(e) => {
-                  this.handleFilterChange(e, "filterAction");
-                }}
-              />
-              <Select
-                outlined
-                enhanced={{ fixed: true }}
-                label="User"
-                options={this.state.users}
-                value={this.state.filterUser}
-                className="user-select"
-                onChange={(e) => {
-                  this.handleFilterChange(e, "filterUser");
-                }}
-              />
-              <Select
-                outlined
-                enhanced={{ fixed: true }}
-                label="Length"
-                options={[
-                  { label: "25", value: 25 },
-                  { label: "50", value: 50 },
-                  { label: "100", value: 100 },
-                  { label: "200", value: 200 },
-                ]}
-                value={this.state.filterLength}
-                className="action-select"
-                onChange={(e) => {
-                  this.getActions(e.currentTarget.value);
-                }}
-              />
-            </DrawerContent>
-          </Drawer>
+            close={this.closeFilterDrawer}
+            device={this.props.device}
+            handleFilterChange={this.handleFilterChange}
+            filterAction={this.state.filterAction}
+            filterUser={this.state.filterUser}
+            users={this.state.users}
+            filterLength={this.state.filterLength}
+            getActions={this.getActions}
+          />
           <DrawerAppContent>
             {this.state.actionsFiltered.length > 0 || this.state.loading ? (
               <div
