@@ -17,8 +17,8 @@ import { Select } from "@rmwc/select";
 import { IconButton } from "@rmwc/icon-button";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent, DrawerAppContent } from "@rmwc/drawer";
 import { ContentEmpty } from "../../content/ContentEmpty";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { AuditEntry } from "./AuditEntry.js";
+import { DialogDelete } from "./DialogDelete.js";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -302,28 +302,14 @@ export class AuditLog extends React.Component {
             ) : (
               <ContentEmpty />
             )}
-            <Dialog open={this.state.deleteDialogOpen}>
-              <DialogTitle>Delete Action</DialogTitle>
-              <DialogContent>
-                Are you sure you want to delete the changelog entry with the ID {this.state.deleteAction.changelogId}?
-              </DialogContent>
-              <DialogActions>
-                <DialogButton action="close" onClick={this.closeDeleteDialog} isDefaultAction>
-                  Cancel
-                </DialogButton>
-                <DialogButton
-                  action="accept"
-                  className="delete"
-                  onClick={() => {
-                    this.deleteAction(this.state.deleteAction);
-                  }}
-                >
-                  Delete
-                </DialogButton>
-              </DialogActions>
-            </Dialog>
           </DrawerAppContent>
         </div>
+        <DialogDelete
+          open={this.state.deleteDialogOpen}
+          close={this.closeDeleteDialog}
+          deleteAction={this.state.deleteAction}
+          deleteActionFn={this.deleteAction}
+        />
       </div>
     );
   }
