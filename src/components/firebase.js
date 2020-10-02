@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import "firebase/analytics";
+//import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
@@ -13,10 +13,10 @@ const firebaseConfig = {
   storageBucket: "keycaplendar.appspot.com",
   messagingSenderId: "422111576432",
   appId: "1:422111576432:web:35088aee2889ffc2b60fb5",
-  measurementId: "G-DTG7KB21BQ",
+  //measurementId: "G-DTG7KB21BQ",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+//firebase.analytics();
 
 export default firebase;
