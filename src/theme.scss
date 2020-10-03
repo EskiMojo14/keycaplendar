@@ -392,9 +392,15 @@ $overlay-values: (
     @include select.outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include select.hover-outline-color(map-get($variables, text-primary));
     @include select.focused-outline-color(map-get($variables, primary));
-    //@include select.dropdown-icon-color(rgba(map-get($variables, on-surface),0.6));
-    &.mdc-select--focused {
-      //@include select.dropdown-icon-color(map-get($variables, primary));
+    .mdc-select__dropdown-icon {
+      // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
+      @include select.dd-arrow-svg-bg_(
+        unquote("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),
+        0.6
+      );
+    }
+    &.mdc-select--focused .mdc-select__dropdown-icon {
+      @include select.dd-arrow-svg-bg_(map-get($variables, primary), 1);
     }
   }
 
