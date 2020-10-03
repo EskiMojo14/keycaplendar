@@ -750,7 +750,7 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
+        .timeline-table.mdc-data-table .mdc-data-table__header-row .mdc-data-table__header-cell.profile-title.title-#{$letter} .profile-indicator {
           background-color: rgba($color, 0.1);
         }
         .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.cell-#{$letter} {
