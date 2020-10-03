@@ -15,7 +15,6 @@ $exit-time: 200ms;
       transition: width 250ms animation.$standard-curve-timing-function, elevation.transition-value();
       &--with-leading-icon .mdc-text-field__icon,
       &--with-trailing-icon .mdc-text-field__icon {
-        bottom: 8px;
         &:focus {
           outline: none;
         }
