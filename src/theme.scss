@@ -349,6 +349,15 @@ $overlay-values: (
         @include ripple.states(map-get($variables, primary));
       }
     }
+    &.mdc-list-item--disabled {
+      .mdc-list-item__text {
+        opacity: 1;
+      }
+      .mdc-list-item__primary-text {
+        @include list.item-primary-text-ink-color(map-get($variables, text-primary));
+      }
+      @include list.item-secondary-text-ink-color(map-get($variables, text-secondary));
+    }
     .mdc-list-item__graphic,
     .mdc-list-item__meta {
       fill: map-get($variables, text-secondary);
