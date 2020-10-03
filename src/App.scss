@@ -3,7 +3,7 @@
 $headline-font: unquote("Roboto Slab, serif");
 $body-font: unquote("Lato, sans-serif");
 
-/*@use "@material/typography/variables" with (
+/*@use "@material/typography" with (
   $styles-headline1: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
