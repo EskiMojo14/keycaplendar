@@ -4,7 +4,7 @@
 
 .content-grid {
   padding: 16px;
-  transform-origin: 50% calc(100vh - #{top-app-bar-row-height});
+  transform-origin: 50% calc(100vh - #{top-app-bar.$row-height});
   max-width: 2000px;
   display: flex;
   flex-direction: row;
@@ -98,8 +98,8 @@
   }
 }
 
-@media (max-width: top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .content-grid {
-    transform-origin: 50% calc(100vh - #{top-app-bar-mobile-row-height});
+    transform-origin: 50% calc(100vh - #{top-app-bar.$mobile-row-height});
   }
 }

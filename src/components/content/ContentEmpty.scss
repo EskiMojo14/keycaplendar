@@ -29,7 +29,7 @@
   }
 }
 
-@media (max-width: top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .empty-container {
     .image {
       height: 192px;

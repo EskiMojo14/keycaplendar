@@ -33,7 +33,7 @@
   }
   .mdc-linear-progress {
     position: absolute;
-    top: top-app-bar-row-height - 4px;
+    top: top-app-bar.$row-height - 4px;
     z-index: 4;
     .mdc-linear-progress__buffering-dots {
       display: none;
@@ -129,12 +129,12 @@
       margin-right: 12px;
     }
     .mdc-linear-progress {
-      top: top-app-bar-mobile-row-height - 4px;
+      top: top-app-bar.$mobile-row-height - 4px;
     }
   }
 
   .statistics .mdc-top-app-bar--fixed-adjust {
-    padding-top: top-app-bar-mobile-row-height + 48px;
+    padding-top: top-app-bar.$mobile-row-height + 48px;
   }
 }
 
@@ -147,5 +147,5 @@
 }
 
 .statistics .mdc-top-app-bar--fixed-adjust {
-  padding-top: top-app-bar-row-height + 48px;
+  padding-top: top-app-bar.$row-height + 48px;
 }

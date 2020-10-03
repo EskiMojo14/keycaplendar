@@ -27,12 +27,12 @@
 }
 
 .content-container .mdc-drawer.mdc-drawer--dismissible {
-  height: calc(100% - #{top-app-bar-row-height});
+  height: calc(100% - #{top-app-bar.$row-height});
 }
 
-@media (max-width: top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .content-container .mdc-drawer.mdc-drawer--dismissible {
-    height: calc(100% - #{top-app-bar-mobile-row-height});
+    height: calc(100% - #{top-app-bar.$mobile-row-height});
   }
 }
 

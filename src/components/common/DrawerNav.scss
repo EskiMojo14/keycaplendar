@@ -8,12 +8,12 @@
   height: 100%;
 }
 
-@media (max-width: top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .mdc-drawer:not(.mdc-drawer--dismissible) {
     width: calc(100% - 56px);
   }
   .mdc-drawer .mdc-drawer__header {
-    height: top-app-bar-mobile-row-height;
+    height: top-app-bar.$mobile-row-height;
     min-height: auto;
   }
 }

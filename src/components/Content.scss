@@ -79,7 +79,7 @@
   display: flex;
   flex-direction: column;
   justify-content: stretch;
-  min-height: calc(100vh - #{top-app-bar-row-height});
+  min-height: calc(100vh - #{top-app-bar.$row-height});
   max-width: 100%;
   .content-grid {
     flex-grow: 1;
@@ -88,14 +88,14 @@
   &::before {
     content: "";
     position: absolute;
-    top: top-app-bar-row-height;
+    top: top-app-bar.$row-height;
     width: 100%;
     height: 0;
     transition: height 250ms animation.$standard-curve-timing-function;
     z-index: -1;
   }
   &.content.card::before {
-    height: 256px - top-app-bar-row-height;
+    height: 256px - top-app-bar.$row-height;
   }
 }
 .bottomNav + .main.card::before {
@@ -111,20 +111,20 @@
   max-height: 100vh;
   overflow: hidden;
   &.mdc-drawer-app-content {
-    max-height: calc(100vh - #{top-app-bar-mobile-row-height});
+    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
 }
 
-@media (max-width: top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .modal-drawer-open.mdc-drawer-app-content,
   .content-container .main {
-    max-height: calc(100vh - #{top-app-bar-mobile-row-height});
+    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
   .main::before {
-    top: top-app-bar-mobile-row-height;
+    top: top-app-bar.$mobile-row-height;
   }
   .main.content.card::before {
-    height: 256px - top-app-bar-mobile-row-height;
+    height: 256px - top-app-bar.$mobile-row-height;
   }
 }
 
