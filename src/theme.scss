@@ -175,30 +175,17 @@ $overlay-values: (
       map-get($variables, secondary),
       map-get($variables, secondary)
     );
-    @include ripple.states(map-get($variables, on-surface));
+    @include checkbox.disabled-container-colors(
+      rgba(map-get($variables, on-surface), 0.26),
+      transparent,
+      transparent,
+      rgba(map-get($variables, on-surface), 0.26)
+    );
+    @include checkbox.ink-color(map-get($variables, on-secondary));
+    @include checkbox.disabled-ink-color(map-get($variables, on-surface));
+    @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(),'.mdc-checkbox__ripple');
     &.mdc-checkbox--selected {
-      @include ripple.states(map-get($variables, secondary));
-    }
-    .mdc-checkbox__native-control[disabled] ~ .mdc-checkbox__background {
-      border-color: rgba(map-get($variables, on-surface), 0.26);
-      background-color: transparent;
-      .mdc-checkbox__checkmark {
-        color: black;
-      }
-    }
-    .mdc-checkbox__native-control[disabled]:checked ~ .mdc-checkbox__background,
-    .mdc-checkbox__native-control[disabled]:indeterminate ~ .mdc-checkbox__background {
-      border-color: transparent;
-      background-color: rgba(map-get($variables, on-surface), 0.26);
-      .mdc-checkbox__checkmark {
-        color: black;
-      }
-    }
-    .mdc-checkbox__checkmark {
-      color: map-get($variables, on-secondary);
-    }
-    .mdc-checkbox__mixedmark {
-      border-color: map-get($variables, on-secondary);
+      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(),'.mdc-checkbox__ripple'); 
     }
   }
 
