@@ -46,7 +46,7 @@ $exit-time: 200ms;
     transition-property: width, opacity;
     transition-timing-function: animation.$standard-curve-timing-function;
     .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
-      transform: scale(1);
+      transform: scale(1) translateY(-50%);
       opacity: 1;
       transition: opacity 150ms animation.$standard-curve-timing-function,
         transform 150ms animation.$standard-curve-timing-function;
@@ -78,7 +78,7 @@ $exit-time: 200ms;
       opacity: 0;
       width: 64px;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
-        transform: scale(0.92);
+        transform: scale(0.92) translateY(-50%);
         opacity: 0;
       }
     }
@@ -86,7 +86,7 @@ $exit-time: 200ms;
       opacity: 1;
       width: 100%;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
-        transform: scale(1);
+        transform: scale(1) translateY(-50%);
         opacity: 0;
       }
       transition-duration: $enter-time;
