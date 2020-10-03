@@ -37,16 +37,16 @@
   &__children-inner {
     padding: 16px;
   }
-  .rmwc-data-table {
+  .mdc-data-table {
     width: 100%;
     border: 1px solid var(--divider-color);
     border-radius: 4px;
     box-sizing: border-box;
-    &__content {
+    &__table {
       width: 100%;
     }
-    &__body .rmwc-data-table__row {
-      .rmwc-data-table__cell {
+    .mdc-data-table__row {
+      .mdc-data-table__cell {
         &.before {
           .highlight {
             background-color: rgba(palette.$red-200, 0.2);

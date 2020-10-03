@@ -291,11 +291,7 @@ export class Users extends React.Component {
                       <DataTableRow>
                         <DataTableHeadCell></DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "displayName" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "displayName" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("displayName");
                           }}
@@ -303,11 +299,7 @@ export class Users extends React.Component {
                           User
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "email" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "email" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("email");
                           }}
@@ -315,11 +307,7 @@ export class Users extends React.Component {
                           Email
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "nickname" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "nickname" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("nickname");
                           }}
@@ -327,11 +315,7 @@ export class Users extends React.Component {
                           Nickname
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "designer" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "designer" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("designer");
                           }}
@@ -339,11 +323,7 @@ export class Users extends React.Component {
                           Designer
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "editor" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "editor" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("editor");
                           }}
@@ -351,11 +331,7 @@ export class Users extends React.Component {
                           Editor
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          className={
-                            "action" +
-                            (this.state.sort === "admin" ? " sorted" : "") +
-                            (this.state.reverseSort ? " reverse" : "")
-                          }
+                          sort={this.state.sort === "admin" ? (this.state.reverseSort ? -1 : 1) : null}
                           onClick={() => {
                             this.setSort("admin");
                           }}

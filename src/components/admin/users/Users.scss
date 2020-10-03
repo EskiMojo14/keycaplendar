@@ -23,53 +23,11 @@
   .users {
     border-radius: 4px;
     @include elevation.elevation(1);
-    .rmwc-data-table {
+    .mdc-data-table {
       overflow: visible;
       border: none;
-      &__content {
-        width: 100%;
-      }
-      &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action,
-      &__head .rmwc-data-table__row:hover .rmwc-data-table__head-cell.action,
-      &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action:hover {
-        user-select: none;
-        cursor: pointer;
-        &::before {
-          content: "arrow_downward";
-          opacity: 0;
-          background-color: transparent;
-          font-family: "Material Icons";
-          font-weight: normal;
-          font-style: normal;
-          font-size: 24px;
-          line-height: 1;
-          letter-spacing: normal;
-          text-transform: none;
-          display: inline-block;
-          white-space: nowrap;
-          word-wrap: normal;
-          direction: ltr;
-          font-feature-settings: "liga";
-          -webkit-font-smoothing: antialiased;
-          left: calc(1rem - (24px + 2px));
-          right: auto;
-          top: 16px;
-          bottom: 16px;
-          transform: rotate(0);
-          transition: transform 150ms animation.$standard-curve-timing-function, opacity 100ms linear;
-          pointer-events: none;
-        }
-        &.sorted {
-          &::before {
-            opacity: 1;
-          }
-          &.reverse::before {
-            transform: rotate(180deg);
-          }
-        }
-      }
-      &__body .rmwc-data-table__row {
-        .rmwc-data-table__cell {
+      .mdc-data-table__row {
+        .mdc-data-table__cell {
           .svg-container {
             position: relative;
             @include ripple.surface;
@@ -78,7 +36,7 @@
               cursor: default;
             }
           }
-          .nickname {
+          .mdc-text-field.nickname {
             height: 32px;
             width: 200px;
             .mdc-text-field__input {

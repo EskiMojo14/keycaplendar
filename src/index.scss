@@ -40,27 +40,21 @@
   @include typography.typography(caption);
 }
 
-.rmwc-data-table {
-  &__content {
-    background-color: transparent;
-  }
-  &__head .rmwc-data-table__row {
+.mdc-data-table {
+  background-color: transparent;
+  .mdc-data-table__header-row {
     height: 56px;
-    .rmwc-data-table__head-cell {
+    .mdc-data-table__header-cell {
       @include typography.typography(subtitle2);
-      font-family: inherit;
       font-weight: bold;
       vertical-align: middle;
     }
   }
-  &__body .rmwc-data-table__row {
+  .mdc-data-table__row {
     height: 52px;
-    .rmwc-data-table__cell {
+    transition: background-color 100ms;
+    .mdc-data-table__cell {
       @include typography.typography(body2);
-      font-family: inherit;
-      &::before {
-        transition: opacity 100ms;
-      }
     }
   }
 }

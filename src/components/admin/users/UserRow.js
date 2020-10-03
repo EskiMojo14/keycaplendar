@@ -139,11 +139,9 @@ export class UserRow extends React.Component {
     return (
       <DataTableRow>
         <DataTableCell>
-          <Avatar src={user.photoURL} name={user.displayName} size="large"/>
+          <Avatar src={user.photoURL} name={user.displayName} size="large" />
         </DataTableCell>
-        <DataTableCell>
-          {user.displayName}
-        </DataTableCell>
+        <DataTableCell>{user.displayName}</DataTableCell>
         <DataTableCell>{user.email}</DataTableCell>
         <DataTableCell>
           <MenuSurfaceAnchor>
@@ -166,10 +164,10 @@ export class UserRow extends React.Component {
             />
           </MenuSurfaceAnchor>
         </DataTableCell>
-        <DataTableCell className="checkbox-cell">
+        <DataTableCell hasFormControl>
           <Checkbox name="designer" checked={user.designer} onChange={this.handleChange} />
         </DataTableCell>
-        <DataTableCell className="checkbox-cell">
+        <DataTableCell hasFormControl>
           <Checkbox
             name="editor"
             checked={user.editor}
@@ -177,7 +175,7 @@ export class UserRow extends React.Component {
             disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
           />
         </DataTableCell>
-        <DataTableCell className="checkbox-cell">
+        <DataTableCell hasFormControl>
           <Checkbox
             name="admin"
             checked={user.admin}
@@ -185,8 +183,8 @@ export class UserRow extends React.Component {
             disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
           />
         </DataTableCell>
-        <DataTableCell className="icon-cell">{saveButton}</DataTableCell>
-        <DataTableCell className="icon-cell">{deleteButton}</DataTableCell>
+        <DataTableCell hasFormControl>{saveButton}</DataTableCell>
+        <DataTableCell hasFormControl>{deleteButton}</DataTableCell>
       </DataTableRow>
     );
   }

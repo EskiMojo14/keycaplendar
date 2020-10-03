@@ -1,57 +1,11 @@
 @use "@material/theme/color-palette" as palette;
 
-/*
-$mdc-theme-primary: palette.$teal-500;
-$mdc-theme-secondary: palette.$deep-orange-200;
-$mdc-theme-on-primary: black;
-$mdc-theme-on-secondary: black;
-$mdc-theme-background: palette.$grey-200;
-$mdc-theme-surface: white;
-$mdc-theme-on-surface: #000;
-*/
-
 @use "theme" as theme;
-
-@use "@material/button/mdc-button";
-@use "@material/card/mdc-card";
-@use "@material/checkbox/mdc-checkbox";
-@use "@material/chips/mdc-chips";
-@use "@material/data-table/mdc-data-table";
-@use "@material/dialog/mdc-dialog";
-@use "@material/drawer/mdc-drawer";
-@use "@material/fab/mdc-fab";
-@use "@material/floating-label/mdc-floating-label";
-@use "@material/form-field/mdc-form-field";
-@use "@material/icon-button/mdc-icon-button";
-@use "@material/image-list/mdc-image-list";
-@use "@material/line-ripple/mdc-line-ripple";
-@use "@material/linear-progress/mdc-linear-progress";
-@use "@material/list/mdc-list";
-@use "@material/menu-surface/mdc-menu-surface";
-@use "@material/menu/mdc-menu";
-@use "@material/notched-outline/mdc-notched-outline";
-@use "@material/radio/mdc-radio";
-@use "@material/select/mdc-select";
-@use "@material/snackbar/mdc-snackbar";
-@use "@material/switch/mdc-switch";
-@use "@material/textfield/mdc-text-field";
-@use "@material/tab-bar/mdc-tab-bar";
-@use "@material/tab/mdc-tab";
-@use "@material/tab-scroller/mdc-tab-scroller";
-@use "@material/tab-indicator/mdc-tab-indicator";
-@use "@material/top-app-bar/mdc-top-app-bar";
-@use "@material/typography/mdc-typography";
-@use "@rmwc/data-table/data-table";
-@use "@rmwc/circular-progress/circular-progress";
-@use "@rmwc/tooltip/tooltip";
-@use "@rmwc/list/collapsible-list";
-@use "@rmwc/avatar/avatar";
-
 
 $headline-font: unquote("Roboto Slab, serif");
 $body-font: unquote("Lato, sans-serif");
 
-/*@use "@material/typography/mdc-typography" with (
+/*@use "@material/typography" with (
   $styles-headline1: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
@@ -112,13 +66,49 @@ $body-font: unquote("Lato, sans-serif");
   )
 );*/
 
+@use "@material/button/mdc-button";
+@use "@material/card/mdc-card";
+@use "@material/checkbox/mdc-checkbox";
+@use "@material/chips/mdc-chips";
+@use "@material/data-table/mdc-data-table";
+@use "@material/dialog/mdc-dialog";
+@use "@material/drawer/mdc-drawer";
+@use "@material/fab/mdc-fab";
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/form-field/mdc-form-field";
+@use "@material/icon-button/mdc-icon-button";
+@use "@material/image-list/mdc-image-list";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/linear-progress/mdc-linear-progress";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/radio/mdc-radio";
+@use "@material/select/mdc-select";
+@use "@material/snackbar/mdc-snackbar";
+@use "@material/switch/mdc-switch";
+@use "@material/textfield/mdc-text-field";
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab/mdc-tab";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use "@material/typography/mdc-typography";
+@use "@rmwc/data-table/data-table";
+@use "@rmwc/circular-progress/circular-progress";
+@use "@rmwc/tooltip/tooltip";
+@use "@rmwc/list/collapsible-list";
+@use "@rmwc/avatar/avatar";
+
 @use "@material/typography/_index" as typography;
 
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
 .mdc-drawer,
 .mdc-list-divider,
-.rmwc-data-table,
+.mdc-data-table,
+.mdc-data-table__row,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);

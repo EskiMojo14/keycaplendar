@@ -5,6 +5,7 @@
 @use "@material/dialog/_index" as dialog;
 @use "@material/drawer/_index" as drawer;
 @use "@material/fab/_index" as fab;
+@use "@material/linear-progress/_index" as linear-progress;
 @use "@material/list/_index" as list;
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
@@ -485,9 +486,7 @@ $overlay-values: (
     }
   }
   .mdc-linear-progress {
-    &__bar-inner {
-      background-color: map-get($variables, primary);
-    }
+    @include linear-progress.bar-color(map-get($variables, primary));
   }
   .mdc-tab-bar {
     .mdc-tab {
@@ -511,8 +510,8 @@ $overlay-values: (
       if($dark, map-get($variables, text-primary), map-get($variables, on-primary))
     );
     @if ($dark != true) {
-      .mdc-linear-progress__bar-inner {
-        background-color: map-get($variables, secondary);
+      .mdc-linear-progress {
+        @include linear-progress.bar-color(map-get($variables, secondary));
       }
       .toggle-group {
         .mdc-button {
@@ -646,11 +645,10 @@ $overlay-values: (
     color: map-get($variables, primary);
   }
 
-  .rmwc-data-table {
+  .mdc-data-table {
     color: map-get($variables, text-primary);
     &__cell {
-      background-color: transparent;
-      border-color: var(--divider-color);
+      color: map-get($variables, text-primary);
       .mdc-icon-button,
       .svg-container.mdc-icon-button {
         color: map-get($variables, text-secondary);
@@ -661,7 +659,7 @@ $overlay-values: (
         }
       }
     }
-    &__head-cell {
+    &__header-cell {
       color: map-get($variables, text-primary);
       &.sorted::before {
         color: map-get($variables, text-secondary);
@@ -670,10 +668,8 @@ $overlay-values: (
         @include ripple.states(map-get($variables, on-surface));
       }
     }
-    &__row:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated) .rmwc-data-table__cell::before,
-    &__row:hover:not(.rmwc-data-table__row--selected):not(.rmwc-data-table__row--activated)
-      .rmwc-data-table__cell:not(.rmwc-data-table__head-cell)::before {
-      background-color: map-get($variables, on-surface);
+    &__row:hover:not(.mdc-data-table__row--selected):not(.mdc-data-table__row--activated) {
+      background-color: rgba(map-get($variables, on-surface),0.04);
     }
   }
 
@@ -741,7 +737,7 @@ $overlay-values: (
         fill: $color;
       }
     }
-    .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} {
+    .timeline-table.mdc-data-table .mdc-data-table__header-row .mdc-data-table__header-cell.profile-title.title-#{$letter} {
       @include ripple.states($color);
       .profile-indicator {
         background-color: $color;
@@ -762,10 +758,10 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
+        .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
           background-color: rgba($color, 0.1);
         }
-        .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {
+        .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.cell-#{$letter} {
           color: map-get($variables, text-disabled);
         }
       }

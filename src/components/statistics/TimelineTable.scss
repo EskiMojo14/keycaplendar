@@ -1,15 +1,15 @@
 @use "@material/ripple/_index" as ripple;
 @use "@material/animation/_index" as animation;
-.timeline-table.rmwc-data-table {
+.timeline-table.mdc-data-table {
   border: none;
   .right-border {
     border-right: 1px solid var(--divider-color);
   }
-  .rmwc-data-table__content {
+  .mdc-data-table__table {
     width: 100%;
   }
-  .rmwc-data-table__head .rmwc-data-table__row {
-    .rmwc-data-table__head-cell {
+  .mdc-data-table__header-row {
+    .mdc-data-table__header-cell {
       &.profile-title {
         padding: 0;
         position: relative;
@@ -34,7 +34,7 @@
       }
     }
   }
-  .rmwc-data-table__body .rmwc-data-table__row .rmwc-data-table__cell {
+  .mdc-data-table__row .mdc-data-table__cell {
     transition: color 200ms animation.$standard-curve-timing-function;
   }
 }
