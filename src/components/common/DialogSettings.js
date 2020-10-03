@@ -181,7 +181,7 @@ export const DialogSettings = (props) => {
           <FormField className="theme-form-field">
             <Typography use="body2">Apply dark theme</Typography>
             <Select
-              enhanced={{ fixed: true }}
+              enhanced
               outlined
               value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
               options={["Manual", "Timed", "System"]}
@@ -191,7 +191,7 @@ export const DialogSettings = (props) => {
             />
           </FormField>
           {themeOptions}
-          <List>
+          <List className="theme-list">
             <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
               <FormField>
                 <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
