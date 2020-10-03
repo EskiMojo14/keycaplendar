@@ -19,6 +19,8 @@
 @use "@material/tab-indicator/_index" as tab-indicator;
 @use "@material/theme/color-palette" as palette;
 
+@use '@material/feature-targeting/_index' as feature-targeting;
+
 $overlay-values: (
   0: 0%,
   1: 5%,   // card, switch
@@ -102,24 +104,18 @@ $overlay-values: (
   }
   .mdc-button {
     @include button.ink-color(map-get($variables, primary));
-    .mdc-button__ripple {
-      @include ripple.states(map-get($variables, primary));
-    }
+    @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), '.mdc-button__ripple');
     &:disabled {
       color: map-get($variables, text-disabled);
     }
     &.mdc-button--raised {
       @include button.container-fill-color(map-get($variables, primary));
       @include button.ink-color(map-get($variables, on-primary));
-      .mdc-button__ripple {
-        @include ripple.states(map-get($variables, on-primary));
-      }
+      @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
     }
     &.delete {
       @include button.ink-color(map-get($variables, error));
-      .mdc-button__ripple {
-        @include ripple.states(map-get($variables, error));
-      }
+      @include ripple.states(map-get($variables, error), false, feature-targeting.all(), '.mdc-button__ripple');
     }
   }
 
@@ -522,10 +518,8 @@ $overlay-values: (
         .mdc-button {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
           @include button.outline-color(rgba(map-get($variables, on-primary), 0.38));
-          @include ripple.states-selected(map-get($variables, on-primary));
-          .mdc-button__ripple {
-            @include ripple.states(map-get($variables, on-primary));
-          }
+          @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
+          @include ripple.states-selected(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
           &--selected {
             @include button.ink-color(map-get($variables, on-primary));
             @include button.outline-color(map-get($variables, on-primary));
@@ -637,9 +631,7 @@ $overlay-values: (
 
     .mdc-button {
       color: map-get($variables, if($dark, text-primary, on-primary));
-      .mdc-button__ripple {
-        @include ripple.states(map-get($variables, if($dark, on-surface, on-primary)));
-      }
+      @include ripple.states-selected(if($dark, on-surface, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
       &[disabled] {
         color: rgba(map-get($variables, if($dark, text-primary, on-primary)), 0.38);
       }
@@ -998,16 +990,11 @@ $overlay-values: (
   .toggle-group {
     .mdc-button {
       @include button.ink-color(map-get($variables, text-secondary));
-      @include ripple.states-selected(map-get($variables, primary));
-      .mdc-button__ripple {
-        @include ripple.states(map-get($variables, on-surface));
-      }
+      @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), '.mdc-button__ripple');
+      @include ripple.states-selected(map-get($variables, primary), false, feature-targeting.all(), '.mdc-button__ripple');
       &--selected {
         @include button.ink-color(map-get($variables, primary));
         @include button.outline-color(map-get($variables, primary));
-        .mdc-button__ripple {
-          @include ripple.states(map-get($variables, primary));
-        }
       }
       &:disabled {
         color: map-get($variables, text-disabled);
