@@ -1,4 +1,4 @@
-@import "@material/typography/mixins";
+@use "@material/typography/_index" as typography;
 
 .mdc-drawer.details-drawer {
   justify-content: stretch;

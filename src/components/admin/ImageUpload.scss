@@ -1,4 +1,4 @@
-@import "@material/animation/variables";
+@use "@material/animation/_index" as animation;
 
 .image-upload {
   overflow: hidden;
@@ -46,7 +46,7 @@
       border: 1px dashed var(--divider-color);
       user-select: none;
       overflow: hidden;
-      transition: border-color 150ms $mdc-animation-standard-curve-timing-function;
+      transition: border-color 150ms animation.$standard-curve-timing-function;
       margin: 1px 0;
       &-image {
         position: absolute;
@@ -86,7 +86,7 @@
         width: 100%;
         border-radius: 2px;
         opacity: 0;
-        transition: opacity 150ms $mdc-animation-standard-curve-timing-function;
+        transition: opacity 150ms animation.$standard-curve-timing-function;
         pointer-events: none;
       }
       &.over {

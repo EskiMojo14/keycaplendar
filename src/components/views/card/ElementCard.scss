@@ -1,8 +1,7 @@
-@import "@material/animation/variables";
-@import "@material/animation/functions";
-@import "@material/elevation/mixins";
-@import "@material/icon-button/mixins";
-@import "@material/ripple/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/icon-button/_index" as icon-button;
+@use "@material/ripple/_index" as ripple;
 
 .card-container .mdc-card {
   height: 100%;
@@ -10,7 +9,7 @@
   position: relative;
   overflow: hidden;
   &:hover {
-    @include mdc-elevation(4);
+    @include elevation.elevation(4);
   }
   .hover-button {
     position: absolute;
@@ -27,12 +26,12 @@
       content: "";
       background: linear-gradient(rgba(black, 0.4), transparent);
       opacity: 0;
-      transition: opacity 250ms $mdc-animation-standard-curve-timing-function;
+      transition: opacity 250ms animation.$standard-curve-timing-function;
     }
     .mdc-icon-button {
       opacity: 0;
-      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
-      @include mdc-icon-button-ink-color(white);
+      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      @include icon-button.ink-color(white);
     }
   }
   &__primary-action {
@@ -49,7 +48,7 @@
       margin-top: 56.25%;
       .mdc-card__media {
         margin-top: -56.25%;
-        animation: fade-in 500ms $mdc-animation-standard-curve-timing-function forwards;
+        animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
       }
     }
     .time-indicator {
@@ -76,7 +75,7 @@
         opacity: 1;
       }
       .mdc-icon-button {
-        animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
+        animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
       }
     }
   }

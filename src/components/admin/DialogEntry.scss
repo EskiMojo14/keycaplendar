@@ -1,8 +1,8 @@
-@import "@material/animation/variables";
-@import "@material/theme/variables";
-@import "@material/elevation/mixins";
-@import "@material/ripple/mixins";
-@import "@material/select/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/theme/_index" as theme;
+@use "@material/elevation/_index" as elevation;
+@use "@material/ripple/_index" as ripple;
+@use "@material/select/_index" as select;
 
 $enter-time: 450ms;
 $exit-time: 400ms;
@@ -14,12 +14,12 @@ $exit-time: 400ms;
   width: 100%;
   height: 100%;
   z-index: 7;
-  @include mdc-elevation(16);
+  @include elevation.elevation(16);
   flex-direction: column;
   justify-content: stretch;
   overflow: hidden;
   transition-property: transform;
-  transition-timing-function: $mdc-animation-standard-curve-timing-function;
+  transition-timing-function: animation.$standard-curve-timing-function;
   display: none;
   &--animate {
     transform: translateY(101%);
@@ -44,7 +44,7 @@ $exit-time: 400ms;
     opacity: 0;
     z-index: 6;
     transition-property: opacity;
-    transition-timing-function: $mdc-animation-standard-curve-timing-function;
+    transition-timing-function: animation.$standard-curve-timing-function;
     display: none;
 
     .full-screen-dialog--open + & {
@@ -70,7 +70,7 @@ $exit-time: 400ms;
     flex-grow: 0;
     position: relative;
     top: 0 !important;
-    @include mdc-elevation(4);
+    @include elevation.elevation(4);
   }
   &-content {
     width: 100%;

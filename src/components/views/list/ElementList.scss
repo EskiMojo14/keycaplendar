@@ -1,6 +1,6 @@
-@import "@material/theme/variables";
-@import "@material/ripple/mixins";
-@import "@material/theme/mixins";
+@use "@material/theme/_index" as theme;
+@use "@material/ripple/_index" as ripple;
+@use "@material/animation/_index" as animation;
 
 .list .mdc-list .mdc-list-item {
   height: 88px;
@@ -61,7 +61,7 @@
     overflow: hidden;
     height: 24px;
     flex-shrink: 0;
-    animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
+    animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
   }
   .link-icon {
     position: absolute;
@@ -73,7 +73,7 @@
     padding: 0 4px;
     .mdc-icon-button {
       height: 48px;
-      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
     }
   }
 }
@@ -82,10 +82,10 @@
   .list .mdc-list .mdc-list-item:hover {
     .live-indicator,
     .ship-indicator {
-      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
     }
     .link-icon .mdc-icon-button {
-      animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
     }
   }
 }
@@ -98,7 +98,7 @@
     flex-shrink: 0;
     animation: placeholder 2s ease infinite;
   }
-  animation: fade-in 500ms $mdc-animation-standard-curve-timing-function forwards;
+  animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
   height: 56px;
   width: 100px;
   background-size: cover;

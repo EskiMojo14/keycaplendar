@@ -1,52 +1,118 @@
-@import "@material/theme/color-palette";
+@use "@material/theme/color-palette" as palette;
 
 /*
-$mdc-theme-primary: $material-color-teal-500;
-$mdc-theme-secondary: $material-color-deep-orange-200;
+$mdc-theme-primary: palette.$teal-500;
+$mdc-theme-secondary: palette.$deep-orange-200;
 $mdc-theme-on-primary: black;
 $mdc-theme-on-secondary: black;
-$mdc-theme-background: $material-color-grey-200;
+$mdc-theme-background: palette.$grey-200;
 $mdc-theme-surface: white;
 $mdc-theme-on-surface: #000;
 */
 
-@import "typography-variables";
-@import "theme";
+@use "theme" as theme;
 
-@import "@material/button/mdc-button";
-@import "@material/card/mdc-card";
-@import "@material/checkbox/mdc-checkbox";
-@import "@material/chips/mdc-chips";
-@import "@material/data-table/mdc-data-table";
-@import "@material/dialog/mdc-dialog";
-@import "@material/drawer/mdc-drawer";
-@import "@material/fab/mdc-fab";
-@import "@material/floating-label/mdc-floating-label";
-@import "@material/form-field/mdc-form-field";
-@import "@material/icon-button/mdc-icon-button";
-@import "@material/image-list/mdc-image-list";
-@import "@material/line-ripple/mdc-line-ripple";
-@import "@material/linear-progress/mdc-linear-progress";
-@import "@material/list/mdc-list";
-@import "@material/menu-surface/mdc-menu-surface";
-@import "@material/menu/mdc-menu";
-@import "@material/notched-outline/mdc-notched-outline";
-@import "@material/radio/mdc-radio";
-@import "@material/select/mdc-select";
-@import "@material/snackbar/mdc-snackbar";
-@import "@material/switch/mdc-switch";
-@import "@material/textfield/mdc-text-field";
-@import "@material/tab-bar/mdc-tab-bar";
-@import "@material/tab/mdc-tab";
-@import "@material/tab-scroller/mdc-tab-scroller";
-@import "@material/tab-indicator/mdc-tab-indicator";
-@import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/typography/mdc-typography";
-@import "@rmwc/data-table/data-table";
-@import "@rmwc/circular-progress/circular-progress";
-@import "@rmwc/tooltip/tooltip";
-@import "@rmwc/list/collapsible-list";
-@import "@rmwc/avatar/avatar";
+@use "@material/button/mdc-button";
+@use "@material/card/mdc-card";
+@use "@material/checkbox/mdc-checkbox";
+@use "@material/chips/mdc-chips";
+@use "@material/data-table/mdc-data-table";
+@use "@material/dialog/mdc-dialog";
+@use "@material/drawer/mdc-drawer";
+@use "@material/fab/mdc-fab";
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/form-field/mdc-form-field";
+@use "@material/icon-button/mdc-icon-button";
+@use "@material/image-list/mdc-image-list";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/linear-progress/mdc-linear-progress";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/radio/mdc-radio";
+@use "@material/select/mdc-select";
+@use "@material/snackbar/mdc-snackbar";
+@use "@material/switch/mdc-switch";
+@use "@material/textfield/mdc-text-field";
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab/mdc-tab";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use "@material/typography/mdc-typography";
+@use "@rmwc/data-table/data-table";
+@use "@rmwc/circular-progress/circular-progress";
+@use "@rmwc/tooltip/tooltip";
+@use "@rmwc/list/collapsible-list";
+@use "@rmwc/avatar/avatar";
+
+
+$headline-font: unquote("Roboto Slab, serif");
+$body-font: unquote("Lato, sans-serif");
+
+/*@use "@material/typography/mdc-typography" with (
+  $styles-headline1: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: 6rem,
+  ),
+  $styles-headline2: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: 3.75rem,
+  ),
+  $styles-headline3: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: 3rem,
+  ),
+  $styles-headline4: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: 2.125rem,
+  ),
+  $styles-headline5: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: 1.5rem,
+  ),
+  $styles-headline6: (
+    font-family: $body-font,
+    font-feature-settings: "lnum",
+    font-size: 1.3125rem,
+  ),
+  $styles-body1: (
+    font-family: $body-font,
+    font-size: 1.0625rem,
+  ),
+  $styles-body2: (
+    font-family: $body-font,
+    font-size: 0.9375rem,
+  ),
+  $styles-subtitle1: (
+    font-family: $body-font,
+    font-size: 1.0625rem,
+  ),
+  $styles-subtitle2: (
+    font-family: $body-font,
+    font-size: 0.9375rem,
+  ),
+  $styles-button: (
+    font-family: $body-font,
+    font-size: 0.9375rem,
+  ),
+  $styles-overline: (
+    font-family: $body-font,
+    font-size: 0.625rem,
+  ),
+  $styles-caption: (
+    font-family: $body-font,
+    font-size: 0.8125rem,
+  )
+);*/
+
+@use "@material/typography/_index" as typography;
 
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
@@ -80,7 +146,7 @@ $mdc-theme-on-surface: #000;
   justify-content: stretch;
   border-bottom: 1px solid var(--divider-color);
   &-text {
-    @include mdc-typography(body2);
+    @include typography.typography(body2);
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -137,23 +203,23 @@ $mdc-theme-on-surface: #000;
 
 .light {
   $theme: (
-    primary: $material-color-teal-500,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
-    background: $material-color-grey-200,
+    background: palette.$grey-200,
     error: #b00020,
     on-error: white,
     surface: white,
     on-surface: black,
   );
-  @include theme($theme);
+  @include theme.theme($theme);
 }
 
 .grey {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #202125,
@@ -162,13 +228,13 @@ $mdc-theme-on-surface: #000;
     surface: #202125,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .ocean {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-light-green-200,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
     on-primary: black,
     on-secondary: black,
     background: #1b2936,
@@ -177,13 +243,13 @@ $mdc-theme-on-surface: #000;
     surface: #1b2936,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .deep {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #17161c,
@@ -192,13 +258,13 @@ $mdc-theme-on-surface: #000;
     surface: #17161c,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .dark {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #121212,
@@ -207,7 +273,7 @@ $mdc-theme-on-surface: #000;
     surface: #121212,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .lich {
@@ -221,7 +287,7 @@ $mdc-theme-on-surface: #000;
     surface: lighten(#decde7, 5%),
     on-surface: black,
   );
-  @include theme($theme);
+  @include theme.theme($theme);
 }
 
 @import "chartist/dist/scss/chartist";

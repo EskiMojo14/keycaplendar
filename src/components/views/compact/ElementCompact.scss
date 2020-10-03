@@ -1,6 +1,5 @@
-@import "@material/theme/variables";
-@import "@material/ripple/mixins";
-@import "@material/theme/mixins";
+@use "@material/theme/_index" as theme;
+@use "@material/ripple/_index" as ripple;
 
 .compact {
   .mdc-list.mdc-list--two-line .mdc-list-item {

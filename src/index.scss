@@ -1,5 +1,5 @@
-@import "@material/top-app-bar/variables";
-@import "@material/typography/mixins";
+@use "@material/top-app-bar/_index" as top-app-bar;
+@use "@material/typography/_index" as typography;
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;
@@ -27,17 +27,17 @@
 }
 
 .content-container .mdc-drawer.mdc-drawer--dismissible {
-  height: calc(100% - #{$mdc-top-app-bar-row-height});
+  height: calc(100% - #{top-app-bar-row-height});
 }
 
-@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar-mobile-breakpoint) {
   .content-container .mdc-drawer.mdc-drawer--dismissible {
-    height: calc(100% - #{$mdc-top-app-bar-mobile-row-height});
+    height: calc(100% - #{top-app-bar-mobile-row-height});
   }
 }
 
 .rmwc-tooltip { 
-  @include mdc-typography(caption);
+  @include typography.typography(caption);
 }
 
 .rmwc-data-table {
@@ -47,7 +47,7 @@
   &__head .rmwc-data-table__row {
     height: 56px;
     .rmwc-data-table__head-cell {
-      @include mdc-typography(subtitle2);
+      @include typography.typography(subtitle2);
       font-family: inherit;
       font-weight: bold;
       vertical-align: middle;
@@ -56,7 +56,7 @@
   &__body .rmwc-data-table__row {
     height: 52px;
     .rmwc-data-table__cell {
-      @include mdc-typography(body2);
+      @include typography.typography(body2);
       font-family: inherit;
       &::before {
         transition: opacity 100ms;

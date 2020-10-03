@@ -1,8 +1,8 @@
-@import "@material/animation/variables";
-@import "@material/elevation/mixins";
-@import "@material/ripple/mixins";
-@import "@material/textfield/mixins";
-@import "@material/typography/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/ripple/_index" as ripple;
+@use "@material/textfield/_index" as textfield;
+@use "@material/typography/_index" as typography;
 
 .users-container {
   padding: 16px;
@@ -22,7 +22,7 @@
   }
   .users {
     border-radius: 4px;
-    @include mdc-elevation(1);
+    @include elevation.elevation(1);
     .rmwc-data-table {
       overflow: visible;
       border: none;
@@ -56,7 +56,7 @@
           top: 16px;
           bottom: 16px;
           transform: rotate(0);
-          transition: transform 150ms $mdc-animation-standard-curve-timing-function, opacity 100ms linear;
+          transition: transform 150ms animation.$standard-curve-timing-function, opacity 100ms linear;
           pointer-events: none;
         }
         &.sorted {
@@ -72,8 +72,8 @@
         .rmwc-data-table__cell {
           .svg-container {
             position: relative;
-            @include mdc-ripple-surface;
-            @include mdc-ripple-radius-unbounded;
+            @include ripple.surface;
+            @include ripple.radius-unbounded;
             &.disabled {
               cursor: default;
             }
@@ -83,14 +83,14 @@
             width: 200px;
             .mdc-text-field__input {
               padding: 0 12px;
-              @include mdc-typography(body2);
+              @include typography.typography(body2);
               font-family: inherit;
             }
           }
           .autocomplete.mdc-menu .mdc-list-item {
             padding: 0 12px;
             height: 40px;
-            @include mdc-typography(body2);
+            @include typography.typography(body2);
             font-family: inherit;
           }
         }
@@ -139,7 +139,7 @@
           flex-direction: column;
           justify-content: center;
           .overline {
-            @include mdc-typography(overline);
+            @include typography.typography(overline);
             font-family: inherit;
             line-height: 1rem;
           }
