@@ -15,7 +15,7 @@
   }
   .mdc-top-app-bar {
     right: 0;
-    transition: mdc-elevation-transition-value(), width animation.$standard-curve-timing-function;
+    transition: elevation.transition-value(), width animation.$standard-curve-timing-function;
     .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
       transition-duration: 280ms, drawer.$animation-enter;
     }

@@ -12,7 +12,7 @@ $exit-time: 200ms;
       border-radius: 4px;
       height: 100%;
       width: 128px;
-      transition: width 250ms animation.$standard-curve-timing-function, mdc-elevation-transition-value();
+      transition: width 250ms animation.$standard-curve-timing-function, elevation.transition-value();
       &--with-leading-icon .mdc-text-field__icon,
       &--with-trailing-icon .mdc-text-field__icon {
         bottom: 8px;
@@ -112,7 +112,7 @@ $exit-time: 200ms;
   transition: top 200ms animation.$standard-curve-timing-function;
   top: -56px;
   .search-bar-field-container {
-    transition: mdc-elevation-transition-value();
+    transition: elevation.transition-value();
   }
   &--open {
     top: 0;

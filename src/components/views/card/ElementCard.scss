@@ -5,7 +5,7 @@
 
 .card-container .mdc-card {
   height: 100%;
-  transition: mdc-elevation-transition-value();
+  transition: elevation.transition-value();
   position: relative;
   overflow: hidden;
   &:hover {
