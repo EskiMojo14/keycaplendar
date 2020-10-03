@@ -1,5 +1,3 @@
-
-
 @use "theme" as theme;
 
 $headline-font: unquote("Roboto Slab, serif");
@@ -159,7 +157,14 @@ $body-font: unquote("Lato, sans-serif");
   transition-duration: 100ms !important;
 }
 
-.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta {
+.rmwc-data-table__head-cell--sorted .rmwc-data-table__sort-icon {
+  transform: rotate(0);
+}
+
+.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta,
+.mdc-select--activated .mdc-select__dropdown-icon,
+.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending .rmwc-data-table__sort-icon,
+.rmwc-data-table__sort-icon {
   transform: rotate(180deg);
 }
 
@@ -189,7 +194,7 @@ $body-font: unquote("Lato, sans-serif");
   }
 }
 
-.rmwc-tooltip { 
+.rmwc-tooltip {
   @include typography.typography(caption);
 }
 
