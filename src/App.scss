@@ -152,7 +152,12 @@ $body-font: unquote("Lato, sans-serif");
 .mdc-drawer .mdc-list-item {
   margin: 0;
   border-radius: 0;
-  height: 48px;
+  box-sizing: border-box;
+}
+
+.mdc-drawer .mdc-menu .mdc-list-item {
+  height: 56px;
+  @include typography.typography(subtitle1);
 }
 
 .mdc-ripple-upgraded::before {

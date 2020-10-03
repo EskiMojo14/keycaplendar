@@ -48,15 +48,14 @@
         margin-left: auto;
       }
     }
-    .mdc-drawer__content {
-      .mdc-list-item {
-        margin: 0;
-        padding: 8px 16px;
-        border-radius: 0;
-        &--selected,
-        &--activated {
-          font-weight: bold;
-        }
+    .mdc-list-item {
+      margin: 0;
+      height: 56px;
+      padding: 8px 16px;
+      border-radius: 0;
+      &--selected,
+      &--activated {
+        font-weight: bold;
       }
     }
     &.bottom {

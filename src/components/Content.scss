@@ -65,6 +65,7 @@
     .filter-drawer-open &,
     .details-drawer-open & {
       width: 320px;
+      transition-duration: drawer.$animation-exit;
     }
     transition-property: width;
     transition-timing-function: animation.$standard-curve-timing-function;
