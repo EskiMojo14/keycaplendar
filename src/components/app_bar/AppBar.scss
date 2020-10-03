@@ -1,8 +1,8 @@
 @use "@material/animation/_index" as animation;
 @use "@material/drawer/_index" as drawer;
-@use "@material/top-app-bar/_index" as top-app-bar;
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
+@use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-top-app-bar {
   &--fixed {

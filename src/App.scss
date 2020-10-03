@@ -86,22 +86,22 @@ $body-font: unquote("Lato, sans-serif");
 @use "@material/select/mdc-select";
 @use "@material/snackbar/mdc-snackbar";
 @use "@material/switch/mdc-switch";
-@use "@material/textfield/mdc-text-field";
 @use "@material/tab-bar/mdc-tab-bar";
-@use "@material/tab/mdc-tab";
-@use "@material/tab-scroller/mdc-tab-scroller";
 @use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab/mdc-tab";
+@use "@material/textfield/mdc-text-field";
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use "@material/typography/mdc-typography";
-@use "@rmwc/data-table/data-table";
-@use "@rmwc/circular-progress/circular-progress";
-@use "@rmwc/tooltip/tooltip";
-@use "@rmwc/list/collapsible-list";
 @use "@rmwc/avatar/avatar";
+@use "@rmwc/circular-progress/circular-progress";
+@use "@rmwc/data-table/data-table";
+@use "@rmwc/list/collapsible-list";
+@use "@rmwc/tooltip/tooltip";
 
-@use "@material/typography/_index" as typography;
-@use "@material/top-app-bar/_index" as top-app-bar;
 @use "@material/theme/color-palette" as palette;
+@use "@material/top-app-bar/_index" as top-app-bar;
+@use "@material/typography/_index" as typography;
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;

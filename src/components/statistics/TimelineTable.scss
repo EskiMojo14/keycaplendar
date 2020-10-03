@@ -1,5 +1,6 @@
-@use "@material/ripple/_index" as ripple;
 @use "@material/animation/_index" as animation;
+@use "@material/ripple/_index" as ripple;
+
 .timeline-table.mdc-data-table {
   border: none;
   .right-border {

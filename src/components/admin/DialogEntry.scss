@@ -1,8 +1,8 @@
 @use "@material/animation/_index" as animation;
-@use "@material/theme/_index" as theme;
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
 @use "@material/select/_index" as select;
+@use "@material/theme/_index" as theme;
 
 $enter-time: 450ms;
 $exit-time: 400ms;
