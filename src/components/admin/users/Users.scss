@@ -26,6 +26,23 @@
     .mdc-data-table {
       overflow: visible;
       border: none;
+      .mdc-data-table__header-row {
+        &.progress-row {
+          height: 0;
+          border: none;
+          .mdc-data-table__header-cell {
+            height: 0;
+            padding: 0;
+            .mdc-linear-progress {
+              height: 0px;
+              transition: height 100ms animation.$standard-curve-timing-function;
+            }
+          }
+          &.loading .mdc-data-table__header-cell .mdc-linear-progress {
+                height: 4px;
+          }
+        }
+      }
       .mdc-data-table__row {
         .mdc-data-table__cell {
           .svg-container {
@@ -52,21 +69,6 @@
             font-family: inherit;
           }
         }
-      }
-      .checkbox-cell {
-        padding: 0 16px;
-        .mdc-checkbox {
-          margin: 0 auto;
-        }
-      }
-      .icon-cell {
-        padding: 0 16px;
-        .mdc-icon-button {
-          margin: 0 auto;
-        }
-      }
-      .rmwc-circular-progress {
-        padding: 12px;
       }
     }
   }
