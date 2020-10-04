@@ -213,6 +213,10 @@ $body-font: unquote("Lato, sans-serif");
       @include typography.typography(subtitle2);
       font-weight: bold;
       vertical-align: middle;
+      .rmwc-data-table__sort-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
     }
   }
   .mdc-data-table__row {
