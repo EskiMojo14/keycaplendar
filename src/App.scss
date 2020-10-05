@@ -150,10 +150,11 @@ $body-font: unquote("Lato, sans-serif");
   border-color: var(--divider-color);
 }
 
-.mdc-drawer .mdc-list-item {
+.mdc-drawer .mdc-list-item, .mdc-drawer .mdc-list-item:first-child {
   margin: 0;
   border-radius: 0;
   box-sizing: border-box;
+  padding: 0 16px;
 }
 
 .mdc-drawer .mdc-menu .mdc-list-item {
