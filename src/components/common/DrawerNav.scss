@@ -98,8 +98,11 @@
         width: 256px;
       }
       &.collapsed {
+        .mdc-drawer__content {
+          width: 100%;
+        }
         .mdc-list-item {
-          width: 56px;
+          width: 100%;
           height: 56px;
           box-sizing: border-box;
         }
