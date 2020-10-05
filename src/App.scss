@@ -1,9 +1,8 @@
-@use "theme" as theme;
-
 $headline-font: unquote("Roboto Slab, serif");
 $body-font: unquote("Lato, sans-serif");
 
-/*@use "@material/typography" with (
+@use "@material/typography" with (
+  $font-family: $body-font,
   $styles-headline1: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
@@ -62,7 +61,9 @@ $body-font: unquote("Lato, sans-serif");
     font-family: $body-font,
     font-size: 0.8125rem,
   )
-);*/
+);
+
+@use "theme" as theme;
 
 @use "@material/button/mdc-button";
 @use "@material/card/mdc-card";
@@ -92,7 +93,6 @@ $body-font: unquote("Lato, sans-serif");
 @use "@material/tab/mdc-tab";
 @use "@material/textfield/mdc-text-field";
 @use "@material/top-app-bar/mdc-top-app-bar";
-@use "@material/typography/mdc-typography";
 @use "@rmwc/avatar/avatar";
 @use "@rmwc/circular-progress/circular-progress";
 @use "@rmwc/data-table/data-table";
@@ -101,7 +101,8 @@ $body-font: unquote("Lato, sans-serif");
 
 @use "@material/theme/color-palette" as palette;
 @use "@material/top-app-bar/_index" as top-app-bar;
-@use "@material/typography/_index" as typography;
+
+@include typography.core-styles();
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;
