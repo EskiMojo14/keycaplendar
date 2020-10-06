@@ -100,6 +100,17 @@ $mdc-theme-on-surface: #000;
   fill: currentColor;
 }
 
+.mdc-checkbox {
+  &__checkmark {
+    height: 10px;
+    width: 10px;
+    padding: 2px;
+  }
+  &__mixedmark {
+    width: calc(100% - 6px);
+  }
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;

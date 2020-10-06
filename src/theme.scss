@@ -171,7 +171,7 @@ $overlay-values: (
       map-get($variables, text-secondary),
       transparent,
       map-get($variables, secondary),
-      map-get($variables, secondary)
+      rgba(map-get($variables, secondary),0.3)
     );
     @include mdc-states(map-get($variables, on-surface));
     &.mdc-checkbox--selected {
@@ -186,17 +186,17 @@ $overlay-values: (
     }
     .mdc-checkbox__native-control[disabled]:checked ~ .mdc-checkbox__background,
     .mdc-checkbox__native-control[disabled]:indeterminate ~ .mdc-checkbox__background {
-      border-color: transparent;
-      background-color: rgba(map-get($variables, on-surface), 0.26);
+      border-color: rgba(map-get($variables, on-surface), 0.26);
+      background-color: rgba(map-get($variables, on-surface), 0.078);
       .mdc-checkbox__checkmark {
         color: black;
       }
     }
     .mdc-checkbox__checkmark {
-      color: map-get($variables, on-secondary);
+      color: map-get($variables, on-surface);
     }
     .mdc-checkbox__mixedmark {
-      border-color: map-get($variables, on-secondary);
+      border-color: map-get($variables, on-surface);
     }
   }
 
