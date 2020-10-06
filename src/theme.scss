@@ -263,6 +263,9 @@ $overlay-values: (
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
       @include mdc-states(map-get($variables, on-surface));
+      &.svg-container {
+        fill: map-get($variables, text-secondary);
+      }
     }
     .mdc-card {
       @include mdc-card-fill-color(transparent);
@@ -436,9 +439,6 @@ $overlay-values: (
       @include mdc-text-field-outline-color(map-get($variables, text-disabled));
       @include mdc-text-field-hover-outline-color(map-get($variables, text-secondary));
       @include mdc-text-field-helper-text-color(map-get($variables, text-secondary));
-      .mdc-text-field__icon {
-        fill: map-get($variables, text-secondary);
-      }
       &.mdc-text-field--invalid {
         @include mdc-text-field-icon-color(map-get($variables, text-secondary));
         @include mdc-text-field-ink-color(map-get($variables, text-primary));
@@ -449,9 +449,6 @@ $overlay-values: (
           if($dark, lighten(map-get($variables, error), 12%), darken(map-get($variables, error), 25%))
         );
         @include mdc-text-field-helper-text-color(map-get($variables, error));
-        .mdc-text-field__icon {
-          fill: map-get($variables, text-secondary);
-        }
         .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
           color: map-get($variables, error);
         }
@@ -464,9 +461,6 @@ $overlay-values: (
       @include mdc-text-field-caret-color(map-get($variables, primary));
       @include mdc-text-field-outline-color(map-get($variables, primary));
       @include mdc-text-field-helper-text-color(map-get($variables, text-secondary));
-      .mdc-text-field__icon {
-        fill: map-get($variables, text-secondary);
-      }
       .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
         color: map-get($variables, primary);
       }
@@ -497,7 +491,7 @@ $overlay-values: (
       @include mdc-tab-active-icon-color(map-get($variables, primary));
       @include mdc-tab-active-states-color(map-get($variables, primary));
       .mdc-tab-indicator {
-        @include mdc-tab-indicator-underline-color(map-get($variables, primary))
+        @include mdc-tab-indicator-underline-color(map-get($variables, primary));
       }
     }
   }
@@ -537,7 +531,7 @@ $overlay-values: (
           @include mdc-tab-active-icon-color(map-get($variables, on-primary));
           @include mdc-tab-active-states-color(map-get($variables, on-primary));
           .mdc-tab-indicator {
-            @include mdc-tab-indicator-underline-color(map-get($variables, on-primary))
+            @include mdc-tab-indicator-underline-color(map-get($variables, on-primary));
           }
         }
       }
@@ -754,7 +748,10 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.profile-title.title-#{$letter} .profile-indicator {
+        .timeline-table.rmwc-data-table
+          .rmwc-data-table__row
+          .rmwc-data-table__cell.profile-title.title-#{$letter}
+          .profile-indicator {
           background-color: rgba($color, 0.1);
         }
         .timeline-table.rmwc-data-table .rmwc-data-table__row .rmwc-data-table__cell.cell-#{$letter} {
@@ -826,7 +823,8 @@ $overlay-values: (
       }
     }
     .indicator {
-      &.shipped, &.post-gb {
+      &.shipped,
+      &.post-gb {
         background-color: map-get($variables, primary);
       }
       &.live-gb {
@@ -857,7 +855,8 @@ $overlay-values: (
     .bold {
       color: map-get($variables, text-primary);
     }
-    a, a.bold {
+    a,
+    a.bold {
       color: map-get($variables, primary);
     }
   }
@@ -902,6 +901,15 @@ $overlay-values: (
   }
 
   .subheader {
+    color: map-get($variables, text-secondary);
+  }
+
+  .main.card.content .outer-container:first-child .subheader {
+    color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+  }
+  
+  .filter-drawer-open .main.card.content .outer-container:first-child .subheader, 
+  .details-drawer-open .main.card.content .outer-container:first-child .subheader {
     color: map-get($variables, text-secondary);
   }
 

@@ -96,6 +96,10 @@ $mdc-theme-on-surface: #000;
   }
 }
 
+.mdc-text-field .mdc-text-field__icon {
+  fill: currentColor;
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;

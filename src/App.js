@@ -52,6 +52,7 @@ class App extends React.Component {
       manualTheme: false,
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
+      lichTheme: false,
       statistics: { timeline: "gbLaunch", status: "profile", shipped: "profile" },
       statisticsSort: { status: "alphabetical", shipped: "alphabetical" },
       statisticsTab: "timeline",
@@ -244,7 +245,7 @@ class App extends React.Component {
   checkTheme = async () => {
     const themeBool = await this.isDarkTheme();
     document.querySelector("html").classList =
-      themeBool === true || themeBool === "true" ? this.state.darkTheme : "light";
+      themeBool === true || themeBool === "true" ? this.state.darkTheme : this.state.lichTheme ? "lich" : "light";
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -300,6 +301,10 @@ class App extends React.Component {
     if (this.state.cookies) {
       this.setCookie("toTimeTheme", time, 365);
     }
+  };
+  toggleLichTheme = () => {
+    this.setState({ lichTheme: !this.state.lichTheme });
+    setTimeout(this.checkTheme, 1);
   };
   changeBottomNav = (value) => {
     document.documentElement.scrollTop = 0;
@@ -794,6 +799,7 @@ class App extends React.Component {
           setFromTimeTheme={this.setFromTimeTheme}
           toTimeTheme={this.state.toTimeTheme}
           setToTimeTheme={this.setToTimeTheme}
+          toggleLichTheme={this.toggleLichTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
@@ -842,6 +848,7 @@ class App extends React.Component {
           setFromTimeTheme={this.setFromTimeTheme}
           toTimeTheme={this.state.toTimeTheme}
           setToTimeTheme={this.setToTimeTheme}
+          toggleLichTheme={this.toggleLichTheme}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}
@@ -890,6 +897,7 @@ class App extends React.Component {
           setFromTimeTheme={this.setFromTimeTheme}
           toTimeTheme={this.state.toTimeTheme}
           setToTimeTheme={this.setToTimeTheme}
+          toggleLichTheme={this.toggleLichTheme}
           bottomNav={this.state.bottomNav}
           changeBottomNav={this.changeBottomNav}
           setWhitelist={this.setWhitelist}

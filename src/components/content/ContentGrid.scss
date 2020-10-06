@@ -25,6 +25,9 @@
   flex-direction: column;
   justify-content: stretch;
   width: 100%;
+  .subheader {
+    transition: color 250ms $mdc-animation-standard-curve-timing-function;
+  }
   &:not(:last-of-type) {
     padding-bottom: 16px;
   }
