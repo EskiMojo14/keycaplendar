@@ -180,7 +180,7 @@ $overlay-values: (
       rgba(map-get($variables, on-surface), 0.26),
       rgba(map-get($variables, on-surface), 0.078)
     );
-    @include checkbox.ink-color(map-get($variables, on-secondary));
+    @include checkbox.ink-color(map-get($variables, on-surface));
     @include checkbox.disabled-ink-color(map-get($variables, on-surface));
     @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(),'.mdc-checkbox__ripple');
     &.mdc-checkbox--selected {
