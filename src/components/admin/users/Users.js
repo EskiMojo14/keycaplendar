@@ -20,6 +20,7 @@ import {
 } from "@rmwc/data-table";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Ripple } from "@rmwc/ripple";
+import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { UserRow } from "./UserRow";
@@ -364,6 +365,11 @@ export class Users extends React.Component {
                         </DataTableHeadCell>
                         <DataTableHeadCell>Save</DataTableHeadCell>
                         <DataTableHeadCell>Delete</DataTableHeadCell>
+                      </DataTableRow>
+                      <DataTableRow className={"progress-row" + (this.state.loading ? " loading" : "")}>
+                        <DataTableHeadCell colSpan={9}>
+                          <LinearProgress />
+                        </DataTableHeadCell>
                       </DataTableRow>
                     </DataTableHead>
                     <DataTableBody>

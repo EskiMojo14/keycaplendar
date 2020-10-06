@@ -29,6 +29,24 @@
       &__content {
         width: 100%;
       }
+      &__head .rmwc-data-table__row {
+        &.progress-row {
+          height: 0;
+          border: none;
+          .rmwc-data-table__head-cell {
+            height: 0;
+            padding: 0;
+            border: none;
+            .mdc-linear-progress {
+              height: 0px;
+              transition: height 100ms $mdc-animation-standard-curve-timing-function;
+            }
+          }
+          &.loading .rmwc-data-table__head-cell .mdc-linear-progress {
+                height: 4px;
+          }
+        }
+      }
       &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action,
       &__head .rmwc-data-table__row:hover .rmwc-data-table__head-cell.action,
       &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action:hover {
