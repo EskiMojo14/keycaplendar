@@ -172,19 +172,19 @@ $overlay-values: (
       map-get($variables, text-secondary),
       transparent,
       map-get($variables, secondary),
-      map-get($variables, secondary)
+      rgba(map-get($variables, secondary),0.3)
     );
     @include checkbox.disabled-container-colors(
       rgba(map-get($variables, on-surface), 0.26),
       transparent,
-      transparent,
-      rgba(map-get($variables, on-surface), 0.26)
+      rgba(map-get($variables, on-surface), 0.26),
+      rgba(map-get($variables, on-surface), 0.078)
     );
     @include checkbox.ink-color(map-get($variables, on-secondary));
     @include checkbox.disabled-ink-color(map-get($variables, on-surface));
     @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(),'.mdc-checkbox__ripple');
     &.mdc-checkbox--selected {
-      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(),'.mdc-checkbox__ripple'); 
+      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(),'.mdc-checkbox__ripple');
     }
   }
 
@@ -251,6 +251,9 @@ $overlay-values: (
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
       @include ripple.states(map-get($variables, on-surface));
+      &.svg-container {
+        fill: map-get($variables, text-secondary);
+      }
     }
     .mdc-card {
       @include card.fill-color(transparent);
@@ -437,9 +440,6 @@ $overlay-values: (
       @include text-field.outline-color(map-get($variables, text-disabled));
       @include text-field.hover-outline-color(map-get($variables, text-secondary));
       @include text-field-helper-text.helper-text-color(map-get($variables, text-secondary));
-      .mdc-text-field__icon {
-        fill: map-get($variables, text-secondary);
-      }
       &.mdc-text-field--invalid {
         @include text-field-icon.leading-icon-color(map-get($variables, text-secondary));
         @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
@@ -451,12 +451,6 @@ $overlay-values: (
           if($dark, lighten(map-get($variables, error), 12%), darken(map-get($variables, error), 25%))
         );
         @include text-field-helper-text.helper-text-color(map-get($variables, error));
-        .mdc-text-field__icon {
-          fill: map-get($variables, text-secondary);
-        }
-        .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
-          color: map-get($variables, error);
-        }
       }
     }
     &.mdc-text-field--focused {
@@ -467,9 +461,6 @@ $overlay-values: (
       @include text-field.caret-color(map-get($variables, primary));
       @include text-field.outline-color(map-get($variables, primary));
       @include text-field-helper-text.helper-text-color(map-get($variables, text-secondary));
-      .mdc-text-field__icon {
-        fill: map-get($variables, text-secondary);
-      }
       .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
         color: map-get($variables, primary);
       }
@@ -498,7 +489,7 @@ $overlay-values: (
       @include tab.active-icon-color(map-get($variables, primary));
       @include tab.active-states-color(map-get($variables, primary));
       .mdc-tab-indicator {
-        @include tab-indicator.underline-color(map-get($variables, primary))
+        @include tab-indicator.underline-color(map-get($variables, primary));
       }
     }
   }
@@ -538,7 +529,7 @@ $overlay-values: (
           @include tab.active-icon-color(map-get($variables, on-primary));
           @include tab.active-states-color(map-get($variables, on-primary));
           .mdc-tab-indicator {
-            @include tab-indicator.underline-color(map-get($variables, on-primary))
+            @include tab-indicator.underline-color(map-get($variables, on-primary));
           }
         }
       }
@@ -831,7 +822,8 @@ $overlay-values: (
       }
     }
     .indicator {
-      &.shipped, &.post-gb {
+      &.shipped,
+      &.post-gb {
         background-color: map-get($variables, primary);
       }
       &.live-gb {
@@ -862,7 +854,8 @@ $overlay-values: (
     .bold {
       color: map-get($variables, text-primary);
     }
-    a, a.bold {
+    a,
+    a.bold {
       color: map-get($variables, primary);
     }
   }
@@ -907,6 +900,15 @@ $overlay-values: (
   }
 
   .subheader {
+    color: map-get($variables, text-secondary);
+  }
+
+  .main.card.content .outer-container:first-child .subheader {
+    color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+  }
+  
+  .filter-drawer-open .main.card.content .outer-container:first-child .subheader, 
+  .details-drawer-open .main.card.content .outer-container:first-child .subheader {
     color: map-get($variables, text-secondary);
   }
 

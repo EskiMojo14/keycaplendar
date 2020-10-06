@@ -150,7 +150,8 @@ $body-font: unquote("Lato, sans-serif");
   border-color: var(--divider-color);
 }
 
-.mdc-drawer .mdc-list-item, .mdc-drawer .mdc-list-item:first-child {
+.mdc-drawer .mdc-list-item,
+.mdc-drawer .mdc-list-item:first-child {
   margin: 0;
   border-radius: 0;
   box-sizing: border-box;
@@ -227,6 +228,21 @@ $body-font: unquote("Lato, sans-serif");
     .mdc-data-table__cell {
       @include typography.typography(body2);
     }
+  }
+}
+
+.mdc-text-field .mdc-text-field__icon {
+  fill: currentColor;
+}
+
+.mdc-checkbox {
+  &__checkmark {
+    height: 10px;
+    width: 10px;
+    padding: 2px;
+  }
+  &__mixedmark {
+    width: calc(100% - 6px);
   }
 }
 

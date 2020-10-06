@@ -265,6 +265,7 @@ export class DesktopContent extends React.Component {
             delete={this.openDeleteDialog}
             search={this.props.search}
             setSearch={this.props.setSearch}
+            toggleLichTheme={this.props.toggleLichTheme}
           />
           <TabletDrawerFilter
             profiles={this.props.profiles}
@@ -286,6 +287,7 @@ export class DesktopContent extends React.Component {
             delete={this.openDeleteDialog}
             search={this.props.search}
             setSearch={this.props.setSearch}
+            toggleLichTheme={this.props.toggleLichTheme}
           />
           <DesktopDrawerFilter
             profiles={this.props.profiles}
@@ -638,6 +640,7 @@ export class TabletContent extends React.Component {
           delete={this.openDeleteDialog}
           search={this.props.search}
           setSearch={this.props.setSearch}
+          toggleLichTheme={this.props.toggleLichTheme}
         />
         <TabletDrawerFilter
           vendors={this.props.vendors}
@@ -1027,6 +1030,7 @@ export class MobileContent extends React.Component {
           delete={this.openDeleteDialog}
           search={this.props.search}
           setSearch={this.props.setSearch}
+          toggleLichTheme={this.props.toggleLichTheme}
         />
         <DialogFilter
           vendors={this.props.vendors}
