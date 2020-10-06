@@ -1,3 +1,4 @@
+@use "@material/animation/_index" as animation;
 @use "@material/elevation/_index" as elevation;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
@@ -26,7 +27,7 @@
   justify-content: stretch;
   width: 100%;
   .subheader {
-    transition: color 250ms $mdc-animation-standard-curve-timing-function;
+    transition: color 250ms animation.$standard-curve-timing-function;
   }
   &:not(:last-of-type) {
     padding-bottom: 16px;
