@@ -554,6 +554,9 @@ export class ContentStatistics extends React.Component {
             return <ShippedCard key={index} data={data} />;
           })}
         </div>
+        <div className="stats-tab stats-grid duration">
+          
+        </div>
       </div>
     );
   }

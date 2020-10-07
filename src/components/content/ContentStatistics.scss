@@ -89,7 +89,7 @@
   max-width: 100%;
   align-items: flex-start;
   &.timeline {
-    .stats-tab.status, .stats-tab.shipped {
+    .stats-tab.status, .stats-tab.shipped, .stats-tab.duration {
       max-height: 100vh;
     }
   }
@@ -97,7 +97,7 @@
     .stats-tab {
       transform: translateX(-100%);
     }
-    .stats-tab.timeline, .stats-tab.shipped {
+    .stats-tab.timeline, .stats-tab.shipped, .stats-tab.duration {
       max-height: 100vh;
     }
   }
@@ -105,7 +105,15 @@
     .stats-tab {
       transform: translateX(-200%);
     }
-    .stats-tab.timeline, .stats-tab.status {
+    .stats-tab.timeline, .stats-tab.status, .stats-tab.duration {
+      max-height: 100vh;
+    }
+  }
+  &.duration {
+    .stats-tab {
+      transform: translateX(-300%);
+    }
+    .stats-tab.timeline, .stats-tab.status, .stats-tab.stats-tab.shipped {
       max-height: 100vh;
     }
   }

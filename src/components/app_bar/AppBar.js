@@ -210,7 +210,7 @@ export const DesktopAppBar = (props) => {
         </MenuSurfaceAnchor>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped"];
+  const tabs = ["timeline", "status", "shipped","duration"];
   const statsTabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -222,6 +222,7 @@ export const DesktopAppBar = (props) => {
             <Tab>Timeline</Tab>
             <Tab>Status</Tab>
             <Tab>Shipped</Tab>
+            <Tab>Duration</Tab>
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -444,7 +445,7 @@ export const TabletAppBar = (props) => {
         </div>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped"];
+  const tabs = ["timeline", "status", "shipped", "duration"];
   const statsTabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -456,6 +457,7 @@ export const TabletAppBar = (props) => {
             <Tab>Timeline</Tab>
             <Tab>Status</Tab>
             <Tab>Shipped</Tab>
+            <Tab>Duration</Tab>
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -696,7 +698,7 @@ export const MobileAppBar = (props) => {
         </div>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped"];
+  const tabs = ["timeline", "status", "shipped", "duration"];
   const statsTabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -708,6 +710,7 @@ export const MobileAppBar = (props) => {
             <Tab>Timeline</Tab>
             <Tab>Status</Tab>
             <Tab>Shipped</Tab>
+            <Tab>Duration</Tab>
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -939,7 +942,7 @@ export const BottomAppBar = (props) => {
         </div>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped"];
+  const tabs = ["timeline", "status", "shipped", "duration"];
   const statsTabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -951,6 +954,7 @@ export const BottomAppBar = (props) => {
             <Tab>Timeline</Tab>
             <Tab>Status</Tab>
             <Tab>Shipped</Tab>
+            <Tab>Duration</Tab>
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
