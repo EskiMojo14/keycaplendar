@@ -15,7 +15,10 @@ export const Autocomplete = (props) => {
       focusOnOpen={false}
       open={props.open && props.query.length >= props.minChars && matchingItems.length > 0}
       anchorCorner="bottomLeft"
-      onSelect={(e) => props.select(props.prop, matchingItems[e.detail.index])}
+      onSelect={(e) => {
+        props.select(props.prop, matchingItems[e.detail.index]);
+        document.activeElement.blur();
+      }}
       onFocus={props.onFocus}
       onBlur={props.onBlur}
     >
