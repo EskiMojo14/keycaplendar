@@ -638,8 +638,8 @@ $overlay-values: (
     color: map-get($variables, on-error);
     background-color: map-get($variables, error);
     &.user-icon {
-      fill: map-get($variables, on-surface);
-      color: map-get($variables, on-surface);
+      fill: map-get($variables, text-secondary);
+      color: map-get($variables, text-secondary);
       background-color: mix(
         map-get($variables, on-surface),
         if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
