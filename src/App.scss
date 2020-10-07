@@ -94,6 +94,7 @@ $body-font: unquote("Lato, sans-serif");
 @use "@material/textfield/mdc-text-field";
 @use "@material/top-app-bar/mdc-top-app-bar";
 @use "@rmwc/avatar/avatar";
+@use "@rmwc/badge/badge";
 @use "@rmwc/circular-progress/circular-progress";
 @use "@rmwc/data-table/data-table";
 @use "@rmwc/list/collapsible-list";
@@ -180,6 +181,26 @@ $body-font: unquote("Lato, sans-serif");
 
 .rmwc-avatar {
   background-color: var(--divider-color);
+}
+
+.rmwc-badge.material-icons {
+  text-transform: none;
+  font-size: 18px;
+  line-height: 18px;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  &.rmwc-badge--align-start, &.rmwc-badge--align-end {
+    top: -13px;
+  }
+  &.rmwc-badge--align-start, [dir=rtl] &.rmwc-badge--align-end {
+    left: -13px;
+    right: auto;
+  }
+  &.rmwc-badge--align-end, [dir=rtl] &.rmwc-badge--align-start {
+    right: -13px;
+    left: auto;
+  }
 }
 
 .banner {

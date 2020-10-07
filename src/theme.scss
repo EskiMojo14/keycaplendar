@@ -633,6 +633,21 @@ $overlay-values: (
     }
   }
 
+  .rmwc-badge {
+    fill: map-get($variables, on-error);
+    color: map-get($variables, on-error);
+    background-color: map-get($variables, error);
+    &.user-icon {
+      fill: map-get($variables, on-surface);
+      color: map-get($variables, on-surface);
+      background-color: mix(
+        map-get($variables, on-surface),
+        if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
+        12%
+      );
+    }
+  }
+
   .rmwc-circular-progress {
     color: map-get($variables, primary);
   }

@@ -125,8 +125,12 @@
         &::before, &::after {
           content: none;
         }
-        .rmwc-avatar {
+        .avatar {
           margin-right: 16px;
+          .user-icon {
+            top: auto;
+            bottom: -13px;
+          }
         }
         .mdc-list-item__text {
           align-self: unset;
