@@ -97,7 +97,6 @@
       justify-content: stretch;
       margin-bottom: 4px;
       display: flex;
-      align-items: center;
       .mdc-typography--overline {
         margin: 0;
         flex-shrink: 1;
@@ -131,6 +130,7 @@
       overflow: hidden;
       display: inline-flex;
       align-items: center;
+      height: 2rem;
     }
   }
 }
