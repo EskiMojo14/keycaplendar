@@ -53,7 +53,13 @@ class App extends React.Component {
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
       lichTheme: false,
-      statistics: { timeline: "gbLaunch", status: "profile", shipped: "profile", duration: "profile" },
+      statistics: {
+        timeline: "gbLaunch",
+        status: "profile",
+        shipped: "profile",
+        durationCat: "icDate",
+        durationGroup: "profile",
+      },
       statisticsSort: { status: "alphabetical", shipped: "alphabetical", duration: "alphabetical" },
       statisticsTab: "timeline",
     };

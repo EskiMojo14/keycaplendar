@@ -15,7 +15,9 @@ export class DialogStatistics extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open && this.props.open === true) {
       this.setState({
-        statistics: this.props.statistics[this.props.statisticsTab],
+        statistics: this.props.statistics[
+          this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab
+        ],
       });
     }
   }
@@ -25,8 +27,14 @@ export class DialogStatistics extends React.Component {
     });
   };
   changeStatistics = () => {
-    if (this.props.statistics[this.props.statisticsTab] !== this.state.statistics) {
-      this.props.setStatistics(this.props.statisticsTab, this.state.statistics);
+    if (
+      this.props.statistics[this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab] !==
+      this.state.statistics
+    ) {
+      this.props.setStatistics(
+        this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab,
+        this.state.statistics
+      );
     }
   };
   render() {
