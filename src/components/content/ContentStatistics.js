@@ -1,10 +1,13 @@
 import React from "react";
 import ChartistGraph from "react-chartist";
+import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
+import { create, all } from "mathjs";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard, ShippedCard } from "../statistics/PieCard";
+import { DurationCard } from "../statistics/DurationCard";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
 
@@ -15,6 +18,11 @@ function camelize(str) {
     })
     .replace(/\s+/g, "");
 }
+function countInArray(arr, val) {
+  return arr.reduce((count, item) => count + (item === val), 0);
+}
+
+const math = create(all);
 
 export class ContentStatistics extends React.Component {
   constructor(props) {
@@ -54,47 +62,49 @@ export class ContentStatistics extends React.Component {
           data: [],
         },
       },
+      durationData: {
+        icDate: {
+          profile: {
+            names: [],
+            data: [],
+          },
+          designer: {
+            names: [],
+            data: [],
+          },
+          vendor: {
+            names: [],
+            data: [],
+          },
+        },
+        gbLaunch: {
+          profile: {
+            names: [],
+            data: [],
+          },
+          designer: {
+            names: [],
+            data: [],
+          },
+          vendor: {
+            names: [],
+            data: [],
+          },
+        },
+      },
       focused: "",
     };
   }
   createData = () => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    //timeline
     let months = { icDate: [], gbLaunch: [] };
     let monthData = { icDate: {}, gbLaunch: {} };
     let countData = { icDate: [], gbLaunch: [] };
     let profileCount = { icDate: {}, gbLaunch: {} };
     let profileCountData = { icDate: [], gbLaunch: [] };
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    let statusData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
-    };
-    let shippedData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
-    };
-    //timeline
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
@@ -164,6 +174,20 @@ export class ContentStatistics extends React.Component {
       });
     });
     //status
+    let statusData = {
+      profile: {
+        names: [],
+        data: [],
+      },
+      designer: {
+        names: [],
+        data: [],
+      },
+      vendor: {
+        names: [],
+        data: [],
+      },
+    };
     this.props.sets.forEach((set) => {
       if (statusData.profile.names.indexOf(set.profile) === -1) {
         statusData.profile.names.push(set.profile);
@@ -279,6 +303,20 @@ export class ContentStatistics extends React.Component {
       });
     });
     //shipped
+    let shippedData = {
+      profile: {
+        names: [],
+        data: [],
+      },
+      designer: {
+        names: [],
+        data: [],
+      },
+      vendor: {
+        names: [],
+        data: [],
+      },
+    };
     const pastSets = this.props.sets.filter((set) => {
       const endDate = new Date(set.gbEnd);
       endDate.setHours(23);
@@ -360,6 +398,145 @@ export class ContentStatistics extends React.Component {
         return 0;
       });
     });
+    //duration
+    let durationData = {
+      icDate: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
+      gbLaunch: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
+    };
+    const dateSets = this.props.sets.filter((set) => {
+      return set.gbLaunch && set.gbLaunch.length === 10;
+    });
+    properties.forEach((property) => {
+      let propSets = [];
+      if (property === "gbLaunch") {
+        propSets = dateSets.filter((set) => {
+          return set.gbEnd.length === 10;
+        });
+      } else {
+        propSets = dateSets;
+      }
+      propSets.forEach((set) => {
+        if (durationData[property].profile.names.indexOf(set.profile) === -1) {
+          durationData[property].profile.names.push(set.profile);
+        }
+        set.designer.forEach((designer) => {
+          if (durationData[property].designer.names.indexOf(designer) === -1) {
+            durationData[property].designer.names.push(designer);
+          }
+        });
+        set.vendors.forEach((vendor) => {
+          if (durationData[property].vendor.names.indexOf(vendor.name) === -1) {
+            durationData[property].vendor.names.push(vendor.name);
+          }
+        });
+      });
+
+      Object.keys(durationData[property]).forEach((prop) => {
+        durationData[property][prop].names.sort(function (a, b) {
+          var x = a.toLowerCase();
+          var y = b.toLowerCase();
+          if (x < y) {
+            return -1;
+          }
+          if (x > y) {
+            return 1;
+          }
+          return 0;
+        });
+
+        durationData[property][prop].names = ["All"].concat(durationData[property][prop].names);
+        durationData[property][prop].names.forEach((name) => {
+          let data = [];
+          if (name === "All") {
+            propSets.forEach((set) => {
+              const startDate = moment(set[property]);
+              const endDate = moment(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+              const length = endDate.diff(startDate, property === "icDate" ? "months" : "days");
+              data.push(length);
+            });
+          } else {
+            propSets
+              .filter((set) => {
+                let bool = false;
+                if (prop === "vendor") {
+                  bool =
+                    set.vendors.findIndex((vendor) => {
+                      return vendor.name === name;
+                    }) !== -1
+                      ? true
+                      : false;
+                } else if (prop === "designer") {
+                  bool = set.designer.indexOf(name) !== -1;
+                } else {
+                  bool = set[prop] === name;
+                }
+                return bool;
+              })
+              .forEach((set) => {
+                const startDate = moment(set[property]);
+                const endDate = moment(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                const length = endDate.diff(startDate, property === "icDate" ? "months" : "days");
+                data.push(length);
+                if (length > 500) {
+                  console.log(set.colorway, length);
+                }
+              });
+          }
+          data.sort(function (a, b) {
+            if (a < b) {
+              return -1;
+            }
+            if (a > b) {
+              return 1;
+            }
+            return 0;
+          });
+          let labels = math.range(math.min(data), math.max(data), 1, true).toArray();
+          let count = [];
+          labels.forEach((label) => {
+            count.push(countInArray(data, label));
+          });
+          const range = math.max(data) - math.min(data);
+          const rangeDisplay = math.min(data) + "-" + math.max(data) + " (" + range + ")";
+          durationData[property][prop].data.push([
+            name,
+            data.length,
+            math.round(math.mean(data), 2),
+            math.median(data),
+            math.mode(data),
+            rangeDisplay,
+            math.round(math.std(data), 2),
+            [labels, count],
+          ]);
+        });
+      });
+    });
     this.setState({
       months: months,
       monthData: monthData,
@@ -368,38 +545,74 @@ export class ContentStatistics extends React.Component {
       profileCountData: profileCountData,
       statusData: statusData,
       shippedData: shippedData,
+      durationData: durationData,
     });
   };
   sortData = () => {
-    let data = Object.assign({}, this.state[this.props.statisticsTab + "Data"]);
-    Object.keys(data).forEach((prop) => {
-      data[prop].data.sort((a, b) => {
-        var x =
-          this.props.statisticsSort[this.props.statisticsTab] === "total"
-            ? a[this.props.statisticsTab === "status" ? 4 : 2]
-            : a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-        var y =
-          this.props.statisticsSort[this.props.statisticsTab] === "total"
-            ? b[this.props.statisticsTab === "status" ? 4 : 2]
-            : b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-        var c = a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-        var d = b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-        if (x < y) {
-          return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
-        }
-        if (x > y) {
-          return this.props.statisticsSort[this.props.statisticsTab] === "total" ? -1 : 1;
-        }
-        if (c < d) {
-          return -1;
-        }
-        if (c > d) {
-          return 1;
-        }
-        return 0;
-      });
-    });
     const key = this.props.statisticsTab + "Data";
+    let data = Object.assign({}, this.state[key]);
+    if (this.props.statisticsTab === "duration") {
+      Object.keys(data).forEach((property) => {
+        Object.keys(data[property]).forEach((prop) => {
+          data[property][prop].data.sort((a, b) => {
+            if (a[0] === "All" || b[0] === "All") {
+              return a[0] === "all";
+            }
+            var x =
+              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                ? a[0].toLowerCase()
+                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+            var y =
+              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                ? b[0].toLowerCase()
+                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+            var c = a[0].toLowerCase();
+            var d = b[0].toLowerCase();
+            if (x < y) {
+              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
+            }
+            if (x > y) {
+              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? 1 : -1;
+            }
+            if (c < d) {
+              return -1;
+            }
+            if (c > d) {
+              return 1;
+            }
+            return 0;
+          });
+        });
+      });
+    } else {
+      Object.keys(data).forEach((prop) => {
+        data[prop].data.sort((a, b) => {
+          var x =
+            this.props.statisticsSort[this.props.statisticsTab] === "total"
+              ? a[this.props.statisticsTab === "status" ? 4 : 2]
+              : a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          var y =
+            this.props.statisticsSort[this.props.statisticsTab] === "total"
+              ? b[this.props.statisticsTab === "status" ? 4 : 2]
+              : b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          var c = a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          var d = b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          if (x < y) {
+            return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
+          }
+          if (x > y) {
+            return this.props.statisticsSort[this.props.statisticsTab] === "total" ? -1 : 1;
+          }
+          if (c < d) {
+            return -1;
+          }
+          if (c > d) {
+            return 1;
+          }
+          return 0;
+        });
+      });
+    }
     this.setState({
       [key]: data,
     });
@@ -437,6 +650,34 @@ export class ContentStatistics extends React.Component {
       axisY: {
         onlyInteger: true,
       },
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 16,
+        left: 16,
+      },
+      plugins: [
+        chartistPluginAxisTitle({
+          axisX: {
+            axisTitle: "Month",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 32,
+            },
+            textAnchor: "middle",
+          },
+          axisY: {
+            axisTitle: "Count",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 16,
+            },
+            flipTitle: true,
+          },
+        }),
+      ],
     };
 
     const profileChartData = {
@@ -450,6 +691,34 @@ export class ContentStatistics extends React.Component {
       axisY: {
         onlyInteger: true,
       },
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 16,
+        left: 16,
+      },
+      plugins: [
+        chartistPluginAxisTitle({
+          axisX: {
+            axisTitle: "Month",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 32,
+            },
+            textAnchor: "middle",
+          },
+          axisY: {
+            axisTitle: "Count",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 16,
+            },
+            flipTitle: true,
+          },
+        }),
+      ],
     };
     const barGraph =
       this.state.profileChartType === "bar" ? (
@@ -553,6 +822,13 @@ export class ContentStatistics extends React.Component {
           {this.state.shippedData[this.props.statistics.shipped].data.map((data, index) => {
             return <ShippedCard key={index} data={data} />;
           })}
+        </div>
+        <div className="stats-tab stats-grid duration">
+          {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
+            (data, index) => {
+              return <DurationCard key={index} data={data} durationCat={this.props.statistics.durationCat} />;
+            }
+          )}
         </div>
       </div>
     );

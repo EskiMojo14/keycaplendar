@@ -150,6 +150,15 @@ $body-font: unquote("Lato, sans-serif");
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);
 }
+.ct-chart {
+  .ct-grid {
+    stroke: var(--divider-color);
+    stroke-dasharray: 4px;
+  }
+  .ct-axis-title {
+    @include typography.typography(caption);
+  }
+}
 
 .mdc-drawer .mdc-list-item,
 .mdc-drawer .mdc-list-item:first-child {
