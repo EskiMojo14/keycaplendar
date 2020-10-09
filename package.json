@@ -9,7 +9,7 @@
     "body-scroll-toggle": "^0.2.0",
     "chartist": "^0.11.4",
     "chartist-plugin-axistitle": "0.0.7",
-    "firebase": "^7.17.2",
+    "firebase": "^7.23.0",
     "firebase-admin": "^8.13.0",
     "firebaseui": "^4.6.1",
     "mathjs": "^7.5.0",
