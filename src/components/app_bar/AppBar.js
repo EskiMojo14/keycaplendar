@@ -1181,12 +1181,12 @@ export const BottomAppBar = (props) => {
                   </svg>
                 ),
               }}
+              tooltip={{
+                enterDelay: 500,
+                align: "top",
+                content: "Alphabetical",
+              }}
             />
-            tooltip={{
-              enterDelay: 500,
-              align: "top",
-              content: "Alphabetical",
-            }}
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "total"}
               onClick={() => {
