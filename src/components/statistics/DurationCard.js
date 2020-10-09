@@ -25,12 +25,14 @@ export const DurationCard = (props) => {
             labels: props.data[7][0],
           }}
           options={{
-            onlyInteger: true,
             chartPadding: {
-              top: 0,
+              top: 16,
               right: 0,
               bottom: 16,
               left: 16,
+            },
+            axisY: {
+              onlyInteger: true,
             },
             plugins: [
               chartistPluginAxisTitle({

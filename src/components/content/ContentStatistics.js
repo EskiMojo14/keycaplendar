@@ -651,7 +651,7 @@ export class ContentStatistics extends React.Component {
         onlyInteger: true,
       },
       chartPadding: {
-        top: 0,
+        top: 16,
         right: 0,
         bottom: 16,
         left: 16,
@@ -692,7 +692,7 @@ export class ContentStatistics extends React.Component {
         onlyInteger: true,
       },
       chartPadding: {
-        top: 0,
+        top: 16,
         right: 0,
         bottom: 16,
         left: 16,
