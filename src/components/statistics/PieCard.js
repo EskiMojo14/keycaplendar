@@ -19,6 +19,9 @@ export const StatusCard = (props) => {
       <Typography use="headline5" tag="h1">
         {props.data[5]}
       </Typography>
+      <Typography use="subtitle2" tag="p">
+        {props.data[4] + " set" + (props.data[4] > 1 ? "s" : "")}
+      </Typography>
       <div className="pie-container">
         <div className="table-container">
           <DataTable>
@@ -26,7 +29,7 @@ export const StatusCard = (props) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Status</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
+                  <DataTableHeadCell alignEnd>Sets</DataTableHeadCell> 
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -54,10 +57,6 @@ export const StatusCard = (props) => {
                   </DataTableCell>
                   <DataTableCell alignEnd>{props.data[3]}</DataTableCell>
                 </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell className="bold">Total</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[4]}</DataTableCell>
-                </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
@@ -83,6 +82,9 @@ export const ShippedCard = (props) => {
       <Typography use="headline5" tag="h1">
         {props.data[3]}
       </Typography>
+      <Typography use="subtitle2" tag="p">
+        {props.data[2] + " set" + (props.data[2] > 1 ? "s" : "")}
+      </Typography>
       <div className="pie-container">
         <div className="table-container">
           <DataTable>
@@ -105,10 +107,6 @@ export const ShippedCard = (props) => {
                     <div className="indicator not-shipped"></div>Not shipped
                   </DataTableCell>
                   <DataTableCell alignEnd>{props.data[1]}</DataTableCell>
-                </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell className="bold">Total</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[2]}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
