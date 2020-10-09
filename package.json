@@ -12,6 +12,7 @@
     "firebase": "^7.17.2",
     "firebase-admin": "^8.13.0",
     "firebaseui": "^4.6.1",
+    "mathjs": "^7.5.0",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",

@@ -29,10 +29,6 @@
       overflow: auto;
       .ct-chart {
         min-width: 1280px;
-        .ct-grid {
-          stroke: var(--divider-color);
-          stroke-dasharray: 4px;
-        }
       }
     }
     &.profile-graph {
@@ -79,6 +75,9 @@
     grid-gap: 16px;
     .mdc-card {
       margin: 0;
+      &.full-span {
+        grid-column: span 4;
+      }
     }
   }
 }
@@ -89,7 +88,9 @@
   max-width: 100%;
   align-items: flex-start;
   &.timeline {
-    .stats-tab.status, .stats-tab.shipped {
+    .stats-tab.status,
+    .stats-tab.shipped,
+    .stats-tab.duration {
       max-height: 100vh;
     }
   }
@@ -97,7 +98,9 @@
     .stats-tab {
       transform: translateX(-100%);
     }
-    .stats-tab.timeline, .stats-tab.shipped {
+    .stats-tab.timeline,
+    .stats-tab.shipped,
+    .stats-tab.duration {
       max-height: 100vh;
     }
   }
@@ -105,90 +108,20 @@
     .stats-tab {
       transform: translateX(-200%);
     }
-    .stats-tab.timeline, .stats-tab.status {
+    .stats-tab.timeline,
+    .stats-tab.status,
+    .stats-tab.duration {
       max-height: 100vh;
     }
   }
-}
-
-.pie-card {
-  .pie-container {
-    display: flex;
-    flex-direction: column;
-    .pie-chart-container {
-      &.shipped .ct-chart {
-        .ct-series {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
-      &.status .ct-chart {
-        .ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--lighter-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--lighter-color);
-          }
-        }
-        .ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
+  &.duration {
+    .stats-tab {
+      transform: translateX(-300%);
     }
-    .table-container {
-      flex-grow: 1;
-      .rmwc-data-table {
-        width: 100%;
-        border-radius: 4px;
-        .rmwc-data-table__content {
-          width: 100%;
-          .bold {
-            font-weight: bold;
-          }
-          .rmwc-data-table__cell {
-            position: relative;
-            .indicator {
-              position: absolute;
-              width: 4px;
-              height: 100%;
-              left: 0;
-              top: 0;
-              bottom: 0;
-              &.not-shipped, &.pre-gb {
-                background-color: var(--divider-color);
-              }
-              &.ic {
-                background-color: var(--lighter-color);
-              }
-            }
-          }
-        }
-      }
+    .stats-tab.timeline,
+    .stats-tab.status,
+    .stats-tab.stats-tab.shipped {
+      max-height: 100vh;
     }
   }
 }

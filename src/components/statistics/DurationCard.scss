@@ -1,0 +1,52 @@
+.stats-tab .mdc-card.duration-card {
+  grid-column: span 2;
+  .mdc-typography--headline5 {
+    margin-bottom: 8px;
+  }
+  .mdc-typography--subtitle2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .duration-container {
+    display: flex;
+    flex-direction: column;
+    .duration-chart-container {
+      max-width: 100%;
+      overflow: auto;
+      .ct-chart {
+        min-width: 1280px;
+      }
+    }
+    .table-container {
+      flex-grow: 1;
+      .rmwc-data-table {
+        width: 100%;
+        border-radius: 4px;
+        .rmwc-data-table__content {
+          width: 100%;
+          .bold {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  .stats-tab .mdc-card.duration-card {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 839px) {
+  .stats-tab .mdc-card.duration-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 479px) {
+  .stats-tab .mdc-card.duration-card {
+    grid-column: span 1;
+  }
+}

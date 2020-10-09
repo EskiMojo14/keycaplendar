@@ -19,17 +19,25 @@
 @import "@material/tab-indicator/mixins";
 @import "@material/theme/color-palette";
 
+// 1 - card, switch
+// 2 - contained button
+// 3 - refresh indicator
+// 4 - app bar
+// 6 - FAB, snackbar
+// 8 - menu, side sheet
+// 16 - nav drawer, modal side sheet
+// 24 - dialog
 $overlay-values: (
   0: 0%,
-  1: 5%,   // card, switch
-  2: 7%,   // contained button
-  3: 8%,   // refresh indicator
-  4: 9%,   // app bar
-  6: 11%,  // FAB, snackbar
-  8: 12%,  // menu, side sheet
+  1: 5%,
+  2: 7%,
+  3: 8%,
+  4: 9%,
+  6: 11%,
+  8: 12%,
   12: 14%,
-  16: 15%, // nav drawer, modal side sheet
-  24: 16%, // dialog
+  16: 15%,
+  24: 16%,
 );
 
 @function overlay-elevation($color, $elevation: 0) {
@@ -171,7 +179,7 @@ $overlay-values: (
       map-get($variables, text-secondary),
       transparent,
       map-get($variables, secondary),
-      rgba(map-get($variables, secondary),0.3)
+      rgba(map-get($variables, secondary), 0.3)
     );
     @include mdc-states(map-get($variables, on-surface));
     &.mdc-checkbox--selected {
@@ -706,7 +714,8 @@ $overlay-values: (
     }
   }
   .ct-chart {
-    .ct-label {
+    .ct-label,
+    .ct-axis-title {
       fill: map-get($variables, text-secondary);
       color: map-get($variables, text-secondary);
     }
@@ -773,6 +782,23 @@ $overlay-values: (
       .ct-donut-solid,
       .ct-area {
         fill: map-get($variables, secondary);
+      }
+    }
+  }
+  .duration-card {
+    .ct-chart {
+      .ct-series.ct-series-a {
+        .ct-point,
+        .ct-line,
+        .ct-bar,
+        .ct-slice-donut {
+          stroke: map-get($variables, secondary);
+        }
+        .ct-slice-pie,
+        .ct-donut-solid,
+        .ct-area {
+          fill: map-get($variables, secondary);
+        }
       }
     }
   }
@@ -907,8 +933,8 @@ $overlay-values: (
   .main.card.content .outer-container:first-child .subheader {
     color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
   }
-  
-  .filter-drawer-open .main.card.content .outer-container:first-child .subheader, 
+
+  .filter-drawer-open .main.card.content .outer-container:first-child .subheader,
   .details-drawer-open .main.card.content .outer-container:first-child .subheader {
     color: map-get($variables, text-secondary);
   }
