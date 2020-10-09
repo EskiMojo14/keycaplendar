@@ -29,10 +29,6 @@
       overflow: auto;
       .ct-chart {
         min-width: 1280px;
-        .ct-grid {
-          stroke: var(--divider-color);
-          stroke-dasharray: 4px;
-        }
       }
     }
     &.profile-graph {

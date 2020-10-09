@@ -10,6 +10,13 @@
   .duration-container {
     display: flex;
     flex-direction: column;
+    .duration-chart-container {
+      max-width: 100%;
+      overflow: auto;
+      .ct-chart {
+        min-width: 1280px;
+      }
+    }
     .table-container {
       flex-grow: 1;
       .rmwc-data-table {

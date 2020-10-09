@@ -57,7 +57,7 @@ class App extends React.Component {
         timeline: "gbLaunch",
         status: "profile",
         shipped: "profile",
-        durationCat: "icDate",
+        durationCat: "gbLaunch",
         durationGroup: "profile",
       },
       statisticsSort: { status: "alphabetical", shipped: "alphabetical", duration: "alphabetical" },
