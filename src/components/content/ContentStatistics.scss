@@ -16,13 +16,15 @@
     &:first-of-type {
       margin-top: 0;
     }
-    .mdc-typography--headline5 {
-      margin-top: 0;
-      margin-bottom: 16px;
-    }
-    .mdc-typography--caption {
-      margin-top: 8px;
-      margin-bottom: 0;
+    &.count-graph, &.profile-graph {
+      .mdc-typography--headline5 {
+        margin-top: 0;
+        margin-bottom: 16px;
+      }
+      .mdc-typography--caption {
+        margin-top: 8px;
+        margin-bottom: 0;
+      }
     }
     .graph-container {
       max-width: 100%;
