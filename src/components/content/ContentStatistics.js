@@ -6,6 +6,7 @@ import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard, ShippedCard } from "../statistics/PieCard";
+import { DurationCard } from "../statistics/DurationCard"
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
 
@@ -513,7 +514,7 @@ export class ContentStatistics extends React.Component {
           const rangeDisplay = math.min(data) + "-" + math.max(data) + " (" + range + ")";
           durationData[property][prop].data.push([
             name,
-            data,
+            data.length,
             math.round(math.mean(data), 2),
             math.median(data),
             math.mode(data),
@@ -718,7 +719,13 @@ export class ContentStatistics extends React.Component {
             return <ShippedCard key={index} data={data} />;
           })}
         </div>
-        <div className="stats-tab stats-grid duration"></div>
+        <div className="stats-tab stats-grid duration">
+          {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
+            (data, index) => {
+              return <DurationCard key={index} data={data} />;
+            }
+          )}
+        </div>
       </div>
     );
   }

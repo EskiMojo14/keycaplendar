@@ -79,6 +79,9 @@
     grid-gap: 16px;
     .mdc-card {
       margin: 0;
+      &.full-span {
+        grid-column: span 4;
+      }
     }
   }
 }
