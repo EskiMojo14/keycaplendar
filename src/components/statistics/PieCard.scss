@@ -1,0 +1,82 @@
+.pie-card {
+  .pie-container {
+    display: flex;
+    flex-direction: column;
+    .pie-chart-container {
+      &.shipped .ct-chart {
+        .ct-series {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+      &.status .ct-chart {
+        .ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--lighter-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--lighter-color);
+          }
+        }
+        .ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+    }
+    .table-container {
+      flex-grow: 1;
+      .rmwc-data-table {
+        width: 100%;
+        border-radius: 4px;
+        .rmwc-data-table__content {
+          width: 100%;
+          .bold {
+            font-weight: bold;
+          }
+          .rmwc-data-table__cell {
+            position: relative;
+            .indicator {
+              position: absolute;
+              width: 4px;
+              height: 100%;
+              left: 0;
+              top: 0;
+              bottom: 0;
+              &.not-shipped,
+              &.pre-gb {
+                background-color: var(--divider-color);
+              }
+              &.ic {
+                background-color: var(--lighter-color);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

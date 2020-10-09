@@ -11,6 +11,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import "./PieCard.scss";
 
 export const StatusCard = (props) => {
   return (
