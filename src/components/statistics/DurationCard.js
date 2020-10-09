@@ -45,7 +45,7 @@ export const DurationCard = (props) => {
                 },
                 axisY: {
                   axisTitle: "Count",
-                  axisClass: "ct-axis-title vertical",
+                  axisClass: "ct-axis-title",
                   offset: {
                     x: 0,
                     y: 16,

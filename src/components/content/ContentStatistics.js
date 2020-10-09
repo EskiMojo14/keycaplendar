@@ -1,5 +1,6 @@
 import React from "react";
 import ChartistGraph from "react-chartist";
+import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
 import { create, all } from "mathjs";
 import { Card } from "@rmwc/card";
@@ -649,6 +650,34 @@ export class ContentStatistics extends React.Component {
       axisY: {
         onlyInteger: true,
       },
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 16,
+        left: 16,
+      },
+      plugins: [
+        chartistPluginAxisTitle({
+          axisX: {
+            axisTitle: "Month",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 32,
+            },
+            textAnchor: "middle",
+          },
+          axisY: {
+            axisTitle: "Count",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 16,
+            },
+            flipTitle: true,
+          },
+        }),
+      ],
     };
 
     const profileChartData = {
@@ -662,6 +691,34 @@ export class ContentStatistics extends React.Component {
       axisY: {
         onlyInteger: true,
       },
+      chartPadding: {
+        top: 0,
+        right: 0,
+        bottom: 16,
+        left: 16,
+      },
+      plugins: [
+        chartistPluginAxisTitle({
+          axisX: {
+            axisTitle: "Month",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 32,
+            },
+            textAnchor: "middle",
+          },
+          axisY: {
+            axisTitle: "Count",
+            axisClass: "ct-axis-title",
+            offset: {
+              x: 0,
+              y: 16,
+            },
+            flipTitle: true,
+          },
+        }),
+      ],
     };
     const barGraph =
       this.state.profileChartType === "bar" ? (
