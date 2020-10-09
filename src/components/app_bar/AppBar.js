@@ -789,7 +789,7 @@ export const MobileAppBar = (props) => {
     previous: "Previous Sets",
     account: "Account",
     timeline: "Timeline",
-    statistics: "Statistics",
+    statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
   };
   const buttons =
     props.page === "statistics" ? (
@@ -1181,12 +1181,12 @@ export const BottomAppBar = (props) => {
                   </svg>
                 ),
               }}
+              tooltip={{
+                enterDelay: 500,
+                align: "top",
+                content: "Alphabetical",
+              }}
             />
-            tooltip={{
-              enterDelay: 500,
-              align: "top",
-              content: "Alphabetical",
-            }}
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "total"}
               onClick={() => {
