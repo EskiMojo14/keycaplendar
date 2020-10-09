@@ -557,15 +557,21 @@ export class ContentStatistics extends React.Component {
             if (a[0] === "All" || b[0] === "All") {
               return a[0] === "all";
             }
-            var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a[2] : a[0].toLowerCase();
-            var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b[2] : b[0].toLowerCase();
+            var x =
+              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                ? a[0].toLowerCase()
+                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+            var y =
+              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                ? b[0].toLowerCase()
+                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
             var c = a[0].toLowerCase();
             var d = b[0].toLowerCase();
             if (x < y) {
-              return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
+              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
             }
             if (x > y) {
-              return this.props.statisticsSort[this.props.statisticsTab] === "total" ? -1 : 1;
+              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? 1 : -1;
             }
             if (c < d) {
               return -1;
