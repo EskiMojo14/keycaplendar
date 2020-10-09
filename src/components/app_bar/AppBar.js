@@ -789,7 +789,7 @@ export const MobileAppBar = (props) => {
     previous: "Previous Sets",
     account: "Account",
     timeline: "Timeline",
-    statistics: "Statistics",
+    statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
   };
   const buttons =
     props.page === "statistics" ? (
