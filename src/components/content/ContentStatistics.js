@@ -507,6 +507,36 @@ export class ContentStatistics extends React.Component {
                   console.log(set.colorway, length);
                 }
               });
+            Object.keys(durationData[property]).forEach((prop) => {
+              durationData[property][prop].data.sort((a, b) => {
+                if (a[0] === "All" || b[0] === "All") {
+                  return a[0] === "all";
+                }
+                var x =
+                  this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                    ? a[0].toLowerCase()
+                    : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                var y =
+                  this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+                    ? b[0].toLowerCase()
+                    : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                var c = a[0].toLowerCase();
+                var d = b[0].toLowerCase();
+                if (x < y) {
+                  return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
+                }
+                if (x > y) {
+                  return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? 1 : -1;
+                }
+                if (c < d) {
+                  return -1;
+                }
+                if (c > d) {
+                  return 1;
+                }
+                return 0;
+              });
+            });
           }
           data.sort(function (a, b) {
             if (a < b) {
@@ -663,7 +693,7 @@ export class ContentStatistics extends React.Component {
             axisClass: "ct-axis-title",
             offset: {
               x: 0,
-              y: 32,
+              y: 40,
             },
             textAnchor: "middle",
           },
@@ -672,7 +702,7 @@ export class ContentStatistics extends React.Component {
             axisClass: "ct-axis-title",
             offset: {
               x: 0,
-              y: 16,
+              y: 24,
             },
             flipTitle: true,
           },
@@ -704,7 +734,7 @@ export class ContentStatistics extends React.Component {
             axisClass: "ct-axis-title",
             offset: {
               x: 0,
-              y: 32,
+              y: 40,
             },
             textAnchor: "middle",
           },
@@ -713,7 +743,7 @@ export class ContentStatistics extends React.Component {
             axisClass: "ct-axis-title",
             offset: {
               x: 0,
-              y: 16,
+              y: 24,
             },
             flipTitle: true,
           },

@@ -41,7 +41,7 @@ export const DurationCard = (props) => {
                   axisClass: "ct-axis-title",
                   offset: {
                     x: 0,
-                    y: 32,
+                    y: 40,
                   },
                   textAnchor: "middle",
                 },
@@ -50,7 +50,7 @@ export const DurationCard = (props) => {
                   axisClass: "ct-axis-title",
                   offset: {
                     x: 0,
-                    y: 16,
+                    y: 24,
                   },
                   flipTitle: true,
                 },
