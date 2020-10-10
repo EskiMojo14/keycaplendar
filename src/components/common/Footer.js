@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { Tooltip } from "@rmwc/tooltip";
 import "./Footer.scss";
@@ -227,34 +227,90 @@ export const Footer = () => {
       </Typography>
       <Typography use="body2" tag="p">
         Something to add/adjust? Join my{" "}
-        <a href="https://discord.gg/zrcN3qF" target="_blank" rel="noopener noreferrer" className="bold">
-          Discord server
-        </a>{" "}
+        <Button
+          label="Discord"
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M22,24L16.75,19L17.38,21H4.5A2.5,2.5 0 0,1 2,18.5V3.5A2.5,2.5 0 0,1 4.5,1H19.5A2.5,2.5 0 0,1 22,3.5V24M12,6.8C9.32,6.8 7.44,7.95 7.44,7.95C8.47,7.03 10.27,6.5 10.27,6.5L10.1,6.33C8.41,6.36 6.88,7.53 6.88,7.53C5.16,11.12 5.27,14.22 5.27,14.22C6.67,16.03 8.75,15.9 8.75,15.9L9.46,15C8.21,14.73 7.42,13.62 7.42,13.62C7.42,13.62 9.3,14.9 12,14.9C14.7,14.9 16.58,13.62 16.58,13.62C16.58,13.62 15.79,14.73 14.54,15L15.25,15.9C15.25,15.9 17.33,16.03 18.73,14.22C18.73,14.22 18.84,11.12 17.12,7.53C17.12,7.53 15.59,6.36 13.9,6.33L13.73,6.5C13.73,6.5 15.53,7.03 16.56,7.95C16.56,7.95 14.68,6.8 12,6.8M9.93,10.59C10.58,10.59 11.11,11.16 11.1,11.86C11.1,12.55 10.58,13.13 9.93,13.13C9.29,13.13 8.77,12.55 8.77,11.86C8.77,11.16 9.28,10.59 9.93,10.59M14.1,10.59C14.75,10.59 15.27,11.16 15.27,11.86C15.27,12.55 14.75,13.13 14.1,13.13C13.46,13.13 12.94,12.55 12.94,11.86C12.94,11.16 13.45,10.59 14.1,10.59Z" />
+              </svg>
+            ),
+          }}
+          tag="a"
+          href="https://discord.gg/zrcN3qF"
+          target="_blank"
+          rel="noopener noreferrer"
+        />{" "}
         and let us know, or contact me via{" "}
         <Tooltip align="top" content="keycaplendar@gmail.com" showArrow>
-          <a
+          <Button
+            label="Email"
+            icon={{
+              strategy: "component",
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M20 8l-8 5-8-5v10h16zm0-2H4l8 4.99z" opacity=".3" />
+                  <path d="M4 20h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2zM20 6l-8 4.99L4 6h16zM4 8l8 5 8-5v10H4V8z" />
+                </svg>
+              ),
+            }}
+            tag="a"
             href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change"
             target="_blank"
             rel="noopener noreferrer"
-            className="bold"
-          >
-            Email
-          </a>
+          />
         </Tooltip>
         . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not rendered
         by keycaprenders.com).
       </Typography>
       <Typography use="body2" tag="p">
         Please direct bug reports or feature requests to this project's{" "}
-        <a
+        <Button
+          label="Github"
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
+              </svg>
+            ),
+          }}
+          tag="a"
           href="https://github.com/EskiMojo14/keycaplendar/issues"
           target="_blank"
           rel="noopener noreferrer"
-          className="bold"
-        >
-          Github issues
-        </a>{" "}
+        />{" "}
         page.
+      </Typography>
+      <Typography use="body2" tag="p">
+        Appreciate what I do and want to support me? Check out my{" "}
+        <Button
+          label="Ko-Fi"
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                <path fill="none" d="M0,0h24v24H0V0z" />
+                <path opacity="0.3" d="M8,17h6c1.1,0,2-0.9,2-2V7H6v8C6,16.1,6.9,17,8,17z" />
+                <path
+                  d="M4,15c0,2.2,1.8,4,4,4h6c2.2,0,4-1.8,4-4v-3h2c1.1,0,2-0.9,2-2V7c0-1.1-0.9-2-2-2H4V15z M18,7h2v3h-2V7z M6,7h10v8
+		c0,1.1-0.9,2-2,2H8c-1.1,0-2-0.9-2-2V7z"
+                />
+                <path
+                  d="M6.9,10.6c0,0.6,0.2,1.1,0.6,1.4l3.5,3.5l3.5-3.5c0.4-0.4,0.6-0.9,0.6-1.4c0-1.1-0.9-2.1-2.1-2.1c-0.6,0-1.1,0.2-1.4,0.6
+		L11,9.7l-0.6-0.6C10,8.7,9.5,8.5,8.9,8.5C7.8,8.5,6.9,9.4,6.9,10.6z"
+                />
+              </svg>
+            ),
+          }}
+          tag="a"
+          href="https://ko-fi.com/eskimojo"
+          target="_blank"
+          rel="noopener noreferrer"
+        />
+        !
       </Typography>
       <div className="sponsors-container">
         <Typography use="body2" tag="p">
@@ -274,14 +330,10 @@ export const Footer = () => {
           </a>
         </div>
       </div>
-      <Typography use="body2" tag="p">
-        <Link className="link" to="/privacy">
-          Privacy Policy
-        </Link>
-        <Link className="link" to="/terms">
-          Terms of Service
-        </Link>
-      </Typography>
+      <div className="button-container">
+        <Button label="Privacy Policy" tag="a" href="./privacy" target="_blank" rel="noopener noreferrer" />
+        <Button label="Terms of Service" tag="a" href="./terms" target="_blank" rel="noopener noreferrer" />
+      </div>
     </div>
   );
 };
