@@ -8,14 +8,8 @@
   flex-direction: column;
   p {
     margin: 0;
-    &:not(:last-of-type) {
-      margin-bottom: 16px;
-    }
+    margin-bottom: 16px;
     .bold {
-      font-weight: bold;
-    }
-    .link {
-      margin-right: 16px;
       font-weight: bold;
     }
   }
