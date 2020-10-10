@@ -876,14 +876,10 @@ $overlay-values: (
     }
   }
 
-  .footer p {
+  .footer {
     color: map-get($variables, text-secondary);
     .bold {
       color: map-get($variables, text-primary);
-    }
-    a,
-    a.bold {
-      color: map-get($variables, primary);
     }
   }
 

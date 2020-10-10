@@ -214,7 +214,7 @@ export const Footer = () => {
   );
   return (
     <div className="footer">
-      <Typography use="body2" tag="p">
+      <Typography use="body2" tag="div">
         Site created by&nbsp;
         <Tooltip align="top" content="eskimojo" showArrow>
           <span className="bold">Ben Durrant</span>
@@ -225,7 +225,7 @@ export const Footer = () => {
         </Tooltip>
         .
       </Typography>
-      <Typography use="body2" tag="p">
+      <Typography use="body2" tag="div">
         Something to add/adjust? Join my{" "}
         <Button
           label="Discord"
@@ -265,7 +265,7 @@ export const Footer = () => {
         . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not rendered
         by keycaprenders.com).
       </Typography>
-      <Typography use="body2" tag="p">
+      <Typography use="body2" tag="div">
         Please direct bug reports or feature requests to this project's{" "}
         <Button
           label="Github"
@@ -284,7 +284,7 @@ export const Footer = () => {
         />{" "}
         page.
       </Typography>
-      <Typography use="body2" tag="p">
+      <Typography use="body2" tag="div">
         Appreciate what I do and want to support me? Check out my{" "}
         <Button
           label="Ko-Fi"
