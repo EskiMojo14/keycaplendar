@@ -35,8 +35,9 @@ export const TimelineTable = (props) => {
               return (
                 <Ripple key={profile}>
                   <DataTableHeadCell
-                    isNumeric
+                    isNumeric 
                     className={"profile-title title-" + letters[index]}
+                    sort={1}
                     onClick={() => {
                       props.setFocus(letters[index]);
                     }}
