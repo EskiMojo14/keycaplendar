@@ -1,65 +1,69 @@
 $headline-font: unquote("Roboto Slab, serif");
 $body-font: unquote("Lato, sans-serif");
 
+@function toRem($px) {
+  @return ($px / 16) * 1rem;
+}
+
 @use "@material/typography" with (
   $font-family: $body-font,
   $styles-headline1: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
-    font-size: 6rem,
+    font-size: toRem(96),
   ),
   $styles-headline2: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
-    font-size: 3.75rem,
+    font-size: toRem(60),
   ),
   $styles-headline3: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
-    font-size: 3rem,
+    font-size: toRem(48),
   ),
   $styles-headline4: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
-    font-size: 2.125rem,
+    font-size: toRem(34),
   ),
   $styles-headline5: (
     font-family: $headline-font,
     font-feature-settings: "lnum",
-    font-size: 1.5rem,
+    font-size: toRem(24),
   ),
   $styles-headline6: (
     font-family: $body-font,
     font-feature-settings: "lnum",
-    font-size: 1.3125rem,
+    font-size: toRem(21),
   ),
   $styles-body1: (
     font-family: $body-font,
-    font-size: 1.0625rem,
+    font-size: toRem(17),
   ),
   $styles-body2: (
     font-family: $body-font,
-    font-size: 0.9375rem,
+    font-size: toRem(15),
   ),
   $styles-subtitle1: (
     font-family: $body-font,
-    font-size: 1.0625rem,
+    font-size: toRem(17),
   ),
   $styles-subtitle2: (
     font-family: $body-font,
-    font-size: 0.9375rem,
+    font-size: toRem(15),
   ),
   $styles-button: (
     font-family: $body-font,
-    font-size: 0.9375rem,
+    font-size: toRem(15),
   ),
   $styles-overline: (
     font-family: $body-font,
-    font-size: 0.625rem,
+    font-size: toRem(10),
   ),
   $styles-caption: (
     font-family: $body-font,
-    font-size: 0.8125rem,
+    font-size: toRem(13),
   )
 );
 
