@@ -153,6 +153,7 @@ class App extends React.Component {
       checkCookie("view", this.changeView);
       checkCookie("bottomNav", this.changeBottomNav);
       checkCookie("applyTheme", this.changeApplyTheme);
+      checkCookie("lightTheme", this.setLightTheme);
       checkCookie("darkTheme", this.setDarkTheme);
       checkCookie("manualTheme", this.setManualTheme);
       checkCookie("fromTimeTheme", this.setFromTimeTheme);
