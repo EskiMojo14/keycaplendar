@@ -48,6 +48,7 @@ class App extends React.Component {
       whitelist: { vendors: [], profiles: [], edited: false },
       cookies: true,
       applyTheme: "manual",
+      lightTheme: "light",
       darkTheme: "deep",
       manualTheme: false,
       fromTimeTheme: "21:00",
@@ -251,7 +252,7 @@ class App extends React.Component {
   checkTheme = async () => {
     const themeBool = await this.isDarkTheme();
     document.querySelector("html").classList =
-      themeBool === true || themeBool === "true" ? this.state.darkTheme : this.state.lichTheme ? "lich" : "light";
+      themeBool === true || themeBool === "true" ? this.state.darkTheme : this.state.lichTheme ? "lich" : this.state.lightTheme;
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -277,6 +278,13 @@ class App extends React.Component {
     }
     if (this.state.cookies) {
       this.setCookie("applyTheme", applyTheme, 365);
+    }
+  };
+  setLightTheme = (theme) => {
+    this.setState({ lightTheme: theme });
+    setTimeout(this.checkTheme, 1);
+    if (this.state.cookies) {
+      this.setCookie("lightTheme", theme, 365);
     }
   };
   setDarkTheme = (theme) => {
@@ -797,6 +805,8 @@ class App extends React.Component {
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
           changeApplyTheme={this.changeApplyTheme}
+          lightTheme={this.state.lightTheme}
+          setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
           setDarkTheme={this.setDarkTheme}
           manualTheme={this.state.manualTheme}
@@ -846,6 +856,8 @@ class App extends React.Component {
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
           changeApplyTheme={this.changeApplyTheme}
+          lightTheme={this.state.lightTheme}
+          setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
           setDarkTheme={this.setDarkTheme}
           manualTheme={this.state.manualTheme}
@@ -895,6 +907,8 @@ class App extends React.Component {
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
           changeApplyTheme={this.changeApplyTheme}
+          lightTheme={this.state.lightTheme}
+          setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
           setDarkTheme={this.setDarkTheme}
           manualTheme={this.state.manualTheme}
