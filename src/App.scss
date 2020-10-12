@@ -1,10 +1,6 @@
 $headline-font: unquote("Roboto Slab, serif");
 $body-font: unquote("Lato, sans-serif");
 
-@function toRem($px) {
-  @return ($px / 16) * 1rem;
-}
-
 @use "@material/typography" with (
   $font-family: $body-font,
   $styles-headline1: (
@@ -108,6 +104,10 @@ $body-font: unquote("Lato, sans-serif");
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 @include typography.core-styles();
+
+@function toRem($px) {
+  @return ($px / 16) * 1rem;
+}
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;
