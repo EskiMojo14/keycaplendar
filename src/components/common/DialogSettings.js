@@ -252,6 +252,12 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
           </FormField>
           {themeOptions}
           <List className="theme-list">
+            <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+              <FormField>
+                <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
+                Ocean
+              </FormField>
+            </ListItem>
             <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
               <FormField>
                 <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
