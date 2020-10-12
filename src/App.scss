@@ -1,66 +1,20 @@
-$headline-font: unquote("Roboto Slab, serif");
-$body-font: unquote("Lato, sans-serif");
+@use "./typography-variables" as typography-variables;
 
 @use "@material/typography" with (
-  $font-family: $body-font,
-  $styles-headline1: (
-    font-family: $headline-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(96),
-  ),
-  $styles-headline2: (
-    font-family: $headline-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(60),
-  ),
-  $styles-headline3: (
-    font-family: $headline-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(48),
-  ),
-  $styles-headline4: (
-    font-family: $headline-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(34),
-  ),
-  $styles-headline5: (
-    font-family: $headline-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(24),
-  ),
-  $styles-headline6: (
-    font-family: $body-font,
-    font-feature-settings: "lnum",
-    font-size: toRem(21),
-  ),
-  $styles-body1: (
-    font-family: $body-font,
-    font-size: toRem(17),
-  ),
-  $styles-body2: (
-    font-family: $body-font,
-    font-size: toRem(15),
-  ),
-  $styles-subtitle1: (
-    font-family: $body-font,
-    font-size: toRem(17),
-  ),
-  $styles-subtitle2: (
-    font-family: $body-font,
-    font-size: toRem(15),
-  ),
-  $styles-button: (
-    font-family: $body-font,
-    font-size: toRem(15),
-  ),
-  $styles-overline: (
-    font-family: $body-font,
-    font-size: toRem(10),
-  ),
-  $styles-caption: (
-    font-family: $body-font,
-    font-size: toRem(13),
-  )
+  $font-family: typography-variables.$body-font,
+  $styles-headline1: typography-variables.$headline1,
+  $styles-headline2: typography-variables.$headline2,
+  $styles-headline3: typography-variables.$headline3,
+  $styles-headline4: typography-variables.$headline4,
+  $styles-headline5: typography-variables.$headline5,
+  $styles-headline6: typography-variables.$headline6,
+  $styles-body1: typography-variables.$body1,
+  $styles-body2: typography-variables.$body2,
+  $styles-subtitle1: typography-variables.$subtitle1,
+  $styles-subtitle2: typography-variables.$subtitle2,
+  $styles-button: typography-variables.$button,
+  $styles-overline: typography-variables.$overline,
+  $styles-caption: typography-variables.$caption
 );
 
 @use "theme" as theme;
@@ -104,10 +58,6 @@ $body-font: unquote("Lato, sans-serif");
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 @include typography.core-styles();
-
-@function toRem($px) {
-  @return ($px / 16) * 1rem;
-}
 
 .mdc-drawer.drawer-right {
   border-right-width: 0;
