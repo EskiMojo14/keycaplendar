@@ -199,14 +199,17 @@ $body-font: unquote("Lato, sans-serif");
   width: 26px;
   height: 26px;
   padding: 4px;
-  &.rmwc-badge--align-start, &.rmwc-badge--align-end {
+  &.rmwc-badge--align-start,
+  &.rmwc-badge--align-end {
     top: -13px;
   }
-  &.rmwc-badge--align-start, [dir=rtl] &.rmwc-badge--align-end {
+  &.rmwc-badge--align-start,
+  [dir="rtl"] &.rmwc-badge--align-end {
     left: -13px;
     right: auto;
   }
-  &.rmwc-badge--align-end, [dir=rtl] &.rmwc-badge--align-start {
+  &.rmwc-badge--align-end,
+  [dir="rtl"] &.rmwc-badge--align-start {
     right: -13px;
     left: auto;
   }
@@ -331,6 +334,36 @@ $body-font: unquote("Lato, sans-serif");
   @include theme.theme($theme);
 }
 
+.sepia {
+  $theme: (
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #cac6ad,
+    error: #b00020,
+    on-error: white,
+    surface: #e2dfd6,
+    on-surface: #3d3d38,
+  );
+  @include theme.theme($theme);
+}
+
+.ocean {
+  $theme: (
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #1b2936,
+    error: #cf6679,
+    on-error: black,
+    surface: #1b2936,
+    on-surface: white,
+  );
+  @include theme.theme($theme, true);
+}
+
 .grey {
   $theme: (
     primary: palette.$teal-200,
@@ -346,16 +379,16 @@ $body-font: unquote("Lato, sans-serif");
   @include theme.theme($theme, true);
 }
 
-.ocean {
+.deep-ocean {
   $theme: (
     primary: palette.$teal-200,
     secondary: palette.$light-green-200,
     on-primary: black,
     on-secondary: black,
-    background: #1b2936,
+    background: #1a2328,
     error: #cf6679,
     on-error: black,
-    surface: #1b2936,
+    surface: #1a2328,
     on-surface: white,
   );
   @include theme.theme($theme, true);

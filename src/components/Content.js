@@ -357,6 +357,8 @@ export class DesktopContent extends React.Component {
           close={this.closeSettingsDialog}
           applyTheme={this.props.applyTheme}
           changeApplyTheme={this.props.changeApplyTheme}
+          lightTheme={this.props.lightTheme}
+          setLightTheme={this.props.setLightTheme}
           darkTheme={this.props.darkTheme}
           setDarkTheme={this.props.setDarkTheme}
           manualTheme={this.props.manualTheme}
@@ -657,6 +659,8 @@ export class TabletContent extends React.Component {
           close={this.closeSettingsDialog}
           applyTheme={this.props.applyTheme}
           changeApplyTheme={this.props.changeApplyTheme}
+          lightTheme={this.props.lightTheme}
+          setLightTheme={this.props.setLightTheme}
           darkTheme={this.props.darkTheme}
           setDarkTheme={this.props.setDarkTheme}
           manualTheme={this.props.manualTheme}
@@ -1048,6 +1052,8 @@ export class MobileContent extends React.Component {
           close={this.closeSettingsDialog}
           applyTheme={this.props.applyTheme}
           changeApplyTheme={this.props.changeApplyTheme}
+          lightTheme={this.props.lightTheme}
+          setLightTheme={this.props.setLightTheme}
           darkTheme={this.props.darkTheme}
           setDarkTheme={this.props.setDarkTheme}
           manualTheme={this.props.manualTheme}

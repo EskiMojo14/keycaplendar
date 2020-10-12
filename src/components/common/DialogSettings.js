@@ -217,6 +217,25 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
       <DialogContent>
         <div className="group">
           <Typography use="subtitle2" tag="h3">
+            Light theme
+          </Typography>
+          <List className="theme-list">
+            <ListItem onClick={() => props.setLightTheme("light")} className="light">
+              <FormField>
+                <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
+                Light
+              </FormField>
+            </ListItem>
+            <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
+              <FormField>
+                <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
+                Sepia
+              </FormField>
+            </ListItem>
+          </List>
+        </div>
+        <div className="group">
+          <Typography use="subtitle2" tag="h3">
             Dark theme
           </Typography>
           <FormField className="theme-form-field">
@@ -239,16 +258,16 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
                 Grey
               </FormField>
             </ListItem>
-            <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+            <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
               <FormField>
-                <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
-                Ocean
+                <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
+                Deep Ocean
               </FormField>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
               <FormField>
                 <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
-                Deep
+                Deep Purple
               </FormField>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">

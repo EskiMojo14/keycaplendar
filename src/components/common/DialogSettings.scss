@@ -72,40 +72,40 @@
           background-color: white;
           color: rgba(black, 0.87);
           @include radio.unchecked-stroke-color(rgba(black, 0.6));
-          @include radio.checked-stroke-color(palette.$deep-orange-200);
-          @include radio.ink-color(palette.$deep-orange-200);
           @include ripple.states(black);
         }
-        .grey {
-          background-color: #464851;
-          color: rgba(white, 0.87);
-          @include radio.unchecked-stroke-color(rgba(white, 0.6));
-          @include radio.checked-stroke-color(palette.$deep-orange-200);
-          @include radio.ink-color(palette.$deep-orange-200);
-          @include ripple.states(white);
+        .sepia {
+          background-color: #e2dfd6;
+          color: rgba(#3d3d38, 0.87);
+          @include radio.unchecked-stroke-color(rgba(#3d3d38, 0.6));
+          @include ripple.states(black);
         }
         .ocean {
           background-color: #36526c;
-          color: rgba(white, 0.87);
-          @include radio.unchecked-stroke-color(rgba(white, 0.6));
-          @include radio.checked-stroke-color(palette.$teal-200);
-          @include radio.ink-color(palette.$teal-200);
-          @include ripple.states(white);
+        }
+        .grey {
+          background-color: #464851;
+        }
+        .deep-ocean {
+          background-color: #3a4e59;
         }
         .deep {
           background-color: #3d3a4a;
-          color: rgba(white, 0.87);
-          @include radio.unchecked-stroke-color(rgba(white, 0.6));
-          @include radio.checked-stroke-color(palette.$deep-orange-200);
-          @include radio.ink-color(palette.$deep-orange-200);
-          @include ripple.states(white);
         }
         .dark {
           background-color: #3b3b3b;
-          color: rgba(white, 0.87);
-          @include radio.unchecked-stroke-color(rgba(white, 0.6));
+        }
+        .light, .sepia, .grey, .deep, .dark {
           @include radio.checked-stroke-color(palette.$deep-orange-200);
           @include radio.ink-color(palette.$deep-orange-200);
+        }
+        .ocean, .deep-ocean {
+          @include radio.checked-stroke-color(palette.$light-green-200);
+          @include radio.ink-color(palette.$light-green-200);
+        }
+        .ocean, .grey, .deep-ocean, .deep, .dark {
+          color: rgba(white, 0.87);
+          @include radio.unchecked-stroke-color(rgba(white, 0.6));
           @include ripple.states(white);
         }
       }
@@ -122,7 +122,8 @@
         padding: 0;
         height: 88px;
         cursor: default;
-        &::before, &::after {
+        &::before,
+        &::after {
           content: none;
         }
         .avatar {

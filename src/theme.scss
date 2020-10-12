@@ -329,7 +329,7 @@ $overlay-values: (
       }
     }
   }
-  :not(.mdc-list--non-interactive)
+  :not(.mdc-list--non-interactive):not(.theme-list)
     > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated) {
     @include ripple.states(map-get($variables, on-surface));
   }
