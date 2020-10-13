@@ -100,7 +100,7 @@ export class ImageUpload extends React.Component {
     this.setState({ loading: true });
     let dt = e.dataTransfer;
     let file = dt.files[0];
-    if (file.type.indexOf("image") === -1) {
+    if (!file.type.includes("image")) {
       this.props.snackbarQueue.notify({ title: "Error: file is not an image." });
       this.setState({ dragOver: false, loading: false });
     } else {

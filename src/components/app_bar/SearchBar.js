@@ -40,7 +40,7 @@ export class SearchBarPersistent extends React.Component {
   createSearchTerms = () => {
     let searchTerms = [];
     const addSearchTerm = (term) => {
-      if (searchTerms.indexOf(term) === -1) {
+      if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
     };
@@ -204,7 +204,7 @@ export class SearchBarModal extends React.Component {
   createSearchTerms = () => {
     let searchTerms = [];
     const addSearchTerm = (term) => {
-      if (searchTerms.indexOf(term) === -1) {
+      if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
     };
@@ -337,7 +337,7 @@ export class SearchAppBar extends React.Component {
   createSearchTerms = () => {
     let searchTerms = [];
     const addSearchTerm = (term) => {
-      if (searchTerms.indexOf(term) === -1) {
+      if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
     };

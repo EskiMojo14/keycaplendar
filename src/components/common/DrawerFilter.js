@@ -27,7 +27,7 @@ export class DesktopDrawerFilter extends React.Component {
       this.props.profiles.forEach((profile) => {
         profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: profile,
-          checked: this.props.whitelist.profiles.indexOf(profile) > -1,
+          checked: this.props.whitelist.profiles.includes(profile),
         };
       });
       this.setState({
@@ -41,7 +41,7 @@ export class DesktopDrawerFilter extends React.Component {
       this.props.vendors.forEach((vendor) => {
         vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: vendor,
-          checked: this.props.whitelist.vendors.indexOf(vendor) > -1,
+          checked: this.props.whitelist.vendors.includes(vendor),
         };
       });
       this.setState({
@@ -57,7 +57,7 @@ export class DesktopDrawerFilter extends React.Component {
       this.props.profiles.forEach((profile) => {
         profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: profile,
-          checked: this.props.whitelist.profiles.indexOf(profile) > -1,
+          checked: this.props.whitelist.profiles.includes(profile),
         };
       });
       this.setState({
@@ -71,7 +71,7 @@ export class DesktopDrawerFilter extends React.Component {
       this.props.vendors.forEach((vendor) => {
         vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: vendor,
-          checked: this.props.whitelist.vendors.indexOf(vendor) > -1,
+          checked: this.props.whitelist.vendors.includes(vendor),
         };
       });
       this.setState({
@@ -279,7 +279,7 @@ export class TabletDrawerFilter extends React.Component {
       this.props.profiles.forEach((profile) => {
         profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: profile,
-          checked: this.props.whitelist.profiles.indexOf(profile) > -1,
+          checked: this.props.whitelist.profiles.includes(profile),
         };
       });
       this.setState({
@@ -293,7 +293,7 @@ export class TabletDrawerFilter extends React.Component {
       this.props.vendors.forEach((vendor) => {
         vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: vendor,
-          checked: this.props.whitelist.vendors.indexOf(vendor) > -1,
+          checked: this.props.whitelist.vendors.includes(vendor),
         };
       });
       this.setState({
@@ -309,7 +309,7 @@ export class TabletDrawerFilter extends React.Component {
       this.props.profiles.forEach((profile) => {
         profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: profile,
-          checked: this.props.whitelist.profiles.indexOf(profile) > -1,
+          checked: this.props.whitelist.profiles.includes(profile),
         };
       });
       this.setState({
@@ -323,7 +323,7 @@ export class TabletDrawerFilter extends React.Component {
       this.props.vendors.forEach((vendor) => {
         vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
           name: vendor,
-          checked: this.props.whitelist.vendors.indexOf(vendor) > -1,
+          checked: this.props.whitelist.vendors.includes(vendor),
         };
       });
       this.setState({

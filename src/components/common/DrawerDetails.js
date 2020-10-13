@@ -213,7 +213,7 @@ export class DesktopDrawerDetails extends React.Component {
     }
     const editorButtons =
       this.props.user.isEditor ||
-      (this.props.user.isDesigner && set.designer && set.designer.indexOf(this.props.user.nickname) > -1) ? (
+      (this.props.user.isDesigner && set.designer && set.designer.includes(this.props.user.nickname)) ? (
         <div className="editor-buttons">
           <Button
             className="edit"
@@ -282,7 +282,7 @@ export class DesktopDrawerDetails extends React.Component {
             ></div>
             <div className="details-text">
               <Typography use="overline" tag="h3">
-                Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
+                Designed by {set.designer ? set.designer.join(" + ") : ""}
               </Typography>
               <Typography use="headline4" tag="h1">
                 <Twemoji options={{ className: "twemoji" }}>
@@ -545,7 +545,7 @@ export class TabletDrawerDetails extends React.Component {
     }
     const editorButtons =
       this.props.user.isEditor ||
-      (this.props.user.isDesigner && set.designer && set.designer.indexOf(this.props.user.nickname) > -1) ? (
+      (this.props.user.isDesigner && set.designer && set.designer.includes(this.props.user.nickname)) ? (
         <div className="editor-buttons">
           <Button
             className="edit"
@@ -607,7 +607,7 @@ export class TabletDrawerDetails extends React.Component {
           <div className="details-image" style={{ backgroundImage: "url(" + set.image + ")" }}></div>
           <div className="details-text">
             <Typography use="overline" tag="h3">
-              Designed by {set.designer ? set.designer.toString().replace(/,/g, " + ") : ""}
+              Designed by {set.designer ? set.designer.join(" + ") : ""}
             </Typography>
             <Typography use="headline4" tag="h1">
               <Twemoji options={{ className: "twemoji" }}>

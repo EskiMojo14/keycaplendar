@@ -458,14 +458,14 @@ export class DrawerCreate extends React.Component {
                 label="Designer"
                 required
                 pattern="(\w+)[^\s](,\s*.+)*"
-                value={this.state.designer.toString().replace(/,/g, ", ")}
+                value={this.state.designer.join(", ")}
                 name="designer"
                 helpText={{
                   persistent: false,
                   validationMsg: true,
                   children:
-                    this.state.designer[0] && this.state.designer[0].indexOf(" ") >= 0
-                      ? "Separate multiple designers with a comma"
+                    this.state.designer[0] && this.state.designer[0].includes(" ")
+                      ? "Separate multiple designers with a comma and a space."
                       : "",
                 }}
                 onChange={this.handleChange}
@@ -476,7 +476,7 @@ export class DrawerCreate extends React.Component {
               <Autocomplete
                 open={this.state.focused === "designer"}
                 array={this.props.allDesigners}
-                query={this.state.designer.toString().replace(/,/g, ", ")}
+                query={this.state.designer.join(", ")}
                 prop="designer"
                 select={this.selectValue}
                 minChars={2}
@@ -1129,14 +1129,14 @@ export class DrawerEdit extends React.Component {
                 label="Designer"
                 required
                 pattern="(\w+)[^\s](,\s*.+)*"
-                value={this.state.designer.toString().replace(/,/g, ", ")}
+                value={this.state.designer.join(", ")}
                 name="designer"
                 helpText={{
                   persistent: false,
                   validationMsg: true,
                   children:
-                    this.state.designer[0] && this.state.designer[0].indexOf(" ") >= 0
-                      ? "Separate multiple designers with a comma"
+                    this.state.designer[0] && this.state.designer[0].includes(" ")
+                      ? "Separate multiple designers with a comma and a space."
                       : "",
                 }}
                 onChange={this.handleChange}
@@ -1147,7 +1147,7 @@ export class DrawerEdit extends React.Component {
               <Autocomplete
                 open={this.state.focused === "designer"}
                 array={this.props.allDesigners}
-                query={this.state.designer.toString().replace(/,/g, ", ")}
+                query={this.state.designer.join(", ")}
                 prop="designer"
                 select={this.selectValue}
                 minChars={2}
