@@ -718,6 +718,10 @@ class App extends React.Component {
       }
     };
     calculate();
+    const viewCookie = this.getCookie("view");
+    if (viewCookie === "" && device === "mobile") {
+      this.changeView("list");
+    }
     window.addEventListener("resize", calculate);
   };
   componentDidMount() {
