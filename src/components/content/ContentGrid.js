@@ -38,7 +38,7 @@ export const ContentGrid = (props) => {
           }
         }
       } else if (sort === "designer") {
-        if (set.designer.indexOf(group) > -1) {
+        if (set.designer.includes(group)) {
           filteredSets.push(set);
         }
       } else {

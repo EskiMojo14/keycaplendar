@@ -108,9 +108,9 @@ export class ContentStatistics extends React.Component {
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
-        if (set[property] && set[property].indexOf("Q") === -1) {
+        if (set[property] && !set[property].includes("Q")) {
           const month = moment(set[property]).format("YYYY-MM");
-          if (months[property].indexOf(month) === -1) {
+          if (!months[property].includes(month)) {
             months[property].push(month);
           }
         }
@@ -151,7 +151,7 @@ export class ContentStatistics extends React.Component {
       });
       months[property].forEach((month) => {
         let filteredSets = this.props.sets.filter((set) => {
-          if (set[property] && set[property].indexOf("Q") === -1) {
+          if (set[property] && !set[property].includes("Q")) {
             const setMonth = moment(set[property]).format("MMM YY");
             return setMonth === month;
           } else {
@@ -189,16 +189,16 @@ export class ContentStatistics extends React.Component {
       },
     };
     this.props.sets.forEach((set) => {
-      if (statusData.profile.names.indexOf(set.profile) === -1) {
+      if (!statusData.profile.names.includes(set.profile)) {
         statusData.profile.names.push(set.profile);
       }
       set.designer.forEach((designer) => {
-        if (statusData.designer.names.indexOf(designer) === -1) {
+        if (!statusData.designer.names.includes(designer)) {
           statusData.designer.names.push(designer);
         }
       });
       set.vendors.forEach((vendor) => {
-        if (statusData.vendor.names.indexOf(vendor.name) === -1) {
+        if (!statusData.vendor.names.includes(vendor.name)) {
           statusData.vendor.names.push(vendor.name);
         }
       });
@@ -226,7 +226,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isIC;
+            return set.designer.includes(name) && isIC;
           } else {
             return set[prop] === name && isIC;
           }
@@ -241,7 +241,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isPreGb;
+            return set.designer.includes(name) && isPreGb;
           } else {
             return set[prop] === name && isPreGb;
           }
@@ -257,7 +257,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isLiveGb;
+            return set.designer.includes(name) && isLiveGb;
           } else {
             return set[prop] === name && isLiveGb;
           }
@@ -276,7 +276,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && isPostGb;
+            return set.designer.includes(name) && isPostGb;
           } else {
             return set[prop] === name && isPostGb;
           }
@@ -326,16 +326,16 @@ export class ContentStatistics extends React.Component {
       return endDate <= yesterday;
     });
     pastSets.forEach((set) => {
-      if (shippedData.profile.names.indexOf(set.profile) === -1) {
+      if (!shippedData.profile.names.includes(set.profile)) {
         shippedData.profile.names.push(set.profile);
       }
       set.designer.forEach((designer) => {
-        if (shippedData.designer.names.indexOf(designer) === -1) {
+        if (!shippedData.designer.names.includes(designer)) {
           shippedData.designer.names.push(designer);
         }
       });
       set.vendors.forEach((vendor) => {
-        if (shippedData.vendor.names.indexOf(vendor.name) === -1) {
+        if (!shippedData.vendor.names.includes(vendor.name)) {
           shippedData.vendor.names.push(vendor.name);
         }
       });
@@ -361,7 +361,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && set.shipped === true;
+            return set.designer.includes(name) && set.shipped === true;
           } else {
             return set[prop] === name && set.shipped === true;
           }
@@ -374,7 +374,7 @@ export class ContentStatistics extends React.Component {
               ? true
               : false;
           } else if (prop === "designer") {
-            return set.designer.indexOf(name) !== -1 && set.shipped !== true;
+            return set.designer.includes(name) && set.shipped !== true;
           } else {
             return set[prop] === name && set.shipped !== true;
           }
@@ -442,16 +442,16 @@ export class ContentStatistics extends React.Component {
         propSets = dateSets;
       }
       propSets.forEach((set) => {
-        if (durationData[property].profile.names.indexOf(set.profile) === -1) {
+        if (!durationData[property].profile.names.includes(set.profile)) {
           durationData[property].profile.names.push(set.profile);
         }
         set.designer.forEach((designer) => {
-          if (durationData[property].designer.names.indexOf(designer) === -1) {
+          if (!durationData[property].designer.names.includes(designer)) {
             durationData[property].designer.names.push(designer);
           }
         });
         set.vendors.forEach((vendor) => {
-          if (durationData[property].vendor.names.indexOf(vendor.name) === -1) {
+          if (!durationData[property].vendor.names.includes(vendor.name)) {
             durationData[property].vendor.names.push(vendor.name);
           }
         });
@@ -492,7 +492,7 @@ export class ContentStatistics extends React.Component {
                       ? true
                       : false;
                 } else if (prop === "designer") {
-                  bool = set.designer.indexOf(name) !== -1;
+                  bool = set.designer.includes(name);
                 } else {
                   bool = set[prop] === name;
                 }

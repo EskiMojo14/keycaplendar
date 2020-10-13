@@ -84,7 +84,7 @@ export const ViewCard = (props) => {
             month[icDate.getUTCMonth()] +
             (icDate.getUTCFullYear() !== today.getUTCFullYear() ? " " + icDate.getUTCFullYear() : "");
         }
-        const designer = set.designer.toString().replace(/,/g, " + ");
+        const designer = set.designer.join(" + ");
         const thisWeek = gbEnd.getTime() - 7 * oneDay < today.getTime() && gbEnd.getTime() > today.getTime();
         const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
         let live = false;

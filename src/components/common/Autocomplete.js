@@ -6,7 +6,7 @@ import reactStringReplace from "react-string-replace";
 
 export const Autocomplete = (props) => {
   const matchingItems = props.array.filter((item) => {
-    return item.toLowerCase().indexOf(props.query.toLowerCase()) > -1;
+    return item.toLowerCase().includes(props.query.toLowerCase());
   });
   const firstFour = matchingItems.slice(0, 4);
   return (
@@ -53,7 +53,7 @@ export const Autocomplete = (props) => {
 };
 export const AutocompleteMobile = (props) => {
   const matchingItems = props.array.filter((item) => {
-    return item.toLowerCase().indexOf(props.query.toLowerCase()) > -1;
+    return item.toLowerCase().includes(props.query.toLowerCase());
   });
   return (
     <div className={"autocomplete-mobile" + (props.open ? " autocomplete-mobile--open" : "")}>

@@ -69,7 +69,7 @@ class App extends React.Component {
     if (params.has("page")) {
       const pageQuery = params.get("page");
       const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics"];
-      if (pages.indexOf(pageQuery) > -1) {
+      if (pages.includes(pageQuery)) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
           this.setState({ sort: "gbLaunch" });
@@ -539,12 +539,12 @@ class App extends React.Component {
     };
     const filteredSets = pageSets.filter((set) => {
       if (set.vendors.length > 0) {
-        return checkVendors(set) && whitelist.profiles.indexOf(set.profile) > -1;
+        return checkVendors(set) && whitelist.profiles.includes(set.profile);
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
         } else {
-          return whitelist.profiles.indexOf(set.profile) > -1;
+          return whitelist.profiles.includes(set.profile);
         }
       }
     });
@@ -564,8 +564,8 @@ class App extends React.Component {
             return " " + vendor.name + " " + vendor.region;
           }) +
           " " +
-          set.designer.toString();
-        return setInfo.toLowerCase().indexOf(search.toLowerCase()) > -1;
+          set.designer.join(" ");
+        return setInfo.toLowerCase().includes(search.toLowerCase());
       });
     };
 
