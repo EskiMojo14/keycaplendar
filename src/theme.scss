@@ -293,6 +293,15 @@ $overlay-values: (
         color: map-get($variables, text-primary);
       }
     }
+    .mdc-linear-progress {
+      @include linear-progress.buffer-color(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface)),
+          10%
+        )
+      );
+    }
   }
 
   .mdc-fab {
@@ -487,6 +496,13 @@ $overlay-values: (
   }
   .mdc-linear-progress {
     @include linear-progress.bar-color(map-get($variables, primary));
+    @include linear-progress.buffer-color(
+      mix(
+        map-get($variables, on-surface),
+        if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)),
+        10%
+      )
+    );
   }
   .mdc-tab-bar {
     .mdc-tab {
@@ -510,9 +526,6 @@ $overlay-values: (
       if($dark, map-get($variables, text-primary), map-get($variables, on-primary))
     );
     @if ($dark != true) {
-      .mdc-linear-progress {
-        @include linear-progress.bar-color(map-get($variables, secondary));
-      }
       .toggle-group {
         .mdc-button {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
@@ -634,6 +647,17 @@ $overlay-values: (
       &[disabled] {
         color: rgba(map-get($variables, if($dark, text-primary, on-primary)), 0.38);
       }
+    }
+
+    .mdc-linear-progress {
+      @include linear-progress.bar-color(map-get($variables, if($dark, primary, secondary)));
+      @include linear-progress.buffer-color(
+        mix(
+          map-get($variables, if($dark, on-surface, on-primary)),
+          if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary)),
+          10%
+        )
+      );
     }
 
     .rmwc-circular-progress {
