@@ -572,7 +572,7 @@ export class DialogCreate extends React.Component {
                 return (
                   <Card key={index} outlined className="vendor-container">
                     <Typography use="caption" tag="h3" className="vendor-title">
-                      {index > 0 ? "Vendor " + (index + 1) : "US vendor (or main vendor if no US vendor)"}
+                      {"Vendor " + (index + 1)}
                     </Typography>
                     <div className="vendor-form">
                       <MenuSurfaceAnchor>
@@ -1286,7 +1286,7 @@ export class DialogEdit extends React.Component {
                   return (
                     <Card key={index} outlined className="vendor-container">
                       <Typography use="caption" tag="h3" className="vendor-title">
-                        {index > 0 ? "Vendor " + (index + 1) : "US vendor (or main vendor if no US vendor)"}
+                        {"Vendor " + (index + 1)}
                       </Typography>
                       <div className="vendor-form">
                         <MenuSurfaceAnchor>
