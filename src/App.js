@@ -26,7 +26,6 @@ class App extends React.Component {
       allDesigners: [],
       allVendors: [],
       allRegions: [],
-      vendors: [],
       sets: [],
       profiles: [],
       filteredSets: [],
@@ -45,7 +44,7 @@ class App extends React.Component {
         isDesigner: false,
         id: null,
       },
-      whitelist: { vendors: [], profiles: [], edited: false },
+      whitelist: { vendors: [], vendorMode: "include", profiles: [], edited: false },
       cookies: true,
       applyTheme: "manual",
       lightTheme: "light",
@@ -252,8 +251,11 @@ class App extends React.Component {
   };
   checkTheme = async () => {
     const themeBool = await this.isDarkTheme();
-    document.querySelector("html").classList =
-      themeBool === true || themeBool === "true" ? this.state.darkTheme : this.state.lichTheme ? "lich" : this.state.lightTheme;
+    document.querySelector("html").classList = this.state.lichTheme
+      ? "lich"
+      : themeBool === true || themeBool === "true"
+      ? this.state.darkTheme
+      : this.state.lightTheme;
     document
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -398,7 +400,6 @@ class App extends React.Component {
     let pageSets = [];
     let allRegions = [];
     let allVendors = [];
-    let usVendors = [];
     let allProfiles = [];
     let allDesigners = [];
     let groups = [];
@@ -447,9 +448,6 @@ class App extends React.Component {
     // lists
     sets.forEach((set) => {
       if (set.vendors[0]) {
-        if (!usVendors.includes(set.vendors[0].name)) {
-          usVendors.push(set.vendors[0].name);
-        }
         set.vendors.forEach((vendor) => {
           if (!allVendors.includes(vendor.name)) {
             allVendors.push(vendor.name);
@@ -467,18 +465,6 @@ class App extends React.Component {
       if (!allProfiles.includes(set.profile)) {
         allProfiles.push(set.profile);
       }
-    });
-
-    usVendors.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
     });
 
     allVendors.sort(function (a, b) {
@@ -535,12 +521,27 @@ class App extends React.Component {
       this.setWhitelist("vendors", allVendors);
       this.setWhitelist("profiles", allProfiles);
     }
-
+    const checkVendors = (set) => {
+      let bool = whitelist.vendorMode === "exclude";
+      Object.keys(set.vendors).forEach((key) => {
+        const vendor = set.vendors[key];
+        if (whitelist.vendorMode === "exclude") {
+          if (whitelist.vendors.includes(vendor.name)) {
+            bool = false;
+          }
+        } else {
+          if (whitelist.vendors.includes(vendor.name)) {
+            bool = true;
+          }
+        }
+      });
+      return bool;
+    };
     const filteredSets = pageSets.filter((set) => {
       if (set.vendors.length > 0) {
-        return whitelist.vendors.indexOf(set.vendors[0].name) > -1 && whitelist.profiles.indexOf(set.profile) > -1;
+        return checkVendors(set) && whitelist.profiles.indexOf(set.profile) > -1;
       } else {
-        if (whitelist.vendors.length === 1) {
+        if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
         } else {
           return whitelist.profiles.indexOf(set.profile) > -1;
@@ -652,7 +653,6 @@ class App extends React.Component {
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
-      vendors: usVendors,
       profiles: allProfiles,
       groups: groups,
       content: searchedSets.length > 0,
@@ -688,9 +688,9 @@ class App extends React.Component {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
   };
-  setWhitelist = (property, values) => {
+  setWhitelist = (property, value) => {
     let whitelistCopy = this.state.whitelist;
-    whitelistCopy[property] = values;
+    whitelistCopy[property] = value;
     whitelistCopy.edited = true;
     this.setState({
       whitelist: whitelistCopy,
@@ -790,7 +790,6 @@ class App extends React.Component {
           view={this.state.view}
           changeView={this.changeView}
           profiles={this.state.profiles}
-          vendors={this.state.vendors}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}
@@ -841,7 +840,6 @@ class App extends React.Component {
           view={this.state.view}
           changeView={this.changeView}
           profiles={this.state.profiles}
-          vendors={this.state.vendors}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}
@@ -892,7 +890,6 @@ class App extends React.Component {
           view={this.state.view}
           changeView={this.changeView}
           profiles={this.state.profiles}
-          vendors={this.state.vendors}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
           allRegions={this.state.allRegions}

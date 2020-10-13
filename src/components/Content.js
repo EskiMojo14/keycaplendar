@@ -7,12 +7,11 @@ import { Fab } from "@rmwc/fab";
 import { ContentEmpty, ContentFailed } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
-import { DialogFilter } from "./filter/DialogFilter";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
-import { DesktopDrawerFilter, TabletDrawerFilter } from "./filter/DrawerFilter";
+import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
@@ -269,7 +268,7 @@ export class DesktopContent extends React.Component {
           />
           <TabletDrawerFilter
             profiles={this.props.profiles}
-            vendors={this.props.vendors}
+            vendors={this.props.allVendors}
             open={this.state.filterDrawerOpen}
             close={this.closeFilterDrawer}
             setWhitelist={this.props.setWhitelist}
@@ -291,7 +290,7 @@ export class DesktopContent extends React.Component {
           />
           <DesktopDrawerFilter
             profiles={this.props.profiles}
-            vendors={this.props.vendors}
+            vendors={this.props.allVendors}
             open={this.state.filterDrawerOpen}
             close={this.closeFilterDrawer}
             setWhitelist={this.props.setWhitelist}
@@ -645,7 +644,7 @@ export class TabletContent extends React.Component {
           toggleLichTheme={this.props.toggleLichTheme}
         />
         <TabletDrawerFilter
-          vendors={this.props.vendors}
+          vendors={this.props.allVendors}
           profiles={this.props.profiles}
           open={this.state.filterDrawerOpen}
           close={this.closeFilterDrawer}
@@ -682,12 +681,11 @@ export class MobileContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filterDialogOpen: false,
+      filterDrawerOpen: false,
       createDialogOpen: false,
       detailsDrawerOpen: false,
       detailSet: {},
       navDrawerOpen: false,
-      filterBy: "vendors",
       editDialogOpen: false,
       editSet: {},
       deleteDialogOpen: false,
@@ -718,14 +716,13 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ navDrawerOpen: false });
   };
-  openFilterDialog = (index) => {
+  openFilterDrawer = () => {
     this.openModal();
-    const filters = ["profiles", "vendors"];
-    this.setState({ filterDialogOpen: true, filterBy: filters[index] });
+    this.setState({ filterDrawerOpen: true });
   };
-  closeFilterDialog = () => {
+  closeFilterDrawer = () => {
     this.closeModal();
-    this.setState({ filterDialogOpen: false });
+    this.setState({ filterDrawerOpen: false });
   };
   openCreateDialog = () => {
     this.openModal();
@@ -917,7 +914,7 @@ export class MobileContent extends React.Component {
           <BottomAppBarIndent
             page={this.props.page}
             loading={this.props.loading}
-            openFilter={this.openFilterDialog}
+            openFilter={this.openFilterDrawer}
             openNav={this.openNavDrawer}
             view={this.props.view}
             changeView={this.props.changeView}
@@ -929,7 +926,7 @@ export class MobileContent extends React.Component {
           <BottomAppBar
             page={this.props.page}
             loading={this.props.loading}
-            openFilter={this.openFilterDialog}
+            openFilter={this.openFilterDrawer}
             openNav={this.openNavDrawer}
             view={this.props.view}
             changeView={this.props.changeView}
@@ -960,7 +957,7 @@ export class MobileContent extends React.Component {
         <MobileAppBar
           page={this.props.page}
           loading={this.props.loading}
-          openFilter={this.openFilterDialog}
+          openFilter={this.openFilterDrawer}
           openNav={this.openNavDrawer}
           view={this.props.view}
           changeView={this.props.changeView}
@@ -1036,12 +1033,11 @@ export class MobileContent extends React.Component {
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
         />
-        <DialogFilter
-          vendors={this.props.vendors}
+        <TabletDrawerFilter
+          vendors={this.props.allVendors}
           profiles={this.props.profiles}
-          open={this.state.filterDialogOpen}
-          onClose={this.closeFilterDialog}
-          filterBy={this.state.filterBy}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
         />

@@ -1,10 +1,11 @@
 import React from "react";
+import { Button } from "@rmwc/button";
+import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Tooltip } from "@rmwc/tooltip";
-import { FormField } from "@rmwc/formfield";
 import { Typography } from "@rmwc/typography";
-import { Checkbox } from "@rmwc/checkbox";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilter.scss";
 
 export class DesktopDrawerFilter extends React.Component {
@@ -80,9 +81,9 @@ export class DesktopDrawerFilter extends React.Component {
       this.checkValues();
     }
   }
-  handleChange = (e, prop) => {
+  handleChange = (name, prop) => {
     const propCopy = this.state[prop];
-    propCopy[e.target.name].checked = e.target.checked;
+    propCopy[name].checked = !propCopy[name].checked;
     this.setState({
       [prop]: propCopy,
     });
@@ -169,81 +170,88 @@ export class DesktopDrawerFilter extends React.Component {
             <div className="subheader">
               <Typography use="caption">Profile</Typography>
             </div>
-            <div className="select-all">
-              <FormField>
-                <Checkbox
-                  label="Select all"
-                  checked={this.state.allProfilesChecked}
-                  indeterminate={!this.state.allProfilesChecked && !this.state.allProfilesUnchecked}
-                  onClick={() => {
-                    if (!this.state.allProfilesChecked) {
-                      this.checkAll("profiles");
-                    } else {
-                      this.uncheckAll("profiles");
-                    }
-                  }}
-                />
-              </FormField>
+            <div className="filter-button-container">
+              <Button
+                label="All"
+                onClick={() => {
+                  this.checkAll("profiles");
+                }}
+              />
+              <Button
+                label="None"
+                onClick={() => {
+                  this.uncheckAll("profiles");
+                }}
+              />
             </div>
-            <div id="profileList" className="checkbox-list">
-              {Object.keys(this.state.profiles).map((key) => {
-                const profile = this.state.profiles[key];
-                return (
-                  <FormField
-                    key={
-                      "profile-" +
-                      profile.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                    }
-                  >
-                    <Checkbox
-                      checked={profile.checked}
-                      name={profile.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}
+            <div className="filter-chip-container">
+              <ChipSet filter>
+                {Object.keys(this.state.profiles).map((key) => {
+                  const profile = this.state.profiles[key];
+                  return (
+                    <Chip
+                      key={"profile-" + profile.name}
                       label={profile.name}
-                      onChange={(e) => this.handleChange(e, "profiles")}
+                      selected={profile.checked}
+                      checkmark
+                      onInteraction={() => this.handleChange(key, "profiles")}
                     />
-                  </FormField>
-                );
-              })}
+                  );
+                })}
+              </ChipSet>
             </div>
           </div>
           <div className="group">
             <div className="subheader">
               <Typography use="caption">Vendor</Typography>
             </div>
-            <div className="select-all">
-              <FormField>
-                <Checkbox
-                  label="Select all"
-                  checked={this.state.allVendorsChecked}
-                  indeterminate={!this.state.allVendorsChecked && !this.state.allVendorsUnchecked}
+            <div className="filter-toggle-button-container">
+              <ToggleGroup>
+                <ToggleGroupButton
+                  label="Include"
                   onClick={() => {
-                    if (!this.state.allVendorsChecked) {
-                      this.checkAll("vendors");
-                    } else {
-                      this.uncheckAll("vendors");
-                    }
+                    this.props.setWhitelist("vendorMode", "include");
                   }}
+                  selected={this.props.whitelist.vendorMode === "include"}
                 />
-              </FormField>
+                <ToggleGroupButton
+                  label="Exclude"
+                  onClick={() => {
+                    this.props.setWhitelist("vendorMode", "exclude");
+                  }}
+                  selected={this.props.whitelist.vendorMode === "exclude"}
+                />
+              </ToggleGroup>
             </div>
-            <div id="vendorList" className="checkbox-list">
-              {Object.keys(this.state.vendors).map((key) => {
-                const vendor = this.state.vendors[key];
-                return (
-                  <FormField
-                    key={
-                      "profile-" + vendor.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                    }
-                  >
-                    <Checkbox
-                      checked={vendor.checked}
-                      name={vendor.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}
+            <div className="filter-button-container">
+              <Button
+                label="All"
+                onClick={() => {
+                  this.checkAll("vendors");
+                }}
+              />
+              <Button
+                label="None"
+                onClick={() => {
+                  this.uncheckAll("vendors");
+                }}
+              />
+            </div>
+            <div className="filter-chip-container">
+              <ChipSet filter>
+                {Object.keys(this.state.vendors).map((key) => {
+                  const vendor = this.state.vendors[key];
+                  return (
+                    <Chip
+                      key={"profile-" + vendor.name}
                       label={vendor.name}
-                      onChange={(e) => this.handleChange(e, "vendors")}
+                      selected={vendor.checked}
+                      checkmark
+                      onInteraction={() => this.handleChange(key, "vendors")}
                     />
-                  </FormField>
-                );
-              })}
+                  );
+                })}
+              </ChipSet>
             </div>
           </div>
         </DrawerContent>
@@ -325,9 +333,9 @@ export class TabletDrawerFilter extends React.Component {
       this.checkValues();
     }
   }
-  handleChange = (e, prop) => {
+  handleChange = (name, prop) => {
     const propCopy = this.state[prop];
-    propCopy[e.target.name].checked = e.target.checked;
+    propCopy[name].checked = !propCopy[name].checked;
     this.setState({
       [prop]: propCopy,
     });
@@ -411,81 +419,88 @@ export class TabletDrawerFilter extends React.Component {
             <div className="subheader">
               <Typography use="caption">Profile</Typography>
             </div>
-            <div className="select-all">
-              <FormField>
-                <Checkbox
-                  label="Select all"
-                  checked={this.state.allProfilesChecked}
-                  indeterminate={!this.state.allProfilesChecked && !this.state.allProfilesUnchecked}
-                  onClick={() => {
-                    if (!this.state.allProfilesChecked) {
-                      this.checkAll("profiles");
-                    } else {
-                      this.uncheckAll("profiles");
-                    }
-                  }}
-                />
-              </FormField>
+            <div className="filter-button-container">
+              <Button
+                label="All"
+                onClick={() => {
+                  this.checkAll("profiles");
+                }}
+              />
+              <Button
+                label="None"
+                onClick={() => {
+                  this.uncheckAll("profiles");
+                }}
+              />
             </div>
-            <div id="profileList" className="checkbox-list">
-              {Object.keys(this.state.profiles).map((key) => {
-                const profile = this.state.profiles[key];
-                return (
-                  <FormField
-                    key={
-                      "profile-" +
-                      profile.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                    }
-                  >
-                    <Checkbox
-                      checked={profile.checked}
-                      name={profile.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}
+            <div className="filter-chip-container">
+              <ChipSet filter>
+                {Object.keys(this.state.profiles).map((key) => {
+                  const profile = this.state.profiles[key];
+                  return (
+                    <Chip
+                      key={"profile-" + profile.name}
                       label={profile.name}
-                      onChange={(e) => this.handleChange(e, "profiles")}
+                      selected={profile.checked}
+                      checkmark
+                      onInteraction={() => this.handleChange(key, "profiles")}
                     />
-                  </FormField>
-                );
-              })}
+                  );
+                })}
+              </ChipSet>
             </div>
           </div>
           <div className="group">
             <div className="subheader">
               <Typography use="caption">Vendor</Typography>
             </div>
-            <div className="select-all">
-              <FormField>
-                <Checkbox
-                  label="Select all"
-                  checked={this.state.allVendorsChecked}
-                  indeterminate={!this.state.allVendorsChecked && !this.state.allVendorsUnchecked}
+            <div className="filter-toggle-button-container">
+              <ToggleGroup>
+                <ToggleGroupButton
+                  label="Include"
                   onClick={() => {
-                    if (!this.state.allVendorsChecked) {
-                      this.checkAll("vendors");
-                    } else {
-                      this.uncheckAll("vendors");
-                    }
+                    this.props.setWhitelist("vendorMode", "include");
                   }}
+                  selected={this.props.whitelist.vendorMode === "include"}
                 />
-              </FormField>
+                <ToggleGroupButton
+                  label="Exclude"
+                  onClick={() => {
+                    this.props.setWhitelist("vendorMode", "exclude");
+                  }}
+                  selected={this.props.whitelist.vendorMode === "exclude"}
+                />
+              </ToggleGroup>
             </div>
-            <div id="vendorList" className="checkbox-list">
-              {Object.keys(this.state.vendors).map((key) => {
-                const vendor = this.state.vendors[key];
-                return (
-                  <FormField
-                    key={
-                      "profile-" + vendor.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                    }
-                  >
-                    <Checkbox
-                      checked={vendor.checked}
-                      name={vendor.name.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())}
+            <div className="filter-button-container">
+              <Button
+                label="All"
+                onClick={() => {
+                  this.checkAll("vendors");
+                }}
+              />
+              <Button
+                label="None"
+                onClick={() => {
+                  this.uncheckAll("vendors");
+                }}
+              />
+            </div>
+            <div className="filter-chip-container">
+              <ChipSet filter>
+                {Object.keys(this.state.vendors).map((key) => {
+                  const vendor = this.state.vendors[key];
+                  return (
+                    <Chip
+                      key={"profile-" + vendor.name}
                       label={vendor.name}
-                      onChange={(e) => this.handleChange(e, "vendors")}
+                      selected={vendor.checked}
+                      checkmark
+                      onInteraction={() => this.handleChange(key, "vendors")}
                     />
-                  </FormField>
-                );
-              })}
+                  );
+                })}
+              </ChipSet>
             </div>
           </div>
         </DrawerContent>

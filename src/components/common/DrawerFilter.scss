@@ -25,20 +25,27 @@
     }
   }
   .group {
-    border-bottom: 1px solid var(--divider-color);
-    margin-bottom: 16px;
-    .select-all {
-      padding: 0 16px;
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--divider-color);
+      margin-bottom: 16px;
     }
-    .checkbox-list {
-      display: flex;
-      flex-direction: column;
-      padding: 16px;
-      padding-top: 0;
-      margin-left: 32px;
-      .mdc-form-field {
-        height: 48px;
+    .filter-toggle-button-container {
+      .toggle-group {
+        justify-content: stretch;
+        .mdc-button {
+          flex-grow: 1;
+        }
       }
+    }
+    .filter-toggle-button-container,
+    .filter-button-container {
+      margin-bottom: 8px;
+    }
+    .filter-button-container .mdc-button {
+      margin-right: 8px;
+    }
+    .filter-chip-container {
+      padding-bottom: 16px;
     }
   }
 }
