@@ -11,7 +11,7 @@ import {
 import { Tooltip } from "@rmwc/tooltip";
 import { Ripple } from "@rmwc/ripple";
 import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
+import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
@@ -705,7 +705,6 @@ export const TabletAppBar = (props) => {
 
 export const MobileAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const openSortMenu = () => {
@@ -713,12 +712,6 @@ export const MobileAppBar = (props) => {
   };
   const closeSortMenu = () => {
     setSortMenuOpen(false);
-  };
-  const openFilterMenu = () => {
-    setFilterMenuOpen(true);
-  };
-  const closeFilterMenu = () => {
-    setFilterMenuOpen(false);
   };
   const openViewMenu = () => {
     setViewMenuOpen(true);
@@ -983,20 +976,9 @@ export const MobileAppBar = (props) => {
             <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
-        <MenuSurfaceAnchor>
-          <Menu
-            anchorCorner="bottomLeft"
-            open={filterMenuOpen}
-            onSelect={(evt) => props.openFilter(evt.detail.index)}
-            onClose={closeFilterMenu}
-          >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Vendor</MenuItem>
-          </Menu>
-          <Tooltip enterDelay={500} content="Filter" align="bottom">
-            <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={openFilterMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+        </Tooltip>
         <MenuSurfaceAnchor>
           <MenuView
             view={props.view}
@@ -1065,7 +1047,6 @@ export const MobileAppBar = (props) => {
 
 export const BottomAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const openSortMenu = () => {
@@ -1073,12 +1054,6 @@ export const BottomAppBar = (props) => {
   };
   const closeSortMenu = () => {
     setSortMenuOpen(false);
-  };
-  const openFilterMenu = () => {
-    setFilterMenuOpen(true);
-  };
-  const closeFilterMenu = () => {
-    setFilterMenuOpen(false);
   };
   const openViewMenu = () => {
     setViewMenuOpen(true);
@@ -1334,20 +1309,9 @@ export const BottomAppBar = (props) => {
             <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
-        <MenuSurfaceAnchor>
-          <Menu
-            anchorCorner="bottomLeft"
-            open={filterMenuOpen}
-            onSelect={(evt) => props.openFilter(evt.detail.index)}
-            onClose={closeFilterMenu}
-          >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Vendor</MenuItem>
-          </Menu>
-          <Tooltip enterDelay={500} content="Filter" align="top">
-            <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={openFilterMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
+        <Tooltip enterDelay={500} content="Filter" align="top">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+        </Tooltip>
         <MenuSurfaceAnchor>
           <MenuView
             view={props.view}
@@ -1414,19 +1378,12 @@ export const BottomAppBar = (props) => {
 };
 export const BottomAppBarIndent = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const openSortMenu = () => {
     setSortMenuOpen(true);
   };
   const closeSortMenu = () => {
     setSortMenuOpen(false);
-  };
-  const openFilterMenu = () => {
-    setFilterMenuOpen(true);
-  };
-  const closeFilterMenu = () => {
-    setFilterMenuOpen(false);
   };
   const openViewMenu = () => {
     setViewMenuOpen(true);
@@ -1497,20 +1454,9 @@ export const BottomAppBarIndent = (props) => {
           <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
         </Tooltip>
       </MenuSurfaceAnchor>
-      <MenuSurfaceAnchor>
-        <Menu
-          anchorCorner="bottomLeft"
-          open={filterMenuOpen}
-          onSelect={(evt) => props.openFilter(evt.detail.index)}
-          onClose={closeFilterMenu}
-        >
-          <MenuItem>Profile</MenuItem>
-          <MenuItem>Vendor</MenuItem>
-        </Menu>
-        <Tooltip enterDelay={500} content="Filter" align="top">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={openFilterMenu} />
-        </Tooltip>
-      </MenuSurfaceAnchor>
+      <Tooltip enterDelay={500} content="Filter" align="top">
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+      </Tooltip>
       <MenuSurfaceAnchor>
         <MenuView
           view={props.view}
