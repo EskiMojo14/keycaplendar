@@ -107,7 +107,7 @@ export class DesktopContent extends React.Component {
       this.setState({
         detailSet: {},
       });
-    }, 200);
+    }, 250);
   };
   openCreateDrawer = () => {
     this.openModal();
@@ -201,7 +201,7 @@ export class DesktopContent extends React.Component {
     );
     const editorElements =
       (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
-        <div>
+        <div className="editor-elements">
           <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
           <DrawerCreate
             open={this.state.createDrawerOpen}
@@ -252,51 +252,51 @@ export class DesktopContent extends React.Component {
       ) : (
         ""
       );
-    const drawers =
+    const detailsDrawer =
       this.props.view === "compact" ? (
-        <div>
-          <TabletDrawerDetails
-            user={this.props.user}
-            set={this.state.detailSet}
-            open={this.state.detailsDrawerOpen}
-            close={this.closeDetailsDrawer}
-            edit={this.openEditDrawer}
-            delete={this.openDeleteDialog}
-            search={this.props.search}
-            setSearch={this.props.setSearch}
-            toggleLichTheme={this.props.toggleLichTheme}
-          />
-          <TabletDrawerFilter
-            profiles={this.props.profiles}
-            vendors={this.props.allVendors}
-            open={this.state.filterDrawerOpen}
-            close={this.closeFilterDrawer}
-            setWhitelist={this.props.setWhitelist}
-            whitelist={this.props.whitelist}
-          />
-        </div>
+        <TabletDrawerDetails
+          user={this.props.user}
+          set={this.state.detailSet}
+          open={this.state.detailsDrawerOpen}
+          close={this.closeDetailsDrawer}
+          edit={this.openEditDrawer}
+          delete={this.openDeleteDialog}
+          search={this.props.search}
+          setSearch={this.props.setSearch}
+          toggleLichTheme={this.props.toggleLichTheme}
+        />
       ) : (
-        <div className="drawer-container">
-          <DesktopDrawerDetails
-            user={this.props.user}
-            set={this.state.detailSet}
-            open={this.state.detailsDrawerOpen}
-            close={this.closeDetailsDrawer}
-            edit={this.openEditDrawer}
-            delete={this.openDeleteDialog}
-            search={this.props.search}
-            setSearch={this.props.setSearch}
-            toggleLichTheme={this.props.toggleLichTheme}
-          />
-          <DesktopDrawerFilter
-            profiles={this.props.profiles}
-            vendors={this.props.allVendors}
-            open={this.state.filterDrawerOpen}
-            close={this.closeFilterDrawer}
-            setWhitelist={this.props.setWhitelist}
-            whitelist={this.props.whitelist}
-          />
-        </div>
+        <DesktopDrawerDetails
+          user={this.props.user}
+          set={this.state.detailSet}
+          open={this.state.detailsDrawerOpen}
+          close={this.closeDetailsDrawer}
+          edit={this.openEditDrawer}
+          delete={this.openDeleteDialog}
+          search={this.props.search}
+          setSearch={this.props.setSearch}
+          toggleLichTheme={this.props.toggleLichTheme}
+        />
+      );
+    const filterDrawer =
+      this.props.view === "compact" ? (
+        <TabletDrawerFilter
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+        />
+      ) : (
+        <DesktopDrawerFilter
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+        />
       );
     return (
       <div className={this.props.className + "app-container"}>
@@ -334,7 +334,9 @@ export class DesktopContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
-            <main
+            {detailsDrawer}
+            {filterDrawer}
+            <DrawerAppContent
               className={
                 "main " +
                 this.props.view +
@@ -344,11 +346,10 @@ export class DesktopContent extends React.Component {
             >
               {content}
               <Footer />
-            </main>
-            {drawers}
+            </DrawerAppContent>
+            {editorElements}
           </div>
         </DrawerAppContent>
-        {editorElements}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}
