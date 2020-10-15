@@ -197,7 +197,7 @@ export class AuditLog extends React.Component {
           <TopAppBarRow>
             <TopAppBarSection>
               <Link to="/">
-                <TopAppBarNavigationIcon icon="arrow_back" />
+                <TopAppBarNavigationIcon className="rtl-flip" icon="arrow_back" />
               </Link>
               <TopAppBarTitle>Audit Log</TopAppBarTitle>
             </TopAppBarSection>

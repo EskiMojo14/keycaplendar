@@ -252,6 +252,14 @@
   }
 }
 
+.rtl-flip {
+  @include rtl.rtl {
+    transform: scaleX(-1);
+    animation: none;
+    opacity: 1;
+  }
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;

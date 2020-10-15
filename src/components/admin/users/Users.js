@@ -270,7 +270,7 @@ export class Users extends React.Component {
           <TopAppBarRow>
             <TopAppBarSection>
               <Link to="/">
-                <TopAppBarNavigationIcon icon="arrow_back" />
+                <TopAppBarNavigationIcon className="rtl-flip" icon="arrow_back" />
               </Link>
               <TopAppBarTitle>Users</TopAppBarTitle>
             </TopAppBarSection>
