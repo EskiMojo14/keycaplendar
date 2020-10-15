@@ -3,7 +3,7 @@ import firebase from "../firebase";
 import { Link } from "react-router-dom";
 import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
 import { Typography } from "@rmwc/typography";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
+import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Button } from "@rmwc/button";
 import { Switch } from "@rmwc/switch";
 import { Select } from "@rmwc/select";
@@ -221,16 +221,16 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
           </Typography>
           <List className="theme-list">
             <ListItem onClick={() => props.setLightTheme("light")} className="light">
-              <FormField>
+              Light
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
-                Light
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
-              <FormField>
+              Sepia
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
-                Sepia
-              </FormField>
+              </ListItemMeta>
             </ListItem>
           </List>
         </div>
@@ -253,34 +253,34 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
           {themeOptions}
           <List className="theme-list">
             <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
-              <FormField>
+              Ocean
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
-                Ocean
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
-              <FormField>
+              Grey
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
-                Grey
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
-              <FormField>
+              Deep Ocean
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
-                Deep Ocean
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
-              <FormField>
+              Deep Purple
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
-                Deep Purple
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
-              <FormField>
+              Dark
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
-                Dark
-              </FormField>
+              </ListItemMeta>
             </ListItem>
           </List>
         </div>
