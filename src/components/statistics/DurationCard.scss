@@ -20,10 +20,10 @@
     }
     .table-container {
       flex-grow: 1;
-      .rmwc-data-table {
+      .mdc-data-table {
         width: 100%;
         border-radius: 4px;
-        .rmwc-data-table__content {
+        .mdc-data-table__table {
           width: 100%;
           .bold {
             font-weight: bold;

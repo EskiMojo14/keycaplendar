@@ -1,4 +1,4 @@
-@import "@material/elevation/mixins";
+@use "@material/elevation/_index" as elevation;
 
 .legal-container {
   padding: 16px;
@@ -15,7 +15,7 @@
   }
   .legal {
     border-radius: 4px;
-    @include mdc-elevation(1);
+    @include elevation.elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
     padding: 16px;

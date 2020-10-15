@@ -1,58 +1,105 @@
-@import "@material/theme/color-palette";
+@use "./typography-variables" as typography-variables;
 
-/*
-$mdc-theme-primary: $material-color-teal-500;
-$mdc-theme-secondary: $material-color-deep-orange-200;
-$mdc-theme-on-primary: black;
-$mdc-theme-on-secondary: black;
-$mdc-theme-background: $material-color-grey-200;
-$mdc-theme-surface: white;
-$mdc-theme-on-surface: #000;
-*/
+@use "@material/typography" with (
+  $font-family: typography-variables.$body-font,
+  $styles-headline1: typography-variables.$headline1,
+  $styles-headline2: typography-variables.$headline2,
+  $styles-headline3: typography-variables.$headline3,
+  $styles-headline4: typography-variables.$headline4,
+  $styles-headline5: typography-variables.$headline5,
+  $styles-headline6: typography-variables.$headline6,
+  $styles-body1: typography-variables.$body1,
+  $styles-body2: typography-variables.$body2,
+  $styles-subtitle1: typography-variables.$subtitle1,
+  $styles-subtitle2: typography-variables.$subtitle2,
+  $styles-button: typography-variables.$button,
+  $styles-overline: typography-variables.$overline,
+  $styles-caption: typography-variables.$caption
+);
 
-@import "typography-variables";
-@import "theme";
+@use "theme" as theme;
 
-@import "@material/button/mdc-button";
-@import "@material/card/mdc-card";
-@import "@material/checkbox/mdc-checkbox";
-@import "@material/chips/mdc-chips";
-@import "@material/data-table/mdc-data-table";
-@import "@material/dialog/mdc-dialog";
-@import "@material/drawer/mdc-drawer";
-@import "@material/fab/mdc-fab";
-@import "@material/floating-label/mdc-floating-label";
-@import "@material/form-field/mdc-form-field";
-@import "@material/icon-button/mdc-icon-button";
-@import "@material/image-list/mdc-image-list";
-@import "@material/line-ripple/mdc-line-ripple";
-@import "@material/linear-progress/mdc-linear-progress";
-@import "@material/list/mdc-list";
-@import "@material/menu-surface/mdc-menu-surface";
-@import "@material/menu/mdc-menu";
-@import "@material/notched-outline/mdc-notched-outline";
-@import "@material/radio/mdc-radio";
-@import "@material/select/mdc-select";
-@import "@material/snackbar/mdc-snackbar";
-@import "@material/switch/mdc-switch";
-@import "@material/textfield/mdc-text-field";
-@import "@material/tab-bar/mdc-tab-bar";
-@import "@material/tab/mdc-tab";
-@import "@material/tab-scroller/mdc-tab-scroller";
-@import "@material/tab-indicator/mdc-tab-indicator";
-@import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/typography/mdc-typography";
-@import "@rmwc/data-table/data-table";
-@import "@rmwc/circular-progress/circular-progress";
-@import "@rmwc/tooltip/tooltip";
-@import "@rmwc/list/collapsible-list";
-@import "@rmwc/avatar/avatar";
+@use "@material/button/mdc-button";
+@use "@material/card/mdc-card";
+@use "@material/checkbox/mdc-checkbox";
+@use "@material/chips/mdc-chips";
+@use "@material/data-table/mdc-data-table";
+@use "@material/dialog/mdc-dialog";
+@use "@material/drawer/mdc-drawer";
+@use "@material/fab/mdc-fab";
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/form-field/mdc-form-field";
+@use "@material/icon-button/mdc-icon-button";
+@use "@material/image-list/mdc-image-list";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/linear-progress/mdc-linear-progress";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/radio/mdc-radio";
+@use "@material/select/mdc-select";
+@use "@material/snackbar/mdc-snackbar";
+@use "@material/switch/mdc-switch";
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab/mdc-tab";
+@use "@material/textfield/mdc-text-field";
+@use "@material/top-app-bar/mdc-top-app-bar";
+@use "@rmwc/avatar/avatar";
+@use "@rmwc/badge/badge";
+@use "@rmwc/circular-progress/circular-progress";
+@use "@rmwc/data-table/data-table";
+@use "@rmwc/list/collapsible-list";
+@use "@rmwc/tooltip/tooltip";
+
+@use "@material/theme/color-palette" as palette;
+@use "@material/top-app-bar/_index" as top-app-bar;
+
+@include typography.core-styles();
+
+.mdc-drawer.drawer-right {
+  border-right-width: 0;
+  border-left-width: 1px;
+  border-right-style: none;
+  border-left-style: solid;
+  left: initial;
+  right: 0;
+  width: 320px;
+  &.mdc-drawer--animate,
+  &.mdc-drawer--closing {
+    transform: translateX(100%);
+  }
+  &.mdc-drawer--opening {
+    transform: translateX(0);
+  }
+  &.mdc-drawer--open:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
+    margin-left: 0;
+    margin-right: 320px;
+  }
+}
+
+.mdc-drawer__content {
+  overflow-x: hidden;
+}
+
+.content-container .mdc-drawer.mdc-drawer--dismissible {
+  height: calc(100% - #{top-app-bar.$row-height});
+}
+
+@media (max-width: top-app-bar.$mobile-breakpoint) {
+  .content-container .mdc-drawer.mdc-drawer--dismissible {
+    height: calc(100% - #{top-app-bar.$mobile-row-height});
+  }
+}
 
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
 .mdc-drawer,
 .mdc-list-divider,
-.rmwc-data-table,
+.mdc-data-table,
+.mdc-data-table__row,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);
@@ -63,24 +110,63 @@ $mdc-theme-on-surface: #000;
     stroke-dasharray: 4px;
   }
   .ct-axis-title {
-    @include mdc-typography(caption);
+    @include typography.typography(caption);
   }
 }
 
-.mdc-drawer .mdc-list-item {
+.mdc-drawer .mdc-list-item,
+.mdc-drawer .mdc-list-item:first-child {
+  margin: 0;
   border-radius: 0;
+  box-sizing: border-box;
+  padding: 0 16px;
+}
+
+.mdc-drawer .mdc-menu .mdc-list-item {
+  height: 56px;
+  @include typography.typography(subtitle1);
 }
 
 .mdc-ripple-upgraded::before {
   transition-duration: 100ms !important;
 }
 
-.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta {
+.rmwc-data-table__head-cell--sorted .rmwc-data-table__sort-icon {
+  transform: rotate(0);
+}
+
+.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta,
+.mdc-select--activated .mdc-select__dropdown-icon,
+.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending .rmwc-data-table__sort-icon,
+.rmwc-data-table__sort-icon {
   transform: rotate(180deg);
 }
 
 .rmwc-avatar {
   background-color: var(--divider-color);
+}
+
+.rmwc-badge.material-icons {
+  text-transform: none;
+  font-size: 18px;
+  line-height: 18px;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  &.rmwc-badge--align-start,
+  &.rmwc-badge--align-end {
+    top: -13px;
+  }
+  &.rmwc-badge--align-start,
+  [dir="rtl"] &.rmwc-badge--align-end {
+    left: -13px;
+    right: auto;
+  }
+  &.rmwc-badge--align-end,
+  [dir="rtl"] &.rmwc-badge--align-start {
+    right: -13px;
+    left: auto;
+  }
 }
 
 .banner {
@@ -89,7 +175,7 @@ $mdc-theme-on-surface: #000;
   justify-content: stretch;
   border-bottom: 1px solid var(--divider-color);
   &-text {
-    @include mdc-typography(body2);
+    @include typography.typography(body2);
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -101,6 +187,34 @@ $mdc-theme-on-surface: #000;
     padding: 8px 16px;
     a {
       text-decoration: none;
+    }
+  }
+}
+
+.rmwc-tooltip {
+  @include typography.typography(caption);
+}
+
+.mdc-data-table {
+  background-color: transparent;
+  .mdc-data-table__header-row {
+    height: 56px;
+    .mdc-data-table__header-cell {
+      @include typography.typography(subtitle2);
+      font-weight: bold;
+      vertical-align: middle;
+      .rmwc-data-table__sort-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+  }
+  .mdc-data-table__row {
+    height: 52px;
+    transition: background-color 100ms;
+    .mdc-data-table__cell {
+      @include typography.typography(body2);
+      overflow: visible;
     }
   }
 }
@@ -161,23 +275,23 @@ $mdc-theme-on-surface: #000;
 
 .light {
   $theme: (
-    primary: $material-color-teal-500,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
-    background: $material-color-grey-200,
+    background: palette.$grey-200,
     error: #b00020,
     on-error: white,
     surface: white,
     on-surface: black,
   );
-  @include theme($theme);
+  @include theme.theme($theme);
 }
 
 .sepia {
   $theme: (
-    primary: $material-color-teal-500,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #cac6ad,
@@ -186,13 +300,13 @@ $mdc-theme-on-surface: #000;
     surface: #e2dfd6,
     on-surface: #3d3d38,
   );
-  @include theme($theme);
+  @include theme.theme($theme);
 }
 
 .ocean {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-light-green-200,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
     on-primary: black,
     on-secondary: black,
     background: #1b2936,
@@ -201,13 +315,13 @@ $mdc-theme-on-surface: #000;
     surface: #1b2936,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .grey {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #202125,
@@ -216,13 +330,13 @@ $mdc-theme-on-surface: #000;
     surface: #202125,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .deep-ocean {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-light-green-200,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
     on-primary: black,
     on-secondary: black,
     background: #1a2328,
@@ -231,13 +345,13 @@ $mdc-theme-on-surface: #000;
     surface: #1a2328,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .deep {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #17161c,
@@ -246,13 +360,13 @@ $mdc-theme-on-surface: #000;
     surface: #17161c,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .dark {
   $theme: (
-    primary: $material-color-teal-200,
-    secondary: $material-color-deep-orange-200,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
     on-primary: black,
     on-secondary: black,
     background: #121212,
@@ -261,7 +375,7 @@ $mdc-theme-on-surface: #000;
     surface: #121212,
     on-surface: white,
   );
-  @include theme($theme, true);
+  @include theme.theme($theme, true);
 }
 
 .lich {
@@ -275,7 +389,7 @@ $mdc-theme-on-surface: #000;
     surface: lighten(#decde7, 5%),
     on-surface: black,
   );
-  @include theme($theme);
+  @include theme.theme($theme);
 }
 
 @import "chartist/dist/scss/chartist";

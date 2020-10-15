@@ -69,22 +69,22 @@ export class DesktopDrawerDetails extends React.Component {
     let gb;
     let vendorList;
     let shippedLine;
-    const sortedVendors =
-      set.vendors && set.vendors[0]
-        ? set.vendors.sort((a, b) => {
-            var regionA = a.region.toLowerCase();
-            var regionB = b.region.toLowerCase();
-            if (regionA < regionB) {
-              return -1;
-            }
-            if (regionA > regionB) {
-              return 1;
-            }
-            return 0;
-          })
-        : [];
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
+    let sortedVendors = set.vendors
+      ? set.vendors.sort((a, b) => {
+          var regionA = a.region.toLowerCase();
+          var regionB = b.region.toLowerCase();
+          if (regionA < regionB) {
+            return -1;
+          }
+          if (regionA > regionB) {
+            return 1;
+          }
+          return 0;
+        })
+      : [];
+
     if (set.icDate) {
       gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
       gbEnd = new Date(set.gbEnd);
@@ -188,26 +188,24 @@ export class DesktopDrawerDetails extends React.Component {
           </Typography>
           <List twoLine>
             {sortedVendors.map((vendor, index) => {
-              if (vendor.storeLink !== "") {
-                return (
-                  <ListItem key={index} tag="a" href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+              return vendor.storeLink !== "" ? (
+                <a key={index} href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                  <ListItem>
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
                     </ListItemText>
                     <ListItemMeta icon="launch" />
                   </ListItem>
-                );
-              } else {
-                return (
-                  <ListItem key={index} disabled>
-                    <ListItemText>
-                      <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
-                      <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
-                    </ListItemText>
-                  </ListItem>
-                );
-              }
+                </a>
+              ) : (
+                <ListItem key={index} disabled>
+                  <ListItemText>
+                    <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
+                    <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                  </ListItemText>
+                </ListItem>
+              );
             })}
           </List>
         </div>

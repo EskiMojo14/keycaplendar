@@ -51,13 +51,8 @@ export const AuditFilter = (props) => {
           outlined
           enhanced={{ fixed: true }}
           label="Length"
-          options={[
-            { label: "25", value: 25 },
-            { label: "50", value: 50 },
-            { label: "100", value: 100 },
-            { label: "200", value: 200 },
-          ]}
-          value={props.filterLength}
+          options={[25, 50, 100, 200]}
+          value={props.filterLength.toString()}
           className="action-select"
           onChange={(e) => {
             props.getActions(e.currentTarget.value);

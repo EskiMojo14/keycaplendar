@@ -1,8 +1,8 @@
-@import "@material/animation/variables";
-@import "@material/elevation/mixins";
-@import "@material/ripple/mixins";
-@import "@material/textfield/mixins";
-@import "@material/typography/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/ripple/_index" as ripple;
+@use "@material/textfield/_index" as textfield;
+@use "@material/typography/_index" as typography;
 
 .users-container {
   padding: 16px;
@@ -11,7 +11,6 @@
   align-items: flex-start;
   flex-wrap: wrap;
   max-width: 100vw;
-  overflow: hidden;
   &::before {
     content: "";
     position: absolute;
@@ -22,111 +21,53 @@
   }
   .users {
     border-radius: 4px;
-    @include mdc-elevation(1);
-    .rmwc-data-table {
+    @include elevation.elevation(1);
+    .mdc-data-table {
       overflow: visible;
       border: none;
-      &__content {
-        width: 100%;
-      }
-      &__head .rmwc-data-table__row {
+      .mdc-data-table__header-row {
         &.progress-row {
           height: 0;
           border: none;
-          .rmwc-data-table__head-cell {
+          .mdc-data-table__header-cell {
             height: 0;
             padding: 0;
-            border: none;
             .mdc-linear-progress {
               height: 0px;
-              transition: height 100ms $mdc-animation-standard-curve-timing-function;
+              transition: height 100ms animation.$standard-curve-timing-function;
             }
           }
-          &.loading .rmwc-data-table__head-cell .mdc-linear-progress {
+          &.loading .mdc-data-table__header-cell .mdc-linear-progress {
                 height: 4px;
           }
         }
       }
-      &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action,
-      &__head .rmwc-data-table__row:hover .rmwc-data-table__head-cell.action,
-      &__head .rmwc-data-table__row .rmwc-data-table__head-cell.action:hover {
-        user-select: none;
-        cursor: pointer;
-        &::before {
-          content: "arrow_downward";
-          opacity: 0;
-          background-color: transparent;
-          font-family: "Material Icons";
-          font-weight: normal;
-          font-style: normal;
-          font-size: 24px;
-          line-height: 1;
-          letter-spacing: normal;
-          text-transform: none;
-          display: inline-block;
-          white-space: nowrap;
-          word-wrap: normal;
-          direction: ltr;
-          font-feature-settings: "liga";
-          -webkit-font-smoothing: antialiased;
-          left: calc(1rem - (24px + 2px));
-          right: auto;
-          top: 16px;
-          bottom: 16px;
-          transform: rotate(0);
-          transition: transform 150ms $mdc-animation-standard-curve-timing-function, opacity 100ms linear;
-          pointer-events: none;
-        }
-        &.sorted {
-          &::before {
-            opacity: 1;
-          }
-          &.reverse::before {
-            transform: rotate(180deg);
-          }
-        }
-      }
-      &__body .rmwc-data-table__row {
-        .rmwc-data-table__cell {
+      .mdc-data-table__row {
+        .mdc-data-table__cell {
           .svg-container {
             position: relative;
-            @include mdc-ripple-surface;
-            @include mdc-ripple-radius-unbounded;
+            @include ripple.surface;
+            @include ripple.radius-unbounded;
             &.disabled {
               cursor: default;
             }
           }
-          .nickname {
+          .mdc-text-field.nickname {
             height: 32px;
             width: 200px;
             .mdc-text-field__input {
               padding: 0 12px;
-              @include mdc-typography(body2);
+              @include typography.typography(body2);
               font-family: inherit;
             }
           }
           .autocomplete.mdc-menu .mdc-list-item {
             padding: 0 12px;
             height: 40px;
-            @include mdc-typography(body2);
+            @include typography.typography(body2);
             font-family: inherit;
           }
         }
-      }
-      .checkbox-cell {
-        padding: 0 16px;
-        .mdc-checkbox {
-          margin: 0 auto;
-        }
-      }
-      .icon-cell {
-        padding: 0 16px;
-        .mdc-icon-button {
-          margin: 0 auto;
-        }
-      }
-      .rmwc-circular-progress {
-        padding: 12px;
       }
     }
   }
@@ -157,7 +98,7 @@
           flex-direction: column;
           justify-content: center;
           .overline {
-            @include mdc-typography(overline);
+            @include typography.typography(overline);
             font-family: inherit;
             line-height: 1rem;
           }

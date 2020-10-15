@@ -1,24 +1,23 @@
-@import "@material/ripple/mdc-ripple";
-.timeline-table.rmwc-data-table {
+@use "@material/animation/_index" as animation;
+@use "@material/ripple/_index" as ripple;
+
+.timeline-table.mdc-data-table {
   border: none;
   .right-border {
     border-right: 1px solid var(--divider-color);
   }
-  .rmwc-data-table__content {
-    width: 100%;
-  }
-  .rmwc-data-table__head .rmwc-data-table__row {
-    .rmwc-data-table__head-cell {
+  .mdc-data-table__header-row {
+    .mdc-data-table__header-cell {
       &.profile-title {
         padding: 0;
         position: relative;
-        //@include mdc-typography(button);
+        //@include typography.typography(button);
         //text-align: center;
         cursor: pointer;
         padding: 0.75rem 1rem;
         padding-bottom: 0.5rem;
-        @include mdc-ripple-surface();
-        @include mdc-ripple-radius-bounded();
+        @include ripple.surface();
+        @include ripple.radius-bounded();
         //border-radius: 4px;
         .profile-indicator {
           height: 4px;
@@ -28,12 +27,15 @@
           bottom: 0;
           left: 2px;
           right: 2px;
-          transition: background-color 200ms $mdc-animation-standard-curve-timing-function;
+          transition: background-color 200ms animation.$standard-curve-timing-function;
+        }
+        .rmwc-data-table__sort-icon {
+          display: none;
         }
       }
     }
   }
-  .rmwc-data-table__body .rmwc-data-table__row .rmwc-data-table__cell {
-    transition: color 200ms $mdc-animation-standard-curve-timing-function;
+  .mdc-data-table__row .mdc-data-table__cell {
+    transition: color 200ms animation.$standard-curve-timing-function;
   }
 }

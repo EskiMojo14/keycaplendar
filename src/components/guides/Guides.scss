@@ -1,5 +1,5 @@
-@import "@material/elevation/mixins";
-@import "@material/typography/mixins";
+@use "@material/elevation/_index" as elevation;
+@use "@material/typography/_index" as typography;
 
 .guide-container {
   padding: 16px;
@@ -23,7 +23,7 @@
   }
   .guide {
     border-radius: 4px;
-    @include mdc-elevation(1);
+    @include elevation.elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
     box-sizing: border-box;
@@ -46,13 +46,13 @@
       align-items: center;
       padding: 16px;
       .mdc-fab {
-        @include mdc-elevation(2);
+        @include elevation.elevation(2);
         margin-right: 16px;
         &:last-child {
           margin-right: 0;
         }
         &:hover {
-          @include mdc-elevation(3);
+          @include elevation.elevation(3);
         }
       }
       .edit {
@@ -63,11 +63,8 @@
       display: flex;
       justify-content: center;
     }
-    .rmwc-data-table {
+    .mdc-data-table {
       border-radius: 4px;
-      &__content {
-        width: 100%;
-      }
     }
   }
 }

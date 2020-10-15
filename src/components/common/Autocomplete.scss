@@ -1,5 +1,5 @@
-@import "@material/animation/variables";
-@import "@material/top-app-bar/variables";
+@use "@material/animation/_index" as animation;
+@use "@material/top-app-bar/_index" as top-app-bar;
 
 .autocomplete.mdc-menu {
   max-height: 160px !important;
@@ -24,12 +24,12 @@
   overflow: hidden;
   position: absolute;
   z-index: 0;
-  top: $mdc-top-app-bar-row-height;
-  transition: min-height 250ms $mdc-animation-standard-curve-timing-function,
-    max-height 250ms $mdc-animation-standard-curve-timing-function;
+  top: top-app-bar.$row-height;
+  transition: min-height 250ms animation.$standard-curve-timing-function,
+    max-height 250ms animation.$standard-curve-timing-function;
   &--open {
-    min-height: calc(100vh - #{$mdc-top-app-bar-row-height});
-    max-height: calc(100vh - #{$mdc-top-app-bar-row-height});
+    min-height: calc(100vh - #{top-app-bar.$row-height});
+    max-height: calc(100vh - #{top-app-bar.$row-height});
     overflow: auto;
   }
   .mdc-list-item {
@@ -45,20 +45,20 @@
 }
 
 .bottom-nav .autocomplete-mobile {
-  top: calc(-100vh + #{$mdc-top-app-bar-row-height});
+  top: calc(-100vh + #{top-app-bar.$row-height});
 }
 
-@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .autocomplete-mobile,
   .bottom-nav .search-app-bar .autocomplete-mobile {
-    top: $mdc-top-app-bar-mobile-row-height;
+    top: top-app-bar.$mobile-row-height;
     &--open {
-      min-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
-      max-height: calc(100vh - #{$mdc-top-app-bar-mobile-row-height});
+      min-height: calc(100vh - #{top-app-bar.$mobile-row-height});
+      max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
     }
   }
   .bottom-nav .autocomplete-mobile {
-    top: calc(-100vh + #{$mdc-top-app-bar-mobile-row-height});
+    top: calc(-100vh + #{top-app-bar.$mobile-row-height});
   }
 }
 

@@ -28,15 +28,16 @@ export const TimelineTable = (props) => {
         <DataTableHead>
           <DataTableRow>
             <DataTableHeadCell className="right-border">Month</DataTableHeadCell>
-            <DataTableHeadCell className="right-border" alignEnd>
+            <DataTableHeadCell className="right-border" isNumeric>
               Sets
             </DataTableHeadCell>
             {props.profiles.map((profile, index) => {
               return (
                 <Ripple key={profile}>
                   <DataTableHeadCell
-                    alignEnd
+                    isNumeric 
                     className={"profile-title title-" + letters[index]}
+                    sort={1}
                     onClick={() => {
                       props.setFocus(letters[index]);
                     }}
@@ -54,12 +55,12 @@ export const TimelineTable = (props) => {
             return (
               <DataTableRow key={month}>
                 <DataTableCell className="right-border">{month}</DataTableCell>
-                <DataTableCell className="right-border" alignEnd>
+                <DataTableCell className="right-border" isNumeric>
                   {props.monthData[props.statistics.timeline][month].count}
                 </DataTableCell>
                 {props.profiles.map((profile, index) => {
                   return (
-                    <DataTableCell alignEnd key={profile} className={"cell-" + letters[index]}>
+                    <DataTableCell isNumeric key={profile} className={"cell-" + letters[index]}>
                       {props.monthData[props.statistics.timeline][month][camelize(profile)]}
                     </DataTableCell>
                   );

@@ -334,15 +334,21 @@ export const AuditEntry = (props) => {
             })}
             <DataTableRow>
               <DataTableCell>documentId</DataTableCell>
-              <DataTableCell colSpan={2}>{props.action.documentId}</DataTableCell>
+              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
+                {props.action.documentId}
+              </DataTableCell>
             </DataTableRow>
             <DataTableRow>
               <DataTableCell>changelogId</DataTableCell>
-              <DataTableCell colSpan={2}>{props.action.changelogId}</DataTableCell>
+              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
+                {props.action.changelogId}
+              </DataTableCell>
             </DataTableRow>
             <DataTableRow>
               <DataTableCell>userEmail</DataTableCell>
-              <DataTableCell colSpan={2}>{props.action.user.email}</DataTableCell>
+              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
+                {props.action.user.email}
+              </DataTableCell>
             </DataTableRow>
           </DataTableBody>
         </DataTableContent>

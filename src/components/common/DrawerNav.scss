@@ -1,6 +1,6 @@
-@import "@material/top-app-bar/variables";
-@import "@material/ripple/mixins";
-@import "@material/typography/mixins";
+@use "@material/ripple/_index" as ripple;
+@use "@material/top-app-bar/_index" as top-app-bar;
+@use "@material/typography/_index" as typography;
 
 .mdc-drawer.mdc-drawer--dismissible {
   z-index: 1;
@@ -8,12 +8,12 @@
   height: 100%;
 }
 
-@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .mdc-drawer:not(.mdc-drawer--dismissible) {
     width: calc(100% - 56px);
   }
   .mdc-drawer .mdc-drawer__header {
-    height: $mdc-top-app-bar-mobile-row-height;
+    height: top-app-bar.$mobile-row-height;
     min-height: auto;
   }
 }
@@ -48,15 +48,14 @@
         margin-left: auto;
       }
     }
-    .mdc-drawer__content {
-      .mdc-list-item {
-        margin: 0;
-        padding: 8px 16px;
-        border-radius: 0;
-        &--selected,
-        &--activated {
-          font-weight: bold;
-        }
+    .mdc-list-item {
+      margin: 0;
+      height: 56px;
+      padding: 8px 16px;
+      border-radius: 0;
+      &--selected,
+      &--activated {
+        font-weight: bold;
       }
     }
     &.bottom {

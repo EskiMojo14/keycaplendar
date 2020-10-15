@@ -6,61 +6,97 @@ $body-font: unquote("Lato, sans-serif");
   @return ($px / 16) * 1rem;
 }
 
-$mdc-typography-styles-headline1: (
+$headline1: (
   font-family: $headline-font,
   font-feature-settings: "lnum",
   font-size: toRem(96),
 );
-$mdc-typography-styles-headline2: (
+$headline2: (
   font-family: $headline-font,
   font-feature-settings: "lnum",
   font-size: toRem(60),
 );
-$mdc-typography-styles-headline3: (
+$headline3: (
   font-family: $headline-font,
   font-feature-settings: "lnum",
   font-size: toRem(48),
 );
-$mdc-typography-styles-headline4: (
+$headline4: (
   font-family: $headline-font,
   font-feature-settings: "lnum",
   font-size: toRem(34),
 );
-$mdc-typography-styles-headline5: (
+$headline5: (
   font-family: $headline-font,
   font-feature-settings: "lnum",
   font-size: toRem(24),
 );
-$mdc-typography-styles-headline6: (
+$headline6: (
   font-family: $body-font,
   font-feature-settings: "lnum",
   font-size: toRem(21),
 );
-$mdc-typography-styles-body1: (
+$body1: (
   font-family: $body-font,
   font-size: toRem(17),
 );
-$mdc-typography-styles-body2: (
+$body2: (
   font-family: $body-font,
   font-size: toRem(15),
 );
-$mdc-typography-styles-subtitle1: (
+$subtitle1: (
   font-family: $body-font,
   font-size: toRem(17),
 );
-$mdc-typography-styles-subtitle2: (
+$subtitle2: (
   font-family: $body-font,
   font-size: toRem(15),
 );
-$mdc-typography-styles-button: (
+$button: (
   font-family: $body-font,
   font-size: toRem(15),
 );
-$mdc-typography-styles-overline: (
+$overline: (
   font-family: $body-font,
   font-size: toRem(10),
 );
-$mdc-typography-styles-caption: (
+$caption: (
   font-family: $body-font,
   font-size: toRem(13),
+);
+
+
+
+$headline6-serif: (
+  font-family: $headline-font,
+  font-feature-settings: "lnum",
+  font-size: toRem(20),
+);
+$body1-serif: (
+  font-family: $headline-font,
+  font-size: toRem(16),
+);
+$body2-serif: (
+  font-family: $headline-font,
+  font-size: toRem(14),
+);
+$subtitle1-serif: (
+  font-family: $headline-font,
+  font-size: toRem(16),
+);
+$subtitle2-serif: (
+  font-family: $headline-font,
+  font-size: toRem(14),
+);
+$button-serif: (
+  font-family: $headline-font,
+  font-size: toRem(14),
+);
+$overline-serif: (
+  font-family: $headline-font,
+  font-size: toRem(10),
+);
+$caption-serif: (
+  font-family: $headline-font,
+  font-size: toRem(12),
 );

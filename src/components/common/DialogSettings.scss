@@ -1,7 +1,7 @@
-@import "@material/theme/color-palette";
-@import "@material/radio/mixins";
-@import "@material/ripple/mixins";
-@import "@material/typography/mixins";
+@use "@material/radio/_index" as radio;
+@use "@material/ripple/_index" as ripple;
+@use "@material/theme/color-palette" as palette;
+@use "@material/typography/_index" as typography;
 
 .settings-dialog {
   user-select: none;
@@ -55,7 +55,7 @@
           background: none;
         }
       }
-      .mdc-list {
+      .theme-list.mdc-list {
         flex-grow: 1;
         padding: 0;
         border-radius: 4px;
@@ -71,14 +71,14 @@
         .light {
           background-color: white;
           color: rgba(black, 0.87);
-          @include mdc-radio-unchecked-stroke-color(rgba(black, 0.6));
-          @include mdc-states(black);
+          @include radio.unchecked-stroke-color(rgba(black, 0.6));
+          @include ripple.states(black);
         }
         .sepia {
           background-color: #e2dfd6;
           color: rgba(#3d3d38, 0.87);
-          @include mdc-radio-unchecked-stroke-color(rgba(#3d3d38, 0.6));
-          @include mdc-states(black);
+          @include radio.unchecked-stroke-color(rgba(#3d3d38, 0.6));
+          @include ripple.states(black);
         }
         .ocean {
           background-color: #36526c;
@@ -96,17 +96,17 @@
           background-color: #3b3b3b;
         }
         .light, .sepia, .grey, .deep, .dark {
-          @include mdc-radio-checked-stroke-color($material-color-deep-orange-200);
-          @include mdc-radio-ink-color($material-color-deep-orange-200);
+          @include radio.checked-stroke-color(palette.$deep-orange-200);
+          @include radio.ink-color(palette.$deep-orange-200);
         }
         .ocean, .deep-ocean {
-          @include mdc-radio-checked-stroke-color($material-color-light-green-200);
-          @include mdc-radio-ink-color($material-color-light-green-200);
+          @include radio.checked-stroke-color(palette.$light-green-200);
+          @include radio.ink-color(palette.$light-green-200);
         }
         .ocean, .grey, .deep-ocean, .deep, .dark {
           color: rgba(white, 0.87);
-          @include mdc-radio-unchecked-stroke-color(rgba(white, 0.6));
-          @include mdc-states(white);
+          @include radio.unchecked-stroke-color(rgba(white, 0.6));
+          @include ripple.states(white);
         }
       }
       .mdc-form-field {
@@ -126,8 +126,12 @@
         &::after {
           content: none;
         }
-        .rmwc-avatar {
+        .avatar {
           margin-right: 16px;
+          .user-icon {
+            top: auto;
+            bottom: -13px;
+          }
         }
         .mdc-list-item__text {
           align-self: unset;
@@ -136,7 +140,7 @@
           flex-direction: column;
           justify-content: stretch;
           .overline {
-            @include mdc-typography(overline);
+            @include typography.typography(overline);
             font-family: inherit;
             line-height: 1rem;
             padding-top: calc(28px - 1rem);

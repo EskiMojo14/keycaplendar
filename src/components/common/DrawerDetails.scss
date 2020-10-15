@@ -1,4 +1,4 @@
-@import "@material/typography/mixins";
+@use "@material/typography/_index" as typography;
 
 .mdc-drawer.details-drawer {
   justify-content: stretch;
@@ -71,14 +71,6 @@
         }
         .mdc-list {
           padding: 0;
-          &-item {
-            height: 56px;
-            margin: 0;
-            padding: 8px 16px;
-            &__primary-text::before {
-              height: 24px;
-            }
-          }
         }
       }
     }

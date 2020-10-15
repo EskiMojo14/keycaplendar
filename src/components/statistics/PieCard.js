@@ -29,7 +29,7 @@ export const StatusCard = (props) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Status</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>Sets</DataTableHeadCell> 
+                  <DataTableHeadCell isNumeric>Sets</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -37,25 +37,25 @@ export const StatusCard = (props) => {
                   <DataTableCell>
                     <div className="indicator ic"></div>IC
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[0]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[0]}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator pre-gb"></div>Pre GB
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[1]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[1]}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator live-gb"></div>Live GB
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[2]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[2]}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator post-gb"></div>Post GB
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[3]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[3]}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
@@ -92,7 +92,7 @@ export const ShippedCard = (props) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Status</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>Sets</DataTableHeadCell>
+                  <DataTableHeadCell isNumeric>Sets</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -100,13 +100,13 @@ export const ShippedCard = (props) => {
                   <DataTableCell>
                     <div className="indicator shipped"></div>Shipped
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[0]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[0]}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator not-shipped"></div>Not shipped
                   </DataTableCell>
-                  <DataTableCell alignEnd>{props.data[1]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data[1]}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>

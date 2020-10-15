@@ -1,16 +1,16 @@
-@import "@material/animation/variables";
-@import "@material/elevation/mixins";
-@import "@material/icon-button/mixins";
-@import "@material/ripple/mixins";
-@import "@material/typography/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/icon-button/_index" as icon-button;
+@use "@material/ripple/_index" as ripple;
+@use "@material/typography/_index" as typography;
 
 .outer-container .mdc-image-list__item {
   cursor: pointer;
   margin: 2px;
   overflow: hidden;
-  @include mdc-ripple-surface;
-  @include mdc-ripple-radius-bounded;
-  @include mdc-states(black);
+  @include ripple.surface;
+  @include ripple.radius-bounded;
+  @include ripple.states(black);
   width: calc((100% * 1 / 6) - 4px);
   .container {
     position: relative;
@@ -21,11 +21,11 @@
       height: 100%;
       opacity: 0;
       z-index: 1;
-      transition: opacity 150ms $mdc-animation-standard-curve-timing-function;
+      transition: opacity 150ms animation.$standard-curve-timing-function;
     }
     .link-icon {
-      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
-      @include mdc-icon-button-ink-color(white);
+      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      @include icon-button.ink-color(white);
       &-container {
         position: absolute;
         width: 100%;
@@ -46,7 +46,7 @@
           content: "";
           background: linear-gradient(rgba(black, 0.4), transparent);
           opacity: 0;
-          transition: opacity 250ms $mdc-animation-standard-curve-timing-function;
+          transition: opacity 250ms animation.$standard-curve-timing-function;
         }
       }
     }
@@ -54,10 +54,10 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: filter 150ms $mdc-animation-standard-curve-timing-function;
+      transition: filter 150ms animation.$standard-curve-timing-function;
       animation: placeholder 2s ease infinite;
       .mdc-image-list__image {
-        animation: fade-in 500ms $mdc-animation-standard-curve-timing-function forwards;
+        animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
       }
       .time-indicator {
         position: absolute;
@@ -78,7 +78,7 @@
   .mdc-image-list__supporting {
     height: 64px;
     z-index: 1;
-    transition: background-color 150ms $mdc-animation-standard-curve-timing-function;
+    transition: background-color 150ms animation.$standard-curve-timing-function;
     .mdc-image-list__label {
       display: flex;
       align-items: center;
@@ -94,7 +94,7 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          transition: color 150ms $mdc-animation-standard-curve-timing-function;
+          transition: color 150ms animation.$standard-curve-timing-function;
           div {
             white-space: nowrap;
             overflow: hidden;
@@ -107,12 +107,12 @@
           }
         }
         .secondary-text {
-          @include mdc-typography(body2);
+          @include typography.typography(body2);
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           color: rgba(white, 0.6);
-          transition: color 150ms $mdc-animation-standard-curve-timing-function;
+          transition: color 150ms animation.$standard-curve-timing-function;
         }
       }
       .live-indicator,
@@ -121,7 +121,7 @@
         flex-shrink: 0;
         margin-left: 8px;
         fill: white;
-        transition: fill 150ms $mdc-animation-standard-curve-timing-function;
+        transition: fill 150ms animation.$standard-curve-timing-function;
       }
     }
   }
@@ -138,7 +138,7 @@
 @media (min-width: 840px) {
   .outer-container .mdc-image-list__item:hover .container {
     .link-icon {
-      animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
       &-container::before {
         opacity: 1;
       }

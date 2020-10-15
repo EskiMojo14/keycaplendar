@@ -1,14 +1,14 @@
-@import "@material/animation/variables";
-@import "@material/drawer/variables";
-@import "@material/top-app-bar/variables";
-@import "@material/elevation/mixins";
-@import "@material/ripple/mixins";
+@use "@material/animation/_index" as animation;
+@use "@material/drawer/_index" as drawer;
+@use "@material/elevation/_index" as elevation;
+@use "@material/ripple/_index" as ripple;
+@use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-top-app-bar {
   &--fixed {
     top: 0;
     .scrolled & {
-      @include mdc-elevation(4);
+      @include elevation.elevation(4);
     }
   }
   &__title {
@@ -25,15 +25,15 @@
   }
   .svg-container {
     position: relative;
-    @include mdc-ripple-surface;
-    @include mdc-ripple-radius-unbounded;
+    @include ripple.surface;
+    @include ripple.radius-unbounded;
   }
   .logo {
     height: 40px;
   }
   .mdc-linear-progress {
     position: absolute;
-    top: $mdc-top-app-bar-row-height - 4px;
+    top: top-app-bar.$row-height - 4px;
     z-index: 4;
     .mdc-linear-progress__buffering-dots {
       display: none;
@@ -41,7 +41,7 @@
   }
   .mdc-icon-button {
     opacity: 0;
-    animation: fade-in-scale 150ms $mdc-animation-standard-curve-timing-function forwards;
+    animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
     animation-delay: calc(var(--animation-delay) * 75ms);
   }
   .hidden {
@@ -55,7 +55,7 @@
     }
     .mdc-icon-button {
       opacity: 1;
-      animation: fade-out 150ms $mdc-animation-standard-curve-timing-function forwards;
+      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
       animation-delay: 0;
     }
   }
@@ -88,7 +88,7 @@
   bottom: 0;
   top: auto !important;
   &:not(.bottom-app-bar--indent) {
-    @include mdc-elevation(4);
+    @include elevation.elevation(4);
   }
   &.bottom-app-bar--indent {
     background-color: transparent;
@@ -126,12 +126,12 @@
       margin-right: 12px;
     }
     .mdc-linear-progress {
-      top: $mdc-top-app-bar-mobile-row-height - 4px;
+      top: top-app-bar.$mobile-row-height - 4px;
     }
   }
 
   .statistics .mdc-top-app-bar--fixed-adjust {
-    padding-top: $mdc-top-app-bar-mobile-row-height + 48px;
+    padding-top: top-app-bar.$mobile-row-height + 48px;
   }
 }
 
@@ -144,5 +144,5 @@
 }
 
 .statistics .mdc-top-app-bar--fixed-adjust {
-  padding-top: $mdc-top-app-bar-row-height + 48px;
+  padding-top: top-app-bar.$row-height + 48px;
 }

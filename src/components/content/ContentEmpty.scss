@@ -1,4 +1,4 @@
-@import "@material/top-app-bar/variables";
+@use "@material/top-app-bar/_index" as top-app-bar;
 
 .empty-container {
   width: 100%;
@@ -29,7 +29,7 @@
   }
 }
 
-@media (max-width: $mdc-top-app-bar-mobile-breakpoint) {
+@media (max-width: top-app-bar.$mobile-breakpoint) {
   .empty-container {
     .image {
       height: 192px;
