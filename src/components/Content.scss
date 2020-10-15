@@ -1,6 +1,7 @@
 @use "@material/animation/_index" as animation;
 @use "@material/drawer/_index" as drawer;
 @use "@material/elevation/_index" as elevation;
+@use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-drawer-app-content {
@@ -14,7 +15,7 @@
     transition-duration: drawer.$animation-exit;
   }
   .mdc-top-app-bar {
-    right: 0;
+    @include rtl.reflexive-position(right, 0);
     transition: elevation.transition-value(), width animation.$standard-curve-timing-function;
     .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & {
       transition-duration: 280ms, drawer.$animation-enter;
@@ -32,9 +33,8 @@
 }
 
 .nav.mdc-drawer + .mdc-drawer-app-content {
-  margin-left: 56px;
+  @include rtl.reflexive-box(margin, left, 56px);
   .mdc-top-app-bar {
-    right: 0;
     width: calc(100% - 56px);
   }
 }
@@ -128,11 +128,14 @@
 .create-fab.mdc-fab {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  @include rtl.reflexive-position(right, 24px);
   z-index: 4;
   animation: fab-enter-opacity 15ms linear 30ms, fab-enter-transform 270ms 0ms cubic-bezier(0, 0, 0.2, 1);
   &.mdc-fab--extended {
     transition-property: box-shadow, right;
+    @include rtl.rtl {
+      transition-property: box-shadow, left;
+    }
     transition-timing-function: linear, animation.$standard-curve-timing-function;
     transition-duration: 280ms, drawer.$animation-enter;
     .mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
@@ -143,10 +146,10 @@
     }
     .mdc-drawer--open ~ .editor-elements &,
     .mdc-drawer--opening ~ .editor-elements & {
-      right: 24px + 320px;
+      @include rtl.reflexive-position(right, 24px + 320px);
     }
     .mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
-      right: 24px;
+      @include rtl.reflexive-position(right, 24px);
     }
   }
 }
@@ -172,10 +175,11 @@
 @media (max-width: 839px) {
   .create-fab.mdc-fab {
     bottom: 16px;
+    @include rtl.reflexive-position(right, 16px);
     right: 16px;
     &.middle {
       bottom: 28px;
-      right: 36px;
+      @include rtl.reflexive-position(right, 36px);
       margin: 0 auto;
     }
   }
