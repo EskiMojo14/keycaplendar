@@ -2,6 +2,7 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/icon-button/_index" as icon-button;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 @use "@material/typography/_index" as typography;
 
 .outer-container .mdc-image-list__item {
@@ -62,7 +63,7 @@
       .time-indicator {
         position: absolute;
         bottom: 64px + 8px;
-        left: 8px;
+        @include rtl.reflexive-position(left, 8px);
         display: flex;
         align-items: center;
         margin: 0;
@@ -101,7 +102,7 @@
             text-overflow: ellipsis;
             .twemoji {
               height: 1.0625rem;
-              margin-left: 0.35rem;
+              @include rtl.reflexive-box(margin, left, 0.35rem);
               margin-bottom: -0.15rem;
             }
           }
@@ -119,7 +120,7 @@
       .ship-indicator {
         height: 24px;
         flex-shrink: 0;
-        margin-left: 8px;
+        @include rtl.reflexive-box(margin, left, 8px);
         fill: white;
         transition: fill 150ms animation.$standard-curve-timing-function;
       }

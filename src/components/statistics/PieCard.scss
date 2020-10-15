@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .pie-card {
   .mdc-typography--headline5 {
     margin-top: 0;
@@ -68,7 +70,7 @@
               position: absolute;
               width: 4px;
               height: 100%;
-              left: 0;
+              @include rtl.reflexive-position(left, 0);
               top: 0;
               bottom: 0;
               &.not-shipped,

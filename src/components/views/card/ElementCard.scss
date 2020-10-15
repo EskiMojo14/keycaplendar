@@ -2,6 +2,7 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/icon-button/_index" as icon-button;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 
 .card-container .mdc-card {
   height: 100%;
@@ -54,7 +55,7 @@
     .time-indicator {
       position: absolute;
       bottom: 8px;
-      left: 8px;
+      @include rtl.reflexive-position(left, 8px);
       display: flex;
       align-items: center;
       margin: 0;
@@ -114,7 +115,7 @@
           align-items: center;
           .twemoji {
             height: 1.5625rem;
-            margin-left: 0.5rem;
+            @include rtl.reflexive-box(margin, left, 0.5rem);
           }
         }
       }
@@ -124,7 +125,7 @@
     }
     .live-indicator,
     .ship-indicator {
-      margin-left: 8px;
+      @include rtl.reflexive-box(margin, left, 8px);
       flex-shrink: 0;
       overflow: hidden;
       display: inline-flex;

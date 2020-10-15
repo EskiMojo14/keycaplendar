@@ -83,7 +83,7 @@ export class SearchBarPersistent extends React.Component {
   };
   render() {
     return (
-      <MenuSurfaceAnchor style={{ marginRight: "8px" }}>
+      <MenuSurfaceAnchor className="search-bar-anchor">
         <div className={"search-bar search-bar--persistent" + (this.state.expanded ? " search-bar--expanded" : "")}>
           <TextField
             outlined

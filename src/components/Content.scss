@@ -176,7 +176,6 @@
   .create-fab.mdc-fab {
     bottom: 16px;
     @include rtl.reflexive-position(right, 16px);
-    right: 16px;
     &.middle {
       bottom: 28px;
       @include rtl.reflexive-position(right, 36px);

@@ -93,7 +93,11 @@
     right: initial;
   }
 }
-
+.mdc-linear-progress {
+  @include rtl.rtl {
+    transform: scaleX(-1);
+  }
+}
 .mdc-drawer__content {
   overflow-x: hidden;
 }
@@ -193,7 +197,7 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-    padding-left: 16px;
+    @include rtl.reflexive-box(padding, left, 16px);
   }
   &-button {
     display: flex;

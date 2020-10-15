@@ -1,4 +1,5 @@
 @use "@material/elevation/_index" as elevation;
+@use "@material/rtl/_index" as rtl;
 @use "@material/typography/_index" as typography;
 
 .guide-container {
@@ -47,9 +48,9 @@
       padding: 16px;
       .mdc-fab {
         @include elevation.elevation(2);
-        margin-right: 16px;
+        @include rtl.reflexive-box(margin, right, 16px);
         &:last-child {
-          margin-right: 0;
+          @include rtl.reflexive-box(margin, right, 0);
         }
         &:hover {
           @include elevation.elevation(3);

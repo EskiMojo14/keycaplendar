@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .mdc-drawer.filter-drawer {
   user-select: none;
   &.mdc-drawer--modal {
@@ -42,7 +44,7 @@
       margin-bottom: 8px;
     }
     .filter-button-container .mdc-button {
-      margin-right: 8px;
+      @include rtl.reflexive-box(margin, right, 8px);
     }
     .filter-chip-container {
       padding-bottom: 16px;

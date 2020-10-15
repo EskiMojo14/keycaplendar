@@ -1,3 +1,4 @@
+@use "@material/rtl/_index" as rtl;
 @use "@material/typography/_index" as typography;
 
 .mdc-drawer.details-drawer {
@@ -50,7 +51,7 @@
             align-items: center;
             .twemoji {
               height: 2.25rem;
-              margin-left: 0.75rem;
+              @include rtl.reflexive-box(margin, left, 0.75rem);
             }
           }
         }
@@ -85,7 +86,7 @@
     }
     .delete {
       flex-grow: 0;
-      margin-left: 16px;
+      @include rtl.reflexive-box(margin, left, 16px);
     }
   }
   .search-chips {

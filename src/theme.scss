@@ -410,7 +410,7 @@ $overlay-values: (
     @include radio.unchecked-stroke-color(map-get($variables, text-secondary));
     @include radio.checked-stroke-color(map-get($variables, secondary));
     @include radio.ink-color(map-get($variables, secondary));
-    @include ripple.states(map-get($variables, secondary));
+    @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), '.mdc-radio__ripple');
   }
 
   .mdc-select {
