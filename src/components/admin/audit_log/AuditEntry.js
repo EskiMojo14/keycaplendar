@@ -239,10 +239,10 @@ export const AuditEntry = (props) => {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className="before">
+                      <DataTableCell hasFormControl className="before">
                         <Checkbox checked={props.action.before[property]} disabled />
                       </DataTableCell>
-                      <DataTableCell className="after">
+                      <DataTableCell hasFormControl className="after">
                         <Checkbox checked={props.action.after[property]} disabled />
                       </DataTableCell>
                     </DataTableRow>

@@ -1,4 +1,5 @@
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 @use "@material/theme/_index" as theme;
 
 .compact {
@@ -8,7 +9,7 @@
     box-sizing: border-box;
     &__text {
       align-self: unset;
-      margin-right: 16px;
+      @include rtl.reflexive-box(margin, right, 16px);
     }
     &__primary-text {
       margin-bottom: 0;
@@ -23,7 +24,7 @@
         text-overflow: ellipsis;
         .twemoji {
           height: 1.0625rem;
-          margin-left: 0.15rem;
+          @include rtl.reflexive-box(margin, left, 0.15rem);
           margin-bottom: -0.15rem;
         }
       }
@@ -35,11 +36,11 @@
       flex-shrink: 0;
       margin: 0;
       & + .mdc-list-item__text {
-        margin-left: 16px;
+        @include rtl.reflexive-box(margin, left, 16px);
       }
     }
     .link {
-      margin-left: auto;
+      @include rtl.reflexive-box(margin, left, auto);
       width: 48px;
       height: 48px;
       text-decoration: none;

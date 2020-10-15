@@ -1,11 +1,15 @@
 @use "@material/animation/_index" as animation;
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 
 $enter-time: 250ms;
 $exit-time: 200ms;
 
 .search-bar {
+  &-anchor {
+    @include rtl.reflexive-box(margin, right, 8px);
+  }
   &--persistent {
     height: 40px;
     .search-bar-field.mdc-text-field {
@@ -34,7 +38,7 @@ $exit-time: 200ms;
   }
   &--modal {
     position: absolute;
-    right: 0;
+    @include rtl.reflexive-position(right, 0);
     top: 0;
     width: 100%;
     height: 100%;

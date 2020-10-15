@@ -1,7 +1,6 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { List, ListItem } from "@rmwc/list";
-import { FormField } from "@rmwc/formfield";
+import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import "./DialogStatistics.scss";
 
@@ -54,30 +53,30 @@ export class DialogStatistics extends React.Component {
                 this.setStatistics("profile");
               }}
             >
-              <FormField>
+              Profile
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={this.state.statistics === "profile"} readOnly />
-                Profile
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem
               onClick={() => {
                 this.setStatistics("designer");
               }}
             >
-              <FormField>
+              Designer
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={this.state.statistics === "designer"} readOnly />
-                Designer
-              </FormField>
+              </ListItemMeta>
             </ListItem>
             <ListItem
               onClick={() => {
                 this.setStatistics("vendor");
               }}
             >
-              <FormField>
+              Vendor
+              <ListItemMeta>
                 <Radio tabIndex="-1" checked={this.state.statistics === "vendor"} readOnly />
-                Vendor
-              </FormField>
+              </ListItemMeta>
             </ListItem>
           </List>
         </DialogContent>

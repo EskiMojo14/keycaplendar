@@ -1,6 +1,7 @@
 @use "@material/animation/_index" as animation;
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 @use "@material/textfield/_index" as textfield;
 @use "@material/typography/_index" as typography;
 
@@ -135,9 +136,9 @@
             display: flex;
             flex-wrap: wrap;
             .mdc-form-field {
-              margin-right: 8px;
+              @include rtl.reflexive-box(margin, right, 8px);
               &:last-child {
-                margin-right: 0;
+                @include rtl.reflexive-box(margin, right, 0);
               }
             }
           }

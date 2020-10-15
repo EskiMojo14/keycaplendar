@@ -12,7 +12,7 @@ export const DesktopDrawerNav = (props) => {
       <DrawerHeader>
         <img className="logo" src={logo} alt="logo" />
         <DrawerTitle>KeycapLendar</DrawerTitle>
-        <IconButton icon="chevron_left" onClick={props.close} />
+        <IconButton className="rtl-flip" icon="chevron_left" onClick={props.close} />
       </DrawerHeader>
       <DrawerContent>
         <List>

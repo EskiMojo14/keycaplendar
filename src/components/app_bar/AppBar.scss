@@ -2,6 +2,7 @@
 @use "@material/drawer/_index" as drawer;
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-top-app-bar {
@@ -60,12 +61,12 @@
     }
   }
   .toggle-group {
-    margin-right: 4px;
+    @include rtl.reflexive-box(margin, right, 4px);
     & + .toggle-group {
-      margin-left: 4px;
+      @include rtl.reflexive-box(margin, left, 4px);
     }
     & + .category-button {
-      margin-left: 4px;
+      @include rtl.reflexive-box(margin, left, 4px);
     }
   }
 }
@@ -123,7 +124,7 @@
 @media (max-width: 599px) {
   .mdc-top-app-bar {
     .toggle-group {
-      margin-right: 12px;
+      @include rtl.reflexive-box(margin, right, 12px);
     }
     .mdc-linear-progress {
       top: top-app-bar.$mobile-row-height - 4px;

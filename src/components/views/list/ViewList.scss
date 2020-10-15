@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .outer-container {
   .view-list {
     flex-grow: 1;
@@ -7,13 +9,13 @@
     .mdc-list-divider {
       flex-grow: 1;
       margin-top: 16px;
-      margin-left: 132px;
+      @include rtl.reflexive-box(margin, left, 132px);
     }
   }
 }
 
 .mdc-list-item__text {
-  margin-right: 16px;
+  @include rtl.reflexive-box(margin, right, 16px);
 }
 
 .outer-container:last-child .view-list .mdc-list-divider {

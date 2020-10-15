@@ -1,10 +1,11 @@
 @use "@material/animation/_index" as animation;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 
 .timeline-table.mdc-data-table {
   border: none;
   .right-border {
-    border-right: 1px solid var(--divider-color);
+    @include rtl.reflexive-box(border, right, 1px solid var(--divider-color));
   }
   .mdc-data-table__header-row {
     .mdc-data-table__header-cell {

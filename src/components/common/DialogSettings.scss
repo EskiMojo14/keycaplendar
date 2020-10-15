@@ -1,5 +1,6 @@
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 @use "@material/theme/color-palette" as palette;
 @use "@material/typography/_index" as typography;
 
@@ -25,24 +26,23 @@
           flex-wrap: wrap;
           justify-items: stretch;
           margin-bottom: 0;
-          margin-left: -8px;
         }
         &__text {
           display: flex;
           justify-content: stretch;
-          margin-left: 8px;
+          @include rtl.reflexive-box(margin, right, 8px);
           flex-grow: 1;
           .mdc-typography--body2 {
             flex-grow: 1;
             line-height: 56px;
-            margin-right: 8px;
+            @include rtl.reflexive-box(margin, right, 8px);
           }
           &:last-of-type {
-            margin-right: 0;
+            @include rtl.reflexive-box(margin, right, 0);
           }
         }
         .mdc-select {
-          margin-left: 16px;
+          @include rtl.reflexive-box(margin, left, 16px);
           .mdc-select__selected-text {
             min-width: 0;
             width: 112px;
@@ -61,13 +61,6 @@
         border-radius: 4px;
         overflow: hidden;
         border: 1px solid var(--divider-color);
-        .mdc-radio {
-          margin-left: -8px;
-          margin-right: 24px;
-        }
-        .mdc-form-field {
-          color: inherit;
-        }
         .light {
           background-color: white;
           color: rgba(black, 0.87);
@@ -127,7 +120,7 @@
           content: none;
         }
         .avatar {
-          margin-right: 16px;
+          @include rtl.reflexive-box(margin, right, 16px);
           .user-icon {
             top: auto;
             bottom: -13px;
@@ -167,13 +160,13 @@
           }
         }
         .button {
-          margin-left: auto;
+          @include rtl.reflexive-box(margin, left, auto);
           flex-shrink: 0;
         }
       }
       .buttons {
         .mdc-button {
-          margin-right: 8px;
+          @include rtl.reflexive-box(margin, right, 8px);
         }
         a {
           text-decoration: none;
