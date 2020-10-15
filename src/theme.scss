@@ -424,7 +424,7 @@ $overlay-values: (
     @include mdc-select-focused-outline-color(map-get($variables, primary));
     .mdc-select__dropdown-icon {
       @include mdc-select-dd-arrow-svg-bg_(
-        unquote("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),
+        "#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4),
         0.6
       );
     }
