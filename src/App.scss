@@ -81,7 +81,7 @@
       transform: translateX(0);
     }
   }
-  &.mdc-drawer--open:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
+  &.mdc-drawer--open.mdc-drawer--dismissible:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
     @include rtl.reflexive-property(margin, 0, 320px);
   }
   @include rtl.rtl {

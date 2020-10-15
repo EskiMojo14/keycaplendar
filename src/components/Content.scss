@@ -144,8 +144,8 @@
     .mdc-drawer--closing ~ .editor-elements & {
       transition-duration: 280ms, drawer.$animation-exit;
     }
-    .mdc-drawer--open ~ .editor-elements &,
-    .mdc-drawer--opening ~ .editor-elements & {
+    .mdc-drawer--open.mdc-drawer--dismissible ~ .editor-elements &,
+    .mdc-drawer--opening.mdc-drawer--dismissible ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px + 320px);
     }
     .mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
