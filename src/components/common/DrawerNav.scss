@@ -77,9 +77,12 @@
       width: 56px;
       transform: none !important;
       .mdc-list-item {
+        height: 56px;
+        width: 100%;
         color: transparent;
         transition: color 150ms linear, width 1ms 150ms linear;
         white-space: nowrap;
+        box-sizing: border-box;
       }
       &.mdc-drawer--open {
         width: 256px;
@@ -95,17 +98,7 @@
       }
       .mdc-drawer__header,
       .mdc-drawer__content {
-        width: 256px;
-      }
-      &.collapsed {
-        .mdc-drawer__content {
-          width: 100%;
-        }
-        .mdc-list-item {
-          width: 100%;
-          height: 56px;
-          box-sizing: border-box;
-        }
+        width: 100%;
       }
     }
   }
