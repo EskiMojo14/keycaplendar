@@ -93,11 +93,13 @@
     right: initial;
   }
 }
+
 .mdc-linear-progress {
   @include rtl.rtl {
     transform: scaleX(-1);
   }
 }
+
 .mdc-drawer__content {
   overflow-x: hidden;
 }
@@ -258,6 +260,10 @@
     animation: none;
     opacity: 1;
   }
+}
+
+:focus {
+  outline: none;
 }
 
 @keyframes fade-out {
