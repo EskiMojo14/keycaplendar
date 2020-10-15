@@ -423,7 +423,7 @@ $overlay-values: (
     .mdc-select__dropdown-icon {
       // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
       @include select.dd-arrow-svg-bg_(
-        unquote("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4)),
+       "#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4),
         0.6
       );
     }

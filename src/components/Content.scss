@@ -7,19 +7,19 @@
   max-width: 100%;
   transition-property: margin;
   transition-timing-function: animation.$standard-curve-timing-function;
-  .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
+  .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & {
     transition-duration: drawer.$animation-enter;
   }
-  .mdc-drawer--closing + & {
+  .mdc-drawer--closing ~ & {
     transition-duration: drawer.$animation-exit;
   }
   .mdc-top-app-bar {
     right: 0;
     transition: elevation.transition-value(), width animation.$standard-curve-timing-function;
-    .mdc-drawer--animate:not(.mdc-drawer--closing) + & {
+    .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & {
       transition-duration: 280ms, drawer.$animation-enter;
     }
-    .mdc-drawer--closing + & {
+    .mdc-drawer--closing ~ & {
       transition-duration: 280ms, drawer.$animation-exit;
     }
     .mdc-top-app-bar__navigation-icon {
@@ -89,7 +89,6 @@
   &::before {
     content: "";
     position: absolute;
-    top: top-app-bar.$row-height;
     width: 100%;
     height: 0;
     transition: height 250ms animation.$standard-curve-timing-function;
@@ -121,9 +120,6 @@
   .content-container .main {
     max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
-  .main::before {
-    top: top-app-bar.$mobile-row-height;
-  }
   .main.content.card::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
@@ -137,12 +133,21 @@
   animation: fab-enter-opacity 15ms linear 30ms, fab-enter-transform 270ms 0ms cubic-bezier(0, 0, 0.2, 1);
   &.mdc-fab--extended {
     transition-property: box-shadow, right;
-    transition-timing-function: animation.$standard-curve-timing-function;
+    transition-timing-function: linear, animation.$standard-curve-timing-function;
     transition-duration: 280ms, drawer.$animation-enter;
-  }
-  .filter-drawer-open + div &,
-  .details-drawer-open + div & {
-    right: 24px + 320px;
+    .mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
+      transition-duration: 280ms, drawer.$animation-enter;
+    }
+    .mdc-drawer--closing ~ .editor-elements & {
+      transition-duration: 280ms, drawer.$animation-exit;
+    }
+    .mdc-drawer--open ~ .editor-elements &,
+    .mdc-drawer--opening ~ .editor-elements & {
+      right: 24px + 320px;
+    }
+    .mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
+      right: 24px;
+    }
   }
 }
 
