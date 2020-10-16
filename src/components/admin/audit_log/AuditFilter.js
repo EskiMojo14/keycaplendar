@@ -1,7 +1,9 @@
 import React from "react";
-import { Select } from "@rmwc/select";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
+import { Select } from "@rmwc/select";
+import { Slider } from "@rmwc/slider";
+import { Typography } from "@rmwc/typography";
 import "./AuditFilter.scss";
 
 export const AuditFilter = (props) => {
@@ -20,10 +22,27 @@ export const AuditFilter = (props) => {
         {closeButton}
       </DrawerHeader>
       <DrawerContent>
+        <div className="subheader">
+          <Typography use="caption">Length</Typography>
+        </div>
+        <Slider
+          discrete
+          displayMarkers
+          min={50}
+          max={500}
+          step={50}
+          onChange={(e) => {
+            if (props.filterLength !== e.detail.value) {
+              props.getActions(e.detail.value);
+            }
+          }}
+        />
+        <div className="subheader">
+          <Typography use="caption">Action</Typography>
+        </div>
         <Select
           outlined
           enhanced={{ fixed: true }}
-          label="Action"
           options={[
             { label: "None", value: "none" },
             { label: "Created", value: "created" },
@@ -36,26 +55,17 @@ export const AuditFilter = (props) => {
             props.handleFilterChange(e, "filterAction");
           }}
         />
+        <div className="subheader">
+          <Typography use="caption">User</Typography>
+        </div>
         <Select
           outlined
           enhanced={{ fixed: true }}
-          label="User"
           options={props.users}
           value={props.filterUser}
           className="user-select"
           onChange={(e) => {
             props.handleFilterChange(e, "filterUser");
-          }}
-        />
-        <Select
-          outlined
-          enhanced={{ fixed: true }}
-          label="Length"
-          options={[25, 50, 100, 200]}
-          value={props.filterLength.toString()}
-          className="action-select"
-          onChange={(e) => {
-            props.getActions(e.currentTarget.value);
           }}
         />
       </DrawerContent>

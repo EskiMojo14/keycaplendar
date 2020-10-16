@@ -10,6 +10,7 @@
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
 @use "@material/select/_index" as select;
+@use "@material/slider/_index" as slider;
 @use "@material/snackbar/_index" as snackbar;
 @use "@material/switch/_index" as switch;
 @use "@material/tab-indicator/_index" as tab-indicator;
@@ -430,6 +431,10 @@ $overlay-values: (
     &.mdc-select--focused .mdc-select__dropdown-icon {
       @include select.dd-arrow-svg-bg_(map-get($variables, primary), 1);
     }
+  }
+
+  .mdc-slider {
+    @include slider.color-accessible(map-get($variables, secondary));
   }
 
   .mdc-snackbar {
