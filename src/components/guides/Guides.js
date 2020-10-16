@@ -242,17 +242,6 @@ export const EntryGuide = () => {
               to add a vendor to the set.
             </Typography>
             <Typography use="headline6" tag="h3">
-              US/Main vendor
-            </Typography>
-            <Typography use="body2" tag="p">
-              The first vendor entered should be the American vendor (or main vendor if there is no American vendor,
-              such as ePBT sets running on KBDfans). This is important for the filtering and sorting systems.
-            </Typography>
-            <Typography use="caption" tag="p" className="secondary">
-              Subsequent vendors can be entered in any order, as they’ll be sorted alphabetically by region
-              automatically.
-            </Typography>
-            <Typography use="headline6" tag="h3">
               Fields
             </Typography>
             <Typography use="subtitle1" tag="h4">
