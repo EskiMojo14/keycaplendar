@@ -441,6 +441,13 @@ $overlay-values: (
     @include slider.rail-tick-mark-color(map-get($variables, on-surface));
     @include slider.thumb-color(map-get($variables, secondary));
     @include slider.focus-halo-color(map-get($variables, secondary));
+    &:not(.mdc-slider--disabled) .mdc-slider__pin {
+      background-color: map-get($variables, text-primary);
+      color: map-get($variables, surface);
+      &::before {
+        border-top-color: map-get($variables, text-primary);
+      }
+    }
     &.mdc-slider--disabled {
       .mdc-slider__track {
         background-color: map-get($variables, text-disabled);
@@ -743,13 +750,13 @@ $overlay-values: (
 
   .rmwc-tooltip {
     &-inner {
-      background-color: map-get($variables, on-surface);
+      background-color: map-get($variables, text-primary);
       color: map-get($variables, surface);
     }
     &-placement-top .rmwc-tooltip-arrow,
     &-placement-topLeft .rmwc-tooltip-arrow,
     &-placement-topRight .rmwc-tooltip-arrow {
-      border-top-color: map-get($variables, on-surface);
+      border-top-color: map-get($variables, text-primary);
       &-inner {
         border-top-color: map-get($variables, surface);
       }
@@ -757,7 +764,7 @@ $overlay-values: (
     &-placement-right .rmwc-tooltip-arrow,
     &-placement-rightTop .rmwc-tooltip-arrow,
     &-placement-rightBottom .rmwc-tooltip-arrow {
-      border-right-color: map-get($variables, on-surface);
+      border-right-color: map-get($variables, text-primary);
       &-inner {
         border-right-color: map-get($variables, surface);
       }
@@ -765,7 +772,7 @@ $overlay-values: (
     &-placement-left .rmwc-tooltip-arrow,
     &-placement-leftTop .rmwc-tooltip-arrow,
     &-placement-leftBottom .rmwc-tooltip-arrow {
-      border-left-color: map-get($variables, on-surface);
+      border-left-color: map-get($variables, text-primary);
       &-inner {
         border-left-color: map-get($variables, surface);
       }
@@ -773,7 +780,7 @@ $overlay-values: (
     &-placement-bottom .rmwc-tooltip-arrow-inner,
     &-placement-bottomLeft .rmwc-tooltip-arrow-inner,
     &-placement-bottomRight .rmwc-tooltip-arrow-inner {
-      border-bottom-color: map-get($variables, on-surface);
+      border-bottom-color: map-get($variables, text-primary);
       &-inner {
         border-bottom-color: map-get($variables, surface);
       }

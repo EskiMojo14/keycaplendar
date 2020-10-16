@@ -55,6 +55,7 @@
 @use "@rmwc/list/collapsible-list";
 @use "@rmwc/tooltip/tooltip";
 
+@use "@material/animation/_index" as animation;
 @use "@material/theme/color-palette" as palette;
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
@@ -214,6 +215,58 @@
 
 .rmwc-tooltip {
   @include typography.typography(caption);
+}
+
+.mdc-slider {
+  &__thumb-container {
+    height: auto;
+  }
+  &__pin {
+    display: flex;
+    align-items: center;
+    transform: scale(0) translateX(-50%);
+    transform-origin: left;
+    border-radius: 0.25rem;
+    min-height: 2rem;
+    padding: 0.33rem 1rem;
+    width: auto;
+    height: auto;
+    margin: 0;
+    top: auto;
+    bottom: 25px;
+    left: 50%;
+    will-change: transform;
+    transition-duration: 200ms;
+    transition-timing-function: animation.$standard-curve-timing-function;
+    &-value-marker {
+      @include typography.typography(caption);
+      transform: none;
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-color: transparent;
+      border-style: solid;
+      left: 50%;
+      bottom: -6px;
+      margin-left: -6px;
+      border-width: 6px 6px 0;
+    }
+  }
+  &--discrete.mdc-slider--active {
+    .mdc-slider__pin {
+      transform: scale(1) translateX(-50%);
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .mdc-slider__pin {
+    padding: 0.33rem 0.5rem;
+    min-height: 1.5rem;
+  }
 }
 
 .mdc-data-table {

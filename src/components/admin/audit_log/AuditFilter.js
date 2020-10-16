@@ -4,13 +4,18 @@ import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
+import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import "./AuditFilter.scss";
 
 export const AuditFilter = (props) => {
   const [filterLength, setFilterLength] = useState(props.filterLength);
   const closeButton =
-    props.device === "desktop" ? <IconButton className="close-icon" icon="close" onClick={props.close} /> : null;
+    props.device === "desktop" ? (
+      <Tooltip enterDelay={500} content="Close" align="bottom">
+        <IconButton className="close-icon" icon="close" onClick={props.close} />
+      </Tooltip>
+    ) : null;
   const getActions = (num) => {
     if (props.filterLength !== num) {
       props.getActions(num);
