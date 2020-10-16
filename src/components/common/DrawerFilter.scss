@@ -47,6 +47,9 @@
     }
     .filter-chip-container {
       padding-bottom: 16px;
+      .mdc-chip-set {
+        margin: -8px;
+      }
     }
   }
 }
