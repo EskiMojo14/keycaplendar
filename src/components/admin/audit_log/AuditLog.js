@@ -30,7 +30,7 @@ export class AuditLog extends React.Component {
       filterAction: "none",
       filterUser: "all",
       filterDrawerOpen: false,
-      filterLength: 25,
+      filterLength: 50,
       deleteDialogOpen: false,
       deleteAction: {
         changelogId: "",
@@ -161,7 +161,7 @@ export class AuditLog extends React.Component {
       });
   };
   componentDidMount() {
-    this.getActions(25);
+    this.getActions(50);
     document.body.classList.add("audit");
   }
   componentWillUnmount() {

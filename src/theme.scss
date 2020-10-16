@@ -216,10 +216,12 @@ $overlay-values: (
     @include drawer.item-activated-icon-ink-color(map-get($variables, primary));
     @include drawer.item-activated-text-ink-color(map-get($variables, primary));
     @include drawer.scrim-fill-color(rgba(map-get($variables, on-surface), 0.32));
+    --mdc-slider-bg-color-behind-component: #{if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface))};
     &.mdc-drawer--dismissible {
       @include drawer.surface-fill-color(
         if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface))
       );
+      --mdc-slider-bg-color-behind-component: #{if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface))};
       .mdc-chip {
         @include chips.fill-color-accessible(
           mix(
@@ -434,7 +436,25 @@ $overlay-values: (
   }
 
   .mdc-slider {
-    @include slider.color-accessible(map-get($variables, secondary));
+    @include slider.highlight-color(map-get($variables, secondary));
+    @include slider.rail-color(map-get($variables, secondary));
+    @include slider.rail-tick-mark-color(map-get($variables, on-surface));
+    @include slider.thumb-color(map-get($variables, secondary));
+    @include slider.focus-halo-color(map-get($variables, secondary));
+    &.mdc-slider--disabled {
+      .mdc-slider__track {
+        background-color: map-get($variables, text-disabled);
+        &-container::after {
+          background-color: map-get($variables, text-disabled);
+        }
+      }
+      .mdc-slider__track-marker-container {
+        background-color: map-get($variables, text-secondary);
+      }
+      .mdc-slider__thumb {
+        fill: map-get($variables, text-disabled);
+      }
+    }
   }
 
   .mdc-snackbar {
