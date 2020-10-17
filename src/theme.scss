@@ -362,13 +362,8 @@ $overlay-values: (
       .overline {
         color: map-get($variables, primary);
       }
-      .mdc-list-item__graphic,
-      .mdc-list-item__meta {
-        fill: map-get($variables, primary);
-      }
       .mdc-icon-button {
         color: map-get($variables, primary);
-        fill: map-get($variables, primary);
         @include ripple.states(map-get($variables, primary));
       }
     }
@@ -381,13 +376,8 @@ $overlay-values: (
       }
       @include list.item-secondary-text-ink-color(map-get($variables, text-secondary));
     }
-    .mdc-list-item__graphic,
-    .mdc-list-item__meta {
-      fill: map-get($variables, text-secondary);
-    }
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
-      fill: map-get($variables, text-secondary);
       @include ripple.states(map-get($variables, on-surface));
     }
     .time-indicator {
@@ -698,11 +688,9 @@ $overlay-values: (
   }
 
   .rmwc-badge {
-    fill: map-get($variables, on-error);
     color: map-get($variables, on-error);
     background-color: map-get($variables, error);
     &.user-icon {
-      fill: map-get($variables, text-secondary);
       color: map-get($variables, text-secondary);
       background-color: mix(
         map-get($variables, on-surface),
