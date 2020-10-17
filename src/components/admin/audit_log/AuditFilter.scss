@@ -1,20 +1,22 @@
 @use "@material/rtl/_index" as rtl;
 
-.mdc-drawer.filter-drawer {
+.mdc-drawer.filter-drawer.audit-filter {
   .mdc-drawer__content {
-    padding: 16px;
-    .mdc-select {
-      width: 320px - 32px;
-      &__anchor {
-        width: 100%;
+    .filter-group {
+      margin-bottom: 16px;
+      .mdc-select {
+        width: 320px - 32px;
+        &__anchor {
+          width: 100%;
+        }
       }
-    }
-    .slider-container {
-      display: flex;
-      .mdc-text-field {
-        flex-shrink: 0;
-        width: 80px;
-        @include rtl.reflexive-box(margin, left, 16px);
+      .slider-container {
+        display: flex;
+        .mdc-text-field {
+          flex-shrink: 0;
+          width: 80px;
+          @include rtl.reflexive-box(margin, left, 16px);
+        }
       }
     }
   }

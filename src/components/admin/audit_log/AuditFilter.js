@@ -32,7 +32,7 @@ export const AuditFilter = (props) => {
       open={props.open}
       dismissible={props.device === "desktop"}
       modal={props.device !== "desktop"}
-      className="drawer-right filter-drawer"
+      className="drawer-right filter-drawer audit-filter"
       onClose={props.close}
     >
       <DrawerHeader>
@@ -40,57 +40,71 @@ export const AuditFilter = (props) => {
         {closeButton}
       </DrawerHeader>
       <DrawerContent>
-        <div className="subheader">
-          <Typography use="caption">Length</Typography>
+        <div className="filter-group">
+          <div className="subheader">
+            <Typography use="caption">Length</Typography>
+          </div>
+          <div className="slider-container">
+            <Slider
+              discrete
+              displayMarkers
+              min={50}
+              max={250}
+              step={50}
+              value={filterLength}
+              onInput={(e) => {
+                setFilterLength(e.detail.value);
+              }}
+              onChange={(e) => {
+                getActions(e.detail.value);
+              }}
+            />
+            <TextField
+              outlined
+              type="number"
+              min={50}
+              max={250}
+              step={50}
+              value={filterLength}
+              onChange={handleChange}
+            />
+          </div>
         </div>
-        <div className="slider-container">
-          <Slider
-            discrete
-            displayMarkers
-            min={50}
-            max={250}
-            step={50}
-            value={filterLength}
-            onInput={(e) => {
-              setFilterLength(e.detail.value);
-            }}
+        <div className="filter-group">
+          <div className="subheader">
+            <Typography use="caption">Action</Typography>
+          </div>
+          <Select
+            outlined
+            enhanced={{ fixed: true }}
+            options={[
+              { label: "None", value: "none" },
+              { label: "Created", value: "created" },
+              { label: "Updated", value: "updated" },
+              { label: "Deleted", value: "deleted" },
+            ]}
+            value={props.filterAction}
+            className="action-select"
             onChange={(e) => {
-              getActions(e.detail.value);
+              props.handleFilterChange(e, "filterAction");
             }}
           />
-          <TextField outlined type="number" min={50} max={250} step={50} value={filterLength} onChange={handleChange} />
         </div>
-        <div className="subheader">
-          <Typography use="caption">Action</Typography>
+        <div className="filter-group">
+          <div className="subheader">
+            <Typography use="caption">User</Typography>
+          </div>
+          <Select
+            outlined
+            enhanced={{ fixed: true }}
+            options={props.users}
+            value={props.filterUser}
+            className="user-select"
+            onChange={(e) => {
+              props.handleFilterChange(e, "filterUser");
+            }}
+          />
         </div>
-        <Select
-          outlined
-          enhanced={{ fixed: true }}
-          options={[
-            { label: "None", value: "none" },
-            { label: "Created", value: "created" },
-            { label: "Updated", value: "updated" },
-            { label: "Deleted", value: "deleted" },
-          ]}
-          value={props.filterAction}
-          className="action-select"
-          onChange={(e) => {
-            props.handleFilterChange(e, "filterAction");
-          }}
-        />
-        <div className="subheader">
-          <Typography use="caption">User</Typography>
-        </div>
-        <Select
-          outlined
-          enhanced={{ fixed: true }}
-          options={props.users}
-          value={props.filterUser}
-          className="user-select"
-          onChange={(e) => {
-            props.handleFilterChange(e, "filterUser");
-          }}
-        />
       </DrawerContent>
     </Drawer>
   );

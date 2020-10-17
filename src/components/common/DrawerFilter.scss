@@ -9,7 +9,7 @@
     display: flex;
     justify-content: stretch;
     align-items: center;
-    padding: 16px 0;
+    padding-bottom: 16px;
     box-sizing: border-box;
   }
   .mdc-drawer__header {
@@ -25,30 +25,33 @@
       flex-shrink: 0;
     }
   }
-  .group {
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--divider-color);
-      margin-bottom: 16px;
-    }
-    .filter-toggle-button-container {
-      .toggle-group {
-        justify-content: stretch;
-        .mdc-button {
-          flex-grow: 1;
+  .mdc-drawer__content {
+    padding: 16px;
+    .group {
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--divider-color);
+        margin-bottom: 16px;
+      }
+      .filter-toggle-button-container {
+        .toggle-group {
+          justify-content: stretch;
+          .mdc-button {
+            flex-grow: 1;
+          }
         }
       }
-    }
-    .filter-toggle-button-container,
-    .filter-button-container {
-      margin-bottom: 8px;
-    }
-    .filter-button-container .mdc-button {
-      @include rtl.reflexive-box(margin, right, 8px);
-    }
-    .filter-chip-container {
-      padding-bottom: 16px;
-      .mdc-chip-set {
-        margin: -8px;
+      .filter-toggle-button-container,
+      .filter-button-container {
+        margin-bottom: 8px;
+      }
+      .filter-button-container .mdc-button {
+        @include rtl.reflexive-box(margin, right, 8px);
+      }
+      .filter-chip-container {
+        padding-bottom: 16px;
+        .mdc-chip-set {
+          margin: -8px;
+        }
       }
     }
   }
