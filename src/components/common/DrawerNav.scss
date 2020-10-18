@@ -106,12 +106,11 @@
 }
 
 .mdc-drawer .drawer-footer {
-  display: flex;
   border-top: 1px solid var(--divider-color);
   user-select: none;
   &-list.mdc-list {
     padding: 0;
-    flex: auto 1 1;
+    width: 100%;
     .mdc-list-item {
       padding: 8px 16px;
       margin: 0;
