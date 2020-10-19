@@ -676,6 +676,7 @@ export class ContentStatistics extends React.Component {
       series: [this.state.countData[this.props.statistics.timeline]],
     };
     const countChartOptions = {
+      showArea: true,
       low: 0,
       axisY: {
         onlyInteger: true,
@@ -716,6 +717,7 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartOptions = {
+      showArea: true,
       stackBars: true,
       low: 0,
       axisY: {

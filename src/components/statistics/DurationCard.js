@@ -25,6 +25,7 @@ export const DurationCard = (props) => {
             labels: props.data[7][0],
           }}
           options={{
+            showArea: true,
             chartPadding: {
               top: 16,
               right: 0,
