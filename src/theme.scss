@@ -113,18 +113,18 @@ $overlay-values: (
   }
   .mdc-button {
     @include button.ink-color(map-get($variables, primary));
-    @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), '.mdc-button__ripple');
+    @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), ".mdc-button__ripple");
     &:disabled {
       color: map-get($variables, text-disabled);
     }
     &.mdc-button--raised {
       @include button.container-fill-color(map-get($variables, primary));
       @include button.ink-color(map-get($variables, on-primary));
-      @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
+      @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
     }
     &.delete {
       @include button.ink-color(map-get($variables, error));
-      @include ripple.states(map-get($variables, error), false, feature-targeting.all(), '.mdc-button__ripple');
+      @include ripple.states(map-get($variables, error), false, feature-targeting.all(), ".mdc-button__ripple");
     }
   }
 
@@ -191,9 +191,9 @@ $overlay-values: (
     );
     @include checkbox.ink-color(map-get($variables, on-surface));
     @include checkbox.disabled-ink-color(map-get($variables, on-surface));
-    @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(),'.mdc-checkbox__ripple');
+    @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-checkbox__ripple");
     &.mdc-checkbox--selected {
-      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(),'.mdc-checkbox__ripple');
+      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
     }
   }
 
@@ -216,12 +216,20 @@ $overlay-values: (
     @include drawer.item-activated-icon-ink-color(map-get($variables, primary));
     @include drawer.item-activated-text-ink-color(map-get($variables, primary));
     @include drawer.scrim-fill-color(rgba(map-get($variables, on-surface), 0.32));
-    --mdc-slider-bg-color-behind-component: #{if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface))};
+    --mdc-slider-bg-color-behind-component: #{if(
+        $dark,
+        overlay-elevation(map-get($variables, surface), 16),
+        map-get($variables, surface)
+      )};
     &.mdc-drawer--dismissible {
       @include drawer.surface-fill-color(
         if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface))
       );
-      --mdc-slider-bg-color-behind-component: #{if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface))};
+      --mdc-slider-bg-color-behind-component: #{if(
+          $dark,
+          overlay-elevation(map-get($variables, surface), 1),
+          map-get($variables, surface)
+        )};
       .mdc-chip {
         @include chips.fill-color-accessible(
           mix(
@@ -403,7 +411,7 @@ $overlay-values: (
     @include radio.unchecked-stroke-color(map-get($variables, text-secondary));
     @include radio.checked-stroke-color(map-get($variables, secondary));
     @include radio.ink-color(map-get($variables, secondary));
-    @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), '.mdc-radio__ripple');
+    @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-radio__ripple");
   }
 
   .mdc-select {
@@ -415,10 +423,7 @@ $overlay-values: (
     @include select.focused-outline-color(map-get($variables, primary));
     .mdc-select__dropdown-icon {
       // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
-      @include select.dd-arrow-svg-bg_(
-       "#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4),
-        0.6
-      );
+      @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.6);
     }
     &.mdc-select--focused .mdc-select__dropdown-icon {
       @include select.dd-arrow-svg-bg_(map-get($variables, primary), 1);
@@ -544,16 +549,24 @@ $overlay-values: (
       if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary))
     );
     @include top-app-bar.ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
-    @include top-app-bar.icon-ink-color(
-      if($dark, map-get($variables, text-primary), map-get($variables, on-primary))
-    );
+    @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
     @if ($dark != true) {
       .toggle-group {
         .mdc-button {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
           @include button.outline-color(rgba(map-get($variables, on-primary), 0.38));
-          @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
-          @include ripple.states-selected(map-get($variables, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
+          @include ripple.states(
+            map-get($variables, on-primary),
+            false,
+            feature-targeting.all(),
+            ".mdc-button__ripple"
+          );
+          @include ripple.states-selected(
+            map-get($variables, on-primary),
+            false,
+            feature-targeting.all(),
+            ".mdc-button__ripple"
+          );
           &--selected {
             @include button.ink-color(map-get($variables, on-primary));
             @include button.outline-color(map-get($variables, on-primary));
@@ -603,9 +616,7 @@ $overlay-values: (
           @include text-field.ink-color(
             if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87))
           );
-          @include text-field.caret-color(
-            if($dark, map-get($variables, on-surface), map-get($variables, on-primary))
-          );
+          @include text-field.caret-color(if($dark, map-get($variables, on-surface), map-get($variables, on-primary)));
           @include text-field.outline-color(
             if($dark, map-get($variables, text-disabled), rgba(map-get($variables, on-primary), 0.38))
           );
@@ -624,9 +635,7 @@ $overlay-values: (
             if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87))
           );
           @include text-field.caret-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
-          @include text-field.outline-color(
-            if($dark, map-get($variables, primary), map-get($variables, on-primary))
-          );
+          @include text-field.outline-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
         }
       }
       &--modal {
@@ -665,7 +674,12 @@ $overlay-values: (
 
     .mdc-button {
       color: map-get($variables, if($dark, text-primary, on-primary));
-      @include ripple.states-selected(if($dark, on-surface, on-primary), false, feature-targeting.all(), '.mdc-button__ripple');
+      @include ripple.states-selected(
+        if($dark, on-surface, on-primary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
       &[disabled] {
         color: rgba(map-get($variables, if($dark, text-primary, on-primary)), 0.38);
       }
@@ -728,7 +742,7 @@ $overlay-values: (
       }
     }
     &__row:hover:not(.mdc-data-table__row--selected):not(.mdc-data-table__row--activated) {
-      background-color: rgba(map-get($variables, on-surface),0.04);
+      background-color: rgba(map-get($variables, on-surface), 0.04);
     }
   }
 
@@ -797,7 +811,9 @@ $overlay-values: (
         fill: $color;
       }
     }
-    .timeline-table.mdc-data-table .mdc-data-table__header-row .mdc-data-table__header-cell.profile-title.title-#{$letter} {
+    .timeline-table.mdc-data-table
+      .mdc-data-table__header-row
+      .mdc-data-table__header-cell.profile-title.title-#{$letter} {
       @include ripple.states($color);
       .profile-indicator {
         background-color: $color;
@@ -818,7 +834,10 @@ $overlay-values: (
             fill: rgba($color, 0.1);
           }
         }
-        .timeline-table.mdc-data-table .mdc-data-table__header-row .mdc-data-table__header-cell.profile-title.title-#{$letter} .profile-indicator {
+        .timeline-table.mdc-data-table
+          .mdc-data-table__header-row
+          .mdc-data-table__header-cell.profile-title.title-#{$letter}
+          .profile-indicator {
           background-color: rgba($color, 0.1);
         }
         .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.cell-#{$letter} {
@@ -1070,8 +1089,13 @@ $overlay-values: (
   .toggle-group {
     .mdc-button {
       @include button.ink-color(map-get($variables, text-secondary));
-      @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), '.mdc-button__ripple');
-      @include ripple.states-selected(map-get($variables, primary), false, feature-targeting.all(), '.mdc-button__ripple');
+      @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states-selected(
+        map-get($variables, primary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
       &--selected {
         @include button.ink-color(map-get($variables, primary));
         @include button.outline-color(map-get($variables, primary));
@@ -1080,5 +1104,12 @@ $overlay-values: (
         color: map-get($variables, text-disabled);
       }
     }
+  }
+
+  &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.mdc-button--selected) {
+    border-left-color: rgba(map-get($variables, on-primary), 0.38);
+  }
+  &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.mdc-button--selected) {
+    border-right-color: rgba(map-get($variables, on-primary), 0.38);
   }
 }
