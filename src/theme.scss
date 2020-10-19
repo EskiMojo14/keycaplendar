@@ -1106,10 +1106,12 @@ $overlay-values: (
     }
   }
 
-  &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.mdc-button--selected) {
-    border-left-color: rgba(map-get($variables, on-primary), 0.38);
-  }
-  &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.mdc-button--selected) {
-    border-right-color: rgba(map-get($variables, on-primary), 0.38);
+  @if ($dark != true) {
+    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.mdc-button--selected) {
+      border-left-color: rgba(map-get($variables, on-primary), 0.38);
+    }
+    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.mdc-button--selected) {
+      border-right-color: rgba(map-get($variables, on-primary), 0.38);
+    }
   }
 }
