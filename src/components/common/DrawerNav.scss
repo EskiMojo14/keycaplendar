@@ -1,3 +1,4 @@
+@use "@material/animation/_index" as animation;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
@@ -77,11 +78,12 @@
       transition-property: width;
       width: 56px;
       transform: none !important;
+      transition-duration: 150ms;
       .mdc-list-item {
         height: 56px;
         width: 100%;
         color: transparent;
-        transition: color 150ms linear, width 1ms 150ms linear;
+        transition: color 150ms linear, border-radius 150ms animation.$standard-curve-timing-function;
         white-space: nowrap;
         box-sizing: border-box;
       }
@@ -100,6 +102,11 @@
       .mdc-drawer__header,
       .mdc-drawer__content {
         width: 100%;
+      }
+      &.collapsed {
+        .mdc-list-item {
+          border-radius: 28px;
+        }
       }
     }
   }

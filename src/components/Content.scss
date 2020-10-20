@@ -6,23 +6,10 @@
 
 .mdc-drawer-app-content {
   max-width: 100%;
-  transition-property: margin;
-  transition-timing-function: animation.$standard-curve-timing-function;
-  .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & {
-    transition-duration: drawer.$animation-enter;
-  }
-  .mdc-drawer--closing ~ & {
-    transition-duration: drawer.$animation-exit;
-  }
+  transition: margin 150ms animation.$standard-curve-timing-function;
   .mdc-top-app-bar {
     @include rtl.reflexive-position(right, 0);
-    transition: elevation.transition-value(), width animation.$standard-curve-timing-function;
-    .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & {
-      transition-duration: 280ms, drawer.$animation-enter;
-    }
-    .mdc-drawer--closing ~ & {
-      transition-duration: 280ms, drawer.$animation-exit;
-    }
+    transition: elevation.transition-value(), width animation.$standard-curve-timing-function 150ms;
     .mdc-top-app-bar__navigation-icon {
       transition-property: width, height, padding;
       transition-duration: 120ms;
@@ -58,18 +45,11 @@
 .content-container {
   display: flex;
   max-width: 100%;
-  .drawer-container {
-    flex-grow: 0;
-    flex-shrink: 0;
-    width: 0;
-    .filter-drawer-open &,
-    .details-drawer-open & {
-      width: 320px;
-      transition-duration: drawer.$animation-exit;
-    }
-    transition-property: width;
-    transition-timing-function: animation.$standard-curve-timing-function;
+  .mdc-drawer--animate:not(.mdc-drawer--closing) ~ & .mdc-drawer-app-content {
     transition-duration: drawer.$animation-enter;
+  }
+  .mdc-drawer--closing ~ & .mdc-drawer-app-content {
+    transition-duration: drawer.$animation-exit;
   }
 }
 
