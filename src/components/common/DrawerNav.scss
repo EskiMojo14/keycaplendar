@@ -82,7 +82,7 @@
       .mdc-list-item {
         width: 100%;
         color: transparent;
-        transition: color 150ms linear, border-radius 150ms animation.$standard-curve-timing-function;
+        transition: color 150ms linear;
         white-space: nowrap;
         box-sizing: border-box;
       }
@@ -101,11 +101,6 @@
       .mdc-drawer__header,
       .mdc-drawer__content {
         width: 100%;
-      }
-      &.collapsed {
-        .mdc-list-item {
-          border-radius: 28px;
-        }
       }
     }
   }
