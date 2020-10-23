@@ -1,11 +1,60 @@
-@mixin density($density: 0) {
+@use "@material/button/_index" as button;
+@use "@material/checkbox/_index" as checkbox;
+@use "@material/chips/_index" as chips;
+@use "@material/data-table/_index" as data-table;
+@use "@material/icon-button/_index" as icon-button;
+@use "@material/list/_index" as list;
+@use "@material/radio/_index" as radio;
+@use "@material/switch/_index" as switch;
+@use "@material/tab-bar/_index" as tab-bar;
+@use "@material/textfield/_index" as textfield;
 
+@use "@material/density/functions" as density-functions;
+@use "@material/rtl/_index" as rtl;
+
+@mixin density($density: 0) {
+  .mdc-button {
+    @include button.density($density);
+  }
+  .mdc-checkbox {
+    @include checkbox.density($density);
+  }
+  .mdc-chip {
+    @include chips.density($density);
+  }
+  .mdc-data-table {
+    @include data-table.density($density);
+  }
+  .mdc-icon-button {
+    @include icon-button.density($density);
+  }
+  .mdc-list {
+    @include list.single-line-density($density);
+  }
+  .mdc-radio {
+    @include radio.density($density);
+    &.mdc-list-item__meta {
+      @include rtl.reflexive-property(margin, auto, 0);
+    }
+  }
+  .mdc-switch {
+    @include switch.density($density);
+  }
+  .mdc-tab-bar {
+    @include tab-bar.density($density);
+  }
+  .mdc-text-field {
+    @include textfield.density($density);
+    &.mdc-text-field--outlined {
+        @include textfield.outlined-density($density);
+    }
+  }
 }
 
 .density-comfortable {
-  @include density(-2);
+  @include density(-1);
 }
 
 .density-compact {
-  @include density(-3);
+  @include density(-2);
 }

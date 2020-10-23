@@ -272,7 +272,6 @@
 .mdc-data-table {
   background-color: transparent;
   .mdc-data-table__header-row {
-    height: 56px;
     .mdc-data-table__header-cell {
       @include typography.typography(subtitle2);
       font-weight: bold;
@@ -284,7 +283,6 @@
     }
   }
   .mdc-data-table__row {
-    height: 52px;
     transition: background-color 100ms;
     .mdc-data-table__cell {
       @include typography.typography(body2);
