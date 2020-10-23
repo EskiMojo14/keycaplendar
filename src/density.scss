@@ -227,6 +227,11 @@
   .settings-dialog .mdc-dialog__content .group .theme-form-field__text .mdc-typography--body2 {
     line-height: 56px + $diff;
   }
+  .footer {
+    .mdc-typography--body2 {
+      margin-bottom: 16px + $diff;
+    }
+  }
   @media (max-width: top-app-bar.$mobile-breakpoint) {
     .mdc-drawer.nav .mdc-drawer__header {
       height: top-app-bar.$mobile-row-height + $diff;
