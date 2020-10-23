@@ -32,6 +32,41 @@
     &:not(.mdc-list--two-line) {
       @include list.single-line-density($density);
     }
+    &.mdc-list--two-line {
+      .mdc-list-item {
+        height: density.prop-value(
+          (
+            height: (
+              default: 72px,
+              maximum: 72px,
+              minimum: 60px,
+            ),
+          ),
+          $density,
+          height
+        );
+        &__primary-text::before {
+          height: 32px + density.$interval * $density;
+        }
+      }
+    }
+    &.three-line .mdc-list-item,
+    .three-line.mdc-list-item {
+      height: density.prop-value(
+        (
+          height: (
+            default: 88px,
+            maximum: 88px,
+            minimum: 72px,
+          ),
+        ),
+        $density,
+        height
+      );
+      &__primary-text::before {
+        height: 32px + density.$interval * $density;
+      }
+    }
   }
   .mdc-radio {
     @include radio.density($density);
