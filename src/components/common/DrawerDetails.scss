@@ -82,11 +82,14 @@
     display: flex;
     justify-content: stretch;
     .edit {
+      flex-basis: 50%;
       flex-grow: 1;
+      @include rtl.reflexive-box(margin, right, 8px);
     }
     .delete {
-      flex-grow: 0;
-      @include rtl.reflexive-box(margin, left, 16px);
+      flex-basis: 50%;
+      flex-grow: 1;
+      @include rtl.reflexive-box(margin, left, 8px);
     }
   }
   .search-chips {
