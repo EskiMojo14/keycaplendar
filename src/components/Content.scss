@@ -26,7 +26,7 @@
   }
 }
 
-.nav.mdc-drawer.mdc-drawer--open + .mdc-drawer-app-content .mdc-top-app-bar {
+.nav.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content .mdc-top-app-bar {
   width: calc(100% - 256px);
   .mdc-top-app-bar__navigation-icon {
     width: 0;
@@ -36,10 +36,6 @@
 
 .nav.mdc-drawer.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
   width: calc(100% - 56px);
-  .mdc-top-app-bar__navigation-icon {
-    width: 48px;
-    padding: 12px;
-  }
 }
 
 .content-container {

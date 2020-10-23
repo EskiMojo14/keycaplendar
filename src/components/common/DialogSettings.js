@@ -1,17 +1,18 @@
 import React from "react";
 import firebase from "../firebase";
 import { Link } from "react-router-dom";
-import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
-import { Typography } from "@rmwc/typography";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
-import { Button } from "@rmwc/button";
-import { Switch } from "@rmwc/switch";
-import { Select } from "@rmwc/select";
-import { FormField } from "@rmwc/formfield";
-import { TextField } from "@rmwc/textfield";
-import { Radio } from "@rmwc/radio";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
+import { Button } from "@rmwc/button";
+import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
+import { FormField } from "@rmwc/formfield";
+import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
+import { Radio } from "@rmwc/radio";
+import { Select } from "@rmwc/select";
+import { Switch } from "@rmwc/switch";
+import { TextField } from "@rmwc/textfield";
+import { Typography } from "@rmwc/typography";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DialogSettings.scss";
 
 export const DialogSettings = (props) => {
@@ -99,12 +100,42 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         className="user-icon material-icons"
       />
     ) : null;
+  const density = props.changeBottomNav ? null : (
+    <div className="group">
+      <Typography use="subtitle2" tag="h3">
+        Density
+      </Typography>
+      <ToggleGroup className="density-toggle">
+        <ToggleGroupButton
+          label="Default"
+          selected={props.density === "default"}
+          onClick={() => {
+            props.setDensity("default");
+          }}
+        />
+        <ToggleGroupButton
+          label="Comfortable"
+          selected={props.density === "comfortable"}
+          onClick={() => {
+            props.setDensity("comfortable");
+          }}
+        />
+        <ToggleGroupButton
+          label="Compact"
+          selected={props.density === "compact"}
+          onClick={() => {
+            props.setDensity("compact");
+          }}
+        />
+      </ToggleGroup>
+    </div>
+  );
   const user = props.user.name ? (
     <div className="group">
       <Typography use="subtitle2" tag="h3">
         Account
       </Typography>
-      <ListItem className="account">
+      <ListItem className="account three-line">
         <BadgeAnchor className="avatar">
           <Avatar src={props.user.avatar} size="xlarge" />
           {userBadge}
@@ -285,6 +316,7 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
           </List>
         </div>
         {bottomNav}
+        {density}
         {user}
         {admin}
       </DialogContent>

@@ -232,7 +232,7 @@ export class AuditLog extends React.Component {
                     "log" + (this.state.actionsFiltered.length === 0 && this.state.loading ? " placeholder" : "")
                   }
                 >
-                  <List twoLine>
+                  <List twoLine className="three-line">
                     {this.state.actionsFiltered.map((action, index) => {
                       const timestamp = moment.utc(action.timestamp);
                       return (

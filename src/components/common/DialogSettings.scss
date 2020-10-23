@@ -111,9 +111,14 @@
           order: 1;
         }
       }
+      .density-toggle {
+        width: 100%;
+        .mdc-button {
+          flex-grow: 1;
+        }
+      }
       .account {
         padding: 0;
-        height: 88px;
         cursor: default;
         &::before,
         &::after {
@@ -124,39 +129,6 @@
           .user-icon {
             top: auto;
             bottom: -13px;
-          }
-        }
-        .mdc-list-item__text {
-          align-self: unset;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: stretch;
-          .overline {
-            @include typography.typography(overline);
-            font-family: inherit;
-            line-height: 1rem;
-            padding-top: calc(28px - 1rem);
-            flex-grow: 0;
-            flex-shrink: 0;
-          }
-          .mdc-list-item__primary-text {
-            flex-grow: 1;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            &::before,
-            &::after {
-              content: none;
-            }
-          }
-          .mdc-list-item__secondary-text {
-            flex-grow: 0;
-            flex-shrink: 0;
-            padding-bottom: calc(28px - 1rem);
-            &::before {
-              content: none;
-            }
           }
         }
         .button {

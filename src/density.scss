@@ -1,0 +1,261 @@
+@use "@material/button/_index" as button;
+@use "@material/checkbox/_index" as checkbox;
+@use "@material/chips/_index" as chips;
+@use "@material/data-table/_index" as data-table;
+@use "@material/icon-button/_index" as icon-button;
+@use "@material/list/_index" as list;
+@use "@material/radio/_index" as radio;
+@use "@material/switch/_index" as switch;
+@use "@material/tab-bar/_index" as tab-bar;
+@use "@material/textfield/_index" as textfield;
+@use "@material/top-app-bar/_index" as top-app-bar;
+
+@use "@material/density/_index" as density;
+@use "@material/rtl/_index" as rtl;
+
+@mixin density($density: 0) {
+  $diff: density.$interval * $density;
+  .mdc-button {
+    @include button.density($density);
+  }
+  .mdc-checkbox {
+    @include checkbox.density($density);
+  }
+  .mdc-chip {
+    @include chips.density($density);
+  }
+  .mdc-data-table {
+    @include data-table.density($density);
+  }
+  .mdc-icon-button {
+    @include icon-button.density($density);
+  }
+  .mdc-list {
+    &:not(.mdc-list--two-line) {
+      @include list.single-line-density($density);
+    }
+    &.mdc-list--two-line {
+      .mdc-list-item {
+        height: density.prop-value(
+          (
+            height: (
+              default: 72px,
+              maximum: 72px,
+              minimum: 60px,
+            ),
+          ),
+          $density,
+          height
+        );
+        &__primary-text::before {
+          height: 32px + $diff / 2;
+        }
+      }
+    }
+    &.three-line .mdc-list-item,
+    .three-line.mdc-list-item {
+      height: density.prop-value(
+        (
+          height: (
+            default: 88px,
+            maximum: 88px,
+            minimum: 72px,
+          ),
+        ),
+        $density,
+        height
+      );
+    }
+  }
+  .mdc-radio {
+    @include radio.density($density);
+    &.mdc-list-item__meta {
+      @include rtl.reflexive-property(margin, auto, 0);
+    }
+  }
+  .mdc-switch {
+    @include switch.density($density);
+  }
+  .mdc-tab-bar {
+    @include tab-bar.density($density);
+  }
+  .mdc-text-field:not(.search-bar-field) {
+    &:not(.mdc-text-field--outlined) {
+      @include textfield.density($density);
+    }
+    &.mdc-text-field--outlined {
+      @include textfield.outlined-density($density);
+      &.mdc-text-field--with-leading-icon {
+        @include textfield.outlined-with-leading-icon-density($density);
+      }
+    }
+  }
+  .mdc-card {
+    .text-row .text-container {
+      .overline {
+        margin-bottom: 4px + $diff;
+      }
+      .title {
+        padding-bottom: 8px + $diff;
+      }
+    }
+  }
+  .content-container .mdc-drawer.mdc-drawer--dismissible {
+    height: calc(100% - #{top-app-bar.$row-height + $diff});
+  }
+  .mdc-drawer {
+    &.nav {
+      .mdc-drawer__header {
+        min-height: 0;
+        height: top-app-bar.$row-height + $diff;
+      }
+      .mdc-list-item {
+        height: density.prop-value(
+          (
+            height: (
+              default: 56px,
+              maximum: 56px,
+              minimum: 44px,
+            ),
+          ),
+          $density,
+          height
+        );
+      }
+    }
+    &.details-drawer {
+      .mdc-drawer__content {
+        .details-image {
+          margin: (8px + $diff / 2) 16px;
+        }
+        .details-text {
+          padding-bottom: 16px + $diff;
+          .mdc-typography--headline4,
+          .mdc-typography--body2 {
+            margin: (8px + $diff / 2) 0;
+          }
+        }
+        .details-button {
+          padding-bottom: 16px + $diff;
+        }
+        .details-list {
+          .subheader {
+            padding-bottom: 16px + $diff;
+          }
+        }
+      }
+      .search-chips-container {
+        height: 48px + $diff;
+      }
+    }
+    &.filter-drawer {
+      .mdc-drawer__content .group:not(:last-child) {
+        margin-bottom: 16px + $diff;
+      }
+      .subheader {
+        padding-bottom: 16px + $diff;
+      }
+    }
+    &.drawer-right.entry-drawer {
+      .drawer-footer {
+        height: 64px + $diff;
+      }
+    }
+  }
+  .mdc-fab--extended {
+    border-radius: 24px + $diff / 2;
+    height: 48px + $diff;
+  }
+  .mdc-select {
+    &__anchor {
+      height: 56px + $diff;
+    }
+    &__dropdown-icon {
+      bottom: 16px + $diff / 2;
+    }
+    &__selected-text {
+      height: 56px + $diff;
+    }
+    &--outlined {
+      .mdc-select__selected-text {
+        padding-top: 14px + $diff / 2;
+        padding-bottom: 12px + $diff / 2;
+      }
+    }
+  }
+  .mdc-top-app-bar {
+    &__row {
+      height: top-app-bar.$row-height + $diff;
+      &.tab-row {
+        height: 48px + $diff;
+      }
+    }
+    &--fixed-adjust {
+      padding-top: top-app-bar.$row-height + $diff;
+    }
+  }
+  .statistics .mdc-top-app-bar--fixed-adjust {
+    padding-top: top-app-bar.$row-height + 48px + $diff * 2;
+  }
+  .stats-tab .mdc-card {
+    &.count-graph,
+    &.profile-graph {
+      .mdc-typography--headline5 {
+        margin-bottom: 16px + $diff;
+      }
+    }
+    &.pie-card,
+    &.duration-card {
+      .mdc-typography--headline5 {
+        margin-bottom: 8px + $diff;
+      }
+      .mdc-typography--subtitle2 {
+        margin-bottom: 16px + $diff;
+      }
+    }
+  }
+  .search-bar {
+    &--persistent {
+      height: density.prop-value(
+        (
+          height: (
+            default: 40px,
+            maximum: 40px,
+            minimum: 28px,
+          ),
+        ),
+        $density,
+        height
+      );
+    }
+  }
+  .settings-dialog .mdc-dialog__content .group .theme-form-field__text .mdc-typography--body2 {
+    line-height: 56px + $diff;
+  }
+  .footer {
+    .mdc-typography--body2 {
+      margin-bottom: 16px + $diff;
+    }
+  }
+  @media (max-width: top-app-bar.$mobile-breakpoint) {
+    .mdc-drawer.nav .mdc-drawer__header {
+      height: top-app-bar.$mobile-row-height + $diff;
+    }
+    .mdc-top-app-bar {
+      &__row {
+        height: top-app-bar.$mobile-row-height + $diff;
+      }
+      &--fixed-adjust {
+        padding-top: top-app-bar.$mobile-row-height + $diff;
+      }
+    }
+  }
+}
+
+.density-comfortable {
+  @include density(-1);
+}
+
+.density-compact {
+  @include density(-2);
+}
