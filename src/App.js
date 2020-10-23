@@ -62,6 +62,7 @@ class App extends React.Component {
       },
       statisticsSort: { status: "alphabetical", shipped: "alphabetical", duration: "alphabetical" },
       statisticsTab: "timeline",
+      density: "default",
     };
   }
   getURLQuery = () => {
@@ -659,6 +660,9 @@ class App extends React.Component {
       loading: false,
     });
   };
+  setDensity = (density) => {
+    this.setState({ density: density });
+  };
   setSort = (sortBy) => {
     document.documentElement.scrollTop = 0;
     this.setState({ sort: sortBy });
@@ -828,6 +832,8 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          density={this.state.density}
+          setDensity={this.setDensity}
           snackbarQueue={queue}
         />
       );
@@ -878,6 +884,8 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          density={this.state.density}
+          setDensity={this.setDensity}
           snackbarQueue={queue}
         />
       );
@@ -930,6 +938,8 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          density={this.state.density}
+          setDensity={this.setDensity}
           snackbarQueue={queue}
         />
       );
@@ -938,7 +948,7 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/users">
-            <div>
+            <div className={"density-" + this.state.density}>
               <Users
                 admin={this.state.user.isAdmin}
                 user={this.state.user}
@@ -962,13 +972,13 @@ class App extends React.Component {
             <EntryGuide />
           </Route>
           <Route path="/audit">
-            <div>
+            <div className={"density-" + this.state.density}>
               <AuditLog device={this.state.device} snackbarQueue={queue} />
               <SnackbarQueue messages={queue.messages} />
             </div>
           </Route>
           <Route path="/">
-            <div className="app">
+            <div className={"app density-" + this.state.density}>
               {content}
               <SnackbarQueue messages={queue.messages} />
               <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />

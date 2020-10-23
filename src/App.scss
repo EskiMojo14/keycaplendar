@@ -18,6 +18,7 @@
 );
 
 @use "theme" as theme;
+@use "density" as density;
 
 @use "@material/button/mdc-button";
 @use "@material/card/mdc-card";

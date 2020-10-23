@@ -1,0 +1,11 @@
+@mixin density($density: 0) {
+
+}
+
+.density-comfortable {
+  @include density(-2);
+}
+
+.density-compact {
+  @include density(-3);
+}

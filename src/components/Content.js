@@ -367,6 +367,8 @@ export class DesktopContent extends React.Component {
           setFromTimeTheme={this.props.setFromTimeTheme}
           toTimeTheme={this.props.toTimeTheme}
           setToTimeTheme={this.props.setToTimeTheme}
+          density={this.props.density}
+          setDensity={this.props.setDensity}
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
@@ -669,6 +671,8 @@ export class TabletContent extends React.Component {
           setFromTimeTheme={this.props.setFromTimeTheme}
           toTimeTheme={this.props.toTimeTheme}
           setToTimeTheme={this.props.setToTimeTheme}
+          density={this.props.density}
+          setDensity={this.props.setDensity}
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />
@@ -1061,6 +1065,8 @@ export class MobileContent extends React.Component {
           setToTimeTheme={this.props.setToTimeTheme}
           bottomNav={this.props.bottomNav}
           changeBottomNav={this.props.changeBottomNav}
+          density={this.props.density}
+          setDensity={this.props.setDensity}
           snackbarQueue={this.props.snackbarQueue}
           getData={this.props.getData}
         />

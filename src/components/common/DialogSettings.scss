@@ -111,6 +111,12 @@
           order: 1;
         }
       }
+      .density-toggle {
+        width: 100%;
+        .mdc-button {
+          flex-grow: 1;
+        }
+      }
       .account {
         padding: 0;
         height: 88px;
