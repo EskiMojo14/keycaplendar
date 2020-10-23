@@ -64,7 +64,7 @@
 @include typography.core-styles();
 
 .mdc-drawer.drawer-right {
-  width: 320px; 
+  width: 320px;
   border-right-width: 0;
   border-left-width: 1px;
   border-right-style: none;
@@ -100,6 +100,37 @@
 .mdc-linear-progress {
   @include rtl.rtl {
     transform: scaleX(-1);
+  }
+}
+
+.mdc-list.three-line .mdc-list-item,
+.mdc-list-item.three-line {
+  height: 88px;
+  .mdc-list-item__text {
+    align-self: unset;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .overline {
+      @include typography.typography(overline);
+      font-family: inherit;
+      line-height: 1rem;
+    }
+    .mdc-list-item__primary-text {
+      margin: 2px 0;
+      display: flex;
+      align-items: center;
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+    .mdc-list-item__secondary-text {
+      &::before {
+        content: none;
+      }
+    }
   }
 }
 
@@ -291,7 +322,8 @@
   }
 }
 
-svg.material-icons, .material-icons svg {
+svg.material-icons,
+.material-icons svg {
   fill: currentColor;
 }
 

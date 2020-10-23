@@ -36,7 +36,7 @@ export const ViewList = (props) => {
   };
   const oneDay = 24 * 60 * 60 * 1000;
   return (
-    <List twoLine className="view-list">
+    <List twoLine className="view-list three-line">
       {props.sets.map((set, index) => {
         const gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
         const gbEnd = new Date(set.gbEnd);

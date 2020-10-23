@@ -105,7 +105,7 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
       <Typography use="subtitle2" tag="h3">
         Account
       </Typography>
-      <ListItem className="account">
+      <ListItem className="account three-line">
         <BadgeAnchor className="avatar">
           <Avatar src={props.user.avatar} size="xlarge" />
           {userBadge}

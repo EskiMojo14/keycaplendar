@@ -4,31 +4,6 @@
 @use "@material/theme/_index" as theme;
 
 .list .mdc-list .mdc-list-item {
-  height: 88px;
-  &__text {
-    align-self: unset;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .overline {
-      line-height: 1rem;
-    }
-    .mdc-list-item__primary-text {
-      margin: 2px 0;
-      display: flex;
-      align-items: center;
-      &::before,
-      &::after {
-        content: none;
-      }
-    }
-    .mdc-list-item__secondary-text {
-      &::before {
-        content: none;
-      }
-    }
-  }
   &__primary-text {
     div {
       display: inline;

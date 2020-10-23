@@ -154,7 +154,7 @@ export class UserCard extends React.Component {
       <Card className="user">
         <CollapsibleList
           handle={
-            <ListItem>
+            <ListItem className="three-line">
               <Avatar src={user.photoURL} className="mdc-list-item__graphic" size="xlarge" />
               <ListItemText>
                 <div className="overline">{user.nickname}</div>
@@ -200,7 +200,10 @@ export class UserCard extends React.Component {
                       checked={user[role]}
                       name={role}
                       onClick={this.handleChange}
-                      disabled={(user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com") && role !== "designer" }
+                      disabled={
+                        (user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com") &&
+                        role !== "designer"
+                      }
                     />
                   </FormField>
                 );
