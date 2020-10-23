@@ -9,7 +9,7 @@
 @use "@material/tab-bar/_index" as tab-bar;
 @use "@material/textfield/_index" as textfield;
 
-@use "@material/density/functions" as density-functions;
+@use "@material/density/_index" as density;
 @use "@material/rtl/_index" as rtl;
 
 @mixin density($density: 0) {
@@ -29,7 +29,9 @@
     @include icon-button.density($density);
   }
   .mdc-list {
-    @include list.single-line-density($density);
+    &:not(.mdc-list--two-line) {
+      @include list.single-line-density($density);
+    }
   }
   .mdc-radio {
     @include radio.density($density);
@@ -44,9 +46,14 @@
     @include tab-bar.density($density);
   }
   .mdc-text-field {
-    @include textfield.density($density);
+    &:not(.mdc-text-field--outlined) {
+      @include textfield.density($density);
+    }
     &.mdc-text-field--outlined {
-        @include textfield.outlined-density($density);
+      @include textfield.outlined-density($density);
+      &.mdc-text-field--with-leading-icon {
+        @include textfield.outlined-with-leading-icon-density($density);
+      }
     }
   }
 }
