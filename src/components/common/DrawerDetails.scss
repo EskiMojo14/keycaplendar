@@ -72,6 +72,9 @@
         }
         .mdc-list {
           padding: 0;
+          &-item {
+            padding: 0 16px;
+          }
         }
       }
     }
@@ -100,6 +103,7 @@
       flex-wrap: nowrap;
       overflow-x: auto;
       overflow-y: hidden;
+      padding: 4px 12px;
       padding-bottom: 32px;
       box-sizing: content-box;
       scroll-behavior: smooth;
