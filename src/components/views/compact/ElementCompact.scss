@@ -4,19 +4,11 @@
 
 .compact {
   .mdc-list.mdc-list--two-line .mdc-list-item {
-    height: 64px;
     border-bottom: 1px solid var(--divider-color);
-    box-sizing: border-box;
     &__text {
-      align-self: unset;
       @include rtl.reflexive-box(margin, right, 16px);
     }
     &__primary-text {
-      margin-bottom: 0;
-      &::before,
-      &::after {
-        content: none;
-      }
       div {
         display: inline;
         white-space: nowrap;

@@ -46,7 +46,7 @@
           height
         );
         &__primary-text::before {
-          height: 32px + density.$interval * $density;
+          height: 32px + (density.$interval / 2) * $density;
         }
       }
     }
@@ -63,9 +63,6 @@
         $density,
         height
       );
-      &__primary-text::before {
-        height: 32px + density.$interval * $density;
-      }
     }
   }
   .mdc-radio {
@@ -91,18 +88,45 @@
       }
     }
   }
-  .mdc-drawer.nav .mdc-list-item {
-    height: density.prop-value(
-      (
-        height: (
-          default: 56px,
-          maximum: 56px,
-          minimum: 44px,
-        ),
-      ),
-      $density,
-      height
-    );
+  .mdc-card {
+    .text-row .text-container {
+      .overline {
+        margin-bottom: 4px + density.$interval * $density;
+      }
+      .title {
+        padding-bottom: 8px + density.$interval * $density;
+      }
+    }
+  }
+  .mdc-drawer {
+    &.nav {
+      .mdc-list-item {
+        height: density.prop-value(
+          (
+            height: (
+              default: 56px,
+              maximum: 56px,
+              minimum: 44px,
+            ),
+          ),
+          $density,
+          height
+        );
+      }
+    }
+    &.details-drawer {
+      .search-chips-container {
+        height: 48px + density.$interval * $density;
+      }
+    }
+    &.filter-drawer {
+      .mdc-drawer__content .group:not(:last-child) {
+        margin-bottom: 16px + density.$interval * $density;
+      }
+      .subheader {
+        padding-bottom: 16px + density.$interval * $density;
+      }
+    }
   }
   .search-bar {
     &--persistent {
