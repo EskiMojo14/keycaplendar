@@ -116,6 +116,26 @@
       }
     }
     &.details-drawer {
+      .mdc-drawer__content {
+        .details-image {
+          margin: (8px + $diff / 2) 16px;
+        }
+        .details-text {
+          padding-bottom: 16px + $diff;
+          .mdc-typography--headline4,
+          .mdc-typography--body2 {
+            margin: (8px + $diff / 2) 0;
+          }
+        }
+        .details-button {
+          padding-bottom: 16px + $diff;
+        }
+        .details-list {
+          .subheader {
+            padding-bottom: 16px + $diff;
+          }
+        }
+      }
       .search-chips-container {
         height: 48px + $diff;
       }
