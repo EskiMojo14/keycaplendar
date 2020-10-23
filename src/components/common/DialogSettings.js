@@ -100,6 +100,36 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         className="user-icon material-icons"
       />
     ) : null;
+  const density = props.changeBottomNav ? null : (
+    <div className="group">
+      <Typography use="subtitle2" tag="h3">
+        Density
+      </Typography>
+      <ToggleGroup className="density-toggle">
+        <ToggleGroupButton
+          label="Default"
+          selected={props.density === "default"}
+          onClick={() => {
+            props.setDensity("default");
+          }}
+        />
+        <ToggleGroupButton
+          label="Comfortable"
+          selected={props.density === "comfortable"}
+          onClick={() => {
+            props.setDensity("comfortable");
+          }}
+        />
+        <ToggleGroupButton
+          label="Compact"
+          selected={props.density === "compact"}
+          onClick={() => {
+            props.setDensity("compact");
+          }}
+        />
+      </ToggleGroup>
+    </div>
+  );
   const user = props.user.name ? (
     <div className="group">
       <Typography use="subtitle2" tag="h3">
@@ -286,34 +316,7 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
           </List>
         </div>
         {bottomNav}
-        <div className="group">
-          <Typography use="subtitle2" tag="h3">
-            Density
-          </Typography>
-          <ToggleGroup className="density-toggle">
-            <ToggleGroupButton
-              label="Default"
-              selected={props.density === "default"}
-              onClick={() => {
-                props.setDensity("default");
-              }}
-            />
-            <ToggleGroupButton
-              label="Comfortable"
-              selected={props.density === "comfortable"}
-              onClick={() => {
-                props.setDensity("comfortable");
-              }}
-            />
-            <ToggleGroupButton
-              label="Compact"
-              selected={props.density === "compact"}
-              onClick={() => {
-                props.setDensity("compact");
-              }}
-            />
-          </ToggleGroup>
-        </div>
+        {density}
         {user}
         {admin}
       </DialogContent>
