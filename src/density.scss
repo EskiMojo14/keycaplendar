@@ -45,7 +45,7 @@
   .mdc-tab-bar {
     @include tab-bar.density($density);
   }
-  .mdc-text-field {
+  .mdc-text-field:not(.search-bar-field) {
     &:not(.mdc-text-field--outlined) {
       @include textfield.density($density);
     }
@@ -54,6 +54,34 @@
       &.mdc-text-field--with-leading-icon {
         @include textfield.outlined-with-leading-icon-density($density);
       }
+    }
+  }
+  .mdc-drawer.nav .mdc-list-item {
+    height: density.prop-value(
+      (
+        height: (
+          default: 56px,
+          maximum: 56px,
+          minimum: 44px,
+        ),
+      ),
+      $density,
+      height
+    );
+  }
+  .search-bar {
+    &--persistent {
+      height: density.prop-value(
+        (
+          height: (
+            default: 40px,
+            maximum: 40px,
+            minimum: 28px,
+          ),
+        ),
+        $density,
+        height
+      );
     }
   }
 }

@@ -80,7 +80,6 @@
       transform: none !important;
       transition-duration: 150ms;
       .mdc-list-item {
-        height: 56px;
         width: 100%;
         color: transparent;
         transition: color 150ms linear, border-radius 150ms animation.$standard-curve-timing-function;
