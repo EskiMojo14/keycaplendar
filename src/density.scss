@@ -157,6 +157,10 @@
       }
     }
   }
+  .mdc-fab--extended {
+    border-radius: 24px + $diff / 2;
+    height: 48px + $diff;
+  }
   .mdc-select {
     &__anchor {
       height: 56px + $diff;
