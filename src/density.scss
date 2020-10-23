@@ -161,6 +161,9 @@
       );
     }
   }
+  .settings-dialog .mdc-dialog__content .group .theme-form-field__text .mdc-typography--body2 {
+    line-height: 56px + $diff;
+  }
 }
 
 .density-comfortable {
