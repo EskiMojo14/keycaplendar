@@ -158,6 +158,7 @@ class App extends React.Component {
       checkCookie("manualTheme", this.setManualTheme);
       checkCookie("fromTimeTheme", this.setFromTimeTheme);
       checkCookie("toTimeTheme", this.setToTimeTheme);
+      checkCookie("density", this.setDensity);
     } else {
       this.clearCookies();
     }
@@ -662,6 +663,9 @@ class App extends React.Component {
   };
   setDensity = (density) => {
     this.setState({ density: density });
+    if (this.state.cookies) {
+      this.setCookie("density", density, 365);
+    }
   };
   setSort = (sortBy) => {
     document.documentElement.scrollTop = 0;
