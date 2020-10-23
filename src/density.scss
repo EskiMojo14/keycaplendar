@@ -13,6 +13,7 @@
 @use "@material/rtl/_index" as rtl;
 
 @mixin density($density: 0) {
+  $diff: density.$interval * $density;
   .mdc-button {
     @include button.density($density);
   }
@@ -46,7 +47,7 @@
           height
         );
         &__primary-text::before {
-          height: 32px + (density.$interval / 2) * $density;
+          height: 32px + $diff / 2;
         }
       }
     }
@@ -91,10 +92,10 @@
   .mdc-card {
     .text-row .text-container {
       .overline {
-        margin-bottom: 4px + density.$interval * $density;
+        margin-bottom: 4px + $diff;
       }
       .title {
-        padding-bottom: 8px + density.$interval * $density;
+        padding-bottom: 8px + $diff;
       }
     }
   }
@@ -116,15 +117,32 @@
     }
     &.details-drawer {
       .search-chips-container {
-        height: 48px + density.$interval * $density;
+        height: 48px + $diff;
       }
     }
     &.filter-drawer {
       .mdc-drawer__content .group:not(:last-child) {
-        margin-bottom: 16px + density.$interval * $density;
+        margin-bottom: 16px + $diff;
       }
       .subheader {
-        padding-bottom: 16px + density.$interval * $density;
+        padding-bottom: 16px + $diff;
+      }
+    }
+  }
+  .mdc-select {
+    &__anchor {
+      height: 56px + $diff;
+    }
+    &__dropdown-icon {
+      bottom: 16px + $diff / 2;
+    }
+    &__selected-text {
+      height: 56px + $diff;
+    }
+    &--outlined {
+      .mdc-select__selected-text {
+        padding-top: 14px + $diff / 2;
+        padding-bottom: 12px + $diff / 2;
       }
     }
   }
