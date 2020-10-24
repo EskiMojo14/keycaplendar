@@ -181,14 +181,10 @@ export class ImageUpload extends React.Component {
         onChange={this.handleChange}
         helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
       />
-    ) : (
-      ""
-    );
+    ) : null;
     const areaInner = this.state.hasImage ? (
       <div className="image-display-image" style={{ backgroundImage: "url(" + this.state.imageBase64 + ")" }} />
-    ) : this.state.loading ? (
-      ""
-    ) : this.props.desktop && !this.state.imageFromURL ? (
+    ) : this.state.loading ? null : this.props.desktop && !this.state.imageFromURL ? (
       <div className="drag-label">
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path d="M0 0h24v24H0V0z" fill="none" />
@@ -214,9 +210,7 @@ export class ImageUpload extends React.Component {
       <div className={"loading-indicator" + (this.state.hasImage ? " image" : "")}>
         <CircularProgress size="large" />
       </div>
-    ) : (
-      ""
-    );
+    ) : null;
     const actions = !this.state.imageFromURL ? (
       <CardActions>
         <CardActionButtons>

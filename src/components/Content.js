@@ -245,13 +245,9 @@ export class DesktopContent extends React.Component {
                 snackbarQueue={this.props.snackbarQueue}
               />
             </div>
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
-      ) : (
-        ""
-      );
+      ) : null;
     const detailsDrawer =
       this.props.view === "compact" ? (
         <TabletDrawerDetails
@@ -575,13 +571,9 @@ export class TabletContent extends React.Component {
                 snackbarQueue={this.props.snackbarQueue}
               />
             </div>
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
-      ) : (
-        ""
-      );
+      ) : null;
     const statsDialog =
       this.props.page === "statistics" ? (
         <DialogStatistics
@@ -899,13 +891,9 @@ export class MobileContent extends React.Component {
                 snackbarQueue={this.props.snackbarQueue}
               />
             </div>
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
-      ) : (
-        ""
-      );
+      ) : null;
     const nav = this.props.bottomNav ? (
       <div className={"bottomNav" + (this.props.page === "statistics" ? " statistics " : "")}>
         <BottomDrawerNav

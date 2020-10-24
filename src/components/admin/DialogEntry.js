@@ -566,9 +566,7 @@ export class DialogCreate extends React.Component {
                         this.moveVendor(index);
                       }}
                     />
-                  ) : (
-                    ""
-                  );
+                  ) : null;
                 return (
                   <Card key={index} outlined className="vendor-container">
                     <Typography use="caption" tag="h3" className="vendor-title">
@@ -1280,9 +1278,7 @@ export class DialogEdit extends React.Component {
                           this.moveVendor(index);
                         }}
                       />
-                    ) : (
-                      ""
-                    );
+                    ) : null;
                   return (
                     <Card key={index} outlined className="vendor-container">
                       <Typography use="caption" tag="h3" className="vendor-title">

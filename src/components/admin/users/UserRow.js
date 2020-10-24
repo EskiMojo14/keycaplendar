@@ -117,9 +117,7 @@ export class UserRow extends React.Component {
       </div>
     );
     const deleteButton =
-      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? (
-        ""
-      ) : (
+      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
         <div
           onClick={() => {
             this.props.delete(user);

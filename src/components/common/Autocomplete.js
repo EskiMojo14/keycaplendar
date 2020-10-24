@@ -50,7 +50,7 @@ export const Autocomplete = (props) => {
                 </MenuItem>
               );
             })
-        : ""}
+        : null}
     </Menu>
   );
 };
@@ -75,7 +75,7 @@ export const AutocompleteMobile = (props) => {
                 </ListItem>
               );
             })
-          : ""}
+          : null}
       </List>
     </div>
   );

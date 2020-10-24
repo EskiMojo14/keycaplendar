@@ -536,9 +536,7 @@ export class DrawerCreate extends React.Component {
                       this.moveVendor(index);
                     }}
                   />
-                ) : (
-                  ""
-                );
+                ) : null;
               return (
                 <Card key={index} outlined className="vendor-container">
                   <Typography use="caption" tag="h3" className="vendor-title">
@@ -1207,9 +1205,7 @@ export class DrawerEdit extends React.Component {
                       this.moveVendor(index);
                     }}
                   />
-                ) : (
-                  ""
-                );
+                ) : null;
               return (
                 <Card key={index} outlined className="vendor-container">
                   <Typography use="caption" tag="h3" className="vendor-title">

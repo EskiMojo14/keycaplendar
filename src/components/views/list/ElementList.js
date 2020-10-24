@@ -54,9 +54,7 @@ export const ElementList = (props) => {
     <Typography use="overline" className="time-indicator">
       {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
     </Typography>
-  ) : (
-    ""
-  );
+  ) : null;
   return (
     <ListItem
       selected={props.selected}

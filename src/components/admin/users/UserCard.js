@@ -131,9 +131,7 @@ export class UserCard extends React.Component {
       </Ripple>
     );
     const deleteButton =
-      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? (
-        ""
-      ) : (
+      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
         <Ripple unbounded>
           <div
             tabIndex="0"

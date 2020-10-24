@@ -169,17 +169,13 @@ export class DesktopDrawerDetails extends React.Component {
               This set has not shipped.
             </Typography>
           )
-        ) : (
-          ""
-        );
+        ) : null;
     }
     const gbLine = gb ? (
       <Typography use="body2" tag="p">
         {gb}
       </Typography>
-    ) : (
-      ""
-    );
+    ) : null;
     if (set.vendors) {
       vendorList = (
         <div className="details-list">
@@ -472,17 +468,13 @@ export class TabletDrawerDetails extends React.Component {
               This set has not shipped.
             </Typography>
           )
-        ) : (
-          ""
-        );
+        ) : null;
     }
     const gbLine = gb ? (
       <Typography use="body2" tag="p">
         {gb}
       </Typography>
-    ) : (
-      ""
-    );
+    ) : null;
     if (set.vendors) {
       vendorList = (
         <div className="details-list">
