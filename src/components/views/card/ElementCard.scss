@@ -9,32 +9,6 @@
   transition: elevation.transition-value();
   position: relative;
   overflow: hidden;
-  &:hover {
-    @include elevation.elevation(4);
-  }
-  .hover-button {
-    position: absolute;
-    z-index: 3;
-    width: 100%;
-    height: 64px;
-    &::before {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      right: 0;
-      top: 0;
-      content: "";
-      background: linear-gradient(rgba(black, 0.4), transparent);
-      opacity: 0;
-      transition: opacity 250ms animation.$standard-curve-timing-function;
-    }
-    .mdc-icon-button {
-      opacity: 0;
-      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
-      @include icon-button.ink-color(white);
-    }
-  }
   &__primary-action {
     height: 100%;
   }
@@ -67,70 +41,119 @@
       color: white;
     }
   }
-}
 
-@media (min-width: 840px) {
-  .mdc-card:hover {
-    .hover-button {
-      &::before {
-        opacity: 1;
+  .text-row {
+    display: flex;
+    .text-container {
+      flex: auto 1 1;
+      padding: 8px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      .overline {
+        width: 100%;
+        display: flex;
+        justify-content: stretch;
+        margin-bottom: 4px;
+        display: flex;
+        .mdc-typography--overline {
+          margin: 0;
+          flex-shrink: 1;
+          flex-grow: 1;
+        }
       }
-      .mdc-icon-button {
-        animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+      .title {
+        padding-bottom: 8px;
+        display: flex;
+        width: 100%;
+        .mdc-typography--headline5 {
+          margin: 0;
+          width: 100%;
+          div {
+            display: inline-flex;
+            align-items: center;
+            .twemoji {
+              height: 1.5625rem;
+              @include rtl.reflexive-box(margin, left, 0.5rem);
+            }
+          }
+        }
+      }
+      .mdc-typography--subtitle2 {
+        margin: 0;
+      }
+      .live-indicator,
+      .ship-indicator {
+        @include rtl.reflexive-box(margin, left, 8px);
+        flex-shrink: 0;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        height: 2rem;
       }
     }
   }
 }
 
-.text-row {
-  display: flex;
-  .text-container {
-    flex: auto 1 1;
-    padding: 8px 16px 16px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    .overline {
+@media (min-width: 840px) {
+  .mdc-card {
+    .hover-button {
+      position: absolute;
+      z-index: 3;
       width: 100%;
-      display: flex;
-      justify-content: stretch;
-      margin-bottom: 4px;
-      display: flex;
-      .mdc-typography--overline {
-        margin: 0;
-        flex-shrink: 1;
-        flex-grow: 1;
+      height: 64px;
+      &::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        right: 0;
+        top: 0;
+        content: "";
+        background: linear-gradient(rgba(black, 0.4), transparent);
+        opacity: 0;
+        transition: opacity 250ms animation.$standard-curve-timing-function;
+      }
+      .mdc-icon-button.mdc-card__action--icon {
+        opacity: 0;
+        animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+        @include icon-button.ink-color(white);
       }
     }
-    .title {
-      padding-bottom: 8px;
-      display: flex;
-      width: 100%;
-      .mdc-typography--headline5 {
-        margin: 0;
-        width: 100%;
-        div {
-          display: inline-flex;
-          align-items: center;
-          .twemoji {
-            height: 1.5625rem;
-            @include rtl.reflexive-box(margin, left, 0.5rem);
-          }
+    &:hover {
+      @include elevation.elevation(4);
+      .hover-button {
+        &::before {
+          opacity: 1;
+        }
+        .mdc-icon-button {
+          animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
         }
       }
     }
-    .mdc-typography--subtitle2 {
-      margin: 0;
-    }
-    .live-indicator,
-    .ship-indicator {
-      @include rtl.reflexive-box(margin, left, 8px);
-      flex-shrink: 0;
-      overflow: hidden;
-      display: inline-flex;
+  }
+}
+
+@media (max-width: 839px) {
+  .hover-button {
+    order: 999;
+    border-top: 1px solid var(--divider-color);
+  }
+}
+
+@media (max-width: 479px) {
+  .card-container .mdc-card {
+    &__primary-action {
+      flex-direction: row;
       align-items: center;
-      height: 2rem;
+    }
+    .media-container {
+      flex-shrink: 0;
+      width: 120px;
+      height: 68px;
+      margin: 16px;
+      @include rtl.reflexive-property(margin, 16px, 0);
     }
   }
 }
