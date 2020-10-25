@@ -291,9 +291,6 @@ $overlay-values: (
         &__secondary-text {
           color: map-get($variables, text-secondary);
         }
-        &__meta {
-          color: map-get($variables, text-disabled);
-        }
       }
       .mdc-typography--overline {
         color: map-get($variables, text-secondary);
@@ -367,6 +364,7 @@ $overlay-values: (
       @include list.item-primary-text-ink-color(map-get($variables, primary));
       @include list.item-secondary-text-ink-color(map-get($variables, primary));
       @include list.item-graphic-ink-color(map-get($variables, primary));
+      @include list.item-meta-ink-color(map-get($variables, primary));
       .overline {
         color: map-get($variables, primary);
       }
