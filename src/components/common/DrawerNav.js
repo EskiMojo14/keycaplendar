@@ -6,7 +6,6 @@ import "./DrawerNav.scss";
 import logo from "../../logo.svg";
 
 export const DesktopDrawerNav = (props) => {
-  const filledIcons = false;
   return (
     <Drawer className={"nav" + (props.open ? "" : " collapsed")} dismissible open={props.open}>
       <DrawerHeader>
@@ -19,17 +18,14 @@ export const DesktopDrawerNav = (props) => {
           <ListItem onClick={(e) => props.changePage("calendar")} activated={props.page === "calendar"}>
             <ListItemGraphic
               icon={{
-                strategy: props.page === "calendar" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "calendar" && filledIcons ? (
-                    "calendar_today"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                      <path d="M4 5.01h16V8H4z" opacity=".3" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                    <path d="M4 5.01h16V8H4z" opacity=".3" />
+                  </svg>
+                ),
               }}
             />
             Calendar
@@ -37,17 +33,14 @@ export const DesktopDrawerNav = (props) => {
           <ListItem onClick={(e) => props.changePage("live")} activated={props.page === "live"}>
             <ListItemGraphic
               icon={{
-                strategy: props.page === "live" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "live" && filledIcons ? (
-                    "store"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                      <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                    <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                  </svg>
+                ),
               }}
             />
             Live GBs
@@ -55,17 +48,14 @@ export const DesktopDrawerNav = (props) => {
           <ListItem onClick={(e) => props.changePage("ic")} activated={props.page === "ic"}>
             <ListItemGraphic
               icon={{
-                strategy: props.page === "ic" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "ic" && filledIcons ? (
-                    "forum"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
-                      <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
+                    <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
+                  </svg>
+                ),
               }}
             />
             IC Tracker
@@ -78,10 +68,7 @@ export const DesktopDrawerNav = (props) => {
             <ListItemGraphic icon="timeline" />
             Timeline
           </ListItem>
-          <ListItem
-            onClick={(e) => props.changePage("statistics")}
-            activated={props.page === "statistics"}
-          >
+          <ListItem onClick={(e) => props.changePage("statistics")} activated={props.page === "statistics"}>
             <ListItemGraphic icon="bar_chart" />
             Statistics
           </ListItem>
@@ -118,7 +105,6 @@ export const MobileDrawerNav = (props) => {
     props.changePage(newPage);
     props.close();
   };
-  const filledIcons = false;
   return (
     <Drawer className="nav" modal open={props.open} onClose={props.close}>
       <DrawerHeader>
@@ -136,17 +122,14 @@ export const MobileDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "calendar" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "calendar" && filledIcons ? (
-                    "calendar_today"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                      <path d="M4 5.01h16V8H4z" opacity=".3" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                    <path d="M4 5.01h16V8H4z" opacity=".3" />
+                  </svg>
+                ),
               }}
             />
             Calendar
@@ -159,17 +142,14 @@ export const MobileDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "live" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "live" && filledIcons ? (
-                    "store"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                      <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                    <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                  </svg>
+                ),
               }}
             />
             Live GBs
@@ -182,17 +162,14 @@ export const MobileDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "ic" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "ic" && filledIcons ? (
-                    "forum"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
-                      <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
+                    <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
+                  </svg>
+                ),
               }}
             />
             IC Tracker
@@ -261,7 +238,6 @@ export const BottomDrawerNav = (props) => {
     props.changePage(newPage);
     props.close();
   };
-  const filledIcons = false;
   return (
     <Drawer className="nav bottom" modal open={props.open} onClose={props.close}>
       <DrawerHeader>
@@ -279,17 +255,14 @@ export const BottomDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "calendar" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "calendar" && filledIcons ? (
-                    "calendar_today"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                      <path d="M4 5.01h16V8H4z" opacity=".3" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                    <path d="M4 5.01h16V8H4z" opacity=".3" />
+                  </svg>
+                ),
               }}
             />
             Calendar
@@ -302,17 +275,14 @@ export const BottomDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "live" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "live" && filledIcons ? (
-                    "store"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                      <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                    <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                  </svg>
+                ),
               }}
             />
             Live GBs
@@ -325,17 +295,14 @@ export const BottomDrawerNav = (props) => {
           >
             <ListItemGraphic
               icon={{
-                strategy: props.page === "ic" && filledIcons ? "ligature" : "component",
-                icon:
-                  props.page === "ic" && filledIcons ? (
-                    "forum"
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
-                      <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
-                    </svg>
-                  ),
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M15 11V4H4v8.17L5.17 11H6z" opacity=".3" />
+                    <path d="M16 13c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10zm-12-.83V4h11v7H5.17L4 12.17zM22 7c0-.55-.45-1-1-1h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7z" />
+                  </svg>
+                ),
               }}
             />
             IC Tracker
