@@ -302,6 +302,7 @@ export class DesktopContent extends React.Component {
           page={this.props.page}
           changePage={this.props.changePage}
           openSettings={this.openSettingsDialog}
+          user={this.props.user}
         />
         <DrawerAppContent
           className={
@@ -592,6 +593,7 @@ export class TabletContent extends React.Component {
           changePage={this.props.changePage}
           close={this.toggleNavDrawer}
           openSettings={this.openSettingsDialog}
+          user={this.props.user}
         />
         <DrawerAppContent className={this.props.page === "statistics" ? "statistics" : ""}>
           <TabletAppBar
@@ -902,6 +904,7 @@ export class MobileContent extends React.Component {
           changePage={this.props.changePage}
           close={this.closeNavDrawer}
           openSettings={this.openSettingsDialog}
+          user={this.props.user}
         />
         {(this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
           <BottomAppBarIndent
@@ -946,6 +949,7 @@ export class MobileContent extends React.Component {
           changePage={this.props.changePage}
           close={this.closeNavDrawer}
           openSettings={this.openSettingsDialog}
+          user={this.props.user}
         />
         <MobileAppBar
           page={this.props.page}
