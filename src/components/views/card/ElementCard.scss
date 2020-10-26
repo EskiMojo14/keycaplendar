@@ -97,7 +97,7 @@
 }
 
 @media (min-width: 840px) {
-  .mdc-card {
+  .card-container .mdc-card {
     .hover-button {
       position: absolute;
       z-index: 3;
@@ -136,7 +136,7 @@
 }
 
 @media (max-width: 839px) {
-  .hover-button {
+  .card-container .mdc-card .hover-button {
     order: 999;
     border-top: 1px solid var(--divider-color);
   }
