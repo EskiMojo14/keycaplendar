@@ -11,6 +11,7 @@ import { Select } from "@rmwc/select";
 import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
@@ -169,6 +170,40 @@ export const ContentSettings = (props) => {
         />
       </FormField>
     );
+
+  const density =
+    props.device !== "mobile" ? (
+      <div className="settings-group">
+        <div className="subheader">
+          <Typography use="caption">Density</Typography>
+        </div>
+        <Card className="density-card">
+          <ToggleGroup className="density-toggle">
+            <ToggleGroupButton
+              label="Default"
+              selected={props.density === "default"}
+              onClick={() => {
+                props.setDensity("default");
+              }}
+            />
+            <ToggleGroupButton
+              label="Comfortable"
+              selected={props.density === "comfortable"}
+              onClick={() => {
+                props.setDensity("comfortable");
+              }}
+            />
+            <ToggleGroupButton
+              label="Compact"
+              selected={props.density === "compact"}
+              onClick={() => {
+                props.setDensity("compact");
+              }}
+            />
+          </ToggleGroup>
+        </Card>
+      </div>
+    ) : null;
   return (
     <div className="admin-main">
       <div className="settings-container">
@@ -247,6 +282,7 @@ export const ContentSettings = (props) => {
               </List>
             </Card>
           </div>
+          {density}
         </div>
       </div>
     </div>

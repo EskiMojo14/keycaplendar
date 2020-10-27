@@ -392,6 +392,7 @@ export class DesktopContent extends React.Component {
       />
     ) : this.props.page === "settings" ? (
       <ContentSettings
+        device={this.props.device}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
@@ -406,6 +407,8 @@ export class DesktopContent extends React.Component {
         setFromTimeTheme={this.props.setFromTimeTheme}
         toTimeTheme={this.props.toTimeTheme}
         setToTimeTheme={this.props.setToTimeTheme}
+        density={this.props.density}
+        setDensity={this.props.setDensity}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
@@ -930,6 +933,7 @@ export class TabletContent extends React.Component {
       />
     ) : this.props.page === "settings" ? (
       <ContentSettings
+        device={this.props.device}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
@@ -944,6 +948,8 @@ export class TabletContent extends React.Component {
         setFromTimeTheme={this.props.setFromTimeTheme}
         toTimeTheme={this.props.toTimeTheme}
         setToTimeTheme={this.props.setToTimeTheme}
+        density={this.props.density}
+        setDensity={this.props.setDensity}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
@@ -1457,6 +1463,7 @@ export class MobileContent extends React.Component {
       />
     ) : this.props.page === "settings" ? (
       <ContentSettings
+        device={this.props.device}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
@@ -1471,6 +1478,8 @@ export class MobileContent extends React.Component {
         setFromTimeTheme={this.props.setFromTimeTheme}
         toTimeTheme={this.props.toTimeTheme}
         setToTimeTheme={this.props.setToTimeTheme}
+        density={this.props.density}
+        setDensity={this.props.setDensity}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
