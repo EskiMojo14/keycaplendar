@@ -9,6 +9,7 @@ import { ContentAudit } from "./content/ContentAudit";
 import { ContentEmpty } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
+import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
 import { DialogStatistics } from "./statistics/DialogStatistics";
@@ -346,6 +347,14 @@ export class DesktopContent extends React.Component {
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
+      />
+    )  : this.props.page === "users" && this.props.user.isAdmin ? (
+      <ContentUsers
+        loading={this.props.loading}
+        user={this.props.user}
+        device={this.props.device}
+        allDesigners={this.props.allDesigners}
+        snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
       <ContentEmpty />

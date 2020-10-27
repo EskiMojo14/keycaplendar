@@ -73,8 +73,7 @@
   }
   &.content.card::before,
   .statistics &::before,
-  .audit &::before,
-  .users &::before {
+  .audit &::before {
     height: 256px - top-app-bar.$row-height;
   }
 }
@@ -102,8 +101,7 @@
   }
   .main.content.card::before,
   .statistics .main::before,
-  .audit .main::before,
-  .users .main::before {
+  .audit .main::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
 }

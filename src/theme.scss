@@ -117,7 +117,8 @@ $overlay-values: (
     &:disabled {
       color: map-get($variables, text-disabled);
     }
-    &.mdc-button--raised, &.mdc-button--unelevated {
+    &.mdc-button--raised,
+    &.mdc-button--unelevated {
       @include button.container-fill-color(map-get($variables, primary));
       @include button.ink-color(map-get($variables, on-primary));
       @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -1014,8 +1015,6 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
   }
 
-  .users,
-  .log,
   .legal,
   .guide {
     color: map-get($variables, text-primary);
