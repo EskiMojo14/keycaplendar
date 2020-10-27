@@ -249,6 +249,9 @@
         padding-top: top-app-bar.$mobile-row-height + $diff;
       }
     }
+    .statistics .mdc-top-app-bar--fixed-adjust {
+      padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
+    }
   }
 }
 

@@ -308,7 +308,7 @@ export class DesktopContent extends React.Component {
           className={
             (this.state.detailsDrawerOpen && this.props.view !== "compact" ? "details-drawer-open " : "") +
             (this.state.filterDrawerOpen && this.props.view !== "compact" ? "filter-drawer-open " : "") +
-            (this.props.page === "statistics" ? "statistics " : "")
+            this.props.page
           }
         >
           <DesktopAppBar
@@ -333,14 +333,7 @@ export class DesktopContent extends React.Component {
           <div className="content-container">
             {detailsDrawer}
             {filterDrawer}
-            <DrawerAppContent
-              className={
-                "main " +
-                this.props.view +
-                (this.props.content ? " content" : "") +
-                (this.props.page === "statistics" ? " card content" : "")
-              }
-            >
+            <DrawerAppContent className={"main " + this.props.view + (this.props.content ? " content" : "")}>
               {content}
               <Footer />
             </DrawerAppContent>
@@ -595,7 +588,7 @@ export class TabletContent extends React.Component {
           openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
-        <DrawerAppContent className={this.props.page === "statistics" ? "statistics" : ""}>
+        <DrawerAppContent className={this.props.page}>
           <TabletAppBar
             page={this.props.page}
             loading={this.props.loading}
@@ -616,14 +609,7 @@ export class TabletContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
             openStatisticsDialog={this.openStatisticsDialog}
           />
-          <main
-            className={
-              "main " +
-              this.props.view +
-              (this.props.content ? " content" : "") +
-              (this.props.page === "statistics" ? " card content" : "")
-            }
-          >
+          <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
             {content}
             <Footer />
           </main>
@@ -897,7 +883,7 @@ export class MobileContent extends React.Component {
         </div>
       ) : null;
     const nav = this.props.bottomNav ? (
-      <div className={"bottomNav" + (this.props.page === "statistics" ? " statistics " : "")}>
+      <div className="bottomNav">
         <BottomDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -942,7 +928,7 @@ export class MobileContent extends React.Component {
         )}
       </div>
     ) : (
-      <div className={this.props.page === "statistics" ? "statistics" : ""}>
+      <div>
         <MobileDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -1000,21 +986,16 @@ export class MobileContent extends React.Component {
       <div
         className={
           this.props.className +
-          "app-container" +
+          "app-container " +
+          this.props.page +
+          " " +
           (this.props.user.isEditor || this.props.user.isDesigner ? " offset-snackbar" : "") +
           (this.props.bottomNav ? " bottom-nav" : "")
         }
       >
         {search}
         {nav}
-        <main
-          className={
-            "main " +
-            this.props.view +
-            (this.props.content ? " content" : "") +
-            (this.props.page === "statistics" ? " card content" : "")
-          }
-        >
+        <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
           {content}
           <Footer />
         </main>
