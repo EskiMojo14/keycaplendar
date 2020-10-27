@@ -4,7 +4,8 @@ import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIn
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
-import { ContentEmpty, ContentFailed } from "./content/ContentEmpty";
+import { ContentAudit } from "./content/ContentAudit";
+import { ContentEmpty } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
 import { DialogDelete } from "./admin/DialogDelete";
@@ -160,7 +161,10 @@ export class DesktopContent extends React.Component {
     this.setState({ settingsDialogOpen: false });
   };
   componentDidUpdate(prevProps) {
-    if (this.props.page !== prevProps.page && this.props.page === "statistics") {
+    if (
+      this.props.page !== prevProps.page &&
+      (this.props.page === "statistics" || this.props.page === "audit" || this.props.page === "users")
+    ) {
       if (this.state.filterDrawerOpen) {
         this.closeFilterDrawer();
       }
@@ -194,8 +198,8 @@ export class DesktopContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.failed ? (
-      <ContentFailed getData={this.props.getData} />
+    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );
@@ -517,8 +521,8 @@ export class TabletContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.failed ? (
-      <ContentFailed getData={this.props.getData} />
+    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );
@@ -830,8 +834,8 @@ export class MobileContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.failed ? (
-      <ContentFailed getData={this.props.getData} />
+    ) :  this.props.page === "audit" && this.props.user.isAdmin ? (
+      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );

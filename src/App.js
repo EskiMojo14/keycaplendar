@@ -69,7 +69,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics"];
+      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics", "audit", "users"];
       if (pages.includes(pageQuery)) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
