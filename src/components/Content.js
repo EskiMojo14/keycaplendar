@@ -391,7 +391,15 @@ export class DesktopContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : this.props.page === "settings" ? (
-      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
+      <ContentSettings
+        user={this.props.user}
+        setUser={this.props.setUser}
+        lightTheme={this.props.lightTheme}
+        setLightTheme={this.props.setLightTheme}
+        darkTheme={this.props.darkTheme}
+        setDarkTheme={this.props.setDarkTheme}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );
@@ -913,7 +921,15 @@ export class TabletContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : this.props.page === "settings" ? (
-      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
+      <ContentSettings
+        user={this.props.user}
+        setUser={this.props.setUser}
+        lightTheme={this.props.lightTheme}
+        setLightTheme={this.props.setLightTheme}
+        darkTheme={this.props.darkTheme}
+        setDarkTheme={this.props.setDarkTheme}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );
@@ -1424,7 +1440,15 @@ export class MobileContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : this.props.page === "settings" ? (
-      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
+      <ContentSettings
+        user={this.props.user}
+        setUser={this.props.setUser}
+        lightTheme={this.props.lightTheme}
+        setLightTheme={this.props.setLightTheme}
+        darkTheme={this.props.darkTheme}
+        setDarkTheme={this.props.setDarkTheme}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );

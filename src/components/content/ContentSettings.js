@@ -4,7 +4,8 @@ import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
-import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
+import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
+import { Radio } from "@rmwc/radio";
 import { Typography } from "@rmwc/typography";
 import "./ContentSettings.scss";
 
@@ -64,7 +65,7 @@ export const ContentSettings = (props) => {
       />
     ) : null;
   const user = props.user.name ? (
-    <div>
+    <div className="settings-group">
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
@@ -91,6 +92,66 @@ export const ContentSettings = (props) => {
       <div className="settings-container">
         <div className="settings">
           {user}
+          <div className="settings-group">
+            <div className="subheader">
+              <Typography use="caption">Light theme</Typography>
+            </div>
+            <Card className="theme-card">
+              <List className="theme-list">
+                <ListItem onClick={() => props.setLightTheme("light")} className="light">
+                  Light
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
+                  Sepia
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+              </List>
+            </Card>
+          </div>
+          <div className="settings-group">
+            <div className="subheader">
+              <Typography use="caption">Dark theme</Typography>
+            </div>
+            <Card className="theme-card">
+              <List className="theme-list">
+                <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+                  Ocean
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
+                  Grey
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
+                  Deep Ocean
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
+                  Deep Purple
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
+                  Dark
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+              </List>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

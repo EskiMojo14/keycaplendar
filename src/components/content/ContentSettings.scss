@@ -1,4 +1,7 @@
+@use "@material/radio/_index" as radio;
+@use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "@material/theme/color-palette" as palette;
 
 .settings-container {
   display: flex;
@@ -33,6 +36,55 @@
         .button {
           @include rtl.reflexive-box(margin, left, auto);
           flex-shrink: 0;
+        }
+      }
+      &.theme-card {
+        padding: 16px;
+        .theme-list.mdc-list {
+          padding: 0;
+          border-radius: 4px;
+          overflow: hidden;
+          border: 1px solid var(--divider-color);
+          .light {
+            background-color: white;
+            color: rgba(black, 0.87);
+            @include radio.unchecked-stroke-color(rgba(black, 0.6));
+            @include ripple.states(black);
+          }
+          .sepia {
+            background-color: #e2dfd6;
+            color: rgba(#3d3d38, 0.87);
+            @include radio.unchecked-stroke-color(rgba(#3d3d38, 0.6));
+            @include ripple.states(black);
+          }
+          .ocean {
+            background-color: #243647;
+          }
+          .grey {
+            background-color: #2c2d33;
+          }
+          .deep-ocean {
+            background-color: #243137;
+          }
+          .deep {
+            background-color: #23212a;
+          }
+          .dark {
+            background-color: #1f1f1f;
+          }
+          .light, .sepia, .grey, .deep, .dark {
+            @include radio.checked-stroke-color(palette.$deep-orange-200);
+            @include radio.ink-color(palette.$deep-orange-200);
+          }
+          .ocean, .deep-ocean {
+            @include radio.checked-stroke-color(palette.$light-green-200);
+            @include radio.ink-color(palette.$light-green-200);
+          }
+          .ocean, .grey, .deep-ocean, .deep, .dark {
+            color: rgba(white, 0.87);
+            @include radio.unchecked-stroke-color(rgba(white, 0.6));
+            @include ripple.states(white);
+          }
         }
       }
     }
