@@ -58,6 +58,7 @@
   justify-content: stretch;
   min-height: calc(100vh - #{top-app-bar.$row-height});
   max-width: 100%;
+  overflow: hidden;
   .content-grid {
     flex-grow: 1;
     flex-shrink: 0;
