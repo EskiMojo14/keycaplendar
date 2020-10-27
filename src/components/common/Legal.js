@@ -31,7 +31,7 @@ export const PrivacyPolicy = () => {
           <Typography use="body2" tag="p">
             Your privacy is important to us. It is KeycapLendar's policy to respect your privacy regarding any
             information we may collect from you across our website,{" "}
-            <a href="http://keycaplendar.com">http://keycaplendar.com</a>, and other sites we own and operate.
+            <a href="http://keycaplendar.firebaseapp.com">http://keycaplendar.firebaseapp.com</a>, and other sites we own and operate.
           </Typography>
           <Typography use="body2" tag="p">
             We only ask for personal information when we truly need it to provide a service to you. We collect it by
@@ -93,7 +93,7 @@ export const TermsOfService = () => {
         <Card className="legal">
           <Typography use="headline5">1. Terms</Typography>
           <Typography use="body2" tag="p">
-            By accessing the website at <a href="http://keycaplendar.com">http://keycaplendar.com</a>, you are agreeing
+            By accessing the website at <a href="http://keycaplendar.firebaseapp.com">http://keycaplendar.firebaseapp.com</a>, you are agreeing
             to be bound by these terms of service, all applicable laws and regulations, and agree that you are
             responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you
             are prohibited from using or accessing this site. The materials contained in this website are protected by
