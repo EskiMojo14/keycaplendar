@@ -17,7 +17,7 @@ import { List } from "@rmwc/list";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { ContentEmpty } from "../../content/ContentEmpty";
 import { AuditEntry } from "./AuditEntry.js";
-import { DialogDelete } from "./DialogDelete.js";
+import { DialogAuditDelete } from "./DialogAuditDelete.js";
 import { DrawerAuditFilter } from "./DrawerAuditFilter.js";
 import "./AuditLog.scss";
 
@@ -254,7 +254,7 @@ export class AuditLog extends React.Component {
             )}
           </DrawerAppContent>
         </div>
-        <DialogDelete
+        <DialogAuditDelete
           open={this.state.deleteDialogOpen}
           close={this.closeDeleteDialog}
           deleteAction={this.state.deleteAction}

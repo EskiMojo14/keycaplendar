@@ -39,7 +39,7 @@ export class ContentAudit extends React.Component {
                       key={index}
                       action={action}
                       timestamp={timestamp}
-                      openDeleteDialog={this.openDeleteDialog}
+                      openDeleteDialog={this.props.openDeleteDialog}
                       properties={properties}
                     />
                   );

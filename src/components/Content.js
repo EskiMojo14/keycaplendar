@@ -17,6 +17,7 @@ import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
+import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
@@ -292,7 +293,7 @@ export class DesktopContent extends React.Component {
       .delete()
       .then(() => {
         this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
-        this.getActions();
+        this.getAuditActions();
         this.closeAuditDeleteDialog();
       })
       .catch((error) => {
@@ -344,6 +345,7 @@ export class DesktopContent extends React.Component {
         actions={this.state.auditActionsFiltered}
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
+        openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : (
       <ContentEmpty />
@@ -460,6 +462,15 @@ export class DesktopContent extends React.Component {
           getActions={this.getAuditActions}
         />
       ) : null;
+    const auditDeleteDialog =
+      this.props.page === "audit" ? (
+        <DialogAuditDelete
+          open={this.state.auditDeleteDialogOpen}
+          close={this.closeAuditDeleteDialog}
+          deleteAction={this.state.auditDeleteAction}
+          deleteActionFn={this.deleteAuditAction}
+        />
+      ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
         <DesktopDrawerNav
@@ -510,6 +521,7 @@ export class DesktopContent extends React.Component {
             {editorElements}
           </div>
         </DrawerAppContent>
+        {auditDeleteDialog}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}
@@ -787,7 +799,7 @@ export class TabletContent extends React.Component {
       .delete()
       .then(() => {
         this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
-        this.getActions();
+        this.getAuditActions();
         this.closeAuditDeleteDialog();
       })
       .catch((error) => {
@@ -825,6 +837,7 @@ export class TabletContent extends React.Component {
         actions={this.state.auditActionsFiltered}
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
+        openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : (
       <ContentEmpty />
@@ -905,6 +918,15 @@ export class TabletContent extends React.Component {
           getActions={this.getAuditActions}
         />
       ) : null;
+    const auditDeleteDialog =
+      this.props.page === "audit" ? (
+        <DialogAuditDelete
+          open={this.state.auditDeleteDialogOpen}
+          close={this.closeAuditDeleteDialog}
+          deleteAction={this.state.auditDeleteAction}
+          deleteActionFn={this.deleteAuditAction}
+        />
+      ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
         <DesktopDrawerNav
@@ -964,6 +986,7 @@ export class TabletContent extends React.Component {
           whitelist={this.props.whitelist}
         />
         {auditFilterDrawer}
+        {auditDeleteDialog}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}
@@ -1261,7 +1284,7 @@ export class MobileContent extends React.Component {
       .delete()
       .then(() => {
         this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
-        this.getActions();
+        this.getAuditActions();
         this.closeAuditDeleteDialog();
       })
       .catch((error) => {
@@ -1298,6 +1321,7 @@ export class MobileContent extends React.Component {
         actions={this.state.auditActionsFiltered}
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
+        openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : (
       <ContentEmpty />
@@ -1477,6 +1501,15 @@ export class MobileContent extends React.Component {
           getActions={this.getAuditActions}
         />
       ) : null;
+    const auditDeleteDialog =
+      this.props.page === "audit" ? (
+        <DialogAuditDelete
+          open={this.state.auditDeleteDialogOpen}
+          close={this.closeAuditDeleteDialog}
+          deleteAction={this.state.auditDeleteAction}
+          deleteActionFn={this.deleteAuditAction}
+        />
+      ) : null;
     return (
       <div
         className={
@@ -1515,6 +1548,7 @@ export class MobileContent extends React.Component {
           whitelist={this.props.whitelist}
         />
         {auditFilterDrawer}
+        {auditDeleteDialog}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}

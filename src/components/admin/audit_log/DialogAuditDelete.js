@@ -1,7 +1,7 @@
 import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
-export const DialogDelete = (props) => {
+export const DialogAuditDelete = (props) => {
   return (
     <Dialog open={props.open}>
       <DialogTitle>Delete Action</DialogTitle>
