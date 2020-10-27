@@ -1,14 +1,7 @@
-@use "@material/animation/_index" as animation;
-@use "@material/elevation/_index" as elevation;
-
 .mdc-top-app-bar {
   .rmwc-circular-progress {
     padding: 12px;
   }
-}
-
-.mdc-drawer-app-content {
-  flex-grow: 1;
 }
 
 .log-container {
