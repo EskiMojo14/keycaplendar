@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import { CircularProgress } from "@rmwc/circular-progress";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { MenuSurfaceAnchor } from "@rmwc/menu";
+import { Ripple } from "@rmwc/ripple";
+import { TabBar, Tab } from "@rmwc/tabs";
+import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -8,11 +14,6 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Tooltip } from "@rmwc/tooltip";
-import { Ripple } from "@rmwc/ripple";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { TabBar, Tab } from "@rmwc/tabs";
 import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal } from "./SearchBar";
@@ -94,6 +95,18 @@ export const DesktopAppBar = (props) => {
     audit: "Audit Log",
     users: "Users",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          this.getActions(this.state.filterLength);
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -291,6 +304,13 @@ export const DesktopAppBar = (props) => {
           </ToggleGroup>
         </TopAppBarSection>
       )
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
     ) : (
       <TopAppBarSection alignEnd>
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
@@ -446,6 +466,18 @@ export const TabletAppBar = (props) => {
     audit: "Audit Log",
     users: "Users",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          this.getActions(this.state.filterLength);
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -624,6 +656,13 @@ export const TabletAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
     ) : (
       <TopAppBarSection alignEnd>
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
@@ -790,6 +829,18 @@ export const MobileAppBar = (props) => {
     audit: "Audit Log",
     users: "Users",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          this.getActions(this.state.filterLength);
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -968,6 +1019,13 @@ export const MobileAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
     ) : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
@@ -1123,6 +1181,18 @@ export const BottomAppBar = (props) => {
       </svg>
     );
   }
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          this.getActions(this.state.filterLength);
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -1301,6 +1371,13 @@ export const BottomAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
     ) : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
