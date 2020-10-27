@@ -108,6 +108,7 @@ export const DesktopAppBar = (props) => {
     statistics: "Statistics",
     audit: "Audit Log",
     users: "Users",
+    settings: "Settings",
   };
   const refreshButton = props.loading ? (
     <CircularProgress />
@@ -384,7 +385,7 @@ export const DesktopAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
       </TopAppBarSection>
-    ) : (
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
@@ -545,6 +546,7 @@ export const TabletAppBar = (props) => {
     statistics: "Statistics",
     audit: "Audit Log",
     users: "Users",
+    settings: "Settings",
   };
   const refreshButton = props.loading ? (
     <CircularProgress />
@@ -766,7 +768,7 @@ export const TabletAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
       </TopAppBarSection>
-    ) : (
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort
@@ -938,6 +940,7 @@ export const MobileAppBar = (props) => {
     statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
     audit: "Audit Log",
     users: "Users",
+    settings: "Settings",
   };
   const refreshButton = props.loading ? (
     <CircularProgress />
@@ -1159,7 +1162,7 @@ export const MobileAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
       </TopAppBarSection>
-    ) : (
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort
@@ -1541,7 +1544,7 @@ export const BottomAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
       </TopAppBarSection>
-    ) : (
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort

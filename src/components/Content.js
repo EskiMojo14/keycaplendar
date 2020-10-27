@@ -9,6 +9,7 @@ import { ContentAudit } from "./content/ContentAudit";
 import { ContentEmpty } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
+import { ContentSettings } from "./content/ContentSettings";
 import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSettings } from "./common/DialogSettings";
@@ -389,6 +390,8 @@ export class DesktopContent extends React.Component {
         allDesigners={this.props.allDesigners}
         snackbarQueue={this.props.snackbarQueue}
       />
+    ) : this.props.page === "settings" ? (
+      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );
@@ -396,7 +399,8 @@ export class DesktopContent extends React.Component {
       (this.props.user.isEditor || this.props.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
-      this.props.page !== "users" ? (
+      this.props.page !== "users" &&
+      this.props.page !== "settings" ? (
         <div className="editor-elements">
           <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -908,6 +912,8 @@ export class TabletContent extends React.Component {
         allDesigners={this.props.allDesigners}
         snackbarQueue={this.props.snackbarQueue}
       />
+    ) : this.props.page === "settings" ? (
+      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );
@@ -915,7 +921,8 @@ export class TabletContent extends React.Component {
       (this.props.user.isEditor || this.props.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
-      this.props.page !== "users" ? (
+      this.props.page !== "users" &&
+      this.props.page !== "settings" ? (
         <div>
           <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -1416,6 +1423,8 @@ export class MobileContent extends React.Component {
         allDesigners={this.props.allDesigners}
         snackbarQueue={this.props.snackbarQueue}
       />
+    ) : this.props.page === "settings" ? (
+      <ContentSettings user={this.props.user} setUser={this.props.setUser} snackbarQueue={this.props.snackbarQueue} />
     ) : (
       <ContentEmpty />
     );
@@ -1423,7 +1432,8 @@ export class MobileContent extends React.Component {
       (this.props.user.isEditor || this.props.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
-      this.props.page !== "users" ? (
+      this.props.page !== "users" &&
+      this.props.page !== "settings" ? (
         <div>
           <Fab
             className={"create-fab" + (this.props.bottomNav ? " middle" : "")}
@@ -1488,7 +1498,8 @@ export class MobileContent extends React.Component {
         {(this.props.user.isEditor || this.props.user.isDesigner) &&
         this.props.page !== "statistics" &&
         this.props.page !== "audit" &&
-        this.props.page !== "users" ? (
+        this.props.page !== "users" &&
+        this.props.page !== "settings" ? (
           <BottomAppBarIndent
             page={this.props.page}
             loading={this.props.loading}

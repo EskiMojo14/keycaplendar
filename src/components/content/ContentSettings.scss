@@ -1,0 +1,40 @@
+@use "@material/rtl/_index" as rtl;
+
+.settings-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  .settings {
+    width: 768px;
+    max-width: 100%;
+    .subheader {
+      margin-bottom: 16px;
+      & + .mdc-card {
+        margin-bottom: 16px;
+      }
+    }
+    .mdc-card {
+      &.last-card {
+        margin-bottom: 0;
+      }
+      .account {
+        &::before,
+        &::after {
+          content: none;
+        }
+        .avatar {
+          @include rtl.reflexive-box(margin, right, 16px);
+          .user-icon {
+            top: auto;
+            @include rtl.reflexive-position(right, -6px);
+            bottom: -6px;
+          }
+        }
+        .button {
+          @include rtl.reflexive-box(margin, left, auto);
+          flex-shrink: 0;
+        }
+      }
+    }
+  }
+}

@@ -66,7 +66,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics", "audit", "users"];
+      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics", "audit", "users", "settings"];
       if (pages.includes(pageQuery)) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
@@ -210,6 +210,7 @@ class App extends React.Component {
         statistics: "Statistics",
         audit: "Audit Log",
         users: "Users",
+        settings: "Settings",
       };
       document.title = "KeycapLendar: " + title[page];
       window.history.pushState(
