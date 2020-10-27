@@ -211,6 +211,8 @@ class App extends React.Component {
         account: "Account",
         timeline: "Timeline",
         statistics: "Statistics",
+        audit: "Audit Log",
+        users: "Users",
       };
       document.title = "KeycapLendar: " + title[page];
       window.history.pushState(

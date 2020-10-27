@@ -91,6 +91,8 @@ export const DesktopAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: "Statistics",
+    audit: "Audit Log",
+    users: "Users",
   };
   const buttons =
     props.page === "statistics" ? (
@@ -441,6 +443,8 @@ export const TabletAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: "Statistics",
+    audit: "Audit Log",
+    users: "Users",
   };
   const buttons =
     props.page === "statistics" ? (
@@ -783,6 +787,8 @@ export const MobileAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
+    audit: "Audit Log",
+    users: "Users",
   };
   const buttons =
     props.page === "statistics" ? (

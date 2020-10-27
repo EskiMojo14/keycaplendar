@@ -77,7 +77,7 @@ export const DesktopDrawerNav = (props) => {
             ),
           }}
         />
-        Manage Users
+        Users
       </ListItem>
     </div>
   ) : null;
@@ -252,7 +252,7 @@ export const MobileDrawerNav = (props) => {
             ),
           }}
         />
-        Manage Users
+        Users
       </ListItem>
     </div>
   ) : null;
@@ -461,7 +461,7 @@ export const BottomDrawerNav = (props) => {
             ),
           }}
         />
-        Manage Users
+        Users
       </ListItem>
     </div>
   ) : null;
