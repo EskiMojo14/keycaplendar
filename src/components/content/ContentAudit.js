@@ -25,7 +25,7 @@ export class ContentAudit extends React.Component {
       "vendors",
     ];
     return (
-      <div>
+      <div className="admin-main">
         {this.props.actions.length > 0 || this.props.loading ? (
           <div className="log-container">
             <Card

@@ -49,6 +49,9 @@ export class DesktopContent extends React.Component {
       auditDeleteDialogOpen: false,
       auditDeleteAction: { changelogId: "" },
       auditUsers: [{ label: "All", value: "all" }],
+      userView: "table",
+      userSort: "nickname",
+      userReverseSort: false,
     };
   }
   openModal = () => {
@@ -302,6 +305,31 @@ export class DesktopContent extends React.Component {
         this.closeAuditDeleteDialog();
       });
   };
+  setUserView = (index) => {
+    const views = ["card", "table"];
+    this.setState({
+      userView: views[index],
+    });
+  };
+  setUserSort = (sort) => {
+    let reverseSort;
+    if (sort === this.state.userSort) {
+      reverseSort = !this.state.userReverseSort;
+    } else {
+      reverseSort = false;
+    }
+    this.setState({
+      userSort: sort,
+      userReverseSort: reverseSort,
+    });
+  };
+  setUserSortIndex = (index) => {
+    const props = ["displayName", "email", "nickname"];
+    this.setState({
+      userSort: props[index],
+      userReverseSort: false,
+    });
+  };
   componentDidUpdate(prevProps) {
     if (
       this.props.page !== prevProps.page &&
@@ -348,11 +376,16 @@ export class DesktopContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
       />
-    )  : this.props.page === "users" && this.props.user.isAdmin ? (
+    ) : this.props.page === "users" && this.props.user.isAdmin ? (
       <ContentUsers
         loading={this.props.loading}
+        toggleLoading={this.props.toggleLoading}
         user={this.props.user}
         device={this.props.device}
+        view={this.state.userView}
+        sort={this.state.userSort}
+        setSort={this.setUserSort}
+        reverseSort={this.state.userReverseSort}
         allDesigners={this.props.allDesigners}
         snackbarQueue={this.props.snackbarQueue}
       />
@@ -507,8 +540,13 @@ export class DesktopContent extends React.Component {
             getActions={this.getAuditActions}
             view={this.props.view}
             changeView={this.props.changeView}
+            userView={this.state.userView}
+            setUserView={this.setUserView}
             sort={this.props.sort}
             setSort={this.props.setSort}
+            userSort={this.state.userSort}
+            setUserSort={this.setUserSort}
+            setUserSortIndex={this.setUserSortIndex}
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
@@ -582,6 +620,8 @@ export class TabletContent extends React.Component {
       auditDeleteDialogOpen: false,
       auditDeleteAction: { changelogId: "" },
       auditUsers: [{ label: "All", value: "all" }],
+      userSort: "nickname",
+      userReverseSort: false,
     };
   }
   openModal = () => {
@@ -816,6 +856,13 @@ export class TabletContent extends React.Component {
         this.closeAuditDeleteDialog();
       });
   };
+  setUserSortIndex = (index) => {
+    const props = ["displayName", "email", "nickname"];
+    this.setState({
+      userSort: props[index],
+      userReverseSort: false,
+    });
+  };
   render() {
     const content = this.props.content ? (
       <ContentGrid
@@ -847,6 +894,19 @@ export class TabletContent extends React.Component {
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
+      />
+    ) : this.props.page === "users" && this.props.user.isAdmin ? (
+      <ContentUsers
+        loading={this.props.loading}
+        toggleLoading={this.props.toggleLoading}
+        user={this.props.user}
+        device={this.props.device}
+        view={"card"}
+        sort={this.state.userSort}
+        setSort={this.setUserSort}
+        reverseSort={this.state.userReverseSort}
+        allDesigners={this.props.allDesigners}
+        snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
       <ContentEmpty />
@@ -958,6 +1018,8 @@ export class TabletContent extends React.Component {
             changeView={this.props.changeView}
             sort={this.props.sort}
             setSort={this.props.setSort}
+            userSort={this.state.userSort}
+            setUserSortIndex={this.setUserSortIndex}
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
@@ -1050,6 +1112,8 @@ export class MobileContent extends React.Component {
       auditDeleteDialogOpen: false,
       auditDeleteAction: { changelogId: "" },
       auditUsers: [{ label: "All", value: "all" }],
+      userSort: "nickname",
+      userReverseSort: false,
     };
   }
   openModal = () => {
@@ -1301,6 +1365,13 @@ export class MobileContent extends React.Component {
         this.closeAuditDeleteDialog();
       });
   };
+  setUserSortIndex = (index) => {
+    const props = ["displayName", "email", "nickname"];
+    this.setState({
+      userSort: props[index],
+      userReverseSort: false,
+    });
+  };
   render() {
     const content = this.props.content ? (
       <ContentGrid
@@ -1331,6 +1402,19 @@ export class MobileContent extends React.Component {
         getActions={this.getAuditActions}
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
+      />
+    ) : this.props.page === "users" && this.props.user.isAdmin ? (
+      <ContentUsers
+        loading={this.props.loading}
+        toggleLoading={this.props.toggleLoading}
+        user={this.props.user}
+        device={this.props.device}
+        view={"card"}
+        sort={this.state.userSort}
+        setSort={this.setUserSort}
+        reverseSort={this.state.userReverseSort}
+        allDesigners={this.props.allDesigners}
+        snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
       <ContentEmpty />
@@ -1428,6 +1512,8 @@ export class MobileContent extends React.Component {
             changeView={this.props.changeView}
             sort={this.props.sort}
             setSort={this.props.setSort}
+            userSort={this.state.userSort}
+            setUserSortIndex={this.setUserSortIndex}
             search={this.props.search}
             setSearch={this.props.setSearch}
             sets={this.props.sets}
@@ -1462,6 +1548,8 @@ export class MobileContent extends React.Component {
           changeView={this.props.changeView}
           sort={this.props.sort}
           setSort={this.props.setSort}
+          userSort={this.state.userSort}
+          setUserSortIndex={this.setUserSortIndex}
           search={this.props.search}
           setSearch={this.props.setSearch}
           sets={this.props.sets}
