@@ -1464,6 +1464,8 @@ export class MobileContent extends React.Component {
     ) : this.props.page === "settings" ? (
       <ContentSettings
         device={this.props.device}
+        bottomNav={this.props.bottomNav}
+        changeBottomNav={this.props.changeBottomNav}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}

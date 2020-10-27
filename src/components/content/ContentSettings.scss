@@ -122,11 +122,21 @@
         &.density-card {
           padding: 16px;
         }
+        &.bottom-nav-card {
+          .mdc-form-field {
+            label {
+              padding: 0;
+              flex-grow: 1;
+            }
+            .mdc-switch {
+              order: 1;
+            }
+          }
+        }
       }
     }
     &-group:last-child {
       .mdc-card {
-        
         margin-bottom: 0;
       }
     }

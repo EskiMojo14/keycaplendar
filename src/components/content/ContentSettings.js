@@ -96,6 +96,21 @@ export const ContentSettings = (props) => {
       </Card>
     </div>
   ) : null;
+  const bottomNav =
+    props.device === "mobile" && props.changeBottomNav ? (
+      <div className="settings-group">
+        <div className="subheader">
+          <Typography use="caption">UI</Typography>
+        </div>
+        <Card className="bottom-nav-card">
+          <Switch
+            label="Bottom navigation"
+            checked={props.bottomNav}
+            onChange={(evt) => props.changeBottomNav(evt.currentTarget.checked)}
+          />
+        </Card>
+      </div>
+    ) : null;
   const themeOptions =
     props.applyTheme === "system" ? null : props.applyTheme === "timed" ? (
       <div className="theme-form-field--flex">
@@ -128,7 +143,7 @@ export const ContentSettings = (props) => {
           </div>
         </FormField>
         <FormField className="theme-form-field">
-          <Typography use="body2">to</Typography>
+          <Typography use="body2">To</Typography>
           <div>
             <TextField
               outlined
@@ -170,7 +185,6 @@ export const ContentSettings = (props) => {
         />
       </FormField>
     );
-
   const density =
     props.device !== "mobile" ? (
       <div className="settings-group">
@@ -209,6 +223,7 @@ export const ContentSettings = (props) => {
       <div className="settings-container">
         <div className="settings">
           {user}
+          {bottomNav}
           <div className="settings-group">
             <div className="subheader">
               <Typography use="caption">Light theme</Typography>
