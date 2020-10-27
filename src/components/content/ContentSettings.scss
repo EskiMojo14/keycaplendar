@@ -40,6 +40,32 @@
       }
       &.theme-card {
         padding: 16px;
+        .theme-form-field {
+          justify-content: stretch;
+          margin-bottom: 16px;
+          .mdc-typography--body2 {
+            padding: 0;
+            flex-grow: 1;
+          }
+          &--flex {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+          }
+          .mdc-select {
+            @include rtl.reflexive-box(margin, left, 16px);
+            .mdc-select__selected-text {
+              min-width: 0;
+              width: 112px;
+            }
+          }
+          .mdc-text-field {
+            min-width: 160px;
+          }
+          input[type="time"]::-webkit-calendar-picker-indicator {
+            background: none;
+          }
+        }
         .theme-list.mdc-list {
           padding: 0;
           border-radius: 4px;
@@ -72,15 +98,24 @@
           .dark {
             background-color: #1f1f1f;
           }
-          .light, .sepia, .grey, .deep, .dark {
+          .light,
+          .sepia,
+          .grey,
+          .deep,
+          .dark {
             @include radio.checked-stroke-color(palette.$deep-orange-200);
             @include radio.ink-color(palette.$deep-orange-200);
           }
-          .ocean, .deep-ocean {
+          .ocean,
+          .deep-ocean {
             @include radio.checked-stroke-color(palette.$light-green-200);
             @include radio.ink-color(palette.$light-green-200);
           }
-          .ocean, .grey, .deep-ocean, .deep, .dark {
+          .ocean,
+          .grey,
+          .deep-ocean,
+          .deep,
+          .dark {
             color: rgba(white, 0.87);
             @include radio.unchecked-stroke-color(rgba(white, 0.6));
             @include ripple.states(white);

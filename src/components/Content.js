@@ -398,6 +398,14 @@ export class DesktopContent extends React.Component {
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
+        applyTheme={this.props.applyTheme}
+        changeApplyTheme={this.props.changeApplyTheme}
+        manualTheme={this.props.manualTheme}
+        setManualTheme={this.props.setManualTheme}
+        fromTimeTheme={this.props.fromTimeTheme}
+        setFromTimeTheme={this.props.setFromTimeTheme}
+        toTimeTheme={this.props.toTimeTheme}
+        setToTimeTheme={this.props.setToTimeTheme}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
@@ -928,6 +936,14 @@ export class TabletContent extends React.Component {
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
+        applyTheme={this.props.applyTheme}
+        changeApplyTheme={this.props.changeApplyTheme}
+        manualTheme={this.props.manualTheme}
+        setManualTheme={this.props.setManualTheme}
+        fromTimeTheme={this.props.fromTimeTheme}
+        setFromTimeTheme={this.props.setFromTimeTheme}
+        toTimeTheme={this.props.toTimeTheme}
+        setToTimeTheme={this.props.setToTimeTheme}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
@@ -1447,6 +1463,14 @@ export class MobileContent extends React.Component {
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
+        applyTheme={this.props.applyTheme}
+        changeApplyTheme={this.props.changeApplyTheme}
+        manualTheme={this.props.manualTheme}
+        setManualTheme={this.props.setManualTheme}
+        fromTimeTheme={this.props.fromTimeTheme}
+        setFromTimeTheme={this.props.setFromTimeTheme}
+        toTimeTheme={this.props.toTimeTheme}
+        setToTimeTheme={this.props.setToTimeTheme}
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (

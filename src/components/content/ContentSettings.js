@@ -4,8 +4,12 @@ import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
+import { FormField } from "@rmwc/formfield";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
+import { Select } from "@rmwc/select";
+import { Switch } from "@rmwc/switch";
+import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import "./ContentSettings.scss";
 
@@ -26,6 +30,10 @@ export const ContentSettings = (props) => {
         console.log("Error signing out: " + error);
         props.snackbarQueue.notify({ title: "Error signing out: " + error });
       });
+  };
+  const setApplyTheme = (e) => {
+    const applyThemeOptions = ["manual", "timed", "system"];
+    props.changeApplyTheme(applyThemeOptions[e.detail.index]);
   };
   const userBadge =
     props.user.isAdmin || props.user.isEditor || props.user.isDesigner ? (
@@ -87,6 +95,80 @@ export const ContentSettings = (props) => {
       </Card>
     </div>
   ) : null;
+  const themeOptions =
+    props.applyTheme === "system" ? null : props.applyTheme === "timed" ? (
+      <div className="theme-form-field--flex">
+        <FormField className="theme-form-field">
+          <Typography use="body2">From</Typography>
+          <div>
+            <TextField
+              outlined
+              icon={{
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.25 12.15L11 13V7h1.5v5.25l4.5 2.67-.75 1.23z"
+                      opacity=".3"
+                    />
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                  </svg>
+                ),
+              }}
+              pattern="^\d{2}:\d{2}"
+              placeholder="--:--"
+              helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
+              type="time"
+              value={props.fromTimeTheme}
+              onChange={(e) => {
+                props.setFromTimeTheme(e.target.value);
+              }}
+            />
+          </div>
+        </FormField>
+        <FormField className="theme-form-field">
+          <Typography use="body2">to</Typography>
+          <div>
+            <TextField
+              outlined
+              icon={{
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.25 12.15L11 13V7h1.5v5.25l4.5 2.67-.75 1.23z"
+                      opacity=".3"
+                    />
+                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                  </svg>
+                ),
+              }}
+              pattern="^\d{2}:\d{2}"
+              placeholder="--:--"
+              helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
+              type="time"
+              value={props.toTimeTheme}
+              onChange={(e) => {
+                props.setToTimeTheme(e.target.value);
+              }}
+            />
+          </div>
+        </FormField>
+      </div>
+    ) : (
+      <FormField className="theme-form-field">
+        <Typography use="body2" tag="label" htmlFor="manualTheme">
+          Dark theme
+        </Typography>
+        <Switch
+          id="manualTheme"
+          checked={props.manualTheme}
+          onChange={(e) => {
+            props.setManualTheme(e.target.checked);
+          }}
+        />
+      </FormField>
+    );
   return (
     <div className="admin-main">
       <div className="settings-container">
@@ -118,6 +200,19 @@ export const ContentSettings = (props) => {
               <Typography use="caption">Dark theme</Typography>
             </div>
             <Card className="theme-card">
+              <FormField className="theme-form-field">
+                <Typography use="body2">Apply dark theme</Typography>
+                <Select
+                  enhanced
+                  outlined
+                  value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
+                  options={["Manual", "Timed", "System"]}
+                  onChange={(e) => {
+                    setApplyTheme(e);
+                  }}
+                />
+              </FormField>
+              {themeOptions}
               <List className="theme-list">
                 <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
                   Ocean
