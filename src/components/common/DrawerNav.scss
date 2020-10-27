@@ -105,17 +105,3 @@
     }
   }
 }
-
-.mdc-drawer .drawer-footer {
-  border-top: 1px solid var(--divider-color);
-  user-select: none;
-  &-list.mdc-list {
-    padding: 0;
-    width: 100%;
-    .mdc-list-item {
-      padding: 8px 16px;
-      margin: 0;
-      border-radius: 0;
-    }
-  }
-}

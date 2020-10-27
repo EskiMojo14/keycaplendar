@@ -148,11 +148,8 @@ export const DesktopDrawerNav = (props) => {
             Statistics
           </ListItem>
           {adminOptions}
-        </List>
-      </DrawerContent>
-      <div className="drawer-footer">
-        <List className="drawer-footer-list">
-          <ListItem onClick={props.openSettings}>
+          <ListDivider />
+          <ListItem onClick={(e) => props.changePage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -171,7 +168,7 @@ export const DesktopDrawerNav = (props) => {
             Settings
           </ListItem>
         </List>
-      </div>
+      </DrawerContent>
     </Drawer>
   );
 };
@@ -562,14 +559,11 @@ export const BottomDrawerNav = (props) => {
             Statistics
           </ListItem>
           {adminOptions}
-        </List>
-      </DrawerContent>
-      <div className="drawer-footer">
-        <List className="drawer-footer-list">
+          <ListDivider />
+
           <ListItem
             onClick={() => {
-              props.close();
-              props.openSettings();
+              changePage("settings");
             }}
           >
             <ListItemGraphic
@@ -590,7 +584,7 @@ export const BottomDrawerNav = (props) => {
             Settings
           </ListItem>
         </List>
-      </div>
+      </DrawerContent>
     </Drawer>
   );
 };
