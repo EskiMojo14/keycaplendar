@@ -200,7 +200,10 @@ export class DesktopContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      this.props.page !== "statistics" &&
+      this.props.page !== "audit" &&
+      this.props.page !== "users" ? (
         <div className="editor-elements">
           <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -520,7 +523,10 @@ export class TabletContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      this.props.page !== "statistics" &&
+      this.props.page !== "audit" &&
+      this.props.page !== "users" ? (
         <div>
           <Fab className="create-fab" icon="add" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -830,7 +836,10 @@ export class MobileContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
+      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      this.props.page !== "statistics" &&
+      this.props.page !== "audit" &&
+      this.props.page !== "users" ? (
         <div>
           <Fab
             className={"create-fab" + (this.props.bottomNav ? " middle" : "")}
@@ -892,7 +901,10 @@ export class MobileContent extends React.Component {
           openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
-        {(this.props.user.isEditor || this.props.user.isDesigner) && this.props.page !== "statistics" ? (
+        {(this.props.user.isEditor || this.props.user.isDesigner) &&
+        this.props.page !== "statistics" &&
+        this.props.page !== "audit" &&
+        this.props.page !== "users" ? (
           <BottomAppBarIndent
             page={this.props.page}
             loading={this.props.loading}
