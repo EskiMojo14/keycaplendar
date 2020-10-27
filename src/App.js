@@ -6,7 +6,6 @@ import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/admin/Login";
 import { Users } from "./components/admin/users/Users";
-import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
@@ -974,12 +973,6 @@ class App extends React.Component {
           </Route>
           <Route path="/guide/entries">
             <EntryGuide />
-          </Route>
-          <Route path="/audit">
-            <div className={"density-" + this.state.density}>
-              <AuditLog device={this.state.device} snackbarQueue={queue} />
-              <SnackbarQueue messages={queue.messages} />
-            </div>
           </Route>
           <Route path="/">
             <div className={"app density-" + this.state.density}>

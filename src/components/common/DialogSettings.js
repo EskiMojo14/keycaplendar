@@ -157,9 +157,6 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         Admin
       </Typography>
       <div className="buttons">
-        <Link to="/audit">
-          <Button label="Audit log" onClick={props.close} />
-        </Link>
         <Link to="/users">
           <Button label="Manage users" onClick={props.close} />
         </Link>
