@@ -14,8 +14,6 @@
     z-index: -1;
   }
   .legal {
-    border-radius: 4px;
-    @include elevation.elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
     padding: 16px;

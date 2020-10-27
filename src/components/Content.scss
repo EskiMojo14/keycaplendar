@@ -70,7 +70,10 @@
     transition: height 250ms animation.$standard-curve-timing-function;
     z-index: -1;
   }
-  &.content.card::before, .statistics &::before {
+  &.content.card::before,
+  .statistics &::before,
+  .audit &::before,
+  .users &::before {
     height: 256px - top-app-bar.$row-height;
   }
 }
@@ -96,7 +99,10 @@
   .content-container .main {
     max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
-  .main.content.card::before, .statistics .main::before {
+  .main.content.card::before,
+  .statistics .main::before,
+  .audit .main::before,
+  .users .main::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
 }

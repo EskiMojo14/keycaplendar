@@ -21,8 +21,6 @@
     z-index: -1;
   }
   .users {
-    border-radius: 4px;
-    @include elevation.elevation(1);
     .mdc-data-table {
       overflow: visible;
       border: none;

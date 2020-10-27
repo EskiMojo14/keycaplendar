@@ -18,6 +18,7 @@ import {
   DataTableHeadCell,
   DataTableBody,
 } from "@rmwc/data-table";
+import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Ripple } from "@rmwc/ripple";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -285,7 +286,7 @@ export class Users extends React.Component {
         <div className="users-container-container">
           <div className="users-container">
             {this.state.view === "table" && this.props.device === "desktop" ? (
-              <div className="users">
+              <Card className="users">
                 <DataTable>
                   <DataTableContent>
                     <DataTableHead>
@@ -365,7 +366,7 @@ export class Users extends React.Component {
                     </DataTableBody>
                   </DataTableContent>
                 </DataTable>
-              </div>
+              </Card>
             ) : (
               <div className="user-container">
                 {this.state.users.map((user, index) => {

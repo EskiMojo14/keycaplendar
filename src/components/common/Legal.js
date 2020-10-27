@@ -8,6 +8,7 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarNavigationIcon,
 } from "@rmwc/top-app-bar";
+import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import "./Legal.scss";
 
@@ -26,7 +27,7 @@ export const PrivacyPolicy = () => {
       </TopAppBar>
       <TopAppBarFixedAdjust />
       <div className="legal-container">
-        <div className="legal">
+        <Card className="legal">
           <Typography use="body2" tag="p">
             Your privacy is important to us. It is KeycapLendar's policy to respect your privacy regarding any
             information we may collect from you across our website,{" "}
@@ -68,7 +69,7 @@ export const PrivacyPolicy = () => {
               Privacy Policy created with GetTerms.
             </a>
           </Typography>
-        </div>
+        </Card>
       </div>
     </div>
   );
@@ -89,7 +90,7 @@ export const TermsOfService = () => {
       </TopAppBar>
       <TopAppBarFixedAdjust />
       <div className="legal-container">
-        <div className="legal">
+        <Card className="legal">
           <Typography use="headline5">1. Terms</Typography>
           <Typography use="body2" tag="p">
             By accessing the website at <a href="http://keycaplendar.com">http://keycaplendar.com</a>, you are agreeing
@@ -181,7 +182,7 @@ export const TermsOfService = () => {
               Terms of Use created with GetTerms.
             </a>
           </Typography>
-        </div>
+        </Card>
       </div>
     </div>
   );

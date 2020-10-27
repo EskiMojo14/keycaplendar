@@ -11,6 +11,7 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { List } from "@rmwc/list";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -227,7 +228,7 @@ export class AuditLog extends React.Component {
                   "log-container" + (this.state.filterDrawerOpen && this.props.device === "desktop" ? "" : " extended")
                 }
               >
-                <div
+                <Card
                   className={
                     "log" + (this.state.actionsFiltered.length === 0 && this.state.loading ? " placeholder" : "")
                   }
@@ -246,7 +247,7 @@ export class AuditLog extends React.Component {
                       );
                     })}
                   </List>
-                </div>
+                </Card>
               </div>
             ) : (
               <ContentEmpty />

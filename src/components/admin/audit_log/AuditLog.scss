@@ -29,8 +29,6 @@
     height: 128px;
   }
   .log {
-    border-radius: 4px;
-    @include elevation.elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
     position: relative;
