@@ -295,7 +295,7 @@ export class DesktopContent extends React.Component {
         />
       );
     return (
-      <div className={this.props.className + "app-container"}>
+      <div className={this.props.className + " app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           close={this.toggleNavDrawer}
@@ -579,7 +579,7 @@ export class TabletContent extends React.Component {
         />
       ) : null;
     return (
-      <div className={this.props.className + "app-container"}>
+      <div className={this.props.className + " app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -986,7 +986,7 @@ export class MobileContent extends React.Component {
       <div
         className={
           this.props.className +
-          "app-container " +
+          " app-container " +
           this.props.page +
           " " +
           (this.props.user.isEditor || this.props.user.isDesigner ? " offset-snackbar" : "") +
