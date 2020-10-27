@@ -3,7 +3,6 @@ import moment from "moment";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";
-import { ContentEmpty } from "../content/ContentEmpty";
 import "./ContentAudit.scss";
 
 export class ContentAudit extends React.Component {
@@ -26,30 +25,24 @@ export class ContentAudit extends React.Component {
     ];
     return (
       <div className="admin-main">
-        {this.props.actions.length > 0 || this.props.loading ? (
-          <div className="log-container">
-            <Card
-              className={"log" + (this.props.actions.length === 0 && this.props.loading ? " placeholder" : "")}
-            >
-              <List twoLine className="three-line">
-                {this.props.actions.map((action, index) => {
-                  const timestamp = moment.utc(action.timestamp);
-                  return (
-                    <AuditEntry
-                      key={index}
-                      action={action}
-                      timestamp={timestamp}
-                      openDeleteDialog={this.props.openDeleteDialog}
-                      properties={properties}
-                    />
-                  );
-                })}
-              </List>
-            </Card>
-          </div>
-        ) : (
-          <ContentEmpty />
-        )}
+        <div className="log-container">
+          <Card className={"log" + (this.props.actions.length === 0 ? " placeholder" : "")}>
+            <List twoLine className="three-line">
+              {this.props.actions.map((action, index) => {
+                const timestamp = moment.utc(action.timestamp);
+                return (
+                  <AuditEntry
+                    key={index}
+                    action={action}
+                    timestamp={timestamp}
+                    openDeleteDialog={this.props.openDeleteDialog}
+                    properties={properties}
+                  />
+                );
+              })}
+            </List>
+          </Card>
+        </div>
       </div>
     );
   }
