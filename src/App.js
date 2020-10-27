@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/admin/Login";
-import { Users } from "./components/admin/users/Users";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
@@ -950,18 +949,6 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route path="/users">
-            <div className={"density-" + this.state.density}>
-              <Users
-                admin={this.state.user.isAdmin}
-                user={this.state.user}
-                snackbarQueue={queue}
-                allDesigners={this.state.allDesigners}
-                device={this.state.device}
-              />
-              <SnackbarQueue messages={queue.messages} />
-            </div>
-          </Route>
           <Route path="/login">
             <Login device={this.state.device} user={this.state.user} setUser={this.setUser} />
           </Route>

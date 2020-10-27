@@ -1,6 +1,5 @@
 import React from "react";
 import firebase from "../firebase";
-import { Link } from "react-router-dom";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -157,9 +156,6 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         Admin
       </Typography>
       <div className="buttons">
-        <Link to="/users">
-          <Button label="Manage users" onClick={props.close} />
-        </Link>
         <Button label="Refresh data" onClick={props.getData} />
         <Button label="Create thumbnails" onClick={createThumbs} />
       </div>
