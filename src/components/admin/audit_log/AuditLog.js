@@ -18,7 +18,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { ContentEmpty } from "../../content/ContentEmpty";
 import { AuditEntry } from "./AuditEntry.js";
 import { DialogDelete } from "./DialogDelete.js";
-import { AuditFilter } from "./AuditFilter.js";
+import { DrawerAuditFilter } from "./DrawerAuditFilter.js";
 import "./AuditLog.scss";
 
 export class AuditLog extends React.Component {
@@ -210,7 +210,7 @@ export class AuditLog extends React.Component {
         </TopAppBar>
         <TopAppBarFixedAdjust />
         <div className="content-container">
-          <AuditFilter
+          <DrawerAuditFilter
             open={this.state.filterDrawerOpen}
             close={this.closeFilterDrawer}
             device={this.props.device}

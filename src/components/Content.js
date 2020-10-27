@@ -1,5 +1,6 @@
 import React from "react";
 import "./Content.scss";
+import firebase from "firebase";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
@@ -15,6 +16,7 @@ import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
+import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
@@ -36,6 +38,15 @@ export class DesktopContent extends React.Component {
       deleteSnackbarOpen: false,
       deleteSet: {},
       settingsDialogOpen: false,
+      auditActions: [],
+      auditActionsFiltered: [],
+      auditFilterAction: "none",
+      auditFilterUser: "all",
+      auditLength: 50,
+      auditFilterDrawerOpen: false,
+      auditDeleteDialogOpen: false,
+      auditDeleteAction: { changelogId: "" },
+      auditUsers: [{ label: "All", value: "all" }],
     };
   }
   openModal = () => {
@@ -160,6 +171,135 @@ export class DesktopContent extends React.Component {
     this.closeModal();
     this.setState({ settingsDialogOpen: false });
   };
+  openAuditDeleteDialog = (action) => {
+    this.setState({
+      auditDeleteDialogOpen: true,
+      auditDeleteAction: action,
+    });
+  };
+  closeAuditDeleteDialog = () => {
+    this.setState({
+      auditDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        auditDeleteAction: {
+          changelogId: "",
+        },
+      });
+    }, 100);
+  };
+  toggleAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: !this.state.auditFilterDrawerOpen,
+    });
+  };
+  closeAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: false,
+    });
+  };
+  handleAuditFilterChange = (e, prop) => {
+    this.setState({
+      ["audit" + prop.charAt(0).toUpperCase() + prop.slice(1)]: e.target.value,
+    });
+
+    this.filterAuditActions(
+      this.state.action,
+      prop === "filterAction" ? e.target.value : this.state.auditFilterAction,
+      prop === "filterUser" ? e.target.value : this.state.auditFilterUser
+    );
+  };
+  getAuditActions = (num = this.state.auditLength) => {
+    if (!this.props.loading) {
+      this.props.toggleLoading();
+    }
+    this.setState({ auditLength: num });
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .orderBy("timestamp", "desc")
+      .limit(parseInt(num))
+      .get()
+      .then((querySnapshot) => {
+        let actions = [];
+        let users = [{ label: "All", value: "all" }];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.changelogId = doc.id;
+          actions.push(data);
+          if (users.filter((e) => e.value === data.user.nickname).length === 0) {
+            users.push({ label: data.user.nickname, value: data.user.nickname });
+          }
+        });
+
+        actions.sort(function (a, b) {
+          var x = a.timestamp.toLowerCase();
+          var y = b.timestamp.toLowerCase();
+          if (x < y) {
+            return 1;
+          }
+          if (x > y) {
+            return -1;
+          }
+          return 0;
+        });
+        this.setState({
+          auditActions: actions,
+          auditUsers: users,
+        });
+
+        this.filterAuditActions(actions);
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        if (this.props.loading) {
+          this.props.toggleLoading();
+        }
+      });
+  };
+
+  filterAuditActions = (
+    actions = this.state.auditActions,
+    filterAction = this.state.auditFilterAction,
+    filterUser = this.state.auditFilterUser
+  ) => {
+    let filteredActions = actions;
+
+    if (filterAction !== "none") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.action === filterAction;
+      });
+    }
+
+    if (filterUser !== "all") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.user.nickname === filterUser;
+      });
+    }
+
+    this.setState({
+      auditActionsFiltered: filteredActions,
+    });
+    if (this.props.loading) {
+      this.props.toggleLoading();
+    }
+  };
+  deleteAuditAction = (action) => {
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .doc(action.changelogId)
+      .delete()
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        this.getActions();
+        this.closeAuditDeleteDialog();
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        this.closeAuditDeleteDialog();
+      });
+  };
   componentDidUpdate(prevProps) {
     if (
       this.props.page !== prevProps.page &&
@@ -199,7 +339,12 @@ export class DesktopContent extends React.Component {
         allVendors={this.props.allVendors}
       />
     ) : this.props.page === "audit" && this.props.user.isAdmin ? (
-      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
+      <ContentAudit
+        loading={this.props.loading}
+        actions={this.state.auditActionsFiltered}
+        getActions={this.getAuditActions}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );
@@ -301,8 +446,22 @@ export class DesktopContent extends React.Component {
           whitelist={this.props.whitelist}
         />
       );
+    const auditFilterDrawer =
+      this.props.page === "audit" ? (
+        <DrawerAuditFilter
+          open={this.state.auditFilterDrawerOpen}
+          close={this.closeAuditFilterDrawer}
+          device={this.props.device}
+          handleFilterChange={this.handleAuditFilterChange}
+          filterAction={this.state.auditFilterAction}
+          filterUser={this.state.auditFilterUser}
+          users={this.state.auditUsers}
+          auditLength={this.state.auditLength}
+          getActions={this.getAuditActions}
+        />
+      ) : null;
     return (
-      <div className={this.props.className + " app-container"}>
+      <div className={this.props.className + " " + this.props.page + " app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           close={this.toggleNavDrawer}
@@ -314,8 +473,9 @@ export class DesktopContent extends React.Component {
         <DrawerAppContent
           className={
             (this.state.detailsDrawerOpen && this.props.view !== "compact" ? "details-drawer-open " : "") +
-            (this.state.filterDrawerOpen && this.props.view !== "compact" ? "filter-drawer-open " : "") +
-            this.props.page
+            ((this.state.filterDrawerOpen || this.state.auditFilterDrawerOpen) && this.props.view !== "compact"
+              ? "filter-drawer-open"
+              : "")
           }
         >
           <DesktopAppBar
@@ -323,6 +483,8 @@ export class DesktopContent extends React.Component {
             loading={this.props.loading}
             toggleNav={this.toggleNavDrawer}
             toggleFilter={this.toggleFilterDrawer}
+            toggleAuditFilter={this.toggleAuditFilterDrawer}
+            getActions={this.getAuditActions}
             view={this.props.view}
             changeView={this.props.changeView}
             sort={this.props.sort}
@@ -340,6 +502,7 @@ export class DesktopContent extends React.Component {
           <div className="content-container">
             {detailsDrawer}
             {filterDrawer}
+            {auditFilterDrawer}
             <DrawerAppContent className={"main " + this.props.view + (this.props.content ? " content" : "")}>
               {content}
               <Footer />
@@ -389,6 +552,15 @@ export class TabletContent extends React.Component {
       deleteSet: {},
       settingsDialogOpen: false,
       statisticsDialogOpen: false,
+      auditActions: [],
+      auditActionsFiltered: [],
+      auditFilterAction: "none",
+      auditFilterUser: "all",
+      auditLength: 50,
+      auditFilterDrawerOpen: false,
+      auditDeleteDialogOpen: false,
+      auditDeleteAction: { changelogId: "" },
+      auditUsers: [{ label: "All", value: "all" }],
     };
   }
   openModal = () => {
@@ -494,8 +666,134 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({ statisticsDialogOpen: false });
   };
-  toggleLoading = () => {
-    this.setState({ loading: !this.state.loading });
+  openAuditDeleteDialog = (action) => {
+    this.setState({
+      auditDeleteDialogOpen: true,
+      auditDeleteAction: action,
+    });
+  };
+  closeAuditDeleteDialog = () => {
+    this.setState({
+      auditDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        auditDeleteAction: {
+          changelogId: "",
+        },
+      });
+    }, 100);
+  };
+  openAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: !this.state.auditFilterDrawerOpen,
+    });
+  };
+  closeAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: false,
+    });
+  };
+  handleAuditFilterChange = (e, prop) => {
+    this.setState({
+      ["audit" + prop.charAt(0).toUpperCase() + prop.slice(1)]: e.target.value,
+    });
+
+    this.filterAuditActions(
+      this.state.action,
+      prop === "filterAction" ? e.target.value : this.state.auditFilterAction,
+      prop === "filterUser" ? e.target.value : this.state.auditFilterUser
+    );
+  };
+  getAuditActions = (num = this.state.auditLength) => {
+    if (!this.props.loading) {
+      this.props.toggleLoading();
+    }
+    this.setState({ auditLength: num });
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .orderBy("timestamp", "desc")
+      .limit(parseInt(num))
+      .get()
+      .then((querySnapshot) => {
+        let actions = [];
+        let users = [{ label: "All", value: "all" }];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.changelogId = doc.id;
+          actions.push(data);
+          if (users.filter((e) => e.value === data.user.nickname).length === 0) {
+            users.push({ label: data.user.nickname, value: data.user.nickname });
+          }
+        });
+
+        actions.sort(function (a, b) {
+          var x = a.timestamp.toLowerCase();
+          var y = b.timestamp.toLowerCase();
+          if (x < y) {
+            return 1;
+          }
+          if (x > y) {
+            return -1;
+          }
+          return 0;
+        });
+        this.setState({
+          auditActions: actions,
+          auditUsers: users,
+        });
+
+        this.filterAuditActions(actions);
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        if (this.props.loading) {
+          this.props.toggleLoading();
+        }
+      });
+  };
+
+  filterAuditActions = (
+    actions = this.state.auditActions,
+    filterAction = this.state.auditFilterAction,
+    filterUser = this.state.auditFilterUser
+  ) => {
+    let filteredActions = actions;
+
+    if (filterAction !== "none") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.action === filterAction;
+      });
+    }
+
+    if (filterUser !== "all") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.user.nickname === filterUser;
+      });
+    }
+
+    this.setState({
+      auditActionsFiltered: filteredActions,
+    });
+    if (this.props.loading) {
+      this.props.toggleLoading();
+    }
+  };
+  deleteAuditAction = (action) => {
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .doc(action.changelogId)
+      .delete()
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        this.getActions();
+        this.closeAuditDeleteDialog();
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        this.closeAuditDeleteDialog();
+      });
   };
   render() {
     const content = this.props.content ? (
@@ -522,7 +820,12 @@ export class TabletContent extends React.Component {
         allVendors={this.props.allVendors}
       />
     ) : this.props.page === "audit" && this.props.user.isAdmin ? (
-      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
+      <ContentAudit
+        loading={this.props.loading}
+        actions={this.state.auditActionsFiltered}
+        getActions={this.getAuditActions}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );
@@ -588,8 +891,22 @@ export class TabletContent extends React.Component {
           statisticsTab={this.props.statisticsTab}
         />
       ) : null;
+    const auditFilterDrawer =
+      this.props.page === "audit" ? (
+        <DrawerAuditFilter
+          open={this.state.auditFilterDrawerOpen}
+          close={this.closeAuditFilterDrawer}
+          device={this.props.device}
+          handleFilterChange={this.handleAuditFilterChange}
+          filterAction={this.state.auditFilterAction}
+          filterUser={this.state.auditFilterUser}
+          users={this.state.auditUsers}
+          auditLength={this.state.auditLength}
+          getActions={this.getAuditActions}
+        />
+      ) : null;
     return (
-      <div className={this.props.className + " app-container"}>
+      <div className={this.props.className + " " + this.props.page + " app-container"}>
         <DesktopDrawerNav
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -598,12 +915,14 @@ export class TabletContent extends React.Component {
           openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
-        <DrawerAppContent className={this.props.page}>
+        <DrawerAppContent>
           <TabletAppBar
             page={this.props.page}
             loading={this.props.loading}
             toggleNav={this.toggleNavDrawer}
             toggleFilter={this.openFilterDrawer}
+            openAuditFilter={this.openAuditFilterDrawer}
+            getActions={this.getAuditActions}
             view={this.props.view}
             changeView={this.props.changeView}
             sort={this.props.sort}
@@ -644,6 +963,7 @@ export class TabletContent extends React.Component {
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
         />
+        {auditFilterDrawer}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}
@@ -689,6 +1009,15 @@ export class MobileContent extends React.Component {
       settingsDialogOpen: false,
       statisticsDialogOpen: false,
       searchBarOpen: false,
+      auditActions: [],
+      auditActionsFiltered: [],
+      auditFilterAction: "none",
+      auditFilterUser: "all",
+      auditLength: 50,
+      auditFilterDrawerOpen: false,
+      auditDeleteDialogOpen: false,
+      auditDeleteAction: { changelogId: "" },
+      auditUsers: [{ label: "All", value: "all" }],
     };
   }
   openModal = () => {
@@ -811,6 +1140,135 @@ export class MobileContent extends React.Component {
   closeSearchBar = () => {
     this.setState({ searchBarOpen: false });
   };
+  openAuditDeleteDialog = (action) => {
+    this.setState({
+      auditDeleteDialogOpen: true,
+      auditDeleteAction: action,
+    });
+  };
+  closeAuditDeleteDialog = () => {
+    this.setState({
+      auditDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        auditDeleteAction: {
+          changelogId: "",
+        },
+      });
+    }, 100);
+  };
+  openAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: !this.state.auditFilterDrawerOpen,
+    });
+  };
+  closeAuditFilterDrawer = () => {
+    this.setState({
+      auditFilterDrawerOpen: false,
+    });
+  };
+  handleAuditFilterChange = (e, prop) => {
+    this.setState({
+      ["audit" + prop.charAt(0).toUpperCase() + prop.slice(1)]: e.target.value,
+    });
+
+    this.filterAuditActions(
+      this.state.action,
+      prop === "filterAction" ? e.target.value : this.state.auditFilterAction,
+      prop === "filterUser" ? e.target.value : this.state.auditFilterUser
+    );
+  };
+  getAuditActions = (num = this.state.auditLength) => {
+    if (!this.props.loading) {
+      this.props.toggleLoading();
+    }
+    this.setState({ auditLength: num });
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .orderBy("timestamp", "desc")
+      .limit(parseInt(num))
+      .get()
+      .then((querySnapshot) => {
+        let actions = [];
+        let users = [{ label: "All", value: "all" }];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.changelogId = doc.id;
+          actions.push(data);
+          if (users.filter((e) => e.value === data.user.nickname).length === 0) {
+            users.push({ label: data.user.nickname, value: data.user.nickname });
+          }
+        });
+
+        actions.sort(function (a, b) {
+          var x = a.timestamp.toLowerCase();
+          var y = b.timestamp.toLowerCase();
+          if (x < y) {
+            return 1;
+          }
+          if (x > y) {
+            return -1;
+          }
+          return 0;
+        });
+        this.setState({
+          auditActions: actions,
+          auditUsers: users,
+        });
+
+        this.filterAuditActions(actions);
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        if (this.props.loading) {
+          this.props.toggleLoading();
+        }
+      });
+  };
+
+  filterAuditActions = (
+    actions = this.state.auditActions,
+    filterAction = this.state.auditFilterAction,
+    filterUser = this.state.auditFilterUser
+  ) => {
+    let filteredActions = actions;
+
+    if (filterAction !== "none") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.action === filterAction;
+      });
+    }
+
+    if (filterUser !== "all") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.user.nickname === filterUser;
+      });
+    }
+
+    this.setState({
+      auditActionsFiltered: filteredActions,
+    });
+    if (this.props.loading) {
+      this.props.toggleLoading();
+    }
+  };
+  deleteAuditAction = (action) => {
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .doc(action.changelogId)
+      .delete()
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        this.getActions();
+        this.closeAuditDeleteDialog();
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        this.closeAuditDeleteDialog();
+      });
+  };
   render() {
     const content = this.props.content ? (
       <ContentGrid
@@ -834,8 +1292,13 @@ export class MobileContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) :  this.props.page === "audit" && this.props.user.isAdmin ? (
-      <ContentAudit snackbarQueue={this.props.snackbarQueue} />
+    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+      <ContentAudit
+        loading={this.props.loading}
+        actions={this.state.auditActionsFiltered}
+        getActions={this.getAuditActions}
+        snackbarQueue={this.props.snackbarQueue}
+      />
     ) : (
       <ContentEmpty />
     );
@@ -925,6 +1388,8 @@ export class MobileContent extends React.Component {
             page={this.props.page}
             loading={this.props.loading}
             openFilter={this.openFilterDrawer}
+            openAuditFilter={this.openAuditFilterDrawer}
+            getActions={this.getAuditActions}
             openNav={this.openNavDrawer}
             view={this.props.view}
             changeView={this.props.changeView}
@@ -957,6 +1422,8 @@ export class MobileContent extends React.Component {
           page={this.props.page}
           loading={this.props.loading}
           openFilter={this.openFilterDrawer}
+          openAuditFilter={this.openAuditFilterDrawer}
+          getActions={this.getAuditActions}
           openNav={this.openNavDrawer}
           view={this.props.view}
           changeView={this.props.changeView}
@@ -995,9 +1462,21 @@ export class MobileContent extends React.Component {
           setSearch={this.props.setSearch}
           sets={this.props.sets}
         />
-      ) : (
-        <div></div>
-      );
+      ) : null;
+    const auditFilterDrawer =
+      this.props.page === "audit" ? (
+        <DrawerAuditFilter
+          open={this.state.auditFilterDrawerOpen}
+          close={this.closeAuditFilterDrawer}
+          device={this.props.device}
+          handleFilterChange={this.handleAuditFilterChange}
+          filterAction={this.state.auditFilterAction}
+          filterUser={this.state.auditFilterUser}
+          users={this.state.auditUsers}
+          auditLength={this.state.auditLength}
+          getActions={this.getAuditActions}
+        />
+      ) : null;
     return (
       <div
         className={
@@ -1035,6 +1514,7 @@ export class MobileContent extends React.Component {
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
         />
+        {auditFilterDrawer}
         <DialogSettings
           user={this.props.user}
           setUser={this.props.setUser}

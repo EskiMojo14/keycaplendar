@@ -805,6 +805,7 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
@@ -834,6 +835,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );
@@ -856,6 +858,7 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
@@ -885,6 +888,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );
@@ -907,6 +911,7 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
@@ -938,6 +943,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );

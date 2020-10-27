@@ -102,7 +102,7 @@ export const DesktopAppBar = (props) => {
       <TopAppBarActionItem
         icon="refresh"
         onClick={() => {
-          this.getActions(this.state.filterLength);
+          props.getActions();
         }}
       />
     </Tooltip>
@@ -307,7 +307,7 @@ export const DesktopAppBar = (props) => {
     ) : props.page === "audit" ? (
       <TopAppBarSection alignEnd>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleAuditFilter} />
         </Tooltip>
         {refreshButton}
       </TopAppBarSection>
@@ -473,7 +473,7 @@ export const TabletAppBar = (props) => {
       <TopAppBarActionItem
         icon="refresh"
         onClick={() => {
-          this.getActions(this.state.filterLength);
+          props.getActions();
         }}
       />
     </Tooltip>
@@ -659,7 +659,7 @@ export const TabletAppBar = (props) => {
     ) : props.page === "audit" ? (
       <TopAppBarSection alignEnd>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
       </TopAppBarSection>
@@ -836,7 +836,7 @@ export const MobileAppBar = (props) => {
       <TopAppBarActionItem
         icon="refresh"
         onClick={() => {
-          this.getActions(this.state.filterLength);
+          props.getActions();
         }}
       />
     </Tooltip>
@@ -1022,7 +1022,7 @@ export const MobileAppBar = (props) => {
     ) : props.page === "audit" ? (
       <TopAppBarSection alignEnd>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
       </TopAppBarSection>
@@ -1188,7 +1188,7 @@ export const BottomAppBar = (props) => {
       <TopAppBarActionItem
         icon="refresh"
         onClick={() => {
-          this.getActions(this.state.filterLength);
+          props.getActions();
         }}
       />
     </Tooltip>
@@ -1374,7 +1374,7 @@ export const BottomAppBar = (props) => {
     ) : props.page === "audit" ? (
       <TopAppBarSection alignEnd>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
       </TopAppBarSection>
