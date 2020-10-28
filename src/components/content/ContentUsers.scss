@@ -11,18 +11,8 @@
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
-  max-width: 100vw;
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 128px;
-    z-index: -1;
-  }
+  max-width: 100%;
   .users {
-    border-radius: 4px;
-    @include elevation.elevation(1);
     .mdc-data-table {
       overflow: visible;
       border: none;
@@ -77,12 +67,13 @@
       margin: -8px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
       flex-wrap: wrap;
       width: 1088px;
-      max-width: 100vw;
+      max-width: calc(100% + 16px);
     }
     width: 512px;
-    max-width: calc(100vw - 32px);
+    max-width: 100%;
     margin: 8px;
     .rmwc-collapsible-list {
       border-bottom: 1px solid var(--divider-color);
@@ -130,4 +121,8 @@
       }
     }
   }
+}
+
+.admin-main {
+  flex-grow: 1;
 }

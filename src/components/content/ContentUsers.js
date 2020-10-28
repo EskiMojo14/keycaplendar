@@ -1,15 +1,5 @@
 import React from "react";
-import firebase from "../../firebase";
-import { Link } from "react-router-dom";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarTitle,
-  TopAppBarNavigationIcon,
-  TopAppBarFixedAdjust,
-  TopAppBarActionItem,
-} from "@rmwc/top-app-bar";
+import firebase from "../firebase";
 import {
   DataTable,
   DataTableContent,
@@ -18,56 +8,50 @@ import {
   DataTableHeadCell,
   DataTableBody,
 } from "@rmwc/data-table";
-import { CircularProgress } from "@rmwc/circular-progress";
-import { Ripple } from "@rmwc/ripple";
+import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
-import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { UserRow } from "./UserRow";
-import { UserCard } from "./UserCard";
-import "./Users.scss";
-export class Users extends React.Component {
+import { UserRow } from "../admin/users/UserRow";
+import { UserCard } from "../admin/users/UserCard";
+import "./ContentUsers.scss";
+export class ContentUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
       deleteDialogOpen: false,
       deletedUser: { displayName: "" },
-      loading: false,
-      view: "table",
-      viewMenuOpen: false,
-      sort: "nickname",
-      sortMenuOpen: false,
-      reverseSort: false,
     };
   }
   getUsers = () => {
-    this.setState({ loading: true });
+    if (!this.props.loading) {
+      this.props.toggleLoading();
+    }
     const listUsersFn = firebase.functions().httpsCallable("listUsers");
     listUsersFn()
       .then((result) => {
         if (result) {
           if (result.data.error) {
             this.props.snackbarQueue.notify({ title: result.data.error });
-            this.setState({
-              loading: false,
-            });
+            if (this.props.loading) {
+              this.props.toggleLoading();
+            }
           } else {
-            this.setState({
-              loading: false,
-            });
+            if (this.props.loading) {
+              this.props.toggleLoading();
+            }
             this.sortUsers(result.data);
           }
         }
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error listing users: " + error });
-        this.setState({
-          loading: false,
-        });
+        if (this.props.loading) {
+          this.props.toggleLoading();
+        }
       });
   };
-  sortUsers = (users = this.state.users, sort = this.state.sort, reverseSort = this.state.reverseSort) => {
+  sortUsers = (users = this.state.users, sort = this.props.sort, reverseSort = this.props.reverseSort) => {
     users.sort((a, b) => {
       if (typeof a[sort] === "string") {
         const x = a[sort].toLowerCase();
@@ -117,8 +101,10 @@ export class Users extends React.Component {
     });
     this.setState({
       users: users,
-      loading: false,
     });
+    if (this.props.loading) {
+      this.props.toggleLoading();
+    }
   };
   openDeleteDialog = (user) => {
     this.setState({
@@ -136,64 +122,19 @@ export class Users extends React.Component {
       });
     }, 75);
   };
-  openViewMenu = () => {
-    this.setState({
-      viewMenuOpen: true,
-    });
-  };
-  closeViewMenu = () => {
-    this.setState({
-      viewMenuOpen: false,
-    });
-  };
-  setView = (index) => {
-    const views = ["card", "table"];
-    this.setState({
-      view: views[index],
-    });
-  };
-  openSortMenu = () => {
-    this.setState({
-      sortMenuOpen: true,
-    });
-  };
-  closeSortMenu = () => {
-    this.setState({
-      sortMenuOpen: false,
-    });
-  };
-  setSort = (sort) => {
-    let reverseSort;
-    if (sort === this.state.sort) {
-      reverseSort = !this.state.reverseSort;
-    } else {
-      reverseSort = false;
-    }
-    this.setState({
-      sort: sort,
-      reverseSort: reverseSort,
-    });
-    this.sortUsers(this.state.users, sort, reverseSort);
-  };
-  setSortIndex = (index) => {
-    const props = ["displayName", "email", "nickname"];
-    this.setState({
-      sort: props[index],
-      reverseSort: false,
-    });
-    this.sortUsers(this.state.users, props[index], false);
-  };
   deleteUser = (user) => {
     this.closeDeleteDialog();
-    this.setState({ loading: true });
+    if (!this.props.loading) {
+      this.props.toggleLoading();
+    }
     const deleteUser = firebase.functions().httpsCallable("deleteUser");
     deleteUser(user)
       .then((result) => {
         if (result.data.error) {
           this.props.snackbarQueue.notify({ title: result.data.error });
-          this.setState({
-            loading: false,
-          });
+          if (this.props.loading) {
+            this.props.toggleLoading();
+          }
         } else {
           this.props.snackbarQueue.notify({ title: "User " + user.displayName + " successfully deleted." });
           this.getUsers();
@@ -201,140 +142,75 @@ export class Users extends React.Component {
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error deleting user: " + error });
-        this.setState({
-          loading: false,
-        });
+        if (this.props.loading) {
+          this.props.toggleLoading();
+        }
       });
   };
   componentDidMount() {
     this.getUsers();
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.sort !== prevProps.sort || this.props.reverseSort !== prevProps.reverseSort) {
+      this.sortUsers();
+    }
+  }
   render() {
-    const refreshButton = this.state.loading ? (
-      <CircularProgress />
-    ) : (
-      <TopAppBarActionItem icon="refresh" onClick={this.getUsers} />
-    );
-    const sortButton =
-      this.state.view === "card" || this.props.device !== "desktop" ? (
-        <MenuSurfaceAnchor>
-          <Menu
-            open={this.state.sortMenuOpen}
-            anchorCorner="bottomLeft"
-            onClose={this.closeSortMenu}
-            onSelect={(e) => this.setSortIndex(e.detail.index)}
-          >
-            <MenuItem selected={this.state.sort === "displayName"}>Name</MenuItem>
-            <MenuItem selected={this.state.sort === "email"}>Email</MenuItem>
-            <MenuItem selected={this.state.sort === "nickname"}>Nickname</MenuItem>
-          </Menu>
-          <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
-        </MenuSurfaceAnchor>
-      ) : null;
-    const viewButton =
-      this.props.device === "desktop" ? (
-        <MenuSurfaceAnchor>
-          <Menu
-            open={this.state.viewMenuOpen}
-            anchorCorner="bottomLeft"
-            onClose={this.closeViewMenu}
-            onSelect={(e) => this.setView(e.detail.index)}
-          >
-            <MenuItem selected={this.state.view === "card"}>Card</MenuItem>
-            <MenuItem selected={this.state.view === "table"}>Table</MenuItem>
-          </Menu>
-          <div onClick={this.openViewMenu}>
-            <Ripple unbounded>
-              <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
-                {this.state.view === "card" ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-                    <path d="M10 7h5v9h-5z" opacity=".3" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-                    <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-                    <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-                  </svg>
-                )}
-              </div>
-            </Ripple>
-          </div>
-        </MenuSurfaceAnchor>
-      ) : null;
     return (
-      <div>
-        <TopAppBar fixed>
-          <TopAppBarRow>
-            <TopAppBarSection>
-              <Link to="/">
-                <TopAppBarNavigationIcon className="rtl-flip" icon="arrow_back" />
-              </Link>
-              <TopAppBarTitle>Users</TopAppBarTitle>
-            </TopAppBarSection>
-            <TopAppBarSection alignEnd>
-              {sortButton}
-              {viewButton}
-              {refreshButton}
-            </TopAppBarSection>
-          </TopAppBarRow>
-        </TopAppBar>
-        <TopAppBarFixedAdjust />
+      <div className="admin-main">
         <div className="users-container-container">
           <div className="users-container">
-            {this.state.view === "table" && this.props.device === "desktop" ? (
-              <div className="users">
+            {this.props.view === "table" && this.props.device === "desktop" ? (
+              <Card className="users">
                 <DataTable>
                   <DataTableContent>
                     <DataTableHead>
                       <DataTableRow>
                         <DataTableHeadCell></DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "displayName" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "displayName" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("displayName");
+                            this.props.setSort("displayName");
                           }}
                         >
                           User
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "email" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "email" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("email");
+                            this.props.setSort("email");
                           }}
                         >
                           Email
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "nickname" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "nickname" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("nickname");
+                            this.props.setSort("nickname");
                           }}
                         >
                           Nickname
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "designer" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "designer" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("designer");
+                            this.props.setSort("designer");
                           }}
                         >
                           Designer
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "editor" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "editor" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("editor");
+                            this.props.setSort("editor");
                           }}
                         >
                           Editor
                         </DataTableHeadCell>
                         <DataTableHeadCell
-                          sort={this.state.sort === "admin" ? (this.state.reverseSort ? -1 : 1) : null}
+                          sort={this.props.sort === "admin" ? (this.props.reverseSort ? -1 : 1) : null}
                           onClick={() => {
-                            this.setSort("admin");
+                            this.props.setSort("admin");
                           }}
                         >
                           Admin
@@ -365,21 +241,20 @@ export class Users extends React.Component {
                     </DataTableBody>
                   </DataTableContent>
                 </DataTable>
-              </div>
+              </Card>
             ) : (
               <div className="user-container">
                 {this.state.users.map((user, index) => {
                   return (
-                    <div key={index}>
-                      <UserCard
-                        user={user}
-                        currentUser={this.props.user}
-                        delete={this.openDeleteDialog}
-                        getUsers={this.getUsers}
-                        snackbarQueue={this.props.snackbarQueue}
-                        allDesigners={this.props.allDesigners}
-                      />
-                    </div>
+                    <UserCard
+                      user={user}
+                      key={index}
+                      currentUser={this.props.user}
+                      delete={this.openDeleteDialog}
+                      getUsers={this.getUsers}
+                      snackbarQueue={this.props.snackbarQueue}
+                      allDesigners={this.props.allDesigners}
+                    />
                   );
                 })}
               </div>
@@ -402,4 +277,4 @@ export class Users extends React.Component {
     );
   }
 }
-export default Users;
+export default ContentUsers;

@@ -1,10 +1,9 @@
 import React from "react";
 import firebase from "../firebase";
-import { Link } from "react-router-dom";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
-import { Dialog, DialogTitle, DialogContent } from "@rmwc/dialog";
+import { Card } from "@rmwc/card";
 import { FormField } from "@rmwc/formfield";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
@@ -13,9 +12,9 @@ import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
-import "./DialogSettings.scss";
+import "./ContentSettings.scss";
 
-export const DialogSettings = (props) => {
+export const ContentSettings = (props) => {
   const signOut = () => {
     firebase
       .auth()
@@ -37,32 +36,6 @@ export const DialogSettings = (props) => {
     const applyThemeOptions = ["manual", "timed", "system"];
     props.changeApplyTheme(applyThemeOptions[e.detail.index]);
   };
-  const createThumbs = () => {
-    const createThumbsFn = firebase.functions().httpsCallable("createThumbs");
-    createThumbsFn()
-      .then((result) => {
-        if (result.data.error) {
-          props.snackbarQueue.notify({ title: "Error creating thumbs: " + result.data.error });
-        }
-        console.log(result.data);
-        props.snackbarQueue.notify({ title: "Successfully created thumbs." });
-      })
-      .catch((error) => {
-        props.snackbarQueue.notify({ title: "Error creating thumbs: " + error });
-      });
-  };
-  const bottomNav = props.changeBottomNav ? (
-    <div className="group">
-      <Typography use="subtitle2" tag="h3">
-        UI
-      </Typography>
-      <Switch
-        label="Bottom navigation"
-        checked={props.bottomNav}
-        onChange={(evt) => props.changeBottomNav(evt.currentTarget.checked)}
-      />
-    </div>
-  ) : null;
   const userBadge =
     props.user.isAdmin || props.user.isEditor || props.user.isDesigner ? (
       <Badge
@@ -72,7 +45,7 @@ export const DialogSettings = (props) => {
               <path fill="none" d="M0,0h18v18H0V0z" />
               <path
                 d="M9,0.8l-6.8,3v4.5c0,4.2,2.9,8.1,6.8,9c3.9-0.9,6.8-4.8,6.8-9V3.8L9,0.8z M14.3,8.3c0,3.4-2.2,6.5-5.3,7.4
-c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
+  c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
               />
               <path opacity="0.3" d="M3.8,4.7v3.5c0,3.4,2.2,6.5,5.3,7.4c3-0.9,5.3-4.1,5.3-7.4V4.7L9,2.4L3.8,4.7z" />
             </svg>
@@ -100,78 +73,48 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         className="user-icon material-icons"
       />
     ) : null;
-  const density = props.changeBottomNav ? null : (
-    <div className="group">
-      <Typography use="subtitle2" tag="h3">
-        Density
-      </Typography>
-      <ToggleGroup className="density-toggle">
-        <ToggleGroupButton
-          label="Default"
-          selected={props.density === "default"}
-          onClick={() => {
-            props.setDensity("default");
-          }}
-        />
-        <ToggleGroupButton
-          label="Comfortable"
-          selected={props.density === "comfortable"}
-          onClick={() => {
-            props.setDensity("comfortable");
-          }}
-        />
-        <ToggleGroupButton
-          label="Compact"
-          selected={props.density === "compact"}
-          onClick={() => {
-            props.setDensity("compact");
-          }}
-        />
-      </ToggleGroup>
-    </div>
-  );
   const user = props.user.name ? (
-    <div className="group">
-      <Typography use="subtitle2" tag="h3">
-        Account
-      </Typography>
-      <ListItem className="account three-line">
-        <BadgeAnchor className="avatar">
-          <Avatar src={props.user.avatar} size="xlarge" />
-          {userBadge}
-        </BadgeAnchor>
-        <ListItemText>
-          <div className="overline">{props.user.nickname}</div>
-          <ListItemPrimaryText>{props.user.name}</ListItemPrimaryText>
-          <ListItemSecondaryText>{props.user.email}</ListItemSecondaryText>
-        </ListItemText>
-        <div className="button">
-          <Button raised label="Log out" onClick={signOut} />
-        </div>
-      </ListItem>
-    </div>
-  ) : null;
-  const admin = props.user.isAdmin ? (
-    <div className="group">
-      <Typography use="subtitle2" tag="h3">
-        Admin
-      </Typography>
-      <div className="buttons">
-        <Link to="/audit">
-          <Button label="Audit log" onClick={props.close} />
-        </Link>
-        <Link to="/users">
-          <Button label="Manage users" onClick={props.close} />
-        </Link>
-        <Button label="Refresh data" onClick={props.getData} />
-        <Button label="Create thumbnails" onClick={createThumbs} />
+    <div className="settings-group">
+      <div className="subheader">
+        <Typography use="caption">Account</Typography>
       </div>
+      <Card>
+        <ListItem disabled className={"account" + (props.user.nickname !== "" ? " three-line" : "")}>
+          <BadgeAnchor className="avatar">
+            <Avatar src={props.user.avatar} size="xlarge" />
+            {userBadge}
+          </BadgeAnchor>
+          <ListItemText>
+            {props.user.nickname !== "" ? <div className="overline">{props.user.nickname}</div> : null}
+            <ListItemPrimaryText>{props.user.name}</ListItemPrimaryText>
+            <ListItemSecondaryText>{props.user.email}</ListItemSecondaryText>
+          </ListItemText>
+          <div className="button">
+            <Button raised label="Log out" onClick={signOut} />
+          </div>
+        </ListItem>
+      </Card>
     </div>
   ) : null;
+  const bottomNav =
+    props.device === "mobile" && props.changeBottomNav ? (
+      <div className="settings-group">
+        <div className="subheader">
+          <Typography use="caption">UI</Typography>
+        </div>
+        <Card className="bottom-nav-card">
+          <Switch
+            label="Bottom navigation"
+            checked={props.bottomNav}
+            onChange={(evt) => props.changeBottomNav(evt.currentTarget.checked)}
+          />
+        </Card>
+      </div>
+    ) : null;
   const themeOptions =
     props.applyTheme === "system" ? null : props.applyTheme === "timed" ? (
-      <FormField className="theme-form-field theme-form-field--flex">
-        <div className="theme-form-field__text">
+      <div className="theme-form-field--flex">
+        <FormField className="theme-form-field">
           <Typography use="body2">From</Typography>
           <div>
             <TextField
@@ -198,9 +141,9 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
               }}
             />
           </div>
-        </div>
-        <div className="theme-form-field__text">
-          <Typography use="body2">to</Typography>
+        </FormField>
+        <FormField className="theme-form-field">
+          <Typography use="body2">To</Typography>
           <div>
             <TextField
               outlined
@@ -226,8 +169,8 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
               }}
             />
           </div>
-        </div>
-      </FormField>
+        </FormField>
+      </div>
     ) : (
       <FormField className="theme-form-field">
         <Typography use="body2" tag="label" htmlFor="manualTheme">
@@ -242,86 +185,121 @@ c-3-0.9-5.3-4.1-5.3-7.4V4.7L9,2.4l5.3,2.3V8.3z"
         />
       </FormField>
     );
-  return (
-    <Dialog open={props.open} onClose={props.close} className="settings-dialog">
-      <DialogTitle>Settings</DialogTitle>
-      <DialogContent>
-        <div className="group">
-          <Typography use="subtitle2" tag="h3">
-            Light theme
-          </Typography>
-          <List className="theme-list">
-            <ListItem onClick={() => props.setLightTheme("light")} className="light">
-              Light
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
-              Sepia
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-          </List>
+  const density =
+    props.device !== "mobile" ? (
+      <div className="settings-group">
+        <div className="subheader">
+          <Typography use="caption">Density</Typography>
         </div>
-        <div className="group">
-          <Typography use="subtitle2" tag="h3">
-            Dark theme
-          </Typography>
-          <FormField className="theme-form-field">
-            <Typography use="body2">Apply dark theme</Typography>
-            <Select
-              enhanced
-              outlined
-              value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
-              options={["Manual", "Timed", "System"]}
-              onChange={(e) => {
-                setApplyTheme(e);
+        <Card className="density-card">
+          <ToggleGroup className="density-toggle">
+            <ToggleGroupButton
+              label="Default"
+              selected={props.density === "default"}
+              onClick={() => {
+                props.setDensity("default");
               }}
             />
-          </FormField>
-          {themeOptions}
-          <List className="theme-list">
-            <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
-              Ocean
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
-              Grey
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
-              Deep Ocean
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
-              Deep Purple
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
-              Dark
-              <ListItemMeta>
-                <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-          </List>
+            <ToggleGroupButton
+              label="Comfortable"
+              selected={props.density === "comfortable"}
+              onClick={() => {
+                props.setDensity("comfortable");
+              }}
+            />
+            <ToggleGroupButton
+              label="Compact"
+              selected={props.density === "compact"}
+              onClick={() => {
+                props.setDensity("compact");
+              }}
+            />
+          </ToggleGroup>
+        </Card>
+      </div>
+    ) : null;
+  return (
+    <div className="admin-main">
+      <div className="settings-container">
+        <div className="settings">
+          {user}
+          {bottomNav}
+          <div className="settings-group">
+            <div className="subheader">
+              <Typography use="caption">Light theme</Typography>
+            </div>
+            <Card className="theme-card">
+              <List className="theme-list">
+                <ListItem onClick={() => props.setLightTheme("light")} className="light">
+                  Light
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
+                  Sepia
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+              </List>
+            </Card>
+          </div>
+          <div className="settings-group">
+            <div className="subheader">
+              <Typography use="caption">Dark theme</Typography>
+            </div>
+            <Card className="theme-card">
+              <FormField className="theme-form-field">
+                <Typography use="body2">Apply dark theme</Typography>
+                <Select
+                  enhanced
+                  outlined
+                  value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
+                  options={["Manual", "Timed", "System"]}
+                  onChange={(e) => {
+                    setApplyTheme(e);
+                  }}
+                />
+              </FormField>
+              {themeOptions}
+              <List className="theme-list">
+                <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+                  Ocean
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
+                  Grey
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
+                  Deep Ocean
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
+                  Deep Purple
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+                <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
+                  Dark
+                  <ListItemMeta>
+                    <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
+                  </ListItemMeta>
+                </ListItem>
+              </List>
+            </Card>
+          </div>
+          {density}
         </div>
-        {bottomNav}
-        {density}
-        {user}
-        {admin}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
-
-export default DialogSettings;

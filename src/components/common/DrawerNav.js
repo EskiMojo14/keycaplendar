@@ -1,11 +1,86 @@
 import React from "react";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { List, ListItem, ListItemGraphic } from "@rmwc/list";
+import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../logo.svg";
 
 export const DesktopDrawerNav = (props) => {
+  const adminOptions = props.user.isAdmin ? (
+    <div>
+      <ListDivider />
+      <ListItem onClick={(e) => props.changePage("audit")} activated={props.page === "audit"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <g opacity=".3">
+                      <path d="M11.34,9.76L9.93,8.34C8.98,7.4,7.73,6.88,6.39,6.88C5.76,6.88,5.14,7,4.57,7.22l1.04,1.04h2.28v2.14 c0.4,0.23,0.86,0.35,1.33,0.35c0.73,0,1.41-0.28,1.92-0.8L11.34,9.76z" />
+                    </g>
+                    <g opacity=".3">
+                      <path d="M11,6.62l6,5.97V14h-1.41l-2.83-2.83l-0.2,0.2c-0.46,0.46-0.99,0.8-1.56,1.03V15h6v2c0,0.55,0.45,1,1,1s1-0.45,1-1V6h-8 V6.62z" />
+                    </g>
+                    <g>
+                      <path d="M9,4v1.38c-0.83-0.33-1.72-0.5-2.61-0.5c-1.79,0-3.58,0.68-4.95,2.05l3.33,3.33h1.11v1.11c0.86,0.86,1.98,1.31,3.11,1.36 V15H6v3c0,1.1,0.9,2,2,2h10c1.66,0,3-1.34,3-3V4H9z M7.89,10.41V8.26H5.61L4.57,7.22C5.14,7,5.76,6.88,6.39,6.88 c1.34,0,2.59,0.52,3.54,1.46l1.41,1.41l-0.2,0.2c-0.51,0.51-1.19,0.8-1.92,0.8C8.75,10.75,8.29,10.63,7.89,10.41z M19,17 c0,0.55-0.45,1-1,1s-1-0.45-1-1v-2h-6v-2.59c0.57-0.23,1.1-0.57,1.56-1.03l0.2-0.2L15.59,14H17v-1.41l-6-5.97V6h8V17z" />
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Audit Log
+      </ListItem>
+      <ListItem onClick={(e) => props.changePage("users")} activated={props.page === "users"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <path
+                      d="M16,7.58l-5.5-2.4L5,7.58v3.6c0,3.5,2.33,6.74,5.5,7.74c0.25-0.08,0.49-0.2,0.73-0.3 C11.08,18.11,11,17.56,11,17c0-2.97,2.16-5.43,5-5.91V7.58z"
+                      opacity=".3"
+                    />
+                    <path
+                      d="M17,13c-2.21,0-4,1.79-4,4c0,2.21,1.79,4,4,4s4-1.79,4-4C21,14.79,19.21,13,17,13z M17,14.38 c0.62,0,1.12,0.51,1.12,1.12s-0.51,1.12-1.12,1.12s-1.12-0.51-1.12-1.12S16.38,14.38,17,14.38z M17,19.75 c-0.93,0-1.74-0.46-2.24-1.17c0.05-0.72,1.51-1.08,2.24-1.08s2.19,0.36,2.24,1.08C18.74,19.29,17.93,19.75,17,19.75z"
+                      opacity=".3"
+                    />
+                    <circle cx="17" cy="15.5" r="1.12" />
+                    <path d="M18,11.09V6.27L10.5,3L3,6.27v4.91c0,4.54,3.2,8.79,7.5,9.82c0.55-0.13,1.08-0.32,1.6-0.55C13.18,21.99,14.97,23,17,23 c3.31,0,6-2.69,6-6C23,14.03,20.84,11.57,18,11.09z M11,17c0,0.56,0.08,1.11,0.23,1.62c-0.24,0.11-0.48,0.22-0.73,0.3 c-3.17-1-5.5-4.24-5.5-7.74v-3.6l5.5-2.4l5.5,2.4v3.51C13.16,11.57,11,14.03,11,17z M17,21c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4 s4,1.79,4,4C21,19.21,19.21,21,17,21z" />
+                    <path d="M17,17.5c-0.73,0-2.19,0.36-2.24,1.08c0.5,0.71,1.32,1.17,2.24,1.17s1.74-0.46,2.24-1.17C19.19,17.86,17.73,17.5,17,17.5z" />
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Users
+      </ListItem>
+    </div>
+  ) : null;
   return (
     <Drawer className={"nav" + (props.open ? "" : " collapsed")} dismissible open={props.open}>
       <DrawerHeader>
@@ -72,11 +147,9 @@ export const DesktopDrawerNav = (props) => {
             <ListItemGraphic icon="bar_chart" />
             Statistics
           </ListItem>
-        </List>
-      </DrawerContent>
-      <div className="drawer-footer">
-        <List className="drawer-footer-list">
-          <ListItem onClick={props.openSettings}>
+          {adminOptions}
+          <ListDivider />
+          <ListItem onClick={(e) => props.changePage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -95,7 +168,7 @@ export const DesktopDrawerNav = (props) => {
             Settings
           </ListItem>
         </List>
-      </div>
+      </DrawerContent>
     </Drawer>
   );
 };
@@ -105,6 +178,81 @@ export const MobileDrawerNav = (props) => {
     props.changePage(newPage);
     props.close();
   };
+  const adminOptions = props.user.isAdmin ? (
+    <div>
+      <ListDivider />
+      <ListItem onClick={(e) => changePage("audit")} activated={props.page === "audit"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <g opacity=".3">
+                      <path d="M11.34,9.76L9.93,8.34C8.98,7.4,7.73,6.88,6.39,6.88C5.76,6.88,5.14,7,4.57,7.22l1.04,1.04h2.28v2.14 c0.4,0.23,0.86,0.35,1.33,0.35c0.73,0,1.41-0.28,1.92-0.8L11.34,9.76z" />
+                    </g>
+                    <g opacity=".3">
+                      <path d="M11,6.62l6,5.97V14h-1.41l-2.83-2.83l-0.2,0.2c-0.46,0.46-0.99,0.8-1.56,1.03V15h6v2c0,0.55,0.45,1,1,1s1-0.45,1-1V6h-8 V6.62z" />
+                    </g>
+                    <g>
+                      <path d="M9,4v1.38c-0.83-0.33-1.72-0.5-2.61-0.5c-1.79,0-3.58,0.68-4.95,2.05l3.33,3.33h1.11v1.11c0.86,0.86,1.98,1.31,3.11,1.36 V15H6v3c0,1.1,0.9,2,2,2h10c1.66,0,3-1.34,3-3V4H9z M7.89,10.41V8.26H5.61L4.57,7.22C5.14,7,5.76,6.88,6.39,6.88 c1.34,0,2.59,0.52,3.54,1.46l1.41,1.41l-0.2,0.2c-0.51,0.51-1.19,0.8-1.92,0.8C8.75,10.75,8.29,10.63,7.89,10.41z M19,17 c0,0.55-0.45,1-1,1s-1-0.45-1-1v-2h-6v-2.59c0.57-0.23,1.1-0.57,1.56-1.03l0.2-0.2L15.59,14H17v-1.41l-6-5.97V6h8V17z" />
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Audit Log
+      </ListItem>
+      <ListItem onClick={(e) => changePage("users")} activated={props.page === "users"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <path
+                      d="M16,7.58l-5.5-2.4L5,7.58v3.6c0,3.5,2.33,6.74,5.5,7.74c0.25-0.08,0.49-0.2,0.73-0.3 C11.08,18.11,11,17.56,11,17c0-2.97,2.16-5.43,5-5.91V7.58z"
+                      opacity=".3"
+                    />
+                    <path
+                      d="M17,13c-2.21,0-4,1.79-4,4c0,2.21,1.79,4,4,4s4-1.79,4-4C21,14.79,19.21,13,17,13z M17,14.38 c0.62,0,1.12,0.51,1.12,1.12s-0.51,1.12-1.12,1.12s-1.12-0.51-1.12-1.12S16.38,14.38,17,14.38z M17,19.75 c-0.93,0-1.74-0.46-2.24-1.17c0.05-0.72,1.51-1.08,2.24-1.08s2.19,0.36,2.24,1.08C18.74,19.29,17.93,19.75,17,19.75z"
+                      opacity=".3"
+                    />
+                    <circle cx="17" cy="15.5" r="1.12" />
+                    <path d="M18,11.09V6.27L10.5,3L3,6.27v4.91c0,4.54,3.2,8.79,7.5,9.82c0.55-0.13,1.08-0.32,1.6-0.55C13.18,21.99,14.97,23,17,23 c3.31,0,6-2.69,6-6C23,14.03,20.84,11.57,18,11.09z M11,17c0,0.56,0.08,1.11,0.23,1.62c-0.24,0.11-0.48,0.22-0.73,0.3 c-3.17-1-5.5-4.24-5.5-7.74v-3.6l5.5-2.4l5.5,2.4v3.51C13.16,11.57,11,14.03,11,17z M17,21c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4 s4,1.79,4,4C21,19.21,19.21,21,17,21z" />
+                    <path d="M17,17.5c-0.73,0-2.19,0.36-2.24,1.08c0.5,0.71,1.32,1.17,2.24,1.17s1.74-0.46,2.24-1.17C19.19,17.86,17.73,17.5,17,17.5z" />
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Users
+      </ListItem>
+    </div>
+  ) : null;
   return (
     <Drawer className="nav" modal open={props.open} onClose={props.close}>
       <DrawerHeader>
@@ -201,6 +349,7 @@ export const MobileDrawerNav = (props) => {
             <ListItemGraphic icon="bar_chart" />
             Statistics
           </ListItem>
+          {adminOptions}
         </List>
       </DrawerContent>
       <div className="drawer-footer">
@@ -238,6 +387,81 @@ export const BottomDrawerNav = (props) => {
     props.changePage(newPage);
     props.close();
   };
+  const adminOptions = props.user.isAdmin ? (
+    <div>
+      <ListDivider />
+      <ListItem onClick={(e) => changePage("audit")} activated={props.page === "audit"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <g opacity=".3">
+                      <path d="M11.34,9.76L9.93,8.34C8.98,7.4,7.73,6.88,6.39,6.88C5.76,6.88,5.14,7,4.57,7.22l1.04,1.04h2.28v2.14 c0.4,0.23,0.86,0.35,1.33,0.35c0.73,0,1.41-0.28,1.92-0.8L11.34,9.76z" />
+                    </g>
+                    <g opacity=".3">
+                      <path d="M11,6.62l6,5.97V14h-1.41l-2.83-2.83l-0.2,0.2c-0.46,0.46-0.99,0.8-1.56,1.03V15h6v2c0,0.55,0.45,1,1,1s1-0.45,1-1V6h-8 V6.62z" />
+                    </g>
+                    <g>
+                      <path d="M9,4v1.38c-0.83-0.33-1.72-0.5-2.61-0.5c-1.79,0-3.58,0.68-4.95,2.05l3.33,3.33h1.11v1.11c0.86,0.86,1.98,1.31,3.11,1.36 V15H6v3c0,1.1,0.9,2,2,2h10c1.66,0,3-1.34,3-3V4H9z M7.89,10.41V8.26H5.61L4.57,7.22C5.14,7,5.76,6.88,6.39,6.88 c1.34,0,2.59,0.52,3.54,1.46l1.41,1.41l-0.2,0.2c-0.51,0.51-1.19,0.8-1.92,0.8C8.75,10.75,8.29,10.63,7.89,10.41z M19,17 c0,0.55-0.45,1-1,1s-1-0.45-1-1v-2h-6v-2.59c0.57-0.23,1.1-0.57,1.56-1.03l0.2-0.2L15.59,14H17v-1.41l-6-5.97V6h8V17z" />
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Audit Log
+      </ListItem>
+      <ListItem onClick={(e) => changePage("users")} activated={props.page === "users"}>
+        <ListItemGraphic
+          icon={{
+            strategy: "component",
+            icon: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                enableBackground="new 0 0 24 24"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <g>
+                  <rect fill="none" height="24" width="24" />
+                </g>
+                <g>
+                  <g>
+                    <path
+                      d="M16,7.58l-5.5-2.4L5,7.58v3.6c0,3.5,2.33,6.74,5.5,7.74c0.25-0.08,0.49-0.2,0.73-0.3 C11.08,18.11,11,17.56,11,17c0-2.97,2.16-5.43,5-5.91V7.58z"
+                      opacity=".3"
+                    />
+                    <path
+                      d="M17,13c-2.21,0-4,1.79-4,4c0,2.21,1.79,4,4,4s4-1.79,4-4C21,14.79,19.21,13,17,13z M17,14.38 c0.62,0,1.12,0.51,1.12,1.12s-0.51,1.12-1.12,1.12s-1.12-0.51-1.12-1.12S16.38,14.38,17,14.38z M17,19.75 c-0.93,0-1.74-0.46-2.24-1.17c0.05-0.72,1.51-1.08,2.24-1.08s2.19,0.36,2.24,1.08C18.74,19.29,17.93,19.75,17,19.75z"
+                      opacity=".3"
+                    />
+                    <circle cx="17" cy="15.5" r="1.12" />
+                    <path d="M18,11.09V6.27L10.5,3L3,6.27v4.91c0,4.54,3.2,8.79,7.5,9.82c0.55-0.13,1.08-0.32,1.6-0.55C13.18,21.99,14.97,23,17,23 c3.31,0,6-2.69,6-6C23,14.03,20.84,11.57,18,11.09z M11,17c0,0.56,0.08,1.11,0.23,1.62c-0.24,0.11-0.48,0.22-0.73,0.3 c-3.17-1-5.5-4.24-5.5-7.74v-3.6l5.5-2.4l5.5,2.4v3.51C13.16,11.57,11,14.03,11,17z M17,21c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4 s4,1.79,4,4C21,19.21,19.21,21,17,21z" />
+                    <path d="M17,17.5c-0.73,0-2.19,0.36-2.24,1.08c0.5,0.71,1.32,1.17,2.24,1.17s1.74-0.46,2.24-1.17C19.19,17.86,17.73,17.5,17,17.5z" />
+                  </g>
+                </g>
+              </svg>
+            ),
+          }}
+        />
+        Users
+      </ListItem>
+    </div>
+  ) : null;
   return (
     <Drawer className="nav bottom" modal open={props.open} onClose={props.close}>
       <DrawerHeader>
@@ -334,14 +558,12 @@ export const BottomDrawerNav = (props) => {
             <ListItemGraphic icon="bar_chart" />
             Statistics
           </ListItem>
-        </List>
-      </DrawerContent>
-      <div className="drawer-footer">
-        <List className="drawer-footer-list">
+          {adminOptions}
+          <ListDivider />
+
           <ListItem
             onClick={() => {
-              props.close();
-              props.openSettings();
+              changePage("settings");
             }}
           >
             <ListItemGraphic
@@ -362,7 +584,7 @@ export const BottomDrawerNav = (props) => {
             Settings
           </ListItem>
         </List>
-      </div>
+      </DrawerContent>
     </Drawer>
   );
 };

@@ -6,10 +6,10 @@ import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import "./AuditFilter.scss";
+import "./DrawerAuditFilter.scss";
 
-export const AuditFilter = (props) => {
-  const [filterLength, setFilterLength] = useState(props.filterLength);
+export const DrawerAuditFilter = (props) => {
+  const [auditLength, setAuditLength] = useState(props.auditLength);
   const closeButton =
     props.device === "desktop" ? (
       <Tooltip enterDelay={500} content="Close" align="bottom">
@@ -17,12 +17,12 @@ export const AuditFilter = (props) => {
       </Tooltip>
     ) : null;
   const getActions = (num) => {
-    if (props.filterLength !== num) {
+    if (props.auditLength !== num) {
       props.getActions(num);
     }
   };
   const handleChange = (e) => {
-    setFilterLength(e.target.value);
+    setAuditLength(e.target.value);
     if (e.target.value >= 50 && e.target.value % 50 === 0) {
       getActions(e.target.value);
     }
@@ -51,9 +51,9 @@ export const AuditFilter = (props) => {
               min={50}
               max={250}
               step={50}
-              value={filterLength}
+              value={auditLength}
               onInput={(e) => {
-                setFilterLength(e.detail.value);
+                setAuditLength(e.detail.value);
               }}
               onChange={(e) => {
                 getActions(e.detail.value);
@@ -65,7 +65,7 @@ export const AuditFilter = (props) => {
               min={50}
               max={250}
               step={50}
-              value={filterLength}
+              value={auditLength}
               onChange={handleChange}
             />
           </div>
@@ -110,4 +110,4 @@ export const AuditFilter = (props) => {
   );
 };
 
-export default AuditFilter;
+export default DrawerAuditFilter;

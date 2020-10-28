@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import { CircularProgress } from "@rmwc/circular-progress";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
+import { Ripple } from "@rmwc/ripple";
+import { TabBar, Tab } from "@rmwc/tabs";
+import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -8,11 +14,6 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Tooltip } from "@rmwc/tooltip";
-import { Ripple } from "@rmwc/ripple";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { TabBar, Tab } from "@rmwc/tabs";
 import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal } from "./SearchBar";
@@ -22,6 +23,8 @@ import "./AppBar.scss";
 export const DesktopAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
+  const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
+  const [userViewMenuOpen, setUserViewMenuOpen] = useState(false);
   const openSortMenu = () => {
     setSortMenuOpen(true);
   };
@@ -33,6 +36,18 @@ export const DesktopAppBar = (props) => {
   };
   const closeViewMenu = () => {
     setViewMenuOpen(false);
+  };
+  const openUserSortMenu = () => {
+    setUserSortMenuOpen(true);
+  };
+  const closeUserSortMenu = () => {
+    setUserSortMenuOpen(false);
+  };
+  const openUserViewMenu = () => {
+    setUserViewMenuOpen(true);
+  };
+  const closeUserViewMenu = () => {
+    setUserViewMenuOpen(false);
   };
   const changeView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
@@ -91,7 +106,22 @@ export const DesktopAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: "Statistics",
+    audit: "Audit Log",
+    users: "Users",
+    settings: "Settings",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -289,7 +319,73 @@ export const DesktopAppBar = (props) => {
           </ToggleGroup>
         </TopAppBarSection>
       )
-    ) : (
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem
+            style={{ "--animation-delay": 2 }}
+            icon="filter_list"
+            onClick={props.toggleAuditFilter}
+          />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
+    ) : props.page === "users" ? (
+      <TopAppBarSection alignEnd>
+        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+          <Menu
+            open={userSortMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={closeUserSortMenu}
+            onSelect={(e) => props.setUserSortIndex(e.detail.index)}
+          >
+            <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
+            <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
+            <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+          </Menu>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={props.userView === "table" ? "hidden" : ""}
+          >
+            <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
+          </Tooltip>
+        </MenuSurfaceAnchor>
+        <MenuSurfaceAnchor>
+          <Menu
+            open={userViewMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={closeUserViewMenu}
+            onSelect={(e) => props.setUserView(e.detail.index)}
+          >
+            <MenuItem selected={props.userView === "card"}>Card</MenuItem>
+            <MenuItem selected={props.userView === "table"}>Table</MenuItem>
+          </Menu>
+          <Tooltip enterDelay={500} content="View" align="bottom">
+            <div onClick={openUserViewMenu}>
+              <Ripple unbounded>
+                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                  {props.userView === "card" ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
+                      <path d="M10 7h5v9h-5z" opacity=".3" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
+                      <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
+                      <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
+                    </svg>
+                  )}
+                </div>
+              </Ripple>
+            </div>
+          </Tooltip>
+        </MenuSurfaceAnchor>
+      </TopAppBarSection>
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
@@ -365,6 +461,7 @@ export const TabletAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
   const openSortMenu = () => {
     setSortMenuOpen(true);
   };
@@ -387,6 +484,12 @@ export const TabletAppBar = (props) => {
   };
   const closeSearch = () => {
     setSearchOpen(false);
+  };
+  const openUserSortMenu = () => {
+    setUserSortMenuOpen(true);
+  };
+  const closeUserSortMenu = () => {
+    setUserSortMenuOpen(false);
   };
   let viewIcon;
   if (props.view === "card") {
@@ -441,7 +544,22 @@ export const TabletAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: "Statistics",
+    audit: "Audit Log",
+    users: "Users",
+    settings: "Settings",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -620,7 +738,37 @@ export const TabletAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
-    ) : (
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
+    ) : props.page === "users" ? (
+      <TopAppBarSection alignEnd>
+        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+          <Menu
+            open={userSortMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={closeUserSortMenu}
+            onSelect={(e) => props.setUserSortIndex(e.detail.index)}
+          >
+            <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
+            <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
+            <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+          </Menu>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={props.userView === "table" ? "hidden" : ""}
+          >
+            <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
+          </Tooltip>
+        </MenuSurfaceAnchor>
+      </TopAppBarSection>
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort
@@ -707,6 +855,7 @@ export const MobileAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
   const openSortMenu = () => {
     setSortMenuOpen(true);
   };
@@ -729,6 +878,12 @@ export const MobileAppBar = (props) => {
   };
   const closeSearch = () => {
     setSearchOpen(false);
+  };
+  const openUserSortMenu = () => {
+    setUserSortMenuOpen(true);
+  };
+  const closeUserSortMenu = () => {
+    setUserSortMenuOpen(false);
   };
   let viewIcon;
   if (props.view === "card") {
@@ -783,7 +938,22 @@ export const MobileAppBar = (props) => {
     account: "Account",
     timeline: "Timeline",
     statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
+    audit: "Audit Log",
+    users: "Users",
+    settings: "Settings",
   };
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -962,7 +1132,37 @@ export const MobileAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
-    ) : (
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
+    ) : props.page === "users" ? (
+      <TopAppBarSection alignEnd>
+        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+          <Menu
+            open={userSortMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={closeUserSortMenu}
+            onSelect={(e) => props.setUserSortIndex(e.detail.index)}
+          >
+            <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
+            <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
+            <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+          </Menu>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={props.userView === "table" ? "hidden" : ""}
+          >
+            <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
+          </Tooltip>
+        </MenuSurfaceAnchor>
+      </TopAppBarSection>
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort
@@ -1049,6 +1249,7 @@ export const BottomAppBar = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
   const openSortMenu = () => {
     setSortMenuOpen(true);
   };
@@ -1071,6 +1272,12 @@ export const BottomAppBar = (props) => {
   };
   const closeSearch = () => {
     setSearchOpen(false);
+  };
+  const openUserSortMenu = () => {
+    setUserSortMenuOpen(true);
+  };
+  const closeUserSortMenu = () => {
+    setUserSortMenuOpen(false);
   };
   let viewIcon;
   if (props.view === "card") {
@@ -1117,6 +1324,18 @@ export const BottomAppBar = (props) => {
       </svg>
     );
   }
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
   const buttons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
@@ -1295,7 +1514,37 @@ export const BottomAppBar = (props) => {
           </Tooltip>
         </TopAppBarSection>
       )
-    ) : (
+    ) : props.page === "audit" ? (
+      <TopAppBarSection alignEnd>
+        <Tooltip enterDelay={500} content="Filter" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
+        </Tooltip>
+        {refreshButton}
+      </TopAppBarSection>
+    ) : props.page === "users" ? (
+      <TopAppBarSection alignEnd>
+        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+          <Menu
+            open={userSortMenuOpen}
+            anchorCorner="bottomLeft"
+            onClose={closeUserSortMenu}
+            onSelect={(e) => props.setUserSortIndex(e.detail.index)}
+          >
+            <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
+            <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
+            <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+          </Menu>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={props.userView === "table" ? "hidden" : ""}
+          >
+            <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
+          </Tooltip>
+        </MenuSurfaceAnchor>
+      </TopAppBarSection>
+    ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
         <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
           <MenuSort

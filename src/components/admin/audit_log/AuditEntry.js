@@ -22,6 +22,24 @@ import { Checkbox } from "@rmwc/checkbox";
 import "./AuditEntry.scss";
 
 export const AuditEntry = (props) => {
+  const documentRow = (
+    <DataTableRow>
+      <DataTableCell>documentId</DataTableCell>
+      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.documentId}</DataTableCell>
+    </DataTableRow>
+  );
+  const changelogRow = (
+    <DataTableRow>
+      <DataTableCell>changelogId</DataTableCell>
+      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.changelogId}</DataTableCell>
+    </DataTableRow>
+  );
+  const emailRow = props.action.user.email ? (
+    <DataTableRow>
+      <DataTableCell>userEmail</DataTableCell>
+      <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.user.email}</DataTableCell>
+    </DataTableRow>
+  ) : null;
   return (
     <CollapsibleList
       handle={
@@ -332,24 +350,9 @@ export const AuditEntry = (props) => {
               }
               return null;
             })}
-            <DataTableRow>
-              <DataTableCell>documentId</DataTableCell>
-              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
-                {props.action.documentId}
-              </DataTableCell>
-            </DataTableRow>
-            <DataTableRow>
-              <DataTableCell>changelogId</DataTableCell>
-              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
-                {props.action.changelogId}
-              </DataTableCell>
-            </DataTableRow>
-            <DataTableRow>
-              <DataTableCell>userEmail</DataTableCell>
-              <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>
-                {props.action.user.email}
-              </DataTableCell>
-            </DataTableRow>
+            {documentRow}
+            {changelogRow}
+            {emailRow}
           </DataTableBody>
         </DataTableContent>
       </DataTable>

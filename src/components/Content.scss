@@ -58,6 +58,7 @@
   justify-content: stretch;
   min-height: calc(100vh - #{top-app-bar.$row-height});
   max-width: 100%;
+  overflow: hidden;
   .content-grid {
     flex-grow: 1;
     flex-shrink: 0;
@@ -70,7 +71,9 @@
     transition: height 250ms animation.$standard-curve-timing-function;
     z-index: -1;
   }
-  &.content.card::before, .statistics &::before {
+  &.content.card::before,
+  .statistics &::before,
+  .audit &::before {
     height: 256px - top-app-bar.$row-height;
   }
 }
@@ -96,7 +99,9 @@
   .content-container .main {
     max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
-  .main.content.card::before, .statistics .main::before {
+  .main.content.card::before,
+  .statistics .main::before,
+  .audit .main::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
 }

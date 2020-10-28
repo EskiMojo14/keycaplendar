@@ -5,8 +5,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/admin/Login";
-import { Users } from "./components/admin/users/Users";
-import { AuditLog } from "./components/admin/audit_log/AuditLog";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
@@ -32,7 +30,6 @@ class App extends React.Component {
       groups: [],
       loading: false,
       content: true,
-      failed: false,
       search: "",
       user: {
         email: null,
@@ -69,7 +66,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics"];
+      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics", "audit", "users", "settings"];
       if (pages.includes(pageQuery)) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
@@ -211,6 +208,9 @@ class App extends React.Component {
         account: "Account",
         timeline: "Timeline",
         statistics: "Statistics",
+        audit: "Audit Log",
+        users: "Users",
+        settings: "Settings",
       };
       document.title = "KeycapLendar: " + title[page];
       window.history.pushState(
@@ -386,7 +386,7 @@ class App extends React.Component {
       .catch((error) => {
         console.log("Error getting data: " + error);
         queue.notify({ title: "Error getting data: " + error });
-        this.setState({ loading: false, content: false, failed: true });
+        this.setState({ loading: false, content: false });
       });
   };
   filterData = (
@@ -804,10 +804,10 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
@@ -834,6 +834,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );
@@ -856,10 +857,10 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
@@ -886,6 +887,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );
@@ -908,10 +910,10 @@ class App extends React.Component {
           sets={this.state.filteredSets}
           groups={this.state.groups}
           loading={this.state.loading}
+          toggleLoading={this.toggleLoading}
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          failed={this.state.failed}
           editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
@@ -940,6 +942,7 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
+          device={this.state.device}
           snackbarQueue={queue}
         />
       );
@@ -947,18 +950,6 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route path="/users">
-            <div className={"density-" + this.state.density}>
-              <Users
-                admin={this.state.user.isAdmin}
-                user={this.state.user}
-                snackbarQueue={queue}
-                allDesigners={this.state.allDesigners}
-                device={this.state.device}
-              />
-              <SnackbarQueue messages={queue.messages} />
-            </div>
-          </Route>
           <Route path="/login">
             <Login device={this.state.device} user={this.state.user} setUser={this.setUser} />
           </Route>
@@ -970,12 +961,6 @@ class App extends React.Component {
           </Route>
           <Route path="/guide/entries">
             <EntryGuide />
-          </Route>
-          <Route path="/audit">
-            <div className={"density-" + this.state.density}>
-              <AuditLog device={this.state.device} snackbarQueue={queue} />
-              <SnackbarQueue messages={queue.messages} />
-            </div>
           </Route>
           <Route path="/">
             <div className={"app density-" + this.state.density}>

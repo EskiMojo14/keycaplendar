@@ -117,7 +117,8 @@ $overlay-values: (
     &:disabled {
       color: map-get($variables, text-disabled);
     }
-    &.mdc-button--raised, &.mdc-button--unelevated {
+    &.mdc-button--raised,
+    &.mdc-button--unelevated {
       @include button.container-fill-color(map-get($variables, primary));
       @include button.ink-color(map-get($variables, on-primary));
       @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -1014,11 +1015,8 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
   }
 
-  .users,
-  .log,
   .legal,
   .guide {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     color: map-get($variables, text-primary);
     a {
       color: map-get($variables, primary);
@@ -1044,18 +1042,12 @@ $overlay-values: (
     .mdc-card__action--icon.disabled {
       color: map-get($variables, text-disabled);
     }
-    .overline {
-      color: map-get($variables, text-secondary);
-    }
   }
 
   .log {
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
       @include ripple.states(map-get($variables, on-surface));
-    }
-    .overline {
-      color: map-get($variables, text-secondary);
     }
     .before,
     .after {
@@ -1110,6 +1102,11 @@ $overlay-values: (
     }
     &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.mdc-button--selected) {
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
+    }
+  }
+  @media (max-width: 479px) {
+    .settings-container {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     }
   }
 }
