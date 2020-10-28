@@ -350,15 +350,12 @@ export const MobileDrawerNav = (props) => {
             Statistics
           </ListItem>
           {adminOptions}
-        </List>
-      </DrawerContent>
-      <div className="drawer-footer">
-        <List className="drawer-footer-list">
+          <ListDivider />
           <ListItem
-            onClick={() => {
-              props.close();
-              props.openSettings();
+            onClick={(e) => {
+              changePage("settings");
             }}
+            activated={props.page === "settings"}
           >
             <ListItemGraphic
               icon={{
@@ -378,7 +375,7 @@ export const MobileDrawerNav = (props) => {
             Settings
           </ListItem>
         </List>
-      </div>
+      </DrawerContent>
     </Drawer>
   );
 };
@@ -560,11 +557,11 @@ export const BottomDrawerNav = (props) => {
           </ListItem>
           {adminOptions}
           <ListDivider />
-
           <ListItem
-            onClick={() => {
+            onClick={(e) => {
               changePage("settings");
             }}
+            activated={props.page === "settings"}
           >
             <ListItemGraphic
               icon={{
