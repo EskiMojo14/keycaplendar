@@ -48,6 +48,9 @@
               display: flex;
               flex-direction: column;
               justify-content: flex-start;
+              .theme-form-field {
+                align-items: flex-start;
+              }
             }
             .mdc-select {
               @include rtl.reflexive-box(margin, left, 16px);
@@ -123,6 +126,9 @@
           padding: 16px;
         }
         &.bottom-nav-card {
+          display: flex;
+          justify-content: center;
+          height: 48px;
           .mdc-form-field {
             label {
               padding: 0;

@@ -232,8 +232,13 @@
   .mdc-data-table__cell .rmwc-circular-progress {
     padding: 12px + $diff;
   }
-  .settings-container .settings .mdc-card.theme-card .theme-form-field--flex .mdc-typography--body2 {
-    line-height: 56px + $diff;
+  .settings-container .settings-group .mdc-card {
+    &.bottom-nav-card {
+      height: 48px + $diff;
+    }
+    &.theme-card .theme-form-field--flex .mdc-typography--body2 {
+      line-height: 56px + $diff;
+    }
   }
   .settings-dialog .mdc-dialog__content .group .theme-form-field__text .mdc-typography--body2 {
     line-height: 56px + $diff;
