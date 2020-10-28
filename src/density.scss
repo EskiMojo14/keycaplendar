@@ -52,7 +52,7 @@
         }
       }
     }
-    &.three-line .mdc-list-item,
+    &--two-line.three-line .mdc-list-item,
     .three-line.mdc-list-item {
       height: density.prop-value(
         (

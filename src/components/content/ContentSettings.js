@@ -78,8 +78,8 @@ export const ContentSettings = (props) => {
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
-      <Card>
-        <ListItem disabled className={"account" + (props.user.nickname !== "" ? " three-line" : "")}>
+      <Card className={"mdc-list--two-line" + (props.user.nickname !== "" ? " three-line" : "")}>
+        <ListItem disabled className="account">
           <BadgeAnchor className="avatar">
             <Avatar src={props.user.avatar} size="xlarge" />
             {userBadge}
