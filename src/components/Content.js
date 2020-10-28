@@ -12,7 +12,6 @@ import { ContentGrid } from "./content/ContentGrid";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
-import { DialogSettings } from "./common/DialogSettings";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
@@ -40,7 +39,6 @@ export class DesktopContent extends React.Component {
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
       deleteSet: {},
-      settingsDialogOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -168,14 +166,6 @@ export class DesktopContent extends React.Component {
       editDrawerOpen: false,
       editSet: {},
     });
-  };
-  openSettingsDialog = () => {
-    this.openModal();
-    this.setState({ settingsDialogOpen: true });
-  };
-  closeSettingsDialog = () => {
-    this.closeModal();
-    this.setState({ settingsDialogOpen: false });
   };
   openAuditDeleteDialog = (action) => {
     this.setState({
@@ -543,7 +533,6 @@ export class DesktopContent extends React.Component {
           close={this.toggleNavDrawer}
           page={this.props.page}
           changePage={this.props.changePage}
-          openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
         <DrawerAppContent
@@ -592,28 +581,6 @@ export class DesktopContent extends React.Component {
           </div>
         </DrawerAppContent>
         {auditDeleteDialog}
-        <DialogSettings
-          user={this.props.user}
-          setUser={this.props.setUser}
-          open={this.state.settingsDialogOpen}
-          close={this.closeSettingsDialog}
-          applyTheme={this.props.applyTheme}
-          changeApplyTheme={this.props.changeApplyTheme}
-          lightTheme={this.props.lightTheme}
-          setLightTheme={this.props.setLightTheme}
-          darkTheme={this.props.darkTheme}
-          setDarkTheme={this.props.setDarkTheme}
-          manualTheme={this.props.manualTheme}
-          setManualTheme={this.props.setManualTheme}
-          fromTimeTheme={this.props.fromTimeTheme}
-          setFromTimeTheme={this.props.setFromTimeTheme}
-          toTimeTheme={this.props.toTimeTheme}
-          setToTimeTheme={this.props.setToTimeTheme}
-          density={this.props.density}
-          setDensity={this.props.setDensity}
-          snackbarQueue={this.props.snackbarQueue}
-          getData={this.props.getData}
-        />
       </div>
     );
   }
@@ -632,7 +599,6 @@ export class TabletContent extends React.Component {
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
       deleteSet: {},
-      settingsDialogOpen: false,
       statisticsDialogOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
@@ -733,14 +699,6 @@ export class TabletContent extends React.Component {
       detailsDrawerOpen: false,
       detailSet: {},
     });
-  };
-  openSettingsDialog = () => {
-    this.openModal();
-    this.setState({ settingsDialogOpen: true });
-  };
-  closeSettingsDialog = () => {
-    this.closeModal();
-    this.setState({ settingsDialogOpen: false });
   };
   openStatisticsDialog = () => {
     this.openModal();
@@ -1048,7 +1006,6 @@ export class TabletContent extends React.Component {
           page={this.props.page}
           changePage={this.props.changePage}
           close={this.toggleNavDrawer}
-          openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
         <DrawerAppContent>
@@ -1103,28 +1060,6 @@ export class TabletContent extends React.Component {
         />
         {auditFilterDrawer}
         {auditDeleteDialog}
-        <DialogSettings
-          user={this.props.user}
-          setUser={this.props.setUser}
-          open={this.state.settingsDialogOpen}
-          close={this.closeSettingsDialog}
-          applyTheme={this.props.applyTheme}
-          changeApplyTheme={this.props.changeApplyTheme}
-          lightTheme={this.props.lightTheme}
-          setLightTheme={this.props.setLightTheme}
-          darkTheme={this.props.darkTheme}
-          setDarkTheme={this.props.setDarkTheme}
-          manualTheme={this.props.manualTheme}
-          setManualTheme={this.props.setManualTheme}
-          fromTimeTheme={this.props.fromTimeTheme}
-          setFromTimeTheme={this.props.setFromTimeTheme}
-          toTimeTheme={this.props.toTimeTheme}
-          setToTimeTheme={this.props.setToTimeTheme}
-          density={this.props.density}
-          setDensity={this.props.setDensity}
-          snackbarQueue={this.props.snackbarQueue}
-          getData={this.props.getData}
-        />
         {statsDialog}
       </div>
     );
@@ -1145,7 +1080,6 @@ export class MobileContent extends React.Component {
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
       deleteSet: {},
-      settingsDialogOpen: false,
       statisticsDialogOpen: false,
       searchBarOpen: false,
       auditActions: [],
@@ -1257,14 +1191,6 @@ export class MobileContent extends React.Component {
       detailsDrawerOpen: false,
       detailSet: {},
     });
-  };
-  openSettingsDialog = () => {
-    this.openModal();
-    this.setState({ settingsDialogOpen: true });
-  };
-  closeSettingsDialog = () => {
-    this.closeModal();
-    this.setState({ settingsDialogOpen: false });
   };
   openStatisticsDialog = () => {
     this.openModal();
@@ -1551,7 +1477,6 @@ export class MobileContent extends React.Component {
           page={this.props.page}
           changePage={this.props.changePage}
           close={this.closeNavDrawer}
-          openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
         {(this.props.user.isEditor || this.props.user.isDesigner) &&
@@ -1604,7 +1529,6 @@ export class MobileContent extends React.Component {
           page={this.props.page}
           changePage={this.props.changePage}
           close={this.closeNavDrawer}
-          openSettings={this.openSettingsDialog}
           user={this.props.user}
         />
         <MobileAppBar
@@ -1716,30 +1640,6 @@ export class MobileContent extends React.Component {
         />
         {auditFilterDrawer}
         {auditDeleteDialog}
-        <DialogSettings
-          user={this.props.user}
-          setUser={this.props.setUser}
-          open={this.state.settingsDialogOpen}
-          close={this.closeSettingsDialog}
-          applyTheme={this.props.applyTheme}
-          changeApplyTheme={this.props.changeApplyTheme}
-          lightTheme={this.props.lightTheme}
-          setLightTheme={this.props.setLightTheme}
-          darkTheme={this.props.darkTheme}
-          setDarkTheme={this.props.setDarkTheme}
-          manualTheme={this.props.manualTheme}
-          setManualTheme={this.props.setManualTheme}
-          fromTimeTheme={this.props.fromTimeTheme}
-          setFromTimeTheme={this.props.setFromTimeTheme}
-          toTimeTheme={this.props.toTimeTheme}
-          setToTimeTheme={this.props.setToTimeTheme}
-          bottomNav={this.props.bottomNav}
-          changeBottomNav={this.props.changeBottomNav}
-          density={this.props.density}
-          setDensity={this.props.setDensity}
-          snackbarQueue={this.props.snackbarQueue}
-          getData={this.props.getData}
-        />
         {statsDialog}
       </div>
     );
