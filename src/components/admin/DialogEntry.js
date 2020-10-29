@@ -10,7 +10,7 @@ import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { TextField } from "@rmwc/textfield";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Autocomplete } from "../common/Autocomplete";
+import { Autocomplete } from "../util/Autocomplete";
 
 export class DialogCreate extends React.Component {
   constructor(props) {

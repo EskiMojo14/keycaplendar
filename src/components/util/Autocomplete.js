@@ -21,6 +21,7 @@ export const Autocomplete = (props) => {
       }}
       onFocus={props.onFocus}
       onBlur={props.onBlur}
+      fixed={props.fixed}
     >
       {props.query.length >= props.minChars
         ? props.open

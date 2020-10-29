@@ -7,7 +7,7 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "../../common/Autocomplete";
+import { Autocomplete } from "../../util/Autocomplete";
 
 export class UserRow extends React.Component {
   constructor(props) {
