@@ -324,7 +324,7 @@ export class DesktopContent extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       this.props.page !== prevProps.page &&
-      (this.props.page === "statistics" || this.props.page === "audit" || this.props.page === "users")
+      (this.props.page === "statistics" || this.props.page === "audit" || this.props.page === "users" || this.props.page === "settings")
     ) {
       if (this.state.filterDrawerOpen) {
         this.closeFilterDrawer();
