@@ -45,18 +45,6 @@ export const ElementCard = (props) => {
   return (
     <div className="card-container">
       <Card className={props.selected ? "mdc-card--selected" : ""}>
-        <CardActions className="hover-button">
-          <CardActionIcons>
-            <CardActionIcon
-              icon="open_in_new"
-              tag="a"
-              href={props.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              label={"Link to " + props.title}
-            />
-          </CardActionIcons>
-        </CardActions>
         <CardPrimaryAction
           className={props.selected ? "mdc-card__primary-action--selected" : ""}
           onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
@@ -87,6 +75,18 @@ export const ElementCard = (props) => {
             </div>
           </div>
         </CardPrimaryAction>
+        <CardActions className="hover-button">
+          <CardActionIcons>
+            <CardActionIcon
+              icon="open_in_new"
+              tag="a"
+              href={props.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              label={"Link to " + props.title}
+            />
+          </CardActionIcons>
+        </CardActions>
       </Card>
     </div>
   );
