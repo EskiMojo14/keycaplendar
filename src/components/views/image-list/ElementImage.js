@@ -56,7 +56,6 @@ export const ElementImage = (props) => {
     <Ripple>
       <ImageListItem
         onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
-        key={props.image}
         className={"image-list-item" + (props.selected ? " selected" : "")}
       >
         <div className="container">
