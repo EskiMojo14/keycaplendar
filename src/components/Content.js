@@ -3,7 +3,7 @@ import "./Content.scss";
 import firebase from "firebase";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
-import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
+import { DrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
 import { ContentAudit } from "./content/ContentAudit";
 import { ContentEmpty } from "./content/ContentEmpty";
@@ -485,7 +485,9 @@ export class DesktopContent extends React.Component {
       ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
-        <DesktopDrawerNav
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
           open={this.state.navDrawerOpen}
           close={this.toggleNavDrawer}
           page={this.props.page}
@@ -979,7 +981,9 @@ export class TabletContent extends React.Component {
       ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
-        <DesktopDrawerNav
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
           open={this.state.navDrawerOpen}
           page={this.props.page}
           changePage={this.props.changePage}
@@ -1452,15 +1456,8 @@ export class MobileContent extends React.Component {
           ) : null}
         </div>
       ) : null;
-    const nav = this.props.bottomNav ? (
+    const appBar = this.props.bottomNav ? (
       <div className="bottomNav">
-        <BottomDrawerNav
-          open={this.state.navDrawerOpen}
-          page={this.props.page}
-          changePage={this.props.changePage}
-          close={this.closeNavDrawer}
-          user={this.props.user}
-        />
         {(this.props.user.isEditor || this.props.user.isDesigner) &&
         this.props.page !== "statistics" &&
         this.props.page !== "audit" &&
@@ -1505,39 +1502,30 @@ export class MobileContent extends React.Component {
         )}
       </div>
     ) : (
-      <div>
-        <MobileDrawerNav
-          open={this.state.navDrawerOpen}
-          page={this.props.page}
-          changePage={this.props.changePage}
-          close={this.closeNavDrawer}
-          user={this.props.user}
-        />
-        <MobileAppBar
-          page={this.props.page}
-          loading={this.props.loading}
-          openFilter={this.openFilterDrawer}
-          openAuditFilter={this.openAuditFilterDrawer}
-          getActions={this.getAuditActions}
-          openNav={this.openNavDrawer}
-          view={this.props.view}
-          changeView={this.props.changeView}
-          sort={this.props.sort}
-          setSort={this.props.setSort}
-          userSort={this.state.userSort}
-          setUserSortIndex={this.setUserSortIndex}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          sets={this.props.sets}
-          statistics={this.props.statistics}
-          setStatistics={this.props.setStatistics}
-          statisticsSort={this.props.statisticsSort}
-          setStatisticsSort={this.props.setStatisticsSort}
-          openStatisticsDialog={this.openStatisticsDialog}
-          statisticsTab={this.props.statisticsTab}
-          setStatisticsTab={this.props.setStatisticsTab}
-        />
-      </div>
+      <MobileAppBar
+        page={this.props.page}
+        loading={this.props.loading}
+        openFilter={this.openFilterDrawer}
+        openAuditFilter={this.openAuditFilterDrawer}
+        getActions={this.getAuditActions}
+        openNav={this.openNavDrawer}
+        view={this.props.view}
+        changeView={this.props.changeView}
+        sort={this.props.sort}
+        setSort={this.props.setSort}
+        userSort={this.state.userSort}
+        setUserSortIndex={this.setUserSortIndex}
+        search={this.props.search}
+        setSearch={this.props.setSearch}
+        sets={this.props.sets}
+        statistics={this.props.statistics}
+        setStatistics={this.props.setStatistics}
+        statisticsSort={this.props.statisticsSort}
+        setStatisticsSort={this.props.setStatisticsSort}
+        openStatisticsDialog={this.openStatisticsDialog}
+        statisticsTab={this.props.statisticsTab}
+        setStatisticsTab={this.props.setStatisticsTab}
+      />
     );
     const statsDialog =
       this.props.page === "statistics" ? (
@@ -1595,7 +1583,17 @@ export class MobileContent extends React.Component {
         }
       >
         {search}
-        {nav}
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
+          bottomNav={this.props.bottomNav}
+          open={this.state.navDrawerOpen}
+          page={this.props.page}
+          changePage={this.props.changePage}
+          close={this.closeNavDrawer}
+          user={this.props.user}
+        />
+        {appBar}
         <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
           {content}
           <Footer />
