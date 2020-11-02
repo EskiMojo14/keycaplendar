@@ -15,7 +15,7 @@ import { DialogDelete } from "./admin/DialogDelete";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
-import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
+import { DrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
 import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
@@ -460,32 +460,6 @@ export class DesktopContent extends React.Component {
           ) : null}
         </div>
       ) : null;
-    const detailsDrawer =
-      this.props.view === "compact" ? (
-        <TabletDrawerDetails
-          user={this.props.user}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDrawer}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-        />
-      ) : (
-        <DesktopDrawerDetails
-          user={this.props.user}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDrawer}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-        />
-      );
     const auditFilterDrawer =
       this.props.page === "audit" ? (
         <DrawerAuditFilter
@@ -553,7 +527,19 @@ export class DesktopContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
-            {detailsDrawer}
+            <DrawerDetails
+              device={this.props.device}
+              view={this.props.view}
+              user={this.props.user}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+            />
             <DrawerFilter
               device={this.props.device}
               view={this.props.view}
@@ -1031,7 +1017,9 @@ export class TabletContent extends React.Component {
           </main>
         </DrawerAppContent>
         {editorElements}
-        <TabletDrawerDetails
+        <DrawerDetails
+          device={this.props.device}
+          view={this.props.view}
           user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
@@ -1613,7 +1601,9 @@ export class MobileContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
-        <TabletDrawerDetails
+        <DrawerDetails
+          device={this.props.device}
+          view={this.props.view}
           user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
