@@ -444,7 +444,7 @@ export const DesktopAppBar = (props) => {
       <TopAppBar fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.toggleNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
@@ -783,7 +783,7 @@ export const TabletAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
         </Tooltip>
         <MenuSurfaceAnchor>
           <MenuView
@@ -838,7 +838,7 @@ export const TabletAppBar = (props) => {
       <TopAppBar fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.toggleNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
@@ -1231,7 +1231,7 @@ export const MobileAppBar = (props) => {
     <div>
       <TopAppBar fixed>
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
@@ -1614,7 +1614,7 @@ export const BottomAppBar = (props) => {
       <TopAppBar className="bottom-app-bar">
         {statsTabs}
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
           </TopAppBarSection>
           {buttons}
@@ -1732,7 +1732,7 @@ export const BottomAppBarIndent = (props) => {
     <div>
       <TopAppBar className="bottom-app-bar bottom-app-bar--indent">
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             {buttons}
           </TopAppBarSection>

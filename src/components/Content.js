@@ -65,8 +65,11 @@ export class DesktopContent extends React.Component {
     }, 20);
     bodyScroll.enable();
   };
-  toggleNavDrawer = () => {
-    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
+  openNavDrawer = () => {
+    this.setState({ navDrawerOpen: true });
+  };
+  closeNavDrawer = () => {
+    this.setState({ navDrawerOpen: false });
   };
   toggleFilterDrawer = () => {
     if (this.state.detailsDrawerOpen) {
@@ -489,7 +492,7 @@ export class DesktopContent extends React.Component {
           device={this.props.device}
           view={this.props.view}
           open={this.state.navDrawerOpen}
-          close={this.toggleNavDrawer}
+          close={this.closeNavDrawer}
           page={this.props.page}
           changePage={this.props.changePage}
           user={this.props.user}
@@ -505,7 +508,7 @@ export class DesktopContent extends React.Component {
           <DesktopAppBar
             page={this.props.page}
             loading={this.props.loading}
-            toggleNav={this.toggleNavDrawer}
+            openNav={this.openNavDrawer}
             toggleFilter={this.toggleFilterDrawer}
             toggleAuditFilter={this.toggleAuditFilterDrawer}
             getActions={this.getAuditActions}
@@ -605,8 +608,13 @@ export class TabletContent extends React.Component {
     }, 20);
     bodyScroll.enable();
   };
-  toggleNavDrawer = () => {
-    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
+  openNavDrawer = () => {
+    this.openModal();
+    this.setState({ navDrawerOpen: true });
+  };
+  closeNavDrawer = () => {
+    this.closeModal();
+    this.setState({ navDrawerOpen: false });
   };
   openCreateDrawer = () => {
     this.openModal();
@@ -987,39 +995,37 @@ export class TabletContent extends React.Component {
           open={this.state.navDrawerOpen}
           page={this.props.page}
           changePage={this.props.changePage}
-          close={this.toggleNavDrawer}
+          close={this.closeNavDrawer}
           user={this.props.user}
         />
-        <DrawerAppContent>
-          <TabletAppBar
-            page={this.props.page}
-            loading={this.props.loading}
-            toggleNav={this.toggleNavDrawer}
-            toggleFilter={this.openFilterDrawer}
-            openAuditFilter={this.openAuditFilterDrawer}
-            getActions={this.getAuditActions}
-            view={this.props.view}
-            changeView={this.props.changeView}
-            sort={this.props.sort}
-            setSort={this.props.setSort}
-            userSort={this.state.userSort}
-            setUserSortIndex={this.setUserSortIndex}
-            search={this.props.search}
-            setSearch={this.props.setSearch}
-            sets={this.props.sets}
-            statistics={this.props.statistics}
-            setStatistics={this.props.setStatistics}
-            statisticsSort={this.props.statisticsSort}
-            setStatisticsSort={this.props.setStatisticsSort}
-            statisticsTab={this.props.statisticsTab}
-            setStatisticsTab={this.props.setStatisticsTab}
-            openStatisticsDialog={this.openStatisticsDialog}
-          />
-          <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
-            {content}
-            <Footer />
-          </main>
-        </DrawerAppContent>
+        <TabletAppBar
+          page={this.props.page}
+          loading={this.props.loading}
+          openNav={this.openNavDrawer}
+          openFilter={this.openFilterDrawer}
+          openAuditFilter={this.openAuditFilterDrawer}
+          getActions={this.getAuditActions}
+          view={this.props.view}
+          changeView={this.props.changeView}
+          sort={this.props.sort}
+          setSort={this.props.setSort}
+          userSort={this.state.userSort}
+          setUserSortIndex={this.setUserSortIndex}
+          search={this.props.search}
+          setSearch={this.props.setSearch}
+          sets={this.props.sets}
+          statistics={this.props.statistics}
+          setStatistics={this.props.setStatistics}
+          statisticsSort={this.props.statisticsSort}
+          setStatisticsSort={this.props.setStatisticsSort}
+          statisticsTab={this.props.statisticsTab}
+          setStatisticsTab={this.props.setStatisticsTab}
+          openStatisticsDialog={this.openStatisticsDialog}
+        />
+        <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
+          {content}
+          <Footer />
+        </main>
         {editorElements}
         <DrawerDetails
           device={this.props.device}
