@@ -12,9 +12,9 @@ import "./DrawerDetails.scss";
 
 export class DrawerDetails extends React.Component {
   setScroll() {
-    const chipSet = document.getElementById("chip-set");
-    if (document.querySelector(".mdc-chip-set .mdc-chip--selected")) {
-      const selectedChip = document.querySelector(".mdc-chip-set .mdc-chip--selected");
+    const chipSet = document.getElementById("search-chip-set");
+    if (chipSet.querySelector(".mdc-chip--selected")) {
+      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
       chipSet.scrollLeft = selectedChip.offsetLeft - 24;
     } else {
       chipSet.scrollLeft = 0;
@@ -316,7 +316,7 @@ export class DrawerDetails extends React.Component {
         {editorButtons}
         <div className="search-chips-container">
           <div className="search-chips">
-            <ChipSet id="chip-set" choice>
+            <ChipSet id="search-chip-set" choice>
               {chips.map((value, index) => {
                 return (
                   <Chip
