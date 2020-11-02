@@ -14,7 +14,7 @@ import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
-import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
+import { DrawerFilter } from "./common/DrawerFilter";
 import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
@@ -324,7 +324,10 @@ export class DesktopContent extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       this.props.page !== prevProps.page &&
-      (this.props.page === "statistics" || this.props.page === "audit" || this.props.page === "users" || this.props.page === "settings")
+      (this.props.page === "statistics" ||
+        this.props.page === "audit" ||
+        this.props.page === "users" ||
+        this.props.page === "settings")
     ) {
       if (this.state.filterDrawerOpen) {
         this.closeFilterDrawer();
@@ -483,26 +486,6 @@ export class DesktopContent extends React.Component {
           toggleLichTheme={this.props.toggleLichTheme}
         />
       );
-    const filterDrawer =
-      this.props.view === "compact" ? (
-        <TabletDrawerFilter
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-        />
-      ) : (
-        <DesktopDrawerFilter
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-        />
-      );
     const auditFilterDrawer =
       this.props.page === "audit" ? (
         <DrawerAuditFilter
@@ -571,7 +554,16 @@ export class DesktopContent extends React.Component {
           />
           <div className="content-container">
             {detailsDrawer}
-            {filterDrawer}
+            <DrawerFilter
+              device={this.props.device}
+              view={this.props.view}
+              profiles={this.props.profiles}
+              vendors={this.props.allVendors}
+              open={this.state.filterDrawerOpen}
+              close={this.closeFilterDrawer}
+              setWhitelist={this.props.setWhitelist}
+              whitelist={this.props.whitelist}
+            />
             {auditFilterDrawer}
             <DrawerAppContent className={"main " + this.props.view + (this.props.content ? " content" : "")}>
               {content}
@@ -1050,7 +1042,9 @@ export class TabletContent extends React.Component {
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
         />
-        <TabletDrawerFilter
+        <DrawerFilter
+          device={this.props.device}
+          view={this.props.view}
           vendors={this.props.allVendors}
           profiles={this.props.profiles}
           open={this.state.filterDrawerOpen}
@@ -1630,7 +1624,9 @@ export class MobileContent extends React.Component {
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
         />
-        <TabletDrawerFilter
+        <DrawerFilter
+          device={this.props.device}
+          view={this.props.view}
           vendors={this.props.allVendors}
           profiles={this.props.profiles}
           open={this.state.filterDrawerOpen}
