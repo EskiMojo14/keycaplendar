@@ -784,9 +784,8 @@ class App extends React.Component {
 
   render() {
     const device = this.state.device;
-    let content;
-    if (device === "desktop") {
-      content = (
+    let content =
+      device === "desktop" ? (
         <DesktopContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -837,9 +836,7 @@ class App extends React.Component {
           device={this.state.device}
           snackbarQueue={queue}
         />
-      );
-    } else if (device === "tablet") {
-      content = (
+      ) : device === "tablet" ? (
         <TabletContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -890,9 +887,7 @@ class App extends React.Component {
           device={this.state.device}
           snackbarQueue={queue}
         />
-      );
-    } else {
-      content = (
+      ) : (
         <MobileContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -946,7 +941,7 @@ class App extends React.Component {
           snackbarQueue={queue}
         />
       );
-    }
+
     return (
       <Router>
         <Switch>
