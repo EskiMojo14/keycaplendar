@@ -29,6 +29,7 @@ export class DrawerDetails extends React.Component {
     }
   }
   render() {
+    const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
     let set = this.props.set;
     if (!set.image) {
       set.image = "";
@@ -267,16 +268,15 @@ export class DrawerDetails extends React.Component {
           </div>
         </Ripple>
       ) : null;
-    const closeIcon =
-      this.props.device === "desktop" && this.props.view !== "compact" ? (
-        <Tooltip enterDelay={500} content="Close" align="bottom">
-          <IconButton className="close-icon" icon="close" onClick={this.props.close} />
-        </Tooltip>
-      ) : null;
+    const closeIcon = dismissible ? (
+      <Tooltip enterDelay={500} content="Close" align="bottom">
+        <IconButton className="close-icon" icon="close" onClick={this.props.close} />
+      </Tooltip>
+    ) : null;
     return (
       <Drawer
-        dismissible={this.props.device === "desktop" && this.props.view !== "compact"}
-        modal={this.props.device !== "desktop" || this.props.view === "compact"}
+        dismissible={dismissible}
+        modal={!dismissible}
         open={this.props.open}
         onClose={this.props.close}
         className="details-drawer drawer-right"
@@ -326,7 +326,7 @@ export class DrawerDetails extends React.Component {
                     selected={this.props.search.toLowerCase() === value.toLowerCase()}
                     onClick={() => {
                       this.props.setSearch(value);
-                      if (this.props.device !== "desktop" || this.props.view === "compact") {
+                      if (!dismissible) {
                         this.props.close();
                       }
                     }}

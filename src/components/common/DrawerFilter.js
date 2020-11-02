@@ -157,15 +157,16 @@ export class DrawerFilter extends React.Component {
     });
   };
   render() {
-    const closeIcon = this.props.device === "desktop" && this.props.view !== "compact" ? (
+    const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
+    const closeIcon = dismissible ? (
       <Tooltip enterDelay={500} content="Close" align="bottom">
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
     return (
       <Drawer
-        dismissible={this.props.device === "desktop" && this.props.view !== "compact"}
-        modal={this.props.device !== "desktop" || this.props.view === "compact"}
+        dismissible={dismissible}
+        modal={!dismissible}
         open={this.props.open}
         onClose={this.props.close}
         className="filter-drawer drawer-right"
