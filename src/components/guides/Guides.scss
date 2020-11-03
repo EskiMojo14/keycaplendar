@@ -23,8 +23,6 @@
     z-index: -1;
   }
   .guide {
-    border-radius: 4px;
-    @include elevation.elevation(1);
     width: 768px;
     max-width: calc(100vw - 32px);
     box-sizing: border-box;
@@ -38,8 +36,15 @@
       white-space: nowrap;
       background-color: rgba(black, 0.1);
     }
-    :first-child {
+    .mdc-typography--headline4,
+    .mdc-typography--headline5,
+    .mdc-typography--subtitle1,
+    .mdc-typography--body2,
+    .mdc-typography--caption {
       margin-top: 0;
+      .mdc-typography--button {
+        line-height: inherit;
+      }
     }
     .demo {
       display: flex;
@@ -63,9 +68,7 @@
     .table-container {
       display: flex;
       justify-content: center;
-    }
-    .mdc-data-table {
-      border-radius: 4px;
+      padding: 16px;
     }
   }
 }

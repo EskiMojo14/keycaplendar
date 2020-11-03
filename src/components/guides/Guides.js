@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Card } from "@rmwc/card";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -37,7 +38,7 @@ export const EntryGuide = () => {
     <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
     <div className="guide-container-container" key="GuideContainer">
       <div className="guide-container">
-        <div className="guide">
+        <Card className="guide">
           <Typography use="headline4" tag="h1">
             Actions
           </Typography>
@@ -124,8 +125,8 @@ export const EntryGuide = () => {
           <div className="demo">
             <Button className="delete" outlined label="Delete" />
           </div>
-        </div>
-        <div className="guide">
+        </Card>
+        <Card className="guide">
           <Typography use="headline4" tag="h1">
             Data Fields
           </Typography>
@@ -335,7 +336,7 @@ export const EntryGuide = () => {
             This should be a direct link to the product/collection, not a link to the homepage of the store. If no
             specific link exists yet, leave blank.
           </Typography>
-        </div>
+        </Card>
       </div>
     </div>,
   ];
