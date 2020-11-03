@@ -789,7 +789,7 @@ export const TabletAppBar = (props) => {
             onSelect={(evt) => changeView(evt.detail.index)}
             onClose={closeViewMenu}
           />
-          <Tooltip content="View" align="bottom">
+          <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
                 <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
