@@ -437,22 +437,20 @@ export const DesktopAppBar = (props) => {
         </TopAppBarSection>
       </TopAppBarRow>
     ) : null;
-  return (
-    <div>
-      <TopAppBar fixed>
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
-          </TopAppBarSection>
-          {buttons}
-        </TopAppBarRow>
-        {statsTabs}
-        <LinearProgress closed={!props.loading} />
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </div>
-  );
+  return [
+    <TopAppBar fixed key="AppBar">
+      <TopAppBarRow>
+        <TopAppBarSection alignStart>
+          <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+          <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
+        </TopAppBarSection>
+        {buttons}
+      </TopAppBarRow>
+      {statsTabs}
+      <LinearProgress closed={!props.loading} />
+    </TopAppBar>,
+    <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
+  ];
 };
 
 export const TabletAppBar = (props) => {
@@ -830,22 +828,20 @@ export const TabletAppBar = (props) => {
         </TopAppBarSection>
       </TopAppBarRow>
     ) : null;
-  return (
-    <div>
-      <TopAppBar fixed>
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
-          </TopAppBarSection>
-          {buttons}
-        </TopAppBarRow>
-        {statsTabs}
-        <LinearProgress closed={!props.loading} />
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </div>
-  );
+  return [
+    <TopAppBar fixed key="AppBar">
+      <TopAppBarRow>
+        <TopAppBarSection alignStart>
+          <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+          <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
+        </TopAppBarSection>
+        {buttons}
+      </TopAppBarRow>
+      {statsTabs}
+      <LinearProgress closed={!props.loading} />
+    </TopAppBar>,
+    <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
+  ];
 };
 
 export const MobileAppBar = (props) => {
@@ -1223,22 +1219,20 @@ export const MobileAppBar = (props) => {
         </TopAppBarSection>
       </TopAppBarRow>
     ) : null;
-  return (
-    <div>
-      <TopAppBar fixed>
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
-          </TopAppBarSection>
-          {buttons}
-        </TopAppBarRow>
-        {statsTabs}
-        <LinearProgress closed={!props.loading} />
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </div>
-  );
+  return [
+    <TopAppBar fixed key="AppBar">
+      <TopAppBarRow>
+        <TopAppBarSection alignStart>
+          <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+          <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
+        </TopAppBarSection>
+        {buttons}
+      </TopAppBarRow>
+      {statsTabs}
+      <LinearProgress closed={!props.loading} />
+    </TopAppBar>,
+    <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
+  ];
 };
 
 export const BottomAppBar = (props) => {
@@ -1604,21 +1598,19 @@ export const BottomAppBar = (props) => {
         </TopAppBarSection>
       </TopAppBarRow>
     ) : null;
-  return (
-    <div>
-      <TopAppBar className="bottom-app-bar">
-        {statsTabs}
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-          </TopAppBarSection>
-          {buttons}
-        </TopAppBarRow>
-        <LinearProgress closed={!props.loading} />
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </div>
-  );
+  return [
+    <TopAppBar className="bottom-app-bar" key="AppBar">
+      {statsTabs}
+      <TopAppBarRow>
+        <TopAppBarSection alignStart>
+          <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+        </TopAppBarSection>
+        {buttons}
+      </TopAppBarRow>
+      <LinearProgress closed={!props.loading} />
+    </TopAppBar>,
+    <TopAppBarFixedAdjust key="AppBarFixedAjust" />,
+  ];
 };
 export const BottomAppBarIndent = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
@@ -1723,29 +1715,27 @@ export const BottomAppBarIndent = (props) => {
       </Tooltip>
     </div>
   );
-  return (
-    <div>
-      <TopAppBar className="bottom-app-bar bottom-app-bar--indent">
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            {buttons}
-          </TopAppBarSection>
-          <TopAppBarSection className="indent" alignEnd>
-            <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
-              <path
-                d="M107.3,0a8.042,8.042,0,0,0-7.9,6.6A36.067,36.067,0,0,1,64,36,36.067,36.067,0,0,1,28.6,6.6,8.042,8.042,0,0,0,20.7,0H0V56H128V0Z"
-                fill="inherit"
-              />
-            </svg>
-            <div className="fill"></div>
-          </TopAppBarSection>
-        </TopAppBarRow>
-        <LinearProgress closed={!props.loading} />
-      </TopAppBar>
-      <TopAppBarFixedAdjust />
-    </div>
-  );
+  return [
+    <TopAppBar className="bottom-app-bar bottom-app-bar--indent" key="AppBar">
+      <TopAppBarRow>
+        <TopAppBarSection alignStart>
+          <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+          {buttons}
+        </TopAppBarSection>
+        <TopAppBarSection className="indent" alignEnd>
+          <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
+            <path
+              d="M107.3,0a8.042,8.042,0,0,0-7.9,6.6A36.067,36.067,0,0,1,64,36,36.067,36.067,0,0,1,28.6,6.6,8.042,8.042,0,0,0,20.7,0H0V56H128V0Z"
+              fill="inherit"
+            />
+          </svg>
+          <div className="fill"></div>
+        </TopAppBarSection>
+      </TopAppBarRow>
+      <LinearProgress closed={!props.loading} />
+    </TopAppBar>,
+    <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
+  ];
 };
 
 export default DesktopAppBar;

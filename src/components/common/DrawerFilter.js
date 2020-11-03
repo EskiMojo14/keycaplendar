@@ -15,10 +15,6 @@ export class DrawerFilter extends React.Component {
       edited: false,
       profiles: {},
       vendors: {},
-      allProfilesChecked: true,
-      allProfilesUnchecked: false,
-      allVendorsChecked: true,
-      allVendorsUnchecked: false,
     };
   }
   componentDidMount() {
@@ -34,7 +30,6 @@ export class DrawerFilter extends React.Component {
         edited: true,
         profiles: profiles,
       });
-      this.checkValues();
     }
     if (!this.state.edited && this.props.vendors.length > 0) {
       let vendors = {};
@@ -48,7 +43,6 @@ export class DrawerFilter extends React.Component {
         edited: true,
         vendors: vendors,
       });
-      this.checkValues();
     }
   }
   componentDidUpdate(prevProps) {
@@ -64,7 +58,6 @@ export class DrawerFilter extends React.Component {
         edited: true,
         profiles: profiles,
       });
-      this.checkValues();
     }
     if (this.props.vendors !== prevProps.vendors && !this.state.edited && prevProps.vendors.length > 0) {
       let vendors = {};
@@ -78,7 +71,6 @@ export class DrawerFilter extends React.Component {
         edited: true,
         vendors: vendors,
       });
-      this.checkValues();
     }
   }
   handleChange = (name, prop) => {
@@ -88,7 +80,6 @@ export class DrawerFilter extends React.Component {
       [prop]: propCopy,
     });
     this.changeWhitelist(prop);
-    this.checkValues();
   };
   changeWhitelist = (prop) => {
     let whitelist = [];
@@ -109,7 +100,6 @@ export class DrawerFilter extends React.Component {
       [prop]: propCopy,
     });
     this.changeWhitelist(prop);
-    this.checkValues();
   };
   uncheckAll = (prop) => {
     const propCopy = this.state[prop];
@@ -120,41 +110,6 @@ export class DrawerFilter extends React.Component {
       [prop]: propCopy,
     });
     this.changeWhitelist(prop);
-    this.checkValues();
-  };
-  checkValues = () => {
-    const profiles = this.state.profiles;
-    const vendors = this.state.vendors;
-    let allProfilesChecked = true;
-    let allVendorsChecked = true;
-    Object.keys(profiles).forEach((key) => {
-      if (profiles[key].checked === false) {
-        allProfilesChecked = false;
-      }
-    });
-    Object.keys(vendors).forEach((key) => {
-      if (vendors[key].checked === false) {
-        allVendorsChecked = false;
-      }
-    });
-    let allProfilesUnchecked = true;
-    let allVendorsUnchecked = true;
-    Object.keys(profiles).forEach((key) => {
-      if (profiles[key].checked === true) {
-        allProfilesUnchecked = false;
-      }
-    });
-    Object.keys(vendors).forEach((key) => {
-      if (vendors[key].checked === true) {
-        allVendorsUnchecked = false;
-      }
-    });
-    this.setState({
-      allProfilesChecked: allProfilesChecked,
-      allProfilesUnchecked: allProfilesUnchecked,
-      allVendorsChecked: allVendorsChecked,
-      allVendorsUnchecked: allVendorsUnchecked,
-    });
   };
   render() {
     const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
