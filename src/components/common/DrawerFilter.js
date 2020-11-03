@@ -12,66 +12,50 @@ export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      edited: false,
+      edited: [false, false, false],
       profiles: {},
       vendors: {},
     };
   }
   componentDidMount() {
-    if (!this.state.edited && this.props.profiles.length > 0) {
-      let profiles = {};
-      this.props.profiles.forEach((profile) => {
-        profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-          name: profile,
-          checked: this.props.whitelist.profiles.includes(profile),
-        };
-      });
-      this.setState({
-        edited: true,
-        profiles: profiles,
-      });
-    }
-    if (!this.state.edited && this.props.vendors.length > 0) {
-      let vendors = {};
-      this.props.vendors.forEach((vendor) => {
-        vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-          name: vendor,
-          checked: this.props.whitelist.vendors.includes(vendor),
-        };
-      });
-      this.setState({
-        edited: true,
-        vendors: vendors,
-      });
-    }
+    const props = ["profiles", "vendors"];
+    props.forEach((prop, index) => {
+      if (!this.state.edited[index] && this.props[prop].length > 0) {
+        let obj = {};
+        this.props[prop].forEach((val) => {
+          obj[val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+            name: val,
+            checked: this.props.whitelist[prop].includes(val),
+          };
+        });
+        const editedCopy = [].concat(this.state.edited);
+        editedCopy[index] = true;
+        this.setState({
+          edited: editedCopy,
+          [prop]: obj,
+        });
+      }
+    });
   }
   componentDidUpdate(prevProps) {
-    if (this.props.profiles !== prevProps.profiles && !this.state.edited && prevProps.profiles.length > 0) {
-      let profiles = {};
-      this.props.profiles.forEach((profile) => {
-        profiles[profile.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-          name: profile,
-          checked: this.props.whitelist.profiles.includes(profile),
-        };
-      });
-      this.setState({
-        edited: true,
-        profiles: profiles,
-      });
-    }
-    if (this.props.vendors !== prevProps.vendors && !this.state.edited && prevProps.vendors.length > 0) {
-      let vendors = {};
-      this.props.vendors.forEach((vendor) => {
-        vendors[vendor.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-          name: vendor,
-          checked: this.props.whitelist.vendors.includes(vendor),
-        };
-      });
-      this.setState({
-        edited: true,
-        vendors: vendors,
-      });
-    }
+    const props = ["profiles", "vendors"];
+    props.forEach((prop, index) => {
+      if (this.props[prop] !== prevProps.profiles && !this.state.edited[index] && prevProps[prop].length > 0) {
+        let obj = {};
+        this.props[prop].forEach((val) => {
+          obj[val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
+            name: val,
+            checked: this.props.whitelist[prop].includes(val),
+          };
+        });
+        const editedCopy = [].concat(this.state.edited);
+        editedCopy[index] = true;
+        this.setState({
+          edited: editedCopy,
+          [prop]: obj,
+        });
+      }
+    });
   }
   handleChange = (name, prop) => {
     const propCopy = this.state[prop];
