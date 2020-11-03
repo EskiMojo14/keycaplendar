@@ -108,7 +108,7 @@ export const ViewCompact = (props) => {
               closeDetails={props.closeDetails}
               link={set.details}
               live={live}
-              key={index}
+              key={set.details}
             />
           );
         })}

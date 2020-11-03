@@ -233,7 +233,7 @@ export class ContentUsers extends React.Component {
                             delete={this.openDeleteDialog}
                             getUsers={this.getUsers}
                             snackbarQueue={this.props.snackbarQueue}
-                            key={index}
+                            key={user.email}
                             allDesigners={this.props.allDesigners}
                           />
                         );
@@ -248,7 +248,7 @@ export class ContentUsers extends React.Component {
                   return (
                     <UserCard
                       user={user}
-                      key={index}
+                      key={user.email}
                       currentUser={this.props.user}
                       delete={this.openDeleteDialog}
                       getUsers={this.getUsers}

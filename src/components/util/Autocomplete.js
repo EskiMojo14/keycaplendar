@@ -25,9 +25,9 @@ export const Autocomplete = (props) => {
     >
       {props.query.length >= props.minChars
         ? props.open
-          ? matchingItems.map((item, index) => {
+          ? matchingItems.map((item) => {
               return (
-                <MenuItem key={index}>
+                <MenuItem key={item}>
                   {props.query.length > 0
                     ? reactStringReplace(item, props.query, (match, i) => (
                         <span key={match + i} className="highlight">
@@ -38,9 +38,9 @@ export const Autocomplete = (props) => {
                 </MenuItem>
               );
             })
-          : firstFour.map((item, index) => {
+          : firstFour.map((item) => {
               return (
-                <MenuItem key={index}>
+                <MenuItem key={item}>
                   {props.query.length > 0
                     ? reactStringReplace(item, props.query, (match, i) => (
                         <span key={match + i} className="highlight">
@@ -63,9 +63,9 @@ export const AutocompleteMobile = (props) => {
     <div className={"autocomplete-mobile" + (props.open ? " autocomplete-mobile--open" : "")}>
       <List>
         {props.query.length >= props.minChars
-          ? matchingItems.map((item, index) => {
+          ? matchingItems.map((item) => {
               return (
-                <ListItem key={index} onClick={() => props.select(props.prop, item)}>
+                <ListItem key={item} onClick={() => props.select(props.prop, item)}>
                   {props.query.length > 0
                     ? reactStringReplace(item, props.query, (match, i) => (
                         <span key={match + i} className="highlight">

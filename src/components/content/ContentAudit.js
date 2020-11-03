@@ -28,11 +28,11 @@ export class ContentAudit extends React.Component {
         <div className="log-container">
           <Card className={"log" + (this.props.actions.length === 0 ? " placeholder" : "")}>
             <List twoLine className="three-line">
-              {this.props.actions.map((action, index) => {
+              {this.props.actions.map((action) => {
                 const timestamp = moment.utc(action.timestamp);
                 return (
                   <AuditEntry
-                    key={index}
+                    key={action.timestamp}
                     action={action}
                     timestamp={timestamp}
                     openDeleteDialog={this.props.openDeleteDialog}

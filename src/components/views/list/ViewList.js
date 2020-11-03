@@ -106,7 +106,7 @@ export const ViewList = (props) => {
             thisWeek={thisWeek}
             daysLeft={daysLeft}
             live={live}
-            key={index}
+            key={set.details}
           />
         );
       })}

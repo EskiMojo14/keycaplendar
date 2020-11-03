@@ -846,19 +846,19 @@ export class ContentStatistics extends React.Component {
           </Card>
         </div>
         <div className="stats-tab stats-grid status">
-          {this.state.statusData[this.props.statistics.status].data.map((data, index) => {
-            return <StatusCard key={index} data={data} />;
+          {this.state.statusData[this.props.statistics.status].data.map((data) => {
+            return <StatusCard key={data[5]} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
-          {this.state.shippedData[this.props.statistics.shipped].data.map((data, index) => {
-            return <ShippedCard key={index} data={data} />;
+          {this.state.shippedData[this.props.statistics.shipped].data.map((data) => {
+            return <ShippedCard key={data[3]} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid duration">
           {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
-            (data, index) => {
-              return <DurationCard key={index} data={data} durationCat={this.props.statistics.durationCat} />;
+            (data) => {
+              return <DurationCard key={data[0]} data={data} durationCat={this.props.statistics.durationCat} />;
             }
           )}
         </div>

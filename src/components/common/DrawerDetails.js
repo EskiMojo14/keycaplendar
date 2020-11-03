@@ -184,9 +184,9 @@ export class DrawerDetails extends React.Component {
             Vendors
           </Typography>
           <List twoLine>
-            {sortedVendors.map((vendor, index) => {
+            {sortedVendors.map((vendor) => {
               return vendor.storeLink !== "" ? (
-                <a key={index} href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                <a key={vendor.name} href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
                   <ListItem>
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
@@ -196,7 +196,7 @@ export class DrawerDetails extends React.Component {
                   </ListItem>
                 </a>
               ) : (
-                <ListItem key={index} disabled>
+                <ListItem key={vendor.name} disabled>
                   <ListItemText>
                     <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                     <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>

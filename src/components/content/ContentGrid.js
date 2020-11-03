@@ -147,12 +147,12 @@ export const ContentGrid = (props) => {
   };
   return (
     <div className="content-grid">
-      {props.groups.map((value, index) => {
+      {props.groups.map((value) => {
         const filteredSets = filterSets(props.sets, value, props.sort, props.page);
         return (
-          <div className="outer-container" key={index}>
+          <div className="outer-container" key={value}>
             <div className="subheader">
-              <Typography use="caption" key={index}>
+              <Typography use="caption">
                 {value} <b>({filteredSets.length})</b>
               </Typography>
             </div>
