@@ -42,7 +42,13 @@ class App extends React.Component {
         isDesigner: false,
         id: null,
       },
-      whitelist: { vendors: [], vendorMode: "include", profiles: [], edited: false },
+      whitelist: {
+        vendors: [],
+        vendorMode: "include",
+        profiles: [],
+        shipped: ["Shipped", "Not shipped"],
+        edited: false,
+      },
       cookies: true,
       applyTheme: "manual",
       lightTheme: "light",
@@ -541,13 +547,14 @@ class App extends React.Component {
       return bool;
     };
     const filteredSets = pageSets.filter((set) => {
+      const shippedBool = (whitelist.shipped.includes("Shipped") && set.shipped) || (whitelist.shipped.includes("Not shipped") && !set.shipped);
       if (set.vendors.length > 0) {
-        return checkVendors(set) && whitelist.profiles.includes(set.profile);
+        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool;
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
         } else {
-          return whitelist.profiles.includes(set.profile);
+          return whitelist.profiles.includes(set.profile) && shippedBool;
         }
       }
     });
