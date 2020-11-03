@@ -63,9 +63,8 @@
     &.bottom {
       width: 100%;
       height: auto;
-      border-top-width: 1px;
+      border-width: 1px 0 0;
       border-top-style: solid;
-      border-right-width: 0;
       &.mdc-drawer--animate {
         transform: translateY(101%);
       }
