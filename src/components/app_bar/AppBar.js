@@ -147,8 +147,7 @@ export const DesktopAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -253,8 +252,7 @@ export const DesktopAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort[props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort(props.statisticsTab, "alphabetical");
               }}
@@ -585,8 +583,7 @@ export const TabletAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -979,8 +976,7 @@ export const MobileAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -1361,8 +1357,7 @@ export const BottomAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
