@@ -107,7 +107,7 @@ export const ViewCard = (props) => {
             thisWeek={thisWeek}
             daysLeft={daysLeft}
             live={live}
-            key={set.details}
+            key={set.details + index}
           />
         );
       })}
