@@ -147,8 +147,7 @@ export const DesktopAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -253,8 +252,7 @@ export const DesktopAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort[props.statisticsTab] === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort(props.statisticsTab, "alphabetical");
               }}
@@ -444,7 +442,7 @@ export const DesktopAppBar = (props) => {
       <TopAppBar fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.toggleNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
@@ -585,8 +583,7 @@ export const TabletAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -783,7 +780,7 @@ export const TabletAppBar = (props) => {
           </Tooltip>
         </MenuSurfaceAnchor>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
         </Tooltip>
         <MenuSurfaceAnchor>
           <MenuView
@@ -792,7 +789,7 @@ export const TabletAppBar = (props) => {
             onSelect={(evt) => changeView(evt.detail.index)}
             onClose={closeViewMenu}
           />
-          <Tooltip content="View" align="bottom">
+          <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
                 <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
@@ -838,7 +835,7 @@ export const TabletAppBar = (props) => {
       <TopAppBar fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={props.toggleNav} />
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
@@ -979,8 +976,7 @@ export const MobileAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -1231,7 +1227,7 @@ export const MobileAppBar = (props) => {
     <div>
       <TopAppBar fixed>
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
@@ -1361,8 +1357,7 @@ export const BottomAppBar = (props) => {
         <TopAppBarSection alignEnd>
           <ToggleGroup>
             <ToggleGroupButton
-              outlined
-              className={props.statisticsSort.duration === "alphabetical" ? "mdc-button--selected" : ""}
+              selected={props.statisticsSort.duration === "alphabetical"}
               onClick={() => {
                 props.setStatisticsSort("duration", "alphabetical");
               }}
@@ -1614,7 +1609,7 @@ export const BottomAppBar = (props) => {
       <TopAppBar className="bottom-app-bar">
         {statsTabs}
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
           </TopAppBarSection>
           {buttons}
@@ -1732,7 +1727,7 @@ export const BottomAppBarIndent = (props) => {
     <div>
       <TopAppBar className="bottom-app-bar bottom-app-bar--indent">
         <TopAppBarRow>
-          <TopAppBarSection alignStart className="nav-icon">
+          <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             {buttons}
           </TopAppBarSection>

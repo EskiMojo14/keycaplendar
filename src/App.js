@@ -16,6 +16,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       device: "desktop",
+      deviceEdited: false,
       bottomNav: false,
       page: "calendar",
       view: "card",
@@ -720,7 +721,7 @@ class App extends React.Component {
         } else {
           device = "mobile";
         }
-        this.setState({ device: device });
+        this.setState({ device: device, deviceEdited: true });
         lastWidth = vw;
         i++;
       }
@@ -784,9 +785,8 @@ class App extends React.Component {
 
   render() {
     const device = this.state.device;
-    let content;
-    if (device === "desktop") {
-      content = (
+    let content = this.state.deviceEdited ? (
+      device === "desktop" ? (
         <DesktopContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -837,9 +837,7 @@ class App extends React.Component {
           device={this.state.device}
           snackbarQueue={queue}
         />
-      );
-    } else if (device === "tablet") {
-      content = (
+      ) : device === "tablet" ? (
         <TabletContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -890,9 +888,7 @@ class App extends React.Component {
           device={this.state.device}
           snackbarQueue={queue}
         />
-      );
-    } else {
-      content = (
+      ) : (
         <MobileContent
           allSets={this.state.sets}
           user={this.state.user}
@@ -945,8 +941,9 @@ class App extends React.Component {
           device={this.state.device}
           snackbarQueue={queue}
         />
-      );
-    }
+      )
+    ) : null;
+
     return (
       <Router>
         <Switch>

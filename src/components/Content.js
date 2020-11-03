@@ -3,7 +3,7 @@ import "./Content.scss";
 import firebase from "firebase";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
-import { DesktopDrawerNav, MobileDrawerNav, BottomDrawerNav } from "./common/DrawerNav";
+import { DrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
 import { ContentAudit } from "./content/ContentAudit";
 import { ContentEmpty } from "./content/ContentEmpty";
@@ -14,8 +14,8 @@ import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
-import { DesktopDrawerFilter, TabletDrawerFilter } from "./common/DrawerFilter";
-import { DesktopDrawerDetails, TabletDrawerDetails } from "./common/DrawerDetails";
+import { DrawerFilter } from "./common/DrawerFilter";
+import { DrawerDetails } from "./common/DrawerDetails";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
 import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
@@ -65,8 +65,11 @@ export class DesktopContent extends React.Component {
     }, 20);
     bodyScroll.enable();
   };
-  toggleNavDrawer = () => {
-    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
+  openNavDrawer = () => {
+    this.setState({ navDrawerOpen: true });
+  };
+  closeNavDrawer = () => {
+    this.setState({ navDrawerOpen: false });
   };
   toggleFilterDrawer = () => {
     if (this.state.detailsDrawerOpen) {
@@ -324,7 +327,10 @@ export class DesktopContent extends React.Component {
   componentDidUpdate(prevProps) {
     if (
       this.props.page !== prevProps.page &&
-      (this.props.page === "statistics" || this.props.page === "audit" || this.props.page === "users" || this.props.page === "settings")
+      (this.props.page === "statistics" ||
+        this.props.page === "audit" ||
+        this.props.page === "users" ||
+        this.props.page === "settings")
     ) {
       if (this.state.filterDrawerOpen) {
         this.closeFilterDrawer();
@@ -457,52 +463,6 @@ export class DesktopContent extends React.Component {
           ) : null}
         </div>
       ) : null;
-    const detailsDrawer =
-      this.props.view === "compact" ? (
-        <TabletDrawerDetails
-          user={this.props.user}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDrawer}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-        />
-      ) : (
-        <DesktopDrawerDetails
-          user={this.props.user}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDrawer}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-        />
-      );
-    const filterDrawer =
-      this.props.view === "compact" ? (
-        <TabletDrawerFilter
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-        />
-      ) : (
-        <DesktopDrawerFilter
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-        />
-      );
     const auditFilterDrawer =
       this.props.page === "audit" ? (
         <DrawerAuditFilter
@@ -528,9 +488,11 @@ export class DesktopContent extends React.Component {
       ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
-        <DesktopDrawerNav
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
           open={this.state.navDrawerOpen}
-          close={this.toggleNavDrawer}
+          close={this.closeNavDrawer}
           page={this.props.page}
           changePage={this.props.changePage}
           user={this.props.user}
@@ -546,7 +508,7 @@ export class DesktopContent extends React.Component {
           <DesktopAppBar
             page={this.props.page}
             loading={this.props.loading}
-            toggleNav={this.toggleNavDrawer}
+            openNav={this.openNavDrawer}
             toggleFilter={this.toggleFilterDrawer}
             toggleAuditFilter={this.toggleAuditFilterDrawer}
             getActions={this.getAuditActions}
@@ -570,8 +532,29 @@ export class DesktopContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
-            {detailsDrawer}
-            {filterDrawer}
+            <DrawerDetails
+              device={this.props.device}
+              view={this.props.view}
+              user={this.props.user}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+            />
+            <DrawerFilter
+              device={this.props.device}
+              view={this.props.view}
+              profiles={this.props.profiles}
+              vendors={this.props.allVendors}
+              open={this.state.filterDrawerOpen}
+              close={this.closeFilterDrawer}
+              setWhitelist={this.props.setWhitelist}
+              whitelist={this.props.whitelist}
+            />
             {auditFilterDrawer}
             <DrawerAppContent className={"main " + this.props.view + (this.props.content ? " content" : "")}>
               {content}
@@ -625,8 +608,13 @@ export class TabletContent extends React.Component {
     }, 20);
     bodyScroll.enable();
   };
-  toggleNavDrawer = () => {
-    this.setState({ navDrawerOpen: !this.state.navDrawerOpen });
+  openNavDrawer = () => {
+    this.openModal();
+    this.setState({ navDrawerOpen: true });
+  };
+  closeNavDrawer = () => {
+    this.closeModal();
+    this.setState({ navDrawerOpen: false });
   };
   openCreateDrawer = () => {
     this.openModal();
@@ -1001,45 +989,47 @@ export class TabletContent extends React.Component {
       ) : null;
     return (
       <div className={this.props.className + " " + this.props.page + " app-container"}>
-        <DesktopDrawerNav
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
           open={this.state.navDrawerOpen}
           page={this.props.page}
           changePage={this.props.changePage}
-          close={this.toggleNavDrawer}
+          close={this.closeNavDrawer}
           user={this.props.user}
         />
-        <DrawerAppContent>
-          <TabletAppBar
-            page={this.props.page}
-            loading={this.props.loading}
-            toggleNav={this.toggleNavDrawer}
-            toggleFilter={this.openFilterDrawer}
-            openAuditFilter={this.openAuditFilterDrawer}
-            getActions={this.getAuditActions}
-            view={this.props.view}
-            changeView={this.props.changeView}
-            sort={this.props.sort}
-            setSort={this.props.setSort}
-            userSort={this.state.userSort}
-            setUserSortIndex={this.setUserSortIndex}
-            search={this.props.search}
-            setSearch={this.props.setSearch}
-            sets={this.props.sets}
-            statistics={this.props.statistics}
-            setStatistics={this.props.setStatistics}
-            statisticsSort={this.props.statisticsSort}
-            setStatisticsSort={this.props.setStatisticsSort}
-            statisticsTab={this.props.statisticsTab}
-            setStatisticsTab={this.props.setStatisticsTab}
-            openStatisticsDialog={this.openStatisticsDialog}
-          />
-          <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
-            {content}
-            <Footer />
-          </main>
-        </DrawerAppContent>
+        <TabletAppBar
+          page={this.props.page}
+          loading={this.props.loading}
+          openNav={this.openNavDrawer}
+          openFilter={this.openFilterDrawer}
+          openAuditFilter={this.openAuditFilterDrawer}
+          getActions={this.getAuditActions}
+          view={this.props.view}
+          changeView={this.props.changeView}
+          sort={this.props.sort}
+          setSort={this.props.setSort}
+          userSort={this.state.userSort}
+          setUserSortIndex={this.setUserSortIndex}
+          search={this.props.search}
+          setSearch={this.props.setSearch}
+          sets={this.props.sets}
+          statistics={this.props.statistics}
+          setStatistics={this.props.setStatistics}
+          statisticsSort={this.props.statisticsSort}
+          setStatisticsSort={this.props.setStatisticsSort}
+          statisticsTab={this.props.statisticsTab}
+          setStatisticsTab={this.props.setStatisticsTab}
+          openStatisticsDialog={this.openStatisticsDialog}
+        />
+        <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
+          {content}
+          <Footer />
+        </main>
         {editorElements}
-        <TabletDrawerDetails
+        <DrawerDetails
+          device={this.props.device}
+          view={this.props.view}
           user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
@@ -1050,7 +1040,9 @@ export class TabletContent extends React.Component {
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
         />
-        <TabletDrawerFilter
+        <DrawerFilter
+          device={this.props.device}
+          view={this.props.view}
           vendors={this.props.allVendors}
           profiles={this.props.profiles}
           open={this.state.filterDrawerOpen}
@@ -1470,15 +1462,8 @@ export class MobileContent extends React.Component {
           ) : null}
         </div>
       ) : null;
-    const nav = this.props.bottomNav ? (
+    const appBar = this.props.bottomNav ? (
       <div className="bottomNav">
-        <BottomDrawerNav
-          open={this.state.navDrawerOpen}
-          page={this.props.page}
-          changePage={this.props.changePage}
-          close={this.closeNavDrawer}
-          user={this.props.user}
-        />
         {(this.props.user.isEditor || this.props.user.isDesigner) &&
         this.props.page !== "statistics" &&
         this.props.page !== "audit" &&
@@ -1523,39 +1508,30 @@ export class MobileContent extends React.Component {
         )}
       </div>
     ) : (
-      <div>
-        <MobileDrawerNav
-          open={this.state.navDrawerOpen}
-          page={this.props.page}
-          changePage={this.props.changePage}
-          close={this.closeNavDrawer}
-          user={this.props.user}
-        />
-        <MobileAppBar
-          page={this.props.page}
-          loading={this.props.loading}
-          openFilter={this.openFilterDrawer}
-          openAuditFilter={this.openAuditFilterDrawer}
-          getActions={this.getAuditActions}
-          openNav={this.openNavDrawer}
-          view={this.props.view}
-          changeView={this.props.changeView}
-          sort={this.props.sort}
-          setSort={this.props.setSort}
-          userSort={this.state.userSort}
-          setUserSortIndex={this.setUserSortIndex}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          sets={this.props.sets}
-          statistics={this.props.statistics}
-          setStatistics={this.props.setStatistics}
-          statisticsSort={this.props.statisticsSort}
-          setStatisticsSort={this.props.setStatisticsSort}
-          openStatisticsDialog={this.openStatisticsDialog}
-          statisticsTab={this.props.statisticsTab}
-          setStatisticsTab={this.props.setStatisticsTab}
-        />
-      </div>
+      <MobileAppBar
+        page={this.props.page}
+        loading={this.props.loading}
+        openFilter={this.openFilterDrawer}
+        openAuditFilter={this.openAuditFilterDrawer}
+        getActions={this.getAuditActions}
+        openNav={this.openNavDrawer}
+        view={this.props.view}
+        changeView={this.props.changeView}
+        sort={this.props.sort}
+        setSort={this.props.setSort}
+        userSort={this.state.userSort}
+        setUserSortIndex={this.setUserSortIndex}
+        search={this.props.search}
+        setSearch={this.props.setSearch}
+        sets={this.props.sets}
+        statistics={this.props.statistics}
+        setStatistics={this.props.setStatistics}
+        statisticsSort={this.props.statisticsSort}
+        setStatisticsSort={this.props.setStatisticsSort}
+        openStatisticsDialog={this.openStatisticsDialog}
+        statisticsTab={this.props.statisticsTab}
+        setStatisticsTab={this.props.setStatisticsTab}
+      />
     );
     const statsDialog =
       this.props.page === "statistics" ? (
@@ -1613,13 +1589,25 @@ export class MobileContent extends React.Component {
         }
       >
         {search}
-        {nav}
+        <DrawerNav
+          device={this.props.device}
+          view={this.props.view}
+          bottomNav={this.props.bottomNav}
+          open={this.state.navDrawerOpen}
+          page={this.props.page}
+          changePage={this.props.changePage}
+          close={this.closeNavDrawer}
+          user={this.props.user}
+        />
+        {appBar}
         <main className={"main " + this.props.view + (this.props.content ? " content" : "")}>
           {content}
           <Footer />
         </main>
         {editorElements}
-        <TabletDrawerDetails
+        <DrawerDetails
+          device={this.props.device}
+          view={this.props.view}
           user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
@@ -1630,7 +1618,9 @@ export class MobileContent extends React.Component {
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
         />
-        <TabletDrawerFilter
+        <DrawerFilter
+          device={this.props.device}
+          view={this.props.view}
           vendors={this.props.allVendors}
           profiles={this.props.profiles}
           open={this.state.filterDrawerOpen}
