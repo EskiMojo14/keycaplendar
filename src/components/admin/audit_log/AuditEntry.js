@@ -85,11 +85,14 @@ export const AuditEntry = (props) => {
             {props.properties.map((property, index) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (props.action.action === "updated" && props.action.before[property] !== props.action.after[property]) {
+                const beforeProp = props.action.before[property] ? props.action.before[property] : "";
+                const afterProp = props.action.after[property] ? props.action.after[property] : "";
                 if (
                   property !== "designer" &&
                   property !== "vendors" &&
                   property !== "image" &&
                   property !== "details" &&
+                  property !== "sales" &&
                   property !== "gbMonth" &&
                   property !== "shipped"
                 ) {
@@ -97,10 +100,10 @@ export const AuditEntry = (props) => {
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
-                        <span className="highlight">{props.action.before[property]}</span>
+                        <span className="highlight">{beforeProp}</span>
                       </DataTableCell>
                       <DataTableCell className="after">
-                        <span className="highlight">{props.action.after[property]}</span>
+                        <span className="highlight">{afterProp}</span>
                       </DataTableCell>
                     </DataTableRow>
                   );
@@ -113,15 +116,15 @@ export const AuditEntry = (props) => {
                       })
                     );
                   };
-                  if (arrayCompare(props.action.before[property], props.action.after[property])) {
+                  if (arrayCompare(beforeProp, afterProp)) {
                     return (
                       <DataTableRow key={property + index}>
                         <DataTableCell>{property}</DataTableCell>
                         <DataTableCell className="before">
-                          <span className="highlight">{props.action.before[property].join(", ")}</span>
+                          <span className="highlight">{beforeProp.join(", ")}</span>
                         </DataTableCell>
                         <DataTableCell className="after">
-                          <span className="highlight">{props.action.after[property].join(", ")}</span>
+                          <span className="highlight">{afterProp.join(", ")}</span>
                         </DataTableCell>
                       </DataTableRow>
                     );
@@ -233,21 +236,21 @@ export const AuditEntry = (props) => {
                     return rows;
                   };
                   return buildRows();
-                } else if (property === "image" || property === "details") {
+                } else if (property === "image" || property === "details" || property === "sales") {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">
-                          <a href={props.action.before[property]} target="_blank" rel="noopener noreferrer">
-                            {props.action.before[property].match(domain)}
+                          <a href={beforeProp} target="_blank" rel="noopener noreferrer">
+                            {beforeProp.match(domain)}
                           </a>
                         </span>
                       </DataTableCell>
                       <DataTableCell className="after">
                         <span className="highlight">
-                          <a href={props.action.after[property]} target="_blank" rel="noopener noreferrer">
-                            {props.action.after[property].match(domain)}
+                          <a href={afterProp} target="_blank" rel="noopener noreferrer">
+                            {afterProp.match(domain)}
                           </a>
                         </span>
                       </DataTableCell>
@@ -258,10 +261,10 @@ export const AuditEntry = (props) => {
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell hasFormControl className="before">
-                        <Checkbox checked={props.action.before[property]} disabled />
+                        <Checkbox checked={beforeProp} disabled />
                       </DataTableCell>
                       <DataTableCell hasFormControl className="after">
-                        <Checkbox checked={props.action.after[property]} disabled />
+                        <Checkbox checked={afterProp} disabled />
                       </DataTableCell>
                     </DataTableRow>
                   );
@@ -269,11 +272,13 @@ export const AuditEntry = (props) => {
                 return null;
               } else if (props.action.action === "created" || props.action.action === "deleted") {
                 const docData = props.action.action === "created" ? props.action.after : props.action.before;
+                const prop = docData[property] ? docData[property] : "";
                 if (
                   property !== "designer" &&
                   property !== "vendors" &&
                   property !== "image" &&
                   property !== "details" &&
+                  property !== "sales" &&
                   property !== "gbMonth" &&
                   property !== "shipped"
                 ) {
@@ -281,7 +286,7 @@ export const AuditEntry = (props) => {
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
-                        <span className="highlight">{docData[property]}</span>
+                        <span className="highlight">{prop}</span>
                       </DataTableCell>
                     </DataTableRow>
                   );
@@ -290,7 +295,7 @@ export const AuditEntry = (props) => {
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
-                        <span className="highlight">{docData[property].join(", ")}</span>
+                        <span className="highlight">{prop.join(", ")}</span>
                       </DataTableCell>
                     </DataTableRow>
                   );
@@ -324,14 +329,14 @@ export const AuditEntry = (props) => {
                     return rows;
                   };
                   return buildRows();
-                } else if (property === "image" || property === "details") {
+                } else if (property === "image" || property === "details" || property === "sales") {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
                         <span className="highlight">
-                          <a href={docData[property]} target="_blank" rel="noopener noreferrer">
-                            {docData[property].match(domain)}
+                          <a href={prop} target="_blank" rel="noopener noreferrer">
+                            {prop.match(domain)}
                           </a>
                         </span>
                       </DataTableCell>
@@ -342,7 +347,7 @@ export const AuditEntry = (props) => {
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
-                        <Checkbox checked={docData[property]} disabled />
+                        <Checkbox checked={prop} disabled />
                       </DataTableCell>
                     </DataTableRow>
                   );

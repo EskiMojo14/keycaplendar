@@ -22,6 +22,7 @@ export class ContentAudit extends React.Component {
       "image",
       "shipped",
       "vendors",
+      "sales",
     ];
     return (
       <div className="admin-main">
