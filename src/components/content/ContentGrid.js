@@ -48,6 +48,15 @@ export const ContentGrid = (props) => {
       }
     });
     filteredSets.sort((a, b) => {
+      const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
+      const bName = b.profile.toLowerCase() + " " + b.colorway.toLowerCase();
+      if (page === "archive") {
+        if (aName > bName) {
+          return 1;
+        } else if (aName < bName) {
+          return -1;
+        }
+      }
       if (sort === "icDate") {
         if (a.icDate < b.icDate) {
           return page === "ic" ? 1 : -1;
@@ -91,8 +100,6 @@ export const ContentGrid = (props) => {
           return page === "ic" ? -1 : 1;
         }
       }
-      const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
-      const bName = b.profile.toLowerCase() + " " + b.colorway.toLowerCase();
       if (aName > bName) {
         return 1;
       } else if (aName < bName) {

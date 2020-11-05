@@ -8,19 +8,19 @@ export const MenuSort = (props) => {
     </MenuItem>
   );
   const launchDate =
-    props.page !== "ic" ? (
+    props.page !== "ic" && props.page !== "archive" ? (
       <MenuItem selected={props.sort === "gbLaunch"} onClick={() => props.onSelect("gbLaunch")}>
         Start date
       </MenuItem>
     ) : null;
   const endDate =
-    props.page !== "ic" && props.page !== "timeline" ? (
+    props.page !== "ic" && props.page !== "timeline" && props.page !== "archive" ? (
       <MenuItem selected={props.sort === "gbEnd"} onClick={() => props.onSelect("gbEnd")}>
         End date
       </MenuItem>
     ) : null;
   const vendorOption =
-    props.page !== "ic" ? (
+    props.page !== "ic" && props.page !== "archive" ? (
       <MenuItem selected={props.sort === "vendor"} onClick={() => props.onSelect("vendor")}>
         Vendor
       </MenuItem>

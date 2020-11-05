@@ -157,6 +157,10 @@ export const DrawerNav = (props) => {
             <ListItemGraphic icon="timeline" />
             Timeline
           </ListItem>
+          <ListItem onClick={(e) => changePage("archive")} activated={props.page === "archive"}>
+            <ListItemGraphic icon="all_inclusive" />
+            Archive
+          </ListItem>
           <ListItem onClick={(e) => changePage("statistics")} activated={props.page === "statistics"}>
             <ListItemGraphic icon="bar_chart" />
             Statistics

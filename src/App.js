@@ -73,7 +73,18 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      const pages = ["calendar", "live", "ic", "previous", "timeline", "statistics", "audit", "users", "settings"];
+      const pages = [
+        "calendar",
+        "live",
+        "ic",
+        "previous",
+        "timeline",
+        "archive",
+        "statistics",
+        "audit",
+        "users",
+        "settings",
+      ];
       if (pages.includes(pageQuery)) {
         this.setState({ page: pageQuery });
         if (pageQuery === "calendar") {
@@ -86,6 +97,8 @@ class App extends React.Component {
           this.setState({ sort: "gbLaunch" });
         } else if (pageQuery === "timeline") {
           this.setState({ sort: "gbLaunch" });
+        } else if (pageQuery === "archive") {
+          this.setState({ sort: "profile" });
         }
       }
       this.getData();
@@ -200,6 +213,8 @@ class App extends React.Component {
           this.setState({ sort: "gbLaunch" });
         } else if (page === "timeline") {
           this.setState({ sort: "gbLaunch" });
+        } else if (page === "archive") {
+          this.setState({ sort: "profile" });
         }
         this.filterData(page);
         document.documentElement.scrollTop = 0;
@@ -214,6 +229,7 @@ class App extends React.Component {
         previous: "Previous Sets",
         account: "Account",
         timeline: "Timeline",
+        archive: "Archive",
         statistics: "Statistics",
         audit: "Audit Log",
         users: "Users",
@@ -452,6 +468,8 @@ class App extends React.Component {
       pageSets = sets.filter((set) => {
         return set.gbLaunch !== "" && !set.gbLaunch.includes("Q");
       });
+    } else if (page === "archive") {
+      pageSets = sets;
     }
 
     // lists
@@ -547,7 +565,9 @@ class App extends React.Component {
       return bool;
     };
     const filteredSets = pageSets.filter((set) => {
-      const shippedBool = (whitelist.shipped.includes("Shipped") && set.shipped) || (whitelist.shipped.includes("Not shipped") && !set.shipped);
+      const shippedBool =
+        (whitelist.shipped.includes("Shipped") && set.shipped) ||
+        (whitelist.shipped.includes("Not shipped") && !set.shipped);
       if (set.vendors.length > 0) {
         return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool;
       } else {
