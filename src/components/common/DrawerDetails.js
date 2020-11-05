@@ -68,7 +68,6 @@ export class DrawerDetails extends React.Component {
     let verb;
     let ic;
     let gb;
-    let vendorList;
     let shippedLine;
     let chips = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
@@ -177,8 +176,8 @@ export class DrawerDetails extends React.Component {
         {gb}
       </Typography>
     ) : null;
-    if (set.vendors) {
-      vendorList = (
+    const vendorList =
+      set.vendors && set.vendors.length > 0 ? (
         <div className="details-list">
           <Typography className="subheader" use="caption" tag="h4">
             Vendors
@@ -206,8 +205,7 @@ export class DrawerDetails extends React.Component {
             })}
           </List>
         </div>
-      );
-    }
+      ) : null;
     const editorButtons =
       this.props.user.isEditor ||
       (this.props.user.isDesigner && set.designer && set.designer.includes(this.props.user.nickname)) ? (
@@ -273,6 +271,9 @@ export class DrawerDetails extends React.Component {
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
+    const salesButton = this.props.set.sales ? (
+      <Button outlined label="Sales" onClick={() => this.props.openSales(set)} />
+    ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -309,6 +310,7 @@ export class DrawerDetails extends React.Component {
             </div>
             <div className="details-button">
               <Button outlined label="Link" tag="a" href={set.details} target="_blank" rel="noopener noreferrer" />
+              {salesButton}
             </div>
             {vendorList}
           </div>

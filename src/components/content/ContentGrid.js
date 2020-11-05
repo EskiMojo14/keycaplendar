@@ -160,7 +160,7 @@ export const ContentGrid = (props) => {
           <div className="outer-container" key={value}>
             <div className="subheader">
               <Typography use="caption">
-                {value} <b>({filteredSets.length})</b>
+                {value} <b>{"(" + filteredSets.length + ")"}</b>
               </Typography>
             </div>
             {createGroup(filteredSets)}

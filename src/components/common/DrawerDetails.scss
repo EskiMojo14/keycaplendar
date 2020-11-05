@@ -62,6 +62,9 @@
         padding: 0 16px 16px;
         .mdc-button {
           flex-grow: 1;
+          &:not(:first-child) {
+            margin-left: 16px;
+          }
         }
       }
       &-list {
