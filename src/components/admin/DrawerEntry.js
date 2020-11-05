@@ -729,7 +729,7 @@ export class DrawerEdit extends React.Component {
       designer: this.props.set.designer,
       icDate: this.props.set.icDate,
       details: this.props.set.details,
-      sales: this.props.set.sales,
+      sales: this.props.set.sales ? this.props.set.sales : "",
       image: this.props.set.image,
       imageURL: this.props.set.image,
       gbMonth: this.props.set.gbMonth,

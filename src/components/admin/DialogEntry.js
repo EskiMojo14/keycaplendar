@@ -814,7 +814,7 @@ export class DialogEdit extends React.Component {
     });
   };
 
-  setValues() {
+  setValues = () => {
     let gbLaunch = "";
     if (this.props.set.gbMonth) {
       const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
@@ -836,7 +836,7 @@ export class DialogEdit extends React.Component {
       designer: this.props.set.designer,
       icDate: this.props.set.icDate,
       details: this.props.set.details,
-      sales: this.props.set.sales,
+      sales: this.props.set.sales ? this.props.set.sales : "",
       image: this.props.set.image,
       imageURL: this.props.set.image,
       gbMonth: this.props.set.gbMonth,
@@ -845,7 +845,7 @@ export class DialogEdit extends React.Component {
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
       vendors: this.props.set.vendors,
     });
-  }
+  };
 
   setImage = (image) => {
     //resize image to 480px height
