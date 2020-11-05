@@ -12,6 +12,7 @@ import { ContentGrid } from "./content/ContentGrid";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
+import { DialogSales } from "./common/DialogSales";
 import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
@@ -33,6 +34,8 @@ export class DesktopContent extends React.Component {
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
       detailSet: {},
+      salesDialogOpen: false,
+      salesSet: {},
       createDrawerOpen: false,
       editDrawerOpen: false,
       editSet: {},
@@ -125,6 +128,24 @@ export class DesktopContent extends React.Component {
     setTimeout(() => {
       this.setState({
         detailSet: {},
+      });
+    }, 250);
+  };
+  openSalesDialog = (set) => {
+    this.openModal();
+    this.setState({
+      salesDialogOpen: true,
+      salesSet: set,
+    });
+  };
+  closeSalesDialog = () => {
+    this.closeModal();
+    this.setState({
+      salesDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        salesSet: {},
       });
     }, 250);
   };
@@ -546,6 +567,12 @@ export class DesktopContent extends React.Component {
               search={this.props.search}
               setSearch={this.props.setSearch}
               toggleLichTheme={this.props.toggleLichTheme}
+              openSales={this.openSalesDialog}
+            />
+            <DialogSales 
+              open={this.state.salesDialogOpen}
+              close={this.closeSalesDialog}
+              set={this.state.salesSet}
             />
             <DrawerFilter
               device={this.props.device}
@@ -578,6 +605,8 @@ export class TabletContent extends React.Component {
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
       detailSet: {},
+      salesDialogOpen: false,
+      salesSet: {},
       createDrawerOpen: false,
       editDrawerOpen: false,
       editSet: {},
@@ -689,6 +718,24 @@ export class TabletContent extends React.Component {
       detailsDrawerOpen: false,
       detailSet: {},
     });
+  };
+  openSalesDialog = (set) => {
+    this.openModal();
+    this.setState({
+      salesDialogOpen: true,
+      salesSet: set,
+    });
+  };
+  closeSalesDialog = () => {
+    this.closeModal();
+    this.setState({
+      salesDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        salesSet: {},
+      });
+    }, 250);
   };
   openStatisticsDialog = () => {
     this.openModal();
@@ -1045,6 +1092,12 @@ export class TabletContent extends React.Component {
           search={this.props.search}
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
+          openSales={this.openSalesDialog}
+        />
+        <DialogSales 
+          open={this.state.salesDialogOpen}
+          close={this.closeSalesDialog}
+          set={this.state.salesSet}
         />
         <DrawerFilter
           device={this.props.device}
@@ -1072,6 +1125,8 @@ export class MobileContent extends React.Component {
       createDialogOpen: false,
       detailsDrawerOpen: false,
       detailSet: {},
+      salesDialogOpen: false,
+      salesSet: {},
       navDrawerOpen: false,
       editDialogOpen: false,
       editSet: {},
@@ -1189,6 +1244,24 @@ export class MobileContent extends React.Component {
       detailsDrawerOpen: false,
       detailSet: {},
     });
+  };
+  openSalesDialog = (set) => {
+    this.openModal();
+    this.setState({
+      salesDialogOpen: true,
+      salesSet: set,
+    });
+  };
+  closeSalesDialog = () => {
+    this.closeModal();
+    this.setState({
+      salesDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        salesSet: {},
+      });
+    }, 250);
   };
   openStatisticsDialog = () => {
     this.openModal();
@@ -1628,6 +1701,12 @@ export class MobileContent extends React.Component {
           search={this.props.search}
           setSearch={this.props.setSearch}
           toggleLichTheme={this.props.toggleLichTheme}
+          openSales={this.openSalesDialog}
+        />
+        <DialogSales 
+          open={this.state.salesDialogOpen}
+          close={this.closeSalesDialog}
+          set={this.state.salesSet}
         />
         <DrawerFilter
           device={this.props.device}

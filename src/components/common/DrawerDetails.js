@@ -271,6 +271,9 @@ export class DrawerDetails extends React.Component {
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
+    const salesButton = this.props.set.sales ? (
+      <Button outlined label="Sales" onClick={() => this.props.openSales(set)} />
+    ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -307,6 +310,7 @@ export class DrawerDetails extends React.Component {
             </div>
             <div className="details-button">
               <Button outlined label="Link" tag="a" href={set.details} target="_blank" rel="noopener noreferrer" />
+              {salesButton}
             </div>
             {vendorList}
           </div>
