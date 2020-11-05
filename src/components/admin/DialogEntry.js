@@ -556,19 +556,6 @@ export class DialogCreate extends React.Component {
                 }}
                 onChange={this.handleChange}
               />
-              <TextField
-                autoComplete="off"
-                icon="link"
-                outlined
-                label="Sales"
-                pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
-                value={this.state.sales}
-                name="sales"
-                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
-                onChange={this.handleChange}
-                onFocus={this.handleFocus}
-                onBlur={this.handleBlur}
-              />
               <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
               {dateCard}
               <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange} />
@@ -690,6 +677,19 @@ export class DialogCreate extends React.Component {
                   }}
                 />
               </div>
+              <TextField
+                autoComplete="off"
+                icon="link"
+                outlined
+                label="Sales"
+                pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
+                value={this.state.sales}
+                name="sales"
+                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                onChange={this.handleChange}
+                onFocus={this.handleFocus}
+                onBlur={this.handleBlur}
+              />
             </form>
           </div>
         </div>
@@ -1281,19 +1281,6 @@ export class DialogEdit extends React.Component {
                   }}
                   onChange={this.handleChange}
                 />
-                <TextField
-                  autoComplete="off"
-                  icon="link"
-                  outlined
-                  label="Sales"
-                  pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
-                  value={this.state.sales}
-                  name="sales"
-                  helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
-                  onChange={this.handleChange}
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                />
                 <ImageUpload
                   image={this.state.image}
                   setImage={this.setImage}
@@ -1419,6 +1406,19 @@ export class DialogEdit extends React.Component {
                     }}
                   />
                 </div>
+                <TextField
+                  autoComplete="off"
+                  icon="link"
+                  outlined
+                  label="Sales"
+                  pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
+                  value={this.state.sales}
+                  name="sales"
+                  helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                  onChange={this.handleChange}
+                  onFocus={this.handleFocus}
+                  onBlur={this.handleBlur}
+                />
               </form>
             </div>
           </div>
