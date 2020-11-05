@@ -526,7 +526,6 @@ export class DrawerCreate extends React.Component {
               icon="link"
               outlined
               label="Sales"
-              required
               pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
               value={this.state.sales}
               name="sales"
@@ -1213,7 +1212,6 @@ export class DrawerEdit extends React.Component {
               icon="link"
               outlined
               label="Sales"
-              required
               pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
               value={this.state.sales}
               name="sales"

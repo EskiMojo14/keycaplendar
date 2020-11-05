@@ -561,7 +561,6 @@ export class DialogCreate extends React.Component {
                 icon="link"
                 outlined
                 label="Sales"
-                required
                 pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
                 value={this.state.sales}
                 name="sales"
@@ -1287,7 +1286,6 @@ export class DialogEdit extends React.Component {
                   icon="link"
                   outlined
                   label="Sales"
-                  required
                   pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
                   value={this.state.sales}
                   name="sales"
