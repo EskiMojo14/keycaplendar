@@ -379,6 +379,7 @@ class App extends React.Component {
               designer: doc.data().designer,
               icDate: doc.data().icDate,
               details: doc.data().details,
+              sales: doc.data().sales,
               image: doc.data().image,
               gbMonth: doc.data().gbMonth,
               gbLaunch: gbLaunch,

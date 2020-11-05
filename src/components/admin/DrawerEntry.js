@@ -21,6 +21,7 @@ export class DrawerCreate extends React.Component {
       designer: [],
       icDate: "",
       details: "",
+      sales: "",
       image: null,
       gbMonth: true,
       gbLaunch: "",
@@ -42,6 +43,7 @@ export class DrawerCreate extends React.Component {
       designer: [],
       icDate: "",
       details: "",
+      sales: "",
       image: null,
       gbMonth: true,
       gbLaunch: "",
@@ -256,6 +258,7 @@ export class DrawerCreate extends React.Component {
           designer: this.state.designer,
           icDate: this.state.icDate,
           details: this.state.details,
+          sales: this.state.sales,
           shipped: this.state.shipped,
           image: this.state.imageURL,
           gbMonth: this.state.gbMonth,
@@ -518,6 +521,20 @@ export class DrawerCreate extends React.Component {
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
             />
+            <TextField
+              autoComplete="off"
+              icon="link"
+              outlined
+              label="Sales"
+              required
+              pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
+              value={this.state.sales}
+              name="sales"
+              helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+            />
             <ImageUpload
               image={this.state.image}
               setImage={this.setImage}
@@ -676,6 +693,7 @@ export class DrawerEdit extends React.Component {
       designer: [],
       icDate: "",
       details: "",
+      sales: "",
       image: "",
       gbMonth: false,
       gbLaunch: "",
@@ -712,6 +730,7 @@ export class DrawerEdit extends React.Component {
       designer: this.props.set.designer,
       icDate: this.props.set.icDate,
       details: this.props.set.details,
+      sales: this.props.set.sales,
       image: this.props.set.image,
       imageURL: this.props.set.image,
       gbMonth: this.props.set.gbMonth,
@@ -735,6 +754,7 @@ export class DrawerEdit extends React.Component {
       designer: [],
       icDate: "",
       details: "",
+      sales: "",
       image: "",
       gbMonth: false,
       gbLaunch: "",
@@ -945,6 +965,7 @@ export class DrawerEdit extends React.Component {
         designer: this.state.designer,
         icDate: this.state.icDate,
         details: this.state.details,
+        sales: this.state.sales,
         image: this.state.imageURL,
         gbMonth: this.state.gbMonth,
         gbLaunch: this.state.gbLaunch,
@@ -1186,6 +1207,20 @@ export class DrawerEdit extends React.Component {
                 children: this.state.details.length > 0 ? "Must be valid link" : "Enter a link",
               }}
               onChange={this.handleChange}
+            />
+            <TextField
+              autoComplete="off"
+              icon="link"
+              outlined
+              label="Sales"
+              required
+              pattern="https?:\/\/.+\.(?:jpg|jpeg|png)"
+              value={this.state.sales}
+              name="sales"
+              helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
             />
             <ImageUpload
               image={this.state.image}
