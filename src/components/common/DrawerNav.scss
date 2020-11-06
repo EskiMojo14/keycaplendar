@@ -75,7 +75,7 @@
         transform: translateY(101%);
       }
     }
-    &.mdc-drawer--dismissible {
+    &.mdc-drawer--dismissible.rail {
       display: flex;
       transition-property: width;
       width: 56px;

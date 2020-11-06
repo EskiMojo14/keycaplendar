@@ -250,8 +250,8 @@ $overlay-values: (
           }
         }
       }
-      &.nav.mdc-drawer--animate:not(.mdc-drawer--opening),
-      &.nav.mdc-drawer--closing {
+      &.rail.mdc-drawer--animate:not(.mdc-drawer--opening),
+      &.rail.mdc-drawer--closing {
         .mdc-list-item,
         .mdc-list-item.mdc-list-item--activated {
           color: transparent;

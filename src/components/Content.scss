@@ -8,6 +8,7 @@
   max-width: 100%;
   transition: margin 150ms animation.$standard-curve-timing-function;
   .mdc-top-app-bar {
+    width: 100%;
     @include rtl.reflexive-position(right, 0);
     transition: elevation.transition-value(), width animation.$standard-curve-timing-function 150ms;
     .mdc-top-app-bar__navigation-icon {
@@ -19,7 +20,7 @@
   }
 }
 
-.nav.mdc-drawer + .mdc-drawer-app-content {
+.rail.mdc-drawer + .mdc-drawer-app-content {
   @include rtl.reflexive-box(margin, left, 56px);
   .mdc-top-app-bar {
     width: calc(100% - 56px);
@@ -34,7 +35,7 @@
   }
 }
 
-.nav.mdc-drawer.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
+.rail.mdc-drawer.mdc-drawer--open.mdc-drawer--closing + .mdc-drawer-app-content .mdc-top-app-bar {
   width: calc(100% - 56px);
 }
 
