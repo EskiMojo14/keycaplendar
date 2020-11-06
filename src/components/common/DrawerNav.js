@@ -6,7 +6,7 @@ import "./DrawerNav.scss";
 import logo from "../../logo.svg";
 
 export const DrawerNav = (props) => {
-  const dismissible = props.device === "desktop" && props.view !== "compact";
+  const dismissible = props.device === "desktop";
   const changePage = (newPage) => {
     props.changePage(newPage);
     if (!dismissible) {
