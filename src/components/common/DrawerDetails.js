@@ -272,7 +272,7 @@ export class DrawerDetails extends React.Component {
       </Tooltip>
     ) : null;
     const salesButton = this.props.set.sales ? (
-      <Button outlined label="Sales" onClick={() => this.props.openSales(set)} />
+      <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
     ) : null;
     return (
       <Drawer
@@ -309,7 +309,7 @@ export class DrawerDetails extends React.Component {
               </Typography>
             </div>
             <div className="details-button">
-              <Button outlined label="Link" tag="a" href={set.details} target="_blank" rel="noopener noreferrer" />
+              <Button outlined label="Link" icon="launch" tag="a" href={set.details} target="_blank" rel="noopener noreferrer" />
               {salesButton}
             </div>
             {vendorList}
