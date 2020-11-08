@@ -720,14 +720,12 @@ export class TabletContent extends React.Component {
     });
   };
   openSalesDialog = (set) => {
-    this.openModal();
     this.setState({
       salesDialogOpen: true,
       salesSet: set,
     });
   };
   closeSalesDialog = () => {
-    this.closeModal();
     this.setState({
       salesDialogOpen: false,
     });
@@ -1246,14 +1244,12 @@ export class MobileContent extends React.Component {
     });
   };
   openSalesDialog = (set) => {
-    this.openModal();
     this.setState({
       salesDialogOpen: true,
       salesSet: set,
     });
   };
   closeSalesDialog = () => {
-    this.closeModal();
     this.setState({
       salesDialogOpen: false,
     });
