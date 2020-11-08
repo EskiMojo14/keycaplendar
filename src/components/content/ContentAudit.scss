@@ -14,7 +14,7 @@
     max-width: 100%;
     position: relative;
     &.placeholder {
-      height: 100vh;
+      display: none;
     }
   }
 }
