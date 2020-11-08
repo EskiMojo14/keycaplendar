@@ -999,6 +999,12 @@ $overlay-values: (
       }
     }
   }
+  
+  .sales-container {
+    .sales-image-icon {
+      fill: map-get($variables, text-secondary);
+    }
+  }
 
   .list .content-grid {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));

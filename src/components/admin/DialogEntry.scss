@@ -150,6 +150,44 @@ $exit-time: 400ms;
         flex-grow: 0;
         margin-bottom: 16px;
       }
+      .sales {
+        &-title {
+          margin: 0;
+          padding: 16px;
+        }
+        &-image {
+          position: relative;
+          margin: 16px;
+          margin-top: 0;
+          border: 1px dashed var(--divider-color);
+          &.loaded {
+            border: none;
+            .sales-image-icon {
+              display: none;
+            }
+          }
+          &-icon {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          img {
+            min-height: 56px;
+            border-radius: 4px;
+            width: 100%;
+          }
+        }
+        &-field {
+          padding: 0 16px;
+          display: flex;
+          flex-direction: column;
+        }
+      }
     }
     .mdc-menu-surface--anchor .mdc-text-field {
       width: 100%;
