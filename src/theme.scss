@@ -5,6 +5,7 @@
 @use "@material/dialog/_index" as dialog;
 @use "@material/drawer/_index" as drawer;
 @use "@material/fab/_index" as fab;
+@use "@material/icon-button/_index" as icon-button;
 @use "@material/linear-progress/_index" as linear-progress;
 @use "@material/list/_index" as list;
 @use "@material/radio/_index" as radio;
@@ -323,6 +324,11 @@ $overlay-values: (
 
   .mdc-form-field {
     color: map-get($variables, text-primary);
+  }
+
+  .mdc-icon-button {
+    @include icon-button.ink-color(map-get($variables, text-secondary));
+    @include icon-button.disabled-ink-color(map-get($variables, text-disabled));
   }
 
   .mdc-image-list {
