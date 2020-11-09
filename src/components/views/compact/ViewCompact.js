@@ -99,7 +99,7 @@ export const ViewCompact = (props) => {
           return (
             <ElementCompact
               page={props.page}
-              selected={props.detailSet === set || props.editSet === set}
+              selected={props.detailSet === set}
               set={set}
               title={title}
               subtitle={subtitle}

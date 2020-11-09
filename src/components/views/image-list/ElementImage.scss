@@ -46,7 +46,7 @@
           right: 0;
           top: 0;
           content: "";
-          background: linear-gradient(rgba(black, 0.4), transparent);
+          background: linear-gradient(rgba(black, 0.5), transparent);
           opacity: 0;
           transition: opacity 250ms animation.$standard-curve-timing-function;
         }

@@ -360,6 +360,9 @@ export class DesktopContent extends React.Component {
         this.closeDetailsDrawer();
       }
     }
+    if (this.props.page !== prevProps.page && prevProps.page === "audit" && this.state.auditFilterDrawerOpen) {
+      this.closeAuditFilterDrawer();
+    }
   }
   render() {
     const content = this.props.content ? (
@@ -372,7 +375,10 @@ export class DesktopContent extends React.Component {
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
+        edit={this.openEditDrawer}
         editSet={this.state.editSet}
+        delete={this.openDeleteDialog}
+        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics
@@ -890,7 +896,10 @@ export class TabletContent extends React.Component {
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
+        edit={this.openEditDrawer}
         editSet={this.state.editSet}
+        delete={this.openDeleteDialog}
+        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics
@@ -1420,7 +1429,10 @@ export class MobileContent extends React.Component {
         view={this.props.view}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
+        edit={this.openEditDrawer}
         detailSet={this.state.detailSet}
+        delete={this.openDeleteDialog}
+        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics

@@ -93,8 +93,9 @@ export const ViewCard = (props) => {
         }
         return (
           <ElementCard
+            user={props.user}
             page={props.page}
-            selected={props.detailSet === set || props.editSet === set}
+            selected={props.detailSet === set}
             cardWidth={Math.round(1 / props.sets.length)}
             set={set}
             title={title}
@@ -104,6 +105,8 @@ export const ViewCard = (props) => {
             link={set.details}
             details={props.details}
             closeDetails={props.closeDetails}
+            edit={props.edit}
+            delete={props.delete}
             thisWeek={thisWeek}
             daysLeft={daysLeft}
             live={live}

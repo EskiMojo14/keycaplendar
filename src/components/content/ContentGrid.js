@@ -118,6 +118,9 @@ export const ContentGrid = (props) => {
           details={props.details}
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}
+          edit={props.edit}
+          delete={props.delete}
+          user={props.user}
         />
       );
     } else if (props.view === "list") {
