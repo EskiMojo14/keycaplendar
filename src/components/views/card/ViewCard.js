@@ -93,6 +93,7 @@ export const ViewCard = (props) => {
         }
         return (
           <ElementCard
+            user={props.user}
             page={props.page}
             selected={props.detailSet === set}
             cardWidth={Math.round(1 / props.sets.length)}
