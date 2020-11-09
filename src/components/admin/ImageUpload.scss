@@ -1,4 +1,5 @@
 @use "@material/animation/_index" as animation;
+@use "@material/shape/_index" as shape;
 
 .image-upload {
   overflow: hidden;
@@ -13,7 +14,6 @@
     padding: 0 16px;
     position: relative;
     .loading-indicator {
-      border-radius: 4px;
       position: absolute;
       top: 0;
       height: 100%;
@@ -42,7 +42,7 @@
       height: 0;
       padding-top: 100% * 9/16;
       box-sizing: border-box;
-      border-radius: 4px;
+      @include shape.radius(small);
       border: 1px dashed var(--divider-color);
       user-select: none;
       overflow: hidden;
@@ -84,7 +84,6 @@
         top: 0;
         height: 100%;
         width: 100%;
-        border-radius: 2px;
         opacity: 0;
         transition: opacity 150ms animation.$standard-curve-timing-function;
         pointer-events: none;

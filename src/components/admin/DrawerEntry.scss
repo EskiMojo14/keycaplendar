@@ -1,4 +1,5 @@
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 
 .mdc-drawer.drawer-right.entry-drawer {
   width: 360px;
@@ -105,9 +106,11 @@
         position: relative;
         margin: 16px;
         margin-top: 0;
+        @include shape.radius(small);
         border: 1px dashed var(--divider-color);
         &.loaded {
           border: none;
+          @include shape.radius(0);
           .sales-image-icon {
             display: none;
           }
@@ -124,7 +127,7 @@
         }
         img {
           min-height: 56px;
-          border-radius: 4px;
+          @include shape.radius(small);
           width: 100%;
         }
       }

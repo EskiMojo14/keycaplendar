@@ -17,6 +17,12 @@
   $styles-caption: typography-variables.$caption
 );
 
+@use "@material/shape" with (
+  $small-component-radius: 4px,
+  $medium-component-radius: 4px,
+  $large-component-radius: 0px
+);
+
 @use "theme" as theme;
 @use "density" as density;
 
@@ -171,7 +177,7 @@
 .mdc-drawer .mdc-list-item,
 .mdc-drawer .mdc-list-item:first-child {
   margin: 0;
-  border-radius: 0;
+  @include shape.radius(0);
   box-sizing: border-box;
 }
 
@@ -257,7 +263,7 @@
     align-items: center;
     transform: scale(0) translateX(-50%);
     transform-origin: bottom left;
-    border-radius: 0.25rem;
+    @include shape.radius(small);
     min-height: 2rem;
     padding: 0.33rem 1rem;
     width: auto;

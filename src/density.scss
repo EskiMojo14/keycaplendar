@@ -12,6 +12,7 @@
 
 @use "@material/density/_index" as density;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 
 @mixin density($density: 0) {
   $diff: density.$interval * $density;
@@ -163,8 +164,8 @@
     }
   }
   .mdc-fab--extended {
-    border-radius: 24px + $diff / 2;
     height: 48px + $diff;
+    @include shape.radius(0.5 * (48px + $diff));
   }
   .mdc-select {
     &__anchor {
