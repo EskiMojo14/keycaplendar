@@ -66,7 +66,7 @@
           flex-grow: 1;
           flex-basis: 50%;
           &:not(:first-child) {
-            margin-left: 16px;
+            @include rtl.reflexive-box(margin, left, 16px);
           }
         }
       }
