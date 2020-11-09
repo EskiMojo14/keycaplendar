@@ -276,13 +276,6 @@ $overlay-values: (
         fill: map-get($variables, text-secondary);
       }
     }
-    .mdc-card {
-      @include card.fill-color(transparent);
-      .vendor-title,
-      .date-title {
-        color: map-get($variables, text-secondary);
-      }
-    }
 
     .mdc-menu {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
@@ -852,7 +845,7 @@ $overlay-values: (
     }
   }
 
-  .count-graph {
+  .count-graph, .duration-card {
     .ct-series-a {
       .ct-point,
       .ct-line,
@@ -864,23 +857,6 @@ $overlay-values: (
       .ct-donut-solid,
       .ct-area {
         fill: map-get($variables, secondary);
-      }
-    }
-  }
-  .duration-card {
-    .ct-chart {
-      .ct-series.ct-series-a {
-        .ct-point,
-        .ct-line,
-        .ct-bar,
-        .ct-slice-donut {
-          stroke: map-get($variables, secondary);
-        }
-        .ct-slice-pie,
-        .ct-donut-solid,
-        .ct-area {
-          fill: map-get($variables, secondary);
-        }
       }
     }
   }
@@ -969,14 +945,6 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
     &-scrim {
       background-color: rgba(map-get($variables, on-surface), 0.32);
-    }
-    .mdc-card {
-      @include card.fill-color(transparent);
-      .vendor-title,
-      .image-title,
-      .date-title {
-        color: map-get($variables, text-secondary);
-      }
     }
     .mdc-menu {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
