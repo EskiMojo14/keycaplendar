@@ -364,7 +364,7 @@ export const DesktopAppBar = (props) => {
           <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openUserViewMenu}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                   {props.userView === "card" ? (
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                       <path d="M0 0h24v24H0V0z" fill="none" />
@@ -412,7 +412,7 @@ export const DesktopAppBar = (props) => {
           <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                   {viewIcon}
                 </div>
               </Ripple>
@@ -663,7 +663,7 @@ export const TabletAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="bottom">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -722,7 +722,7 @@ export const TabletAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="bottom">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -792,7 +792,7 @@ export const TabletAppBar = (props) => {
           <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                   {viewIcon}
                 </div>
               </Ripple>
@@ -1055,7 +1055,7 @@ export const MobileAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="bottom">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -1114,7 +1114,7 @@ export const MobileAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="bottom">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -1184,7 +1184,7 @@ export const MobileAppBar = (props) => {
           <Tooltip enterDelay={500} content="View" align="bottom">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                   {viewIcon}
                 </div>
               </Ripple>
@@ -1434,7 +1434,7 @@ export const BottomAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="top">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -1493,7 +1493,7 @@ export const BottomAppBar = (props) => {
           <Tooltip enterDelay={500} content="Category" align="top">
             <div className="category-button" onClick={props.openStatisticsDialog}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 0 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 0 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
@@ -1563,7 +1563,7 @@ export const BottomAppBar = (props) => {
           <Tooltip enterDelay={500} content="View" align="top">
             <div onClick={openViewMenu}>
               <Ripple unbounded>
-                <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+                <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                   {viewIcon}
                 </div>
               </Ripple>
@@ -1706,7 +1706,7 @@ export const BottomAppBarIndent = (props) => {
         <Tooltip enterDelay={500} content="View" align="top">
           <div onClick={openViewMenu}>
             <Ripple unbounded>
-              <div tabIndex="0" className="svg-container mdc-icon-button" style={{ "--animation-delay": 3 }}>
+              <div tabIndex="0" className="svg-container mdc-top-app-bar__action-item mdc-icon-button" style={{ "--animation-delay": 3 }}>
                 {viewIcon}
               </div>
             </Ripple>
