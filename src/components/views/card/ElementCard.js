@@ -2,16 +2,7 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { Typography } from "@rmwc/typography";
-import {
-  Card,
-  CardMedia,
-  CardPrimaryAction,
-  CardActions,
-  CardActionButtons,
-  CardActionButton,
-  CardActionIcons,
-  CardActionIcon,
-} from "@rmwc/card";
+import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardActionIcon } from "@rmwc/card";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementCard.scss";
 
@@ -51,21 +42,16 @@ export const ElementCard = (props) => {
       {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
     </Typography>
   ) : null;
-  const linkButton =
-    props.user.isEditor ? (
-      <CardActionButton label={"Link"} tag="a" href={props.link} target="_blank" rel="noopener noreferrer" />
-    ) : null;
-  const linkIcon =
-    !props.user.isEditor ? (
-      <CardActionIcon
-        icon="open_in_new"
-        tag="a"
-        href={props.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        label={"Link to " + props.title}
-      />
-    ) : null;
+  const linkIcon = !props.user.isEditor ? (
+    <CardActionIcon
+      icon="open_in_new"
+      tag="a"
+      href={props.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      label={"Link to " + props.title}
+    />
+  ) : null;
   const editButton =
     props.user.isEditor ||
     (props.user.isDesigner && props.set.designer && props.set.designer.includes(props.user.nickname)) ? (
@@ -135,8 +121,7 @@ export const ElementCard = (props) => {
             </div>
           </div>
         </CardPrimaryAction>
-        <CardActions className={props.user.isEditor || props.user.isDesigner ? "" : "hover-button"}>
-          <CardActionButtons>{linkButton}</CardActionButtons>
+        <CardActions className="hover-button">
           <CardActionIcons>
             {linkIcon}
             {editButton}
