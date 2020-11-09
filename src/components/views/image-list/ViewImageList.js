@@ -98,7 +98,7 @@ export const ViewImageList = (props) => {
         return (
           <ElementImage
             page={props.page}
-            selected={props.detailSet === set || props.editSet === set}
+            selected={props.detailSet === set}
             title={title}
             subtitle={subtitle}
             image={set.image.replace("keysets", "image-list")}

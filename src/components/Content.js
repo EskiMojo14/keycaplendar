@@ -372,6 +372,7 @@ export class DesktopContent extends React.Component {
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
+        edit={this.openEditDrawer}
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
@@ -890,6 +891,7 @@ export class TabletContent extends React.Component {
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
+        edit={this.openEditDrawer}
         editSet={this.state.editSet}
       />
     ) : this.props.page === "statistics" ? (
@@ -1420,6 +1422,7 @@ export class MobileContent extends React.Component {
         view={this.props.view}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
+        edit={this.openEditDrawer}
         detailSet={this.state.detailSet}
       />
     ) : this.props.page === "statistics" ? (
