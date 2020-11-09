@@ -360,6 +360,9 @@ export class DesktopContent extends React.Component {
         this.closeDetailsDrawer();
       }
     }
+    if (this.props.page !== prevProps.page && prevProps.page === "audit" && this.state.auditFilterDrawerOpen) {
+      this.closeAuditFilterDrawer();
+    }
   }
   render() {
     const content = this.props.content ? (
