@@ -2,7 +2,16 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { Typography } from "@rmwc/typography";
-import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardActionIcon } from "@rmwc/card";
+import {
+  Card,
+  CardMedia,
+  CardPrimaryAction,
+  CardActions,
+  CardActionButtons,
+  CardActionButton,
+  CardActionIcons,
+  CardActionIcon,
+} from "@rmwc/card";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementCard.scss";
 
@@ -41,6 +50,13 @@ export const ElementCard = (props) => {
     <Typography use="overline" tag="h4" className="time-indicator">
       {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
     </Typography>
+  ) : null;
+  const linkButton = props.user.isEditor ? (
+    <CardActionButton label="Link"
+    tag="a"
+    href={props.link}
+    target="_blank"
+    rel="noopener noreferrer" />
   ) : null;
   const linkIcon = !props.user.isEditor ? (
     <CardActionIcon
@@ -122,6 +138,9 @@ export const ElementCard = (props) => {
           </div>
         </CardPrimaryAction>
         <CardActions className="hover-button">
+          <CardActionButtons>
+            {linkButton}
+          </CardActionButtons>
           <CardActionIcons>
             {linkIcon}
             {editButton}
