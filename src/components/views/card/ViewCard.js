@@ -106,6 +106,7 @@ export const ViewCard = (props) => {
             details={props.details}
             closeDetails={props.closeDetails}
             edit={props.edit}
+            delete={props.delete}
             thisWeek={thisWeek}
             daysLeft={daysLeft}
             live={live}
