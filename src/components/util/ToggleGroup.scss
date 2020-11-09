@@ -6,6 +6,9 @@
     flex-grow: 1;
     @include rtl.reflexive-box(margin, right, -1px);
     min-width: 0;
+    .mdc-button__ripple {
+      border-radius: inherit;
+    }
     &:not(.mdc-button--selected) {
       border-left-color: var(--lighter-color);
       border-right-color: var(--lighter-color);
