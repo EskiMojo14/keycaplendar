@@ -173,7 +173,7 @@ $overlay-values: (
   }
   @if ($dark) {
     @media (min-width: 840px) {
-      transition-property: box-shadow, background-color; 
+      transition-property: box-shadow, background-color;
       .card-container .mdc-card:hover {
         background-color: overlay-elevation(map-get($variables, surface), 4);
       }
@@ -339,6 +339,10 @@ $overlay-values: (
           .secondary-text,
           .overline {
             color: map-get($variables, primary);
+          }
+          .live-indicator,
+          .shipped-indicator {
+            fill: map-get($variables, primary);
           }
         }
       }
@@ -843,7 +847,8 @@ $overlay-values: (
     }
   }
 
-  .count-graph, .duration-card {
+  .count-graph,
+  .duration-card {
     .ct-series-a {
       .ct-point,
       .ct-line,
@@ -965,7 +970,7 @@ $overlay-values: (
       }
     }
   }
-  
+
   .sales-container {
     .sales-image-icon {
       fill: map-get($variables, text-secondary);
