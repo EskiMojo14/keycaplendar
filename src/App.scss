@@ -1,5 +1,11 @@
 @use "./typography-variables" as typography-variables;
 
+@use "@material/shape" with (
+  $small-component-radius: 4px,
+  $medium-component-radius: 4px,
+  $large-component-radius: 0px
+);
+
 @use "@material/typography" with (
   $font-family: typography-variables.$body-font,
   $styles-headline1: typography-variables.$headline1,
@@ -15,12 +21,6 @@
   $styles-button: typography-variables.$button,
   $styles-overline: typography-variables.$overline,
   $styles-caption: typography-variables.$caption
-);
-
-@use "@material/shape" with (
-  $small-component-radius: 4px,
-  $medium-component-radius: 4px,
-  $large-component-radius: 0px
 );
 
 @use "theme" as theme;

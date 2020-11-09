@@ -1,6 +1,7 @@
 @use "@material/animation/_index" as animation;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 @use "@material/top-app-bar/_index" as top-app-bar;
 @use "@material/typography/_index" as typography;
 
@@ -54,7 +55,7 @@
       margin: 0;
       height: 56px;
       padding: 8px 16px;
-      border-radius: 0;
+      @include shape.radius(0);
       &--selected,
       &--activated {
         font-weight: bold;

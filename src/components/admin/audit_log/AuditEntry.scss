@@ -1,5 +1,7 @@
 @use "@material/theme/color-palette" as palette;
+@use "@material/shape/_index" as shape;
 @use "@material/typography/_index" as typography;
+
 .log .rmwc-collapsible-list {
   border-bottom: 1px solid var(--divider-color);
   &:last-child {
@@ -11,7 +13,7 @@
   .mdc-data-table {
     width: 100%;
     border: 1px solid var(--divider-color);
-    border-radius: 4px;
+    @include shape.radius(small);
     box-sizing: border-box;
     .mdc-data-table__row {
       .mdc-data-table__cell {

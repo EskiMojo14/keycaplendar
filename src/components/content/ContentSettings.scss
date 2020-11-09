@@ -2,6 +2,7 @@
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 @use "@material/theme/color-palette" as palette;
 
 .settings-container {
@@ -68,7 +69,7 @@
           }
           .theme-list.mdc-list {
             padding: 0;
-            border-radius: 4px;
+            @include shape.radius(small);
             overflow: hidden;
             border: 1px solid var(--divider-color);
             .light {
@@ -156,7 +157,7 @@
       &-group {
         padding: 16px;
         .mdc-card {
-          border-radius: 0;
+          @include shape.radius(0);
           @include elevation.elevation(0);
           background-color: transparent;
           margin-bottom: 0;

@@ -3,6 +3,7 @@
 @use "@material/icon-button/_index" as icon-button;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 
 .card-container .mdc-card {
   height: 100%;
@@ -38,7 +39,7 @@
       margin: 0;
       height: 24px;
       padding: 0 12px;
-      border-radius: 16px;
+      @include shape.radius(12px);
       z-index: 3;
       background-color: #333333;
       color: white;
