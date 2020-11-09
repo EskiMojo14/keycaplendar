@@ -172,9 +172,11 @@ $overlay-values: (
     }
   }
   @if ($dark) {
-    transition-property: box-shadow, background-color;
-    .card-container .mdc-card:hover {
-      background-color: overlay-elevation(map-get($variables, surface), 4);
+    @media (min-width: 840px) {
+      transition-property: box-shadow, background-color; 
+      .card-container .mdc-card:hover {
+        background-color: overlay-elevation(map-get($variables, surface), 4);
+      }
     }
   }
 
