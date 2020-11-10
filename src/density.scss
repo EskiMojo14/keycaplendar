@@ -126,7 +126,7 @@
     &.details-drawer {
       .mdc-drawer__content {
         .details-image {
-          margin: (8px + $diff / 2) 16px;
+          margin-bottom: (8px + $diff / 2);
         }
         .details-text {
           padding-bottom: 16px + $diff;

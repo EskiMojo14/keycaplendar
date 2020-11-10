@@ -12,6 +12,7 @@
   .mdc-drawer__header {
     display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--divider-color);
     .mdc-drawer__title {
       flex: auto 1;
       flex-shrink: 0;
@@ -28,7 +29,8 @@
     height: auto;
     .details {
       &-image {
-        margin: 8px 16px;
+        margin: 16px;
+        margin-bottom: 8px;
         padding-top: 56.25%;
         background-repeat: no-repeat;
         background-position: center;

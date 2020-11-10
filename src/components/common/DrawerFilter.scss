@@ -15,6 +15,7 @@
   .mdc-drawer__header {
     display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--divider-color);
     .mdc-drawer__title {
       flex: auto 1;
       flex-shrink: 0;
