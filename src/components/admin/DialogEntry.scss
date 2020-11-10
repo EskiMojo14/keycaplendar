@@ -163,7 +163,7 @@ $exit-time: 400ms;
           position: relative;
           margin: 16px;
           margin-top: 0;
-          @include shape.radius(small);
+          @include shape.radius(4px);
           border: 1px dashed var(--divider-color);
           &.loaded {
             border: none;
@@ -184,7 +184,7 @@ $exit-time: 400ms;
           }
           img {
             min-height: 56px;
-            @include shape.radius(small);
+            @include shape.radius(4px);
             width: 100%;
           }
         }
