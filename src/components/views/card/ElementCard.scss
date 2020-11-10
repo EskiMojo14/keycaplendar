@@ -3,6 +3,7 @@
 @use "@material/icon-button/_index" as icon-button;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "../../../util";
 
 .card-container .mdc-card {
   height: 100%;
@@ -13,7 +14,7 @@
     height: 100%;
   } 
   &__actions {
-    border-top: 1px solid var(--divider-color);
+    @include util.divider-border(top);
   }
   .media-container {
     display: flex;

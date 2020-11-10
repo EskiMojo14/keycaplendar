@@ -1,5 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/typography/_index" as typography;
+@use "../../util";
 
 .mdc-drawer.details-drawer {
   justify-content: stretch;
@@ -12,7 +13,7 @@
   .mdc-drawer__header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--divider-color);
+    @include util.divider-border(bottom);
     .mdc-drawer__title {
       flex: auto 1;
       flex-shrink: 0;

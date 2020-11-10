@@ -4,6 +4,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/textfield/_index" as textfield;
 @use "@material/typography/_index" as typography;
+@use "../../util";
 
 .users-container {
   padding: 16px;
@@ -76,7 +77,7 @@
     max-width: 100%;
     margin: 8px;
     .rmwc-collapsible-list {
-      border-bottom: 1px solid var(--divider-color);
+      @include util.divider-border(bottom);
       &__handle > .mdc-list-item {
         .rmwc-avatar.mdc-list-item__graphic {
           width: 48px;

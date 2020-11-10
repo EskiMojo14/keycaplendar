@@ -1,7 +1,8 @@
 @use "@material/theme/color-palette" as palette;
 @use "@material/typography/_index" as typography;
+@use "../../../util";
 .log .rmwc-collapsible-list {
-  border-bottom: 1px solid var(--divider-color);
+  @include util.divider-border(bottom);
   &:last-child {
     border-bottom: none;
   }
@@ -10,8 +11,6 @@
   }
   .mdc-data-table {
     width: 100%;
-    border: 1px solid var(--divider-color);
-    border-radius: 4px;
     box-sizing: border-box;
     .mdc-data-table__row {
       .mdc-data-table__cell {

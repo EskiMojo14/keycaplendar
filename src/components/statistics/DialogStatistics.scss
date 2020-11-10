@@ -1,7 +1,9 @@
+@use "../../util";
+
 .statistics-dialog {
   .mdc-dialog__content {
-    border-top: 1px solid var(--divider-color);
-    border-bottom: 1px solid var(--divider-color);
+    @include util.divider-border(top);
+    @include util.divider-border(bottom);
     padding: 0;
   }
 }

@@ -19,6 +19,7 @@
 
 @use "theme" as theme;
 @use "density" as density;
+@use "util";
 
 @use "@material/button/mdc-button";
 @use "@material/card/mdc-card";
@@ -226,7 +227,7 @@
   height: 54px;
   display: flex;
   justify-content: stretch;
-  border-bottom: 1px solid var(--divider-color);
+  @include util.divider-border(bottom);
   &-text {
     @include typography.typography(body2);
     display: flex;

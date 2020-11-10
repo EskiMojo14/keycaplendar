@@ -1,4 +1,5 @@
 @use "@material/rtl/_index" as rtl;
+@use "../../util";
 
 .mdc-drawer.filter-drawer {
   user-select: none;
@@ -15,7 +16,7 @@
   .mdc-drawer__header {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--divider-color);
+    @include util.divider-border(bottom);
     .mdc-drawer__title {
       flex: auto 1;
       flex-shrink: 0;
@@ -30,7 +31,7 @@
     padding: 16px;
     .group {
       &:not(:last-child) {
-        border-bottom: 1px solid var(--divider-color);
+        @include util.divider-border(bottom);
         margin-bottom: 16px;
       }
       .filter-toggle-button-container {
