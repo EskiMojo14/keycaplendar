@@ -1,5 +1,7 @@
 import React from "react";
 import firebase from "../firebase";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { nanoid } from "nanoid";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../util/Autocomplete";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -12,7 +14,6 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Button } from "@rmwc/button";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./DrawerEntry.scss";
 
 export class DrawerCreate extends React.Component {
@@ -159,6 +160,7 @@ export class DrawerCreate extends React.Component {
   addVendor = () => {
     let vendors = this.state.vendors;
     const emptyVendor = {
+      id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
@@ -576,7 +578,7 @@ export class DrawerCreate extends React.Component {
                   <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                     {this.state.vendors.map((vendor, index) => {
                       return (
-                        <Draggable key={index} draggableId={"vendor" + index} index={index}>
+                        <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
                           {(provided, snapshot) => (
                             <Card
                               outlined
