@@ -157,6 +157,9 @@
       }
     }
     &.drawer-right.entry-drawer {
+      .form .vendor-container .title-container .drag-handle {
+        padding: 12px + $diff / 2;
+      }
       .drawer-footer {
         height: 64px + $diff;
       }

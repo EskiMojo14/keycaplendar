@@ -1,3 +1,4 @@
+@use "@material/elevation/_index" as elevation;
 @use "@material/rtl/_index" as rtl;
 @use "../../util";
 
@@ -58,7 +59,10 @@
       margin-bottom: 16px;
     }
     .mdc-card {
-      background-color: transparent;
+      transition: elevation.transition-value();
+      &.dragged {
+        @include elevation.elevation(8);
+      }
     }
     .date-container {
       overflow: hidden;
@@ -78,9 +82,17 @@
     }
     .vendor-container {
       margin-bottom: 16px;
-      .vendor-title {
-        margin: 0;
+      .title-container {
+        display: flex;
+        align-items: center;
         padding: 16px;
+        .vendor-title {
+          margin: 0;
+          flex-grow: 1;
+        }
+        .drag-handle {
+          padding: 12px;
+        }
       }
       .vendor-form {
         display: flex;
