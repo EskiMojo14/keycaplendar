@@ -24,7 +24,6 @@
       flex-grow: 1;
       .mdc-data-table {
         width: 100%;
-        @include shape.radius(small);
         .mdc-data-table__table {
           width: 100%;
           .bold {

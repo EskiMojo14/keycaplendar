@@ -1,4 +1,5 @@
 @use "@material/elevation/_index" as elevation;
+@use "@material/list/_index" as list;
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
@@ -69,9 +70,9 @@
           }
           .theme-list.mdc-list {
             padding: 0;
-            @include shape.radius(small);
             overflow: hidden;
             border: 1px solid var(--divider-color);
+            @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
             .light {
               background-color: white;
               color: rgba(black, 0.87);

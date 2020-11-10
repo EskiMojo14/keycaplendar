@@ -27,6 +27,9 @@
   }
   .mdc-data-table {
     @include data-table.density($density);
+    &.rounded {
+      border-radius: shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small);
+    }
   }
   .mdc-icon-button {
     @include icon-button.density($density);
@@ -240,9 +243,13 @@
     &.theme-card .theme-form-field--flex .mdc-typography--body2 {
       line-height: 56px + $diff;
     }
-  }
-  .settings-dialog .mdc-dialog__content .group .theme-form-field__text .mdc-typography--body2 {
-    line-height: 56px + $diff;
+    .theme-list.mdc-list {
+      @include shape.radius(shape.resolve-percentage-radius(density.prop-value(
+        $density-config: list.$single-line-density-config,
+        $density-scale: $density,
+        $property-name: height,
+      ), small));
+    }
   }
   .footer {
     .mdc-typography--body2 {

@@ -252,6 +252,9 @@
 
 .rmwc-tooltip {
   @include typography.typography(caption);
+  &-inner {
+    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
+  }
 }
 
 .mdc-slider {
@@ -263,7 +266,7 @@
     align-items: center;
     transform: scale(0) translateX(-50%);
     transform-origin: bottom left;
-    @include shape.radius(small);
+    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
     min-height: 2rem;
     padding: 0.33rem 1rem;
     width: auto;
@@ -308,6 +311,9 @@
 
 .mdc-data-table {
   background-color: transparent;
+  &.rounded {
+    border-radius: shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(52px, small) shape.resolve-percentage-radius(52px, small);
+  }
   .mdc-data-table__header-row {
     .mdc-data-table__header-cell {
       @include typography.typography(subtitle2);

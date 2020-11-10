@@ -12,8 +12,6 @@
   }
   .mdc-data-table {
     width: 100%;
-    border: 1px solid var(--divider-color);
-    @include shape.radius(small);
     box-sizing: border-box;
     .mdc-data-table__row {
       .mdc-data-table__cell {

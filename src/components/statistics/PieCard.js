@@ -24,7 +24,7 @@ export const StatusCard = (props) => {
       </Typography>
       <div className="pie-container">
         <div className="table-container">
-          <DataTable>
+          <DataTable className="rounded">
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>
@@ -87,7 +87,7 @@ export const ShippedCard = (props) => {
       </Typography>
       <div className="pie-container">
         <div className="table-container">
-          <DataTable>
+          <DataTable className="rounded">
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>
