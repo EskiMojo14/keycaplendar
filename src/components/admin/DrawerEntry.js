@@ -16,6 +16,18 @@ import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/ca
 import { Button } from "@rmwc/button";
 import "./DrawerEntry.scss";
 
+const getVendorStyle = (style, snapshot) => {
+  let transform = style.transform;
+  if (style.transform) {
+    const axisLockY = "translate(0px" + style.transform.slice(style.transform.indexOf(","), style.transform.length);
+    transform = axisLockY;
+  }
+  return {
+    ...style,
+    transform: transform,
+  };
+};
+
 export class DrawerCreate extends React.Component {
   constructor(props) {
     super(props);
@@ -195,17 +207,6 @@ export class DrawerCreate extends React.Component {
     this.setState({
       vendors: vendors,
     });
-  };
-
-  getVendorStyle = (style, snapshot) => {
-    if (style.transform) {
-      const axisLockY = "translate(0px" + style.transform.slice(style.transform.indexOf(","), style.transform.length);
-      return {
-        ...style,
-        transform: axisLockY,
-      };
-    }
-    return style;
   };
 
   handleDragVendor = (result) => {
@@ -585,7 +586,7 @@ export class DrawerCreate extends React.Component {
                               className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={this.getVendorStyle(provided.draggableProps.style, snapshot)}
+                              style={getVendorStyle(provided.draggableProps.style, snapshot)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
@@ -828,6 +829,12 @@ export class DrawerEdit extends React.Component {
     } else {
       gbLaunch = this.props.set.gbLaunch;
     }
+    let vendorsCopy = this.props.set.vendors;
+    vendorsCopy.forEach((vendor) => {
+      if (!vendor.id) {
+        vendor.id = nanoid();
+      }
+    });
     this.setState({
       id: this.props.set.id,
       profile: this.props.set.profile,
@@ -1005,6 +1012,25 @@ export class DrawerEdit extends React.Component {
     }
     let vendors = this.state.vendors;
     array_move(vendors, index, index - 1);
+    this.setState({
+      vendors: vendors,
+    });
+  };
+
+  handleDragVendor = (result) => {
+    if (!result.destination) return;
+    function array_move(arr, old_index, new_index) {
+      if (new_index >= arr.length) {
+        var k = new_index - arr.length + 1;
+        while (k--) {
+          arr.push(undefined);
+        }
+      }
+      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+      return arr; // for testing
+    }
+    let vendors = this.state.vendors;
+    array_move(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
     });
@@ -1325,113 +1351,151 @@ export class DrawerEdit extends React.Component {
             />
             {dateCard}
             <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange} />
-            {this.state.vendors.map((vendor, index) => {
-              const moveUp =
-                index !== 0 ? (
-                  <CardActionButton
-                    label="Move Up"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      this.moveVendor(index);
-                    }}
-                  />
-                ) : null;
-              return (
-                <Card key={index} outlined className="vendor-container">
-                  <Typography use="caption" tag="h3" className="vendor-title">
-                    {"Vendor " + (index + 1)}
-                  </Typography>
-                  <div className="vendor-form">
-                    <MenuSurfaceAnchor>
-                      <TextField
-                        autoComplete="off"
-                        icon={{
-                          icon: (
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                              <path d="M0 0h24v24H0V0z" fill="none" />
-                              <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                              <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                            </svg>
-                          ),
-                        }}
-                        required
-                        outlined
-                        label="Name"
-                        value={vendor.name}
-                        name={"name" + index}
-                        onChange={this.handleChangeVendor}
-                        onFocus={this.handleFocus}
-                        onBlur={this.handleBlur}
-                      />
-                      <Autocomplete
-                        open={this.state.focused === "name" + index}
-                        array={this.props.allVendors}
-                        query={this.state.vendors[index].name}
-                        prop={"name" + index}
-                        select={this.selectVendor}
-                        minChars={1}
-                      />
-                    </MenuSurfaceAnchor>
-                    <MenuSurfaceAnchor>
-                      <TextField
-                        autoComplete="off"
-                        icon={{
-                          icon: (
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                              <path d="M0 0h24v24H0V0z" fill="none" />
-                              <path
-                                d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                opacity=".3"
-                              />
-                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                            </svg>
-                          ),
-                        }}
-                        required
-                        outlined
-                        label="Region"
-                        value={vendor.region}
-                        name={"region" + index}
-                        onChange={this.handleChangeVendor}
-                        onFocus={this.handleFocus}
-                        onBlur={this.handleBlur}
-                      />
-                      <Autocomplete
-                        open={this.state.focused === "region" + index}
-                        array={this.props.allRegions}
-                        query={this.state.vendors[index].region}
-                        prop={"region" + index}
-                        select={this.selectVendor}
-                        minChars={1}
-                      />
-                    </MenuSurfaceAnchor>
-                    <TextField
-                      autoComplete="off"
-                      icon="link"
-                      outlined
-                      label="Store link"
-                      pattern="https?:\/\/.+"
-                      value={vendor.storeLink}
-                      name={"storeLink" + index}
-                      onChange={this.handleChangeVendor}
-                      helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
-                    />
+            <Typography use="caption" tag="h3" className="subheader">
+              Vendors
+            </Typography>
+            <DragDropContext onDragEnd={this.handleDragVendor}>
+              <Droppable droppableId="vendors-edit">
+                {(provided) => (
+                  <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                    {this.state.vendors.map((vendor, index) => {
+                      return (
+                        <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
+                          {(provided, snapshot) => (
+                            <Card
+                              outlined
+                              className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              style={getVendorStyle(provided.draggableProps.style, snapshot)}
+                            >
+                              <div className="title-container">
+                                <Typography use="caption" className="vendor-title">
+                                  {"Vendor " + (index + 1)}
+                                </Typography>
+                                <IconButton
+                                  icon={{
+                                    strategy: "component",
+                                    icon: (
+                                      <div>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                        >
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                          <path d="M8 9h8v10H8z" opacity=".3" />
+                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                        </svg>
+                                      </div>
+                                    ),
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    this.removeVendor(index);
+                                  }}
+                                />
+                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                              </div>
+                              <div className="vendor-form">
+                                <MenuSurfaceAnchor>
+                                  <TextField
+                                    autoComplete="off"
+                                    icon={{
+                                      icon: (
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                        >
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                          <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                                          <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                                        </svg>
+                                      ),
+                                    }}
+                                    required
+                                    outlined
+                                    label="Name"
+                                    value={vendor.name}
+                                    name={"name" + index}
+                                    onChange={this.handleChangeVendor}
+                                    onFocus={this.handleFocus}
+                                    onBlur={this.handleBlur}
+                                  />
+                                  <Autocomplete
+                                    open={this.state.focused === "name" + index}
+                                    array={this.props.allVendors}
+                                    query={this.state.vendors[index].name}
+                                    prop={"name" + index}
+                                    select={this.selectVendor}
+                                    minChars={1}
+                                  />
+                                </MenuSurfaceAnchor>
+                                <MenuSurfaceAnchor>
+                                  <TextField
+                                    autoComplete="off"
+                                    icon={{
+                                      icon: (
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                        >
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                          <path
+                                            d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                                            opacity=".3"
+                                          />
+                                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                                        </svg>
+                                      ),
+                                    }}
+                                    required
+                                    outlined
+                                    label="Region"
+                                    value={vendor.region}
+                                    name={"region" + index}
+                                    onChange={this.handleChangeVendor}
+                                    onFocus={this.handleFocus}
+                                    onBlur={this.handleBlur}
+                                  />
+                                  <Autocomplete
+                                    open={this.state.focused === "region" + index}
+                                    array={this.props.allRegions}
+                                    query={this.state.vendors[index].region}
+                                    prop={"region" + index}
+                                    select={this.selectVendor}
+                                    minChars={1}
+                                  />
+                                </MenuSurfaceAnchor>
+                                <TextField
+                                  autoComplete="off"
+                                  icon="link"
+                                  outlined
+                                  label="Store link"
+                                  pattern="https?:\/\/.+"
+                                  value={vendor.storeLink}
+                                  name={"storeLink" + index}
+                                  onChange={this.handleChangeVendor}
+                                  onFocus={this.handleFocus}
+                                  onBlur={this.handleBlur}
+                                  helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                                />
+                              </div>
+                            </Card>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
                   </div>
-                  <CardActions className="remove-button">
-                    <CardActionButtons>
-                      <CardActionButton
-                        label="Remove"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          this.removeVendor(index);
-                        }}
-                      />
-                      {moveUp}
-                    </CardActionButtons>
-                  </CardActions>
-                </Card>
-              );
-            })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <div className="add-button">
               <Button
                 outlined
