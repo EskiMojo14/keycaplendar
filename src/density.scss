@@ -231,6 +231,19 @@
         $density,
         height
       );
+      .search-bar-field {
+        @include shape.radius(shape.resolve-percentage-radius(density.prop-value(
+          (
+            height: (
+              default: 40px,
+              maximum: 40px,
+              minimum: 28px,
+            ),
+          ),
+          $density,
+          height
+        ), small));
+      }
     }
   }
   .mdc-data-table__cell .rmwc-circular-progress {
