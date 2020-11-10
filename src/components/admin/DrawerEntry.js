@@ -14,6 +14,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Button } from "@rmwc/button";
+import { Tooltip } from "@rmwc/tooltip";
 import "./DrawerEntry.scss";
 
 const getVendorStyle = (style, snapshot) => {
@@ -592,30 +593,34 @@ export class DrawerCreate extends React.Component {
                                 <Typography use="caption" className="vendor-title">
                                   {"Vendor " + (index + 1)}
                                 </Typography>
-                                <IconButton
-                                  icon={{
-                                    strategy: "component",
-                                    icon: (
-                                      <div>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M8 9h8v10H8z" opacity=".3" />
-                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                        </svg>
-                                      </div>
-                                    ),
-                                  }}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    this.removeVendor(index);
-                                  }}
-                                />
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                                <Tooltip enterDelay={500} content="Delete" align="bottom">
+                                  <IconButton
+                                    icon={{
+                                      strategy: "component",
+                                      icon: (
+                                        <div>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                          >
+                                            <path d="M0 0h24v24H0V0z" fill="none" />
+                                            <path d="M8 9h8v10H8z" opacity=".3" />
+                                            <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                          </svg>
+                                        </div>
+                                      ),
+                                    }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      this.removeVendor(index);
+                                    }}
+                                  />
+                                </Tooltip>
+                                <Tooltip enterDelay={500} content="Drag" align="bottom">
+                                  <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                                </Tooltip>
                               </div>
                               <div className="vendor-form">
                                 <MenuSurfaceAnchor>
@@ -1373,30 +1378,34 @@ export class DrawerEdit extends React.Component {
                                 <Typography use="caption" className="vendor-title">
                                   {"Vendor " + (index + 1)}
                                 </Typography>
-                                <IconButton
-                                  icon={{
-                                    strategy: "component",
-                                    icon: (
-                                      <div>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M8 9h8v10H8z" opacity=".3" />
-                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                        </svg>
-                                      </div>
-                                    ),
-                                  }}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    this.removeVendor(index);
-                                  }}
-                                />
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                                <Tooltip enterDelay={500} content="Delete" align="bottom">
+                                  <IconButton
+                                    icon={{
+                                      strategy: "component",
+                                      icon: (
+                                        <div>
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                          >
+                                            <path d="M0 0h24v24H0V0z" fill="none" />
+                                            <path d="M8 9h8v10H8z" opacity=".3" />
+                                            <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                          </svg>
+                                        </div>
+                                      ),
+                                    }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      this.removeVendor(index);
+                                    }}
+                                  />
+                                </Tooltip>
+                                <Tooltip enterDelay={500} content="Drag" align="bottom">
+                                  <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                                </Tooltip>
                               </div>
                               <div className="vendor-form">
                                 <MenuSurfaceAnchor>
