@@ -1,5 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
+@use "../../util";
 
 .mdc-drawer.drawer-right.entry-drawer {
   width: 360px;
@@ -7,7 +8,7 @@
     top: 0;
   }
   .mdc-drawer__header {
-    border-bottom: 1px solid var(--divider-color);
+    @include util.divider-border(bottom);
     .mdc-drawer__title {
       &::before {
         height: 42px;

@@ -1,0 +1,7 @@
+@mixin divider-border($direction: all, $width: 1px, $style: solid) {
+    @if ($direction == all) {
+        border: $width $style var(--divider-color);
+    } @else {
+        border-#{$direction}: $width $style var(--divider-color);
+    }
+}

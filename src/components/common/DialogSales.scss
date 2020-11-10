@@ -1,9 +1,11 @@
+@use "../../util";
+
 .sales-dialog.mdc-dialog {
   .sales-image {
     padding-bottom: 16px;
     img {
       width: 100%;
-      border: 1px solid var(--divider-color);
+      @include util.divider-border();
       box-sizing: border-box;
     }
   }

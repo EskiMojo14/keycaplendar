@@ -4,6 +4,7 @@
 @use "@material/shape/_index" as shape;
 @use "@material/top-app-bar/_index" as top-app-bar;
 @use "@material/typography/_index" as typography;
+@use "../../util";
 
 .mdc-drawer.mdc-drawer--dismissible {
   z-index: 1;
@@ -33,7 +34,7 @@
     .mdc-drawer__header {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid var(--divider-color);
+      @include util.divider-border(bottom);
       padding: 0 8px 4px;
       box-sizing: border-box;
       .mdc-drawer__title {

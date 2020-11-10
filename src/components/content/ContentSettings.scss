@@ -5,6 +5,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "@material/theme/color-palette" as palette;
+@use "../../util";
 
 .settings-container {
   display: flex;
@@ -71,8 +72,8 @@
           .theme-list.mdc-list {
             padding: 0;
             overflow: hidden;
-            border: 1px solid var(--divider-color);
             @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
+            @include util.divider-border();
             .light {
               background-color: white;
               color: rgba(black, 0.87);
@@ -170,7 +171,7 @@
           }
         }
         &:not(:last-child) {
-          border-bottom: 1px solid var(--divider-color);
+          @include util.divider-border(bottom);
         }
       }
     }

@@ -1,10 +1,11 @@
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
 @use "@material/theme/_index" as theme;
+@use "../../../util";
 
 .compact {
   .mdc-list.mdc-list--two-line .mdc-list-item {
-    border-bottom: 1px solid var(--divider-color);
+    @include util.divider-border(bottom);
     &__text {
       @include rtl.reflexive-box(margin, right, 16px);
     }
