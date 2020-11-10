@@ -1429,7 +1429,7 @@ export class MobileContent extends React.Component {
         view={this.props.view}
         details={this.openDetailsDrawer}
         closeDetails={this.closeDetailsDrawer}
-        edit={this.openEditDrawer}
+        edit={this.openEditDialog}
         detailSet={this.state.detailSet}
         delete={this.openDeleteDialog}
         user={this.props.user}
