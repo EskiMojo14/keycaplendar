@@ -409,6 +409,17 @@ export class DrawerCreate extends React.Component {
       <Drawer modal open={this.props.open} onClose={this.closeDrawer} className="entry-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>Create Entry</DrawerTitle>
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <Button
+            outlined
+            label="Save"
+            onClick={(e) => {
+              if (formFilled) {
+                this.uploadImage(e);
+              }
+            }}
+            disabled={!formFilled}
+          />
         </DrawerHeader>
         <DrawerContent>
           <div className="banner">
@@ -699,19 +710,6 @@ export class DrawerCreate extends React.Component {
             </Card>
           </form>
         </DrawerContent>
-        <div className="drawer-footer">
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
-          <Button
-            outlined
-            label="Save"
-            onClick={(e) => {
-              if (formFilled) {
-                this.uploadImage(e);
-              }
-            }}
-            disabled={!formFilled}
-          />
-        </div>
       </Drawer>
     );
   }
@@ -1131,6 +1129,22 @@ export class DrawerEdit extends React.Component {
       <Drawer modal open={this.props.open} onClose={this.props.close} className="entry-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>Edit Entry</DrawerTitle>
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <Button
+            outlined
+            label="Save"
+            onClick={(e) => {
+              if (formFilled) {
+                e.preventDefault();
+                if (this.state.newImage) {
+                  this.uploadImage();
+                } else {
+                  this.editEntry();
+                }
+              }
+            }}
+            disabled={!formFilled}
+          />
         </DrawerHeader>
         <DrawerContent>
           <div className="banner">
@@ -1417,24 +1431,6 @@ export class DrawerEdit extends React.Component {
             </Card>
           </form>
         </DrawerContent>
-        <div className="drawer-footer">
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
-          <Button
-            outlined
-            label="Save"
-            onClick={(e) => {
-              if (formFilled) {
-                e.preventDefault();
-                if (this.state.newImage) {
-                  this.uploadImage();
-                } else {
-                  this.editEntry();
-                }
-              }
-            }}
-            disabled={!formFilled}
-          />
-        </div>
       </Drawer>
     );
   }
