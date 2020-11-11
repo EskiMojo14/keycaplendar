@@ -104,6 +104,11 @@
     height: calc(100% - #{top-app-bar.$row-height + $diff});
   }
   .mdc-drawer {
+    &__header {
+      .mdc-icon-button:last-child {
+        @include rtl.reflexive-box(margin, right, -12px - $diff / 2);
+      }
+    }
     &.nav {
       .mdc-drawer__header {
         min-height: 0;
