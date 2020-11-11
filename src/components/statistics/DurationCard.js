@@ -73,7 +73,7 @@ export const DurationCard = (props) => {
       <div className="duration-container">
         {chart}
         <div className="table-container">
-          <DataTable>
+          <DataTable className="rounded">
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>

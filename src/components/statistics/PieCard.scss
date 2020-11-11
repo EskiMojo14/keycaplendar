@@ -1,4 +1,5 @@
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 
 .pie-card {
   .mdc-typography--headline5 {
@@ -61,7 +62,6 @@
       flex-grow: 1;
       .mdc-data-table {
         width: 100%;
-        border-radius: 4px;
         .mdc-data-table__table {
           width: 100%;
           .mdc-data-table__cell {

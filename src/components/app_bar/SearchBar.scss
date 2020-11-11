@@ -2,6 +2,7 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 
 $enter-time: 250ms;
 $exit-time: 200ms;
@@ -13,7 +14,6 @@ $exit-time: 200ms;
   &--persistent {
     height: 40px;
     .search-bar-field.mdc-text-field {
-      border-radius: 4px;
       height: 100%;
       width: 128px;
       transition: width 250ms animation.$standard-curve-timing-function, elevation.transition-value();
@@ -66,7 +66,7 @@ $exit-time: 200ms;
       position: relative;
       .search-bar-field.mdc-text-field {
         flex-grow: 1;
-        border-radius: 0;
+        @include shape.radius(0);
         &--with-leading-icon .mdc-text-field__icon,
         &--with-trailing-icon .mdc-text-field__icon {
           &:focus {

@@ -1,5 +1,11 @@
 @use "./typography-variables" as typography-variables;
 
+@use "@material/shape" with (
+  $small-component-radius: 4px,
+  $medium-component-radius: 4px,
+  $large-component-radius: 0px
+);
+
 @use "@material/typography" with (
   $font-family: typography-variables.$body-font,
   $styles-headline1: typography-variables.$headline1,
@@ -17,8 +23,8 @@
   $styles-caption: typography-variables.$caption
 );
 
-@use "theme" as theme;
-@use "density" as density;
+@use "theme";
+@use "density";
 @use "util";
 
 @use "@material/button/mdc-button";
@@ -58,6 +64,7 @@
 @use "@rmwc/tooltip/tooltip";
 
 @use "@material/animation/_index" as animation;
+@use "@material/list/_index" as list;
 @use "@material/theme/color-palette" as palette;
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
@@ -79,6 +86,7 @@
     &.mdc-drawer--closing {
       transform: translateY(101%);
     }
+    @include shape.radius(large large 0 0);
   }
   &.drawer-right {
     width: 320px;
@@ -112,6 +120,7 @@
       left: 0;
       right: initial;
     }
+    @include shape.radius(large 0 0 large, true);
   }
   &__header {
     .mdc-icon-button:last-child {
@@ -120,38 +129,47 @@
   }
 }
 
+.mdc-image-list__item {
+  @include shape.radius(medium);
+}
+
 .mdc-linear-progress {
   @include rtl.rtl {
     transform: scaleX(-1);
   }
 }
 
-.mdc-list--two-line.three-line .mdc-list-item,
-.mdc-list-item.three-line {
-  height: 88px;
-  .mdc-list-item__text {
-    align-self: unset;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .overline {
-      @include typography.typography(overline);
-      font-family: inherit;
-      line-height: 1rem;
-    }
-    .mdc-list-item__primary-text {
-      margin: 2px 0;
+.mdc-list {
+  &.theme-list {
+    @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
+  }
+  &.mdc-list--two-line.three-line .mdc-list-item,
+  &-item.three-line {
+    height: 88px;
+    .mdc-list-item__text {
+      align-self: unset;
+      height: 100%;
       display: flex;
-      align-items: center;
-      &::before,
-      &::after {
-        content: none;
+      flex-direction: column;
+      justify-content: center;
+      .overline {
+        @include typography.typography(overline);
+        font-family: inherit;
+        line-height: 1rem;
       }
-    }
-    .mdc-list-item__secondary-text {
-      &::before {
-        content: none;
+      .mdc-list-item__primary-text {
+        margin: 2px 0;
+        display: flex;
+        align-items: center;
+        &::before,
+        &::after {
+          content: none;
+        }
+      }
+      .mdc-list-item__secondary-text {
+        &::before {
+          content: none;
+        }
       }
     }
   }
@@ -194,7 +212,7 @@
 .mdc-drawer .mdc-list-item,
 .mdc-drawer .mdc-list-item:first-child {
   margin: 0;
-  border-radius: 0;
+  @include shape.radius(0);
   box-sizing: border-box;
 }
 
@@ -269,6 +287,9 @@
 
 .rmwc-tooltip {
   @include typography.typography(caption);
+  &-inner {
+    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
+  }
 }
 
 .mdc-slider {
@@ -280,7 +301,7 @@
     align-items: center;
     transform: scale(0) translateX(-50%);
     transform-origin: bottom left;
-    border-radius: 0.25rem;
+    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
     min-height: 2rem;
     padding: 0.33rem 1rem;
     width: auto;
@@ -325,6 +346,10 @@
 
 .mdc-data-table {
   background-color: transparent;
+  &.rounded {
+    border-radius: shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(56px, small)
+      shape.resolve-percentage-radius(52px, small) shape.resolve-percentage-radius(52px, small);
+  }
   .mdc-data-table__header-row {
     .mdc-data-table__header-cell {
       @include typography.typography(subtitle2);
@@ -359,6 +384,10 @@ svg.material-icons,
   &__mixedmark {
     width: calc(100% - 6px);
   }
+}
+
+.search-bar--persistent .search-bar-field.mdc-text-field {
+  @include shape.radius(shape.resolve-percentage-radius(40px, small));
 }
 
 .rtl-flip {
