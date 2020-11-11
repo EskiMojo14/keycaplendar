@@ -23,8 +23,8 @@
   $styles-caption: typography-variables.$caption
 );
 
-@use "theme" as theme;
-@use "density" as density;
+@use "theme";
+@use "density";
 @use "util";
 
 @use "@material/button/mdc-button";
@@ -121,6 +121,10 @@
     }
     @include shape.radius(large 0 0 large, true);
   }
+}
+
+.mdc-image-list__item {
+  @include shape.radius(medium);
 }
 
 .mdc-linear-progress {
