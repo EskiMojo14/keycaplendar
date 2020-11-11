@@ -91,7 +91,7 @@ export const DrawerNav = (props) => {
   const closeIcon = dismissible ? <IconButton className="rtl-flip" icon="chevron_left" onClick={props.close} /> : null;
   return (
     <Drawer
-      className={"nav" + (dismissible ? " rail" : "") + (props.bottomNav ? " bottom" : "")}
+      className={"nav" + (dismissible ? " rail" : "") + (props.bottomNav ? " drawer-bottom" : "")}
       dismissible={dismissible}
       modal={!dismissible}
       open={props.open}
