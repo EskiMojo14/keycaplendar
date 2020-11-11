@@ -36,14 +36,6 @@
       }
       .mdc-data-table__row {
         .mdc-data-table__cell {
-          .svg-container {
-            position: relative;
-            @include ripple.surface;
-            @include ripple.radius-unbounded;
-            &.disabled {
-              cursor: default;
-            }
-          }
           .mdc-text-field.nickname {
             height: 32px;
             width: 200px;
@@ -112,14 +104,6 @@
     }
     .mdc-card__actions {
       justify-content: flex-end;
-      .svg-container {
-        &.disabled {
-          &::before {
-            content: none;
-          }
-          cursor: default;
-        }
-      }
     }
   }
 }

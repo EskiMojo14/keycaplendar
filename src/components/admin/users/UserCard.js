@@ -3,11 +3,11 @@ import firebase from "../../firebase";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Ripple } from "@rmwc/ripple";
 import { TextField } from "@rmwc/textfield";
 import { Avatar } from "@rmwc/avatar";
 import { Autocomplete } from "../../util/Autocomplete";
 import { Card, CardActions } from "@rmwc/card";
+import { IconButton } from "@rmwc/icon-button";
 import {
   CollapsibleList,
   ListItem,
@@ -106,47 +106,49 @@ export class UserCard extends React.Component {
     const saveButton = this.state.loading ? (
       <CircularProgress />
     ) : (
-      <Ripple unbounded disabled={!this.state.edited}>
-        <div
-          tabIndex="0"
-          className={
-            "svg-container mdc-card__action mdc-card__action--icon mdc-icon-button" +
-            (this.state.edited ? "" : " disabled")
+      <IconButton
+        onClick={() => {
+          if (this.state.edited) {
+            this.setRoles();
           }
-          onClick={() => {
-            if (this.state.edited) {
-              this.setRoles();
-            }
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z"
-              opacity=".3"
-            />
-            <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z" />
-          </svg>
-        </div>
-      </Ripple>
+        }}
+        icon={{
+          strategy: "component",
+          icon: (
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z"
+                  opacity=".3"
+                />
+                <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z" />
+              </svg>
+            </div>
+          ),
+        }}
+        disabled={!this.state.edited}
+      />
     );
     const deleteButton =
       user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
-        <Ripple unbounded>
-          <div
-            tabIndex="0"
-            className="svg-container mdc-card__action mdc-card__action--icon mdc-icon-button"
-            onClick={() => {
-              this.props.delete(user);
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M8 9h8v10H8z" opacity=".3" />
-              <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-            </svg>
-          </div>
-        </Ripple>
+        <IconButton
+          onClick={() => {
+            this.props.delete(user);
+          }}
+          icon={{
+            strategy: "component",
+            icon: (
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M8 9h8v10H8z" opacity=".3" />
+                  <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                </svg>
+              </div>
+            ),
+          }}
+        />
       );
     return (
       <Card className="user">
