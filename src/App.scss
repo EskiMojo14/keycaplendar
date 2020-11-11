@@ -119,8 +119,8 @@
       left: 0;
       right: initial;
     }
+    @include shape.radius(large 0 0 large, true);
   }
-  @include shape.radius(large 0 0 large, true);
 }
 
 .mdc-linear-progress {
