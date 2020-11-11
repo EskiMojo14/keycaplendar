@@ -113,6 +113,11 @@
       right: initial;
     }
   }
+  &__header {
+    .mdc-icon-button:last-child {
+      @include rtl.reflexive-box(margin, right, -12px);
+    }
+  }
 }
 
 .mdc-linear-progress {
