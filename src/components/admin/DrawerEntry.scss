@@ -7,14 +7,26 @@
     top: 0;
   }
   .mdc-drawer__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px;
     @include util.divider-border(bottom);
     .mdc-drawer__title {
+      flex-grow: 1;
+      align-self: flex-start;
       &::before {
         height: 42px;
       }
       &::after {
         content: none;
       }
+    }
+    .mdc-linear-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
     }
   }
   .form {
@@ -138,25 +150,5 @@
   }
   .mdc-menu-surface--anchor .mdc-text-field {
     width: 100%;
-  }
-  .drawer-footer {
-    @include util.divider-border(top);
-    height: 64px;
-    flex-shrink: 0;
-    padding: 8px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    position: relative;
-    .mdc-linear-progress {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-    }
-    .mdc-button {
-      @include rtl.reflexive-box(margin, left, 16px);
-    }
   }
 }
