@@ -35,21 +35,18 @@
       display: flex;
       align-items: center;
       @include util.divider-border(bottom);
-      padding: 0 8px 4px;
       box-sizing: border-box;
       .mdc-drawer__title {
         margin-bottom: 0;
         font-family: Courgette, Lato, sans-serif;
         font-size: 1.125rem;
         font-weight: 400;
+        flex-grow: 1;
       }
       .logo {
         width: 40px;
         height: 40px;
-        @include rtl.reflexive-box(margin, right, 8px);
-      }
-      .mdc-icon-button {
-        @include rtl.reflexive-box(margin, left, auto);
+        @include rtl.reflexive-property(margin, -8px, 8px);
       }
     }
     .mdc-list-item {
