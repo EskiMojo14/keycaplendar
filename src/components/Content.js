@@ -575,11 +575,7 @@ export class DesktopContent extends React.Component {
               toggleLichTheme={this.props.toggleLichTheme}
               openSales={this.openSalesDialog}
             />
-            <DialogSales 
-              open={this.state.salesDialogOpen}
-              close={this.closeSalesDialog}
-              set={this.state.salesSet}
-            />
+            <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
             <DrawerFilter
               device={this.props.device}
               view={this.props.view}
@@ -1101,11 +1097,7 @@ export class TabletContent extends React.Component {
           toggleLichTheme={this.props.toggleLichTheme}
           openSales={this.openSalesDialog}
         />
-        <DialogSales 
-          open={this.state.salesDialogOpen}
-          close={this.closeSalesDialog}
-          set={this.state.salesSet}
-        />
+        <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
         <DrawerFilter
           device={this.props.device}
           view={this.props.view}
@@ -1636,7 +1628,11 @@ export class MobileContent extends React.Component {
         />
       ) : null;
     const search =
-      this.props.bottomNav && (this.props.user.isEditor || this.props.user.isDesigner) ? (
+      this.props.bottomNav &&
+      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      this.props.page !== "statistics" &&
+      this.props.page !== "audit" &&
+      this.props.page !== "users" ? (
         <SearchAppBar
           open={this.state.searchBarOpen}
           openBar={this.openSearchBar}
@@ -1711,11 +1707,7 @@ export class MobileContent extends React.Component {
           toggleLichTheme={this.props.toggleLichTheme}
           openSales={this.openSalesDialog}
         />
-        <DialogSales 
-          open={this.state.salesDialogOpen}
-          close={this.closeSalesDialog}
-          set={this.state.salesSet}
-        />
+        <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
         <DrawerFilter
           device={this.props.device}
           view={this.props.view}

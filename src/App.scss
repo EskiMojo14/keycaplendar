@@ -64,37 +64,54 @@
 
 @include typography.core-styles();
 
-.mdc-drawer.drawer-right {
-  width: 320px;
-  border-right-width: 0;
-  border-left-width: 1px;
-  border-right-style: none;
-  border-left-style: solid;
-  @include rtl.reflexive-position(left, initial);
-  @include rtl.reflexive-position(right, 0);
-  &.mdc-drawer--animate,
-  &.mdc-drawer--closing {
-    transform: translateX(100%);
-    @include rtl.rtl {
-      transform: translateX(-100%);
+.mdc-drawer {
+  &.drawer-bottom {
+    width: 100%;
+    height: auto;
+    border-width: 1px 0 0;
+    border-top-style: solid;
+    &.mdc-drawer--animate {
+      transform: translateY(101%);
+    }
+    &.mdc-drawer--opening {
+      transform: translateY(0);
+    }
+    &.mdc-drawer--closing {
+      transform: translateY(101%);
     }
   }
-  &.mdc-drawer--opening {
-    transform: translateX(0);
-    @include rtl.rtl {
+  &.drawer-right {
+    width: 320px;
+    border-right-width: 0;
+    border-left-width: 1px;
+    border-right-style: none;
+    border-left-style: solid;
+    @include rtl.reflexive-position(left, initial);
+    @include rtl.reflexive-position(right, 0);
+    &.mdc-drawer--animate,
+    &.mdc-drawer--closing {
+      transform: translateX(100%);
+      @include rtl.rtl {
+        transform: translateX(-100%);
+      }
+    }
+    &.mdc-drawer--opening {
       transform: translateX(0);
+      @include rtl.rtl {
+        transform: translateX(0);
+      }
     }
-  }
-  &.mdc-drawer--open.mdc-drawer--dismissible:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
-    @include rtl.reflexive-property(margin, 0, 320px);
-  }
-  @include rtl.rtl {
-    border-left-width: 0;
-    border-right-width: 1px;
-    border-left-style: none;
-    border-right-style: solid;
-    left: 0;
-    right: initial;
+    &.mdc-drawer--open.mdc-drawer--dismissible:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
+      @include rtl.reflexive-property(margin, 0, 320px);
+    }
+    @include rtl.rtl {
+      border-left-width: 0;
+      border-right-width: 1px;
+      border-left-style: none;
+      border-right-style: solid;
+      left: 0;
+      right: initial;
+    }
   }
 }
 
