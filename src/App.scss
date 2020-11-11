@@ -85,6 +85,7 @@
     &.mdc-drawer--closing {
       transform: translateY(101%);
     }
+    @include shape.radius(large large 0 0);
   }
   &.drawer-right {
     width: 320px;
