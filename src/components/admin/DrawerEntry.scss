@@ -80,26 +80,29 @@
         }
       }
     }
-    .vendor-container {
-      margin-bottom: 16px;
-      .title-container {
-        display: flex;
-        align-items: center;
-        padding: 16px;
-        .vendor-title {
-          margin: 0;
-          flex-grow: 1;
+    .vendors-container {
+      position: relative;
+      .vendor-container {
+        margin-bottom: 16px;
+        .title-container {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          .vendor-title {
+            margin: 0;
+            flex-grow: 1;
+          }
+          .drag-handle {
+            padding: 12px;
+          }
         }
-        .drag-handle {
-          padding: 12px;
-        }
-      }
-      .vendor-form {
-        display: flex;
-        flex-direction: column;
-        padding: 0 16px;
-        .mdc-text-field-helper-line:last-of-type {
-          margin-bottom: 0;
+        .vendor-form {
+          display: flex;
+          flex-direction: column;
+          padding: 0 16px;
+          .mdc-text-field-helper-line:last-of-type {
+            margin-bottom: 0;
+          }
         }
       }
     }

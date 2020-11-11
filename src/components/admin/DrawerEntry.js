@@ -17,10 +17,12 @@ import { Button } from "@rmwc/button";
 import { Tooltip } from "@rmwc/tooltip";
 import "./DrawerEntry.scss";
 
-const getVendorStyle = (style, snapshot) => {
+const getVendorStyle = (provided, snapshot) => {
+  const style = provided.draggableProps.style;
   let transform = style.transform;
   if (style.transform) {
-    const axisLockY = "translate(0px" + style.transform.slice(style.transform.indexOf(","), style.transform.length);
+    const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
+    const axisLockY = "translate(0px, " + YVal + "px)";
     transform = axisLockY;
   }
   return {
@@ -587,7 +589,7 @@ export class DrawerCreate extends React.Component {
                               className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={getVendorStyle(provided.draggableProps.style, snapshot)}
+                              style={getVendorStyle(provided, snapshot)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
@@ -1372,7 +1374,7 @@ export class DrawerEdit extends React.Component {
                               className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={getVendorStyle(provided.draggableProps.style, snapshot)}
+                              style={getVendorStyle(provided, snapshot)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
