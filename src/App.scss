@@ -102,6 +102,7 @@
     left: 0;
     right: initial;
   }
+  @include shape.radius(large 0 0 large, true);
 }
 
 .mdc-linear-progress {
@@ -313,7 +314,8 @@
 .mdc-data-table {
   background-color: transparent;
   &.rounded {
-    border-radius: shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(52px, small) shape.resolve-percentage-radius(52px, small);
+    border-radius: shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(56px, small)
+      shape.resolve-percentage-radius(52px, small) shape.resolve-percentage-radius(52px, small);
   }
   .mdc-data-table__header-row {
     .mdc-data-table__header-cell {
