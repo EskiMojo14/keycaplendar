@@ -68,7 +68,7 @@ export const AuditEntry = (props) => {
         </ListItem>
       }
     >
-      <DataTable>
+      <DataTable className="rounded">
         <DataTableContent>
           <DataTableHead>
             <DataTableRow>

@@ -1,5 +1,6 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 @use "../../util";
 
 .mdc-drawer.drawer-right.entry-drawer {
@@ -133,9 +134,11 @@
         position: relative;
         margin: 16px;
         margin-top: 0;
+        @include shape.radius(4px);
         border: 1px dashed var(--divider-color);
         &.loaded {
           border: none;
+          @include shape.radius(0);
           .sales-image-icon {
             display: none;
           }
@@ -152,7 +155,7 @@
         }
         img {
           min-height: 56px;
-          border-radius: 4px;
+          @include shape.radius(4px);
           width: 100%;
         }
       }

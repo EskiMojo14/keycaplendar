@@ -1,4 +1,5 @@
 @use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
 @use "@material/typography/_index" as typography;
 @use "../../util";
 
@@ -36,7 +37,7 @@
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
-        border-radius: 4px;
+        @include shape.radius(4px);
       }
       &-text {
         padding: 0px 16px 16px;
