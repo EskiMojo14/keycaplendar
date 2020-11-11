@@ -61,21 +61,6 @@
         font-weight: bold;
       }
     }
-    &.bottom {
-      width: 100%;
-      height: auto;
-      border-width: 1px 0 0;
-      border-top-style: solid;
-      &.mdc-drawer--animate {
-        transform: translateY(101%);
-      }
-      &.mdc-drawer--opening {
-        transform: translateY(0);
-      }
-      &.mdc-drawer--closing {
-        transform: translateY(101%);
-      }
-    }
     &.mdc-drawer--dismissible.rail {
       display: flex;
       transition-property: width;
