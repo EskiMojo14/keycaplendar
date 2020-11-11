@@ -14,7 +14,6 @@ $exit-time: 200ms;
   &--persistent {
     height: 40px;
     .search-bar-field.mdc-text-field {
-      @include shape.radius(shape.resolve-percentage-radius(40px,small));
       height: 100%;
       width: 128px;
       transition: width 250ms animation.$standard-curve-timing-function, elevation.transition-value();

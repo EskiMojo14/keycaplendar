@@ -1,5 +1,4 @@
 @use "@material/elevation/_index" as elevation;
-@use "@material/list/_index" as list;
 @use "@material/radio/_index" as radio;
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
@@ -68,11 +67,10 @@
             input[type="time"]::-webkit-calendar-picker-indicator {
               background: none;
             }
-          }
+          } 
           .theme-list.mdc-list {
             padding: 0;
             overflow: hidden;
-            @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
             @include util.divider-border();
             .light {
               background-color: white;

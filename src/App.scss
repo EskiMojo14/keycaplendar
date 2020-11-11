@@ -64,6 +64,7 @@
 @use "@rmwc/tooltip/tooltip";
 
 @use "@material/animation/_index" as animation;
+@use "@material/list/_index" as list;
 @use "@material/theme/color-palette" as palette;
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
@@ -133,32 +134,37 @@
   }
 }
 
-.mdc-list--two-line.three-line .mdc-list-item,
-.mdc-list-item.three-line {
-  height: 88px;
-  .mdc-list-item__text {
-    align-self: unset;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    .overline {
-      @include typography.typography(overline);
-      font-family: inherit;
-      line-height: 1rem;
-    }
-    .mdc-list-item__primary-text {
-      margin: 2px 0;
+.mdc-list {
+  &.theme-list {
+    @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
+  }
+  &.mdc-list--two-line.three-line .mdc-list-item,
+  &-item.three-line {
+    height: 88px;
+    .mdc-list-item__text {
+      align-self: unset;
+      height: 100%;
       display: flex;
-      align-items: center;
-      &::before,
-      &::after {
-        content: none;
+      flex-direction: column;
+      justify-content: center;
+      .overline {
+        @include typography.typography(overline);
+        font-family: inherit;
+        line-height: 1rem;
       }
-    }
-    .mdc-list-item__secondary-text {
-      &::before {
-        content: none;
+      .mdc-list-item__primary-text {
+        margin: 2px 0;
+        display: flex;
+        align-items: center;
+        &::before,
+        &::after {
+          content: none;
+        }
+      }
+      .mdc-list-item__secondary-text {
+        &::before {
+          content: none;
+        }
       }
     }
   }
@@ -373,6 +379,10 @@ svg.material-icons,
   &__mixedmark {
     width: calc(100% - 6px);
   }
+}
+
+.search-bar--persistent .search-bar-field.mdc-text-field {
+  @include shape.radius(shape.resolve-percentage-radius(40px, small));
 }
 
 .rtl-flip {
