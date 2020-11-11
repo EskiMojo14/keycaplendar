@@ -306,9 +306,6 @@ $overlay-values: (
     .mdc-icon-button {
       color: map-get($variables, text-secondary);
       @include ripple.states(map-get($variables, on-surface));
-      &.svg-container {
-        fill: map-get($variables, text-secondary);
-      }
     }
 
     .mdc-menu {
@@ -700,9 +697,6 @@ $overlay-values: (
         fill: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
       }
     }
-    .svg-container {
-      @include ripple.states(map-get($variables, if($dark, on-surface, on-primary)));
-    }
 
     .mdc-button {
       color: map-get($variables, if($dark, text-primary, on-primary));
@@ -754,15 +748,6 @@ $overlay-values: (
     color: map-get($variables, text-primary);
     &__cell {
       color: map-get($variables, text-primary);
-      .mdc-icon-button,
-      .svg-container.mdc-icon-button {
-        color: map-get($variables, text-secondary);
-        @include ripple.states(map-get($variables, on-surface));
-        &.disabled {
-          color: map-get($variables, text-disabled);
-          @include ripple.states(transparent);
-        }
-      }
     }
     &__header-cell {
       color: map-get($variables, text-primary);

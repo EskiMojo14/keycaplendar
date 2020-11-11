@@ -24,11 +24,6 @@
       }
     }
   }
-  .svg-container {
-    position: relative;
-    @include ripple.surface;
-    @include ripple.radius-unbounded;
-  }
   .logo {
     height: 40px;
   }

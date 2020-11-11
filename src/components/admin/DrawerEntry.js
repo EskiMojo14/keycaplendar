@@ -4,17 +4,17 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../util/Autocomplete";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { TextField } from "@rmwc/textfield";
-import { Typography } from "@rmwc/typography";
+import { Button } from "@rmwc/button";
+import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
-import { LinearProgress } from "@rmwc/linear-progress";
+import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
 import { IconButton } from "@rmwc/icon-button";
+import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
-import { Button } from "@rmwc/button";
+import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
+import { Typography } from "@rmwc/typography";
 import "./DrawerEntry.scss";
 
 const getVendorStyle = (provided, snapshot) => {
