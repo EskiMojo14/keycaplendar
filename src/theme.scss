@@ -22,6 +22,7 @@
 @use "@material/theme/color-palette" as palette;
 @use "@material/top-app-bar/_index" as top-app-bar;
 @use '@material/feature-targeting/_index' as feature-targeting;
+@use "@material/elevation/_index" as elevation;
 
 // 1 - card, switch
 // 2 - contained button
@@ -259,6 +260,37 @@ $overlay-values: (
         .mdc-list-item.mdc-list-item--activated {
           color: transparent;
         }
+      }
+
+      .mdc-card {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 2), map-get($variables, surface));
+        &--outlined {
+          background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+        }
+        &.dragged {
+          background-color: if(
+            $dark,
+            overlay-elevation(map-get($variables, surface), 8),
+            map-get($variables, surface)
+          );
+        }
+      }
+    }
+    .mdc-card {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+      &--outlined {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
+      }
+      &.dragged {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+      }
+      @if ($dark) {
+        transition-property: box-shadow, background-color;
+      }
+    }
+    @if ($dark) {
+      &.drawer-right.entry-drawer .form .mdc-card {
+        transition-property: box-shadow, background-color;
       }
     }
     .mdc-chip {
@@ -966,7 +998,8 @@ $overlay-values: (
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
   }
 
-  .subheader {
+  .subheader,
+  .drag-handle {
     color: map-get($variables, text-secondary);
   }
 

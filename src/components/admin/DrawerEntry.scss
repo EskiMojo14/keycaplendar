@@ -1,3 +1,4 @@
+@use "@material/elevation/_index" as elevation;
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "../../util";
@@ -71,7 +72,10 @@
       margin-bottom: 16px;
     }
     .mdc-card {
-      background-color: transparent;
+      transition: elevation.transition-value();
+      &.dragged {
+        @include elevation.elevation(8);
+      }
     }
     .date-container {
       overflow: hidden;
@@ -89,18 +93,29 @@
         }
       }
     }
-    .vendor-container {
-      margin-bottom: 16px;
-      .vendor-title {
-        margin: 0;
-        padding: 16px;
-      }
-      .vendor-form {
-        display: flex;
-        flex-direction: column;
-        padding: 0 16px;
-        .mdc-text-field-helper-line:last-of-type {
-          margin-bottom: 0;
+    .vendors-container {
+      position: relative;
+      .vendor-container {
+        margin-bottom: 16px;
+        .title-container {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          .vendor-title {
+            margin: 0;
+            flex-grow: 1;
+          }
+          .drag-handle {
+            padding: 12px;
+          }
+        }
+        .vendor-form {
+          display: flex;
+          flex-direction: column;
+          padding: 0 16px;
+          .mdc-text-field-helper-line:last-of-type {
+            margin-bottom: 0;
+          }
         }
       }
     }
