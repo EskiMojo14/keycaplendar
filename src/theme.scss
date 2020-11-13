@@ -268,11 +268,7 @@ $overlay-values: (
           background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
         }
         &.dragged {
-          background-color: if(
-            $dark,
-            overlay-elevation(map-get($variables, surface), 8),
-            map-get($variables, surface)
-          );
+          background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
         }
       }
     }
@@ -968,6 +964,15 @@ $overlay-values: (
     }
     .mdc-menu {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+    }
+    .mdc-card {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
+      @if ($dark) {
+        transition-property: box-shadow, background-color;
+      }
+      &.dragged {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+      }
     }
   }
   .image-upload {
