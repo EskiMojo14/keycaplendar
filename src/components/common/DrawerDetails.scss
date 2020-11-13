@@ -37,7 +37,6 @@
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
-        @include shape.radius(4px);
       }
       &-text {
         padding: 0px 16px 16px;

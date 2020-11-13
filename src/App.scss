@@ -390,6 +390,10 @@ svg.material-icons,
   @include shape.radius(shape.resolve-percentage-radius(40px, small));
 }
 
+.sales-image, .sales-image img, .details-image, .image-display {
+  @include shape.radius(shape.resolve-percentage-radius(16px, medium));
+}
+
 .rtl-flip {
   @include rtl.rtl {
     transform: scaleX(-1);
