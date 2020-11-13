@@ -143,7 +143,7 @@
   &.theme-list {
     @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
   }
-  &.mdc-list--two-line.three-line .mdc-list-item,
+  &--two-line.three-line .mdc-list-item,
   &-item.three-line {
     height: 88px;
     .mdc-list-item__text {
