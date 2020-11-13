@@ -134,7 +134,10 @@ $exit-time: 400ms;
           }
         }
       }
-
+      .subheader {
+        margin: 0;
+        margin-bottom: 16px;
+      }
       .vendors-container {
         position: relative;
         .vendor-container {
@@ -161,7 +164,6 @@ $exit-time: 400ms;
           }
         }
       }
-
       .add-button {
         display: flex;
         justify-content: flex-end;
