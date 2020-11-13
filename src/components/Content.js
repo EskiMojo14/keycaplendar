@@ -132,14 +132,18 @@ export class DesktopContent extends React.Component {
     }, 250);
   };
   openSalesDialog = (set) => {
-    this.openModal();
+    if (this.props.view !== "compact") {
+      this.openModal();
+    }
     this.setState({
       salesDialogOpen: true,
       salesSet: set,
     });
   };
   closeSalesDialog = () => {
-    this.closeModal();
+    if (this.props.view !== "compact") {
+      this.closeModal();
+    }
     this.setState({
       salesDialogOpen: false,
     });
