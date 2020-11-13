@@ -854,7 +854,7 @@ export class DrawerEdit extends React.Component {
       gbLaunch: gbLaunch,
       gbEnd: this.props.set.gbEnd,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
-      vendors: this.props.set.vendors,
+      vendors: vendorsCopy,
     });
   };
   componentDidUpdate(prevProps) {
