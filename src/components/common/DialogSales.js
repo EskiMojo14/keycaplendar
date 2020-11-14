@@ -16,6 +16,7 @@ export const DialogSales = (props) => {
       </DialogContent>
       <DialogActions>
         <DialogButton label="Open original" tag="a" href={props.set.sales} target="_blank" rel="noopener noreferrer" />
+        <DialogButton label="Close" onClick={props.close} />
       </DialogActions>
     </Dialog>
   );
