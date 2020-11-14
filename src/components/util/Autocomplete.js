@@ -86,7 +86,7 @@ export const AutocompleteMobile = (props) => {
 export default Autocomplete;
 
 Autocomplete.propTypes = {
-  array: PropTypes.array,
+  array: PropTypes.arrayOf(PropTypes.string),
   minChars: PropTypes.number,
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
@@ -97,7 +97,7 @@ Autocomplete.propTypes = {
 };
 
 AutocompleteMobile.propTypes = {
-  array: PropTypes.array,
+  array: PropTypes.arrayOf(PropTypes.string),
   minChars: PropTypes.number,
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,

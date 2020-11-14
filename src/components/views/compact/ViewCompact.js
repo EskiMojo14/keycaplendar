@@ -123,5 +123,5 @@ ViewCompact.propTypes = {
   detailSet: PropTypes.object,
   details: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.array,
+  sets: PropTypes.arrayOf(PropTypes.object),
 };

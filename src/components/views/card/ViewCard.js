@@ -126,6 +126,6 @@ ViewCard.propTypes = {
   details: PropTypes.func,
   edit: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.array,
+  sets: PropTypes.arrayOf(PropTypes.object),
   user: PropTypes.object,
 };
