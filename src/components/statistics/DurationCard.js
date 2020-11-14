@@ -119,6 +119,15 @@ export const DurationCard = (props) => {
 export default DurationCard;
 
 DurationCard.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.shape({
+    chartData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    mean: PropTypes.number,
+    median: PropTypes.number,
+    mode: PropTypes.arrayOf(PropTypes.number),
+    name: PropTypes.string,
+    range: PropTypes.string,
+    standardDev: PropTypes.number,
+    total: PropTypes.number,
+  }),
   durationCat: PropTypes.string,
 };

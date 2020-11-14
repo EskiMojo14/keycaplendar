@@ -129,10 +129,21 @@ export const ShippedCard = (props) => {
 };
 
 StatusCard.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.shape({
+    ic: PropTypes.number,
+    liveGb: PropTypes.number,
+    name: PropTypes.string,
+    postGb: PropTypes.number,
+    preGb: PropTypes.number,
+    total: PropTypes.number,
+  }),
 };
 
 ShippedCard.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    shipped: PropTypes.number,
+    total: PropTypes.number,
+    unshipped: PropTypes.number,
+  }),
 };
-
