@@ -858,8 +858,12 @@ export class DrawerEdit extends React.Component {
     });
   };
   componentDidUpdate(prevProps) {
-    if (this.props.open !== prevProps.open && this.props.open) {
-      this.setValues();
+    if (this.props.open !== prevProps.open) {
+      if (this.props.open) {
+        this.setValues();
+      } else {
+        setTimeout(this.closeDrawer, 300);
+      }
     }
   }
 
