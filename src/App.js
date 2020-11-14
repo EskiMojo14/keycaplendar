@@ -544,11 +544,6 @@ class App extends React.Component {
     });
 
     // whitelist logic
-
-    if (!whitelist.edited) {
-      this.setWhitelist("vendors", allVendors);
-      this.setWhitelist("profiles", allProfiles);
-    }
     const checkVendors = (set) => {
       let bool = whitelist.vendorMode === "exclude";
       Object.keys(set.vendors).forEach((key) => {
@@ -689,6 +684,11 @@ class App extends React.Component {
       content: searchedSets.length > 0,
       loading: false,
     });
+
+    if (!whitelist.edited) {
+      this.setWhitelist("vendors", allVendors);
+      this.setWhitelist("profiles", allProfiles);
+    }
   };
   setDensity = (density) => {
     this.setState({ density: density });
@@ -712,28 +712,22 @@ class App extends React.Component {
     this.setState({ user: user });
   };
   setStatistics = (prop, query) => {
-    let objectCopy = Object.assign({}, this.state.statistics);
-    objectCopy[prop] = query;
-    this.setState({ statistics: objectCopy });
+    this.setState({ statistics: { ...this.state.statistics, [prop]: query } });
   };
   setStatisticsSort = (prop, query) => {
-    let objectCopy = Object.assign({}, this.state.statisticsSort);
-    objectCopy[prop] = query;
-    this.setState({ statisticsSort: objectCopy });
+    this.setState({ statisticsSort: { ...this.state.statisticsSort, [prop]: query } });
   };
   setStatisticsTab = (tab) => {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
   };
-  setWhitelist = (property, value) => {
-    let whitelistCopy = this.state.whitelist;
-    whitelistCopy[property] = value;
-    whitelistCopy.edited = true;
+  setWhitelist = (prop, val) => {
+    const whitelist = { ...this.state.whitelist, [prop]: val, edited: true };
     this.setState({
-      whitelist: whitelistCopy,
+      whitelist: whitelist,
     });
     document.documentElement.scrollTop = 0;
-    this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelistCopy);
+    this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
   };
   setDevice = () => {
     let i = 0;
