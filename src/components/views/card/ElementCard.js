@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { Typography } from "@rmwc/typography";
@@ -153,3 +154,22 @@ export const ElementCard = (props) => {
 };
 
 export default ElementCard;
+
+ElementCard.propTypes = {
+  closeDetails: PropTypes.func,
+  daysLeft: PropTypes.number,
+  delete: PropTypes.func,
+  designer: PropTypes.string,
+  details: PropTypes.func,
+  edit: PropTypes.func,
+  image: PropTypes.string,
+  link: PropTypes.string,
+  live: PropTypes.bool,
+  page: PropTypes.string,
+  selected: PropTypes.bool,
+  set: PropTypes.object,
+  subtitle: PropTypes.string,
+  thisWeek: PropTypes.bool,
+  title: PropTypes.string,
+  user: PropTypes.object,
+}
