@@ -1,6 +1,7 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import PropTypes from "prop-types";
 import firebase from "../firebase";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 export const DialogDelete = (props) => {
   const deleteEntry = (e) => {
@@ -40,3 +41,13 @@ export const DialogDelete = (props) => {
 };
 
 export default DialogDelete;
+
+DialogDelete.propTypes = {
+  close: PropTypes.func,
+  getData: PropTypes.func,
+  open: PropTypes.bool,
+  openSnackbar: PropTypes.func,
+  set: PropTypes.object,
+  snackbarQueue: PropTypes.object,
+  user: PropTypes.object,
+};

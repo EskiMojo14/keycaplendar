@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -111,3 +112,15 @@ export const DrawerAuditFilter = (props) => {
 };
 
 export default DrawerAuditFilter;
+
+DrawerAuditFilter.propTypes = {
+  auditLength: PropTypes.number,
+  close: PropTypes.func,
+  device: PropTypes.string,
+  filterAction: PropTypes.string,
+  filterUser: PropTypes.string,
+  getActions: PropTypes.func,
+  handleFilterChange: PropTypes.func,
+  open: PropTypes.bool,
+  users: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.string })),
+};

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../firebase";
 import { Redirect } from "react-router-dom";
@@ -51,3 +52,8 @@ export const Login = (props) => {
 };
 
 export default Login;
+
+Login.propTypes = {
+  device: PropTypes.string,
+  user: PropTypes.object,
+};

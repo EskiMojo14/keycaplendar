@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import firebase from "../firebase";
 
@@ -40,3 +41,11 @@ export const SnackbarDeleted = (props) => {
 };
 
 export default SnackbarDeleted;
+
+SnackbarDeleted.propTypes = {
+  close: PropTypes.func,
+  getData: PropTypes.func,
+  open: PropTypes.bool,
+  set: PropTypes.object,
+  snackbarQueue: PropTypes.object,
+};

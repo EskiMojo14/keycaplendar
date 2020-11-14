@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import firebase from "../../firebase";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
@@ -194,3 +195,12 @@ export class UserRow extends React.Component {
 }
 
 export default UserRow;
+
+UserRow.propType = {
+  allDesigner: PropTypes.arrayOf(PropTypes.string),
+  currentUser: PropTypes.object,
+  delete: PropTypes.func,
+  getUsers: PropTypes.func,
+  snackbarQueue: PropTypes.object,
+  user: PropTypes.object,
+};

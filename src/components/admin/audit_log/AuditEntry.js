@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -375,3 +376,10 @@ export const AuditEntry = (props) => {
 };
 
 export default AuditEntry;
+
+AuditEntry.propTypes = {
+  action: PropTypes.object,
+  openDeleteDialog: PropTypes.func,
+  properties: PropTypes.arrayOf(PropTypes.string),
+  timestamp: PropTypes.object,
+};
