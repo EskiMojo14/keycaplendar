@@ -380,7 +380,6 @@ export class DesktopContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        editSet={this.state.editSet}
         delete={this.openDeleteDialog}
         user={this.props.user}
       />
@@ -427,7 +426,7 @@ export class DesktopContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}
@@ -897,7 +896,6 @@ export class TabletContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        editSet={this.state.editSet}
         delete={this.openDeleteDialog}
         user={this.props.user}
       />
@@ -943,7 +941,7 @@ export class TabletContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}
@@ -1466,7 +1464,7 @@ export class MobileContent extends React.Component {
       <ContentSettings
         device={this.props.device}
         bottomNav={this.props.bottomNav}
-        changeBottomNav={this.props.changeBottomNav}
+        setBottomNav={this.props.setBottomNav}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
@@ -1474,7 +1472,7 @@ export class MobileContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
@@ -868,3 +869,15 @@ export class ContentStatistics extends React.Component {
 }
 
 export default ContentStatistics;
+
+ContentStatistics.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  navOpen: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setStatisticsSort: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  statistics: PropTypes.object,
+  statisticsSort: PropTypes.object,
+  statisticsTab: PropTypes.string,
+};

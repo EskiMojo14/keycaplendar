@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -174,3 +175,17 @@ export const ContentGrid = (props) => {
   );
 };
 export default ContentGrid;
+
+ContentGrid.propTypes = {
+  closeDetails: PropTypes.func,
+  delete: PropTypes.func,
+  detailSet: PropTypes.object,
+  details: PropTypes.func,
+  edit: PropTypes.func,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  page: PropTypes.string,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.string,
+  user: PropTypes.object,
+  view: PropTypes.string,
+};

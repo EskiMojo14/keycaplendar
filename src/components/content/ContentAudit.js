@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
@@ -49,3 +50,11 @@ export class ContentAudit extends React.Component {
   }
 }
 export default ContentAudit;
+
+ContentAudit.propTypes = {
+  actions: PropTypes.arrayOf(PropTypes.object),
+  getActions: PropTypes.func,
+  loading: PropTypes.bool,
+  openDeleteDialog: PropTypes.func,
+  snackbarQueue: PropTypes.object,
+};
