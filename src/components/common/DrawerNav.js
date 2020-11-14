@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { userTypes } from "../util/propTypeTemplates";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -200,6 +201,6 @@ DrawerNav.propTypes = {
   device: PropTypes.string,
   open: PropTypes.bool,
   page: PropTypes.string,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
+import { userTypes } from "../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -370,6 +371,6 @@ DrawerDetails.propTypes = {
   set: PropTypes.object,
   setSearch: PropTypes.func,
   toggleLichTheme: PropTypes.func,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

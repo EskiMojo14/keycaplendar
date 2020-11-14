@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
+import { userTypes } from "../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -325,5 +326,5 @@ ContentSettings.propTypes = {
   setUser: PropTypes.func,
   snackbarQueue: PropTypes.object,
   toTimeTheme: PropTypes.string,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };

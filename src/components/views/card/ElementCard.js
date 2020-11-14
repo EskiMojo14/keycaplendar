@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import { userTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -165,5 +166,5 @@ ElementCard.propTypes = {
   subtitle: PropTypes.string,
   thisWeek: PropTypes.bool,
   title: PropTypes.string,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };

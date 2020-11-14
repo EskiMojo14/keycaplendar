@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { userTypes } from "../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -186,6 +187,6 @@ ContentGrid.propTypes = {
   page: PropTypes.string,
   sets: PropTypes.arrayOf(PropTypes.object),
   sort: PropTypes.string,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

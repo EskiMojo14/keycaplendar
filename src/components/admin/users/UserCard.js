@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../../firebase";
+import { userTypes } from "../../util/propTypeTemplates";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -225,9 +226,9 @@ export default UserCard;
 
 UserCard.propType = {
   allDesigner: PropTypes.arrayOf(PropTypes.string),
-  currentUser: PropTypes.object,
+  currentuser: PropTypes.shape(userTypes),
   delete: PropTypes.func,
   getUsers: PropTypes.func,
   snackbarQueue: PropTypes.object,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };

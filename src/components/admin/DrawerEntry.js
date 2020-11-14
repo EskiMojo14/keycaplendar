@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
+import { userTypes } from "../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { ImageUpload } from "./ImageUpload";
@@ -1597,7 +1598,7 @@ DrawerCreate.propTypes = {
   open: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
   snackbarQueue: PropTypes.object,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };
 
 DrawerEdit.propTypes = {
@@ -1610,5 +1611,5 @@ DrawerEdit.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.string),
   set: PropTypes.object,
   snackbarQueue: PropTypes.object,
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };

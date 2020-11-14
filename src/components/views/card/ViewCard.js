@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { userTypes } from "../../util/propTypeTemplates";
 import { ElementCard } from "./ElementCard";
 import "./ViewCard.scss";
 
@@ -127,5 +128,5 @@ ViewCard.propTypes = {
   edit: PropTypes.func,
   page: PropTypes.string,
   sets: PropTypes.arrayOf(PropTypes.object),
-  user: PropTypes.object,
+  user: PropTypes.shape(userTypes),
 };
