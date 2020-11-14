@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes } from "../util/propTypeTemplates";
+import { userTypes, setTypes } from "../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { Button } from "@rmwc/button";
@@ -1678,7 +1678,7 @@ DialogEdit.propTypes = {
   getData: PropTypes.func,
   open: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
-  set: PropTypes.object,
+  set: PropTypes.shape(setTypes),
   snackbarQueue: PropTypes.object,
   user: PropTypes.shape(userTypes),
 };

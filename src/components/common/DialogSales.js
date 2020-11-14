@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { setTypes } from "../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogSales.scss";
 
@@ -25,5 +26,5 @@ export default DialogSales;
 DialogSales.propTypes = {
   close: PropTypes.func,
   open: PropTypes.bool,
-  set: PropTypes.object,
+  set: PropTypes.shape(setTypes),
 };

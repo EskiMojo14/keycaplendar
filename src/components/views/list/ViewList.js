@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { setTypes } from "../../util/propTypeTemplates";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
@@ -119,8 +120,8 @@ export default ViewList;
 
 ViewList.propTypes = {
   closeDetails: PropTypes.func,
-  detailSet: PropTypes.object,
+  detailset: PropTypes.shape(setTypes),
   details: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
 };

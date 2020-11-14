@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import firebase from "../firebase";
+import { setTypes } from "../util/propTypeTemplates";
+import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 export const SnackbarDeleted = (props) => {
   const recreateEntry = (e) => {
@@ -46,6 +47,6 @@ SnackbarDeleted.propTypes = {
   close: PropTypes.func,
   getData: PropTypes.func,
   open: PropTypes.bool,
-  set: PropTypes.object,
+  set: PropTypes.shape(setTypes),
   snackbarQueue: PropTypes.object,
 };

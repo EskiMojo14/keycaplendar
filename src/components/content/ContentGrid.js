@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { userTypes } from "../util/propTypeTemplates";
+import { userTypes, setTypes } from "../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -180,12 +180,12 @@ export default ContentGrid;
 ContentGrid.propTypes = {
   closeDetails: PropTypes.func,
   delete: PropTypes.func,
-  detailSet: PropTypes.object,
+  detailset: PropTypes.shape(setTypes),
   details: PropTypes.func,
   edit: PropTypes.func,
   groups: PropTypes.arrayOf(PropTypes.string),
   page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
   user: PropTypes.shape(userTypes),
   view: PropTypes.string,

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { setTypes } from "../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
@@ -1791,7 +1792,7 @@ DesktopAppBar.propTypes = {
   setUserSortIndex: PropTypes.func,
   setUserView: PropTypes.func,
   setView: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
   statistics: PropTypes.object,
   statisticsSort: PropTypes.object,
@@ -1819,7 +1820,7 @@ TabletAppBar.propTypes = {
   setStatisticsTab: PropTypes.func,
   setUserSortIndex: PropTypes.func,
   setView: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
   statistics: PropTypes.object,
   statisticsSort: PropTypes.object,
@@ -1844,7 +1845,7 @@ MobileAppBar.propTypes = {
   setStatisticsTab: PropTypes.func,
   setUserSortIndex: PropTypes.func,
   setView: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
   statistics: PropTypes.object,
   statisticsSort: PropTypes.object,
@@ -1869,7 +1870,7 @@ BottomAppBar.propTypes = {
   setStatisticsTab: PropTypes.func,
   setUserSortIndex: PropTypes.func,
   setView: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
   statistics: PropTypes.object,
   statisticsSort: PropTypes.object,

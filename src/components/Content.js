@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { userTypes } from "./util/propTypeTemplates";
+import { userTypes, setTypes } from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -35,15 +35,47 @@ export class DesktopContent extends React.Component {
       navDrawerOpen: true,
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       createDrawerOpen: false,
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -129,7 +161,15 @@ export class DesktopContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        detailSet: {},
+        detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       });
     }, 250);
   };
@@ -151,7 +191,15 @@ export class DesktopContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       });
     }, 250);
   };
@@ -194,7 +242,15 @@ export class DesktopContent extends React.Component {
     this.closeModal();
     this.setState({
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openAuditDeleteDialog = (action) => {
@@ -611,15 +667,47 @@ export class TabletContent extends React.Component {
       navDrawerOpen: false,
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       createDrawerOpen: false,
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       statisticsDialogOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
@@ -681,7 +769,15 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openDeleteDialog = (set) => {
@@ -723,7 +819,15 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openSalesDialog = (set) => {
@@ -738,7 +842,15 @@ export class TabletContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       });
     }, 250);
   };
@@ -1127,15 +1239,47 @@ export class MobileContent extends React.Component {
       filterDrawerOpen: false,
       createDialogOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       navDrawerOpen: false,
       editDialogOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       statisticsDialogOpen: false,
       searchBarOpen: false,
       auditActions: [],
@@ -1210,7 +1354,15 @@ export class MobileContent extends React.Component {
     setTimeout(() => {
       this.closeModal();
       this.setState({
-        editSet: {},
+        editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       });
     }, 200);
   };
@@ -1245,7 +1397,15 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openSalesDialog = (set) => {
@@ -1260,7 +1420,15 @@ export class MobileContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       });
     }, 250);
   };
@@ -1735,7 +1903,7 @@ export default DesktopContent;
 DesktopContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allSets: PropTypes.arrayOf(PropTypes.object),
+  allSets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   className: PropTypes.string,
@@ -1769,7 +1937,7 @@ DesktopContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
   statistics: PropTypes.object,
@@ -1786,7 +1954,7 @@ DesktopContent.propTypes = {
 TabletContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allSets: PropTypes.arrayOf(PropTypes.object),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   className: PropTypes.string,
@@ -1820,7 +1988,7 @@ TabletContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
   statistics: PropTypes.object,
@@ -1837,7 +2005,7 @@ TabletContent.propTypes = {
 MobileContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allSets: PropTypes.arrayOf(PropTypes.object),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   bottomNav: PropTypes.bool,
@@ -1873,7 +2041,7 @@ MobileContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
   statistics: PropTypes.object,

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { setTypes } from "../../util/propTypeTemplates";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 
@@ -121,8 +122,8 @@ export default ViewImageList;
 
 ViewImageList.propTypes = {
   closeDetails: PropTypes.func,
-  detailSet: PropTypes.object,
+  detailset: PropTypes.shape(setTypes),
   details: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.object),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
 };

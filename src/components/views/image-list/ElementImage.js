@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import { setTypes } from "../../util/propTypeTemplates";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
@@ -107,7 +108,7 @@ ElementImage.propTypes = {
   live: PropTypes.bool,
   page: PropTypes.string,
   selected: PropTypes.bool,
-  set: PropTypes.object,
+  set: PropTypes.shape(setTypes),
   subtitle: PropTypes.string,
   thisWeek: PropTypes.bool,
   title: PropTypes.string,
