@@ -33,3 +33,11 @@ export const setTypes = {
     })
   ),
 };
+
+export const whitelistTypes = {
+  edited: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  shipped: PropTypes.arrayOf(PropTypes.string),
+  vendorMode: PropTypes.string,
+  vendors: PropTypes.arrayOf(PropTypes.string),
+};

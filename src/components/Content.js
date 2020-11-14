@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { userTypes, setTypes } from "./util/propTypeTemplates";
+import { userTypes, setTypes, whitelistTypes } from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -1948,7 +1948,7 @@ DesktopContent.propTypes = {
   toggleLoading: PropTypes.func,
   user: PropTypes.shape(userTypes),
   view: PropTypes.string,
-  whitelist: PropTypes.object,
+  whitelist: PropTypes.shape(whitelistTypes),
 };
 
 TabletContent.propTypes = {
@@ -1999,7 +1999,7 @@ TabletContent.propTypes = {
   toggleLoading: PropTypes.func,
   user: PropTypes.shape(userTypes),
   view: PropTypes.string,
-  whitelist: PropTypes.object,
+  whitelist: PropTypes.shape(whitelistTypes),
 };
 
 MobileContent.propTypes = {
@@ -2052,5 +2052,5 @@ MobileContent.propTypes = {
   toggleLoading: PropTypes.func,
   user: PropTypes.shape(userTypes),
   view: PropTypes.string,
-  whitelist: PropTypes.object,
+  whitelist: PropTypes.shape(whitelistTypes),
 };

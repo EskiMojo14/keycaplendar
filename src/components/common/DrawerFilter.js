@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { whitelistTypes } from "../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -278,5 +279,5 @@ DrawerFilter.propTypes = {
   setWhitelist: PropTypes.func,
   vendors: PropTypes.arrayOf(PropTypes.string),
   view: PropTypes.string,
-  whitelist: PropTypes.object,
+  whitelist: PropTypes.shape(whitelistTypes),
 };
