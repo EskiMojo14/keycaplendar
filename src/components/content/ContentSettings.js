@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
-import { userTypes } from "../util/propTypeTemplates";
+import { userTypes, queueTypes } from "../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -324,7 +324,7 @@ ContentSettings.propTypes = {
   setManualTheme: PropTypes.func,
   setToTimeTheme: PropTypes.func,
   setUser: PropTypes.func,
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   toTimeTheme: PropTypes.string,
   user: PropTypes.shape(userTypes),
 };

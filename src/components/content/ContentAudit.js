@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import { queueTypes } from "../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";
@@ -56,5 +57,5 @@ ContentAudit.propTypes = {
   getActions: PropTypes.func,
   loading: PropTypes.bool,
   openDeleteDialog: PropTypes.func,
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
 };

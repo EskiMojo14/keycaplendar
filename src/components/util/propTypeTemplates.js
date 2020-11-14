@@ -55,3 +55,7 @@ export const statisticsSortTypes = {
   shipped: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
 };
+
+export const queueTypes = {
+  notify: PropTypes.func.isRequired,
+};

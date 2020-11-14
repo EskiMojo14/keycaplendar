@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes, setTypes } from "../util/propTypeTemplates";
+import { userTypes, setTypes, queueTypes } from "../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 export const DialogDelete = (props) => {
@@ -49,6 +49,6 @@ DialogDelete.propTypes = {
   open: PropTypes.bool,
   openSnackbar: PropTypes.func,
   set: PropTypes.shape(setTypes),
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   user: PropTypes.shape(userTypes),
 };

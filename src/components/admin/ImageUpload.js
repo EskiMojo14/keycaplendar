@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { queueTypes } from "../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -256,5 +257,5 @@ ImageUpload.propTypes = {
   desktop: PropTypes.bool,
   image: PropTypes.oneOfType([PropTypes.instanceOf(Blob), PropTypes.string]),
   setImage: PropTypes.func,
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
 };

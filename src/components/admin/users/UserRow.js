@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../../firebase";
-import { userTypes } from "../../util/propTypeTemplates";
+import { userTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -202,6 +202,6 @@ UserRow.propType = {
   currentuser: PropTypes.shape(userTypes),
   delete: PropTypes.func,
   getUsers: PropTypes.func,
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   user: PropTypes.shape(userTypes),
 };

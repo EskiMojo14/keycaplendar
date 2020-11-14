@@ -1,7 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { userTypes, setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes } from "./util/propTypeTemplates";
+import {
+  userTypes,
+  setTypes,
+  whitelistTypes,
+  statisticsTypes,
+  statisticsSortTypes,
+  queueTypes,
+} from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -162,14 +169,14 @@ export class DesktopContent extends React.Component {
     setTimeout(() => {
       this.setState({
         detailSet: {
-        colorway: "",
-        designer: [""],
-        details: "",
-        icDate: "",
-        id: "",
-        image: "",
-        profile: "",
-      },
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -192,14 +199,14 @@ export class DesktopContent extends React.Component {
     setTimeout(() => {
       this.setState({
         salesSet: {
-        colorway: "",
-        designer: [""],
-        details: "",
-        icDate: "",
-        id: "",
-        image: "",
-        profile: "",
-      },
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -843,14 +850,14 @@ export class TabletContent extends React.Component {
     setTimeout(() => {
       this.setState({
         salesSet: {
-        colorway: "",
-        designer: [""],
-        details: "",
-        icDate: "",
-        id: "",
-        image: "",
-        profile: "",
-      },
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -1355,14 +1362,14 @@ export class MobileContent extends React.Component {
       this.closeModal();
       this.setState({
         editSet: {
-        colorway: "",
-        designer: [""],
-        details: "",
-        icDate: "",
-        id: "",
-        image: "",
-        profile: "",
-      },
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 200);
   };
@@ -1421,14 +1428,14 @@ export class MobileContent extends React.Component {
     setTimeout(() => {
       this.setState({
         salesSet: {
-        colorway: "",
-        designer: [""],
-        details: "",
-        icDate: "",
-        id: "",
-        image: "",
-        profile: "",
-      },
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -1938,7 +1945,7 @@ DesktopContent.propTypes = {
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),
   statisticsSort: PropTypes.shape(statisticsSortTypes),
@@ -1989,7 +1996,7 @@ TabletContent.propTypes = {
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),
   statisticsSort: PropTypes.shape(statisticsSortTypes),
@@ -2042,7 +2049,7 @@ MobileContent.propTypes = {
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
-  snackbarQueue: PropTypes.object,
+  snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),
   statisticsSort: PropTypes.shape(statisticsSortTypes),
