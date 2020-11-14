@@ -87,9 +87,9 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
-  changeWhitelist = (prop) => {
+  setWhitelist = (prop) => {
     let whitelist = [];
     Object.keys(this.state[prop]).forEach((key) => {
       const value = this.state[prop][key];
@@ -107,7 +107,7 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
   uncheckAll = (prop) => {
     const propCopy = this.state[prop];
@@ -117,7 +117,7 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
   render() {
     const dismissible = this.props.device === "desktop" && this.props.view !== "compact";

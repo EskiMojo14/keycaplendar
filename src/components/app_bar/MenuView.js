@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
 
 export const MenuView = (props) => {
@@ -24,3 +25,10 @@ export const MenuView = (props) => {
   );
 };
 export default MenuView;
+
+MenuView.propTypes = {
+  onClose: PropTypes.func,
+  onSelect: PropTypes.func,
+  open: PropTypes.bool,
+  view: PropTypes.string,
+};

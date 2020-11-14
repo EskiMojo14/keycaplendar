@@ -167,7 +167,7 @@ class App extends React.Component {
         }
         this.setCookie("theme", legacyTheme, -1);
       }
-      checkCookie("view", this.changeView);
+      checkCookie("view", this.setView);
       checkCookie("bottomNav", this.setBottomNav);
       checkCookie("applyTheme", this.setApplyTheme);
       checkCookie("lightTheme", this.setLightTheme);
@@ -180,7 +180,7 @@ class App extends React.Component {
       this.clearCookies();
     }
   };
-  changeView = (view) => {
+  setView = (view) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -197,7 +197,7 @@ class App extends React.Component {
       this.setCookie("view", view, 365);
     }
   };
-  changePage = (page) => {
+  setPage = (page) => {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -822,9 +822,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
@@ -873,9 +873,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
@@ -924,9 +924,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}

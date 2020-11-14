@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
 
 export const MenuSort = (props) => {
@@ -41,3 +42,11 @@ export const MenuSort = (props) => {
   );
 };
 export default MenuSort;
+
+MenuSort.propTypes = {
+  onClose: PropTypes.func,
+  onSelect: PropTypes.func,
+  open: PropTypes.bool,
+  page: PropTypes.string,
+  sort: PropTypes.string,
+};

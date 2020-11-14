@@ -8,8 +8,8 @@ import logo from "../../logo.svg";
 
 export const DrawerNav = (props) => {
   const dismissible = props.device === "desktop";
-  const changePage = (newPage) => {
-    props.changePage(newPage);
+  const setPage = (newPage) => {
+    props.setPage(newPage);
     if (!dismissible) {
       props.close();
     }
@@ -17,7 +17,7 @@ export const DrawerNav = (props) => {
   const adminOptions = props.user.isAdmin
     ? [
         <ListDivider key="divider" />,
-        <ListItem key="audit" onClick={(e) => changePage("audit")} activated={props.page === "audit"}>
+        <ListItem key="audit" onClick={(e) => setPage("audit")} activated={props.page === "audit"}>
           <ListItemGraphic
             icon={{
               strategy: "component",
@@ -51,7 +51,7 @@ export const DrawerNav = (props) => {
           />
           Audit Log
         </ListItem>,
-        <ListItem key="users" onClick={(e) => changePage("users")} activated={props.page === "users"}>
+        <ListItem key="users" onClick={(e) => setPage("users")} activated={props.page === "users"}>
           <ListItemGraphic
             icon={{
               strategy: "component",
@@ -105,7 +105,7 @@ export const DrawerNav = (props) => {
       </DrawerHeader>
       <DrawerContent>
         <List>
-          <ListItem onClick={(e) => changePage("calendar")} activated={props.page === "calendar"}>
+          <ListItem onClick={(e) => setPage("calendar")} activated={props.page === "calendar"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -120,7 +120,7 @@ export const DrawerNav = (props) => {
             />
             Calendar
           </ListItem>
-          <ListItem onClick={(e) => changePage("live")} activated={props.page === "live"}>
+          <ListItem onClick={(e) => setPage("live")} activated={props.page === "live"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -135,7 +135,7 @@ export const DrawerNav = (props) => {
             />
             Live GBs
           </ListItem>
-          <ListItem onClick={(e) => changePage("ic")} activated={props.page === "ic"}>
+          <ListItem onClick={(e) => setPage("ic")} activated={props.page === "ic"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -150,25 +150,25 @@ export const DrawerNav = (props) => {
             />
             IC Tracker
           </ListItem>
-          <ListItem onClick={(e) => changePage("previous")} activated={props.page === "previous"}>
+          <ListItem onClick={(e) => setPage("previous")} activated={props.page === "previous"}>
             <ListItemGraphic icon="history" />
             Previous Sets
           </ListItem>
-          <ListItem onClick={(e) => changePage("timeline")} activated={props.page === "timeline"}>
+          <ListItem onClick={(e) => setPage("timeline")} activated={props.page === "timeline"}>
             <ListItemGraphic icon="timeline" />
             Timeline
           </ListItem>
-          <ListItem onClick={(e) => changePage("archive")} activated={props.page === "archive"}>
+          <ListItem onClick={(e) => setPage("archive")} activated={props.page === "archive"}>
             <ListItemGraphic icon="all_inclusive" />
             Archive
           </ListItem>
-          <ListItem onClick={(e) => changePage("statistics")} activated={props.page === "statistics"}>
+          <ListItem onClick={(e) => setPage("statistics")} activated={props.page === "statistics"}>
             <ListItemGraphic icon="bar_chart" />
             Statistics
           </ListItem>
           {adminOptions}
           <ListDivider />
-          <ListItem onClick={(e) => changePage("settings")} activated={props.page === "settings"}>
+          <ListItem onClick={(e) => setPage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic
               icon={{
                 strategy: "component",
@@ -195,7 +195,7 @@ export const DrawerNav = (props) => {
 export default DrawerNav;
 
 DrawerNav.propTypes = {
-  changePage: PropTypes.func,
+  setPage: PropTypes.func,
   close: PropTypes.func,
   device: PropTypes.string,
   open: PropTypes.bool,

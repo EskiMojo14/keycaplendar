@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
@@ -48,9 +49,9 @@ export const DesktopAppBar = (props) => {
   const closeUserViewMenu = () => {
     setUserViewMenuOpen(false);
   };
-  const changeView = (index) => {
+  const setView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
-    props.changeView(views[index]);
+    props.setView(views[index]);
   };
   let viewIcon;
   if (props.view === "card") {
@@ -410,7 +411,7 @@ export const DesktopAppBar = (props) => {
           <MenuView
             view={props.view}
             open={viewMenuOpen}
-            onSelect={(evt) => changeView(evt.detail.index)}
+            onSelect={(evt) => setView(evt.detail.index)}
             onClose={closeViewMenu}
           />
           <Tooltip enterDelay={500} content="View" align="bottom">
@@ -473,9 +474,9 @@ export const TabletAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const changeView = (index) => {
+  const setView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
-    props.changeView(views[index]);
+    props.setView(views[index]);
   };
   const openSearch = () => {
     setSearchOpen(true);
@@ -800,7 +801,7 @@ export const TabletAppBar = (props) => {
           <MenuView
             view={props.view}
             open={viewMenuOpen}
-            onSelect={(evt) => changeView(evt.detail.index)}
+            onSelect={(evt) => setView(evt.detail.index)}
             onClose={closeViewMenu}
           />
           <Tooltip enterDelay={500} content="View" align="bottom">
@@ -875,9 +876,9 @@ export const MobileAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const changeView = (index) => {
+  const setView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
-    props.changeView(views[index]);
+    props.setView(views[index]);
   };
   const openSearch = () => {
     setSearchOpen(true);
@@ -1202,7 +1203,7 @@ export const MobileAppBar = (props) => {
           <MenuView
             view={props.view}
             open={viewMenuOpen}
-            onSelect={(evt) => changeView(evt.detail.index)}
+            onSelect={(evt) => setView(evt.detail.index)}
             onClose={closeViewMenu}
           />
           <Tooltip enterDelay={500} content="View" align="bottom">
@@ -1277,9 +1278,9 @@ export const BottomAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const changeView = (index) => {
+  const setView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
-    props.changeView(views[index]);
+    props.setView(views[index]);
   };
   const openSearch = () => {
     setSearchOpen(true);
@@ -1593,7 +1594,7 @@ export const BottomAppBar = (props) => {
           <MenuView
             view={props.view}
             open={viewMenuOpen}
-            onSelect={(evt) => changeView(evt.detail.index)}
+            onSelect={(evt) => setView(evt.detail.index)}
             onClose={closeViewMenu}
           />
           <Tooltip enterDelay={500} content="View" align="top">
@@ -1664,9 +1665,9 @@ export const BottomAppBarIndent = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const changeView = (index) => {
+  const setView = (index) => {
     const views = ["card", "list", "imageList", "compact"];
-    props.changeView(views[index]);
+    props.setView(views[index]);
   };
   let viewIcon;
   if (props.view === "card") {
@@ -1734,7 +1735,7 @@ export const BottomAppBarIndent = (props) => {
         <MenuView
           view={props.view}
           open={viewMenuOpen}
-          onSelect={(evt) => changeView(evt.detail.index)}
+          onSelect={(evt) => setView(evt.detail.index)}
           onClose={closeViewMenu}
         />
         <Tooltip enterDelay={500} content="View" align="top">
@@ -1774,3 +1775,117 @@ export const BottomAppBarIndent = (props) => {
 };
 
 export default DesktopAppBar;
+
+DesktopAppBar.propTypes = {
+  getActions: PropTypes.func,
+  loading: PropTypes.bool,
+  openNav: PropTypes.func,
+  page: PropTypes.string,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setUserSort: PropTypes.func,
+  setUserSortIndex: PropTypes.func,
+  setUserView: PropTypes.func,
+  setView: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.string,
+  statistics: PropTypes.object,
+  statisticsSort: PropTypes.object,
+  statisticsTab: PropTypes.string,
+  toggleAuditFilter: PropTypes.func,
+  toggleFilter: PropTypes.func,
+  userSort: PropTypes.string,
+  userView: PropTypes.string,
+  view: PropTypes.string,
+};
+
+TabletAppBar.propTypes = {
+  getActions: PropTypes.func,
+  loading: PropTypes.bool,
+  openAuditFilter: PropTypes.func,
+  openFilter: PropTypes.func,
+  openNav: PropTypes.func,
+  openStatisticsDialog: PropTypes.func,
+  page: PropTypes.string,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setUserSortIndex: PropTypes.func,
+  setView: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.string,
+  statistics: PropTypes.object,
+  statisticsSort: PropTypes.object,
+  statisticsTab: PropTypes.string,
+  userSort: PropTypes.string,
+  view: PropTypes.string,
+};
+
+MobileAppBar.propTypes = {
+  getActions: PropTypes.func,
+  loading: PropTypes.bool,
+  openAuditFilter: PropTypes.func,
+  openFilter: PropTypes.func,
+  openNav: PropTypes.func,
+  openStatisticsDialog: PropTypes.func,
+  page: PropTypes.string,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setUserSortIndex: PropTypes.func,
+  setView: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.string,
+  statistics: PropTypes.object,
+  statisticsSort: PropTypes.object,
+  statisticsTab: PropTypes.string,
+  userSort: PropTypes.string,
+  view: PropTypes.string,
+};
+
+BottomAppBar.propTypes = {
+  getActions: PropTypes.func,
+  loading: PropTypes.bool,
+  openAuditFilter: PropTypes.func,
+  openFilter: PropTypes.func,
+  openNav: PropTypes.func,
+  openStatisticsDialog: PropTypes.func,
+  page: PropTypes.string,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setUserSortIndex: PropTypes.func,
+  setView: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.object),
+  sort: PropTypes.string,
+  statistics: PropTypes.object,
+  statisticsSort: PropTypes.object,
+  statisticsTab: PropTypes.string,
+  userSort: PropTypes.string,
+  view: PropTypes.string,
+};
+
+BottomAppBarIndent.propTypes = {
+  loading: PropTypes.bool,
+  openFilter: PropTypes.func,
+  openNav: PropTypes.func,
+  openSearch: PropTypes.func,
+  page: PropTypes.string,
+  setSort: PropTypes.func,
+  setView: PropTypes.func,
+  sort: PropTypes.string,
+  view: PropTypes.string,
+};

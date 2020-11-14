@@ -526,7 +526,7 @@ export class DesktopContent extends React.Component {
           open={this.state.navDrawerOpen}
           close={this.closeNavDrawer}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           user={this.props.user}
         />
         <DrawerAppContent
@@ -545,7 +545,7 @@ export class DesktopContent extends React.Component {
             toggleAuditFilter={this.toggleAuditFilterDrawer}
             getActions={this.getAuditActions}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             userView={this.state.userView}
             setUserView={this.setUserView}
             sort={this.props.sort}
@@ -1052,7 +1052,7 @@ export class TabletContent extends React.Component {
           view={this.props.view}
           open={this.state.navDrawerOpen}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           close={this.closeNavDrawer}
           user={this.props.user}
         />
@@ -1064,7 +1064,7 @@ export class TabletContent extends React.Component {
           openAuditFilter={this.openAuditFilterDrawer}
           getActions={this.getAuditActions}
           view={this.props.view}
-          changeView={this.props.changeView}
+          setView={this.props.setView}
           sort={this.props.sort}
           setSort={this.props.setSort}
           userSort={this.state.userSort}
@@ -1561,7 +1561,7 @@ export class MobileContent extends React.Component {
             openFilter={this.openFilterDrawer}
             openNav={this.openNavDrawer}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             sort={this.props.sort}
             setSort={this.props.setSort}
             openSearch={this.openSearchBar}
@@ -1575,7 +1575,7 @@ export class MobileContent extends React.Component {
             getActions={this.getAuditActions}
             openNav={this.openNavDrawer}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             sort={this.props.sort}
             setSort={this.props.setSort}
             userSort={this.state.userSort}
@@ -1602,7 +1602,7 @@ export class MobileContent extends React.Component {
         getActions={this.getAuditActions}
         openNav={this.openNavDrawer}
         view={this.props.view}
-        changeView={this.props.changeView}
+        setView={this.props.setView}
         sort={this.props.sort}
         setSort={this.props.setSort}
         userSort={this.state.userSort}
@@ -1685,7 +1685,7 @@ export class MobileContent extends React.Component {
           bottomNav={this.props.bottomNav}
           open={this.state.navDrawerOpen}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           close={this.closeNavDrawer}
           user={this.props.user}
         />
