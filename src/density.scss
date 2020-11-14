@@ -28,7 +28,9 @@
   .mdc-data-table {
     @include data-table.density($density);
     &.rounded {
-      border-radius: shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small);
+      border-radius: shape.resolve-percentage-radius(56px + $diff, small)
+        shape.resolve-percentage-radius(56px + $diff, small) shape.resolve-percentage-radius(52px + $diff, small)
+        shape.resolve-percentage-radius(52px + $diff, small);
     }
   }
   .mdc-icon-button {
@@ -209,6 +211,14 @@
   .statistics .mdc-top-app-bar--fixed-adjust {
     padding-top: top-app-bar.$row-height + 48px + $diff * 2;
   }
+  .autocomplete-mobile,
+  .bottom-nav .search-app-bar .autocomplete-mobile {
+    top: top-app-bar.$row-height + $diff;
+    &--open {
+      min-height: calc(100vh - #{top-app-bar.$row-height + $diff});
+      max-height: calc(100vh - #{top-app-bar.$row-height + $diff});
+    }
+  }
   .stats-tab .mdc-card {
     &.count-graph,
     &.profile-graph {
@@ -240,17 +250,22 @@
         height
       );
       .search-bar-field {
-        @include shape.radius(shape.resolve-percentage-radius(density.prop-value(
-          (
-            height: (
-              default: 40px,
-              maximum: 40px,
-              minimum: 28px,
+        @include shape.radius(
+          shape.resolve-percentage-radius(
+            density.prop-value(
+              (
+                height: (
+                  default: 40px,
+                  maximum: 40px,
+                  minimum: 28px,
+                ),
+              ),
+              $density,
+              height
             ),
-          ),
-          $density,
-          height
-        ), small));
+            small
+          )
+        );
       }
     }
   }
@@ -265,11 +280,16 @@
       line-height: 56px + $diff;
     }
     .theme-list.mdc-list {
-      @include shape.radius(shape.resolve-percentage-radius(density.prop-value(
-        $density-config: list.$single-line-density-config,
-        $density-scale: $density,
-        $property-name: height,
-      ), small));
+      @include shape.radius(
+        shape.resolve-percentage-radius(
+          density.prop-value(
+            $density-config: list.$single-line-density-config,
+            $density-scale: $density,
+            $property-name: height
+          ),
+          small
+        )
+      );
     }
   }
   .footer {
@@ -291,6 +311,14 @@
     }
     .statistics .mdc-top-app-bar--fixed-adjust {
       padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
+    }
+    .autocomplete-mobile,
+    .bottom-nav .search-app-bar .autocomplete-mobile {
+      top: top-app-bar.$mobile-row-height + $diff;
+      &--open {
+        min-height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+        max-height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+      }
     }
   }
 }
