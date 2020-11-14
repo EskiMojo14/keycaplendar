@@ -167,9 +167,9 @@ class App extends React.Component {
         }
         this.setCookie("theme", legacyTheme, -1);
       }
-      checkCookie("view", this.changeView);
-      checkCookie("bottomNav", this.changeBottomNav);
-      checkCookie("applyTheme", this.changeApplyTheme);
+      checkCookie("view", this.setView);
+      checkCookie("bottomNav", this.setBottomNav);
+      checkCookie("applyTheme", this.setApplyTheme);
       checkCookie("lightTheme", this.setLightTheme);
       checkCookie("darkTheme", this.setDarkTheme);
       checkCookie("manualTheme", this.setManualTheme);
@@ -180,7 +180,7 @@ class App extends React.Component {
       this.clearCookies();
     }
   };
-  changeView = (view) => {
+  setView = (view) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -197,7 +197,7 @@ class App extends React.Component {
       this.setCookie("view", view, 365);
     }
   };
-  changePage = (page) => {
+  setPage = (page) => {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -285,7 +285,7 @@ class App extends React.Component {
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
   };
-  changeApplyTheme = (applyTheme) => {
+  setApplyTheme = (applyTheme) => {
     this.setState({
       applyTheme: applyTheme,
     });
@@ -348,7 +348,7 @@ class App extends React.Component {
     this.setState({ lichTheme: !this.state.lichTheme });
     setTimeout(this.checkTheme, 1);
   };
-  changeBottomNav = (value) => {
+  setBottomNav = (value) => {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
     if (this.state.cookies) {
@@ -822,9 +822,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
@@ -840,7 +840,7 @@ class App extends React.Component {
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
-          changeApplyTheme={this.changeApplyTheme}
+          setApplyTheme={this.setApplyTheme}
           lightTheme={this.state.lightTheme}
           setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
@@ -873,9 +873,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
@@ -891,7 +891,7 @@ class App extends React.Component {
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
-          changeApplyTheme={this.changeApplyTheme}
+          setApplyTheme={this.setApplyTheme}
           lightTheme={this.state.lightTheme}
           setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
@@ -924,9 +924,9 @@ class App extends React.Component {
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
-          changePage={this.changePage}
+          setPage={this.setPage}
           view={this.state.view}
-          changeView={this.changeView}
+          setView={this.setView}
           profiles={this.state.profiles}
           allDesigners={this.state.allDesigners}
           allVendors={this.state.allVendors}
@@ -942,7 +942,7 @@ class App extends React.Component {
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
-          changeApplyTheme={this.changeApplyTheme}
+          setApplyTheme={this.setApplyTheme}
           lightTheme={this.state.lightTheme}
           setLightTheme={this.setLightTheme}
           darkTheme={this.state.darkTheme}
@@ -955,7 +955,7 @@ class App extends React.Component {
           setToTimeTheme={this.setToTimeTheme}
           toggleLichTheme={this.toggleLichTheme}
           bottomNav={this.state.bottomNav}
-          changeBottomNav={this.changeBottomNav}
+          setBottomNav={this.setBottomNav}
           setWhitelist={this.setWhitelist}
           whitelist={this.state.whitelist}
           statistics={this.state.statistics}

@@ -1,6 +1,14 @@
 import React from "react";
-import "./Content.scss";
+import PropTypes from "prop-types";
 import firebase from "firebase";
+import {
+  userTypes,
+  setTypes,
+  whitelistTypes,
+  statisticsTypes,
+  statisticsSortTypes,
+  queueTypes,
+} from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -23,6 +31,7 @@ import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
+import "./Content.scss";
 
 const bodyScroll = require("body-scroll-toggle");
 
@@ -33,15 +42,47 @@ export class DesktopContent extends React.Component {
       navDrawerOpen: true,
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       createDrawerOpen: false,
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -49,7 +90,17 @@ export class DesktopContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userView: "table",
       userSort: "nickname",
@@ -127,7 +178,15 @@ export class DesktopContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        detailSet: {},
+        detailSet: {
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -149,7 +208,15 @@ export class DesktopContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -192,7 +259,15 @@ export class DesktopContent extends React.Component {
     this.closeModal();
     this.setState({
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openAuditDeleteDialog = (action) => {
@@ -208,7 +283,15 @@ export class DesktopContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -380,7 +463,6 @@ export class DesktopContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        editSet={this.state.editSet}
         delete={this.openDeleteDialog}
         user={this.props.user}
       />
@@ -427,7 +509,7 @@ export class DesktopContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}
@@ -527,7 +609,7 @@ export class DesktopContent extends React.Component {
           open={this.state.navDrawerOpen}
           close={this.closeNavDrawer}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           user={this.props.user}
         />
         <DrawerAppContent
@@ -546,7 +628,7 @@ export class DesktopContent extends React.Component {
             toggleAuditFilter={this.toggleAuditFilterDrawer}
             getActions={this.getAuditActions}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             userView={this.state.userView}
             setUserView={this.setUserView}
             sort={this.props.sort}
@@ -610,15 +692,47 @@ export class TabletContent extends React.Component {
       navDrawerOpen: false,
       filterDrawerOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       createDrawerOpen: false,
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       statisticsDialogOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
@@ -627,7 +741,17 @@ export class TabletContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userSort: "nickname",
       userReverseSort: false,
@@ -680,7 +804,15 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({
       editDrawerOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openDeleteDialog = (set) => {
@@ -722,7 +854,15 @@ export class TabletContent extends React.Component {
     this.closeModal();
     this.setState({
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openSalesDialog = (set) => {
@@ -737,7 +877,15 @@ export class TabletContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -762,7 +910,15 @@ export class TabletContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -897,7 +1053,6 @@ export class TabletContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        editSet={this.state.editSet}
         delete={this.openDeleteDialog}
         user={this.props.user}
       />
@@ -943,7 +1098,7 @@ export class TabletContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}
@@ -1054,7 +1209,7 @@ export class TabletContent extends React.Component {
           view={this.props.view}
           open={this.state.navDrawerOpen}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           close={this.closeNavDrawer}
           user={this.props.user}
         />
@@ -1066,7 +1221,7 @@ export class TabletContent extends React.Component {
           openAuditFilter={this.openAuditFilterDrawer}
           getActions={this.getAuditActions}
           view={this.props.view}
-          changeView={this.props.changeView}
+          setView={this.props.setView}
           sort={this.props.sort}
           setSort={this.props.setSort}
           userSort={this.state.userSort}
@@ -1127,15 +1282,47 @@ export class MobileContent extends React.Component {
       filterDrawerOpen: false,
       createDialogOpen: false,
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       salesDialogOpen: false,
-      salesSet: {},
+      salesSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       navDrawerOpen: false,
       editDialogOpen: false,
-      editSet: {},
+      editSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       deleteDialogOpen: false,
       deleteSnackbarOpen: false,
-      deleteSet: {},
+      deleteSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
       statisticsDialogOpen: false,
       searchBarOpen: false,
       auditActions: [],
@@ -1145,7 +1332,17 @@ export class MobileContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userSort: "nickname",
       userReverseSort: false,
@@ -1210,7 +1407,15 @@ export class MobileContent extends React.Component {
     setTimeout(() => {
       this.closeModal();
       this.setState({
-        editSet: {},
+        editSet: {
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 200);
   };
@@ -1245,7 +1450,15 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({
       detailsDrawerOpen: false,
-      detailSet: {},
+      detailSet: {
+        colorway: "",
+        designer: [""],
+        details: "",
+        icDate: "",
+        id: "",
+        image: "",
+        profile: "",
+      },
     });
   };
   openSalesDialog = (set) => {
@@ -1260,7 +1473,15 @@ export class MobileContent extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        salesSet: {},
+        salesSet: {
+          colorway: "",
+          designer: [""],
+          details: "",
+          icDate: "",
+          id: "",
+          image: "",
+          profile: "",
+        },
       });
     }, 250);
   };
@@ -1292,7 +1513,15 @@ export class MobileContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -1466,7 +1695,7 @@ export class MobileContent extends React.Component {
       <ContentSettings
         device={this.props.device}
         bottomNav={this.props.bottomNav}
-        changeBottomNav={this.props.changeBottomNav}
+        setBottomNav={this.props.setBottomNav}
         user={this.props.user}
         setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
@@ -1474,7 +1703,7 @@ export class MobileContent extends React.Component {
         darkTheme={this.props.darkTheme}
         setDarkTheme={this.props.setDarkTheme}
         applyTheme={this.props.applyTheme}
-        changeApplyTheme={this.props.changeApplyTheme}
+        setApplyTheme={this.props.setApplyTheme}
         manualTheme={this.props.manualTheme}
         setManualTheme={this.props.setManualTheme}
         fromTimeTheme={this.props.fromTimeTheme}
@@ -1563,7 +1792,7 @@ export class MobileContent extends React.Component {
             openFilter={this.openFilterDrawer}
             openNav={this.openNavDrawer}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             sort={this.props.sort}
             setSort={this.props.setSort}
             openSearch={this.openSearchBar}
@@ -1577,7 +1806,7 @@ export class MobileContent extends React.Component {
             getActions={this.getAuditActions}
             openNav={this.openNavDrawer}
             view={this.props.view}
-            changeView={this.props.changeView}
+            setView={this.props.setView}
             sort={this.props.sort}
             setSort={this.props.setSort}
             userSort={this.state.userSort}
@@ -1604,7 +1833,7 @@ export class MobileContent extends React.Component {
         getActions={this.getAuditActions}
         openNav={this.openNavDrawer}
         view={this.props.view}
-        changeView={this.props.changeView}
+        setView={this.props.setView}
         sort={this.props.sort}
         setSort={this.props.setSort}
         userSort={this.state.userSort}
@@ -1687,7 +1916,7 @@ export class MobileContent extends React.Component {
           bottomNav={this.props.bottomNav}
           open={this.state.navDrawerOpen}
           page={this.props.page}
-          changePage={this.props.changePage}
+          setPage={this.props.setPage}
           close={this.closeNavDrawer}
           user={this.props.user}
         />
@@ -1731,3 +1960,158 @@ export class MobileContent extends React.Component {
 }
 
 export default DesktopContent;
+
+DesktopContent.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  allSets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  applyTheme: PropTypes.string,
+  className: PropTypes.string,
+  content: PropTypes.bool,
+  darkTheme: PropTypes.string,
+  density: PropTypes.string,
+  device: PropTypes.string,
+  editor: PropTypes.bool,
+  fromTimeTheme: PropTypes.string,
+  getData: PropTypes.func,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  lightTheme: PropTypes.string,
+  loading: PropTypes.bool,
+  manualTheme: PropTypes.bool,
+  page: PropTypes.string,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  search: PropTypes.string,
+  setApplyTheme: PropTypes.func,
+  setDarkTheme: PropTypes.func,
+  setDensity: PropTypes.func,
+  setFromTimeTheme: PropTypes.func,
+  setLightTheme: PropTypes.func,
+  setManualTheme: PropTypes.func,
+  setPage: PropTypes.func,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setToTimeTheme: PropTypes.func,
+  setUser: PropTypes.func,
+  setView: PropTypes.func,
+  setWhitelist: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  sort: PropTypes.string,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  statisticsTab: PropTypes.string,
+  toTimeTheme: PropTypes.string,
+  toggleLichTheme: PropTypes.func,
+  toggleLoading: PropTypes.func,
+  user: PropTypes.shape(userTypes),
+  view: PropTypes.string,
+  whitelist: PropTypes.shape(whitelistTypes),
+};
+
+TabletContent.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  applyTheme: PropTypes.string,
+  className: PropTypes.string,
+  content: PropTypes.bool,
+  darkTheme: PropTypes.string,
+  density: PropTypes.string,
+  device: PropTypes.string,
+  editor: PropTypes.bool,
+  fromTimeTheme: PropTypes.string,
+  getData: PropTypes.func,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  lightTheme: PropTypes.string,
+  loading: PropTypes.bool,
+  manualTheme: PropTypes.bool,
+  page: PropTypes.string,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  search: PropTypes.string,
+  setApplyTheme: PropTypes.func,
+  setDarkTheme: PropTypes.func,
+  setDensity: PropTypes.func,
+  setFromTimeTheme: PropTypes.func,
+  setLightTheme: PropTypes.func,
+  setManualTheme: PropTypes.func,
+  setPage: PropTypes.func,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setToTimeTheme: PropTypes.func,
+  setUser: PropTypes.func,
+  setView: PropTypes.func,
+  setWhitelist: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  sort: PropTypes.string,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  statisticsTab: PropTypes.string,
+  toTimeTheme: PropTypes.string,
+  toggleLichTheme: PropTypes.func,
+  toggleLoading: PropTypes.func,
+  user: PropTypes.shape(userTypes),
+  view: PropTypes.string,
+  whitelist: PropTypes.shape(whitelistTypes),
+};
+
+MobileContent.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  applyTheme: PropTypes.string,
+  bottomNav: PropTypes.bool,
+  className: PropTypes.string,
+  content: PropTypes.bool,
+  darkTheme: PropTypes.string,
+  density: PropTypes.string,
+  device: PropTypes.string,
+  editor: PropTypes.bool,
+  fromTimeTheme: PropTypes.string,
+  getData: PropTypes.func,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  lightTheme: PropTypes.string,
+  loading: PropTypes.bool,
+  manualTheme: PropTypes.bool,
+  page: PropTypes.string,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  search: PropTypes.string,
+  setApplyTheme: PropTypes.func,
+  setBottomNav: PropTypes.func,
+  setDarkTheme: PropTypes.func,
+  setDensity: PropTypes.func,
+  setFromTimeTheme: PropTypes.func,
+  setLightTheme: PropTypes.func,
+  setManualTheme: PropTypes.func,
+  setPage: PropTypes.func,
+  setSearch: PropTypes.func,
+  setSort: PropTypes.func,
+  setStatistics: PropTypes.func,
+  setStatisticsSort: PropTypes.func,
+  setStatisticsTab: PropTypes.func,
+  setToTimeTheme: PropTypes.func,
+  setUser: PropTypes.func,
+  setView: PropTypes.func,
+  setWhitelist: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  sort: PropTypes.string,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  statisticsTab: PropTypes.string,
+  toTimeTheme: PropTypes.string,
+  toggleLichTheme: PropTypes.func,
+  toggleLoading: PropTypes.func,
+  user: PropTypes.shape(userTypes),
+  view: PropTypes.string,
+  whitelist: PropTypes.shape(whitelistTypes),
+};

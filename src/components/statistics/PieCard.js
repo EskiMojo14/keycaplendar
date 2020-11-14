@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -125,4 +126,24 @@ export const ShippedCard = (props) => {
       </div>
     </Card>
   );
+};
+
+StatusCard.propTypes = {
+  data: PropTypes.shape({
+    ic: PropTypes.number,
+    liveGb: PropTypes.number,
+    name: PropTypes.string,
+    postGb: PropTypes.number,
+    preGb: PropTypes.number,
+    total: PropTypes.number,
+  }),
+};
+
+ShippedCard.propTypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    shipped: PropTypes.number,
+    total: PropTypes.number,
+    unshipped: PropTypes.number,
+  }),
 };

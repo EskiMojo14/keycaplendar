@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { setTypes } from "../../util/propTypeTemplates";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
@@ -102,7 +104,6 @@ export const ViewList = (props) => {
             link={set.details}
             details={props.details}
             closeDetails={props.closeDetails}
-            store={set.storeLink}
             thisWeek={thisWeek}
             daysLeft={daysLeft}
             live={live}
@@ -115,3 +116,12 @@ export const ViewList = (props) => {
   );
 };
 export default ViewList;
+
+
+ViewList.propTypes = {
+  closeDetails: PropTypes.func,
+  detailset: PropTypes.shape(setTypes()),
+  details: PropTypes.func,
+  page: PropTypes.string,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+};

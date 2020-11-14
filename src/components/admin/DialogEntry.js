@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import firebase from "../firebase";
+import { userTypes, setTypes, queueTypes } from "../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { Button } from "@rmwc/button";
@@ -1655,3 +1657,28 @@ export class DialogEdit extends React.Component {
 }
 
 export default DialogCreate;
+
+DialogCreate.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  close: PropTypes.func,
+  getData: PropTypes.func,
+  open: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  user: PropTypes.shape(userTypes),
+};
+
+DialogEdit.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  close: PropTypes.func,
+  getData: PropTypes.func,
+  open: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  set: PropTypes.shape(setTypes()),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  user: PropTypes.shape(userTypes),
+};

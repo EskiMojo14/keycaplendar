@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import { Card } from "@rmwc/card";
@@ -116,3 +117,17 @@ export const DurationCard = (props) => {
 };
 
 export default DurationCard;
+
+DurationCard.propTypes = {
+  data: PropTypes.shape({
+    chartData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    mean: PropTypes.number,
+    median: PropTypes.number,
+    mode: PropTypes.arrayOf(PropTypes.number),
+    name: PropTypes.string,
+    range: PropTypes.string,
+    standardDev: PropTypes.number,
+    total: PropTypes.number,
+  }),
+  durationCat: PropTypes.string,
+};

@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { statisticsTypes } from "../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,
@@ -35,7 +37,7 @@ export const TimelineTable = (props) => {
               return (
                 <Ripple key={profile}>
                   <DataTableHeadCell
-                    isNumeric 
+                    isNumeric
                     className={"profile-title title-" + letters[index]}
                     sort={1}
                     onClick={() => {
@@ -75,3 +77,17 @@ export const TimelineTable = (props) => {
 };
 
 export default TimelineTable;
+
+TimelineTable.propTypes = {
+  monthData: PropTypes.shape({
+    gbLaunch: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
+    icDate: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
+  }),
+  months: PropTypes.shape({
+    gbLaunch: PropTypes.arrayOf(PropTypes.string),
+    icDate: PropTypes.arrayOf(PropTypes.string),
+  }),
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setFocus: PropTypes.func,
+  statistics: PropTypes.shape(statisticsTypes),
+};

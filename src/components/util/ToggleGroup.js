@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Button } from "@rmwc/button";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ToggleGroup.scss";
@@ -46,4 +47,28 @@ export const ToggleGroupButton = (props) => {
       onClick={props.onClick}
     />
   );
+};
+
+ToggleGroup.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.node,
+};
+
+ToggleGroupButton.propTypes = {
+  className: PropTypes.string,
+  icon: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      strategy: PropTypes.string.isRequired,
+      icon: PropTypes.node.isRequired,
+    }),
+  ]),
+  label: PropTypes.string,
+  onClick: PropTypes.func,
+  selected: PropTypes.bool,
+  tooltip: PropTypes.shape({
+    enterDelay: PropTypes.number,
+    align: PropTypes.string,
+    content: PropTypes.node.isRequired,
+  }),
 };

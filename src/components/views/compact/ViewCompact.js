@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { setTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { ElementCompact } from "./ElementCompact";
@@ -103,7 +105,6 @@ export const ViewCompact = (props) => {
               set={set}
               title={title}
               subtitle={subtitle}
-              image={set.image}
               details={props.details}
               closeDetails={props.closeDetails}
               link={set.details}
@@ -117,3 +118,11 @@ export const ViewCompact = (props) => {
   );
 };
 export default ViewCompact;
+
+ViewCompact.propTypes = {
+  closeDetails: PropTypes.func,
+  detailset: PropTypes.shape(setTypes()),
+  details: PropTypes.func,
+  page: PropTypes.string,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+};

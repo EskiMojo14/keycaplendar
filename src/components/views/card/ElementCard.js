@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import { userTypes, setTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -52,11 +54,7 @@ export const ElementCard = (props) => {
     </Typography>
   ) : null;
   const linkButton = props.user.isEditor ? (
-    <CardActionButton label="Link"
-    tag="a"
-    href={props.link}
-    target="_blank"
-    rel="noopener noreferrer" />
+    <CardActionButton label="Link" tag="a" href={props.link} target="_blank" rel="noopener noreferrer" />
   ) : null;
   const linkIcon = !props.user.isEditor ? (
     <CardActionIcon
@@ -138,9 +136,7 @@ export const ElementCard = (props) => {
           </div>
         </CardPrimaryAction>
         <CardActions className="hover-button">
-          <CardActionButtons>
-            {linkButton}
-          </CardActionButtons>
+          <CardActionButtons>{linkButton}</CardActionButtons>
           <CardActionIcons>
             {linkIcon}
             {editButton}
@@ -153,3 +149,22 @@ export const ElementCard = (props) => {
 };
 
 export default ElementCard;
+
+ElementCard.propTypes = {
+  closeDetails: PropTypes.func,
+  daysLeft: PropTypes.number,
+  delete: PropTypes.func,
+  designer: PropTypes.string,
+  details: PropTypes.func,
+  edit: PropTypes.func,
+  image: PropTypes.string,
+  link: PropTypes.string,
+  live: PropTypes.bool,
+  page: PropTypes.string,
+  selected: PropTypes.bool,
+  set: PropTypes.shape(setTypes()),
+  subtitle: PropTypes.string,
+  thisWeek: PropTypes.bool,
+  title: PropTypes.string,
+  user: PropTypes.shape(userTypes),
+};

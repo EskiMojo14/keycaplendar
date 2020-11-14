@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { whitelistTypes } from "../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -86,9 +88,9 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
-  changeWhitelist = (prop) => {
+  setWhitelist = (prop) => {
     let whitelist = [];
     Object.keys(this.state[prop]).forEach((key) => {
       const value = this.state[prop][key];
@@ -106,7 +108,7 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
   uncheckAll = (prop) => {
     const propCopy = this.state[prop];
@@ -116,7 +118,7 @@ export class DrawerFilter extends React.Component {
     this.setState({
       [prop]: propCopy,
     });
-    this.changeWhitelist(prop);
+    this.setWhitelist(prop);
   };
   render() {
     const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
@@ -268,3 +270,14 @@ export class DrawerFilter extends React.Component {
 }
 
 export default DrawerFilter;
+
+DrawerFilter.propTypes = {
+  close: PropTypes.func,
+  device: PropTypes.string,
+  open: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setWhitelist: PropTypes.func,
+  vendors: PropTypes.arrayOf(PropTypes.string),
+  view: PropTypes.string,
+  whitelist: PropTypes.shape(whitelistTypes),
+};

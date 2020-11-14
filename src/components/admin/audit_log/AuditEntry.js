@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { actionTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -375,3 +377,12 @@ export const AuditEntry = (props) => {
 };
 
 export default AuditEntry;
+
+AuditEntry.propTypes = {
+  action: PropTypes.shape(actionTypes),
+  openDeleteDialog: PropTypes.func,
+  properties: PropTypes.arrayOf(PropTypes.string),
+  timestamp: PropTypes.shape({
+    format: PropTypes.func.isRequired,
+  }),
+};

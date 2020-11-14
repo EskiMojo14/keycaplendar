@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
@@ -83,3 +84,25 @@ export const AutocompleteMobile = (props) => {
 };
 
 export default Autocomplete;
+
+Autocomplete.propTypes = {
+  array: PropTypes.arrayOf(PropTypes.string),
+  minChars: PropTypes.number,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  open: PropTypes.bool,
+  prop: PropTypes.string,
+  query: PropTypes.string,
+  select: PropTypes.func,
+};
+
+AutocompleteMobile.propTypes = {
+  array: PropTypes.arrayOf(PropTypes.string),
+  minChars: PropTypes.number,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  open: PropTypes.bool,
+  prop: PropTypes.string,
+  query: PropTypes.string,
+  select: PropTypes.func,
+};

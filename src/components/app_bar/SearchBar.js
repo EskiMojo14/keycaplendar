@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { setTypes } from "../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -433,3 +435,26 @@ export class SearchAppBar extends React.Component {
 }
 
 export default SearchBarPersistent;
+
+SearchBarPersistent.propTypes = {
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+};
+
+SearchBarModal.propTypes = {
+  close: PropTypes.func,
+  open: PropTypes.bool,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+};
+
+SearchAppBar.propTypes = {
+  close: PropTypes.func,
+  open: PropTypes.bool,
+  openBar: PropTypes.func,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+};

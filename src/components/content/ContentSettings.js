@@ -1,5 +1,7 @@
 import React from "react";
 import firebase from "../firebase";
+import PropTypes from "prop-types";
+import { userTypes, queueTypes } from "../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -34,7 +36,7 @@ export const ContentSettings = (props) => {
   };
   const setApplyTheme = (e) => {
     const applyThemeOptions = ["manual", "timed", "system"];
-    props.changeApplyTheme(applyThemeOptions[e.detail.index]);
+    props.setApplyTheme(applyThemeOptions[e.detail.index]);
   };
   const userBadge =
     props.user.isAdmin || props.user.isEditor || props.user.isDesigner ? (
@@ -97,7 +99,7 @@ export const ContentSettings = (props) => {
     </div>
   ) : null;
   const bottomNav =
-    props.device === "mobile" && props.changeBottomNav ? (
+    props.device === "mobile" && props.setBottomNav ? (
       <div className="settings-group">
         <div className="subheader">
           <Typography use="caption">UI</Typography>
@@ -106,7 +108,7 @@ export const ContentSettings = (props) => {
           <Switch
             label="Bottom navigation"
             checked={props.bottomNav}
-            onChange={(evt) => props.changeBottomNav(evt.currentTarget.checked)}
+            onChange={(evt) => props.setBottomNav(evt.currentTarget.checked)}
           />
         </Card>
       </div>
@@ -302,4 +304,27 @@ export const ContentSettings = (props) => {
       </div>
     </div>
   );
+};
+
+ContentSettings.propTypes = {
+  applyTheme: PropTypes.string,
+  bottomNav: PropTypes.bool,
+  darkTheme: PropTypes.string,
+  density: PropTypes.string,
+  device: PropTypes.string,
+  fromTimeTheme: PropTypes.string,
+  lightTheme: PropTypes.string,
+  manualTheme: PropTypes.bool,
+  setApplyTheme: PropTypes.func,
+  setBottomNav: PropTypes.func,
+  setDarkTheme: PropTypes.func,
+  setDensity: PropTypes.func,
+  setFromTimeTheme: PropTypes.func,
+  setLightTheme: PropTypes.func,
+  setManualTheme: PropTypes.func,
+  setToTimeTheme: PropTypes.func,
+  setUser: PropTypes.func,
+  snackbarQueue: PropTypes.shape(queueTypes),
+  toTimeTheme: PropTypes.string,
+  user: PropTypes.shape(userTypes),
 };

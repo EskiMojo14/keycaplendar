@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import firebase from "../firebase";
+import { userTypes, queueTypes } from "../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,
@@ -278,3 +280,16 @@ export class ContentUsers extends React.Component {
   }
 }
 export default ContentUsers;
+
+ContentUsers.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  device: PropTypes.string,
+  loading: PropTypes.bool,
+  reverseSort: PropTypes.bool,
+  setSort: PropTypes.func,
+  snackbarQueue: PropTypes.shape(queueTypes),
+  sort: PropTypes.string,
+  toggleLoading: PropTypes.func,
+  user: PropTypes.shape(userTypes),
+  view: PropTypes.string,
+};

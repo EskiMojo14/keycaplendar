@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { statisticsTypes } from "../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
@@ -25,7 +27,7 @@ export class DialogStatistics extends React.Component {
       statistics: stats,
     });
   };
-  changeStatistics = () => {
+  setStatistics = () => {
     if (
       this.props.statistics[this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab] !==
       this.state.statistics
@@ -82,7 +84,7 @@ export class DialogStatistics extends React.Component {
         </DialogContent>
         <DialogActions>
           <DialogButton action="close">Cancel</DialogButton>
-          <DialogButton action="accept" onClick={this.changeStatistics} isDefaultAction>
+          <DialogButton action="accept" onClick={this.setStatistics} isDefaultAction>
             Confirm
           </DialogButton>
         </DialogActions>
@@ -92,3 +94,11 @@ export class DialogStatistics extends React.Component {
 }
 
 export default DialogStatistics;
+
+DialogStatistics.propTypes = {
+  onClose: PropTypes.func,
+  open: PropTypes.bool,
+  setStatistics: PropTypes.func,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsTab: PropTypes.string,
+};

@@ -1,8 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
 import { create, all } from "mathjs";
+import { setTypes, statisticsTypes, statisticsSortTypes } from "../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";
@@ -860,3 +862,15 @@ export class ContentStatistics extends React.Component {
 }
 
 export default ContentStatistics;
+
+ContentStatistics.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  navOpen: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setStatisticsSort: PropTypes.func,
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  statisticsTab: PropTypes.string,
+};
