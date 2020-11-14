@@ -47,6 +47,6 @@ SnackbarDeleted.propTypes = {
   close: PropTypes.func,
   getData: PropTypes.func,
   open: PropTypes.bool,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
 };

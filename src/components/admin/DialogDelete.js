@@ -48,7 +48,7 @@ DialogDelete.propTypes = {
   getData: PropTypes.func,
   open: PropTypes.bool,
   openSnackbar: PropTypes.func,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
   user: PropTypes.shape(userTypes),
 };

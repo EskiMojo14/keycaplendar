@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { queueTypes } from "../util/propTypeTemplates";
+import { queueTypes, actionTypes } from "../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";
@@ -53,7 +53,7 @@ export class ContentAudit extends React.Component {
 export default ContentAudit;
 
 ContentAudit.propTypes = {
-  actions: PropTypes.arrayOf(PropTypes.object),
+  actions: PropTypes.arrayOf(PropTypes.shape(actionTypes)),
   getActions: PropTypes.func,
   loading: PropTypes.bool,
   openDeleteDialog: PropTypes.func,

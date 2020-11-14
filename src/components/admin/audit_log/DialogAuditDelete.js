@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { actionTypes } from "../../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 export const DialogAuditDelete = (props) => {
@@ -29,7 +30,7 @@ export const DialogAuditDelete = (props) => {
 
 DialogAuditDelete.propTypes = {
   close: PropTypes.func,
-  deleteAction: PropTypes.object,
+  deleteAction: PropTypes.shape(actionTypes),
   deleteActionFn: PropTypes.func,
   open: PropTypes.bool,
 };

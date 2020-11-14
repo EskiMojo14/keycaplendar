@@ -439,7 +439,7 @@ export default SearchBarPersistent;
 SearchBarPersistent.propTypes = {
   search: PropTypes.string,
   setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
 };
 
 SearchBarModal.propTypes = {
@@ -447,7 +447,7 @@ SearchBarModal.propTypes = {
   open: PropTypes.bool,
   search: PropTypes.string,
   setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
 };
 
 SearchAppBar.propTypes = {
@@ -456,5 +456,5 @@ SearchAppBar.propTypes = {
   openBar: PropTypes.func,
   search: PropTypes.string,
   setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
 };

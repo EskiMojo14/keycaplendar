@@ -84,7 +84,7 @@ ElementCompact.propTypes = {
   live: PropTypes.bool,
   page: PropTypes.string,
   selected: PropTypes.bool,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   subtitle: PropTypes.string,
   title: PropTypes.string,
 };

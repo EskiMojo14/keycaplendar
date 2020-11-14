@@ -121,8 +121,8 @@ export default ViewCompact;
 
 ViewCompact.propTypes = {
   closeDetails: PropTypes.func,
-  detailset: PropTypes.shape(setTypes),
+  detailset: PropTypes.shape(setTypes()),
   details: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
 };

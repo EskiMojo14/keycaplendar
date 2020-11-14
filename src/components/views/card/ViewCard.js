@@ -123,10 +123,10 @@ export default ViewCard;
 ViewCard.propTypes = {
   closeDetails: PropTypes.func,
   delete: PropTypes.func,
-  detailset: PropTypes.shape(setTypes),
+  detailset: PropTypes.shape(setTypes()),
   details: PropTypes.func,
   edit: PropTypes.func,
   page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   user: PropTypes.shape(userTypes),
 };

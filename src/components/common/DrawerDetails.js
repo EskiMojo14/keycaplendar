@@ -368,7 +368,7 @@ DrawerDetails.propTypes = {
   open: PropTypes.bool,
   openSales: PropTypes.func,
   search: PropTypes.string,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   setSearch: PropTypes.func,
   toggleLichTheme: PropTypes.func,
   user: PropTypes.shape(userTypes),

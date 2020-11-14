@@ -90,7 +90,17 @@ export class DesktopContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userView: "table",
       userSort: "nickname",
@@ -273,7 +283,15 @@ export class DesktopContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -723,7 +741,17 @@ export class TabletContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userSort: "nickname",
       userReverseSort: false,
@@ -882,7 +910,15 @@ export class TabletContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -1296,7 +1332,17 @@ export class MobileContent extends React.Component {
       auditLength: 50,
       auditFilterDrawerOpen: false,
       auditDeleteDialogOpen: false,
-      auditDeleteAction: { changelogId: "" },
+      auditDeleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
       auditUsers: [{ label: "All", value: "all" }],
       userSort: "nickname",
       userReverseSort: false,
@@ -1467,7 +1513,15 @@ export class MobileContent extends React.Component {
     setTimeout(() => {
       this.setState({
         auditDeleteAction: {
+          action: "",
           changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
         },
       });
     }, 100);
@@ -1910,7 +1964,7 @@ export default DesktopContent;
 DesktopContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allSets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  allSets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   className: PropTypes.string,
@@ -1944,7 +1998,7 @@ DesktopContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),
@@ -1961,7 +2015,7 @@ DesktopContent.propTypes = {
 TabletContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   className: PropTypes.string,
@@ -1995,7 +2049,7 @@ TabletContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),
@@ -2012,7 +2066,7 @@ TabletContent.propTypes = {
 MobileContent.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allRegions: PropTypes.arrayOf(PropTypes.string),
-  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  allsets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   allVendors: PropTypes.arrayOf(PropTypes.string),
   applyTheme: PropTypes.string,
   bottomNav: PropTypes.bool,
@@ -2048,7 +2102,7 @@ MobileContent.propTypes = {
   setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   statistics: PropTypes.shape(statisticsTypes),

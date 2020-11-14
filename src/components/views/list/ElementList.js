@@ -95,7 +95,7 @@ ElementList.propTypes = {
   live: PropTypes.bool,
   page: PropTypes.string,
   selected: PropTypes.bool,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   subtitle: PropTypes.string,
   thisWeek: PropTypes.bool,
   title: PropTypes.string,

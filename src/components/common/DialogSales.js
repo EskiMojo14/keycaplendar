@@ -26,5 +26,5 @@ export default DialogSales;
 DialogSales.propTypes = {
   close: PropTypes.func,
   open: PropTypes.bool,
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
 };

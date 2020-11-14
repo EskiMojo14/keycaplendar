@@ -869,7 +869,7 @@ ContentStatistics.propTypes = {
   navOpen: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
   setStatisticsSort: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   statistics: PropTypes.shape(statisticsTypes),
   statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,

@@ -1609,7 +1609,7 @@ DrawerEdit.propTypes = {
   getData: PropTypes.func,
   open: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
-  set: PropTypes.shape(setTypes),
+  set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
   user: PropTypes.shape(userTypes),
 };
