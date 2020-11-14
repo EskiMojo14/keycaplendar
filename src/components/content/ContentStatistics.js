@@ -28,12 +28,14 @@ export class ContentStatistics extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      months: { icDate: [], gbLaunch: [] },
-      monthData: { icDate: {}, gbLaunch: {} },
-      countData: { icDate: [], gbLaunch: [] },
-      profileCount: { icDate: {}, gbLaunch: {} },
-      profileCountData: { icDate: [], gbLaunch: [] },
-      profileChartType: "bar",
+      timelineData: {
+        months: { icDate: [], gbLaunch: [] },
+        monthData: { icDate: {}, gbLaunch: {} },
+        countData: { icDate: [], gbLaunch: [] },
+        profileCount: { icDate: {}, gbLaunch: {} },
+        profileCountData: { icDate: [], gbLaunch: [] },
+        profileChartType: "bar",
+      },
       statusData: {
         profile: {
           names: [],
@@ -100,22 +102,18 @@ export class ContentStatistics extends React.Component {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     //timeline
-    let months = { icDate: [], gbLaunch: [] };
-    let monthData = { icDate: {}, gbLaunch: {} };
-    let countData = { icDate: [], gbLaunch: [] };
-    let profileCount = { icDate: {}, gbLaunch: {} };
-    let profileCountData = { icDate: [], gbLaunch: [] };
+    let timelineData = this.state.timelineData;
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
         if (set[property] && !set[property].includes("Q")) {
           const month = moment(set[property]).format("YYYY-MM");
-          if (!months[property].includes(month)) {
-            months[property].push(month);
+          if (!timelineData.months[property].includes(month)) {
+            timelineData.months[property].push(month);
           }
         }
       });
-      months[property].sort(function (a, b) {
+      timelineData.months[property].sort(function (a, b) {
         if (a < b) {
           return -1;
         }
@@ -127,11 +125,15 @@ export class ContentStatistics extends React.Component {
       const monthDiff = (dateFrom, dateTo) => {
         return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
       };
-      const length = monthDiff(moment(months[property][0]), moment(months[property][months[property].length - 1])) + 1;
+      const length =
+        monthDiff(
+          moment(timelineData.months[property][0]),
+          moment(timelineData.months[property][timelineData.months[property].length - 1])
+        ) + 1;
       let i;
       let allMonths = [];
       for (i = 0; i < length; i++) {
-        allMonths.push(moment(months[property][0]).add(i, "M").format("YYYY-MM"));
+        allMonths.push(moment(timelineData.months[property][0]).add(i, "M").format("YYYY-MM"));
       }
       allMonths.sort(function (a, b) {
         if (a < b) {
@@ -142,14 +144,14 @@ export class ContentStatistics extends React.Component {
         }
         return 0;
       });
-      months[property] = [];
+      timelineData.months[property] = [];
       allMonths.forEach((month) => {
-        months[property].push(moment(month).format("MMM YY"));
+        timelineData.months[property].push(moment(month).format("MMM YY"));
       });
       this.props.profiles.forEach((profile) => {
-        profileCount[property][camelize(profile)] = [];
+        timelineData.profileCount[property][camelize(profile)] = [];
       });
-      months[property].forEach((month) => {
+      timelineData.months[property].forEach((month) => {
         let filteredSets = this.props.sets.filter((set) => {
           if (set[property] && !set[property].includes("Q")) {
             const setMonth = moment(set[property]).format("MMM YY");
@@ -158,19 +160,19 @@ export class ContentStatistics extends React.Component {
             return false;
           }
         });
-        monthData[property][month] = {};
-        monthData[property][month].count = filteredSets.length;
-        countData[property].push(filteredSets.length);
+        timelineData.monthData[property][month] = {};
+        timelineData.monthData[property][month].count = filteredSets.length;
+        timelineData.countData[property].push(filteredSets.length);
         this.props.profiles.forEach((profile) => {
           const profileSets = filteredSets.filter((set) => {
             return set.profile === profile;
           });
-          profileCount[property][camelize(profile)].push(profileSets.length);
-          monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
+          timelineData.profileCount[property][camelize(profile)].push(profileSets.length);
+          timelineData.monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
         });
       });
       this.props.profiles.forEach((profile) => {
-        profileCountData[property].push(profileCount[property][camelize(profile)]);
+        timelineData.profileCountData[property].push(timelineData.profileCount[property][camelize(profile)]);
       });
     });
     //status
@@ -568,11 +570,7 @@ export class ContentStatistics extends React.Component {
       });
     });
     this.setState({
-      months: months,
-      monthData: monthData,
-      countData: countData,
-      profileCount: profileCount,
-      profileCountData: profileCountData,
+      timelineData: timelineData,
       statusData: statusData,
       shippedData: shippedData,
       durationData: durationData,
@@ -648,7 +646,7 @@ export class ContentStatistics extends React.Component {
     });
   };
   setProfileChartType = (type) => {
-    this.setState({ profileChartType: type });
+    this.setState({ timelineData: { ...this.state.timelineData, profileChartType: type } });
   };
   setFocus = (letter) => {
     if (letter === this.state.focused) {
@@ -672,8 +670,8 @@ export class ContentStatistics extends React.Component {
   }
   render() {
     const countChartData = {
-      labels: this.state.months[this.props.statistics.timeline],
-      series: [this.state.countData[this.props.statistics.timeline]],
+      labels: this.state.timelineData.months[this.props.statistics.timeline],
+      series: [this.state.timelineData.countData[this.props.statistics.timeline]],
     };
     const countChartOptions = {
       showArea: true,
@@ -712,8 +710,8 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: this.state.months[this.props.statistics.timeline],
-      series: this.state.profileCountData[this.props.statistics.timeline],
+      labels: this.state.timelineData.months[this.props.statistics.timeline],
+      series: this.state.timelineData.profileCountData[this.props.statistics.timeline],
     };
 
     const profileChartOptions = {
@@ -753,7 +751,7 @@ export class ContentStatistics extends React.Component {
       ],
     };
     const barGraph =
-      this.state.profileChartType === "bar" ? (
+      this.state.timelineData.profileChartType === "bar" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -762,7 +760,7 @@ export class ContentStatistics extends React.Component {
         />
       ) : null;
     const lineGraph =
-      this.state.profileChartType === "line" ? (
+      this.state.timelineData.profileChartType === "line" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -806,7 +804,7 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  selected={this.state.profileChartType === "bar"}
+                  selected={this.state.timelineData.profileChartType === "bar"}
                   onClick={() => {
                     this.setProfileChartType("bar");
                   }}
@@ -821,7 +819,7 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  selected={this.state.profileChartType === "line"}
+                  selected={this.state.timelineData.profileChartType === "line"}
                   onClick={() => {
                     this.setProfileChartType("line");
                   }}
@@ -839,9 +837,9 @@ export class ContentStatistics extends React.Component {
             <TimelineTable
               profiles={this.props.profiles}
               setFocus={this.setFocus}
-              months={this.state.months}
+              months={this.state.timelineData.months}
               statistics={this.props.statistics}
-              monthData={this.state.monthData}
+              monthData={this.state.timelineData.monthData}
             />
           </Card>
         </div>
