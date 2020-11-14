@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ElementCard } from "./ElementCard";
 import "./ViewCard.scss";
 
@@ -117,3 +118,14 @@ export const ViewCard = (props) => {
   );
 };
 export default ViewCard;
+
+ViewCard.propTypes = {
+  closeDetails: PropTypes.func,
+  delete: PropTypes.func,
+  detailSet: PropTypes.object,
+  details: PropTypes.func,
+  edit: PropTypes.func,
+  page: PropTypes.string,
+  sets: PropTypes.array,
+  user: PropTypes.object,
+};

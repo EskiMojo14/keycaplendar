@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
@@ -83,3 +84,18 @@ export const ElementList = (props) => {
 };
 
 export default ElementList;
+
+ElementList.propTypes = {
+  closeDetails: PropTypes.func,
+  daysLeft: PropTypes.number,
+  details: PropTypes.func,
+  image: PropTypes.string,
+  link: PropTypes.string,
+  live: PropTypes.bool,
+  page: PropTypes.string,
+  selected: PropTypes.bool,
+  set: PropTypes.object,
+  subtitle: PropTypes.string,
+  thisWeek: PropTypes.bool,
+  title: PropTypes.string,
+};

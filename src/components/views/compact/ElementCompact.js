@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemGraphic } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -74,3 +75,15 @@ export const ElementCompact = (props) => {
 };
 
 export default ElementCompact;
+
+ElementCompact.propTypes = {
+  closeDetails: PropTypes.func,
+  details: PropTypes.func,
+  link: PropTypes.string,
+  live: PropTypes.bool,
+  page: PropTypes.string,
+  selected: PropTypes.bool,
+  set: PropTypes.object,
+  subtitle: PropTypes.string,
+  title: PropTypes.string,
+};

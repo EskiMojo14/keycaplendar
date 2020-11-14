@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { Typography } from "@rmwc/typography";
@@ -53,11 +53,7 @@ export const ElementCard = (props) => {
     </Typography>
   ) : null;
   const linkButton = props.user.isEditor ? (
-    <CardActionButton label="Link"
-    tag="a"
-    href={props.link}
-    target="_blank"
-    rel="noopener noreferrer" />
+    <CardActionButton label="Link" tag="a" href={props.link} target="_blank" rel="noopener noreferrer" />
   ) : null;
   const linkIcon = !props.user.isEditor ? (
     <CardActionIcon
@@ -139,9 +135,7 @@ export const ElementCard = (props) => {
           </div>
         </CardPrimaryAction>
         <CardActions className="hover-button">
-          <CardActionButtons>
-            {linkButton}
-          </CardActionButtons>
+          <CardActionButtons>{linkButton}</CardActionButtons>
           <CardActionIcons>
             {linkIcon}
             {editButton}
@@ -172,4 +166,4 @@ ElementCard.propTypes = {
   thisWeek: PropTypes.bool,
   title: PropTypes.string,
   user: PropTypes.object,
-}
+};

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import {
@@ -96,3 +97,18 @@ export const ElementImage = (props) => {
 };
 
 export default ElementImage;
+
+ElementImage.propTypes = {
+  closeDetails: PropTypes.func,
+  daysLeft: PropTypes.number,
+  details: PropTypes.func,
+  image: PropTypes.string,
+  link: PropTypes.string,
+  live: PropTypes.bool,
+  page: PropTypes.string,
+  selected: PropTypes.bool,
+  set: PropTypes.object,
+  subtitle: PropTypes.string,
+  thisWeek: PropTypes.bool,
+  title: PropTypes.string,
+};

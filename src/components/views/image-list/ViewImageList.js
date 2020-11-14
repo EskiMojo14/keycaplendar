@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 
@@ -117,3 +118,11 @@ export const ViewImageList = (props) => {
   );
 };
 export default ViewImageList;
+
+ViewImageList.propTypes = {
+  closeDetails: PropTypes.func,
+  detailSet: PropTypes.object,
+  details: PropTypes.func,
+  page: PropTypes.string,
+  sets: PropTypes.array,
+};
