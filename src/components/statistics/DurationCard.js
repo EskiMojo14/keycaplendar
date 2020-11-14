@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import { Card } from "@rmwc/card";
@@ -116,3 +117,8 @@ export const DurationCard = (props) => {
 };
 
 export default DurationCard;
+
+DurationCard.propTypes = {
+  data: PropTypes.array,
+  durationCat: PropTypes.string,
+};

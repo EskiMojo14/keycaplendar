@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   DataTable,
   DataTableContent,
@@ -35,7 +36,7 @@ export const TimelineTable = (props) => {
               return (
                 <Ripple key={profile}>
                   <DataTableHeadCell
-                    isNumeric 
+                    isNumeric
                     className={"profile-title title-" + letters[index]}
                     sort={1}
                     onClick={() => {
@@ -75,3 +76,11 @@ export const TimelineTable = (props) => {
 };
 
 export default TimelineTable;
+
+TimelineTable.propTypes = {
+  monthData: PropTypes.object,
+  months: PropTypes.object,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setFocus: PropTypes.func,
+  statistics: PropTypes.object,
+};

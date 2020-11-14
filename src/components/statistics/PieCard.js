@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -126,3 +127,12 @@ export const ShippedCard = (props) => {
     </Card>
   );
 };
+
+StatusCard.propTypes = {
+  data: PropTypes.array,
+};
+
+ShippedCard.propTypes = {
+  data: PropTypes.array,
+};
+
