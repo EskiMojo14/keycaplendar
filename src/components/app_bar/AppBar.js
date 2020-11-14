@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { setTypes } from "../util/propTypeTemplates";
+import { setTypes, statisticsTypes, statisticsSortTypes } from "../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
@@ -1794,8 +1794,8 @@ DesktopAppBar.propTypes = {
   setView: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   toggleAuditFilter: PropTypes.func,
   toggleFilter: PropTypes.func,
@@ -1822,8 +1822,8 @@ TabletAppBar.propTypes = {
   setView: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   userSort: PropTypes.string,
   view: PropTypes.string,
@@ -1847,8 +1847,8 @@ MobileAppBar.propTypes = {
   setView: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   userSort: PropTypes.string,
   view: PropTypes.string,
@@ -1872,8 +1872,8 @@ BottomAppBar.propTypes = {
   setView: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   userSort: PropTypes.string,
   view: PropTypes.string,

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { userTypes, setTypes, whitelistTypes } from "./util/propTypeTemplates";
+import { userTypes, setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes } from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -1940,8 +1940,8 @@ DesktopContent.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,
@@ -1991,8 +1991,8 @@ TabletContent.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,
@@ -2044,8 +2044,8 @@ MobileContent.propTypes = {
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
   snackbarQueue: PropTypes.object,
   sort: PropTypes.string,
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,

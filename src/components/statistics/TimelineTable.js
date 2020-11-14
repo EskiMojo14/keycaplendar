@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { statisticsTypes } from "../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,
@@ -82,5 +83,5 @@ TimelineTable.propTypes = {
   months: PropTypes.object,
   profiles: PropTypes.arrayOf(PropTypes.string),
   setFocus: PropTypes.func,
-  statistics: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
 };

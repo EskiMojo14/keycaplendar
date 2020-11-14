@@ -4,7 +4,7 @@ import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
 import { create, all } from "mathjs";
-import { setTypes } from "../util/propTypeTemplates";
+import { setTypes, statisticsTypes, statisticsSortTypes } from "../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";
@@ -870,7 +870,7 @@ ContentStatistics.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.string),
   setStatisticsSort: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes)),
-  statistics: PropTypes.object,
-  statisticsSort: PropTypes.object,
+  statistics: PropTypes.shape(statisticsTypes),
+  statisticsSort: PropTypes.shape(statisticsSortTypes),
   statisticsTab: PropTypes.string,
 };

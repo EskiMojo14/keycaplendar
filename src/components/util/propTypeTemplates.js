@@ -41,3 +41,17 @@ export const whitelistTypes = {
   vendorMode: PropTypes.string,
   vendors: PropTypes.arrayOf(PropTypes.string),
 };
+
+export const statisticsTypes = {
+  durationCat: PropTypes.string.isRequired,
+  durationGroup: PropTypes.string.isRequired,
+  shipped: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  timeline: PropTypes.string.isRequired,
+};
+
+export const statisticsSortTypes = {
+  duration: PropTypes.string.isRequired,
+  shipped: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+};
