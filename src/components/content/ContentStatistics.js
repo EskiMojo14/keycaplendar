@@ -283,18 +283,18 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && isPostGb;
           }
         });
-        statusData[prop].data.push([
-          icSets.length,
-          preGbSets.length,
-          liveGbSets.length,
-          postGbSets.length,
-          icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
-          name,
-        ]);
+        statusData[prop].data.push({
+          name: name,
+          ic: icSets.length,
+          preGb: preGbSets.length,
+          liveGb: liveGbSets.length,
+          postGb: postGbSets.length,
+          total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
+        });
       });
       statusData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.status === "total" ? a[4] : a[5].toLowerCase();
-        var y = this.props.statisticsSort.status === "total" ? b[4] : a[5].toLowerCase();
+        var x = this.props.statisticsSort.status === "total" ? a.total : a.name.toLowerCase();
+        var y = this.props.statisticsSort.status === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
           return this.props.statisticsSort.status === "total" ? 1 : -1;
         }
@@ -381,16 +381,16 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && set.shipped !== true;
           }
         });
-        shippedData[prop].data.push([
-          shippedSets.length,
-          unshippedSets.length,
-          shippedSets.length + unshippedSets.length,
-          name,
-        ]);
+        shippedData[prop].data.push({
+          name: name,
+          shipped: shippedSets.length,
+          unshipped: unshippedSets.length,
+          total: shippedSets.length + unshippedSets.length,
+        });
       });
       shippedData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.shipped === "total" ? a[2] : a[3].toLowerCase();
-        var y = this.props.statisticsSort.shipped === "total" ? b[2] : a[3].toLowerCase();
+        var x = this.props.statisticsSort.shipped === "total" ? a.total : a.name.toLowerCase();
+        var y = this.props.statisticsSort.shipped === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
           return this.props.statisticsSort.shipped === "total" ? 1 : -1;
         }
@@ -511,19 +511,19 @@ export class ContentStatistics extends React.Component {
               });
             Object.keys(durationData[property]).forEach((prop) => {
               durationData[property][prop].data.sort((a, b) => {
-                if (a[0] === "All" || b[0] === "All") {
+                if (a.name === "All" || b.name === "All") {
                   return a[0] === "all";
                 }
                 var x =
                   this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                    ? a[0].toLowerCase()
-                    : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                    ? a.name.toLowerCase()
+                    : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
                 var y =
                   this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                    ? b[0].toLowerCase()
-                    : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
-                var c = a[0].toLowerCase();
-                var d = b[0].toLowerCase();
+                    ? b.name.toLowerCase()
+                    : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+                var c = a.name.toLowerCase();
+                var d = b.name.toLowerCase();
                 if (x < y) {
                   return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
                 }
@@ -556,16 +556,16 @@ export class ContentStatistics extends React.Component {
           });
           const range = math.max(data) - math.min(data);
           const rangeDisplay = math.min(data) + "-" + math.max(data) + " (" + range + ")";
-          durationData[property][prop].data.push([
-            name,
-            data.length,
-            math.round(math.mean(data), 2),
-            math.median(data),
-            math.mode(data),
-            rangeDisplay,
-            math.round(math.std(data), 2),
-            [labels, count],
-          ]);
+          durationData[property][prop].data.push({
+            name: name,
+            total: data.length,
+            mean: math.round(math.mean(data), 2),
+            median: math.median(data),
+            mode: math.mode(data),
+            range: rangeDisplay,
+            standardDev: math.round(math.std(data), 2),
+            chartData: [labels, count],
+          });
         });
       });
     });
@@ -583,19 +583,19 @@ export class ContentStatistics extends React.Component {
       Object.keys(data).forEach((property) => {
         Object.keys(data[property]).forEach((prop) => {
           data[property][prop].data.sort((a, b) => {
-            if (a[0] === "All" || b[0] === "All") {
-              return a[0] === "all";
+            if (a.name === "All" || b.name === "All") {
+              return a.name === "all";
             }
             var x =
               this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                ? a[0].toLowerCase()
-                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                ? a.name.toLowerCase()
+                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
             var y =
               this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                ? b[0].toLowerCase()
-                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
-            var c = a[0].toLowerCase();
-            var d = b[0].toLowerCase();
+                ? b.name.toLowerCase()
+                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+            var c = a.name.toLowerCase();
+            var d = b.name.toLowerCase();
             if (x < y) {
               return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
             }
@@ -615,16 +615,10 @@ export class ContentStatistics extends React.Component {
     } else {
       Object.keys(data).forEach((prop) => {
         data[prop].data.sort((a, b) => {
-          var x =
-            this.props.statisticsSort[this.props.statisticsTab] === "total"
-              ? a[this.props.statisticsTab === "status" ? 4 : 2]
-              : a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var y =
-            this.props.statisticsSort[this.props.statisticsTab] === "total"
-              ? b[this.props.statisticsTab === "status" ? 4 : 2]
-              : b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var c = a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var d = b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a.total : a.name.toLowerCase();
+          var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b.total : b.name.toLowerCase();
+          var c = a.name.toLowerCase();
+          var d = b.name.toLowerCase();
           if (x < y) {
             return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
           }
@@ -845,18 +839,18 @@ export class ContentStatistics extends React.Component {
         </div>
         <div className="stats-tab stats-grid status">
           {this.state.statusData[this.props.statistics.status].data.map((data) => {
-            return <StatusCard key={data[5]} data={data} />;
+            return <StatusCard key={data.name} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
           {this.state.shippedData[this.props.statistics.shipped].data.map((data) => {
-            return <ShippedCard key={data[3]} data={data} />;
+            return <ShippedCard key={data.name} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid duration">
           {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
             (data) => {
-              return <DurationCard key={data[0]} data={data} durationCat={this.props.statistics.durationCat} />;
+              return <DurationCard key={data.name} data={data} durationCat={this.props.statistics.durationCat} />;
             }
           )}
         </div>

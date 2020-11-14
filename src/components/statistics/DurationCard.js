@@ -16,13 +16,13 @@ import "./DurationCard.scss";
 
 export const DurationCard = (props) => {
   const chart =
-    props.data[0] === "All" ? (
+    props.data.name === "All" ? (
       <div className="duration-chart-container">
         <ChartistGraph
-          className={props.data[0] === "All" ? "ct-double-octave" : "ct-octave"}
+          className={props.data.name === "All" ? "ct-double-octave" : "ct-octave"}
           data={{
-            series: [props.data[7][1]],
-            labels: props.data[7][0],
+            series: [props.data.chartData[1]],
+            labels: props.data.chartData[0],
           }}
           options={{
             showArea: true,
@@ -63,12 +63,12 @@ export const DurationCard = (props) => {
       </div>
     ) : null;
   return (
-    <Card className={"duration-card" + (props.data[0] === "All" ? " full-span" : "")}>
+    <Card className={"duration-card" + (props.data.name === "All" ? " full-span" : "")}>
       <Typography use="headline5" tag="h1">
-        {props.data[0]}
+        {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data[1] + " set" + (props.data[1] > 1 ? "s" : "")}
+        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
       </Typography>
       <div className="duration-container">
         {chart}
@@ -86,25 +86,25 @@ export const DurationCard = (props) => {
               <DataTableBody>
                 <DataTableRow>
                   <DataTableCell>Mean</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[2]}</DataTableCell>
+                  <DataTableCell alignEnd>{props.data.mean}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Median</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[3]}</DataTableCell>
+                  <DataTableCell alignEnd>{props.data.median}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Mode</DataTableCell>
                   <DataTableCell alignEnd>
-                    {props.data[4].length === props.data[1] ? "None" : props.data[4].join(", ")}
+                    {props.data.mode.length === props.data.total ? "None" : props.data.mode.join(", ")}
                   </DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Range</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[5]}</DataTableCell>
+                  <DataTableCell alignEnd>{props.data.range}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Standard deviation</DataTableCell>
-                  <DataTableCell alignEnd>{props.data[6]}</DataTableCell>
+                  <DataTableCell alignEnd>{props.data.standardDev}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
