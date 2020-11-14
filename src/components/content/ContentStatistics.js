@@ -29,12 +29,14 @@ export class ContentStatistics extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      months: { icDate: [], gbLaunch: [] },
-      monthData: { icDate: {}, gbLaunch: {} },
-      countData: { icDate: [], gbLaunch: [] },
-      profileCount: { icDate: {}, gbLaunch: {} },
-      profileCountData: { icDate: [], gbLaunch: [] },
-      profileChartType: "bar",
+      timelineData: {
+        months: { icDate: [], gbLaunch: [] },
+        monthData: { icDate: {}, gbLaunch: {} },
+        countData: { icDate: [], gbLaunch: [] },
+        profileCount: { icDate: {}, gbLaunch: {} },
+        profileCountData: { icDate: [], gbLaunch: [] },
+        profileChartType: "bar",
+      },
       statusData: {
         profile: {
           names: [],
@@ -101,22 +103,18 @@ export class ContentStatistics extends React.Component {
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     //timeline
-    let months = { icDate: [], gbLaunch: [] };
-    let monthData = { icDate: {}, gbLaunch: {} };
-    let countData = { icDate: [], gbLaunch: [] };
-    let profileCount = { icDate: {}, gbLaunch: {} };
-    let profileCountData = { icDate: [], gbLaunch: [] };
+    let timelineData = this.state.timelineData;
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
       this.props.sets.forEach((set) => {
         if (set[property] && !set[property].includes("Q")) {
           const month = moment(set[property]).format("YYYY-MM");
-          if (!months[property].includes(month)) {
-            months[property].push(month);
+          if (!timelineData.months[property].includes(month)) {
+            timelineData.months[property].push(month);
           }
         }
       });
-      months[property].sort(function (a, b) {
+      timelineData.months[property].sort(function (a, b) {
         if (a < b) {
           return -1;
         }
@@ -128,11 +126,15 @@ export class ContentStatistics extends React.Component {
       const monthDiff = (dateFrom, dateTo) => {
         return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
       };
-      const length = monthDiff(moment(months[property][0]), moment(months[property][months[property].length - 1])) + 1;
+      const length =
+        monthDiff(
+          moment(timelineData.months[property][0]),
+          moment(timelineData.months[property][timelineData.months[property].length - 1])
+        ) + 1;
       let i;
       let allMonths = [];
       for (i = 0; i < length; i++) {
-        allMonths.push(moment(months[property][0]).add(i, "M").format("YYYY-MM"));
+        allMonths.push(moment(timelineData.months[property][0]).add(i, "M").format("YYYY-MM"));
       }
       allMonths.sort(function (a, b) {
         if (a < b) {
@@ -143,14 +145,14 @@ export class ContentStatistics extends React.Component {
         }
         return 0;
       });
-      months[property] = [];
+      timelineData.months[property] = [];
       allMonths.forEach((month) => {
-        months[property].push(moment(month).format("MMM YY"));
+        timelineData.months[property].push(moment(month).format("MMM YY"));
       });
       this.props.profiles.forEach((profile) => {
-        profileCount[property][camelize(profile)] = [];
+        timelineData.profileCount[property][camelize(profile)] = [];
       });
-      months[property].forEach((month) => {
+      timelineData.months[property].forEach((month) => {
         let filteredSets = this.props.sets.filter((set) => {
           if (set[property] && !set[property].includes("Q")) {
             const setMonth = moment(set[property]).format("MMM YY");
@@ -159,19 +161,19 @@ export class ContentStatistics extends React.Component {
             return false;
           }
         });
-        monthData[property][month] = {};
-        monthData[property][month].count = filteredSets.length;
-        countData[property].push(filteredSets.length);
+        timelineData.monthData[property][month] = {};
+        timelineData.monthData[property][month].count = filteredSets.length;
+        timelineData.countData[property].push(filteredSets.length);
         this.props.profiles.forEach((profile) => {
           const profileSets = filteredSets.filter((set) => {
             return set.profile === profile;
           });
-          profileCount[property][camelize(profile)].push(profileSets.length);
-          monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
+          timelineData.profileCount[property][camelize(profile)].push(profileSets.length);
+          timelineData.monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
         });
       });
       this.props.profiles.forEach((profile) => {
-        profileCountData[property].push(profileCount[property][camelize(profile)]);
+        timelineData.profileCountData[property].push(timelineData.profileCount[property][camelize(profile)]);
       });
     });
     //status
@@ -282,18 +284,18 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && isPostGb;
           }
         });
-        statusData[prop].data.push([
-          icSets.length,
-          preGbSets.length,
-          liveGbSets.length,
-          postGbSets.length,
-          icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
-          name,
-        ]);
+        statusData[prop].data.push({
+          name: name,
+          ic: icSets.length,
+          preGb: preGbSets.length,
+          liveGb: liveGbSets.length,
+          postGb: postGbSets.length,
+          total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
+        });
       });
       statusData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.status === "total" ? a[4] : a[5].toLowerCase();
-        var y = this.props.statisticsSort.status === "total" ? b[4] : a[5].toLowerCase();
+        var x = this.props.statisticsSort.status === "total" ? a.total : a.name.toLowerCase();
+        var y = this.props.statisticsSort.status === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
           return this.props.statisticsSort.status === "total" ? 1 : -1;
         }
@@ -380,16 +382,16 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && set.shipped !== true;
           }
         });
-        shippedData[prop].data.push([
-          shippedSets.length,
-          unshippedSets.length,
-          shippedSets.length + unshippedSets.length,
-          name,
-        ]);
+        shippedData[prop].data.push({
+          name: name,
+          shipped: shippedSets.length,
+          unshipped: unshippedSets.length,
+          total: shippedSets.length + unshippedSets.length,
+        });
       });
       shippedData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.shipped === "total" ? a[2] : a[3].toLowerCase();
-        var y = this.props.statisticsSort.shipped === "total" ? b[2] : a[3].toLowerCase();
+        var x = this.props.statisticsSort.shipped === "total" ? a.total : a.name.toLowerCase();
+        var y = this.props.statisticsSort.shipped === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
           return this.props.statisticsSort.shipped === "total" ? 1 : -1;
         }
@@ -510,19 +512,19 @@ export class ContentStatistics extends React.Component {
               });
             Object.keys(durationData[property]).forEach((prop) => {
               durationData[property][prop].data.sort((a, b) => {
-                if (a[0] === "All" || b[0] === "All") {
+                if (a.name === "All" || b.name === "All") {
                   return a[0] === "all";
                 }
                 var x =
                   this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                    ? a[0].toLowerCase()
-                    : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                    ? a.name.toLowerCase()
+                    : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
                 var y =
                   this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                    ? b[0].toLowerCase()
-                    : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
-                var c = a[0].toLowerCase();
-                var d = b[0].toLowerCase();
+                    ? b.name.toLowerCase()
+                    : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+                var c = a.name.toLowerCase();
+                var d = b.name.toLowerCase();
                 if (x < y) {
                   return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
                 }
@@ -555,25 +557,21 @@ export class ContentStatistics extends React.Component {
           });
           const range = math.max(data) - math.min(data);
           const rangeDisplay = math.min(data) + "-" + math.max(data) + " (" + range + ")";
-          durationData[property][prop].data.push([
-            name,
-            data.length,
-            math.round(math.mean(data), 2),
-            math.median(data),
-            math.mode(data),
-            rangeDisplay,
-            math.round(math.std(data), 2),
-            [labels, count],
-          ]);
+          durationData[property][prop].data.push({
+            name: name,
+            total: data.length,
+            mean: math.round(math.mean(data), 2),
+            median: math.median(data),
+            mode: math.mode(data),
+            range: rangeDisplay,
+            standardDev: math.round(math.std(data), 2),
+            chartData: [labels, count],
+          });
         });
       });
     });
     this.setState({
-      months: months,
-      monthData: monthData,
-      countData: countData,
-      profileCount: profileCount,
-      profileCountData: profileCountData,
+      timelineData: timelineData,
       statusData: statusData,
       shippedData: shippedData,
       durationData: durationData,
@@ -586,19 +584,19 @@ export class ContentStatistics extends React.Component {
       Object.keys(data).forEach((property) => {
         Object.keys(data[property]).forEach((prop) => {
           data[property][prop].data.sort((a, b) => {
-            if (a[0] === "All" || b[0] === "All") {
-              return a[0] === "all";
+            if (a.name === "All" || b.name === "All") {
+              return a.name === "all";
             }
             var x =
               this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                ? a[0].toLowerCase()
-                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
+                ? a.name.toLowerCase()
+                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
             var y =
               this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
-                ? b[0].toLowerCase()
-                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? 2 : 1];
-            var c = a[0].toLowerCase();
-            var d = b[0].toLowerCase();
+                ? b.name.toLowerCase()
+                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+            var c = a.name.toLowerCase();
+            var d = b.name.toLowerCase();
             if (x < y) {
               return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
             }
@@ -618,16 +616,10 @@ export class ContentStatistics extends React.Component {
     } else {
       Object.keys(data).forEach((prop) => {
         data[prop].data.sort((a, b) => {
-          var x =
-            this.props.statisticsSort[this.props.statisticsTab] === "total"
-              ? a[this.props.statisticsTab === "status" ? 4 : 2]
-              : a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var y =
-            this.props.statisticsSort[this.props.statisticsTab] === "total"
-              ? b[this.props.statisticsTab === "status" ? 4 : 2]
-              : b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var c = a[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
-          var d = b[this.props.statisticsTab === "status" ? 5 : 3].toLowerCase();
+          var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a.total : a.name.toLowerCase();
+          var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b.total : b.name.toLowerCase();
+          var c = a.name.toLowerCase();
+          var d = b.name.toLowerCase();
           if (x < y) {
             return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
           }
@@ -649,7 +641,7 @@ export class ContentStatistics extends React.Component {
     });
   };
   setProfileChartType = (type) => {
-    this.setState({ profileChartType: type });
+    this.setState({ timelineData: { ...this.state.timelineData, profileChartType: type } });
   };
   setFocus = (letter) => {
     if (letter === this.state.focused) {
@@ -673,8 +665,8 @@ export class ContentStatistics extends React.Component {
   }
   render() {
     const countChartData = {
-      labels: this.state.months[this.props.statistics.timeline],
-      series: [this.state.countData[this.props.statistics.timeline]],
+      labels: this.state.timelineData.months[this.props.statistics.timeline],
+      series: [this.state.timelineData.countData[this.props.statistics.timeline]],
     };
     const countChartOptions = {
       showArea: true,
@@ -713,8 +705,8 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: this.state.months[this.props.statistics.timeline],
-      series: this.state.profileCountData[this.props.statistics.timeline],
+      labels: this.state.timelineData.months[this.props.statistics.timeline],
+      series: this.state.timelineData.profileCountData[this.props.statistics.timeline],
     };
 
     const profileChartOptions = {
@@ -754,7 +746,7 @@ export class ContentStatistics extends React.Component {
       ],
     };
     const barGraph =
-      this.state.profileChartType === "bar" ? (
+      this.state.timelineData.profileChartType === "bar" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -763,7 +755,7 @@ export class ContentStatistics extends React.Component {
         />
       ) : null;
     const lineGraph =
-      this.state.profileChartType === "line" ? (
+      this.state.timelineData.profileChartType === "line" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -807,7 +799,7 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  selected={this.state.profileChartType === "bar"}
+                  selected={this.state.timelineData.profileChartType === "bar"}
                   onClick={() => {
                     this.setProfileChartType("bar");
                   }}
@@ -822,7 +814,7 @@ export class ContentStatistics extends React.Component {
                       </svg>
                     ),
                   }}
-                  selected={this.state.profileChartType === "line"}
+                  selected={this.state.timelineData.profileChartType === "line"}
                   onClick={() => {
                     this.setProfileChartType("line");
                   }}
@@ -840,26 +832,26 @@ export class ContentStatistics extends React.Component {
             <TimelineTable
               profiles={this.props.profiles}
               setFocus={this.setFocus}
-              months={this.state.months}
+              months={this.state.timelineData.months}
               statistics={this.props.statistics}
-              monthData={this.state.monthData}
+              monthData={this.state.timelineData.monthData}
             />
           </Card>
         </div>
         <div className="stats-tab stats-grid status">
           {this.state.statusData[this.props.statistics.status].data.map((data) => {
-            return <StatusCard key={data[5]} data={data} />;
+            return <StatusCard key={data.name} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid shipped">
           {this.state.shippedData[this.props.statistics.shipped].data.map((data) => {
-            return <ShippedCard key={data[3]} data={data} />;
+            return <ShippedCard key={data.name} data={data} />;
           })}
         </div>
         <div className="stats-tab stats-grid duration">
           {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
             (data) => {
-              return <DurationCard key={data[0]} data={data} durationCat={this.props.statistics.durationCat} />;
+              return <DurationCard key={data.name} data={data} durationCat={this.props.statistics.durationCat} />;
             }
           )}
         </div>

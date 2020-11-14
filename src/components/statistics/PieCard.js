@@ -18,10 +18,10 @@ export const StatusCard = (props) => {
   return (
     <Card className="pie-card">
       <Typography use="headline5" tag="h1">
-        {props.data[5]}
+        {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data[4] + " set" + (props.data[4] > 1 ? "s" : "")}
+        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
       </Typography>
       <div className="pie-container">
         <div className="table-container">
@@ -38,25 +38,25 @@ export const StatusCard = (props) => {
                   <DataTableCell>
                     <div className="indicator ic"></div>IC
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[0]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.ic}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator pre-gb"></div>Pre GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[1]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.preGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator live-gb"></div>Live GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[2]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.liveGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator post-gb"></div>Post GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[3]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.postGb}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
@@ -66,7 +66,7 @@ export const StatusCard = (props) => {
           <ChartistGraph
             className="ct-octave"
             data={{
-              series: [props.data[0], props.data[1], props.data[2], props.data[3]],
+              series: [props.data.ic, props.data.preGb, props.data.liveGb, props.data.postGb],
               labels: [" ", " ", " ", " "],
             }}
             type={"Pie"}
@@ -81,10 +81,10 @@ export const ShippedCard = (props) => {
   return (
     <Card className="pie-card">
       <Typography use="headline5" tag="h1">
-        {props.data[3]}
+        {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data[2] + " set" + (props.data[2] > 1 ? "s" : "")}
+        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
       </Typography>
       <div className="pie-container">
         <div className="table-container">
@@ -101,13 +101,13 @@ export const ShippedCard = (props) => {
                   <DataTableCell>
                     <div className="indicator shipped"></div>Shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[0]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.shipped}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator not-shipped"></div>Not shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data[1]}</DataTableCell>
+                  <DataTableCell isNumeric>{props.data.unshipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
@@ -117,7 +117,7 @@ export const ShippedCard = (props) => {
           <ChartistGraph
             className="ct-octave"
             data={{
-              series: [props.data[1], props.data[0]],
+              series: [props.data.unshipped, props.data.shipped],
               labels: [" ", " "],
             }}
             type={"Pie"}
