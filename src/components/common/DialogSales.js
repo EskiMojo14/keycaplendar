@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogSales.scss";
 
@@ -20,3 +21,9 @@ export const DialogSales = (props) => {
 };
 
 export default DialogSales;
+
+DialogSales.propTypes = {
+  close: PropTypes.func,
+  open: PropTypes.bool,
+  set: PropTypes.object,
+};

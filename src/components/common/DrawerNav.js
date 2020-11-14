@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -192,3 +193,13 @@ export const DrawerNav = (props) => {
 };
 
 export default DrawerNav;
+
+DrawerNav.propTypes = {
+  changePage: PropTypes.func,
+  close: PropTypes.func,
+  device: PropTypes.string,
+  open: PropTypes.bool,
+  page: PropTypes.string,
+  user: PropTypes.object,
+  view: PropTypes.string,
+};

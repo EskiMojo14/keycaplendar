@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -268,3 +269,14 @@ export class DrawerFilter extends React.Component {
 }
 
 export default DrawerFilter;
+
+DrawerFilter.propTypes = {
+  close: PropTypes.func,
+  device: PropTypes.string,
+  open: PropTypes.bool,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  setWhitelist: PropTypes.func,
+  vendors: PropTypes.arrayOf(PropTypes.string),
+  view: PropTypes.string,
+  whitelist: PropTypes.object,
+};
