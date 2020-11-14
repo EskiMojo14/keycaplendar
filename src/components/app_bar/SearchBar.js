@@ -439,7 +439,7 @@ export class SearchAppBar extends React.Component {
             </div>
           </TopAppBarRow>
         </TopAppBar>
-        <TopAppBarFixedAdjust />,
+        <TopAppBarFixedAdjust />
       </>
     );
   }

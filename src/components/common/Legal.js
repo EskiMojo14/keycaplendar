@@ -25,7 +25,7 @@ export const PrivacyPolicy = () => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      <TopAppBarFixedAdjust key="AppBarFixedAdjust" />,
+      <TopAppBarFixedAdjust />
       <div className="legal-container">
         <Card className="legal">
           <Typography use="body2" tag="p">
