@@ -96,7 +96,6 @@ export const ViewCard = (props) => {
             user={props.user}
             page={props.page}
             selected={props.detailSet === set}
-            cardWidth={Math.round(1 / props.sets.length)}
             set={set}
             title={title}
             subtitle={subtitle}
