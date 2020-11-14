@@ -56,9 +56,19 @@ ToggleGroup.propTypes = {
 
 ToggleGroupButton.propTypes = {
   className: PropTypes.string,
-  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  icon: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      strategy: PropTypes.string.isRequired,
+      icon: PropTypes.node.isRequired,
+    }),
+  ]),
   label: PropTypes.string,
   onClick: PropTypes.func,
   selected: PropTypes.bool,
-  tooltip: PropTypes.object,
+  tooltip: PropTypes.shape({
+    enterDelay: PropTypes.number,
+    align: PropTypes.string,
+    content: PropTypes.node.isRequired,
+  }),
 };

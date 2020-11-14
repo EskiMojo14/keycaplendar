@@ -382,5 +382,7 @@ AuditEntry.propTypes = {
   action: PropTypes.shape(actionTypes),
   openDeleteDialog: PropTypes.func,
   properties: PropTypes.arrayOf(PropTypes.string),
-  timestamp: PropTypes.object,
+  timestamp: PropTypes.shape({
+    format: PropTypes.func.isRequired,
+  }),
 };

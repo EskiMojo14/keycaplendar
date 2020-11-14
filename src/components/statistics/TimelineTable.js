@@ -79,8 +79,14 @@ export const TimelineTable = (props) => {
 export default TimelineTable;
 
 TimelineTable.propTypes = {
-  monthData: PropTypes.object,
-  months: PropTypes.object,
+  monthData: PropTypes.shape({
+    gbLaunch: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
+    icDate: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
+  }),
+  months: PropTypes.shape({
+    gbLaunch: PropTypes.arrayOf(PropTypes.string),
+    icDate: PropTypes.arrayOf(PropTypes.string),
+  }),
   profiles: PropTypes.arrayOf(PropTypes.string),
   setFocus: PropTypes.func,
   statistics: PropTypes.shape(statisticsTypes),
