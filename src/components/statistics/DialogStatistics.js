@@ -26,7 +26,7 @@ export class DialogStatistics extends React.Component {
       statistics: stats,
     });
   };
-  changeStatistics = () => {
+  setStatistics = () => {
     if (
       this.props.statistics[this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab] !==
       this.state.statistics
@@ -83,7 +83,7 @@ export class DialogStatistics extends React.Component {
         </DialogContent>
         <DialogActions>
           <DialogButton action="close">Cancel</DialogButton>
-          <DialogButton action="accept" onClick={this.changeStatistics} isDefaultAction>
+          <DialogButton action="accept" onClick={this.setStatistics} isDefaultAction>
             Confirm
           </DialogButton>
         </DialogActions>
