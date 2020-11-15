@@ -193,6 +193,11 @@ export const AuditEntry = (props) => {
                             <DataTableCell>{property + index}</DataTableCell>
                             <DataTableCell className="before">
                               <div>
+                                <span className={afterVendor.id !== beforeVendor.id ? "highlight" : ""}>
+                                  ID: {beforeVendor.id}
+                                </span>
+                              </div>
+                              <div>
                                 <span className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}>
                                   Name: {beforeVendor.name}
                                 </span>
@@ -212,6 +217,11 @@ export const AuditEntry = (props) => {
                               </div>
                             </DataTableCell>
                             <DataTableCell className="after">
+                              <div>
+                                <span className={afterVendor.id !== beforeVendor.id ? "highlight" : ""}>
+                                  ID: {afterVendor.id}
+                                </span>
+                              </div>
                               <div>
                                 <span className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}>
                                   Name: {afterVendor.name}
@@ -310,6 +320,9 @@ export const AuditEntry = (props) => {
                         <DataTableRow key={vendor.name + index}>
                           <DataTableCell>{property + index}</DataTableCell>
                           <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
+                            <div>
+                              <span className="highlight">ID: {docData.vendors[index].id}</span>
+                            </div>
                             <div>
                               <span className="highlight">Name: {docData.vendors[index].name}</span>
                             </div>
