@@ -56,8 +56,11 @@
     }
   }
   .toggle-group {
-    @include rtl.reflexive-box(margin, right, 4px);
-    & + .toggle-group {
+    margin: 0 4px;
+    &:first-child {
+      @include rtl.reflexive-box(margin, right, 4px);
+    }
+    &:last-child {
       @include rtl.reflexive-box(margin, left, 4px);
     }
     & + .category-button {
