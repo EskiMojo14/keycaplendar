@@ -89,7 +89,7 @@
   }
   .editor-buttons {
     padding: 8px 16px;
-    border-top: var(--divider-color) 1px solid;
+    @include util.divider-border(top);
     display: flex;
     justify-content: stretch;
     .edit {
@@ -125,7 +125,7 @@
     &-container {
       height: 48px;
       flex-shrink: 0;
-      border-top: var(--divider-color) 1px solid;
+      @include util.divider-border(top);
       display: flex;
       justify-content: stretch;
     }

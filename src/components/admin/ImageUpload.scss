@@ -1,5 +1,6 @@
 @use "@material/animation/_index" as animation;
 @use "@material/shape/_index" as shape;
+@use "../../util";
 
 .image-upload {
   overflow: hidden;
@@ -42,7 +43,7 @@
       height: 0;
       padding-top: 100% * 9/16;
       box-sizing: border-box;
-      border: 1px dashed var(--divider-color);
+      @include util.divider-border(all, 1px, dashed);
       user-select: none;
       overflow: hidden;
       transition: border-color 150ms animation.$standard-curve-timing-function;

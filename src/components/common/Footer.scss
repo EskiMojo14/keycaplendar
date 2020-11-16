@@ -1,10 +1,11 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/theme/color-palette" as palette;
+@use "../../util";
 
 .footer {
   box-sizing: border-box;
   padding: 16px;
-  border-top: solid 1px var(--divider-color);
+  @include util.divider-border(top);
   display: flex;
   flex-direction: column;
   .mdc-typography--body2 {

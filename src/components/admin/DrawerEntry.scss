@@ -138,7 +138,7 @@
         position: relative;
         margin: 16px;
         margin-top: 0;
-        border: 1px dashed var(--divider-color);
+        @include util.divider-border(all, 1px, dashed);
         &.loaded {
           border: none;
           @include shape.radius(0);

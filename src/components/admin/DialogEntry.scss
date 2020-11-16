@@ -5,6 +5,7 @@
 @use "@material/select/_index" as select;
 @use "@material/shape/_index" as shape;
 @use "@material/theme/_index" as theme;
+@use "../../util";
 
 $enter-time: 450ms;
 $exit-time: 400ms;
@@ -179,7 +180,7 @@ $exit-time: 400ms;
           position: relative;
           margin: 16px;
           margin-top: 0;
-          border: 1px dashed var(--divider-color);
+          @include util.divider-border(all, 1px, dashed);
           &.loaded {
             border: none;
             @include shape.radius(0);
