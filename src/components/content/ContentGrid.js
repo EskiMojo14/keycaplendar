@@ -29,7 +29,7 @@ export const ContentGrid = (props) => {
           "December",
         ];
         const setDate = new Date(set[sort]);
-        let setMonth = month[setDate.getUTCMonth()] + " " + setDate.getUTCFullYear();
+        let setMonth = `${month[setDate.getUTCMonth()]} ${setDate.getUTCFullYear()}`;
         if (setMonth === group) {
           filteredSets.push(set);
         }
@@ -50,8 +50,8 @@ export const ContentGrid = (props) => {
       }
     });
     filteredSets.sort((a, b) => {
-      const aName = a.profile.toLowerCase() + " " + a.colorway.toLowerCase();
-      const bName = b.profile.toLowerCase() + " " + b.colorway.toLowerCase();
+      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
       if (page === "archive") {
         if (aName > bName) {
           return 1;

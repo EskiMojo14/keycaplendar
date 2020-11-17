@@ -25,9 +25,9 @@ export const DialogDelete = (props) => {
   };
   return (
     <Dialog open={props.open}>
-      <DialogTitle>Delete {props.set.profile + " " + props.set.colorway}</DialogTitle>
+      <DialogTitle>Delete {`${props.set.profile} ${props.set.colorway}`}</DialogTitle>
       <DialogContent>
-        Are you sure you want to delete the entry for {props.set.profile + " " + props.set.colorway}?
+        Are you sure you want to delete the entry for {`${props.set.profile} ${props.set.colorway}`}?
       </DialogContent>
       <DialogActions>
         <DialogButton action="close" onClick={props.close} isDefaultAction>

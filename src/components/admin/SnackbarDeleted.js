@@ -34,7 +34,7 @@ export const SnackbarDeleted = (props) => {
   return (
     <Snackbar
       open={props.open}
-      message={props.set.profile + " " + props.set.colorway + " has been deleted."}
+      message={`${props.set.profile} ${props.set.colorway} has been deleted.`}
       onClose={props.close}
       action={<SnackbarAction label="Undo" onClick={recreateEntry} />}
     />

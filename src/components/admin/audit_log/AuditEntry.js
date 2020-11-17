@@ -59,11 +59,11 @@ export const AuditEntry = (props) => {
             <div className="overline">{props.action.action}</div>
             <ListItemPrimaryText>
               {props.action.action !== "deleted"
-                ? props.action.after.profile + " " + props.action.after.colorway
-                : props.action.before.profile + " " + props.action.before.colorway}
+                ? `${props.action.after.profile} ${props.action.after.colorway}`
+                : `${props.action.before.profile} ${props.action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {props.action.user.nickname + ", " + props.timestamp.format("Do MMM YYYY HH:mm")}
+              {`${props.action.user.nickname}, ${props.timestamp.format("Do MMM YYYY HH:mm")}`}
             </ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
@@ -75,11 +75,7 @@ export const AuditEntry = (props) => {
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              {props.action.action === "updated" ? (
-                <DataTableHeadCell>Before</DataTableHeadCell>
-              ) : (
-                <DataTableHeadCell>Data</DataTableHeadCell>
-              )}
+              <DataTableHeadCell>{props.action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
               {props.action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
             </DataTableRow>
           </DataTableHead>

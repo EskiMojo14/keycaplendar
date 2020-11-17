@@ -90,14 +90,10 @@ export class DrawerDetails extends React.Component {
       gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
       gbEnd = new Date(set.gbEnd);
       icDate = new Date(set.icDate);
-      ic =
-        "IC posted " +
-        icDate.getUTCDate() +
-        nth(icDate.getUTCDate()) +
-        "\xa0" +
+      ic = `IC posted ${icDate.getUTCDate() + nth(icDate.getUTCDate())}\xa0${
         month[icDate.getUTCMonth()] +
-        (icDate.getUTCFullYear() !== today.getUTCFullYear() ? " " + icDate.getUTCFullYear() : "") +
-        ".";
+        (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ` ${icDate.getUTCFullYear()}` : "")
+      }.`;
       if (gbLaunch <= today && gbEnd >= today) {
         verb = "Running";
       } else if (gbEnd <= today) {
@@ -108,39 +104,26 @@ export class DrawerDetails extends React.Component {
         verb = "Runs";
       }
       if (set.gbLaunch !== "" && set.gbEnd) {
-        gb =
-          verb +
-          " from " +
-          gbLaunch.getUTCDate() +
-          nth(gbLaunch.getUTCDate()) +
-          "\xa0" +
+        gb = `${verb} from ${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
           month[gbLaunch.getUTCMonth()] +
           (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-            ? " " + gbLaunch.getUTCFullYear()
-            : "") +
-          " until " +
-          gbEnd.getUTCDate() +
-          nth(gbEnd.getUTCDate()) +
-          "\xa0" +
+            ? ` ${gbLaunch.getUTCFullYear()}`
+            : "")
+        } until ${gbEnd.getUTCDate() + nth(gbEnd.getUTCDate())}\xa0${
           month[gbEnd.getUTCMonth()] +
-          (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbEnd.getUTCFullYear() : "") +
-          ".";
+          (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbEnd.getUTCFullYear()}` : "")
+        }.`;
       } else if (set.gbLaunch.includes("Q")) {
         gb = "GB expected " + gbLaunch + ".";
       } else if (set.gbMonth && set.gbLaunch !== "") {
         gb = "Expected " + month[gbLaunch.getUTCMonth()] + ".";
       } else if (set.gbLaunch !== "") {
-        gb =
-          verb +
-          " from " +
-          gbLaunch.getUTCDate() +
-          nth(gbLaunch.getUTCDate()) +
-          "\xa0" +
+        gb = `${verb} from ${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
           month[gbLaunch.getUTCMonth()] +
           (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-            ? " " + gbLaunch.getUTCFullYear()
-            : "") +
-          ".";
+            ? ` ${gbLaunch.getUTCFullYear()}`
+            : "")
+        }.`;
       } else {
         gb = false;
       }
@@ -306,7 +289,7 @@ export class DrawerDetails extends React.Component {
               </Typography>
               <Typography use="headline4" tag="h1">
                 <Twemoji options={{ className: "twemoji" }}>
-                  {(set.profile ? set.profile : "") + " " + (set.colorway ? set.colorway : "")}
+                  {`${set.profile ? set.profile : ""} ${set.colorway ? set.colorway : ""}`}
                 </Twemoji>
               </Typography>
               {gbLine}

@@ -43,49 +43,39 @@ export const ViewList = (props) => {
         const gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
         const gbEnd = new Date(set.gbEnd);
         const icDate = new Date(set.icDate);
-        const title = set.profile + " " + set.colorway;
+        const title = `${set.profile} ${set.colorway}`;
         let subtitle;
         if (set.gbLaunch !== "" && set.gbEnd) {
-          subtitle =
-            gbLaunch.getUTCDate() +
-            nth(gbLaunch.getUTCDate()) +
-            "\xa0" +
+          subtitle = `${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
             month[gbLaunch.getUTCMonth()] +
             ((gbLaunch.getUTCFullYear() !== today.getUTCFullYear() &&
               gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()) ||
             gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-              ? " " + gbLaunch.getUTCFullYear()
-              : "") +
-            " until " +
-            gbEnd.getUTCDate() +
-            nth(gbEnd.getUTCDate()) +
-            "\xa0" +
+              ? ` ${gbLaunch.getUTCFullYear()}`
+              : "")
+          } until ${gbEnd.getUTCDate() + nth(gbEnd.getUTCDate())}\xa0${
             month[gbEnd.getUTCMonth()] +
             (gbEnd.getUTCFullYear() !== today.getUTCFullYear() || gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-              ? " " + gbEnd.getUTCFullYear()
-              : "");
+              ? ` ${gbEnd.getUTCFullYear()}`
+              : "")
+          }`;
         } else if (set.gbLaunch.includes("Q")) {
           subtitle = "GB expected " + gbLaunch;
         } else if (set.gbMonth && set.gbLaunch !== "") {
-          subtitle =
-            "GB expected " +
+          subtitle = `GB expected ${
             month[gbLaunch.getUTCMonth()] +
-            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
+            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbLaunch.getUTCFullYear()}` : "")
+          }`;
         } else if (set.gbLaunch !== "") {
-          subtitle =
-            gbLaunch.getUTCDate() +
-            nth(gbLaunch.getUTCDate()) +
-            "\xa0" +
+          subtitle = `${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
             month[gbLaunch.getUTCMonth()] +
-            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? " " + gbLaunch.getUTCFullYear() : "");
+            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbLaunch.getUTCFullYear()}` : "")
+          }`;
         } else {
-          subtitle =
-            "IC posted " +
-            icDate.getUTCDate() +
-            nth(icDate.getUTCDate()) +
-            "\xa0" +
+          subtitle = `IC posted ${icDate.getUTCDate() + nth(icDate.getUTCDate())}\xa0${
             month[icDate.getUTCMonth()] +
-            (icDate.getUTCFullYear() !== today.getUTCFullYear() ? " " + icDate.getUTCFullYear() : "");
+            (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ` ${icDate.getUTCFullYear()}` : "")
+          }`;
         }
         const thisWeek = gbEnd.getTime() - 7 * oneDay < today.getTime() && gbEnd.getTime() > today.getTime();
         const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
@@ -116,7 +106,6 @@ export const ViewList = (props) => {
   );
 };
 export default ViewList;
-
 
 ViewList.propTypes = {
   closeDetails: PropTypes.func,

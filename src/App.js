@@ -579,18 +579,11 @@ class App extends React.Component {
 
     const searchSets = (search) => {
       return filteredSets.filter((set) => {
-        let setInfo =
-          set.profile +
-          " " +
-          set.colorway +
-          " " +
-          set.colorway.normalize("NFD").replace(/[^a-zA-Z0-9]/g, "") +
-          " " +
-          set.vendors.map((vendor) => {
-            return " " + vendor.name + " " + vendor.region;
-          }) +
-          " " +
-          set.designer.join(" ");
+        let setInfo = `${set.profile} ${set.colorway} ${set.colorway
+          .normalize("NFD")
+          .replace(/[^a-zA-Z0-9]/g, "")} ${set.vendors.map(
+          (vendor) => ` ${vendor.name} ${vendor.region}`
+        )} ${set.designer.join(" ")}`;
         return setInfo.toLowerCase().includes(search.toLowerCase());
       });
     };
@@ -615,7 +608,7 @@ class App extends React.Component {
     searchedSets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const setDate = new Date(set[sort]);
-        let setMonth = months[setDate.getUTCMonth()] + " " + setDate.getUTCFullYear();
+        let setMonth = `${months[setDate.getUTCMonth()]} ${setDate.getUTCFullYear()}`;
         if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
         }

@@ -7,7 +7,7 @@ import "./DialogSales.scss";
 export const DialogSales = (props) => {
   return (
     <Dialog className="sales-dialog" open={props.open} onClose={props.close}>
-      <DialogTitle>Sales - {props.set.profile + " " + props.set.colorway}</DialogTitle>
+      <DialogTitle>Sales - {`${props.set.profile} ${props.set.colorway}`}</DialogTitle>
       <DialogContent>
         <div className="sales-image">
           <img alt="Sales graph" src={props.set.sales} />

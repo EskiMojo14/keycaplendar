@@ -600,7 +600,7 @@ export class DesktopContent extends React.Component {
         />
       ) : null;
     return (
-      <div className={this.props.className + " " + this.props.page + " app-container"}>
+      <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
           device={this.props.device}
           view={this.props.view}
@@ -1197,7 +1197,7 @@ export class TabletContent extends React.Component {
         />
       ) : null;
     return (
-      <div className={this.props.className + " " + this.props.page + " app-container"}>
+      <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
           device={this.props.device}
           view={this.props.view}
@@ -1891,14 +1891,9 @@ export class MobileContent extends React.Component {
       ) : null;
     return (
       <div
-        className={
-          this.props.className +
-          " app-container " +
-          this.props.page +
-          " " +
-          (this.props.user.isEditor || this.props.user.isDesigner ? " offset-snackbar" : "") +
-          (this.props.bottomNav ? " bottom-nav" : "")
-        }
+        className={`${this.props.className} ${this.props.page} app-container ${
+          this.props.user.isEditor || this.props.user.isDesigner ? "offset-snackbar" : ""
+        } ${this.props.bottomNav ? "bottom-nav" : ""}`}
       >
         {search}
         <DrawerNav
