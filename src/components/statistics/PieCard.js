@@ -21,7 +21,7 @@ export const StatusCard = (props) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
+        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
       </Typography>
       <div className="pie-container">
         <div className="table-container">
@@ -84,7 +84,7 @@ export const ShippedCard = (props) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
+        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
       </Typography>
       <div className="pie-container">
         <div className="table-container">

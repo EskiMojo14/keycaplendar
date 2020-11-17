@@ -69,7 +69,7 @@ export const DurationCard = (props) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {props.data.total + " set" + (props.data.total > 1 ? "s" : "")}
+        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
       </Typography>
       <div className="duration-container">
         {chart}

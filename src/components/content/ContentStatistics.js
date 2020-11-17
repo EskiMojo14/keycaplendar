@@ -557,7 +557,7 @@ export class ContentStatistics extends React.Component {
             count.push(countInArray(data, label));
           });
           const range = math.max(data) - math.min(data);
-          const rangeDisplay = math.min(data) + "-" + math.max(data) + " (" + range + ")";
+          const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
           durationData[property][prop].data.push({
             name: name,
             total: data.length,

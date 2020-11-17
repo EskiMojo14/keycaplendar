@@ -355,17 +355,7 @@ exports.setRoles = functions.https.onCall(async (data, context) => {
     .setCustomUserClaims(user.uid, claims)
     .then(() => {
       console.log(
-        currentUser.displayName +
-          " successfully edited account of " +
-          user.displayName +
-          ". Designer: " +
-          data.designer +
-          ", editor: " +
-          data.editor +
-          ", admin: " +
-          data.admin +
-          ", nickname: " +
-          data.nickname
+        `${currentUser.displayName} successfully edited account of ${user.displayName}. Designer: ${data.designer}, editor: ${data.editor}, admin: ${data.admin}, nickname: ${data.nickname}`
       );
       return null;
     })
