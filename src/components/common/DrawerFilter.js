@@ -120,6 +120,29 @@ export class DrawerFilter extends React.Component {
     });
     this.setWhitelist(prop);
   };
+  copyLink = () => {
+    const params = new URLSearchParams(window.location.search);
+    const editedArray = this.props.whitelist.profiles.map((profile) => profile.replace(" ", "-"));
+    if (editedArray.length === this.props.profiles.length) {
+      params.delete("profile");
+      params.delete("profiles");
+    } else if (editedArray.length === 1) {
+      params.delete("profiles");
+      params.set("profile", editedArray.join(" "));
+    } else {
+      params.delete("profile");
+      params.set("profiles", editedArray.join(" "));
+    }
+    const url = window.location.href.split("?")[0] + "?" + params.toString();
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Copied filtered URL to clipboard." });
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error copying to clipboard" + error });
+      });
+  };
   render() {
     const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
     const closeIcon = dismissible ? (
@@ -155,6 +178,21 @@ export class DrawerFilter extends React.Component {
                 label="None"
                 onClick={() => {
                   this.uncheckAll("profiles");
+                }}
+              />
+              <Button
+                disabled={
+                  this.props.whitelist.profiles.length === this.props.profiles.length ||
+                  this.props.whitelist.profiles.length === 0
+                }
+                label="Copy link"
+                onClick={() => {
+                  if (
+                    this.props.whitelist.profiles.length !== this.props.profiles.length &&
+                    this.props.whitelist.profiles.length !== 0
+                  ) {
+                    this.copyLink();
+                  }
                 }}
               />
             </div>

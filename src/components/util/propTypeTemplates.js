@@ -33,11 +33,11 @@ export const setTypes = (idRequired = true) => {
         storeLink: PropTypes.string,
       })
     ),
-  }
+  };
 };
 
 export const whitelistTypes = {
-  edited: PropTypes.bool,
+  edited: PropTypes.arrayOf(PropTypes.string),
   profiles: PropTypes.arrayOf(PropTypes.string),
   shipped: PropTypes.arrayOf(PropTypes.string),
   vendorMode: PropTypes.string,

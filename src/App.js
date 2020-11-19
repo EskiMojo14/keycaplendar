@@ -11,6 +11,19 @@ import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import "./App.scss";
 
 const queue = createSnackbarQueue();
+const title = {
+  calendar: "Calendar",
+  live: "Live GBs",
+  ic: "IC Tracker",
+  previous: "Previous Sets",
+  account: "Account",
+  timeline: "Timeline",
+  archive: "Archive",
+  statistics: "Statistics",
+  audit: "Audit Log",
+  users: "Users",
+  settings: "Settings",
+};
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -47,7 +60,7 @@ class App extends React.Component {
         vendorMode: "include",
         profiles: [],
         shipped: ["Shipped", "Not shipped"],
-        edited: false,
+        edited: [],
       },
       cookies: true,
       applyTheme: "manual",
@@ -101,10 +114,20 @@ class App extends React.Component {
           this.setState({ sort: "profile" });
         }
       }
-      this.getData();
-    } else {
-      this.getData();
     }
+    if (params.has("profile") || params.has("profiles")) {
+      if (params.has("profile")) {
+        const profile = [params.get("profile")];
+        this.setWhitelist("profiles", profile, false);
+      } else {
+        const profiles = params
+          .get("profiles")
+          .split(" ")
+          .map((profile) => profile.replace("-", " "));
+        this.setWhitelist("profiles", profiles, false);
+      }
+    }
+    this.getData();
   };
   acceptCookies = () => {
     this.setState({ cookies: true });
@@ -222,26 +245,15 @@ class App extends React.Component {
       setTimeout(() => {
         this.setState({ transition: false });
       }, 300);
-      const title = {
-        calendar: "Calendar",
-        live: "Live GBs",
-        ic: "IC Tracker",
-        previous: "Previous Sets",
-        account: "Account",
-        timeline: "Timeline",
-        archive: "Archive",
-        statistics: "Statistics",
-        audit: "Audit Log",
-        users: "Users",
-        settings: "Settings",
-      };
       document.title = "KeycapLendar: " + title[page];
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", page);
       window.history.pushState(
         {
           page: page,
         },
         "KeycapLendar: " + title[page],
-        "?page=" + page
+        "?" + params.toString()
       );
     }
   };
@@ -678,9 +690,12 @@ class App extends React.Component {
       loading: false,
     });
 
-    if (!whitelist.edited) {
-      this.setWhitelist("vendors", allVendors);
-      this.setWhitelist("profiles", allProfiles);
+    if (!whitelist.edited.includes("vendors")) {
+      this.setWhitelist("vendors", allVendors, false);
+    }
+
+    if (!whitelist.edited.includes("profiles")) {
+      this.setWhitelist("profiles", allProfiles, false);
     }
   };
   setDensity = (density) => {
@@ -714,13 +729,38 @@ class App extends React.Component {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
   };
-  setWhitelist = (prop, val) => {
-    const whitelist = { ...this.state.whitelist, [prop]: val, edited: true };
+  setWhitelist = (prop, val, clearUrl = true) => {
+    const edited = this.state.whitelist.edited.includes(prop)
+      ? this.state.whitelist.edited
+      : [...this.state.whitelist.edited, prop];
+    const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
     this.setState({
       whitelist: whitelist,
     });
     document.documentElement.scrollTop = 0;
-    this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+    if (this.state.sets.length > 0) {
+      this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+    }
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("profile") || params.has("profiles")) {
+        params.delete("profile");
+        params.delete("profiles");
+        if (params.has("page")) {
+          const page = params.get("page");
+          window.history.pushState(
+            {
+              page: page,
+            },
+            "KeycapLendar: " + title[page],
+            "?" + params.toString()
+          );
+        } else {
+          const questionParam = params.has("page") ? "?" + params.toString() : "/";
+          window.history.pushState({}, "KeycapLendar", questionParam);
+        }
+      }
+    }
   };
   setDevice = () => {
     let i = 0;

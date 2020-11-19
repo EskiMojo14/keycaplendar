@@ -669,9 +669,10 @@ export class DesktopContent extends React.Component {
               close={this.closeFilterDrawer}
               setWhitelist={this.props.setWhitelist}
               whitelist={this.props.whitelist}
+              snackbarQueue={this.props.snackbarQueue}
             />
             {auditFilterDrawer}
-            <DrawerAppContent className={`main ${this.props.view} ${(this.props.content ? " content" : "")}`}>
+            <DrawerAppContent className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
               {content}
               <Footer />
             </DrawerAppContent>
@@ -1231,7 +1232,7 @@ export class TabletContent extends React.Component {
           setStatisticsTab={this.props.setStatisticsTab}
           openStatisticsDialog={this.openStatisticsDialog}
         />
-        <main className={`main ${this.props.view} ${(this.props.content ? " content" : "")}`}>
+        <main className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
           {content}
           <Footer />
         </main>
@@ -1260,6 +1261,7 @@ export class TabletContent extends React.Component {
           close={this.closeFilterDrawer}
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
         />
         {auditFilterDrawer}
         {auditDeleteDialog}
@@ -1907,7 +1909,7 @@ export class MobileContent extends React.Component {
           user={this.props.user}
         />
         {appBar}
-        <main className={`main ${this.props.view} ${(this.props.content ? " content" : "")}`}>
+        <main className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
           {content}
           <Footer />
         </main>
@@ -1936,6 +1938,7 @@ export class MobileContent extends React.Component {
           close={this.closeFilterDrawer}
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
         />
         {auditFilterDrawer}
         {auditDeleteDialog}
