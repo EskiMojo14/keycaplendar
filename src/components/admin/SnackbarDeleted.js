@@ -7,10 +7,12 @@ import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 export const SnackbarDeleted = (props) => {
   const recreateEntry = (e) => {
     e.preventDefault();
+    const { id, ...set } = props.set;
+    console.log(props.set, set);
     const db = firebase.firestore();
     db.collection("keysets")
       .add({
-        ...props.set,
+        ...set,
         gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
         latestEditor: props.user.id,
       })
