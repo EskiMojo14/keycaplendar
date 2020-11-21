@@ -8,7 +8,6 @@ export const SnackbarDeleted = (props) => {
   const recreateEntry = (e) => {
     e.preventDefault();
     const { id, ...set } = props.set;
-    console.log(props.set, set);
     const db = firebase.firestore();
     db.collection("keysets")
       .add({
