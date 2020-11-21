@@ -570,6 +570,7 @@ export class DesktopContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
             </>
           ) : null}
@@ -1157,6 +1158,7 @@ export class TabletContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
             </>
           ) : null}
@@ -1764,6 +1766,7 @@ export class MobileContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
+                user={this.props.user}
               />
             </>
           ) : null}

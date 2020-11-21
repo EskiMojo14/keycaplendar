@@ -15,10 +15,14 @@ export const SnackbarDeleted = (props) => {
         designer: props.set.designer,
         icDate: props.set.icDate,
         details: props.set.details,
+        sales: props.set.sales,
+        shipped: props.set.shipped,
         image: props.set.image,
-        gbLaunch: props.set.gbLaunch,
+        gbMonth: props.set.gbMonth,
+        gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
         gbEnd: props.set.gbEnd,
         vendors: props.set.vendors,
+        latestEditor: props.user.id,
       })
       .then((docRef) => {
         console.log("Document recreated with ID: ", docRef.id);
