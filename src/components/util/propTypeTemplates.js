@@ -11,18 +11,18 @@ export const userTypes = {
   nickname: PropTypes.string,
 };
 
-export const setTypes = (idRequired = true) => {
+export const setTypes = (isAction = false) => {
   return {
-    colorway: PropTypes.string.isRequired,
-    designer: PropTypes.arrayOf(PropTypes.string).isRequired,
-    details: PropTypes.string.isRequired,
+    colorway: isAction ? PropTypes.string : PropTypes.string.isRequired,
+    designer: isAction ? PropTypes.arrayOf(PropTypes.string) : PropTypes.arrayOf(PropTypes.string).isRequired,
+    details: isAction ? PropTypes.string : PropTypes.string.isRequired,
     gbEnd: PropTypes.string,
     gbLaunch: PropTypes.string,
     gbMonth: PropTypes.bool,
-    icDate: PropTypes.string.isRequired,
-    id: idRequired ? PropTypes.string.isRequired : PropTypes.string,
-    image: PropTypes.string.isRequired,
-    profile: PropTypes.string.isRequired,
+    icDate: isAction ? PropTypes.string : PropTypes.string.isRequired,
+    id: isAction ? PropTypes.string : PropTypes.string.isRequired,
+    image: isAction ? PropTypes.string : PropTypes.string.isRequired,
+    profile: isAction ? PropTypes.string : PropTypes.string.isRequired,
     sales: PropTypes.string,
     shipped: PropTypes.bool,
     vendors: PropTypes.arrayOf(
@@ -64,8 +64,8 @@ export const queueTypes = {
 
 export const actionTypes = {
   action: PropTypes.string.isRequired,
-  after: PropTypes.shape(setTypes(false)),
-  before: PropTypes.shape(setTypes(false)),
+  after: PropTypes.shape(setTypes(true)),
+  before: PropTypes.shape(setTypes(true)),
   changelogId: PropTypes.string.isRequired,
   documentId: PropTypes.string.isRequired,
   timestamp: PropTypes.string.isRequired,
