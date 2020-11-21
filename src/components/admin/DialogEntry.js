@@ -952,27 +952,17 @@ export class DialogEdit extends React.Component {
     } else {
       gbLaunch = this.props.set.gbLaunch;
     }
-    let vendorsCopy = this.props.set.vendors;
-    vendorsCopy.forEach((vendor) => {
-      if (!vendor.id) {
-        vendor.id = nanoid();
-      }
-    });
     this.setState({
-      id: this.props.set.id,
-      profile: this.props.set.profile,
-      colorway: this.props.set.colorway,
-      designer: this.props.set.designer,
-      icDate: this.props.set.icDate,
-      details: this.props.set.details,
+      ...this.props.set,
       sales: this.props.set.sales ? this.props.set.sales : "",
-      image: this.props.set.image,
-      imageURL: this.props.set.image,
-      gbMonth: this.props.set.gbMonth,
       gbLaunch: gbLaunch,
-      gbEnd: this.props.set.gbEnd,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
-      vendors: vendorsCopy,
+      vendors: this.props.set.vendors.map((vendor) => {
+        if (!vendor.id) {
+          vendor.id = nanoid();
+        }
+        return vendor;
+      }),
     });
   };
 
