@@ -13,7 +13,7 @@
   overflow: hidden;
   &__primary-action {
     height: 100%;
-  } 
+  }
   &__actions {
     @include util.divider-border(top);
   }

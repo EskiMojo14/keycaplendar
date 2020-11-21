@@ -121,7 +121,6 @@ export const ContentGrid = (props) => {
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}
           edit={props.edit}
-          delete={props.delete}
           user={props.user}
         />
       );
@@ -179,7 +178,6 @@ export default ContentGrid;
 
 ContentGrid.propTypes = {
   closeDetails: PropTypes.func,
-  delete: PropTypes.func,
   detailset: PropTypes.shape(setTypes()),
   details: PropTypes.func,
   edit: PropTypes.func,

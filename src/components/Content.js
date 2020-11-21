@@ -463,7 +463,6 @@ export class DesktopContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        delete={this.openDeleteDialog}
         user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
@@ -1052,7 +1051,6 @@ export class TabletContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        delete={this.openDeleteDialog}
         user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
@@ -1652,7 +1650,6 @@ export class MobileContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         edit={this.openEditDialog}
         detailSet={this.state.detailSet}
-        delete={this.openDeleteDialog}
         user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
