@@ -1098,7 +1098,7 @@ export class DrawerEdit extends React.Component {
         icDate: this.state.icDate,
         details: this.state.details,
         sales: this.state.sales,
-        image: this.state.imageURL,
+        image: this.state.newImage ? this.state.imageURL : this.state.image,
         gbMonth: this.state.gbMonth,
         gbLaunch: this.state.gbLaunch,
         gbEnd: this.state.gbEnd,
