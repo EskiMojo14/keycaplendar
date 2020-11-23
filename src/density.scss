@@ -249,7 +249,7 @@
         $density,
         height
       );
-      .search-bar-field {
+      .search-bar-field.mdc-text-field {
         @include shape.radius(
           shape.resolve-percentage-radius(
             density.prop-value(
@@ -266,6 +266,21 @@
             small
           )
         );
+        .leading-icon-ripple {
+          padding: (
+              density.prop-value(
+                  (
+                    height: (
+                      default: 40px,
+                      maximum: 40px,
+                      minimum: 28px,
+                    ),
+                  ),
+                  $density,
+                  height
+                ) - 24px - 4px
+            ) / 2;
+        }
       }
     }
   }

@@ -665,6 +665,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
           @include text-field.caret-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
           @include text-field.outline-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
         }
+        .leading-icon-ripple {
+          @include ripple.states(if($dark, map-get($variables, on-surface), map-get($variables, on-primary)));
+        }
       }
       &--modal {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
@@ -684,6 +687,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
             @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
             @include text-field.ink-color(map-get($variables, text-primary));
             @include text-field.caret-color(map-get($variables, on-surface));
+          }
+          .leading-icon-ripple {
+            @include ripple.states(map-get($variables, on-surface));
           }
         }
       }
