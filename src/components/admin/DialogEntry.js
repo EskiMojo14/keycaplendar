@@ -1028,6 +1028,7 @@ export class DialogEdit extends React.Component {
   addVendor = () => {
     let vendors = this.state.vendors;
     const emptyVendor = {
+      id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
