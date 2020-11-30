@@ -589,14 +589,38 @@ class App extends React.Component {
 
     // search logic
 
+    const replaceChars = [
+      ["β", "B"],
+      ["æ", "ae"],
+    ];
+
+    const replaceFunction = (string) => {
+      let val = string;
+      replaceChars.forEach((set) => {
+        val = val.replace(set[0], set[1]);
+      });
+      return val;
+    };
+
     const searchSets = (search) => {
       return filteredSets.filter((set) => {
-        let setInfo = `${set.profile} ${set.colorway} ${set.colorway
-          .normalize("NFD")
-          .replace(/[^a-zA-Z0-9]/g, "")} ${set.vendors.map(
-          (vendor) => ` ${vendor.name} ${vendor.region}`
-        )} ${set.designer.join(" ")}`;
-        return setInfo.toLowerCase().includes(search.toLowerCase());
+        let setInfo = [
+          set.profile,
+          set.colorway,
+          replaceFunction(set.colorway)
+            .normalize("NFD")
+            .replace(/[^a-zA-Z0-9 ]/g, ""),
+          set.designer.join(" "),
+          set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`),
+        ];
+        const array = search
+          .toLowerCase()
+          .split(" ")
+          .map((term) => {
+            return setInfo.join(" ").toLowerCase().includes(term.toLowerCase());
+          });
+        const bool = !array.includes(false);
+        return bool;
       });
     };
 
