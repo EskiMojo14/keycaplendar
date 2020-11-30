@@ -357,7 +357,9 @@ class App extends React.Component {
     }
   };
   toggleLichTheme = () => {
-    this.setState({ lichTheme: !this.state.lichTheme });
+    this.setState((prevState) => {
+      return { lichTheme: !prevState.lichTheme };
+    });
     setTimeout(this.checkTheme, 1);
   };
   setBottomNav = (value) => {
@@ -368,7 +370,9 @@ class App extends React.Component {
     }
   };
   toggleLoading = () => {
-    this.setState({ loading: !this.state.loading });
+    this.setState((prevState) => {
+      return { loading: !prevState.loading };
+    });
   };
   getData = () => {
     this.setState({ loading: true });
