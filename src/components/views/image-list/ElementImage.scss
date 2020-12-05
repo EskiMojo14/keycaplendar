@@ -23,10 +23,10 @@
       height: 100%;
       opacity: 0;
       z-index: 1;
-      transition: opacity 150ms animation.$standard-curve-timing-function;
+      transition: animation.standard(opacity, 150ms);
     }
     .link-icon {
-      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-out, 150ms) forwards;
       @include icon-button.ink-color(white);
       &-container {
         position: absolute;
@@ -48,7 +48,7 @@
           content: "";
           background: linear-gradient(rgba(black, 0.5), transparent);
           opacity: 0;
-          transition: opacity 250ms animation.$standard-curve-timing-function;
+          transition: animation.standard(opacity, 250ms);
         }
       }
     }
@@ -56,10 +56,10 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: filter 150ms animation.$standard-curve-timing-function;
+      transition: animation.standard(filter, 150ms);
       animation: placeholder 2s ease infinite;
       .mdc-image-list__image {
-        animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
+        animation: animation.standard(fade-in, 500ms) forwards;
       }
       .time-indicator {
         position: absolute;
@@ -80,7 +80,7 @@
   .mdc-image-list__supporting {
     height: 64px;
     z-index: 1;
-    transition: background-color 150ms animation.$standard-curve-timing-function;
+    transition: animation.standard(background-color, 150ms);
     .mdc-image-list__label {
       display: flex;
       align-items: center;
@@ -96,7 +96,7 @@
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          transition: color 150ms animation.$standard-curve-timing-function;
+          transition: animation.standard(color, 150ms);
           div {
             white-space: nowrap;
             overflow: hidden;
@@ -114,7 +114,7 @@
           overflow: hidden;
           text-overflow: ellipsis;
           color: rgba(white, 0.6);
-          transition: color 150ms animation.$standard-curve-timing-function;
+          transition: animation.standard(color, 150ms);
         }
       }
       .live-indicator,
@@ -123,7 +123,7 @@
         flex-shrink: 0;
         @include rtl.reflexive-box(margin, left, 8px);
         fill: white;
-        transition: fill 150ms animation.$standard-curve-timing-function;
+        transition: animation.standard(fill, 150ms);
       }
     }
   }
@@ -140,7 +140,7 @@
 @media (min-width: 840px) {
   .outer-container .mdc-image-list__item:hover .container {
     .link-icon {
-      animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-in-scale, 150ms) forwards;
       &-container::before {
         opacity: 1;
       }

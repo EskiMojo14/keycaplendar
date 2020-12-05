@@ -2,7 +2,6 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
-
 .content-grid {
   padding: 16px;
   transform-origin: 50% calc(100vh - #{top-app-bar.$row-height});
@@ -27,7 +26,7 @@
   justify-content: stretch;
   width: 100%;
   .subheader {
-    transition: color 250ms animation.$standard-curve-timing-function;
+    transition: animation.standard(color, 250ms);
   }
   &:not(:last-of-type) {
     padding-bottom: 16px;

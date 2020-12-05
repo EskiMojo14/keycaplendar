@@ -16,7 +16,7 @@ $exit-time: 200ms;
     .search-bar-field.mdc-text-field {
       height: 100%;
       width: 128px;
-      transition: width 250ms animation.$standard-curve-timing-function, elevation.transition-value();
+      transition: animation.standard(width, 250ms), elevation.transition-value();
       &--with-leading-icon .mdc-text-field__icon,
       &--with-trailing-icon .mdc-text-field__icon {
         &:focus {
@@ -57,8 +57,7 @@ $exit-time: 200ms;
     .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
       transform: scale(1) translateY(-50%);
       opacity: 1;
-      transition: opacity 150ms animation.$standard-curve-timing-function,
-        transform 150ms animation.$standard-curve-timing-function;
+      transition: animation.standard(opacity, 150ms), animation.standard(transform, 150ms);
       outline: none;
     }
     .search-bar-field-container {
@@ -122,7 +121,7 @@ $exit-time: 200ms;
 
 .mdc-top-app-bar.search-app-bar {
   @include elevation.elevation(0);
-  transition: top 200ms animation.$standard-curve-timing-function;
+  transition: animation.standard(top, 200ms);
   top: -56px;
   .search-bar-field-container {
     transition: elevation.transition-value();
@@ -135,7 +134,7 @@ $exit-time: 200ms;
   }
   & + .mdc-top-app-bar--fixed-adjust {
     padding-top: 0;
-    transition: padding-top 200ms animation.$standard-curve-timing-function;
+    transition: animation.standard(padding-top, 200ms);
   }
   &.search-app-bar--open + .mdc-top-app-bar--fixed-adjust {
     padding-top: 56px;

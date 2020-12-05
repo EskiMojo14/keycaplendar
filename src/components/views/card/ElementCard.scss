@@ -28,7 +28,7 @@
       margin-top: 56.25%;
       .mdc-card__media {
         margin-top: -56.25%;
-        animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
+        animation: animation.standard(fade-in, 500ms) forwards;
       }
     }
     .time-indicator {
@@ -119,11 +119,11 @@
         content: "";
         background: linear-gradient(rgba(black, 0.5), transparent);
         opacity: 0;
-        transition: opacity 250ms animation.$standard-curve-timing-function;
+        transition: animation.standard(opacity, 250ms);
       }
       .mdc-icon-button.mdc-card__action--icon {
         opacity: 0;
-        animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+        animation: animation.standard(fade-out, 150ms) forwards;
         @include icon-button.ink-color(white);
       }
       .mdc-card__action-buttons {
@@ -137,7 +137,7 @@
           opacity: 1;
         }
         .mdc-icon-button {
-          animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+          animation: animation.standard(fade-in-scale, 150ms) forwards;
         }
       }
     }

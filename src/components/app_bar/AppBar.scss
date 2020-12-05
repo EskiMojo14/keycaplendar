@@ -37,7 +37,7 @@
   }
   .mdc-icon-button {
     opacity: 0;
-    animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+    animation: animation.standard(fade-in-scale, 150ms) forwards;
     animation-delay: calc(var(--animation-delay) * 75ms);
   }
   .hidden {
@@ -51,7 +51,7 @@
     }
     .mdc-icon-button {
       opacity: 1;
-      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-out, 150ms) forwards;
       animation-delay: 0;
     }
   }

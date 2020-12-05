@@ -6,11 +6,11 @@
 
 .mdc-drawer-app-content {
   max-width: 100%;
-  transition: margin 150ms animation.$standard-curve-timing-function;
+  transition: animation.standard(margin, 150ms);
   .mdc-top-app-bar {
     width: 100%;
     @include rtl.reflexive-position(right, 0);
-    transition: elevation.transition-value(), width animation.$standard-curve-timing-function 150ms;
+    transition: elevation.transition-value(), animation.standard(width, 150ms);
     .mdc-top-app-bar__navigation-icon {
       transition-property: width, height, padding;
       transition-duration: 120ms;
@@ -69,7 +69,7 @@
     position: absolute;
     width: 100%;
     height: 0;
-    transition: height 250ms animation.$standard-curve-timing-function;
+    transition: animation.standard(height, 250ms);
     z-index: -1;
   }
   &.content.card::before,
@@ -182,8 +182,7 @@
 }
 
 .view-transition .content-grid {
-  animation: fade-out 90ms animation.$acceleration-curve-timing-function,
-    fade-in-scale 210ms 90ms animation.$deceleration-curve-timing-function;
+  animation: animation.exit-permanent(fade-out, 90ms), animation.enter(fade-in-scale, 210ms, 90ms);
   will-change: transform, opacity;
 }
 

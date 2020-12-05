@@ -46,7 +46,7 @@
       @include util.divider-border(all, 1px, dashed);
       user-select: none;
       overflow: hidden;
-      transition: border-color 150ms animation.$standard-curve-timing-function;
+      transition: animation.standard(border-color, 150ms);
       margin: 1px 0;
       &-image {
         position: absolute;
@@ -85,7 +85,7 @@
         height: 100%;
         width: 100%;
         opacity: 0;
-        transition: opacity 150ms animation.$standard-curve-timing-function;
+        transition: animation.standard(opacity, 150ms);
         pointer-events: none;
       }
       &.over {

@@ -38,7 +38,7 @@
     overflow: hidden;
     height: 24px;
     flex-shrink: 0;
-    animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+    animation: animation.standard(fade-in-scale, 150ms) forwards;
   }
   .link-icon {
     position: absolute;
@@ -49,7 +49,7 @@
     @include rtl.reflexive-position(right, 0);
     padding: 0 6px;
     .mdc-icon-button {
-      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-out, 150ms) forwards;
     }
   }
 }
@@ -58,10 +58,10 @@
   .list .mdc-list .mdc-list-item:hover {
     .live-indicator,
     .ship-indicator {
-      animation: fade-out 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-out, 150ms) forwards;
     }
     .link-icon .mdc-icon-button {
-      animation: fade-in-scale 150ms animation.$standard-curve-timing-function forwards;
+      animation: animation.standard(fade-in-scale, 150ms) forwards;
     }
   }
 }
@@ -74,7 +74,7 @@
     flex-shrink: 0;
     animation: placeholder 2s ease infinite;
   }
-  animation: fade-in 500ms animation.$standard-curve-timing-function forwards;
+  animation: animation.standard(fade-in, 500ms) forwards;
   height: 56px;
   width: 100px;
   background-size: cover;

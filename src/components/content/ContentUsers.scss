@@ -26,11 +26,11 @@
             padding: 0;
             .mdc-linear-progress {
               height: 0px;
-              transition: height 100ms animation.$standard-curve-timing-function;
+              transition: animation.standard(height, 100ms);
             }
           }
           &.loading .mdc-data-table__header-cell .mdc-linear-progress {
-                height: 4px;
+            height: 4px;
           }
         }
       }

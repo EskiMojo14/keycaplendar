@@ -8,7 +8,7 @@
   min-width: 100%;
   width: 100%;
   box-sizing: border-box;
-  transition: transform 350ms animation.$standard-curve-timing-function;
+  transition: animation.standard(transform, 350ms);
   .mdc-card {
     grid-column: span 1;
     padding: 16px;
@@ -17,7 +17,8 @@
     &:first-of-type {
       margin-top: 0;
     }
-    &.count-graph, &.profile-graph {
+    &.count-graph,
+    &.profile-graph {
       .mdc-typography--headline5 {
         margin-top: 0;
         margin-bottom: 16px;
@@ -58,12 +59,12 @@
         .ct-line,
         .ct-bar,
         .ct-slice-donut {
-          transition: stroke 200ms animation.$standard-curve-timing-function;
+          transition: animation.standard(stroke, 200ms);
         }
         .ct-slice-pie,
         .ct-donut-solid,
         .ct-area {
-          transition: fill 200ms animation.$standard-curve-timing-function;
+          transition: animation.standard(fill, 200ms);
         }
       }
     }
