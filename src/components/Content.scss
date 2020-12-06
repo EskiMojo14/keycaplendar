@@ -73,9 +73,11 @@
     z-index: -1;
   }
   &.content.card::before,
-  .statistics &::before,
   .audit &::before {
     height: 256px - top-app-bar.$row-height;
+  }
+  .statistics &::before {
+    height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
 .bottomNav + .main.card::before {
@@ -101,9 +103,11 @@
     max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
   }
   .main.content.card::before,
-  .statistics .main::before,
   .audit .main::before {
     height: 256px - top-app-bar.$mobile-row-height;
+  }
+  .statistics .main::before {
+    height: 256px - (top-app-bar.$mobile-row-height + 48px);
   }
 }
 

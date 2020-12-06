@@ -208,8 +208,13 @@
       padding-top: top-app-bar.$row-height + $diff;
     }
   }
-  .statistics .mdc-top-app-bar--fixed-adjust {
-    padding-top: top-app-bar.$row-height + 48px + $diff * 2;
+  .statistics {
+    .mdc-top-app-bar--fixed-adjust {
+      padding-top: top-app-bar.$row-height + 48px + $diff * 2;
+    }
+    .main::before {
+      height: 256px - (top-app-bar.$row-height + 48px + $diff * 2);
+    }
   }
   .autocomplete-mobile,
   .bottom-nav .search-app-bar .autocomplete-mobile {
@@ -324,8 +329,13 @@
         padding-top: top-app-bar.$mobile-row-height + $diff;
       }
     }
-    .statistics .mdc-top-app-bar--fixed-adjust {
-      padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
+    .statistics {
+      .mdc-top-app-bar--fixed-adjust {
+        padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
+      }
+      .main::before {
+        height: 256px - (top-app-bar.$mobile-row-height + 48px + $diff * 2);
+      }
     }
     .autocomplete-mobile,
     .bottom-nav .search-app-bar .autocomplete-mobile {
