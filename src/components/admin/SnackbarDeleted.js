@@ -10,13 +10,17 @@ export const SnackbarDeleted = (props) => {
     const { id, ...set } = props.set;
     const db = firebase.firestore();
     db.collection("keysets")
-      .add({
-        ...set,
-        gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
-        latestEditor: props.user.id,
-      })
-      .then((docRef) => {
-        console.log("Document recreated with ID: ", docRef.id);
+      .doc(id)
+      .set(
+        {
+          ...set,
+          gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
+          latestEditor: props.user.id,
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("Document recreated with ID: ", id);
         props.snackbarQueue.notify({ title: "Entry successfully recreated." });
         props.getData();
       })
