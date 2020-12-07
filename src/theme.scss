@@ -97,8 +97,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
 @mixin theme($theme, $dark: false) {
   $text-colors: (
-    text-primary: rgba(map-get($theme, on-surface), 0.87),
-    text-secondary: rgba(map-get($theme, on-surface), 0.6),
+    text-high: rgba(map-get($theme, on-surface), 0.87),
+    text-medium: rgba(map-get($theme, on-surface), 0.6),
     text-disabled: rgba(map-get($theme, on-surface), 0.38),
   );
   $variables: map-merge($theme, $text-colors);
@@ -156,23 +156,23 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     }
     &__action--icon {
       &:not(:disabled) {
-        color: map-get($variables, text-secondary);
+        color: map-get($variables, text-medium);
       }
       &:disabled {
         color: map-get($variables, text-disabled);
       }
     }
     .mdc-typography--headline5 {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
     }
     .live-indicator,
     .ship-indicator {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
     }
     .overline,
     .mdc-typography--subtitle2,
     .mdc-typography--caption {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
     }
   }
   @if ($dark) {
@@ -186,7 +186,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .mdc-checkbox {
     @include checkbox.container-colors(
-      map-get($variables, text-secondary),
+      map-get($variables, text-medium),
       transparent,
       map-get($variables, secondary),
       rgba(map-get($variables, secondary), 0.3)
@@ -210,10 +210,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface))
     );
     @include dialog.scrim-color(map-get($variables, on-surface), 0.32);
-    @include dialog.title-ink-color(map-get($variables, text-primary));
-    @include dialog.content-ink-color(map-get($variables, text-secondary));
+    @include dialog.title-ink-color(map-get($variables, text-high));
+    @include dialog.content-ink-color(map-get($variables, text-medium));
     .primary {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
     }
   }
 
@@ -251,7 +251,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       &.nav.mdc-drawer--open,
       &.nav.mdc-drawer--opening {
         .mdc-list-item {
-          color: map-get($variables, text-primary);
+          color: map-get($variables, text-high);
           &.mdc-list-item--activated {
             color: map-get($variables, primary);
           }
@@ -303,7 +303,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       @include chips.selected-ink-color(map-get($variables, primary));
     }
     .mdc-icon-button {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
       @include ripple.states(map-get($variables, on-surface));
     }
 
@@ -314,16 +314,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     &__content {
       .mdc-list-item {
         &__secondary-text {
-          color: map-get($variables, text-secondary);
+          color: map-get($variables, text-medium);
         }
       }
       .mdc-typography--overline {
-        color: map-get($variables, text-secondary);
+        color: map-get($variables, text-medium);
       }
       .mdc-typography--headline4,
       .mdc-typography--body2,
       .mdc-form-field {
-        color: map-get($variables, text-primary);
+        color: map-get($variables, text-high);
       }
     }
     .mdc-linear-progress {
@@ -346,11 +346,11 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
 
   .mdc-form-field {
-    color: map-get($variables, text-primary);
+    color: map-get($variables, text-high);
   }
 
   .mdc-icon-button {
-    @include icon-button.ink-color(map-get($variables, text-secondary));
+    @include icon-button.ink-color(map-get($variables, text-medium));
     @include icon-button.disabled-ink-color(map-get($variables, text-disabled));
   }
 
@@ -382,10 +382,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
   .mdc-list .mdc-list-item,
   .mdc-list-item {
-    @include list.item-primary-text-ink-color(map-get($variables, text-primary));
-    @include list.item-secondary-text-ink-color(map-get($variables, text-secondary));
-    @include list.item-graphic-ink-color(map-get($variables, text-secondary));
-    @include list.item-meta-ink-color(map-get($variables, text-secondary));
+    @include list.item-primary-text-ink-color(map-get($variables, text-high));
+    @include list.item-secondary-text-ink-color(map-get($variables, text-medium));
+    @include list.item-graphic-ink-color(map-get($variables, text-medium));
+    @include list.item-meta-ink-color(map-get($variables, text-medium));
     @include ripple.states(map-get($variables, on-surface));
     @include ripple.states-activated(map-get($variables, primary));
     @include ripple.states-selected(map-get($variables, primary));
@@ -408,12 +408,12 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         opacity: 1;
       }
       .mdc-list-item__primary-text {
-        @include list.item-primary-text-ink-color(map-get($variables, text-primary));
+        @include list.item-primary-text-ink-color(map-get($variables, text-high));
       }
-      @include list.item-secondary-text-ink-color(map-get($variables, text-secondary));
+      @include list.item-secondary-text-ink-color(map-get($variables, text-medium));
     }
     .mdc-icon-button {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
       @include ripple.states(map-get($variables, on-surface));
     }
     .time-indicator {
@@ -421,7 +421,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       color: map-get($variables, surface);
     }
     .overline {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
     }
   }
 
@@ -436,18 +436,18 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
 
   .mdc-radio {
-    @include radio.unchecked-stroke-color(map-get($variables, text-secondary));
+    @include radio.unchecked-stroke-color(map-get($variables, text-medium));
     @include radio.checked-stroke-color(map-get($variables, secondary));
     @include radio.ink-color(map-get($variables, secondary));
     @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-radio__ripple");
   }
 
   .mdc-select {
-    @include select.ink-color(map-get($variables, text-primary));
-    @include select.label-color(map-get($variables, text-secondary));
+    @include select.ink-color(map-get($variables, text-high));
+    @include select.label-color(map-get($variables, text-medium));
     @include select.focused-label-color(rgba(map-get($variables, primary), 0.87));
     @include select.outline-color(rgba(map-get($variables, on-surface), 0.38));
-    @include select.hover-outline-color(map-get($variables, text-primary));
+    @include select.hover-outline-color(map-get($variables, text-high));
     @include select.focused-outline-color(map-get($variables, primary));
     .mdc-select__dropdown-icon {
       // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
@@ -465,10 +465,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     @include slider.thumb-color(map-get($variables, secondary));
     @include slider.focus-halo-color(map-get($variables, secondary));
     &:not(.mdc-slider--disabled) .mdc-slider__pin {
-      background-color: map-get($variables, text-primary);
+      background-color: map-get($variables, text-high);
       color: map-get($variables, surface);
       &::before {
-        border-top-color: map-get($variables, text-primary);
+        border-top-color: map-get($variables, text-high);
       }
     }
     &.mdc-slider--disabled {
@@ -479,7 +479,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         }
       }
       .mdc-slider__track-marker-container {
-        background-color: map-get($variables, text-secondary);
+        background-color: map-get($variables, text-medium);
       }
       .mdc-slider__thumb {
         fill: map-get($variables, text-disabled);
@@ -504,18 +504,18 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .mdc-text-field {
     &:not(.mdc-text-field--focused) {
-      @include text-field-icon.leading-icon-color(map-get($variables, text-secondary));
-      @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
-      @include text-field.ink-color(map-get($variables, text-primary));
-      @include text-field.label-color(map-get($variables, text-secondary));
-      @include text-field.caret-color(map-get($variables, text-primary));
+      @include text-field-icon.leading-icon-color(map-get($variables, text-medium));
+      @include text-field-icon.trailing-icon-color(map-get($variables, text-medium));
+      @include text-field.ink-color(map-get($variables, text-high));
+      @include text-field.label-color(map-get($variables, text-medium));
+      @include text-field.caret-color(map-get($variables, text-high));
       @include text-field.outline-color(map-get($variables, text-disabled));
-      @include text-field.hover-outline-color(map-get($variables, text-secondary));
-      @include text-field-helper-text.helper-text-color(map-get($variables, text-secondary));
+      @include text-field.hover-outline-color(map-get($variables, text-medium));
+      @include text-field-helper-text.helper-text-color(map-get($variables, text-medium));
       &.mdc-text-field--invalid {
-        @include text-field-icon.leading-icon-color(map-get($variables, text-secondary));
-        @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
-        @include text-field.ink-color(map-get($variables, text-primary));
+        @include text-field-icon.leading-icon-color(map-get($variables, text-medium));
+        @include text-field-icon.trailing-icon-color(map-get($variables, text-medium));
+        @include text-field.ink-color(map-get($variables, text-high));
         @include text-field.label-color(map-get($variables, error));
         @include text-field.caret-color(map-get($variables, error));
         @include text-field.outline-color(map-get($variables, error));
@@ -526,13 +526,13 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       }
     }
     &.mdc-text-field--focused {
-      @include text-field-icon.leading-icon-color(map-get($variables, text-secondary));
-      @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
-      @include text-field.ink-color(map-get($variables, text-primary));
+      @include text-field-icon.leading-icon-color(map-get($variables, text-medium));
+      @include text-field-icon.trailing-icon-color(map-get($variables, text-medium));
+      @include text-field.ink-color(map-get($variables, text-high));
       @include text-field.label-color(map-get($variables, primary));
       @include text-field.caret-color(map-get($variables, primary));
       @include text-field.outline-color(map-get($variables, primary));
-      @include text-field-helper-text.helper-text-color(map-get($variables, text-secondary));
+      @include text-field-helper-text.helper-text-color(map-get($variables, text-medium));
       .mdc-text-field__input:required ~ .mdc-notched-outline .mdc-floating-label::after {
         color: map-get($variables, primary);
       }
@@ -561,8 +561,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
   .mdc-tab-bar {
     .mdc-tab {
-      @include tab.text-label-color(map-get($variables, text-secondary));
-      @include tab.icon-color(map-get($variables, text-secondary));
+      @include tab.text-label-color(map-get($variables, text-medium));
+      @include tab.icon-color(map-get($variables, text-medium));
       @include tab.states-color(map-get($variables, on-surface));
       @include tab.active-text-label-color(map-get($variables, primary));
       @include tab.active-icon-color(map-get($variables, primary));
@@ -576,8 +576,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     @include top-app-bar.fill-color(
       if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary))
     );
-    @include top-app-bar.ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
-    @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-primary), map-get($variables, on-primary)));
+    @include top-app-bar.ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
+    @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
     @if ($dark != true) {
       .toggle-group {
         .mdc-button {
@@ -623,44 +623,40 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)), 0.15);
         .mdc-text-field__input {
           &::placeholder {
-            color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+            color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6));
             opacity: 1;
           }
           &::-ms-input-placeholder {
-            color: if(
-              $dark,
-              map-get($variables, text-secondary),
-              rgba(map-get($variables, on-primary), 0.6)
-            ) !important;
+            color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6)) !important;
           }
         }
         &:not(.mdc-text-field--focused) {
           @include text-field-icon.leading-icon-color(
-            if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6))
+            if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6))
           );
           @include text-field-icon.trailing-icon-color(
-            if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6))
+            if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6))
           );
           @include text-field.ink-color(
-            if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87))
+            if($dark, map-get($variables, text-high), rgba(map-get($variables, on-primary), 0.87))
           );
           @include text-field.caret-color(if($dark, map-get($variables, on-surface), map-get($variables, on-primary)));
           @include text-field.outline-color(
             if($dark, map-get($variables, text-disabled), rgba(map-get($variables, on-primary), 0.38))
           );
           @include text-field.hover-outline-color(
-            if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6))
+            if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6))
           );
         }
         &.mdc-text-field--focused {
           @include text-field-icon.leading-icon-color(
-            if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6))
+            if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6))
           );
           @include text-field-icon.trailing-icon-color(
-            if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6))
+            if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6))
           );
           @include text-field.ink-color(
-            if($dark, map-get($variables, text-primary), rgba(map-get($variables, on-primary), 0.87))
+            if($dark, map-get($variables, text-high), rgba(map-get($variables, on-primary), 0.87))
           );
           @include text-field.caret-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
           @include text-field.outline-color(if($dark, map-get($variables, primary), map-get($variables, on-primary)));
@@ -674,18 +670,18 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         .search-bar-field.mdc-text-field {
           .mdc-text-field__input {
             &::placeholder {
-              color: map-get($variables, text-secondary);
+              color: map-get($variables, text-medium);
               opacity: 1;
             }
             &::-ms-input-placeholder {
-              color: map-get($variables, text-secondary) !important;
+              color: map-get($variables, text-medium) !important;
             }
           }
           &:not(.mdc-text-field--focused),
           &.mdc-text-field--focused {
-            @include text-field-icon.leading-icon-color(map-get($variables, text-secondary));
-            @include text-field-icon.trailing-icon-color(map-get($variables, text-secondary));
-            @include text-field.ink-color(map-get($variables, text-primary));
+            @include text-field-icon.leading-icon-color(map-get($variables, text-medium));
+            @include text-field-icon.trailing-icon-color(map-get($variables, text-medium));
+            @include text-field.ink-color(map-get($variables, text-high));
             @include text-field.caret-color(map-get($variables, on-surface));
           }
           .leading-icon-ripple {
@@ -704,7 +700,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     }
 
     .mdc-button {
-      color: map-get($variables, if($dark, text-primary, on-primary));
+      color: map-get($variables, if($dark, text-high, on-primary));
       @include ripple.states-selected(
         if($dark, on-surface, on-primary),
         false,
@@ -712,7 +708,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         ".mdc-button__ripple"
       );
       &[disabled] {
-        color: rgba(map-get($variables, if($dark, text-primary, on-primary)), 0.38);
+        color: rgba(map-get($variables, if($dark, text-high, on-primary)), 0.38);
       }
     }
 
@@ -736,7 +732,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     color: map-get($variables, on-error);
     background-color: map-get($variables, error);
     &.user-icon {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
       background-color: mix(
         map-get($variables, on-surface),
         if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
@@ -750,14 +746,14 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
 
   .mdc-data-table {
-    color: map-get($variables, text-primary);
+    color: map-get($variables, text-high);
     &__cell {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
     }
     &__header-cell {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
       &.sorted::before {
-        color: map-get($variables, text-secondary);
+        color: map-get($variables, text-medium);
       }
       &.profile-title {
         @include ripple.states(map-get($variables, on-surface));
@@ -774,13 +770,13 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .rmwc-tooltip {
     &-inner {
-      background-color: map-get($variables, text-primary);
+      background-color: map-get($variables, text-high);
       color: map-get($variables, surface);
     }
     &-placement-top .rmwc-tooltip-arrow,
     &-placement-topLeft .rmwc-tooltip-arrow,
     &-placement-topRight .rmwc-tooltip-arrow {
-      border-top-color: map-get($variables, text-primary);
+      border-top-color: map-get($variables, text-high);
       &-inner {
         border-top-color: map-get($variables, surface);
       }
@@ -788,7 +784,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     &-placement-right .rmwc-tooltip-arrow,
     &-placement-rightTop .rmwc-tooltip-arrow,
     &-placement-rightBottom .rmwc-tooltip-arrow {
-      border-right-color: map-get($variables, text-primary);
+      border-right-color: map-get($variables, text-high);
       &-inner {
         border-right-color: map-get($variables, surface);
       }
@@ -796,7 +792,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     &-placement-left .rmwc-tooltip-arrow,
     &-placement-leftTop .rmwc-tooltip-arrow,
     &-placement-leftBottom .rmwc-tooltip-arrow {
-      border-left-color: map-get($variables, text-primary);
+      border-left-color: map-get($variables, text-high);
       &-inner {
         border-left-color: map-get($variables, surface);
       }
@@ -804,7 +800,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
     &-placement-bottom .rmwc-tooltip-arrow-inner,
     &-placement-bottomLeft .rmwc-tooltip-arrow-inner,
     &-placement-bottomRight .rmwc-tooltip-arrow-inner {
-      border-bottom-color: map-get($variables, text-primary);
+      border-bottom-color: map-get($variables, text-high);
       &-inner {
         border-bottom-color: map-get($variables, surface);
       }
@@ -813,8 +809,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   .ct-chart {
     .ct-label,
     .ct-axis-title {
-      fill: map-get($variables, text-secondary);
-      color: map-get($variables, text-secondary);
+      fill: map-get($variables, text-medium);
+      color: map-get($variables, text-medium);
     }
   }
 
@@ -946,23 +942,23 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
 
   .banner-text {
-    color: map-get($variables, text-secondary);
+    color: map-get($variables, text-medium);
   }
 
   .empty-container,
   .login-container {
     .title {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
     }
     .subtitle {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
     }
   }
 
   .footer {
-    color: map-get($variables, text-secondary);
+    color: map-get($variables, text-medium);
     .bold {
-      color: map-get($variables, text-primary);
+      color: map-get($variables, text-high);
     }
   }
 
@@ -986,10 +982,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
   }
   .image-upload {
     &-title {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
     }
     .image-display {
-      fill: map-get($variables, text-secondary);
+      fill: map-get($variables, text-medium);
       &::before {
         background-color: map-get($variables, on-surface);
       }
@@ -997,14 +993,14 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         border-color: map-get($variables, primary);
       }
       .caption {
-        color: map-get($variables, text-secondary);
+        color: map-get($variables, text-medium);
       }
     }
   }
 
   .sales-container {
     .sales-image-icon {
-      fill: map-get($variables, text-secondary);
+      fill: map-get($variables, text-medium);
     }
   }
 
@@ -1014,16 +1010,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .subheader,
   .drag-handle {
-    color: map-get($variables, text-secondary);
+    color: map-get($variables, text-medium);
   }
 
   .main.card.content .outer-container:first-child .subheader {
-    color: if($dark, map-get($variables, text-secondary), rgba(map-get($variables, on-primary), 0.6));
+    color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6));
   }
 
   .filter-drawer-open .main.card.content .outer-container:first-child .subheader,
   .details-drawer-open .main.card.content .outer-container:first-child .subheader {
-    color: map-get($variables, text-secondary);
+    color: map-get($variables, text-medium);
   }
 
   .main::before {
@@ -1032,7 +1028,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .legal,
   .guide {
-    color: map-get($variables, text-primary);
+    color: map-get($variables, text-high);
     a {
       color: map-get($variables, primary);
     }
@@ -1043,9 +1039,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
       }
     }
     .secondary {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
       .bold {
-        color: map-get($variables, text-primary);
+        color: map-get($variables, text-high);
       }
     }
     &-container::before {
@@ -1061,7 +1057,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .log {
     .mdc-icon-button {
-      color: map-get($variables, text-secondary);
+      color: map-get($variables, text-medium);
       @include ripple.states(map-get($variables, on-surface));
     }
     .before,
@@ -1071,7 +1067,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         color: rgba(map-get($variables, primary), 0.38);
       }
       .highlight {
-        color: map-get($variables, text-primary);
+        color: map-get($variables, text-high);
         a {
           color: map-get($variables, primary);
         }
@@ -1093,7 +1089,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
 
   .toggle-group {
     .mdc-button {
-      @include button.ink-color(map-get($variables, text-secondary));
+      @include button.ink-color(map-get($variables, text-medium));
       @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
       @include ripple.states-selected(
         map-get($variables, primary),
