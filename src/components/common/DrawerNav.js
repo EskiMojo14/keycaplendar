@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { userTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -8,6 +8,7 @@ import "./DrawerNav.scss";
 import logo from "../../logo.svg";
 
 export const DrawerNav = (props) => {
+  const { user } = useContext(UserContext);
   const dismissible = props.device === "desktop";
   const setPage = (newPage) => {
     props.setPage(newPage);
@@ -15,7 +16,7 @@ export const DrawerNav = (props) => {
       props.close();
     }
   };
-  const adminOptions = props.user.isAdmin ? (
+  const adminOptions = user.isAdmin ? (
     <>
       <ListDivider />
       <ListItem onClick={(e) => setPage("audit")} activated={props.page === "audit"}>
@@ -201,6 +202,5 @@ DrawerNav.propTypes = {
   device: PropTypes.string,
   open: PropTypes.bool,
   page: PropTypes.string,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

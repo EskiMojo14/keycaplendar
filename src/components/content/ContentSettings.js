@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
-import { userTypes, queueTypes } from "../util/propTypeTemplates";
+import { queueTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -17,12 +18,13 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
+  const { user, setUser } = useContext(UserContext);
   const signOut = () => {
     firebase
       .auth()
       .signOut()
       .then(() => {
-        props.setUser({});
+        setUser({});
       })
       .catch((error) => {
         console.log("Error signing out: " + error);
@@ -34,10 +36,10 @@ export const ContentSettings = (props) => {
     props.setApplyTheme(applyThemeOptions[e.detail.index]);
   };
   const userBadge =
-    props.user.isAdmin || props.user.isEditor || props.user.isDesigner ? (
+    user.isAdmin || user.isEditor || user.isDesigner ? (
       <Badge
         label={
-          props.user.isAdmin ? (
+          user.isAdmin ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="18px" height="18px">
               <path fill="none" d="M0,0h18v18H0V0z" />
               <path
@@ -46,13 +48,13 @@ export const ContentSettings = (props) => {
               />
               <path opacity="0.3" d="M3.8,4.7v3.5c0,3.4,2.2,6.5,5.3,7.4c3-0.9,5.3-4.1,5.3-7.4V4.7L9,2.4L3.8,4.7z" />
             </svg>
-          ) : props.user.isEditor ? (
+          ) : user.isEditor ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path d="M5 18.08V19h.92l9.06-9.06-.92-.92z" opacity=".3" />
               <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z" />
             </svg>
-          ) : props.user.isDesigner ? (
+          ) : user.isDesigner ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18px" height="18px">
               <path d="M0 0h24v24H0V0z" fill="none" />
               <path
@@ -70,21 +72,21 @@ export const ContentSettings = (props) => {
         className="user-icon material-icons"
       />
     ) : null;
-  const user = props.user.name ? (
+  const userDisplay = user.name ? (
     <div className="settings-group">
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
-      <Card className={"mdc-list--two-line" + (props.user.nickname !== "" ? " three-line" : "")}>
+      <Card className={"mdc-list--two-line" + (user.nickname !== "" ? " three-line" : "")}>
         <ListItem disabled className="account">
           <BadgeAnchor className="avatar">
-            <Avatar src={props.user.avatar} size="xlarge" />
+            <Avatar src={user.avatar} size="xlarge" />
             {userBadge}
           </BadgeAnchor>
           <ListItemText>
-            {props.user.nickname !== "" ? <div className="overline">{props.user.nickname}</div> : null}
-            <ListItemPrimaryText>{props.user.name}</ListItemPrimaryText>
-            <ListItemSecondaryText>{props.user.email}</ListItemSecondaryText>
+            {user.nickname !== "" ? <div className="overline">{user.nickname}</div> : null}
+            <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
+            <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
           </ListItemText>
           <div className="button">
             <Button raised label="Log out" onClick={signOut} />
@@ -219,7 +221,7 @@ export const ContentSettings = (props) => {
     <div className="admin-main">
       <div className="settings-container">
         <div className="settings">
-          {user}
+          {userDisplay}
           {bottomNav}
           <div className="settings-group">
             <div className="subheader">
@@ -318,8 +320,6 @@ ContentSettings.propTypes = {
   setLightTheme: PropTypes.func,
   setManualTheme: PropTypes.func,
   setToTimeTheme: PropTypes.func,
-  setUser: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
   toTimeTheme: PropTypes.string,
-  user: PropTypes.shape(userTypes),
 };

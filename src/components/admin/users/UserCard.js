@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../../firebase";
 import { userTypes, queueTypes } from "../../util/propTypeTemplates";
+import { UserContext } from "../../util/contexts";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -133,7 +134,7 @@ export class UserCard extends React.Component {
       />
     );
     const deleteButton =
-      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
+      user.email === this.context.user.email || user.email === "ben.j.durrant@gmail.com" ? null : (
         <IconButton
           onClick={() => {
             this.props.delete(user);
@@ -203,7 +204,7 @@ export class UserCard extends React.Component {
                       name={role}
                       onClick={this.handleChange}
                       disabled={
-                        (user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com") &&
+                        (user.email === this.context.user.email || user.email === "ben.j.durrant@gmail.com") &&
                         role !== "designer"
                       }
                     />
@@ -222,11 +223,12 @@ export class UserCard extends React.Component {
   }
 }
 
+UserCard.contextType = UserContext;
+
 export default UserCard;
 
 UserCard.propType = {
   allDesigner: PropTypes.arrayOf(PropTypes.string),
-  currentuser: PropTypes.shape(userTypes),
   delete: PropTypes.func,
   getUsers: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),

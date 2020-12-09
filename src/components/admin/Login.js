@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../firebase";
-import { userTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
@@ -11,6 +11,8 @@ import "./Login.scss";
 import peach from "../../peach.svg";
 
 export const Login = (props) => {
+  const { user } = useContext(UserContext);
+
   const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: props.device === "desktop" ? "popup" : "redirect",
@@ -24,7 +26,7 @@ export const Login = (props) => {
     },
   };
 
-  if (props.user.name) {
+  if (user.email) {
     return <Redirect to="/" />;
   }
 
@@ -56,5 +58,4 @@ export default Login;
 
 Login.propTypes = {
   device: PropTypes.string,
-  user: PropTypes.shape(userTypes),
 };

@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
-import { userTypes, setTypes } from "../util/propTypeTemplates";
+import { setTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -191,8 +192,8 @@ export class DrawerDetails extends React.Component {
         </div>
       ) : null;
     const editorButtons =
-      this.props.user.isEditor ||
-      (this.props.user.isDesigner && set.designer && set.designer.includes(this.props.user.nickname)) ? (
+      this.context.user.isEditor ||
+      (this.context.user.isDesigner && set.designer && set.designer.includes(this.context.user.nickname)) ? (
         <div className="editor-buttons">
           <Button
             className="edit"
@@ -210,7 +211,7 @@ export class DrawerDetails extends React.Component {
               ),
             }}
           />
-          {this.props.user.isEditor ? (
+          {this.context.user.isEditor ? (
             <Button
               className="delete"
               outlined
@@ -341,6 +342,8 @@ export class DrawerDetails extends React.Component {
   }
 }
 
+DrawerDetails.contextType = UserContext;
+
 export default DrawerDetails;
 
 DrawerDetails.propTypes = {
@@ -354,6 +357,5 @@ DrawerDetails.propTypes = {
   set: PropTypes.shape(setTypes()),
   setSearch: PropTypes.func,
   toggleLichTheme: PropTypes.func,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

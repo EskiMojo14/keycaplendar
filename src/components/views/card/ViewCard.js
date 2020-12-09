@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { userTypes, setTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
 import { ElementCard } from "./ElementCard";
 import "./ViewCard.scss";
 
@@ -86,7 +86,6 @@ export const ViewCard = (props) => {
         }
         return (
           <ElementCard
-            user={props.user}
             page={props.page}
             selected={props.detailSet === set}
             set={set}
@@ -117,5 +116,4 @@ ViewCard.propTypes = {
   edit: PropTypes.func,
   page: PropTypes.string,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  user: PropTypes.shape(userTypes),
 };

@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes, setTypes, queueTypes } from "../util/propTypeTemplates";
+import { setTypes, queueTypes } from "../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { UserContext } from "../util/contexts";
 
 export const DialogDelete = (props) => {
+  const { user } = useContext(UserContext);
   const deleteEntry = (e) => {
     e.preventDefault();
     const db = firebase.firestore();
     db.collection("keysets")
       .doc(props.set.id)
       .set({
-        latestEditor: props.user.id,
+        latestEditor: user.id,
       })
       .then((docRef) => {
         props.openSnackbar();
@@ -50,5 +52,4 @@ DialogDelete.propTypes = {
   openSnackbar: PropTypes.func,
   set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
 };

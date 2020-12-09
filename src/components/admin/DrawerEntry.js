@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes, setTypes, queueTypes } from "../util/propTypeTemplates";
+import { setTypes, queueTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { ImageUpload } from "./ImageUpload";
@@ -307,7 +308,7 @@ export class DrawerCreate extends React.Component {
           gbLaunch: this.state.gbLaunch,
           gbEnd: this.state.gbEnd,
           vendors: this.state.vendors,
-          latestEditor: this.props.user.id,
+          latestEditor: this.context.user.id,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -328,9 +329,9 @@ export class DrawerCreate extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
-      if (this.props.user.isEditor === false && this.props.user.isDesigner) {
+      if (this.context.user.isEditor === false && this.context.user.isDesigner) {
         this.setState({
-          designer: [this.props.user.nickname],
+          designer: [this.context.user.nickname],
         });
       }
     }
@@ -531,7 +532,7 @@ export class DrawerCreate extends React.Component {
                 onChange={this.handleChange}
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
-                disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
+                disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
               />
               <Autocomplete
                 open={this.state.focused === "designer"}
@@ -794,6 +795,8 @@ export class DrawerCreate extends React.Component {
     );
   }
 }
+
+DrawerCreate.contextType = UserContext;
 
 export class DrawerEdit extends React.Component {
   constructor(props) {
@@ -1105,7 +1108,7 @@ export class DrawerEdit extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
-        latestEditor: this.props.user.id,
+        latestEditor: this.context.user.id,
       })
       .then((docRef) => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
@@ -1314,7 +1317,7 @@ export class DrawerEdit extends React.Component {
                 onChange={this.handleChange}
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
-                disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
+                disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
               />
               <Autocomplete
                 open={this.state.focused === "designer"}
@@ -1578,6 +1581,8 @@ export class DrawerEdit extends React.Component {
   }
 }
 
+DrawerEdit.contextType = UserContext;
+
 export default DrawerCreate;
 
 DrawerCreate.propTypes = {
@@ -1589,7 +1594,6 @@ DrawerCreate.propTypes = {
   open: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
   snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
 };
 
 DrawerEdit.propTypes = {
@@ -1602,5 +1606,4 @@ DrawerEdit.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.string),
   set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
 };

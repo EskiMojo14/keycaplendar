@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { userTypes, setTypes } from "../util/propTypeTemplates";
+import { setTypes } from "../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -121,7 +121,6 @@ export const ContentGrid = (props) => {
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}
           edit={props.edit}
-          user={props.user}
         />
       );
     } else if (props.view === "list") {
@@ -185,6 +184,5 @@ ContentGrid.propTypes = {
   page: PropTypes.string,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   sort: PropTypes.string,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

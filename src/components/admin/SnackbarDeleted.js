@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
 import { setTypes, queueTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 export const SnackbarDeleted = (props) => {
+  const { user } = useContext(UserContext);
   const recreateEntry = (e) => {
     e.preventDefault();
     const { id, ...set } = props.set;
@@ -15,7 +17,7 @@ export const SnackbarDeleted = (props) => {
         {
           ...set,
           gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
-          latestEditor: props.user.id,
+          latestEditor: user.id,
         },
         { merge: true }
       )

@@ -1,14 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import {
-  userTypes,
-  setTypes,
-  whitelistTypes,
-  statisticsTypes,
-  statisticsSortTypes,
-  queueTypes,
-} from "./util/propTypeTemplates";
+import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "./util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -32,6 +25,7 @@ import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
+import { UserContext } from "./util/contexts";
 
 const bodyScroll = require("body-scroll-toggle");
 
@@ -467,7 +461,6 @@ export class DesktopContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics
@@ -481,7 +474,7 @@ export class DesktopContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+    ) : this.props.page === "audit" && this.context.user.isAdmin ? (
       <ContentAudit
         loading={this.props.loading}
         actions={this.state.auditActionsFiltered}
@@ -489,11 +482,10 @@ export class DesktopContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
       />
-    ) : this.props.page === "users" && this.props.user.isAdmin ? (
+    ) : this.props.page === "users" && this.context.user.isAdmin ? (
       <ContentUsers
         loading={this.props.loading}
         toggleLoading={this.props.toggleLoading}
-        user={this.props.user}
         device={this.props.device}
         view={this.state.userView}
         sort={this.state.userSort}
@@ -505,8 +497,6 @@ export class DesktopContent extends React.Component {
     ) : this.props.page === "settings" ? (
       <ContentSettings
         device={this.props.device}
-        user={this.props.user}
-        setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
@@ -527,7 +517,7 @@ export class DesktopContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      (this.context.user.isEditor || this.context.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
       this.props.page !== "users" &&
@@ -537,7 +527,6 @@ export class DesktopContent extends React.Component {
           <DrawerCreate
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -548,7 +537,6 @@ export class DesktopContent extends React.Component {
           <DrawerEdit
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -557,7 +545,7 @@ export class DesktopContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          {this.props.user.isEditor ? (
+          {this.context.user.isEditor ? (
             <>
               <DialogDelete
                 open={this.state.deleteDialogOpen}
@@ -566,7 +554,6 @@ export class DesktopContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
               <SnackbarDeleted
                 open={this.state.deleteSnackbarOpen}
@@ -574,7 +561,6 @@ export class DesktopContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
             </>
           ) : null}
@@ -612,7 +598,6 @@ export class DesktopContent extends React.Component {
           close={this.closeNavDrawer}
           page={this.props.page}
           setPage={this.props.setPage}
-          user={this.props.user}
         />
         <DrawerAppContent
           className={
@@ -652,7 +637,6 @@ export class DesktopContent extends React.Component {
             <DrawerDetails
               device={this.props.device}
               view={this.props.view}
-              user={this.props.user}
               set={this.state.detailSet}
               open={this.state.detailsDrawerOpen}
               close={this.closeDetailsDrawer}
@@ -688,6 +672,9 @@ export class DesktopContent extends React.Component {
     );
   }
 }
+
+DesktopContent.contextType = UserContext;
+
 export class TabletContent extends React.Component {
   constructor(props) {
     super(props);
@@ -1058,7 +1045,6 @@ export class TabletContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         detailSet={this.state.detailSet}
         edit={this.openEditDrawer}
-        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics
@@ -1071,7 +1057,7 @@ export class TabletContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+    ) : this.props.page === "audit" && this.context.user.isAdmin ? (
       <ContentAudit
         loading={this.props.loading}
         actions={this.state.auditActionsFiltered}
@@ -1079,11 +1065,10 @@ export class TabletContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
       />
-    ) : this.props.page === "users" && this.props.user.isAdmin ? (
+    ) : this.props.page === "users" && this.context.user.isAdmin ? (
       <ContentUsers
         loading={this.props.loading}
         toggleLoading={this.props.toggleLoading}
-        user={this.props.user}
         device={this.props.device}
         view={"card"}
         sort={this.state.userSort}
@@ -1095,8 +1080,6 @@ export class TabletContent extends React.Component {
     ) : this.props.page === "settings" ? (
       <ContentSettings
         device={this.props.device}
-        user={this.props.user}
-        setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
@@ -1117,7 +1100,7 @@ export class TabletContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      (this.context.user.isEditor || this.context.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
       this.props.page !== "users" &&
@@ -1127,7 +1110,6 @@ export class TabletContent extends React.Component {
           <DrawerCreate
             open={this.state.createDrawerOpen}
             close={this.closeCreateDrawer}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -1138,7 +1120,6 @@ export class TabletContent extends React.Component {
           <DrawerEdit
             open={this.state.editDrawerOpen}
             close={this.closeEditDrawer}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -1147,7 +1128,7 @@ export class TabletContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          {this.props.user.isEditor ? (
+          {this.context.user.isEditor ? (
             <>
               <DialogDelete
                 open={this.state.deleteDialogOpen}
@@ -1156,7 +1137,6 @@ export class TabletContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
               <SnackbarDeleted
                 open={this.state.deleteSnackbarOpen}
@@ -1164,7 +1144,6 @@ export class TabletContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
             </>
           ) : null}
@@ -1212,7 +1191,6 @@ export class TabletContent extends React.Component {
           page={this.props.page}
           setPage={this.props.setPage}
           close={this.closeNavDrawer}
-          user={this.props.user}
         />
         <TabletAppBar
           page={this.props.page}
@@ -1246,7 +1224,6 @@ export class TabletContent extends React.Component {
         <DrawerDetails
           device={this.props.device}
           view={this.props.view}
-          user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
           close={this.closeDetailsDrawer}
@@ -1276,6 +1253,8 @@ export class TabletContent extends React.Component {
     );
   }
 }
+
+TabletContent.contextType = UserContext;
 
 export class MobileContent extends React.Component {
   constructor(props) {
@@ -1662,7 +1641,6 @@ export class MobileContent extends React.Component {
         closeDetails={this.closeDetailsDrawer}
         edit={this.openEditDialog}
         detailSet={this.state.detailSet}
-        user={this.props.user}
       />
     ) : this.props.page === "statistics" ? (
       <ContentStatistics
@@ -1675,7 +1653,7 @@ export class MobileContent extends React.Component {
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
       />
-    ) : this.props.page === "audit" && this.props.user.isAdmin ? (
+    ) : this.props.page === "audit" && this.context.user.isAdmin ? (
       <ContentAudit
         loading={this.props.loading}
         actions={this.state.auditActionsFiltered}
@@ -1683,11 +1661,10 @@ export class MobileContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
         openDeleteDialog={this.openAuditDeleteDialog}
       />
-    ) : this.props.page === "users" && this.props.user.isAdmin ? (
+    ) : this.props.page === "users" && this.context.user.isAdmin ? (
       <ContentUsers
         loading={this.props.loading}
         toggleLoading={this.props.toggleLoading}
-        user={this.props.user}
         device={this.props.device}
         view={"card"}
         sort={this.state.userSort}
@@ -1701,8 +1678,6 @@ export class MobileContent extends React.Component {
         device={this.props.device}
         bottomNav={this.props.bottomNav}
         setBottomNav={this.props.setBottomNav}
-        user={this.props.user}
-        setUser={this.props.setUser}
         lightTheme={this.props.lightTheme}
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
@@ -1723,7 +1698,7 @@ export class MobileContent extends React.Component {
       <ContentEmpty />
     );
     const editorElements =
-      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      (this.context.user.isEditor || this.context.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
       this.props.page !== "users" &&
@@ -1737,7 +1712,6 @@ export class MobileContent extends React.Component {
           <DialogCreate
             open={this.state.createDialogOpen}
             close={this.closeCreateDialog}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -1748,7 +1722,6 @@ export class MobileContent extends React.Component {
           <DialogEdit
             open={this.state.editDialogOpen}
             close={this.closeEditDialog}
-            user={this.props.user}
             profiles={this.props.profiles}
             allDesigners={this.props.allDesigners}
             allVendors={this.props.allVendors}
@@ -1757,7 +1730,7 @@ export class MobileContent extends React.Component {
             getData={this.props.getData}
             snackbarQueue={this.props.snackbarQueue}
           />
-          {this.props.user.isEditor ? (
+          {this.context.user.isEditor ? (
             <>
               <DialogDelete
                 key="DialogDelete"
@@ -1767,7 +1740,6 @@ export class MobileContent extends React.Component {
                 openSnackbar={this.openDeleteSnackbar}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
               <SnackbarDeleted
                 key="SnackbarDeleted"
@@ -1776,7 +1748,6 @@ export class MobileContent extends React.Component {
                 set={this.state.deleteSet}
                 getData={this.props.getData}
                 snackbarQueue={this.props.snackbarQueue}
-                user={this.props.user}
               />
             </>
           ) : null}
@@ -1784,7 +1755,7 @@ export class MobileContent extends React.Component {
       ) : null;
     const appBar = this.props.bottomNav ? (
       <div className="bottomNav">
-        {(this.props.user.isEditor || this.props.user.isDesigner) &&
+        {(this.context.user.isEditor || this.context.user.isDesigner) &&
         this.props.page !== "statistics" &&
         this.props.page !== "audit" &&
         this.props.page !== "users" &&
@@ -1865,7 +1836,7 @@ export class MobileContent extends React.Component {
       ) : null;
     const search =
       this.props.bottomNav &&
-      (this.props.user.isEditor || this.props.user.isDesigner) &&
+      (this.context.user.isEditor || this.context.user.isDesigner) &&
       this.props.page !== "statistics" &&
       this.props.page !== "audit" &&
       this.props.page !== "users" ? (
@@ -1904,7 +1875,7 @@ export class MobileContent extends React.Component {
     return (
       <div
         className={`${this.props.className} ${this.props.page} app-container ${
-          this.props.user.isEditor || this.props.user.isDesigner ? "offset-snackbar" : ""
+          this.context.user.isEditor || this.context.user.isDesigner ? "offset-snackbar" : ""
         } ${this.props.bottomNav ? "bottom-nav" : ""}`}
       >
         {search}
@@ -1916,7 +1887,6 @@ export class MobileContent extends React.Component {
           page={this.props.page}
           setPage={this.props.setPage}
           close={this.closeNavDrawer}
-          user={this.props.user}
         />
         {appBar}
         <main className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
@@ -1927,7 +1897,6 @@ export class MobileContent extends React.Component {
         <DrawerDetails
           device={this.props.device}
           view={this.props.view}
-          user={this.props.user}
           set={this.state.detailSet}
           open={this.state.detailsDrawerOpen}
           close={this.closeDetailsDrawer}
@@ -1957,6 +1926,8 @@ export class MobileContent extends React.Component {
     );
   }
 }
+
+MobileContent.contextType = UserContext;
 
 export default DesktopContent;
 
@@ -1994,7 +1965,6 @@ DesktopContent.propTypes = {
   setStatisticsSort: PropTypes.func,
   setStatisticsTab: PropTypes.func,
   setToTimeTheme: PropTypes.func,
-  setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
@@ -2006,7 +1976,6 @@ DesktopContent.propTypes = {
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,
   toggleLoading: PropTypes.func,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
   whitelist: PropTypes.shape(whitelistTypes),
 };
@@ -2045,7 +2014,6 @@ TabletContent.propTypes = {
   setStatisticsSort: PropTypes.func,
   setStatisticsTab: PropTypes.func,
   setToTimeTheme: PropTypes.func,
-  setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
@@ -2057,7 +2025,6 @@ TabletContent.propTypes = {
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,
   toggleLoading: PropTypes.func,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
   whitelist: PropTypes.shape(whitelistTypes),
 };
@@ -2098,7 +2065,6 @@ MobileContent.propTypes = {
   setStatisticsSort: PropTypes.func,
   setStatisticsTab: PropTypes.func,
   setToTimeTheme: PropTypes.func,
-  setUser: PropTypes.func,
   setView: PropTypes.func,
   setWhitelist: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
@@ -2110,7 +2076,6 @@ MobileContent.propTypes = {
   toTimeTheme: PropTypes.string,
   toggleLichTheme: PropTypes.func,
   toggleLoading: PropTypes.func,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
   whitelist: PropTypes.shape(whitelistTypes),
 };

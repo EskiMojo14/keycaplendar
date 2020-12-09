@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
-import { userTypes, setTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
+import { UserContext } from "../../util/contexts";
 import { Typography } from "@rmwc/typography";
 import { Card, CardMedia, CardPrimaryAction, CardActions, CardActionIcons, CardActionIcon } from "@rmwc/card";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementCard.scss";
 
 export const ElementCard = (props) => {
+  const { user } = useContext(UserContext);
   const liveIndicator =
     props.live && props.page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
@@ -45,8 +47,7 @@ export const ElementCard = (props) => {
     </Typography>
   ) : null;
   const editButton =
-    props.user.isEditor ||
-    (props.user.isDesigner && props.set.designer && props.set.designer.includes(props.user.nickname)) ? (
+    user.isEditor || (user.isDesigner && props.set.designer && props.set.designer.includes(user.nickname)) ? (
       <CardActionIcon
         icon={{
           strategy: "component",
@@ -131,5 +132,4 @@ ElementCard.propTypes = {
   subtitle: PropTypes.string,
   thisWeek: PropTypes.bool,
   title: PropTypes.string,
-  user: PropTypes.shape(userTypes),
 };

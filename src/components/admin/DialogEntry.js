@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes, setTypes, queueTypes } from "../util/propTypeTemplates";
+import { setTypes, queueTypes } from "../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { Button } from "@rmwc/button";
@@ -17,6 +17,7 @@ import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNav
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../util/Autocomplete";
+import { UserContext } from "../util/contexts";
 import "./DialogEntry.scss";
 
 const getVendorStyle = (provided, snapshot) => {
@@ -72,9 +73,9 @@ export class DialogCreate extends React.Component {
       }
     }
     if (this.props.open !== prevProps.open) {
-      if (this.props.user.isEditor === false && this.props.user.isDesigner) {
+      if (this.context.user.isEditor === false && this.context.user.isDesigner) {
         this.setState({
-          designer: [this.props.user.nickname],
+          designer: [this.context.user.nickname],
         });
       }
     }
@@ -334,7 +335,7 @@ export class DialogCreate extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
-        latestEditor: this.props.user.id,
+        latestEditor: this.context.user.id,
       })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
@@ -556,7 +557,7 @@ export class DialogCreate extends React.Component {
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
-                  disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
+                  disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
                 />
                 <Autocomplete
                   open={this.state.focused === "designer"}
@@ -820,6 +821,8 @@ export class DialogCreate extends React.Component {
     );
   }
 }
+
+DialogCreate.contextType = UserContext;
 
 export class DialogEdit extends React.Component {
   constructor(props) {
@@ -1151,7 +1154,7 @@ export class DialogEdit extends React.Component {
         gbEnd: this.state.gbEnd,
         shipped: this.state.shipped,
         vendors: this.state.vendors,
-        latestEditor: this.props.user.id,
+        latestEditor: this.context.user.id,
       })
       .then((docRef) => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
@@ -1377,7 +1380,7 @@ export class DialogEdit extends React.Component {
                     onChange={this.handleChange}
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
-                    disabled={this.props.user.isEditor === false && this.props.user.isDesigner}
+                    disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
                   />
                   <Autocomplete
                     open={this.state.focused === "designer"}
@@ -1647,6 +1650,8 @@ export class DialogEdit extends React.Component {
   }
 }
 
+DialogCreate.contextType = UserContext;
+
 export default DialogCreate;
 
 DialogCreate.propTypes = {
@@ -1658,7 +1663,6 @@ DialogCreate.propTypes = {
   open: PropTypes.bool,
   profiles: PropTypes.arrayOf(PropTypes.string),
   snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
 };
 
 DialogEdit.propTypes = {
@@ -1671,5 +1675,4 @@ DialogEdit.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.string),
   set: PropTypes.shape(setTypes()),
   snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
 };

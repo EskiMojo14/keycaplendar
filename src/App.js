@@ -8,6 +8,7 @@ import { Login } from "./components/admin/Login";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
+import { UserContext } from "./components/util/contexts";
 import "./App.scss";
 
 const queue = createSnackbarQueue();
@@ -864,8 +865,6 @@ class App extends React.Component {
       device === "desktop" ? (
         <DesktopContent
           allSets={this.state.sets}
-          user={this.state.user}
-          setUser={this.setUser}
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
@@ -915,8 +914,6 @@ class App extends React.Component {
       ) : device === "tablet" ? (
         <TabletContent
           allSets={this.state.sets}
-          user={this.state.user}
-          setUser={this.setUser}
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
@@ -966,8 +963,6 @@ class App extends React.Component {
       ) : (
         <MobileContent
           allSets={this.state.sets}
-          user={this.state.user}
-          setUser={this.setUser}
           getData={this.getData}
           className={this.state.transition ? "view-transition" : ""}
           page={this.state.page}
@@ -1023,7 +1018,9 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/login">
-            <Login device={this.state.device} user={this.state.user} setUser={this.setUser} />
+            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+              <Login device={this.state.device} />
+            </UserContext.Provider>
           </Route>
           <Route path="/privacy">
             <PrivacyPolicy />
@@ -1035,11 +1032,13 @@ class App extends React.Component {
             <EntryGuide />
           </Route>
           <Route path="/">
-            <div className={"app density-" + this.state.density}>
-              {content}
-              <SnackbarQueue messages={queue.messages} />
-              <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
-            </div>
+            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+              <div className={"app density-" + this.state.density}>
+                {content}
+                <SnackbarQueue messages={queue.messages} />
+                <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
+              </div>
+            </UserContext.Provider>
           </Route>
         </Switch>
       </Router>

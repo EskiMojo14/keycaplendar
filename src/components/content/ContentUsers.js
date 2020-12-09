@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { userTypes, queueTypes } from "../util/propTypeTemplates";
+import { queueTypes } from "../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,
@@ -231,7 +231,6 @@ export class ContentUsers extends React.Component {
                         return (
                           <UserRow
                             user={user}
-                            currentUser={this.props.user}
                             delete={this.openDeleteDialog}
                             getUsers={this.getUsers}
                             snackbarQueue={this.props.snackbarQueue}
@@ -251,7 +250,6 @@ export class ContentUsers extends React.Component {
                     <UserCard
                       user={user}
                       key={user.email}
-                      currentUser={this.props.user}
                       delete={this.openDeleteDialog}
                       getUsers={this.getUsers}
                       snackbarQueue={this.props.snackbarQueue}
@@ -290,6 +288,5 @@ ContentUsers.propTypes = {
   snackbarQueue: PropTypes.shape(queueTypes),
   sort: PropTypes.string,
   toggleLoading: PropTypes.func,
-  user: PropTypes.shape(userTypes),
   view: PropTypes.string,
 };

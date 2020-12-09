@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../../firebase";
 import { userTypes, queueTypes } from "../../util/propTypeTemplates";
+import { UserContext } from "../../util/contexts";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -122,7 +123,7 @@ export class UserRow extends React.Component {
       />
     );
     const deleteButton =
-      user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
+      user.email === this.context.user.email || user.email === "ben.j.durrant@gmail.com" ? null : (
         <IconButton
           onClick={() => {
             this.props.delete(user);
@@ -177,7 +178,7 @@ export class UserRow extends React.Component {
             name="editor"
             checked={user.editor}
             onChange={this.handleChange}
-            disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+            disabled={user.email === this.context.user.email || user.email === "ben.j.durrant@gmail.com"}
           />
         </DataTableCell>
         <DataTableCell hasFormControl>
@@ -185,7 +186,7 @@ export class UserRow extends React.Component {
             name="admin"
             checked={user.admin}
             onChange={this.handleChange}
-            disabled={user.email === this.props.currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+            disabled={user.email === this.context.user.email || user.email === "ben.j.durrant@gmail.com"}
           />
         </DataTableCell>
         <DataTableCell hasFormControl>{saveButton}</DataTableCell>
@@ -195,11 +196,12 @@ export class UserRow extends React.Component {
   }
 }
 
+UserRow.contextType = UserContext;
+
 export default UserRow;
 
 UserRow.propType = {
   allDesigner: PropTypes.arrayOf(PropTypes.string),
-  currentuser: PropTypes.shape(userTypes),
   delete: PropTypes.func,
   getUsers: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
