@@ -41,6 +41,7 @@ export const ViewCard = (props) => {
       {props.sets.map((set, index) => {
         const gbLaunch = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
         const gbEnd = new Date(set.gbEnd);
+        gbEnd.setHours(23, 59, 59, 999);
         const icDate = new Date(set.icDate);
         const title = `${set.profile} ${set.colorway}`;
         let subtitle;
