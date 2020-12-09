@@ -451,20 +451,14 @@ class App extends React.Component {
       pageSets = sets.filter((set) => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
-        endDate.setHours(23);
-        endDate.setMinutes(59);
-        endDate.setSeconds(59);
-        endDate.setMilliseconds(999);
+        endDate.setUTCHours(23, 59, 59, 999);
         return startDate > today || (startDate <= today && (endDate >= yesterday || set.gbEnd === ""));
       });
     } else if (page === "live") {
       pageSets = sets.filter((set) => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
-        endDate.setHours(23);
-        endDate.setMinutes(59);
-        endDate.setSeconds(59);
-        endDate.setMilliseconds(999);
+        endDate.setUTCHours(23, 59, 59, 999);
         return startDate <= today && (endDate >= yesterday || set.gbEnd === "");
       });
     } else if (page === "ic") {
@@ -475,10 +469,7 @@ class App extends React.Component {
     } else if (page === "previous") {
       pageSets = sets.filter((set) => {
         const endDate = new Date(set.gbEnd);
-        endDate.setHours(23);
-        endDate.setMinutes(59);
-        endDate.setSeconds(59);
-        endDate.setMilliseconds(999);
+        endDate.setUTCHours(23, 59, 59, 999);
         return endDate <= yesterday;
       });
     } else if (page === "timeline") {

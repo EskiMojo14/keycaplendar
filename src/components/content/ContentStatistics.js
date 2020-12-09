@@ -268,10 +268,7 @@ export class ContentStatistics extends React.Component {
         });
         const postGbSets = this.props.sets.filter((set) => {
           const endDate = new Date(set.gbEnd);
-          endDate.setHours(23);
-          endDate.setMinutes(59);
-          endDate.setSeconds(59);
-          endDate.setMilliseconds(999);
+          endDate.setUTCHours(23, 59, 59, 999);
           const isPostGb = endDate <= yesterday;
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
@@ -323,10 +320,7 @@ export class ContentStatistics extends React.Component {
     };
     const pastSets = this.props.sets.filter((set) => {
       const endDate = new Date(set.gbEnd);
-      endDate.setHours(23);
-      endDate.setMinutes(59);
-      endDate.setSeconds(59);
-      endDate.setMilliseconds(999);
+      endDate.setUTCHours(23, 59, 59, 999);
       return endDate <= yesterday;
     });
     pastSets.forEach((set) => {
