@@ -22,12 +22,7 @@ export const ContentSettings = (props) => {
       .auth()
       .signOut()
       .then(() => {
-        props.setUser({
-          id: null,
-          email: null,
-          name: null,
-          avatar: null,
-        });
+        props.setUser({});
       })
       .catch((error) => {
         console.log("Error signing out: " + error);

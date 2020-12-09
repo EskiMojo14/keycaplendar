@@ -211,7 +211,6 @@ exports.getClaims = functions.https.onCall((data, context) => {
       designer: context.auth.token.designer ? context.auth.token.designer : false,
       editor: context.auth.token.editor ? context.auth.token.editor : false,
       admin: context.auth.token.admin ? context.auth.token.admin : false,
-      id: context.auth.uid,
     };
   }
   return {
@@ -219,7 +218,6 @@ exports.getClaims = functions.https.onCall((data, context) => {
     designer: false,
     editor: false,
     admin: false,
-    id: null,
   };
 });
 

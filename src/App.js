@@ -736,7 +736,18 @@ class App extends React.Component {
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   };
   setUser = (user) => {
-    this.setState({ user: user });
+    const blankUser = {
+      email: null,
+      name: null,
+      avatar: null,
+      nickname: "",
+      isDesigner: false,
+      isEditor: false,
+      isAdmin: false,
+      id: null,
+    };
+    const newUser = user.email ? { ...blankUser, ...user } : blankUser;
+    this.setState({ user: newUser });
   };
   setStatistics = (prop, query) => {
     this.setState({ statistics: { ...this.state.statistics, [prop]: query } });
@@ -821,11 +832,11 @@ class App extends React.Component {
               email: user.email,
               name: user.displayName,
               avatar: user.photoURL,
+              id: user.uid,
               nickname: result.data.nickname,
               isDesigner: result.data.designer,
               isEditor: result.data.editor,
               isAdmin: result.data.admin,
-              id: result.data.id,
             });
           })
           .catch((error) => {
@@ -834,21 +845,11 @@ class App extends React.Component {
               email: user.email,
               name: user.displayName,
               avatar: user.photoURL,
-              nickname: "",
-              isDesigner: false,
-              isEditor: false,
-              isAdmin: false,
-              id: null,
+              id: user.uid,
             });
           });
       } else {
-        this.setUser({
-          email: null,
-          name: null,
-          avatar: null,
-          isEditor: false,
-          isAdmin: false,
-        });
+        this.setUser({});
       }
     });
   }
