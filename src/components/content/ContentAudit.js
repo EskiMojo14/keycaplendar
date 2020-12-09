@@ -32,7 +32,7 @@ export class ContentAudit extends React.Component {
           <Card className={"log" + (this.props.actions.length === 0 ? " placeholder" : "")}>
             <List twoLine className="three-line">
               {this.props.actions.map((action) => {
-                const timestamp = moment.utc(action.timestamp);
+                const timestamp = moment(action.timestamp);
                 return (
                   <AuditEntry
                     key={action.timestamp}
