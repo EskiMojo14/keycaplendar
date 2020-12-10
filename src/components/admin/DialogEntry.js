@@ -1650,7 +1650,7 @@ export class DialogEdit extends React.Component {
   }
 }
 
-DialogCreate.contextType = UserContext;
+DialogEdit.contextType = UserContext;
 
 export default DialogCreate;
 
