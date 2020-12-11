@@ -514,7 +514,7 @@ export class DesktopContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
-      <ContentEmpty />
+      <ContentEmpty page={this.props.page} />
     );
     const editorElements =
       (this.context.user.isEditor || this.context.user.isDesigner) &&
@@ -1097,7 +1097,7 @@ export class TabletContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
-      <ContentEmpty />
+      <ContentEmpty page={this.props.page} />
     );
     const editorElements =
       (this.context.user.isEditor || this.context.user.isDesigner) &&
@@ -1695,7 +1695,7 @@ export class MobileContent extends React.Component {
         snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
-      <ContentEmpty />
+      <ContentEmpty page={this.props.page} />
     );
     const editorElements =
       (this.context.user.isEditor || this.context.user.isDesigner) &&

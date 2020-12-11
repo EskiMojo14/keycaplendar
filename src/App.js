@@ -20,6 +20,7 @@ const title = {
   account: "Account",
   timeline: "Timeline",
   archive: "Archive",
+  favorites: "Favorites",
   statistics: "Statistics",
   audit: "Audit Log",
   users: "Users",
@@ -108,6 +109,7 @@ class App extends React.Component {
         "previous",
         "timeline",
         "archive",
+        "favorites",
         "statistics",
         "audit",
         "users",
@@ -252,6 +254,8 @@ class App extends React.Component {
         } else if (page === "timeline") {
           this.setState({ sort: "gbLaunch" });
         } else if (page === "archive") {
+          this.setState({ sort: "profile" });
+        } else if (page === "favorites") {
           this.setState({ sort: "profile" });
         }
         this.filterData(page);
@@ -449,7 +453,8 @@ class App extends React.Component {
     sets = this.state.sets,
     sort = this.state.sort,
     search = this.state.search,
-    whitelist = this.state.whitelist
+    whitelist = this.state.whitelist,
+    favorites = this.state.favorites
   ) => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -493,6 +498,10 @@ class App extends React.Component {
       });
     } else if (page === "archive") {
       pageSets = sets;
+    } else if (page === "favorites") {
+      pageSets = sets.filter((set) => {
+        return favorites.includes(set.id);
+      });
     }
 
     // lists
@@ -830,7 +839,18 @@ class App extends React.Component {
     window.addEventListener("resize", calculate);
   };
   toggleFavorite = (id) => {
-    this.setState((prevState) => ({ favorites: addOrRemove([...prevState.favorites], id) }));
+    const favorites = addOrRemove([...this.state.favorites], id);
+    this.setState({ favorites: favorites });
+    if (this.state.page === "favorites") {
+      this.filterData(
+        this.state.page,
+        this.state.sets,
+        this.state.sort,
+        this.state.search,
+        this.state.whitelist,
+        favorites
+      );
+    }
   };
   componentDidMount() {
     this.setDevice();
