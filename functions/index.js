@@ -331,6 +331,17 @@ exports.deleteUser = functions.https.onCall(async (data, context) => {
     .catch((error) => {
       return { error: "Error deleting user: " + error };
     });
+
+  db.collection("users")
+    .doc(user.uid)
+    .delete()
+    .then(() => {
+      console.log("Deleted user preference file for" + user.displayName + ".");
+      return null;
+    })
+    .catch((error) => {
+      console.log("Failed to delete user preference file:" + error);
+    });
   return "Success";
 });
 
