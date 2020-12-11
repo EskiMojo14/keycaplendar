@@ -851,6 +851,50 @@ class App extends React.Component {
         favorites
       );
     }
+    if (this.state.user.id) {
+      const db = firebase.firestore();
+      db.collection("users")
+        .doc(this.state.user.id)
+        .set(
+          {
+            favorites: favorites,
+          },
+          { merge: true }
+        )
+        .then(() => {
+          this.getFavorites();
+        })
+        .catch((error) => {
+          console.log("Failed to sync favorites: " + error);
+          queue.notify({ title: "Failed to sync favorites: " + error });
+        });
+    }
+  };
+  getFavorites = (id = this.state.user.id) => {
+    if (id) {
+      const db = firebase.firestore();
+      db.collection("users")
+        .doc(id)
+        .get()
+        .then((doc) => {
+          const favorites = doc.data().favorites;
+          this.setState({ favorites: favorites });
+          if (this.state.page === "favorites") {
+            this.filterData(
+              this.state.page,
+              this.state.sets,
+              this.state.sort,
+              this.state.search,
+              this.state.whitelist,
+              favorites
+            );
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to fetch favorites: " + error);
+          queue.notify({ title: "Failed to fetch favorites: " + error });
+        });
+    }
   };
   componentDidMount() {
     this.setDevice();
@@ -886,6 +930,7 @@ class App extends React.Component {
               id: user.uid,
             });
           });
+        this.getFavorites(user.uid);
       } else {
         this.setUser({});
       }
