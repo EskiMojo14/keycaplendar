@@ -336,7 +336,7 @@ exports.deleteUser = functions.https.onCall(async (data, context) => {
     .doc(user.uid)
     .delete()
     .then(() => {
-      console.log("Deleted user preference file for" + user.displayName + ".");
+      console.log("Deleted user preference file for " + user.displayName + ".");
       return null;
     })
     .catch((error) => {
