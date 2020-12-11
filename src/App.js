@@ -25,6 +25,19 @@ const title = {
   users: "Users",
   settings: "Settings",
 };
+
+const addOrRemove = (array, value) => {
+  const index = array.indexOf(value);
+
+  if (index === -1) {
+    array.push(value);
+  } else {
+    array.splice(index, 1);
+  }
+
+  return array;
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +69,7 @@ class App extends React.Component {
         isDesigner: false,
         id: null,
       },
+      favorites: [],
       whitelist: {
         vendors: [],
         vendorMode: "include",
@@ -815,6 +829,9 @@ class App extends React.Component {
     calculate();
     window.addEventListener("resize", calculate);
   };
+  toggleFavorite = (id) => {
+    this.setState((prevState) => ({ favorites: addOrRemove([...prevState.favorites], id) }));
+  };
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
@@ -1018,7 +1035,14 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/login">
-            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+            <UserContext.Provider
+              value={{
+                user: this.state.user,
+                setUser: this.setUser,
+                favorites: this.state.favorites,
+                toggleFavorite: this.toggleFavorite,
+              }}
+            >
               <Login device={this.state.device} />
             </UserContext.Provider>
           </Route>
@@ -1032,7 +1056,14 @@ class App extends React.Component {
             <EntryGuide />
           </Route>
           <Route path="/">
-            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+            <UserContext.Provider
+              value={{
+                user: this.state.user,
+                setUser: this.setUser,
+                favorites: this.state.favorites,
+                toggleFavorite: this.toggleFavorite,
+              }}
+            >
               <div className={"app density-" + this.state.density}>
                 {content}
                 <SnackbarQueue messages={queue.messages} />
