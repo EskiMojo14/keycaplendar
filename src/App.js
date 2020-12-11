@@ -11,6 +11,8 @@ import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { UserContext } from "./components/util/contexts";
 import "./App.scss";
 
+const db = firebase.firestore();
+
 const queue = createSnackbarQueue();
 const title = {
   calendar: "Calendar",
@@ -20,11 +22,25 @@ const title = {
   account: "Account",
   timeline: "Timeline",
   archive: "Archive",
+  favorites: "Favorites",
   statistics: "Statistics",
   audit: "Audit Log",
   users: "Users",
   settings: "Settings",
 };
+
+const addOrRemove = (array, value) => {
+  const index = array.indexOf(value);
+
+  if (index === -1) {
+    array.push(value);
+  } else {
+    array.splice(index, 1);
+  }
+
+  return array;
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +72,7 @@ class App extends React.Component {
         isDesigner: false,
         id: null,
       },
+      favorites: [],
       whitelist: {
         vendors: [],
         vendorMode: "include",
@@ -94,6 +111,7 @@ class App extends React.Component {
         "previous",
         "timeline",
         "archive",
+        "favorites",
         "statistics",
         "audit",
         "users",
@@ -239,6 +257,8 @@ class App extends React.Component {
           this.setState({ sort: "gbLaunch" });
         } else if (page === "archive") {
           this.setState({ sort: "profile" });
+        } else if (page === "favorites") {
+          this.setState({ sort: "profile" });
         }
         this.filterData(page);
         document.documentElement.scrollTop = 0;
@@ -377,7 +397,6 @@ class App extends React.Component {
   };
   getData = () => {
     this.setState({ loading: true });
-    const db = firebase.firestore();
     db.collection("keysets")
       .get()
       .then((querySnapshot) => {
@@ -435,7 +454,8 @@ class App extends React.Component {
     sets = this.state.sets,
     sort = this.state.sort,
     search = this.state.search,
-    whitelist = this.state.whitelist
+    whitelist = this.state.whitelist,
+    favorites = this.state.favorites
   ) => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -479,6 +499,10 @@ class App extends React.Component {
       });
     } else if (page === "archive") {
       pageSets = sets;
+    } else if (page === "favorites") {
+      pageSets = sets.filter((set) => {
+        return favorites.includes(set.id);
+      });
     }
 
     // lists
@@ -815,6 +839,62 @@ class App extends React.Component {
     calculate();
     window.addEventListener("resize", calculate);
   };
+  toggleFavorite = (id) => {
+    const favorites = addOrRemove([...this.state.favorites], id);
+    this.setState({ favorites: favorites });
+    if (this.state.page === "favorites") {
+      this.filterData(
+        this.state.page,
+        this.state.sets,
+        this.state.sort,
+        this.state.search,
+        this.state.whitelist,
+        favorites
+      );
+    }
+    if (this.state.user.id) {
+      db.collection("users")
+        .doc(this.state.user.id)
+        .set(
+          {
+            favorites: favorites,
+          },
+          { merge: true }
+        )
+        .then(() => {
+          this.getFavorites();
+        })
+        .catch((error) => {
+          console.log("Failed to sync favorites: " + error);
+          queue.notify({ title: "Failed to sync favorites: " + error });
+        });
+    }
+  };
+  getFavorites = (id = this.state.user.id) => {
+    if (id) {
+      db.collection("users")
+        .doc(id)
+        .get()
+        .then((doc) => {
+          const favorites = doc.data().favorites;
+          this.setState({ favorites: favorites });
+          if (this.state.page === "favorites") {
+            this.filterData(
+              this.state.page,
+              this.state.sets,
+              this.state.sort,
+              this.state.search,
+              this.state.whitelist,
+              favorites
+            );
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to fetch favorites: " + error);
+          queue.notify({ title: "Failed to fetch favorites: " + error });
+        });
+    }
+  };
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
@@ -849,6 +929,7 @@ class App extends React.Component {
               id: user.uid,
             });
           });
+        this.getFavorites(user.uid);
       } else {
         this.setUser({});
       }
@@ -1018,7 +1099,14 @@ class App extends React.Component {
       <Router>
         <Switch>
           <Route path="/login">
-            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+            <UserContext.Provider
+              value={{
+                user: this.state.user,
+                setUser: this.setUser,
+                favorites: this.state.favorites,
+                toggleFavorite: this.toggleFavorite,
+              }}
+            >
               <Login device={this.state.device} />
             </UserContext.Provider>
           </Route>
@@ -1032,7 +1120,14 @@ class App extends React.Component {
             <EntryGuide />
           </Route>
           <Route path="/">
-            <UserContext.Provider value={{ user: this.state.user, setUser: this.setUser }}>
+            <UserContext.Provider
+              value={{
+                user: this.state.user,
+                setUser: this.setUser,
+                favorites: this.state.favorites,
+                toggleFavorite: this.toggleFavorite,
+              }}
+            >
               <div className={"app density-" + this.state.density}>
                 {content}
                 <SnackbarQueue messages={queue.messages} />

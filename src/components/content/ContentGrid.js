@@ -52,7 +52,7 @@ export const ContentGrid = (props) => {
     filteredSets.sort((a, b) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (page === "archive") {
+      if (page === "archive" || page === "favorites") {
         if (aName > bName) {
           return 1;
         } else if (aName < bName) {

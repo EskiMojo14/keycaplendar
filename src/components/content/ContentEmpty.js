@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import emptyImg from "../../empty.svg";
+import { UserContext } from "../util/contexts";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 
-export const ContentEmpty = () => {
+export const ContentEmpty = (props) => {
+  const { favorites } = useContext(UserContext);
   return (
     <div className="empty-container">
       <img className="image" src={emptyImg} alt="Empty" />
@@ -11,7 +13,9 @@ export const ContentEmpty = () => {
         Nothing to see here
       </Typography>
       <Typography className="subtitle" use="body1" tag="p">
-        No results, please adjust your filters/search.
+        {props.page === "favorites" && favorites.length === 0
+          ? "No sets currently favorited."
+          : "No results, please adjust your filters/search."}
       </Typography>
     </div>
   );

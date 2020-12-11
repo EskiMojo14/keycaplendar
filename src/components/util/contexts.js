@@ -12,6 +12,8 @@ export const UserContext = React.createContext({
     id: null,
   },
   setUser: () => {},
+  favorites: [],
+  toggleFavorite: () => {},
 });
 
 UserContext.displayName = "User";
