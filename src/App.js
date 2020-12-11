@@ -876,22 +876,24 @@ class App extends React.Component {
         .doc(id)
         .get()
         .then((doc) => {
-          const favorites = doc.data().favorites;
-          this.setState({ favorites: favorites });
-          if (this.state.page === "favorites") {
-            this.filterData(
-              this.state.page,
-              this.state.sets,
-              this.state.sort,
-              this.state.search,
-              this.state.whitelist,
-              favorites
-            );
+          if (doc.exists) {
+            const favorites = doc.data().favorites;
+            this.setState({ favorites: favorites });
+            if (this.state.page === "favorites") {
+              this.filterData(
+                this.state.page,
+                this.state.sets,
+                this.state.sort,
+                this.state.search,
+                this.state.whitelist,
+                favorites
+              );
+            }
           }
         })
         .catch((error) => {
-          console.log("Failed to fetch favorites: " + error);
-          queue.notify({ title: "Failed to fetch favorites: " + error });
+          console.log("Failed to get favorites: " + error);
+          queue.notify({ title: "Failed to get favorites: " + error });
         });
     }
   };
