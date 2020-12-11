@@ -274,6 +274,7 @@ export class DrawerDetails extends React.Component {
               </svg>
             ),
           }}
+          className="favorite"
           checked={this.context.favorites.includes(this.props.set.id)}
           onClick={() => this.context.toggleFavorite(this.props.set.id)}
         />

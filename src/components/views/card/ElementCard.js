@@ -96,6 +96,7 @@ export const ElementCard = (props) => {
             </svg>
           ),
         }}
+        className="favorite"
         checked={favorites.includes(props.set.id)}
         onClick={() => toggleFavorite(props.set.id)}
       />
