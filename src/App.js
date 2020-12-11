@@ -11,6 +11,8 @@ import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { UserContext } from "./components/util/contexts";
 import "./App.scss";
 
+const db = firebase.firestore();
+
 const queue = createSnackbarQueue();
 const title = {
   calendar: "Calendar",
@@ -395,7 +397,6 @@ class App extends React.Component {
   };
   getData = () => {
     this.setState({ loading: true });
-    const db = firebase.firestore();
     db.collection("keysets")
       .get()
       .then((querySnapshot) => {
@@ -852,7 +853,6 @@ class App extends React.Component {
       );
     }
     if (this.state.user.id) {
-      const db = firebase.firestore();
       db.collection("users")
         .doc(this.state.user.id)
         .set(
@@ -872,7 +872,6 @@ class App extends React.Component {
   };
   getFavorites = (id = this.state.user.id) => {
     if (id) {
-      const db = firebase.firestore();
       db.collection("users")
         .doc(id)
         .get()
