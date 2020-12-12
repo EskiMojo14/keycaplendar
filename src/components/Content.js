@@ -97,7 +97,7 @@ export class DesktopContent extends React.Component {
       },
       auditUsers: [{ label: "All", value: "all" }],
       userView: "table",
-      userSort: "nickname",
+      userSort: "editor",
       userReverseSort: false,
     };
   }
@@ -752,7 +752,7 @@ export class TabletContent extends React.Component {
         },
       },
       auditUsers: [{ label: "All", value: "all" }],
-      userSort: "nickname",
+      userSort: "editor",
       userReverseSort: false,
     };
   }
@@ -1343,7 +1343,7 @@ export class MobileContent extends React.Component {
         },
       },
       auditUsers: [{ label: "All", value: "all" }],
-      userSort: "nickname",
+      userSort: "editor",
       userReverseSort: false,
     };
   }
