@@ -206,6 +206,19 @@
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);
 }
+
+.material-icons,
+.mdc-button,
+.time-indicator,
+.mdc-card__primary-action,
+.profile-title,
+.mdc-list-item,
+.mdc-image-list__item,
+.mdc-tab,
+.mdc-top-app-bar {
+  user-select: none;
+}
+
 .ct-chart {
   .ct-grid {
     stroke: var(--divider-color);

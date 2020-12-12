@@ -12,9 +12,6 @@
       @include elevation.elevation(4);
     }
   }
-  &__title {
-    user-select: none;
-  }
   &__row.tab-row {
     height: 48px;
     .mdc-top-app-bar__section {
