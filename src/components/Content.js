@@ -25,7 +25,7 @@ import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
-import { UserContext } from "./util/contexts";
+import { UserContext, DeviceContext } from "./util/contexts";
 
 const bodyScroll = require("body-scroll-toggle");
 
@@ -483,20 +483,23 @@ export class DesktopContent extends React.Component {
         openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : this.props.page === "users" && this.context.user.isAdmin ? (
-      <ContentUsers
-        loading={this.props.loading}
-        toggleLoading={this.props.toggleLoading}
-        device={this.props.device}
-        view={this.state.userView}
-        sort={this.state.userSort}
-        setSort={this.setUserSort}
-        reverseSort={this.state.userReverseSort}
-        allDesigners={this.props.allDesigners}
-        snackbarQueue={this.props.snackbarQueue}
-      />
+      <DeviceContext.Consumer>
+        {(device) => (
+          <ContentUsers
+            loading={this.props.loading}
+            toggleLoading={this.props.toggleLoading}
+            view={this.state.userView}
+            sort={this.state.userSort}
+            setSort={this.setUserSort}
+            reverseSort={this.state.userReverseSort}
+            allDesigners={this.props.allDesigners}
+            snackbarQueue={this.props.snackbarQueue}
+            device={device}
+          />
+        )}
+      </DeviceContext.Consumer>
     ) : this.props.page === "settings" ? (
       <ContentSettings
-        device={this.props.device}
         lightTheme={this.props.lightTheme}
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
@@ -571,7 +574,6 @@ export class DesktopContent extends React.Component {
         <DrawerAuditFilter
           open={this.state.auditFilterDrawerOpen}
           close={this.closeAuditFilterDrawer}
-          device={this.props.device}
           handleFilterChange={this.handleAuditFilterChange}
           filterAction={this.state.auditFilterAction}
           filterUser={this.state.auditFilterUser}
@@ -592,7 +594,6 @@ export class DesktopContent extends React.Component {
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
-          device={this.props.device}
           view={this.props.view}
           open={this.state.navDrawerOpen}
           close={this.closeNavDrawer}
@@ -634,31 +635,39 @@ export class DesktopContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
-            <DrawerDetails
-              device={this.props.device}
-              view={this.props.view}
-              set={this.state.detailSet}
-              open={this.state.detailsDrawerOpen}
-              close={this.closeDetailsDrawer}
-              edit={this.openEditDrawer}
-              delete={this.openDeleteDialog}
-              search={this.props.search}
-              setSearch={this.props.setSearch}
-              toggleLichTheme={this.props.toggleLichTheme}
-              openSales={this.openSalesDialog}
-            />
+            <DeviceContext.Consumer>
+              {(device) => (
+                <DrawerDetails
+                  view={this.props.view}
+                  set={this.state.detailSet}
+                  open={this.state.detailsDrawerOpen}
+                  close={this.closeDetailsDrawer}
+                  edit={this.openEditDrawer}
+                  delete={this.openDeleteDialog}
+                  search={this.props.search}
+                  setSearch={this.props.setSearch}
+                  toggleLichTheme={this.props.toggleLichTheme}
+                  openSales={this.openSalesDialog}
+                  device={device}
+                />
+              )}
+            </DeviceContext.Consumer>
             <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-            <DrawerFilter
-              device={this.props.device}
-              view={this.props.view}
-              profiles={this.props.profiles}
-              vendors={this.props.allVendors}
-              open={this.state.filterDrawerOpen}
-              close={this.closeFilterDrawer}
-              setWhitelist={this.props.setWhitelist}
-              whitelist={this.props.whitelist}
-              snackbarQueue={this.props.snackbarQueue}
-            />
+            <DeviceContext.Consumer>
+              {(device) => (
+                <DrawerFilter
+                  view={this.props.view}
+                  profiles={this.props.profiles}
+                  vendors={this.props.allVendors}
+                  open={this.state.filterDrawerOpen}
+                  close={this.closeFilterDrawer}
+                  setWhitelist={this.props.setWhitelist}
+                  whitelist={this.props.whitelist}
+                  snackbarQueue={this.props.snackbarQueue}
+                  device={device}
+                />
+              )}
+            </DeviceContext.Consumer>
             {auditFilterDrawer}
             <DrawerAppContent className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
               {content}
@@ -1066,20 +1075,23 @@ export class TabletContent extends React.Component {
         openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : this.props.page === "users" && this.context.user.isAdmin ? (
-      <ContentUsers
-        loading={this.props.loading}
-        toggleLoading={this.props.toggleLoading}
-        device={this.props.device}
-        view={"card"}
-        sort={this.state.userSort}
-        setSort={this.setUserSort}
-        reverseSort={this.state.userReverseSort}
-        allDesigners={this.props.allDesigners}
-        snackbarQueue={this.props.snackbarQueue}
-      />
+      <DeviceContext.Consumer>
+        {(device) => (
+          <ContentUsers
+            loading={this.props.loading}
+            toggleLoading={this.props.toggleLoading}
+            view={"card"}
+            sort={this.state.userSort}
+            setSort={this.setUserSort}
+            reverseSort={this.state.userReverseSort}
+            allDesigners={this.props.allDesigners}
+            snackbarQueue={this.props.snackbarQueue}
+            device={device}
+          />
+        )}
+      </DeviceContext.Consumer>
     ) : this.props.page === "settings" ? (
       <ContentSettings
-        device={this.props.device}
         lightTheme={this.props.lightTheme}
         setLightTheme={this.props.setLightTheme}
         darkTheme={this.props.darkTheme}
@@ -1164,7 +1176,6 @@ export class TabletContent extends React.Component {
         <DrawerAuditFilter
           open={this.state.auditFilterDrawerOpen}
           close={this.closeAuditFilterDrawer}
-          device={this.props.device}
           handleFilterChange={this.handleAuditFilterChange}
           filterAction={this.state.auditFilterAction}
           filterUser={this.state.auditFilterUser}
@@ -1185,7 +1196,6 @@ export class TabletContent extends React.Component {
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
-          device={this.props.device}
           view={this.props.view}
           open={this.state.navDrawerOpen}
           page={this.props.page}
@@ -1221,31 +1231,39 @@ export class TabletContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
-        <DrawerDetails
-          device={this.props.device}
-          view={this.props.view}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDrawer}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-          openSales={this.openSalesDialog}
-        />
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerDetails
+              view={this.props.view}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+              openSales={this.openSalesDialog}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
         <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-        <DrawerFilter
-          device={this.props.device}
-          view={this.props.view}
-          vendors={this.props.allVendors}
-          profiles={this.props.profiles}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-          snackbarQueue={this.props.snackbarQueue}
-        />
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerFilter
+              view={this.props.view}
+              profiles={this.props.profiles}
+              vendors={this.props.allVendors}
+              open={this.state.filterDrawerOpen}
+              close={this.closeFilterDrawer}
+              setWhitelist={this.props.setWhitelist}
+              whitelist={this.props.whitelist}
+              snackbarQueue={this.props.snackbarQueue}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
@@ -1662,20 +1680,23 @@ export class MobileContent extends React.Component {
         openDeleteDialog={this.openAuditDeleteDialog}
       />
     ) : this.props.page === "users" && this.context.user.isAdmin ? (
-      <ContentUsers
-        loading={this.props.loading}
-        toggleLoading={this.props.toggleLoading}
-        device={this.props.device}
-        view={"card"}
-        sort={this.state.userSort}
-        setSort={this.setUserSort}
-        reverseSort={this.state.userReverseSort}
-        allDesigners={this.props.allDesigners}
-        snackbarQueue={this.props.snackbarQueue}
-      />
+      <DeviceContext.Consumer>
+        {(device) => (
+          <ContentUsers
+            loading={this.props.loading}
+            toggleLoading={this.props.toggleLoading}
+            view={"card"}
+            sort={this.state.userSort}
+            setSort={this.setUserSort}
+            reverseSort={this.state.userReverseSort}
+            allDesigners={this.props.allDesigners}
+            snackbarQueue={this.props.snackbarQueue}
+            device={device}
+          />
+        )}
+      </DeviceContext.Consumer>
     ) : this.props.page === "settings" ? (
       <ContentSettings
-        device={this.props.device}
         bottomNav={this.props.bottomNav}
         setBottomNav={this.props.setBottomNav}
         lightTheme={this.props.lightTheme}
@@ -1854,7 +1875,6 @@ export class MobileContent extends React.Component {
         <DrawerAuditFilter
           open={this.state.auditFilterDrawerOpen}
           close={this.closeAuditFilterDrawer}
-          device={this.props.device}
           handleFilterChange={this.handleAuditFilterChange}
           filterAction={this.state.auditFilterAction}
           filterUser={this.state.auditFilterUser}
@@ -1880,7 +1900,6 @@ export class MobileContent extends React.Component {
       >
         {search}
         <DrawerNav
-          device={this.props.device}
           view={this.props.view}
           bottomNav={this.props.bottomNav}
           open={this.state.navDrawerOpen}
@@ -1894,31 +1913,39 @@ export class MobileContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
-        <DrawerDetails
-          device={this.props.device}
-          view={this.props.view}
-          set={this.state.detailSet}
-          open={this.state.detailsDrawerOpen}
-          close={this.closeDetailsDrawer}
-          edit={this.openEditDialog}
-          delete={this.openDeleteDialog}
-          search={this.props.search}
-          setSearch={this.props.setSearch}
-          toggleLichTheme={this.props.toggleLichTheme}
-          openSales={this.openSalesDialog}
-        />
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerDetails
+              view={this.props.view}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+              openSales={this.openSalesDialog}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
         <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-        <DrawerFilter
-          device={this.props.device}
-          view={this.props.view}
-          vendors={this.props.allVendors}
-          profiles={this.props.profiles}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-          snackbarQueue={this.props.snackbarQueue}
-        />
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerFilter
+              view={this.props.view}
+              profiles={this.props.profiles}
+              vendors={this.props.allVendors}
+              open={this.state.filterDrawerOpen}
+              close={this.closeFilterDrawer}
+              setWhitelist={this.props.setWhitelist}
+              whitelist={this.props.whitelist}
+              snackbarQueue={this.props.snackbarQueue}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}

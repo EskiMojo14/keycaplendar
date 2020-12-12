@@ -17,3 +17,7 @@ export const UserContext = React.createContext({
 });
 
 UserContext.displayName = "User";
+
+export const DeviceContext = React.createContext("desktop");
+
+DeviceContext.displayName = "Device";

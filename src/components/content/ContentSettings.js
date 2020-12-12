@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
 import { queueTypes } from "../util/propTypeTemplates";
-import { UserContext } from "../util/contexts";
+import { UserContext, DeviceContext } from "../util/contexts";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -19,6 +19,7 @@ import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
   const { user, setUser } = useContext(UserContext);
+  const device = useContext(DeviceContext);
   const signOut = () => {
     firebase
       .auth()
@@ -96,7 +97,7 @@ export const ContentSettings = (props) => {
     </div>
   ) : null;
   const bottomNav =
-    props.device === "mobile" && props.setBottomNav ? (
+    device === "mobile" && props.setBottomNav ? (
       <div className="settings-group">
         <div className="subheader">
           <Typography use="caption">UI</Typography>
@@ -185,7 +186,7 @@ export const ContentSettings = (props) => {
       </FormField>
     );
   const density =
-    props.device !== "mobile" ? (
+    device !== "mobile" ? (
       <div className="settings-group">
         <div className="subheader">
           <Typography use="caption">Density</Typography>

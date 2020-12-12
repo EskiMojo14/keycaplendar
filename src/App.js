@@ -8,7 +8,7 @@ import { Login } from "./components/admin/Login";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { UserContext } from "./components/util/contexts";
+import { UserContext, DeviceContext } from "./components/util/contexts";
 import "./App.scss";
 
 const db = firebase.firestore();
@@ -991,7 +991,6 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
-          device={this.state.device}
           snackbarQueue={queue}
         />
       ) : device === "tablet" ? (
@@ -1040,7 +1039,6 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
-          device={this.state.device}
           snackbarQueue={queue}
         />
       ) : (
@@ -1091,7 +1089,6 @@ class App extends React.Component {
           setStatisticsTab={this.setStatisticsTab}
           density={this.state.density}
           setDensity={this.setDensity}
-          device={this.state.device}
           snackbarQueue={queue}
         />
       )
@@ -1109,7 +1106,9 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
               }}
             >
-              <Login device={this.state.device} />
+              <DeviceContext.Provider value={this.state.device}>
+                <Login />
+              </DeviceContext.Provider>
             </UserContext.Provider>
           </Route>
           <Route path="/privacy">
@@ -1130,11 +1129,13 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
               }}
             >
-              <div className={"app density-" + this.state.density}>
-                {content}
-                <SnackbarQueue messages={queue.messages} />
-                <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
-              </div>
+              <DeviceContext.Provider value={this.state.device}>
+                <div className={"app density-" + this.state.density}>
+                  {content}
+                  <SnackbarQueue messages={queue.messages} />
+                  <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
+                </div>
+              </DeviceContext.Provider>
             </UserContext.Provider>
           </Route>
         </Switch>

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { UserContext } from "../util/contexts";
+import { UserContext, DeviceContext } from "../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -9,7 +9,8 @@ import logo from "../../logo.svg";
 
 export const DrawerNav = (props) => {
   const { user } = useContext(UserContext);
-  const dismissible = props.device === "desktop";
+  const device = useContext(DeviceContext);
+  const dismissible = device === "desktop";
   const setPage = (newPage) => {
     props.setPage(newPage);
     if (!dismissible) {

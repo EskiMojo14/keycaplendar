@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../firebase";
-import { UserContext } from "../util/contexts";
+import { UserContext, DeviceContext } from "../util/contexts";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
@@ -13,9 +13,11 @@ import peach from "../../peach.svg";
 export const Login = (props) => {
   const { user } = useContext(UserContext);
 
+  const device = useContext(DeviceContext);
+
   const uiConfig = {
     // Popup signin flow rather than redirect flow.
-    signInFlow: props.device === "desktop" ? "popup" : "redirect",
+    signInFlow: device === "desktop" ? "popup" : "redirect",
     // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
     signInSuccessUrl: "/",
     // We will display Google and Facebook as auth providers.

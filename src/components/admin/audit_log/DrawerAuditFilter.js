@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
+import { DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -11,8 +12,9 @@ import "./DrawerAuditFilter.scss";
 
 export const DrawerAuditFilter = (props) => {
   const [auditLength, setAuditLength] = useState(props.auditLength);
+  const device = useContext(DeviceContext);
   const closeButton =
-    props.device === "desktop" ? (
+    device === "desktop" ? (
       <Tooltip enterDelay={500} content="Close" align="bottom">
         <IconButton className="close-icon" icon="close" onClick={props.close} />
       </Tooltip>
@@ -31,8 +33,8 @@ export const DrawerAuditFilter = (props) => {
   return (
     <Drawer
       open={props.open}
-      dismissible={props.device === "desktop"}
-      modal={props.device !== "desktop"}
+      dismissible={device === "desktop"}
+      modal={device !== "desktop"}
       className="drawer-right filter-drawer audit-filter"
       onClose={props.close}
     >
