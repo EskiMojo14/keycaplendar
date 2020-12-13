@@ -917,7 +917,20 @@ class App extends React.Component {
   setSyncSettings = (bool, write = true) => {
     this.setState({ syncSettings: bool });
     if (write) {
-      db.collection("users").doc(this.state.user.id).set({ syncSettings: bool }, { merge: true });
+      let settingsObject = {};
+      if (bool) {
+        Object.keys(settingsFunctions).forEach((setting) => {
+          settingsObject[setting] = this.state[setting];
+        });
+      }
+      db.collection("users")
+        .doc(this.state.user.id)
+        .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
+        .then(() => {})
+        .catch((error) => {
+          console.log("Failed to set sync setting: " + error);
+          queue.notify({ title: "Failed to set sync setting: " + error });
+        });
     }
   };
   syncSetting = (setting, value) => {
