@@ -126,11 +126,15 @@
         &.density-card {
           padding: 16px;
         }
-        &.bottom-nav-card {
+        .switch-container {
           display: flex;
-          justify-content: center;
+          align-items: center;
           height: 48px;
+          &.account {
+            padding: 0 16px;
+          }
           .mdc-form-field {
+            flex-grow: 1;
             label {
               padding: 0;
               flex-grow: 1;
@@ -165,6 +169,9 @@
             padding: 0;
           }
           .account {
+            padding: 0;
+          }
+          .switch-container.account {
             padding: 0;
           }
         }

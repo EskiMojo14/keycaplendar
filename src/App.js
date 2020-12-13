@@ -41,6 +41,18 @@ const addOrRemove = (array, value) => {
   return array;
 };
 
+const settingsFunctions = {
+  view: "setView",
+  bottomNav: "setBottomNav",
+  applyTheme: "setApplyTheme",
+  lightTheme: "setLightTheme",
+  darkTheme: "setDarkTheme",
+  manualTheme: "setManualTheme",
+  fromTimeTheme: "setFromTimeTheme",
+  toTimeTheme: "setToTimeTheme",
+  density: "setDensity",
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -98,6 +110,7 @@ class App extends React.Component {
       statisticsSort: { status: "alphabetical", shipped: "alphabetical", duration: "alphabetical" },
       statisticsTab: "timeline",
       density: "default",
+      syncSettings: false,
     };
   }
   getURLQuery = () => {
@@ -157,10 +170,12 @@ class App extends React.Component {
     this.setCookie("accepted", false, -1);
   };
   setCookie(cname, cvalue, exdays) {
-    let d = new Date();
-    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-    const expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    if (this.state.cookies || cname === "accepted") {
+      let d = new Date();
+      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      const expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
   }
   getCookie(cname) {
     var name = cname + "=";
@@ -186,12 +201,12 @@ class App extends React.Component {
         if (cookie !== "") {
           if (cookie !== "true" && cookie !== "false") {
             setTimeout(() => {
-              setFunction(cookie);
+              setFunction(cookie, false);
             }, 0);
           } else {
             const cookieBool = cookie === "true";
             setTimeout(() => {
-              setFunction(cookieBool);
+              setFunction(cookieBool, false);
             }, 0);
           }
         }
@@ -209,20 +224,14 @@ class App extends React.Component {
         }
         this.setCookie("theme", legacyTheme, -1);
       }
-      checkCookie("view", this.setView);
-      checkCookie("bottomNav", this.setBottomNav);
-      checkCookie("applyTheme", this.setApplyTheme);
-      checkCookie("lightTheme", this.setLightTheme);
-      checkCookie("darkTheme", this.setDarkTheme);
-      checkCookie("manualTheme", this.setManualTheme);
-      checkCookie("fromTimeTheme", this.setFromTimeTheme);
-      checkCookie("toTimeTheme", this.setToTimeTheme);
-      checkCookie("density", this.setDensity);
+      Object.keys(settingsFunctions).forEach((setting) => {
+        checkCookie(setting, this[settingsFunctions[setting]]);
+      });
     } else {
       this.clearCookies();
     }
   };
-  setView = (view) => {
+  setView = (view, write = true) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -235,8 +244,9 @@ class App extends React.Component {
     } else {
       this.setState({ view: view });
     }
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("view", view, 365);
+      this.syncSetting("view", view);
     }
   };
   setPage = (page) => {
@@ -318,7 +328,7 @@ class App extends React.Component {
       .querySelector("meta[name=theme-color]")
       .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
   };
-  setApplyTheme = (applyTheme) => {
+  setApplyTheme = (applyTheme, write = true) => {
     this.setState({
       applyTheme: applyTheme,
     });
@@ -337,44 +347,49 @@ class App extends React.Component {
     if (applyTheme !== "timed") {
       clearInterval(this.checkTheme);
     }
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("applyTheme", applyTheme, 365);
+      this.syncSetting("applyTheme", applyTheme);
     }
   };
-  setLightTheme = (theme) => {
+  setLightTheme = (theme, write = true) => {
     this.setState({ lightTheme: theme });
     setTimeout(this.checkTheme, 1);
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("lightTheme", theme, 365);
+      this.syncSetting("lightTheme", theme);
     }
   };
-  setDarkTheme = (theme) => {
+  setDarkTheme = (theme, write = true) => {
     this.setState({ darkTheme: theme });
     setTimeout(this.checkTheme, 1);
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("darkTheme", theme, 365);
+      this.syncSetting("darkTheme", theme);
     }
   };
-  setManualTheme = (bool) => {
+  setManualTheme = (bool, write = true) => {
     this.setState({ manualTheme: bool });
     setTimeout(this.checkTheme, 1);
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("manualTheme", bool, 365);
+      this.syncSetting("manualTheme", bool);
     }
   };
-  setFromTimeTheme = (time) => {
+  setFromTimeTheme = (time, write = true) => {
     this.setState({ fromTimeTheme: time });
     setTimeout(this.checkTheme, 1);
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("fromTimeTheme", time, 365);
+      this.syncSetting("fromTimeTheme", time);
     }
   };
-  setToTimeTheme = (time) => {
+  setToTimeTheme = (time, write = true) => {
     this.setState({ toTimeTheme: time });
     setTimeout(this.checkTheme, 1);
-    setTimeout(this.checkTheme, 1);
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("toTimeTheme", time, 365);
+      this.syncSetting("toTimeTheme", time);
     }
   };
   toggleLichTheme = () => {
@@ -383,11 +398,12 @@ class App extends React.Component {
     });
     setTimeout(this.checkTheme, 1);
   };
-  setBottomNav = (value) => {
+  setBottomNav = (value, write = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("bottomNav", value, 365);
+      this.syncSetting("bottomNav", value);
     }
   };
   toggleLoading = () => {
@@ -742,10 +758,11 @@ class App extends React.Component {
       this.setWhitelist("profiles", allProfiles, false);
     }
   };
-  setDensity = (density) => {
+  setDensity = (density, write = true) => {
     this.setState({ density: density });
-    if (this.state.cookies) {
+    if (write) {
       this.setCookie("density", density, 365);
+      this.syncSetting("density", density);
     }
   };
   setSort = (sortBy) => {
@@ -876,7 +893,7 @@ class App extends React.Component {
         .doc(id)
         .get()
         .then((doc) => {
-          if (doc.exists) {
+          if (doc.exists && doc.data().favorites) {
             const favorites = doc.data().favorites;
             this.setState({ favorites: favorites });
             if (this.state.page === "favorites") {
@@ -894,6 +911,70 @@ class App extends React.Component {
         .catch((error) => {
           console.log("Failed to get favorites: " + error);
           queue.notify({ title: "Failed to get favorites: " + error });
+        });
+    }
+  };
+  setSyncSettings = (bool, write = true) => {
+    this.setState({ syncSettings: bool });
+    if (write) {
+      db.collection("users").doc(this.state.user.id).set({ syncSettings: bool }, { merge: true });
+    }
+  };
+  syncSetting = (setting, value) => {
+    if (this.state.user.id && this.state.syncSettings) {
+      const userDocRef = db.collection("users").doc(this.state.user.id);
+      userDocRef.get().then((doc) => {
+        if (doc.exists) {
+          sync();
+        } else {
+          userDocRef
+            .set({ settings: {} }, { merge: true })
+            .then(() => {
+              sync();
+            })
+            .catch((error) => {
+              console.log("Failed to create settings object: " + error);
+              queue.notify({ title: "Failed to create settings object: " + error });
+            });
+        }
+      });
+      const sync = () => {
+        let settingObject = {};
+        settingObject["settings." + setting] = value;
+        userDocRef
+          .update(settingObject)
+          .then(() => {})
+          .catch((error) => {
+            console.log("Failed to sync settings: " + error);
+            queue.notify({ title: "Failed to sync settings: " + error });
+          });
+      };
+    }
+  };
+  getSettings = (id = this.state.user.id) => {
+    if (id) {
+      const userDocRef = db.collection("users").doc(id);
+      userDocRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.syncSettings) {
+              this.setState({ syncSettings: data.syncSettings });
+              const getSetting = (setting, setFunction) => {
+                if (data.settings && data.settings[setting]) {
+                  setFunction(data.settings[setting], false);
+                }
+              };
+              Object.keys(settingsFunctions).forEach((setting) => {
+                getSetting(setting, this[settingsFunctions[setting]]);
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get settings: " + error);
+          queue.notify({ title: "Failed to get settings: " + error });
         });
     }
   };
@@ -932,6 +1013,7 @@ class App extends React.Component {
             });
           });
         this.getFavorites(user.uid);
+        this.getSettings(user.uid);
       } else {
         this.setUser({});
       }
@@ -965,7 +1047,6 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
@@ -1013,7 +1094,6 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
@@ -1061,7 +1141,6 @@ class App extends React.Component {
           sort={this.state.sort}
           setSort={this.setSort}
           content={this.state.content}
-          editor={this.state.user.isEditor}
           search={this.state.search}
           setSearch={this.setSearch}
           applyTheme={this.state.applyTheme}
@@ -1104,6 +1183,8 @@ class App extends React.Component {
                 setUser: this.setUser,
                 favorites: this.state.favorites,
                 toggleFavorite: this.toggleFavorite,
+                syncSettings: this.state.syncSettings,
+                setSyncSettings: this.setSyncSettings,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
@@ -1127,6 +1208,8 @@ class App extends React.Component {
                 setUser: this.setUser,
                 favorites: this.state.favorites,
                 toggleFavorite: this.toggleFavorite,
+                syncSettings: this.state.syncSettings,
+                setSyncSettings: this.setSyncSettings,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

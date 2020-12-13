@@ -293,7 +293,7 @@
     padding: 12px + $diff;
   }
   .settings-container .settings-group .mdc-card {
-    &.bottom-nav-card {
+    .switch-container {
       height: 48px + $diff;
     }
     &.theme-card .theme-form-field--flex .mdc-typography--body2 {

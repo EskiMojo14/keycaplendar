@@ -18,7 +18,7 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const signOut = () => {
     firebase
@@ -93,6 +93,13 @@ export const ContentSettings = (props) => {
             <Button raised label="Log out" onClick={signOut} />
           </div>
         </ListItem>
+        <div className="switch-container account">
+          <Switch
+            label="Sync settings to account"
+            checked={syncSettings}
+            onChange={(evt) => setSyncSettings(evt.currentTarget.checked)}
+          />
+        </div>
       </Card>
     </div>
   ) : null;
@@ -102,12 +109,14 @@ export const ContentSettings = (props) => {
         <div className="subheader">
           <Typography use="caption">UI</Typography>
         </div>
-        <Card className="bottom-nav-card">
-          <Switch
-            label="Bottom navigation"
-            checked={props.bottomNav}
-            onChange={(evt) => props.setBottomNav(evt.currentTarget.checked)}
-          />
+        <Card>
+          <div className="switch-container">
+            <Switch
+              label="Bottom navigation"
+              checked={props.bottomNav}
+              onChange={(evt) => props.setBottomNav(evt.currentTarget.checked)}
+            />
+          </div>
         </Card>
       </div>
     ) : null;
@@ -176,13 +185,15 @@ export const ContentSettings = (props) => {
         <Typography use="body2" tag="label" htmlFor="manualTheme">
           Dark theme
         </Typography>
-        <Switch
-          id="manualTheme"
-          checked={props.manualTheme}
-          onChange={(e) => {
-            props.setManualTheme(e.target.checked);
-          }}
-        />
+        <div className="switch-container">
+          <Switch
+            id="manualTheme"
+            checked={props.manualTheme}
+            onChange={(e) => {
+              props.setManualTheme(e.target.checked);
+            }}
+          />
+        </div>
       </FormField>
     );
   const density =
