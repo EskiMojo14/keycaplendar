@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { whitelistTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../util/contexts";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -103,6 +104,24 @@ export class DrawerFilter extends React.Component {
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
+    const presetMenu = this.context.user.email ? (
+      <div className="preset-group">
+        <div className="subheader">
+          <Typography use="caption">Preset</Typography>
+        </div>
+        <Select
+          outlined
+          enhanced
+          value={this.state.preset}
+          options={presetArray.map((preset) => preset.name)}
+          onChange={this.selectPreset}
+        />
+        <div className="preset-buttons">
+          <Button label="Save" outlined />
+          <Button label="Delete" outlined className="delete" />
+        </div>
+      </div>
+    ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -115,22 +134,7 @@ export class DrawerFilter extends React.Component {
           <DrawerTitle>Filters</DrawerTitle>
           {closeIcon}
         </DrawerHeader>
-        <div className="preset-group">
-          <div className="subheader">
-            <Typography use="caption">Preset</Typography>
-          </div>
-          <Select
-            outlined
-            enhanced
-            value={this.state.preset}
-            options={presetArray.map((preset) => preset.name)}
-            onChange={this.selectPreset}
-          />
-          <div className="preset-buttons">
-            <Button label="Save" outlined />
-            <Button label="Delete" outlined className="delete" />
-          </div>
-        </div>
+        {presetMenu}
         <DrawerContent>
           <div className="group">
             <div className="subheader">
@@ -272,6 +276,8 @@ export class DrawerFilter extends React.Component {
     );
   }
 }
+
+DrawerFilter.contextType = UserContext;
 
 export default DrawerFilter;
 
