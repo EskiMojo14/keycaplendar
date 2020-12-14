@@ -40,6 +40,7 @@
     "firebase": "^7.23.0",
     "firebase-admin": "^8.13.0",
     "firebaseui": "^4.6.1",
+    "lodash.isequal": "^4.5.0",
     "mathjs": "^7.5.0",
     "moment": "^2.27.0",
     "nanoid": "^3.1.16",

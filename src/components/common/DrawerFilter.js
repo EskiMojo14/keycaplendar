@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import isEqual from "lodash.isequal";
+import { nanoid } from "nanoid";
 import { whitelistTypes } from "../util/propTypeTemplates";
 import { UserContext } from "../util/contexts";
 import { Button } from "@rmwc/button";
@@ -27,6 +29,7 @@ const addOrRemove = (oldArray, value) => {
 
 function Preset(name, profiles, shipped, vendorMode, vendors) {
   this.name = name;
+  this.id = nanoid();
   this.whitelist = {
     profiles: profiles,
     shipped: shipped,
@@ -38,7 +41,7 @@ function Preset(name, profiles, shipped, vendorMode, vendors) {
 const shippedArray = ["Shipped", "Not shipped"];
 
 const presetArray = [
-  new Preset("None", [], [], "include", []),
+  new Preset("New*", [], [], "include", []),
   new Preset("GMK only", ["GMK"], ["Shipped", "Not shipped"], "exclude", []),
 ];
 
@@ -46,9 +49,29 @@ export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preset: "None",
+      preset: "New*",
     };
   }
+  componentDidUpdate = (prevProps) => {
+    if (!isEqual(this.props.whitelist, prevProps.whitelist)) {
+      this.findPreset();
+    }
+  };
+  findPreset = () => {
+    const { edited, ...newWhitelist } = this.props.whitelist;
+    const preset = presetArray.filter((preset) => {
+      return isEqual(preset.whitelist, newWhitelist);
+    })[0];
+    if (preset) {
+      if (this.state.preset !== preset.name) {
+        this.setState({ preset: preset.name });
+      }
+    } else {
+      if (this.state.preset !== "New*") {
+        this.setState({ preset: "New*" });
+      }
+    }
+  };
   selectPreset = (e) => {
     const opt = e.detail.value;
     this.setState({ preset: opt });
@@ -117,8 +140,8 @@ export class DrawerFilter extends React.Component {
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">
-          <Button label="Save" outlined />
-          <Button label="Delete" outlined className="delete" />
+          <Button label={this.state.preset === "New*" ? "Save" : "Modify"} outlined />
+          <Button label="Delete" disabled={this.state.preset === "New*"} outlined className="delete" />
         </div>
       </div>
     ) : null;
