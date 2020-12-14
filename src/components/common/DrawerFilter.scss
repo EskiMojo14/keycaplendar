@@ -27,6 +27,31 @@
       flex-shrink: 0;
     }
   }
+  .preset {
+    &-group {
+      padding: 16px;
+      @include util.divider-border(bottom);
+      .mdc-select {
+        &__anchor,
+        &__menu {
+          width: 100%;
+        }
+        margin-bottom: 16px;
+      }
+    }
+    &-buttons {
+      display: flex;
+      .mdc-button {
+        flex: 0 1 50%;
+        &:first-child {
+          @include rtl.reflexive-box(margin, right, 8px);
+        }
+        &:last-child {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
+  }
   .mdc-drawer__content {
     padding: 16px;
     .group {

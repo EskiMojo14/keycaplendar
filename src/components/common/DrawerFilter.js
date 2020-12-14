@@ -5,6 +5,7 @@ import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
+import { Select } from "@rmwc/select";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
@@ -87,6 +88,16 @@ export class DrawerFilter extends React.Component {
           <DrawerTitle>Filters</DrawerTitle>
           {closeIcon}
         </DrawerHeader>
+        <div className="preset-group">
+          <div className="subheader">
+            <Typography use="caption">Preset</Typography>
+          </div>
+          <Select outlined enhanced />
+          <div className="preset-buttons">
+            <Button label="Save" outlined />
+            <Button label="Delete" outlined className="delete" />
+          </div>
+        </div>
         <DrawerContent>
           <div className="group">
             <div className="subheader">
