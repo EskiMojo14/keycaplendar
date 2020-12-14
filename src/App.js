@@ -802,34 +802,44 @@ class App extends React.Component {
     this.setState({ statisticsTab: tab });
   };
   setWhitelist = (prop, val, clearUrl = true) => {
-    const edited = this.state.whitelist.edited.includes(prop)
-      ? this.state.whitelist.edited
-      : [...this.state.whitelist.edited, prop];
-    const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-    this.setState({
-      whitelist: whitelist,
-    });
-    document.documentElement.scrollTop = 0;
-    if (this.state.sets.length > 0) {
-      this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("profile") || params.has("profiles")) {
-        params.delete("profile");
-        params.delete("profiles");
-        if (params.has("page")) {
-          const page = params.get("page");
-          window.history.pushState(
-            {
-              page: page,
-            },
-            "KeycapLendar: " + title[page],
-            "?" + params.toString()
-          );
-        } else {
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
-          window.history.pushState({}, "KeycapLendar", questionParam);
+    if (prop === "all") {
+      const edited = Object.keys(val);
+      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
+      this.setState({ whitelist: whitelist });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+      }
+    } else {
+      const edited = this.state.whitelist.edited.includes(prop)
+        ? this.state.whitelist.edited
+        : [...this.state.whitelist.edited, prop];
+      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
+      this.setState({
+        whitelist: whitelist,
+      });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+      }
+      if (clearUrl) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("profile") || params.has("profiles")) {
+          params.delete("profile");
+          params.delete("profiles");
+          if (params.has("page")) {
+            const page = params.get("page");
+            window.history.pushState(
+              {
+                page: page,
+              },
+              "KeycapLendar: " + title[page],
+              "?" + params.toString()
+            );
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
+          }
         }
       }
     }
