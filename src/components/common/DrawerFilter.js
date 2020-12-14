@@ -27,10 +27,11 @@ const addOrRemove = (oldArray, value) => {
   return array;
 };
 
-function Preset(name, profiles, shipped, vendorMode, vendors) {
+function Preset(name, favorites, profiles, shipped, vendorMode, vendors) {
   this.name = name;
   this.id = nanoid();
   this.whitelist = {
+    favorites: favorites,
     profiles: profiles,
     shipped: shipped,
     vendorMode: vendorMode,
@@ -41,8 +42,8 @@ function Preset(name, profiles, shipped, vendorMode, vendors) {
 const shippedArray = ["Shipped", "Not shipped"];
 
 const presetArray = [
-  new Preset("New*", [], [], "include", []),
-  new Preset("GMK only", ["GMK"], ["Shipped", "Not shipped"], "exclude", []),
+  new Preset("New*", false, [], [], "include", []),
+  new Preset("GMK only", false, ["GMK"], ["Shipped", "Not shipped"], "exclude", []),
 ];
 
 export class DrawerFilter extends React.Component {
@@ -83,9 +84,9 @@ export class DrawerFilter extends React.Component {
     }
   };
   handleChange = (name, prop) => {
-    const array = this.props.whitelist[prop];
-    const editedArray = addOrRemove(array, name);
-    this.setWhitelist(prop, editedArray);
+    const original = this.props.whitelist[prop];
+    const edited = prop === "favorites" ? !original : addOrRemove(original, name);
+    this.setWhitelist(prop, edited);
   };
   setWhitelist = (prop, whitelist) => {
     this.props.setWhitelist(prop, whitelist);
@@ -145,6 +146,35 @@ export class DrawerFilter extends React.Component {
         </div>
       </div>
     ) : null;
+    const favorites = this.context.user.email ? (
+      <div className="group">
+        <div className="subheader">
+          <Typography use="caption">Favorites</Typography>
+        </div>
+        <div className="filter-chip-container">
+          <ChipSet choice>
+            <Chip
+              label="Favorites"
+              icon={{
+                strategy: "component",
+                icon: (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                      d="M16.5 5c-1.54 0-3.04.99-3.56 2.36h-1.87C10.54 5.99 9.04 5 7.5 5 5.5 5 4 6.5 4 8.5c0 2.89 3.14 5.74 7.9 10.05l.1.1.1-.1C16.86 14.24 20 11.39 20 8.5c0-2-1.5-3.5-3.5-3.5z"
+                      opacity=".3"
+                    />
+                    <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
+                  </svg>
+                ),
+              }}
+              selected={this.props.whitelist.favorites}
+              onInteraction={() => this.handleChange("favorites", "favorites")}
+            />
+          </ChipSet>
+        </div>
+      </div>
+    ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -159,6 +189,7 @@ export class DrawerFilter extends React.Component {
         </DrawerHeader>
         {presetMenu}
         <DrawerContent>
+          {favorites}
           <div className="group">
             <div className="subheader">
               <Typography use="caption">Profile</Typography>

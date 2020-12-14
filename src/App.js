@@ -86,11 +86,12 @@ class App extends React.Component {
       },
       favorites: [],
       whitelist: {
-        vendors: [],
-        vendorMode: "include",
+        edited: [],
+        favorites: false,
         profiles: [],
         shipped: ["Shipped", "Not shipped"],
-        edited: [],
+        vendorMode: "include",
+        vendors: [],
       },
       cookies: true,
       applyTheme: "manual",
@@ -612,13 +613,14 @@ class App extends React.Component {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
+      const favoritesBool = !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id));
       if (set.vendors.length > 0) {
-        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool;
+        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
         } else {
-          return whitelist.profiles.includes(set.profile) && shippedBool;
+          return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
         }
       }
     });
