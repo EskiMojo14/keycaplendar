@@ -10,115 +10,38 @@ import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilter.scss";
 
+const addOrRemove = (oldArray, value) => {
+  const array = [...oldArray];
+  const index = array.indexOf(value);
+
+  if (index === -1) {
+    array.push(value);
+  } else {
+    array.splice(index, 1);
+  }
+
+  return array;
+};
+
 export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      edited: [false, false, false],
-      profiles: {},
-      vendors: {},
-      shipped: {},
-    };
-  }
-  componentDidMount() {
-    const props = ["profiles", "vendors"];
-    props.forEach((prop, index) => {
-      if (!this.state.edited[index] && this.props[prop].length > 0) {
-        let obj = {};
-        this.props[prop].forEach((val) => {
-          obj[val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-            name: val,
-            checked: this.props.whitelist[prop].includes(val),
-          };
-        });
-        const editedCopy = [].concat(this.state.edited);
-        editedCopy[index] = true;
-        this.setState({
-          edited: editedCopy,
-          [prop]: obj,
-        });
-      }
-    });
-    if (!this.state.edited[2]) {
-      const editedCopy = [].concat(this.state.edited);
-      editedCopy[2] = true;
-      this.setState({
-        edited: editedCopy,
-        shipped: {
-          shipped: { name: "Shipped", checked: this.props.whitelist.shipped.includes("Shipped") },
-          notShipped: { name: "Not shipped", checked: this.props.whitelist.shipped.includes("Not shipped") },
-        },
-      });
-    }
-  }
-  componentDidUpdate(prevProps) {
-    const props = ["profiles", "vendors"];
-    props.forEach((prop, index) => {
-      if (this.props[prop] !== prevProps[prop] && !this.state.edited[index] && prevProps[prop].length > 0) {
-        let obj = {};
-        this.props[prop].forEach((val) => {
-          obj[val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())] = {
-            name: val,
-            checked: this.props.whitelist[prop].includes(val),
-          };
-        });
-        const editedCopy = [].concat(this.state.edited);
-        editedCopy[index] = true;
-        this.setState({
-          edited: editedCopy,
-          [prop]: obj,
-        });
-      }
-    });
-    if (!this.state.edited[2]) {
-      const editedCopy = [].concat(this.state.edited);
-      editedCopy[2] = true;
-      this.setState({
-        edited: editedCopy,
-        shipped: {
-          shipped: { name: "Shipped", checked: this.props.whitelist.shipped.includes("Shipped") },
-          notShipped: { name: "Not shipped", checked: this.props.whitelist.shipped.includes("Not shipped") },
-        },
-      });
-    }
+    this.state = {};
   }
   handleChange = (name, prop) => {
-    const propCopy = this.state[prop];
-    propCopy[name].checked = !propCopy[name].checked;
-    this.setState({
-      [prop]: propCopy,
-    });
-    this.setWhitelist(prop);
+    const array = this.props.whitelist[prop];
+    const editedArray = addOrRemove(array, name);
+    this.setWhitelist(prop, editedArray);
   };
-  setWhitelist = (prop) => {
-    let whitelist = [];
-    Object.keys(this.state[prop]).forEach((key) => {
-      const value = this.state[prop][key];
-      if (value.checked) {
-        whitelist.push(value.name);
-      }
-    });
+  setWhitelist = (prop, whitelist) => {
     this.props.setWhitelist(prop, whitelist);
   };
   checkAll = (prop) => {
-    const propCopy = this.state[prop];
-    Object.keys(propCopy).forEach((key) => {
-      propCopy[key].checked = true;
-    });
-    this.setState({
-      [prop]: propCopy,
-    });
-    this.setWhitelist(prop);
+    const array = prop === "shipped" ? ["Shipped", "Not shipped"] : this.props[prop];
+    this.setWhitelist(prop, array);
   };
   uncheckAll = (prop) => {
-    const propCopy = this.state[prop];
-    Object.keys(propCopy).forEach((key) => {
-      propCopy[key].checked = false;
-    });
-    this.setState({
-      [prop]: propCopy,
-    });
-    this.setWhitelist(prop);
+    this.setWhitelist(prop, []);
   };
   copyLink = () => {
     const params = new URLSearchParams(window.location.search);
@@ -198,15 +121,14 @@ export class DrawerFilter extends React.Component {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {Object.keys(this.state.profiles).map((key) => {
-                  const profile = this.state.profiles[key];
+                {this.props.profiles.map((profile) => {
                   return (
                     <Chip
-                      key={"profile-" + profile.name}
-                      label={profile.name}
-                      selected={profile.checked}
+                      key={"profile-" + profile}
+                      label={profile}
+                      selected={this.props.whitelist.profiles.includes(profile)}
                       checkmark
-                      onInteraction={() => this.handleChange(key, "profiles")}
+                      onInteraction={() => this.handleChange(profile, "profiles")}
                     />
                   );
                 })}
@@ -233,15 +155,14 @@ export class DrawerFilter extends React.Component {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {Object.keys(this.state.shipped).map((key) => {
-                  const shipped = this.state.shipped[key];
+                {["Shipped", "Not shipped"].map((prop) => {
                   return (
                     <Chip
-                      key={"shipped-" + shipped.name}
-                      label={shipped.name}
-                      selected={shipped.checked}
+                      key={"shipped-" + prop}
+                      label={prop}
+                      selected={this.props.whitelist.shipped.includes(prop)}
                       checkmark
-                      onInteraction={() => this.handleChange(key, "shipped")}
+                      onInteraction={() => this.handleChange(prop, "shipped")}
                     />
                   );
                 })}
@@ -286,15 +207,14 @@ export class DrawerFilter extends React.Component {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {Object.keys(this.state.vendors).map((key) => {
-                  const vendor = this.state.vendors[key];
+                {this.props.vendors.map((vendor) => {
                   return (
                     <Chip
-                      key={"profile-" + vendor.name}
-                      label={vendor.name}
-                      selected={vendor.checked}
+                      key={"profile-" + vendor}
+                      label={vendor}
+                      selected={this.props.whitelist.vendors.includes(vendor)}
                       checkmark
-                      onInteraction={() => this.handleChange(key, "vendors")}
+                      onInteraction={() => this.handleChange(vendor, "vendors")}
                     />
                   );
                 })}
