@@ -23,6 +23,8 @@ const addOrRemove = (oldArray, value) => {
   return array;
 };
 
+const shippedArray = ["Shipped", "Not shipped"];
+
 export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +39,7 @@ export class DrawerFilter extends React.Component {
     this.props.setWhitelist(prop, whitelist);
   };
   checkAll = (prop) => {
-    const array = prop === "shipped" ? ["Shipped", "Not shipped"] : this.props[prop];
+    const array = prop === "shipped" ? shippedArray : this.props[prop];
     this.setWhitelist(prop, array);
   };
   uncheckAll = (prop) => {
@@ -155,7 +157,7 @@ export class DrawerFilter extends React.Component {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {["Shipped", "Not shipped"].map((prop) => {
+                {shippedArray.map((prop) => {
                   return (
                     <Chip
                       key={"shipped-" + prop}
