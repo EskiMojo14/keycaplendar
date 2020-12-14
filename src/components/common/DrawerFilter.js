@@ -55,7 +55,7 @@ export class DrawerFilter extends React.Component {
   }
   componentDidUpdate = (prevProps) => {
     if (!isEqual(this.props.whitelist, prevProps.whitelist)) {
-      this.findPreset();
+      this.setPreset();
     }
   };
   findPreset = () => {
@@ -63,6 +63,10 @@ export class DrawerFilter extends React.Component {
     const preset = presetArray.filter((preset) => {
       return isEqual(preset.whitelist, newWhitelist);
     })[0];
+    return preset;
+  };
+  setPreset = () => {
+    const preset = this.findPreset();
     if (preset) {
       if (this.state.preset !== preset.name) {
         this.setState({ preset: preset.name });
@@ -81,6 +85,16 @@ export class DrawerFilter extends React.Component {
     })[0];
     if (preset) {
       this.setWhitelist("all", preset.whitelist);
+    }
+  };
+  savePreset = () => {
+    const preset = this.findPreset();
+    if (preset) {
+      this.props.openPreset(preset);
+    } else {
+      const { favorites, profiles, shipped, vendorMode, vendors } = this.props.whitelist;
+      const newPreset = new Preset("", favorites, profiles, shipped, vendorMode, vendors);
+      this.props.openPreset(newPreset);
     }
   };
   handleChange = (name, prop) => {
@@ -141,7 +155,7 @@ export class DrawerFilter extends React.Component {
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">
-          <Button label={this.state.preset === "New*" ? "Save" : "Modify"} outlined />
+          <Button label={this.state.preset === "New*" ? "Save" : "Modify"} onClick={this.savePreset} outlined />
           <Button label="Delete" disabled={this.state.preset === "New*"} outlined className="delete" />
         </div>
       </div>

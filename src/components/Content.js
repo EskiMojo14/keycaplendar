@@ -18,6 +18,7 @@ import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
 import { DrawerDetails } from "./common/DrawerDetails";
+import { DrawerFilterPreset } from "./common/DrawerFilterPreset";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
 import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
@@ -35,6 +36,18 @@ export class DesktopContent extends React.Component {
     this.state = {
       navDrawerOpen: true,
       filterDrawerOpen: false,
+      filterPresetDrawerOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       detailsDrawerOpen: false,
       detailSet: {
         colorway: "",
@@ -144,6 +157,31 @@ export class DesktopContent extends React.Component {
       this.closeModal();
     }
     this.setState({ filterDrawerOpen: false });
+  };
+  openFilterPresetDrawer = (preset) => {
+    this.openModal();
+    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+  };
+  closeFilterPresetDrawer = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDrawerOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 400);
   };
   openDetailsDrawer = (set) => {
     if (this.state.filterDrawerOpen) {
@@ -591,6 +629,13 @@ export class DesktopContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetDrawer = this.context.user.email ? (
+      <DrawerFilterPreset
+        open={this.state.filterPresetDrawerOpen}
+        close={this.closeFilterPresetDrawer}
+        filterPreset={this.state.filterPreset}
+      />
+    ) : null;
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
@@ -665,6 +710,7 @@ export class DesktopContent extends React.Component {
                   whitelist={this.props.whitelist}
                   snackbarQueue={this.props.snackbarQueue}
                   device={device}
+                  openPreset={this.openFilterPresetDrawer}
                 />
               )}
             </DeviceContext.Consumer>
@@ -674,6 +720,7 @@ export class DesktopContent extends React.Component {
               <Footer />
             </DrawerAppContent>
             {editorElements}
+            {filterPresetDrawer}
           </div>
         </DrawerAppContent>
         {auditDeleteDialog}
@@ -690,6 +737,18 @@ export class TabletContent extends React.Component {
     this.state = {
       navDrawerOpen: false,
       filterDrawerOpen: false,
+      filterPresetDrawerOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       detailsDrawerOpen: false,
       detailSet: {
         colorway: "",
@@ -843,6 +902,31 @@ export class TabletContent extends React.Component {
   closeFilterDrawer = () => {
     this.closeModal();
     this.setState({ filterDrawerOpen: false });
+  };
+  openFilterPresetDrawer = (preset) => {
+    this.openModal();
+    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+  };
+  closeFilterPresetDrawer = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDrawerOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 400);
   };
   openDetailsDrawer = (set) => {
     this.openModal();
@@ -1193,6 +1277,13 @@ export class TabletContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetDrawer = this.context.user.email ? (
+      <DrawerFilterPreset
+        open={this.state.filterPresetDrawerOpen}
+        close={this.closeFilterPresetDrawer}
+        filterPreset={this.state.filterPreset}
+      />
+    ) : null;
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
@@ -1231,6 +1322,7 @@ export class TabletContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
+        {filterPresetDrawer}
         <DeviceContext.Consumer>
           {(device) => (
             <DrawerDetails
@@ -1261,6 +1353,7 @@ export class TabletContent extends React.Component {
               whitelist={this.props.whitelist}
               snackbarQueue={this.props.snackbarQueue}
               device={device}
+              openPreset={this.openFilterPresetDrawer}
             />
           )}
         </DeviceContext.Consumer>
@@ -1279,6 +1372,18 @@ export class MobileContent extends React.Component {
     super(props);
     this.state = {
       filterDrawerOpen: false,
+      filterPresetDrawerOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       createDialogOpen: false,
       detailsDrawerOpen: false,
       detailSet: {
@@ -1374,6 +1479,31 @@ export class MobileContent extends React.Component {
   closeFilterDrawer = () => {
     this.closeModal();
     this.setState({ filterDrawerOpen: false });
+  };
+  openFilterPresetDrawer = (preset) => {
+    this.openModal();
+    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+  };
+  closeFilterPresetDrawer = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDrawerOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 400);
   };
   openCreateDialog = () => {
     this.openModal();
@@ -1892,6 +2022,13 @@ export class MobileContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetDrawer = this.context.user.email ? (
+      <DrawerFilterPreset
+        open={this.state.filterPresetDrawerOpen}
+        close={this.closeFilterPresetDrawer}
+        filterPreset={this.state.filterPreset}
+      />
+    ) : null;
     return (
       <div
         className={`${this.props.className} ${this.props.page} app-container ${
@@ -1913,6 +2050,7 @@ export class MobileContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
+        {filterPresetDrawer}
         <DeviceContext.Consumer>
           {(device) => (
             <DrawerDetails
@@ -1943,6 +2081,7 @@ export class MobileContent extends React.Component {
               whitelist={this.props.whitelist}
               snackbarQueue={this.props.snackbarQueue}
               device={device}
+              openPreset={this.openFilterPresetDrawer}
             />
           )}
         </DeviceContext.Consumer>

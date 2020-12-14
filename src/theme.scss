@@ -301,6 +301,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         )
       );
       @include chips.selected-ink-color(map-get($variables, primary));
+      &[disabled] {
+        @include chips.ink-color(map-get($variables, text-disabled));
+      }
     }
     .mdc-icon-button {
       color: map-get($variables, text-medium);
@@ -1100,12 +1103,20 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         feature-targeting.all(),
         ".mdc-button__ripple"
       );
+      @include ripple.states-selected(
+        map-get($variables, text-disabled),
+        false,
+        feature-targeting.all(),
+        "&:disabled .mdc-button__ripple"
+      );
       &--selected {
         @include button.ink-color(map-get($variables, primary));
         @include button.outline-color(map-get($variables, primary));
       }
-      &:disabled {
-        color: map-get($variables, text-disabled);
+      &:disabled,
+      &--selected:disabled {
+        @include button.ink-color(map-get($variables, text-disabled));
+        @include button.outline-color(map-get($variables, text-disabled));
       }
     }
   }
