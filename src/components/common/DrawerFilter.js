@@ -155,7 +155,7 @@ export class DrawerFilter extends React.Component {
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">
-          <Button label={this.state.preset === "New*" ? "Save" : "Modify"} onClick={this.savePreset} outlined />
+          <Button label={this.state.preset === "New*" ? "Save" : "Rename"} onClick={this.savePreset} outlined />
           <Button label="Delete" disabled={this.state.preset === "New*"} outlined className="delete" />
         </div>
       </div>

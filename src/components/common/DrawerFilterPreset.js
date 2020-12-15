@@ -14,6 +14,7 @@ export class DrawerFilterPreset extends React.Component {
     super(props);
     this.state = {
       name: "",
+      new: true,
     };
   }
   componentDidUpdate = (prevProps) => {
@@ -21,7 +22,7 @@ export class DrawerFilterPreset extends React.Component {
       this.props.filterPreset.name !== prevProps.filterPreset.name &&
       this.props.filterPreset.name !== this.state.name
     ) {
-      this.setState({ name: this.props.filterPreset.name });
+      this.setState({ name: this.props.filterPreset.name, new: this.props.filterPreset.name === "" });
     }
   };
   handleChange = (e) => {
@@ -31,7 +32,7 @@ export class DrawerFilterPreset extends React.Component {
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
-          <DrawerTitle>Edit filter preset</DrawerTitle>
+          <DrawerTitle>{this.state.new ? "Create" : "Edit"} filter preset</DrawerTitle>
           <Button label="Save" disabled={this.state.name === ""} outlined />
         </DrawerHeader>
         <div className="field-container">
