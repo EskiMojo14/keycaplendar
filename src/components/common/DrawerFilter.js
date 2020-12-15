@@ -17,11 +17,6 @@ import "./DrawerFilter.scss";
 
 const shippedArray = ["Shipped", "Not shipped"];
 
-const presetArray = [
-  new Preset("New", false, [], [], "include", []),
-  new Preset("GMK only", false, ["GMK"], ["Shipped", "Not shipped"], "exclude", []),
-];
-
 export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +31,7 @@ export class DrawerFilter extends React.Component {
   };
   findPreset = () => {
     const { edited, ...newWhitelist } = this.props.whitelist;
-    const preset = presetArray.filter((preset) => {
+    const preset = this.context.presets.filter((preset) => {
       return isEqual(preset.whitelist, newWhitelist);
     })[0];
     return preset;
@@ -56,7 +51,7 @@ export class DrawerFilter extends React.Component {
   selectPreset = (e) => {
     const opt = e.detail.value;
     this.setState({ preset: opt });
-    const preset = presetArray.filter((preset) => {
+    const preset = this.context.presets.filter((preset) => {
       return preset.name === opt;
     })[0];
     if (preset) {
@@ -127,7 +122,7 @@ export class DrawerFilter extends React.Component {
           outlined
           enhanced
           value={this.state.preset}
-          options={presetArray.map((preset) => preset.name)}
+          options={this.context.presets.map((preset) => ({ label: preset.name, key: preset.id, value: preset.name }))}
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">

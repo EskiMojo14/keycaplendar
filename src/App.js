@@ -10,6 +10,7 @@ import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove } from "./util/functions";
+import { Preset } from "./util/constructors";
 import "./App.scss";
 
 const db = firebase.firestore();
@@ -731,6 +732,20 @@ class App extends React.Component {
       return 0;
     });
 
+    // Create "New" preset with current whitelist settings.
+    const presetArray = this.state.presets.filter((preset) => preset.name !== "New");
+
+    const newPreset = new Preset(
+      "New",
+      whitelist.favorites,
+      whitelist.profiles,
+      whitelist.shipped,
+      whitelist.vendorMode,
+      whitelist.vendors
+    );
+
+    const allPresets = [newPreset, ...presetArray];
+
     // set states
     this.setState({
       filteredSets: searchedSets,
@@ -741,6 +756,7 @@ class App extends React.Component {
       groups: groups,
       content: searchedSets.length > 0,
       loading: false,
+      presets: allPresets,
     });
 
     if (!whitelist.edited.includes("vendors")) {
@@ -1201,6 +1217,7 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
+                presets: this.state.presets,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
@@ -1226,6 +1243,7 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
+                presets: this.state.presets,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

@@ -16,7 +16,7 @@ export const UserContext = React.createContext({
   toggleFavorite: () => {},
   syncSettings: false,
   setSyncSettings: () => {},
-  preset: {},
+  presets: [],
   addPreset: () => {},
   renamePreset: () => {},
   removePreset: () => {},
