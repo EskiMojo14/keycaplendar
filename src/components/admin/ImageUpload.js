@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { queueTypes } from "../util/propTypeTemplates";
+import { queueTypes } from "../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { CircularProgress } from "@rmwc/circular-progress";

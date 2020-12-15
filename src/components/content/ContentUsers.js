@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { queueTypes } from "../util/propTypeTemplates";
+import { queueTypes } from "../../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,

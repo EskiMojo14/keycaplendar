@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { statisticsTypes } from "../util/propTypeTemplates";
+import { statisticsTypes } from "../../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";

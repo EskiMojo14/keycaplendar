@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import { queueTypes, actionTypes } from "../util/propTypeTemplates";
+import { queueTypes, actionTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";

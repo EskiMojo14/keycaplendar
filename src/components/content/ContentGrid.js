@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { setTypes } from "../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";

@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "./util/propTypeTemplates";
+import { UserContext, DeviceContext } from "../util/contexts";
+import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -26,7 +27,6 @@ import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
-import { UserContext, DeviceContext } from "./util/contexts";
 
 const bodyScroll = require("body-scroll-toggle");
 

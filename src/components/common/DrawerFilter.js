@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
-import { nanoid } from "nanoid";
-import { whitelistTypes } from "../util/propTypeTemplates";
-import { UserContext } from "../util/contexts";
+import { Preset } from "../../util/constructors";
+import { UserContext } from "../../util/contexts";
+import { addOrRemove } from "../../util/functions";
+import { whitelistTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -13,31 +14,6 @@ import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilter.scss";
-
-const addOrRemove = (oldArray, value) => {
-  const array = [...oldArray];
-  const index = array.indexOf(value);
-
-  if (index === -1) {
-    array.push(value);
-  } else {
-    array.splice(index, 1);
-  }
-
-  return array;
-};
-
-function Preset(name, favorites, profiles, shipped, vendorMode, vendors) {
-  this.name = name;
-  this.id = nanoid();
-  this.whitelist = {
-    favorites: favorites,
-    profiles: profiles,
-    shipped: shipped,
-    vendorMode: vendorMode,
-    vendors: vendors,
-  };
-}
 
 const shippedArray = ["Shipped", "Not shipped"];
 

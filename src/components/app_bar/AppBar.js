@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { setTypes, statisticsTypes, statisticsSortTypes } from "../util/propTypeTemplates";
+import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";

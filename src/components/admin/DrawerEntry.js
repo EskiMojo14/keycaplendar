@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { setTypes, queueTypes } from "../util/propTypeTemplates";
-import { UserContext } from "../util/contexts";
+import { UserContext } from "../../util/contexts";
+import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { ImageUpload } from "./ImageUpload";

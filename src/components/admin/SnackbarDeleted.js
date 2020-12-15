@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { setTypes, queueTypes } from "../util/propTypeTemplates";
-import { UserContext } from "../util/contexts";
+import { UserContext } from "../../util/contexts";
+import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 export const SnackbarDeleted = (props) => {

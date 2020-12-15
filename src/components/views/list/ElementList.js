@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
-import { setTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";

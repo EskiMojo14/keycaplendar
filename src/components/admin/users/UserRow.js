@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../../firebase";
-import { userTypes, queueTypes } from "../../util/propTypeTemplates";
-import { UserContext } from "../../util/contexts";
+import { UserContext } from "../../../util/contexts";
+import { userTypes, queueTypes } from "../../../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";

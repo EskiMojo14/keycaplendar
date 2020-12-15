@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { setTypes } from "../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";

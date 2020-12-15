@@ -8,12 +8,14 @@ import { Login } from "./components/admin/Login";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { UserContext, DeviceContext } from "./components/util/contexts";
+import { UserContext, DeviceContext } from "./util/contexts";
+import { addOrRemove } from "./util/functions";
 import "./App.scss";
 
 const db = firebase.firestore();
 
 const queue = createSnackbarQueue();
+
 const title = {
   calendar: "Calendar",
   live: "Live GBs",
@@ -27,18 +29,6 @@ const title = {
   audit: "Audit Log",
   users: "Users",
   settings: "Settings",
-};
-
-const addOrRemove = (array, value) => {
-  const index = array.indexOf(value);
-
-  if (index === -1) {
-    array.push(value);
-  } else {
-    array.splice(index, 1);
-  }
-
-  return array;
 };
 
 const settingsFunctions = {
@@ -112,6 +102,7 @@ class App extends React.Component {
       statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
+      presets: [],
     };
   }
   getURLQuery = () => {

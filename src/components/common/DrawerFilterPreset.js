@@ -1,4 +1,5 @@
 import React from "react";
+import { UserContext } from "../../util/contexts";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -6,7 +7,6 @@ import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
-import { UserContext } from "../util/contexts";
 import "./DrawerFilterPreset.scss";
 
 export class DrawerFilterPreset extends React.Component {
