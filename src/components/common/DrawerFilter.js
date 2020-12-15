@@ -42,7 +42,7 @@ function Preset(name, favorites, profiles, shipped, vendorMode, vendors) {
 const shippedArray = ["Shipped", "Not shipped"];
 
 const presetArray = [
-  new Preset("New*", false, [], [], "include", []),
+  new Preset("New", false, [], [], "include", []),
   new Preset("GMK only", false, ["GMK"], ["Shipped", "Not shipped"], "exclude", []),
 ];
 
@@ -50,7 +50,7 @@ export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preset: "New*",
+      preset: "New",
     };
   }
   componentDidUpdate = (prevProps) => {
@@ -72,8 +72,8 @@ export class DrawerFilter extends React.Component {
         this.setState({ preset: preset.name });
       }
     } else {
-      if (this.state.preset !== "New*") {
-        this.setState({ preset: "New*" });
+      if (this.state.preset !== "New") {
+        this.setState({ preset: "New" });
       }
     }
   };
@@ -155,8 +155,8 @@ export class DrawerFilter extends React.Component {
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">
-          <Button label={this.state.preset === "New*" ? "Save" : "Rename"} onClick={this.savePreset} outlined />
-          <Button label="Delete" disabled={this.state.preset === "New*"} outlined className="delete" />
+          <Button label={this.state.preset === "New" ? "Save" : "Rename"} onClick={this.savePreset} outlined />
+          <Button label="Delete" disabled={this.state.preset === "New"} outlined className="delete" />
         </div>
       </div>
     ) : null;
