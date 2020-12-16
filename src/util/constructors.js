@@ -1,8 +1,16 @@
 import { nanoid } from "nanoid";
 
-export function Preset(name = "", favorites = false, profiles = [], shipped = [], vendorMode = "", vendors = []) {
+export function Preset(
+  name = "",
+  favorites = false,
+  profiles = [],
+  shipped = [],
+  vendorMode = "",
+  vendors = [],
+  id = nanoid()
+) {
   this.name = name;
-  this.id = nanoid();
+  this.id = id;
   this.whitelist = {
     favorites: favorites,
     profiles: profiles,

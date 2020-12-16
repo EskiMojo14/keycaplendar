@@ -29,23 +29,27 @@ export const DrawerFilter = (props) => {
     props.openPreset(newPreset);
   };
 
-  const editPreset = () => {
-    const { favorites, profiles, shipped, vendorMode, vendors } = props.whitelist;
-    const modifiedPreset = {
-      ...preset,
-      whitelist: {
-        favorites: favorites,
-        profiles: profiles,
-        shipped: shipped,
-        vendorMode: vendorMode,
-        vendors: vendors,
-      },
-    };
-    props.openPreset(modifiedPreset);
+  const savePreset = () => {
+    if (preset.name !== "Default") {
+      const { favorites, profiles, shipped, vendorMode, vendors } = props.whitelist;
+      const modifiedPreset = {
+        ...preset,
+        whitelist: {
+          favorites: favorites,
+          profiles: profiles,
+          shipped: shipped,
+          vendorMode: vendorMode,
+          vendors: vendors,
+        },
+      };
+      props.openPreset(modifiedPreset);
+    }
   };
 
   const deletePreset = () => {
-    props.deletePreset(preset);
+    if (preset.name !== "Default") {
+      props.deletePreset(preset);
+    }
   };
 
   const handleChange = (name, prop) => {
@@ -113,7 +117,7 @@ export const DrawerFilter = (props) => {
   ) : null;
 
   const presetSelect =
-    presets.length > 0 ? (
+    presets.length > 1 ? (
       <>
         <Select
           outlined
@@ -128,7 +132,7 @@ export const DrawerFilter = (props) => {
         />
         <div className="preset-buttons">
           <Button
-            label="Edit"
+            label="Save"
             icon={{
               strategy: "component",
               icon: (
@@ -149,8 +153,9 @@ export const DrawerFilter = (props) => {
                 </svg>
               ),
             }}
-            onClick={editPreset}
             outlined
+            disabled={preset.name === "Default"}
+            onClick={savePreset}
           />
           <Button
             label="Delete"
@@ -171,7 +176,7 @@ export const DrawerFilter = (props) => {
               ),
             }}
             outlined
-            disabled={preset.name === "New"}
+            disabled={preset.name === "Default"}
             className="delete"
             onClick={deletePreset}
           />

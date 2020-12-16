@@ -43,7 +43,7 @@ export class DrawerFilterPreset extends React.Component {
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
-          <DrawerTitle>{this.state.new ? "Create" : "Edit"} filter preset</DrawerTitle>
+          <DrawerTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</DrawerTitle>
           <Button label="Save" disabled={this.state.name === ""} outlined onClick={this.savePreset} />
         </DrawerHeader>
         <div className="field-container">

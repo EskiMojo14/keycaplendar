@@ -82,7 +82,7 @@ class App extends React.Component {
         favorites: false,
         profiles: [],
         shipped: ["Shipped", "Not shipped"],
-        vendorMode: "include",
+        vendorMode: "exclude",
         vendors: [],
       },
       cookies: true,
@@ -734,6 +734,14 @@ class App extends React.Component {
       return 0;
     });
 
+    // create default preset
+
+    const filteredPresets = this.state.presets.filter((preset) => preset.name !== "Default");
+
+    const defaultPreset = new Preset("Default", false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
+
+    const presets = [defaultPreset, ...filteredPresets];
+
     // set states
     this.setState({
       filteredSets: searchedSets,
@@ -744,10 +752,11 @@ class App extends React.Component {
       groups: groups,
       content: searchedSets.length > 0,
       loading: false,
+      presets: presets,
     });
 
-    if (!whitelist.edited.includes("vendors")) {
-      this.setWhitelist("vendors", allVendors, false);
+    if (this.state.preset.name === "") {
+      this.setState({ preset: defaultPreset });
     }
 
     if (!whitelist.edited.includes("profiles")) {
@@ -1035,11 +1044,12 @@ class App extends React.Component {
   };
   deletePreset = (preset) => {
     const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
-    this.setState({ presets: this.sortPresets(presets), preset: presets.length > 0 ? presets[0] : new Preset() });
+    this.setState({ presets: this.sortPresets(presets), preset: presets[0] });
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.presets) => {
-    const sortedPresets = this.sortPresets(presets);
+    const filteredPresets = presets.filter((preset) => preset.name !== "Default");
+    const sortedPresets = this.sortPresets(filteredPresets).map((preset) => ({ ...preset }));
     db.collection("users")
       .doc(this.state.user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })
@@ -1058,7 +1068,28 @@ class App extends React.Component {
           if (doc.exists) {
             const data = doc.data();
             if (data.filterPresets) {
-              this.setState({ presets: data.filterPresets });
+              const defaultPreset = new Preset(
+                "Default",
+                false,
+                this.state.profiles,
+                ["Shipped", "Not shipped"],
+                "exclude",
+                []
+              );
+              const dataPresets = data.filterPresets.map(
+                (preset) =>
+                  new Preset(
+                    preset.name,
+                    preset.whitelist.favorites,
+                    preset.whitelist.profiles,
+                    preset.whitelist.shipped,
+                    preset.whitelist.vendorMode,
+                    preset.whitelist.vendors,
+                    preset.id
+                  )
+              );
+              const presets = [defaultPreset, ...dataPresets];
+              this.setState({ presets: presets });
             }
           }
         })
