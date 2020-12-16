@@ -104,7 +104,7 @@ class App extends React.Component {
       statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
-      preset: {},
+      preset: new Preset(),
       presets: [],
     };
   }
@@ -734,20 +734,6 @@ class App extends React.Component {
       return 0;
     });
 
-    // Create "New" preset with current whitelist settings.
-    const presetArray = this.state.presets.filter((preset) => preset.name !== "New");
-
-    const newPreset = new Preset(
-      "New",
-      whitelist.favorites,
-      whitelist.profiles,
-      whitelist.shipped,
-      whitelist.vendorMode,
-      whitelist.vendors
-    );
-
-    const allPresets = [newPreset, ...presetArray];
-
     // set states
     this.setState({
       filteredSets: searchedSets,
@@ -758,12 +744,7 @@ class App extends React.Component {
       groups: groups,
       content: searchedSets.length > 0,
       loading: false,
-      presets: allPresets,
     });
-
-    if (!this.state.preset.id) {
-      this.setState({ preset: newPreset });
-    }
 
     if (!whitelist.edited.includes("vendors")) {
       this.setWhitelist("vendors", allVendors, false);
@@ -1016,26 +997,52 @@ class App extends React.Component {
         });
     }
   };
-  findPreset = (name) => {
-    const preset = this.state.presets.filter((preset) => preset.name === name)[0];
+  findPreset = (prop, val) => {
+    const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
+  sortPresets = (presets) => {
+    presets.sort(function (a, b) {
+      var x = a.name.toLowerCase();
+      var y = b.name.toLowerCase();
+      if (x < y) {
+        return -1;
+      }
+      if (x > y) {
+        return 1;
+      }
+      return 0;
+    });
+    return presets;
+  };
   selectPreset = (presetName) => {
-    const preset = this.findPreset(presetName);
+    const preset = this.findPreset("name", presetName);
     this.setState({ preset: preset });
     this.setWhitelist("all", preset.whitelist);
   };
-  addPreset = (preset) => {
+  newPreset = (preset) => {
     preset.id = nanoid();
     const presets = [...this.state.presets, preset];
-    this.setState({ presets: presets });
+    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    this.syncPresets(presets);
+  };
+  editPreset = (preset) => {
+    const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
+    const presets = [...this.state.presets];
+    presets[index] = preset;
+    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    this.syncPresets(presets);
+  };
+  deletePreset = (preset) => {
+    const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
+    this.setState({ presets: this.sortPresets(presets), preset: presets.length > 0 ? presets[0] : new Preset() });
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.presets) => {
-    const filteredPresets = presets.filter((preset) => preset.name !== "New");
-    console.log(filteredPresets);
+    const sortedPreset = this.sortPresets(presets);
+    console.log(sortedPreset);
   };
-  getPresets = () => {
+  getPresets = (id = this.state.user.id) => {
     console.log(this.state.presets);
   };
   componentDidMount() {
@@ -1073,6 +1080,7 @@ class App extends React.Component {
             });
           });
         this.getFavorites(user.uid);
+        this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
         this.setUser({});
@@ -1269,7 +1277,9 @@ class App extends React.Component {
                 preset: this.state.preset,
                 presets: this.state.presets,
                 selectPreset: this.selectPreset,
-                addPreset: this.addPreset,
+                newPreset: this.newPreset,
+                editPreset: this.editPreset,
+                deletePreset: this.deletePreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

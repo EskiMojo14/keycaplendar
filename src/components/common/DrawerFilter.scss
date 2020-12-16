@@ -36,7 +36,13 @@
         &__menu {
           width: 100%;
         }
-        margin-bottom: 16px;
+        margin: 16px 0;
+      }
+    }
+    &-button {
+      display: flex;
+      .mdc-button {
+        flex: 0 1 100%;
       }
     }
     &-buttons {

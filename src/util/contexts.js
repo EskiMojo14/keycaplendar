@@ -19,7 +19,8 @@ export const UserContext = React.createContext({
   preset: {},
   presets: [],
   selectPreset: () => {},
-  addPreset: () => {},
+  newPreset: () => {},
+  editPreset: () => {},
   renamePreset: () => {},
   removePreset: () => {},
 });

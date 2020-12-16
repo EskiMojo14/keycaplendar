@@ -18,27 +18,24 @@ export class DrawerFilterPreset extends React.Component {
     };
   }
   componentDidUpdate = (prevProps) => {
-    if (
-      this.props.filterPreset.name !== prevProps.filterPreset.name &&
-      this.props.filterPreset.name !== this.state.name
-    ) {
-      if (this.props.filterPreset.name === "New") {
-        this.setState({ name: "", new: true });
-      } else {
-        this.setState({ name: this.props.filterPreset.name, new: this.props.filterPreset.name === "" });
-      }
+    if (this.props.preset.name !== prevProps.preset.name) {
+      this.setState({ name: this.props.preset.name, new: this.props.preset.name === "" });
     }
   };
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  addPreset = () => {
-    if (this.state.name !== "" && this.state.name !== "New") {
+  savePreset = () => {
+    if (this.state.name !== "") {
       const preset = {
-        ...this.props.filterPreset,
+        ...this.props.preset,
         name: this.state.name,
       };
-      this.context.addPreset(preset);
+      if (this.props.preset.name === "") {
+        this.context.newPreset(preset);
+      } else {
+        this.context.editPreset(preset);
+      }
       this.props.close();
     }
   };
@@ -47,12 +44,7 @@ export class DrawerFilterPreset extends React.Component {
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>{this.state.new ? "Create" : "Edit"} filter preset</DrawerTitle>
-          <Button
-            label="Save"
-            disabled={this.state.name === "" || this.state.name === "New"}
-            outlined
-            onClick={this.addPreset}
-          />
+          <Button label="Save" disabled={this.state.name === ""} outlined onClick={this.savePreset} />
         </DrawerHeader>
         <div className="field-container">
           <TextField
@@ -71,7 +63,7 @@ export class DrawerFilterPreset extends React.Component {
               <Typography use="caption">Favorites</Typography>
             </div>
             <div className="checkbox-container">
-              <Checkbox checked={this.props.filterPreset.whitelist.favorites} disabled />
+              <Checkbox checked={this.props.preset.whitelist.favorites} disabled />
             </div>
           </div>
           <div className="group">
@@ -80,7 +72,7 @@ export class DrawerFilterPreset extends React.Component {
             </div>
             <div className="chip-set-container">
               <ChipSet choice>
-                {this.props.filterPreset.whitelist.profiles.map((profile) => (
+                {this.props.preset.whitelist.profiles.map((profile) => (
                   <Chip key={profile} label={profile} disabled />
                 ))}
               </ChipSet>
@@ -92,7 +84,7 @@ export class DrawerFilterPreset extends React.Component {
             </div>
             <div className="chip-set-container">
               <ChipSet choice>
-                {this.props.filterPreset.whitelist.shipped.map((shipped) => (
+                {this.props.preset.whitelist.shipped.map((shipped) => (
                   <Chip key={shipped} label={shipped} disabled />
                 ))}
               </ChipSet>
@@ -107,18 +99,18 @@ export class DrawerFilterPreset extends React.Component {
                 <ToggleGroupButton
                   disabled
                   label="Include"
-                  selected={this.props.filterPreset.whitelist.vendorMode === "include"}
+                  selected={this.props.preset.whitelist.vendorMode === "include"}
                 />
                 <ToggleGroupButton
                   disabled
                   label="Exclude"
-                  selected={this.props.filterPreset.whitelist.vendorMode === "exclude"}
+                  selected={this.props.preset.whitelist.vendorMode === "exclude"}
                 />
               </ToggleGroup>
             </div>
             <div className="chip-set-container">
               <ChipSet choice>
-                {this.props.filterPreset.whitelist.vendors.map((vendor) => (
+                {this.props.preset.whitelist.vendors.map((vendor) => (
                   <Chip key={vendor} label={vendor} disabled />
                 ))}
               </ChipSet>
