@@ -1039,11 +1039,34 @@ class App extends React.Component {
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.presets) => {
-    const sortedPreset = this.sortPresets(presets);
-    console.log(sortedPreset);
+    const sortedPresets = this.sortPresets(presets);
+    db.collection("users")
+      .doc(this.state.user.id)
+      .set({ filterPresets: sortedPresets }, { merge: true })
+      .then(() => {})
+      .catch((error) => {
+        console.log("Failed to sync presets: " + error);
+        queue.notify({ title: "Failed to sync presets: " + error });
+      });
   };
   getPresets = (id = this.state.user.id) => {
-    console.log(this.state.presets);
+    if (id) {
+      const userDocRef = db.collection("users").doc(id);
+      userDocRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.filterPresets) {
+              this.setState({ presets: data.filterPresets });
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get filter presets: " + error);
+          queue.notify({ title: "Failed to get filter presets: " + error });
+        });
+    }
   };
   componentDidMount() {
     this.setDevice();
