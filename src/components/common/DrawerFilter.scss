@@ -37,6 +37,11 @@
           width: 100%;
         }
         margin: 16px 0;
+        &.modified {
+          .mdc-select__selected-text::after {
+            content: "*";
+          }
+        }
       }
     }
     &-button {

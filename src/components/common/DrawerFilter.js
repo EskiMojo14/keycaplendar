@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import isEqual from "lodash.isequal";
 import { Preset } from "../../util/constructors";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove } from "../../util/functions";
@@ -19,6 +20,14 @@ const shippedArray = ["Shipped", "Not shipped"];
 export const DrawerFilter = (props) => {
   const { user, preset, presets, selectPreset } = useContext(UserContext);
   const device = useContext(DeviceContext);
+  const [modified, setModified] = useState(false);
+
+  useEffect(() => {
+    const { edited, ...whitelist } = props.whitelist;
+    const equal = isEqual(preset.whitelist, whitelist);
+    setModified(!equal);
+  }, [preset.whitelist, props.whitelist]);
+
   const selectPresetFn = (e) => {
     selectPreset(e.detail.value);
   };
@@ -129,6 +138,7 @@ export const DrawerFilter = (props) => {
             value: preset.name,
           }))}
           onChange={selectPresetFn}
+          className={modified ? "modified" : ""}
         />
         <div className="preset-buttons">
           <Button
