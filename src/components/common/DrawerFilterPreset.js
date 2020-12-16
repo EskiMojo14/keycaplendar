@@ -22,18 +22,37 @@ export class DrawerFilterPreset extends React.Component {
       this.props.filterPreset.name !== prevProps.filterPreset.name &&
       this.props.filterPreset.name !== this.state.name
     ) {
-      this.setState({ name: this.props.filterPreset.name, new: this.props.filterPreset.name === "" });
+      if (this.props.filterPreset.name === "New") {
+        this.setState({ name: "", new: true });
+      } else {
+        this.setState({ name: this.props.filterPreset.name, new: this.props.filterPreset.name === "" });
+      }
     }
   };
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+  addPreset = () => {
+    if (this.state.name !== "" && this.state.name !== "New") {
+      const preset = {
+        ...this.props.filterPreset,
+        name: this.state.name,
+      };
+      this.context.addPreset(preset);
+      this.props.close();
+    }
   };
   render() {
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>{this.state.new ? "Create" : "Edit"} filter preset</DrawerTitle>
-          <Button label="Save" disabled={this.state.name === ""} outlined />
+          <Button
+            label="Save"
+            disabled={this.state.name === "" || this.state.name === "New"}
+            outlined
+            onClick={this.addPreset}
+          />
         </DrawerHeader>
         <div className="field-container">
           <TextField

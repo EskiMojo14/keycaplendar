@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "./components/firebase";
 import moment from "moment";
+import { nanoid } from "nanoid";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
@@ -103,6 +104,7 @@ class App extends React.Component {
       statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
+      preset: {},
       presets: [],
     };
   }
@@ -759,6 +761,10 @@ class App extends React.Component {
       presets: allPresets,
     });
 
+    if (!this.state.preset.id) {
+      this.setState({ preset: newPreset });
+    }
+
     if (!whitelist.edited.includes("vendors")) {
       this.setWhitelist("vendors", allVendors, false);
     }
@@ -1010,6 +1016,28 @@ class App extends React.Component {
         });
     }
   };
+  findPreset = (name) => {
+    const preset = this.state.presets.filter((preset) => preset.name === name)[0];
+    return preset;
+  };
+  selectPreset = (presetName) => {
+    const preset = this.findPreset(presetName);
+    this.setState({ preset: preset });
+    this.setWhitelist("all", preset.whitelist);
+  };
+  addPreset = (preset) => {
+    preset.id = nanoid();
+    const presets = [...this.state.presets, preset];
+    this.setState({ presets: presets });
+    this.syncPresets(presets);
+  };
+  syncPresets = (presets = this.state.presets) => {
+    const filteredPresets = presets.filter((preset) => preset.name !== "New");
+    console.log(filteredPresets);
+  };
+  getPresets = () => {
+    console.log(this.state.presets);
+  };
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
@@ -1213,11 +1241,6 @@ class App extends React.Component {
               value={{
                 user: this.state.user,
                 setUser: this.setUser,
-                favorites: this.state.favorites,
-                toggleFavorite: this.toggleFavorite,
-                syncSettings: this.state.syncSettings,
-                setSyncSettings: this.setSyncSettings,
-                presets: this.state.presets,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
@@ -1243,7 +1266,10 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
+                preset: this.state.preset,
                 presets: this.state.presets,
+                selectPreset: this.selectPreset,
+                addPreset: this.addPreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

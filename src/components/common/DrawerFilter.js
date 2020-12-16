@@ -21,47 +21,36 @@ export class DrawerFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      preset: "New",
+      modified: false,
     };
   }
   componentDidUpdate = (prevProps) => {
     if (!isEqual(this.props.whitelist, prevProps.whitelist)) {
-      this.setPreset();
-    }
-  };
-  findPreset = () => {
-    const { edited, ...newWhitelist } = this.props.whitelist;
-    const preset = this.context.presets.filter((preset) => {
-      return isEqual(preset.whitelist, newWhitelist);
-    })[0];
-    return preset;
-  };
-  setPreset = () => {
-    const preset = this.findPreset();
-    if (preset) {
-      if (this.state.preset !== preset.name) {
-        this.setState({ preset: preset.name });
-      }
-    } else {
-      if (this.state.preset !== "New") {
-        this.setState({ preset: "New" });
-      }
+      const { edited, ...whitelist } = this.props.whitelist;
+      const diff = !isEqual(whitelist, this.context.preset.whitelist);
+      console.log(this.props.whitelist, this.context.preset.whitelist);
+      this.setState({ modified: diff });
     }
   };
   selectPreset = (e) => {
-    const opt = e.detail.value;
-    this.setState({ preset: opt });
-    const preset = this.context.presets.filter((preset) => {
-      return preset.name === opt;
-    })[0];
-    if (preset) {
-      this.setWhitelist("all", preset.whitelist);
-    }
+    this.context.selectPreset(e.detail.value);
   };
   savePreset = () => {
-    const preset = this.findPreset();
-    if (preset) {
-      this.props.openPreset(preset);
+    if (this.context.preset.name !== "New" && !this.state.modified) {
+      this.props.openPreset(this.context.preset);
+    } else if (this.state.modified) {
+      const { favorites, profiles, shipped, vendorMode, vendors } = this.props.whitelist;
+      const modifiedPreset = {
+        ...this.context.preset,
+        whitelist: {
+          favorites: favorites,
+          profiles: profiles,
+          shipped: shipped,
+          vendorMode: vendorMode,
+          vendors: vendors,
+        },
+      };
+      this.props.openPreset(modifiedPreset);
     } else {
       const { favorites, profiles, shipped, vendorMode, vendors } = this.props.whitelist;
       const newPreset = new Preset("", favorites, profiles, shipped, vendorMode, vendors);
@@ -70,7 +59,20 @@ export class DrawerFilter extends React.Component {
   };
   handleChange = (name, prop) => {
     const original = this.props.whitelist[prop];
-    const edited = prop === "favorites" ? !original : addOrRemove(original, name);
+    const edited =
+      prop === "favorites"
+        ? !original
+        : addOrRemove(original, name).sort(function (a, b) {
+            var x = a.toLowerCase();
+            var y = b.toLowerCase();
+            if (x < y) {
+              return -1;
+            }
+            if (x > y) {
+              return 1;
+            }
+            return 0;
+          });
     this.setWhitelist(prop, edited);
   };
   setWhitelist = (prop, whitelist) => {
@@ -121,13 +123,21 @@ export class DrawerFilter extends React.Component {
         <Select
           outlined
           enhanced
-          value={this.state.preset}
-          options={this.context.presets.map((preset) => ({ label: preset.name, key: preset.id, value: preset.name }))}
+          value={this.context.preset.name}
+          options={this.context.presets.map((preset) => ({
+            label: preset.name,
+            key: preset.id,
+            value: preset.name,
+          }))}
           onChange={this.selectPreset}
         />
         <div className="preset-buttons">
-          <Button label={this.state.preset === "New" ? "Save" : "Rename"} onClick={this.savePreset} outlined />
-          <Button label="Delete" disabled={this.state.preset === "New"} outlined className="delete" />
+          <Button
+            label={this.state.modified || this.context.preset.name === "New" ? "Save" : "Rename"}
+            onClick={this.savePreset}
+            outlined
+          />
+          <Button label="Delete" disabled={this.context.preset.name === "New"} outlined className="delete" />
         </div>
       </div>
     ) : null;
