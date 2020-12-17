@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
-import { setTypes } from "../../util/propTypeTemplates";
-import { UserContext } from "../../util/contexts";
+import { UserContext } from "../../../util/contexts";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import {
   Card,

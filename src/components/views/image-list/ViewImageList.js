@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { setTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 

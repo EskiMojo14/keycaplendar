@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
-import { queueTypes } from "../util/propTypeTemplates";
-import { UserContext, DeviceContext } from "../util/contexts";
+import { UserContext, DeviceContext } from "../../util/contexts";
+import { queueTypes } from "../../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";

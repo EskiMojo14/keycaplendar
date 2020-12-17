@@ -16,6 +16,12 @@ export const UserContext = React.createContext({
   toggleFavorite: () => {},
   syncSettings: false,
   setSyncSettings: () => {},
+  preset: {},
+  presets: [],
+  selectPreset: () => {},
+  newPreset: () => {},
+  editPreset: () => {},
+  deletePreset: () => {},
 });
 
 UserContext.displayName = "User";

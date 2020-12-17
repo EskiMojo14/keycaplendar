@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { setTypes } from "../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogSales.scss";
 

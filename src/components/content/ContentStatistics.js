@@ -4,7 +4,7 @@ import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
 import { create, all } from "mathjs";
-import { setTypes, statisticsTypes, statisticsSortTypes } from "../util/propTypeTemplates";
+import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";

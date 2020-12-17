@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
-import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "./util/propTypeTemplates";
+import { UserContext, DeviceContext } from "../util/contexts";
+import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -18,6 +19,9 @@ import { DialogStatistics } from "./statistics/DialogStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
 import { DrawerDetails } from "./common/DrawerDetails";
+import { DrawerFilterPreset } from "./common/DrawerFilterPreset";
+import { DialogFilterPreset } from "./common/DialogFilterPreset";
+import { DialogDeleteFilterPreset } from "./common/DialogDeleteFilterPreset";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
 import { DialogAuditDelete } from "./admin/audit_log/DialogAuditDelete";
@@ -25,7 +29,6 @@ import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
-import { UserContext, DeviceContext } from "./util/contexts";
 
 const bodyScroll = require("body-scroll-toggle");
 
@@ -35,6 +38,30 @@ export class DesktopContent extends React.Component {
     this.state = {
       navDrawerOpen: true,
       filterDrawerOpen: false,
+      filterPresetDrawerOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
+      filterPresetDeleteDialogOpen: false,
+      deleteFilterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       detailsDrawerOpen: false,
       detailSet: {
         colorway: "",
@@ -129,7 +156,7 @@ export class DesktopContent extends React.Component {
         this.setState((prevState) => {
           return { filterDrawerOpen: !prevState.filterDrawerOpen };
         });
-      }, 400);
+      }, 300);
     } else {
       if (this.props.view === "compact") {
         this.openModal();
@@ -145,6 +172,65 @@ export class DesktopContent extends React.Component {
     }
     this.setState({ filterDrawerOpen: false });
   };
+  openFilterPresetDrawer = (preset) => {
+    if (this.props.view === "compact") {
+      this.closeFilterDrawer();
+      this.setState({ filterPreset: preset });
+      setTimeout(() => {
+        this.openModal();
+        this.setState({ filterPresetDrawerOpen: true });
+      }, 300);
+    } else {
+      this.openModal();
+      this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+    }
+  };
+  closeFilterPresetDrawer = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDrawerOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 300);
+  };
+  openFilterPresetDeleteDialog = (preset) => {
+    this.openModal();
+    this.setState({ filterPresetDeleteDialogOpen: true, deleteFilterPreset: preset });
+  };
+  closeFilterPresetDeleteDialog = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        deleteFilterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 300);
+  };
   openDetailsDrawer = (set) => {
     if (this.state.filterDrawerOpen) {
       this.closeFilterDrawer();
@@ -156,7 +242,7 @@ export class DesktopContent extends React.Component {
           detailsDrawerOpen: true,
           detailSet: set,
         });
-      }, 400);
+      }, 300);
     } else {
       if (this.props.view === "compact") {
         this.openModal();
@@ -591,6 +677,20 @@ export class DesktopContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetElements = this.context.user.email ? (
+      <>
+        <DrawerFilterPreset
+          open={this.state.filterPresetDrawerOpen}
+          close={this.closeFilterPresetDrawer}
+          preset={this.state.filterPreset}
+        />
+        <DialogDeleteFilterPreset
+          open={this.state.filterPresetDeleteDialogOpen}
+          close={this.closeFilterPresetDeleteDialog}
+          preset={this.state.deleteFilterPreset}
+        />
+      </>
+    ) : null;
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
@@ -653,27 +753,25 @@ export class DesktopContent extends React.Component {
               )}
             </DeviceContext.Consumer>
             <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-            <DeviceContext.Consumer>
-              {(device) => (
-                <DrawerFilter
-                  view={this.props.view}
-                  profiles={this.props.profiles}
-                  vendors={this.props.allVendors}
-                  open={this.state.filterDrawerOpen}
-                  close={this.closeFilterDrawer}
-                  setWhitelist={this.props.setWhitelist}
-                  whitelist={this.props.whitelist}
-                  snackbarQueue={this.props.snackbarQueue}
-                  device={device}
-                />
-              )}
-            </DeviceContext.Consumer>
+            <DrawerFilter
+              view={this.props.view}
+              profiles={this.props.profiles}
+              vendors={this.props.allVendors}
+              open={this.state.filterDrawerOpen}
+              close={this.closeFilterDrawer}
+              setWhitelist={this.props.setWhitelist}
+              whitelist={this.props.whitelist}
+              snackbarQueue={this.props.snackbarQueue}
+              openPreset={this.openFilterPresetDrawer}
+              deletePreset={this.openFilterPresetDeleteDialog}
+            />
             {auditFilterDrawer}
             <DrawerAppContent className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
               {content}
               <Footer />
             </DrawerAppContent>
             {editorElements}
+            {filterPresetElements}
           </div>
         </DrawerAppContent>
         {auditDeleteDialog}
@@ -690,6 +788,30 @@ export class TabletContent extends React.Component {
     this.state = {
       navDrawerOpen: false,
       filterDrawerOpen: false,
+      filterPresetDrawerOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
+      filterPresetDeleteDialogOpen: false,
+      deleteFilterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       detailsDrawerOpen: false,
       detailSet: {
         colorway: "",
@@ -793,7 +915,7 @@ export class TabletContent extends React.Component {
         this.setState((prevState) => {
           return { editDrawerOpen: !prevState.editDrawerOpen };
         });
-      }, 400);
+      }, 300);
     } else {
       this.setState({
         editDrawerOpen: !this.state.editDrawerOpen,
@@ -843,6 +965,58 @@ export class TabletContent extends React.Component {
   closeFilterDrawer = () => {
     this.closeModal();
     this.setState({ filterDrawerOpen: false });
+  };
+  openFilterPresetDrawer = (preset) => {
+    this.closeFilterDrawer();
+    this.setState({ filterPreset: preset });
+    setTimeout(() => {
+      this.openModal();
+      this.setState({ filterPresetDrawerOpen: true });
+    }, 300);
+  };
+  closeFilterPresetDrawer = () => {
+    this.closeModal();
+    this.setState({
+      filterPresetDrawerOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 300);
+  };
+  openFilterPresetDeleteDialog = (preset) => {
+    this.setState({ filterPresetDeleteDialogOpen: true, deleteFilterPreset: preset });
+  };
+  closeFilterPresetDeleteDialog = () => {
+    this.setState({
+      filterPresetDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        deleteFilterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 300);
   };
   openDetailsDrawer = (set) => {
     this.openModal();
@@ -1193,6 +1367,20 @@ export class TabletContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetElements = this.context.user.email ? (
+      <>
+        <DrawerFilterPreset
+          open={this.state.filterPresetDrawerOpen}
+          close={this.closeFilterPresetDrawer}
+          preset={this.state.filterPreset}
+        />
+        <DialogDeleteFilterPreset
+          open={this.state.filterPresetDeleteDialogOpen}
+          close={this.closeFilterPresetDeleteDialog}
+          preset={this.state.deleteFilterPreset}
+        />
+      </>
+    ) : null;
     return (
       <div className={`${this.props.className} ${this.props.page} app-container`}>
         <DrawerNav
@@ -1249,21 +1437,19 @@ export class TabletContent extends React.Component {
           )}
         </DeviceContext.Consumer>
         <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-        <DeviceContext.Consumer>
-          {(device) => (
-            <DrawerFilter
-              view={this.props.view}
-              profiles={this.props.profiles}
-              vendors={this.props.allVendors}
-              open={this.state.filterDrawerOpen}
-              close={this.closeFilterDrawer}
-              setWhitelist={this.props.setWhitelist}
-              whitelist={this.props.whitelist}
-              snackbarQueue={this.props.snackbarQueue}
-              device={device}
-            />
-          )}
-        </DeviceContext.Consumer>
+        <DrawerFilter
+          view={this.props.view}
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
+          openPreset={this.openFilterPresetDrawer}
+          deletePreset={this.openFilterPresetDeleteDialog}
+        />
+        {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
@@ -1279,6 +1465,30 @@ export class MobileContent extends React.Component {
     super(props);
     this.state = {
       filterDrawerOpen: false,
+      filterPresetDialogOpen: false,
+      filterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
+      filterPresetDeleteDialogOpen: false,
+      deleteFilterPreset: {
+        name: "",
+        id: "",
+        whitelist: {
+          favorites: false,
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "include",
+          vendors: [],
+        },
+      },
       createDialogOpen: false,
       detailsDrawerOpen: false,
       detailSet: {
@@ -1375,6 +1585,52 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ filterDrawerOpen: false });
   };
+  openFilterPresetDialog = (preset) => {
+    this.setState({ filterPresetDialogOpen: true, filterPreset: preset });
+  };
+  closeFilterPresetDialog = () => {
+    this.setState({
+      filterPresetDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        filterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 400);
+  };
+  openFilterPresetDeleteDialog = (preset) => {
+    this.setState({ filterPresetDeleteDialogOpen: true, deleteFilterPreset: preset });
+  };
+  closeFilterPresetDeleteDialog = () => {
+    this.setState({
+      filterPresetDeleteDialogOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        deleteFilterPreset: {
+          name: "",
+          id: "",
+          whitelist: {
+            favorites: false,
+            profiles: [],
+            shipped: ["Shipped", "Not shipped"],
+            vendorMode: "include",
+            vendors: [],
+          },
+        },
+      });
+    }, 300);
+  };
   openCreateDialog = () => {
     this.openModal();
     this.setState((prevState) => {
@@ -1394,7 +1650,7 @@ export class MobileContent extends React.Component {
         this.setState((prevState) => {
           return { editDialogOpen: !prevState.editDialogOpen };
         });
-      }, 400);
+      }, 300);
     } else {
       this.openModal();
       this.setState({
@@ -1892,6 +2148,20 @@ export class MobileContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
+    const filterPresetElements = this.context.user.email ? (
+      <>
+        <DialogFilterPreset
+          open={this.state.filterPresetDialogOpen}
+          close={this.closeFilterPresetDialog}
+          preset={this.state.filterPreset}
+        />
+        <DialogDeleteFilterPreset
+          open={this.state.filterPresetDeleteDialogOpen}
+          close={this.closeFilterPresetDeleteDialog}
+          preset={this.state.deleteFilterPreset}
+        />
+      </>
+    ) : null;
     return (
       <div
         className={`${this.props.className} ${this.props.page} app-container ${
@@ -1931,21 +2201,19 @@ export class MobileContent extends React.Component {
           )}
         </DeviceContext.Consumer>
         <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-        <DeviceContext.Consumer>
-          {(device) => (
-            <DrawerFilter
-              view={this.props.view}
-              profiles={this.props.profiles}
-              vendors={this.props.allVendors}
-              open={this.state.filterDrawerOpen}
-              close={this.closeFilterDrawer}
-              setWhitelist={this.props.setWhitelist}
-              whitelist={this.props.whitelist}
-              snackbarQueue={this.props.snackbarQueue}
-              device={device}
-            />
-          )}
-        </DeviceContext.Consumer>
+        <DrawerFilter
+          view={this.props.view}
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
+          openPreset={this.openFilterPresetDialog}
+          deletePreset={this.openFilterPresetDeleteDialog}
+        />
+        {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
@@ -1969,7 +2237,6 @@ DesktopContent.propTypes = {
   darkTheme: PropTypes.string,
   density: PropTypes.string,
   device: PropTypes.string,
-  editor: PropTypes.bool,
   fromTimeTheme: PropTypes.string,
   getData: PropTypes.func,
   groups: PropTypes.arrayOf(PropTypes.string),
@@ -2018,7 +2285,6 @@ TabletContent.propTypes = {
   darkTheme: PropTypes.string,
   density: PropTypes.string,
   device: PropTypes.string,
-  editor: PropTypes.bool,
   fromTimeTheme: PropTypes.string,
   getData: PropTypes.func,
   groups: PropTypes.arrayOf(PropTypes.string),
@@ -2068,7 +2334,6 @@ MobileContent.propTypes = {
   darkTheme: PropTypes.string,
   density: PropTypes.string,
   device: PropTypes.string,
-  editor: PropTypes.bool,
   fromTimeTheme: PropTypes.string,
   getData: PropTypes.func,
   groups: PropTypes.arrayOf(PropTypes.string),

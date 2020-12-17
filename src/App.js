@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "./components/firebase";
 import moment from "moment";
+import { nanoid } from "nanoid";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
@@ -8,12 +9,15 @@ import { Login } from "./components/admin/Login";
 import { EntryGuide } from "./components/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { UserContext, DeviceContext } from "./components/util/contexts";
+import { UserContext, DeviceContext } from "./util/contexts";
+import { addOrRemove } from "./util/functions";
+import { Preset } from "./util/constructors";
 import "./App.scss";
 
 const db = firebase.firestore();
 
 const queue = createSnackbarQueue();
+
 const title = {
   calendar: "Calendar",
   live: "Live GBs",
@@ -27,18 +31,6 @@ const title = {
   audit: "Audit Log",
   users: "Users",
   settings: "Settings",
-};
-
-const addOrRemove = (array, value) => {
-  const index = array.indexOf(value);
-
-  if (index === -1) {
-    array.push(value);
-  } else {
-    array.splice(index, 1);
-  }
-
-  return array;
 };
 
 const settingsFunctions = {
@@ -86,11 +78,12 @@ class App extends React.Component {
       },
       favorites: [],
       whitelist: {
-        vendors: [],
-        vendorMode: "include",
+        edited: [],
+        favorites: false,
         profiles: [],
         shipped: ["Shipped", "Not shipped"],
-        edited: [],
+        vendorMode: "exclude",
+        vendors: [],
       },
       cookies: true,
       applyTheme: "manual",
@@ -111,6 +104,8 @@ class App extends React.Component {
       statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
+      preset: new Preset(),
+      presets: [],
     };
   }
   getURLQuery = () => {
@@ -612,13 +607,14 @@ class App extends React.Component {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
+      const favoritesBool = !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id));
       if (set.vendors.length > 0) {
-        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool;
+        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
         } else {
-          return whitelist.profiles.includes(set.profile) && shippedBool;
+          return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
         }
       }
     });
@@ -738,6 +734,14 @@ class App extends React.Component {
       return 0;
     });
 
+    // create default preset
+
+    const filteredPresets = this.state.presets.filter((preset) => preset.name !== "Default");
+
+    const defaultPreset = new Preset("Default", false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
+
+    const presets = [defaultPreset, ...filteredPresets];
+
     // set states
     this.setState({
       filteredSets: searchedSets,
@@ -748,10 +752,11 @@ class App extends React.Component {
       groups: groups,
       content: searchedSets.length > 0,
       loading: false,
+      presets: presets,
     });
 
-    if (!whitelist.edited.includes("vendors")) {
-      this.setWhitelist("vendors", allVendors, false);
+    if (this.state.preset.name === "") {
+      this.setState({ preset: defaultPreset });
     }
 
     if (!whitelist.edited.includes("profiles")) {
@@ -802,34 +807,44 @@ class App extends React.Component {
     this.setState({ statisticsTab: tab });
   };
   setWhitelist = (prop, val, clearUrl = true) => {
-    const edited = this.state.whitelist.edited.includes(prop)
-      ? this.state.whitelist.edited
-      : [...this.state.whitelist.edited, prop];
-    const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-    this.setState({
-      whitelist: whitelist,
-    });
-    document.documentElement.scrollTop = 0;
-    if (this.state.sets.length > 0) {
-      this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("profile") || params.has("profiles")) {
-        params.delete("profile");
-        params.delete("profiles");
-        if (params.has("page")) {
-          const page = params.get("page");
-          window.history.pushState(
-            {
-              page: page,
-            },
-            "KeycapLendar: " + title[page],
-            "?" + params.toString()
-          );
-        } else {
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
-          window.history.pushState({}, "KeycapLendar", questionParam);
+    if (prop === "all") {
+      const edited = Object.keys(val);
+      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
+      this.setState({ whitelist: whitelist });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+      }
+    } else {
+      const edited = this.state.whitelist.edited.includes(prop)
+        ? this.state.whitelist.edited
+        : [...this.state.whitelist.edited, prop];
+      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
+      this.setState({
+        whitelist: whitelist,
+      });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+      }
+      if (clearUrl) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("profile") || params.has("profiles")) {
+          params.delete("profile");
+          params.delete("profiles");
+          if (params.has("page")) {
+            const page = params.get("page");
+            window.history.pushState(
+              {
+                page: page,
+              },
+              "KeycapLendar: " + title[page],
+              "?" + params.toString()
+            );
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
+          }
         }
       }
     }
@@ -991,6 +1006,99 @@ class App extends React.Component {
         });
     }
   };
+  findPreset = (prop, val) => {
+    const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
+    return preset;
+  };
+  sortPresets = (presets) => {
+    presets.sort(function (a, b) {
+      var x = a.name.toLowerCase();
+      var y = b.name.toLowerCase();
+      if (x < y) {
+        return -1;
+      }
+      if (x > y) {
+        return 1;
+      }
+      return 0;
+    });
+    return presets;
+  };
+  selectPreset = (presetName) => {
+    const preset = this.findPreset("name", presetName);
+    this.setState({ preset: preset });
+    this.setWhitelist("all", preset.whitelist);
+  };
+  newPreset = (preset) => {
+    preset.id = nanoid();
+    const presets = [...this.state.presets, preset];
+    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    this.syncPresets(presets);
+  };
+  editPreset = (preset) => {
+    const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
+    const presets = [...this.state.presets];
+    presets[index] = preset;
+    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    this.syncPresets(presets);
+  };
+  deletePreset = (preset) => {
+    const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
+    this.setState({ presets: this.sortPresets(presets), preset: presets[0] });
+    this.syncPresets(presets);
+  };
+  syncPresets = (presets = this.state.presets) => {
+    const filteredPresets = presets.filter((preset) => preset.name !== "Default");
+    const sortedPresets = this.sortPresets(filteredPresets).map((preset) => ({ ...preset }));
+    db.collection("users")
+      .doc(this.state.user.id)
+      .set({ filterPresets: sortedPresets }, { merge: true })
+      .then(() => {})
+      .catch((error) => {
+        console.log("Failed to sync presets: " + error);
+        queue.notify({ title: "Failed to sync presets: " + error });
+      });
+  };
+  getPresets = (id = this.state.user.id) => {
+    if (id) {
+      const userDocRef = db.collection("users").doc(id);
+      userDocRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.filterPresets) {
+              const defaultPreset = new Preset(
+                "Default",
+                false,
+                this.state.profiles,
+                ["Shipped", "Not shipped"],
+                "exclude",
+                []
+              );
+              const dataPresets = data.filterPresets.map(
+                (preset) =>
+                  new Preset(
+                    preset.name,
+                    preset.whitelist.favorites,
+                    preset.whitelist.profiles,
+                    preset.whitelist.shipped,
+                    preset.whitelist.vendorMode,
+                    preset.whitelist.vendors,
+                    preset.id
+                  )
+              );
+              const presets = [defaultPreset, ...dataPresets];
+              this.setState({ presets: presets });
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get filter presets: " + error);
+          queue.notify({ title: "Failed to get filter presets: " + error });
+        });
+    }
+  };
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
@@ -1026,6 +1134,7 @@ class App extends React.Component {
             });
           });
         this.getFavorites(user.uid);
+        this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
         this.setUser({});
@@ -1194,10 +1303,6 @@ class App extends React.Component {
               value={{
                 user: this.state.user,
                 setUser: this.setUser,
-                favorites: this.state.favorites,
-                toggleFavorite: this.toggleFavorite,
-                syncSettings: this.state.syncSettings,
-                setSyncSettings: this.setSyncSettings,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
@@ -1223,6 +1328,12 @@ class App extends React.Component {
                 toggleFavorite: this.toggleFavorite,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
+                preset: this.state.preset,
+                presets: this.state.presets,
+                selectPreset: this.selectPreset,
+                newPreset: this.newPreset,
+                editPreset: this.editPreset,
+                deletePreset: this.deletePreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

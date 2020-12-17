@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { statisticsTypes } from "../util/propTypeTemplates";
+import { statisticsTypes } from "../../util/propTypeTemplates";
 import {
   DataTable,
   DataTableContent,

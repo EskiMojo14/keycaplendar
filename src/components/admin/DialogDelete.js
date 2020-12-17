@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
-import { setTypes, queueTypes } from "../util/propTypeTemplates";
+import { UserContext } from "../../util/contexts";
+import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { UserContext } from "../util/contexts";
 
 export const DialogDelete = (props) => {
   const { user } = useContext(UserContext);

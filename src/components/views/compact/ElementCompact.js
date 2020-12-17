@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
-import { setTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemGraphic } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Tooltip } from "@rmwc/tooltip";
