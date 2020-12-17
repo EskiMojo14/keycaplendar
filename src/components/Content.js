@@ -957,8 +957,12 @@ export class TabletContent extends React.Component {
     this.setState({ filterDrawerOpen: false });
   };
   openFilterPresetDrawer = (preset) => {
-    this.openModal();
-    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+    this.closeFilterDrawer();
+    this.setState({ filterPreset: preset });
+    setTimeout(() => {
+      this.openModal();
+      this.setState({ filterPresetDrawerOpen: true });
+    }, 300);
   };
   closeFilterPresetDrawer = () => {
     this.closeModal();
@@ -1405,7 +1409,6 @@ export class TabletContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
-        {filterPresetElements}
         <DeviceContext.Consumer>
           {(device) => (
             <DrawerDetails
@@ -1436,6 +1439,7 @@ export class TabletContent extends React.Component {
           openPreset={this.openFilterPresetDrawer}
           deletePreset={this.openFilterPresetDeleteDialog}
         />
+        {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
@@ -1572,8 +1576,12 @@ export class MobileContent extends React.Component {
     this.setState({ filterDrawerOpen: false });
   };
   openFilterPresetDrawer = (preset) => {
-    this.openModal();
-    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+    this.closeFilterDrawer();
+    this.setState({ filterPreset: preset });
+    setTimeout(() => {
+      this.openModal();
+      this.setState({ filterPresetDrawerOpen: true });
+    }, 300);
   };
   closeFilterPresetDrawer = () => {
     this.closeModal();
@@ -2171,7 +2179,6 @@ export class MobileContent extends React.Component {
           <Footer />
         </main>
         {editorElements}
-        {filterPresetElements}
         <DeviceContext.Consumer>
           {(device) => (
             <DrawerDetails
@@ -2202,6 +2209,7 @@ export class MobileContent extends React.Component {
           openPreset={this.openFilterPresetDrawer}
           deletePreset={this.openFilterPresetDeleteDialog}
         />
+        {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
