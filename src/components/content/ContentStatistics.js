@@ -103,11 +103,21 @@ export class ContentStatistics extends React.Component {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
+
+    const limitedSets = this.props.sets.filter((set) => {
+      if (set.gbLaunch !== "" && !set.gbLaunch.includes("Q")) {
+        const year = set.gbLaunch.slice(0, 4);
+        return year >= 2019;
+      } else {
+        return true;
+      }
+    });
+
     //timeline
     let timelineData = this.state.timelineData;
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
-      this.props.sets.forEach((set) => {
+      limitedSets.forEach((set) => {
         if (set[property] && !set[property].includes("Q")) {
           const month = moment(set[property]).format("YYYY-MM");
           if (!timelineData.months[property].includes(month)) {
@@ -154,7 +164,7 @@ export class ContentStatistics extends React.Component {
         timelineData.profileCount[property][camelize(profile)] = [];
       });
       timelineData.months[property].forEach((month) => {
-        let filteredSets = this.props.sets.filter((set) => {
+        let filteredSets = limitedSets.filter((set) => {
           if (set[property] && !set[property].includes("Q")) {
             const setMonth = moment(set[property]).format("MMM YY");
             return setMonth === month;
@@ -192,7 +202,7 @@ export class ContentStatistics extends React.Component {
         data: [],
       },
     };
-    this.props.sets.forEach((set) => {
+    limitedSets.forEach((set) => {
       if (!statusData.profile.names.includes(set.profile)) {
         statusData.profile.names.push(set.profile);
       }
@@ -220,7 +230,7 @@ export class ContentStatistics extends React.Component {
         return 0;
       });
       statusData[prop].names.forEach((name) => {
-        const icSets = this.props.sets.filter((set) => {
+        const icSets = limitedSets.filter((set) => {
           const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
           const isIC = !startDate || startDate === "" || set.gbLaunch.includes("Q");
           if (prop === "vendor") {
@@ -235,7 +245,7 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && isIC;
           }
         });
-        const preGbSets = this.props.sets.filter((set) => {
+        const preGbSets = limitedSets.filter((set) => {
           const startDate = new Date(set.gbLaunch);
           const isPreGb = startDate > today;
           if (prop === "vendor") {
@@ -250,7 +260,7 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && isPreGb;
           }
         });
-        const liveGbSets = this.props.sets.filter((set) => {
+        const liveGbSets = limitedSets.filter((set) => {
           const startDate = new Date(set.gbLaunch);
           const endDate = new Date(set.gbEnd);
           const isLiveGb = startDate <= today && (endDate >= yesterday || set.gbEnd === "");
@@ -266,7 +276,7 @@ export class ContentStatistics extends React.Component {
             return set[prop] === name && isLiveGb;
           }
         });
-        const postGbSets = this.props.sets.filter((set) => {
+        const postGbSets = limitedSets.filter((set) => {
           const endDate = new Date(set.gbEnd);
           endDate.setUTCHours(23, 59, 59, 999);
           const isPostGb = endDate <= yesterday;
@@ -318,7 +328,7 @@ export class ContentStatistics extends React.Component {
         data: [],
       },
     };
-    const pastSets = this.props.sets.filter((set) => {
+    const pastSets = limitedSets.filter((set) => {
       const endDate = new Date(set.gbEnd);
       endDate.setUTCHours(23, 59, 59, 999);
       return endDate <= yesterday;
@@ -427,7 +437,7 @@ export class ContentStatistics extends React.Component {
         },
       },
     };
-    const dateSets = this.props.sets.filter((set) => {
+    const dateSets = limitedSets.filter((set) => {
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
     properties.forEach((property) => {
