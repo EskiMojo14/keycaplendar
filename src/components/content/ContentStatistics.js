@@ -107,7 +107,8 @@ export class ContentStatistics extends React.Component {
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch !== "" && !set.gbLaunch.includes("Q")) {
         const year = set.gbLaunch.slice(0, 4);
-        return year >= 2019;
+        const currentYear = today.getUTCFullYear();
+        return year >= currentYear - 1 && year <= currentYear + 1;
       } else {
         return true;
       }
