@@ -18,7 +18,7 @@ import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNav
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../util/Autocomplete";
-import { FullScreenDialog } from "../util/FullScreenDialog";
+import { FullScreenDialog, FullScreenDialogContent } from "../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
 const getVendorStyle = (provided, snapshot) => {
@@ -454,7 +454,7 @@ export class DialogCreate extends React.Component {
           </TopAppBarRow>
           <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
         </TopAppBar>
-        <div className="full-screen-dialog-content">
+        <FullScreenDialogContent>
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>
             <div className="banner-button">
@@ -779,7 +779,7 @@ export class DialogCreate extends React.Component {
               </div>
             </Card>
           </form>
-        </div>
+        </FullScreenDialogContent>
       </FullScreenDialog>
     );
   }
@@ -1240,7 +1240,7 @@ export class DialogEdit extends React.Component {
 
           <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
         </TopAppBar>
-        <div className="full-screen-dialog-content">
+        <FullScreenDialogContent>
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>
             <div className="banner-button">
@@ -1567,7 +1567,7 @@ export class DialogEdit extends React.Component {
               </Card>
             </form>
           </div>
-        </div>
+        </FullScreenDialogContent>
       </FullScreenDialog>
     );
   }

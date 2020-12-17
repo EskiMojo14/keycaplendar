@@ -20,6 +20,7 @@ import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
 import { DrawerDetails } from "./common/DrawerDetails";
 import { DrawerFilterPreset } from "./common/DrawerFilterPreset";
+import { DialogFilterPreset } from "./common/DialogFilterPreset";
 import { DialogDeleteFilterPreset } from "./common/DialogDeleteFilterPreset";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { DrawerAuditFilter } from "./admin/audit_log/DrawerAuditFilter";
@@ -1464,7 +1465,7 @@ export class MobileContent extends React.Component {
     super(props);
     this.state = {
       filterDrawerOpen: false,
-      filterPresetDrawerOpen: false,
+      filterPresetDialogOpen: false,
       filterPreset: {
         name: "",
         id: "",
@@ -1584,18 +1585,12 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ filterDrawerOpen: false });
   };
-  openFilterPresetDrawer = (preset) => {
-    this.closeFilterDrawer();
-    this.setState({ filterPreset: preset });
-    setTimeout(() => {
-      this.openModal();
-      this.setState({ filterPresetDrawerOpen: true });
-    }, 300);
+  openFilterPresetDialog = (preset) => {
+    this.setState({ filterPresetDialogOpen: true, filterPreset: preset });
   };
-  closeFilterPresetDrawer = () => {
-    this.closeModal();
+  closeFilterPresetDialog = () => {
     this.setState({
-      filterPresetDrawerOpen: false,
+      filterPresetDialogOpen: false,
     });
     setTimeout(() => {
       this.setState({
@@ -1611,7 +1606,7 @@ export class MobileContent extends React.Component {
           },
         },
       });
-    }, 300);
+    }, 400);
   };
   openFilterPresetDeleteDialog = (preset) => {
     this.setState({ filterPresetDeleteDialogOpen: true, deleteFilterPreset: preset });
@@ -2155,9 +2150,9 @@ export class MobileContent extends React.Component {
       ) : null;
     const filterPresetElements = this.context.user.email ? (
       <>
-        <DrawerFilterPreset
-          open={this.state.filterPresetDrawerOpen}
-          close={this.closeFilterPresetDrawer}
+        <DialogFilterPreset
+          open={this.state.filterPresetDialogOpen}
+          close={this.closeFilterPresetDialog}
           preset={this.state.filterPreset}
         />
         <DialogDeleteFilterPreset
@@ -2215,7 +2210,7 @@ export class MobileContent extends React.Component {
           setWhitelist={this.props.setWhitelist}
           whitelist={this.props.whitelist}
           snackbarQueue={this.props.snackbarQueue}
-          openPreset={this.openFilterPresetDrawer}
+          openPreset={this.openFilterPresetDialog}
           deletePreset={this.openFilterPresetDeleteDialog}
         />
         {filterPresetElements}

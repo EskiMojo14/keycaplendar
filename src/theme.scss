@@ -985,6 +985,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
       }
     }
+    .mdc-chip {
+      @include chips.fill-color-accessible(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
+          12%
+        )
+      );
+      @include chips.selected-ink-color(map-get($variables, primary));
+      &[disabled] {
+        @include chips.ink-color(map-get($variables, text-disabled));
+      }
+    }
   }
   .image-upload {
     &-title {

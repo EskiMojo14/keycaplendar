@@ -68,7 +68,7 @@ $exit-time: 400ms;
     top: 0 !important;
     @include elevation.elevation(4);
   }
-  &-content {
+  &__content {
     width: 100%;
     height: 100%;
     overflow-y: auto;

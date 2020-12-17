@@ -64,3 +64,11 @@ export class FullScreenDialog extends React.Component {
     );
   }
 }
+
+export const FullScreenDialogContent = (props) => {
+  return (
+    <div {...props} className={"full-screen-dialog__content" + (props.className ? ` ${props.className}` : "")}>
+      {props.children}
+    </div>
+  );
+};
