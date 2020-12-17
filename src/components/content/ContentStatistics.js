@@ -106,9 +106,16 @@ export class ContentStatistics extends React.Component {
 
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch !== "" && !set.gbLaunch.includes("Q")) {
+        const setDate = new Date();
         const year = set.gbLaunch.slice(0, 4);
-        const currentYear = today.getUTCFullYear();
-        return year >= currentYear - 1 && year <= currentYear + 1;
+        setDate.setUTCFullYear(year);
+        const lastYear = new Date();
+        lastYear.setUTCFullYear(today.getUTCFullYear() - 1);
+        lastYear.setDate(1);
+        const nextYear = new Date();
+        nextYear.setUTCFullYear(today.getUTCFullYear() + 1);
+        nextYear.setDate(1);
+        return setDate >= lastYear && setDate <= nextYear;
       } else {
         return true;
       }
