@@ -172,8 +172,17 @@ export class DesktopContent extends React.Component {
     this.setState({ filterDrawerOpen: false });
   };
   openFilterPresetDrawer = (preset) => {
-    this.openModal();
-    this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+    if (this.props.view === "compact") {
+      this.closeFilterDrawer();
+      this.setState({ filterPreset: preset });
+      setTimeout(() => {
+        this.openModal();
+        this.setState({ filterPresetDrawerOpen: true });
+      }, 300);
+    } else {
+      this.openModal();
+      this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
+    }
   };
   closeFilterPresetDrawer = () => {
     this.closeModal();
