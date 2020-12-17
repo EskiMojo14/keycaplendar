@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { UserContext } from "../../util/contexts";
+import { presetTypes } from "../../util/propTypeTemplates";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 export const DialogDeleteFilterPreset = (props) => {
@@ -31,5 +32,5 @@ export default DialogDeleteFilterPreset;
 DialogDeleteFilterPreset.propTypes = {
   close: PropTypes.func,
   open: PropTypes.bool,
-  preset: PropTypes.object,
+  preset: PropTypes.shape(presetTypes),
 };

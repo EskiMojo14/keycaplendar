@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { UserContext } from "../../util/contexts";
+import { presetTypes } from "../../util/propTypeTemplates";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -123,5 +125,11 @@ export class DrawerFilterPreset extends React.Component {
 }
 
 DrawerFilterPreset.contextType = UserContext;
+
+DrawerFilterPreset.propTypes = {
+  close: PropTypes.func,
+  open: PropTypes.bool,
+  preset: PropTypes.shape(presetTypes),
+};
 
 export default DrawerFilterPreset;

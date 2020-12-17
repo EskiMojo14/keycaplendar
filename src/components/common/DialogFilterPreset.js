@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { UserContext } from "../../util/contexts";
+import { presetTypes } from "../../util/propTypeTemplates";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -131,5 +133,11 @@ export class DialogFilterPreset extends React.Component {
 }
 
 DialogFilterPreset.contextType = UserContext;
+
+DialogFilterPreset.propTypes = {
+  close: PropTypes.func,
+  open: PropTypes.bool,
+  preset: PropTypes.shape(presetTypes),
+};
 
 export default DialogFilterPreset;

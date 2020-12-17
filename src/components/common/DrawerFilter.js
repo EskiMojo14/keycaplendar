@@ -4,7 +4,7 @@ import isEqual from "lodash.isequal";
 import { Preset } from "../../util/constructors";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove } from "../../util/functions";
-import { whitelistTypes } from "../../util/propTypeTemplates";
+import { whitelistTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -422,9 +422,12 @@ export default DrawerFilter;
 
 DrawerFilter.propTypes = {
   close: PropTypes.func,
+  deletePreset: PropTypes.func,
   open: PropTypes.bool,
+  openPreset: PropTypes.func,
   profiles: PropTypes.arrayOf(PropTypes.string),
   setWhitelist: PropTypes.func,
+  snackbarQueue: PropTypes.shape(queueTypes),
   vendors: PropTypes.arrayOf(PropTypes.string),
   view: PropTypes.string,
   whitelist: PropTypes.shape(whitelistTypes),

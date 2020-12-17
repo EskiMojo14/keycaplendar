@@ -75,3 +75,9 @@ export const actionTypes = {
     nickname: PropTypes.string,
   }).isRequired,
 };
+
+export const presetTypes = {
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  whitelist: PropTypes.shape(whitelistTypes),
+};
