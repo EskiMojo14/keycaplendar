@@ -12,8 +12,8 @@ export const DialogDeleteFilterPreset = (props) => {
   };
   return (
     <Dialog open={props.open}>
-      <DialogTitle>Delete {`${props.preset.name}`}</DialogTitle>
-      <DialogContent>Are you sure you want to delete the filter preset {props.preset.name}?</DialogContent>
+      <DialogTitle>Delete {`"${props.preset.name}"`}</DialogTitle>
+      <DialogContent>Are you sure you want to delete the filter preset {`"${props.preset.name}"`}?</DialogContent>
       <DialogActions>
         <DialogButton action="close" onClick={props.close} isDefaultAction>
           Cancel

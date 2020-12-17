@@ -1,0 +1,76 @@
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+
+$enter-time: 450ms;
+$exit-time: 400ms;
+.full-screen-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 7;
+  @include elevation.elevation(16);
+  flex-direction: column;
+  justify-content: stretch;
+  overflow: hidden;
+  transition-property: transform;
+  transition-timing-function: animation.$standard-curve-timing-function;
+  display: none;
+  &--animate {
+    transform: translateY(101%);
+  }
+  &--opening {
+    transform: translateY(0);
+    transition-duration: $enter-time;
+  }
+  &--closing {
+    transform: translateY(101%);
+    transition-duration: $exit-time;
+  }
+  &--open {
+    display: flex;
+  }
+  &-scrim {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 6;
+    transition-property: opacity;
+    transition-timing-function: animation.$standard-curve-timing-function;
+    display: none;
+
+    .full-screen-dialog--open + & {
+      display: block;
+    }
+
+    .full-screen-dialog--animate + & {
+      opacity: 0;
+    }
+
+    .full-screen-dialog--opening + & {
+      transition-duration: $enter-time;
+      opacity: 1;
+    }
+
+    .full-screen-dialog--closing + & {
+      transition-duration: $exit-time;
+      opacity: 0;
+    }
+  }
+  .mdc-top-app-bar {
+    flex-shrink: 0;
+    flex-grow: 0;
+    position: relative;
+    top: 0 !important;
+    @include elevation.elevation(4);
+  }
+  &-content {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+}
