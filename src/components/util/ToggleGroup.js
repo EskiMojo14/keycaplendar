@@ -6,7 +6,7 @@ import "./ToggleGroup.scss";
 
 export const ToggleGroup = (props) => {
   return (
-    <div className={`toggle-group ${props.className}`} {...props}>
+    <div {...props} className={`toggle-group ${props.className}`}>
       {props.children}
     </div>
   );
@@ -21,26 +21,26 @@ export const ToggleGroupButton = (props) => {
         content={props.tooltip.content ? props.tooltip.content : null}
       >
         <Button
+          {...props}
           outlined
           className={
             (props.selected ? "mdc-button--selected" : "") +
             (props.className ? ` ${props.className}` : "") +
             (props.icon && !props.label ? " only-icon" : "")
           }
-          {...props}
         />
       </Tooltip>
     );
   }
   return (
     <Button
+      {...props}
       outlined
       className={
         (props.selected ? "mdc-button--selected" : "") +
         (props.className ? ` ${props.className}` : "") +
         (props.icon && !props.label ? " only-icon" : "")
       }
-      {...props}
     />
   );
 };
