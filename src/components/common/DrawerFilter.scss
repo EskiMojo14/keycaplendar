@@ -6,7 +6,7 @@
   &.mdc-drawer--modal {
     top: 0;
   }
-  .subheader {
+  div.subheader {
     display: flex;
     justify-content: stretch;
     align-items: center;
@@ -28,13 +28,20 @@
     }
   }
   .preset {
+    &-collapsible {
+      @include util.divider-border(bottom);
+      .mdc-list-item {
+        padding: 0 16px;
+      }
+    }
     &-group {
       padding: 16px;
-      @include util.divider-border(bottom);
       .mdc-select {
-        &__anchor,
-        &__menu {
+        &__anchor {
           width: 100%;
+        }
+        &__menu {
+          width: 320px - 32px;
         }
         margin: 16px 0;
         &.modified {

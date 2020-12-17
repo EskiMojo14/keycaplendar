@@ -9,6 +9,7 @@ import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
+import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
@@ -130,7 +131,7 @@ export const DrawerFilter = (props) => {
       <>
         <Select
           outlined
-          enhanced
+          enhanced={{ fixed: true }}
           value={preset.name}
           options={presets.map((preset) => ({
             label: preset.name,
@@ -194,35 +195,45 @@ export const DrawerFilter = (props) => {
       </>
     ) : null;
   const presetMenu = user.email ? (
-    <div className="preset-group">
-      <div className="subheader">
-        <Typography use="caption">Preset</Typography>
+    <CollapsibleList
+      defaultOpen
+      handle={
+        <ListItem>
+          <Typography use="caption" className="subheader">
+            Preset
+          </Typography>
+          <ListItemMeta icon="expand_more" />
+        </ListItem>
+      }
+      className="preset-collapsible"
+    >
+      <div className="preset-group">
+        <div className="preset-button">
+          <Button
+            label="New"
+            icon={{
+              strategy: "component",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path fill="none" d="M0,0h24v24H0V0z" />
+                  <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
+                </svg>
+              ),
+            }}
+            outlined
+            onClick={newPreset}
+          />
+        </div>
+        {presetSelect}
       </div>
-      <div className="preset-button">
-        <Button
-          label="New"
-          icon={{
-            strategy: "component",
-            icon: (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
-              </svg>
-            ),
-          }}
-          outlined
-          onClick={newPreset}
-        />
-      </div>
-      {presetSelect}
-    </div>
+    </CollapsibleList>
   ) : null;
   const favorites = user.email ? (
     <div className="group">
