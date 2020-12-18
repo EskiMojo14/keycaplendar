@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import classNames from "classnames";
 import { UserContext } from "../../../util/contexts";
 import { setTypes } from "../../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
@@ -124,9 +125,9 @@ export const ElementCard = (props) => {
     ) : null;
   return (
     <div className="card-container">
-      <Card className={props.selected ? "mdc-card--selected" : ""}>
+      <Card className={classNames({ "mdc-card--selected": props.selected })}>
         <CardPrimaryAction
-          className={props.selected ? "mdc-card__primary-action--selected" : ""}
+          className={classNames({ "mdc-card__primary-action--selected": props.selected })}
           onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
         >
           <div className="media-container">
@@ -155,7 +156,7 @@ export const ElementCard = (props) => {
             </div>
           </div>
         </CardPrimaryAction>
-        <CardActions className={!user.email ? "hover-button" : ""}>
+        <CardActions className={classNames({ "hover-button": !user.email })}>
           {linkButton}
           <CardActionIcons>
             {linkIcon}

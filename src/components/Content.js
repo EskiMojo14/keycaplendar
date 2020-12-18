@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "firebase";
+import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
@@ -692,7 +693,7 @@ export class DesktopContent extends React.Component {
       </>
     ) : null;
     return (
-      <div className={`${this.props.className} ${this.props.page} app-container`}>
+      <div className={classNames(this.props.className, this.props.page, "app-container")}>
         <DrawerNav
           view={this.props.view}
           open={this.state.navDrawerOpen}
@@ -701,12 +702,11 @@ export class DesktopContent extends React.Component {
           setPage={this.props.setPage}
         />
         <DrawerAppContent
-          className={
-            (this.state.detailsDrawerOpen && this.props.view !== "compact" ? "details-drawer-open " : "") +
-            ((this.state.filterDrawerOpen || this.state.auditFilterDrawerOpen) && this.props.view !== "compact"
-              ? "filter-drawer-open"
-              : "")
-          }
+          className={classNames({
+            "details-drawer-open": this.state.detailsDrawerOpen && this.props.view !== "compact",
+            "filter-drawer-open":
+              (this.state.filterDrawerOpen || this.state.auditFilterDrawerOpen) && this.props.view !== "compact",
+          })}
         >
           <DesktopAppBar
             page={this.props.page}
@@ -766,7 +766,7 @@ export class DesktopContent extends React.Component {
               deletePreset={this.openFilterPresetDeleteDialog}
             />
             {auditFilterDrawer}
-            <DrawerAppContent className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
+            <DrawerAppContent className={classNames("main", this.props.view, { content: this.props.content })}>
               {content}
               <Footer />
             </DrawerAppContent>
@@ -1382,7 +1382,7 @@ export class TabletContent extends React.Component {
       </>
     ) : null;
     return (
-      <div className={`${this.props.className} ${this.props.page} app-container`}>
+      <div className={classNames(this.props.className, this.props.page, "app-container")}>
         <DrawerNav
           view={this.props.view}
           open={this.state.navDrawerOpen}
@@ -1414,7 +1414,7 @@ export class TabletContent extends React.Component {
           setStatisticsTab={this.props.setStatisticsTab}
           openStatisticsDialog={this.openStatisticsDialog}
         />
-        <main className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
+        <main className={classNames("main", this.props.view, { content: this.props.content })}>
           {content}
           <Footer />
         </main>
@@ -1982,7 +1982,7 @@ export class MobileContent extends React.Component {
       this.props.page !== "settings" ? (
         <>
           <Fab
-            className={"create-fab" + (this.props.bottomNav ? " middle" : "")}
+            className={classNames("create-fab", { middle: this.props.bottomNav })}
             icon="add"
             onClick={this.openCreateDialog}
           />
@@ -2164,9 +2164,10 @@ export class MobileContent extends React.Component {
     ) : null;
     return (
       <div
-        className={`${this.props.className} ${this.props.page} app-container ${
-          this.context.user.isEditor || this.context.user.isDesigner ? "offset-snackbar" : ""
-        } ${this.props.bottomNav ? "bottom-nav" : ""}`}
+        className={classNames(this.props.className, this.props.page, "app-container", {
+          "offset-snackbar": this.context.user.isEditor || this.context.user.isDesigner,
+          "bottom-nav": this.props.bottomNav,
+        })}
       >
         {search}
         <DrawerNav
@@ -2178,7 +2179,7 @@ export class MobileContent extends React.Component {
           close={this.closeNavDrawer}
         />
         {appBar}
-        <main className={`main ${this.props.view} ${this.props.content ? " content" : ""}`}>
+        <main className={classNames("main", this.props.view, { content: this.props.content })}>
           {content}
           <Footer />
         </main>

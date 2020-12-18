@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { actionTypes } from "../../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import {
@@ -189,22 +190,26 @@ export const AuditEntry = (props) => {
                             <DataTableCell>{property + index}</DataTableCell>
                             <DataTableCell className="before">
                               <div>
-                                <span className={afterVendor.id !== beforeVendor.id ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
                                   ID: {beforeVendor.id}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
                                   Name: {beforeVendor.name}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.region !== beforeVendor.region ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
                                   Region: {beforeVendor.region}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""}>
+                                <span
+                                  className={classNames({
+                                    highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  })}
+                                >
                                   Link:{" "}
                                   <a href={beforeVendor.storeLink} target="_blank" rel="noopener noreferrer">
                                     {beforeVendor.storeLink.match(domain)}
@@ -214,22 +219,26 @@ export const AuditEntry = (props) => {
                             </DataTableCell>
                             <DataTableCell className="after">
                               <div>
-                                <span className={afterVendor.id !== beforeVendor.id ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
                                   ID: {afterVendor.id}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.name !== beforeVendor.name ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
                                   Name: {afterVendor.name}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.region !== beforeVendor.region ? "highlight" : ""}>
+                                <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
                                   Region: {afterVendor.region}
                                 </span>
                               </div>
                               <div>
-                                <span className={afterVendor.storeLink !== beforeVendor.storeLink ? "highlight" : ""}>
+                                <span
+                                  className={classNames({
+                                    highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  })}
+                                >
                                   Link:{" "}
                                   <a href={afterVendor.storeLink} target="_blank" rel="noopener noreferrer">
                                     {afterVendor.storeLink.match(domain)}

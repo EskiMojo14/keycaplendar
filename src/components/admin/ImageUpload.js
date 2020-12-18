@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { queueTypes } from "../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
@@ -209,7 +210,7 @@ export class ImageUpload extends React.Component {
       </div>
     );
     const loadingIndicator = this.state.loading ? (
-      <div className={"loading-indicator" + (this.state.hasImage ? " image" : "")}>
+      <div className={classNames("loading-indicator", { image: this.state.hasImage })}>
         <CircularProgress size="large" />
       </div>
     ) : null;
@@ -238,7 +239,7 @@ export class ImageUpload extends React.Component {
         <div className="image-upload-form">
           <div
             id="drop-area"
-            className={"image-display" + (this.state.dragOver ? " over" : "") + (this.state.hasImage ? " image" : "")}
+            className={classNames("image-display", { over: this.state.dragOver, image: this.state.hasImage })}
           >
             {loadingIndicator}
             {areaInner}

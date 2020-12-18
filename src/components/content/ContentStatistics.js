@@ -4,6 +4,7 @@ import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import moment from "moment";
 import { create, all } from "mathjs";
+import classNames from "classnames";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -779,7 +780,7 @@ export class ContentStatistics extends React.Component {
         />
       ) : null;
     return (
-      <div className={"tab-container " + this.props.statisticsTab}>
+      <div className={classNames("tab-container", this.props.statisticsTab)}>
         <div className="stats-tab timeline">
           <Card className="count-graph">
             <Typography use="headline5" tag="h1">
@@ -837,13 +838,21 @@ export class ContentStatistics extends React.Component {
               </ToggleGroup>
             </div>
             <div
-              className={"graph-container" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}
+              className={classNames("graph-container", {
+                focused: this.state.focused !== "",
+                ["series-" + this.state.focused]: this.state.focused !== "",
+              })}
             >
               {barGraph}
               {lineGraph}
             </div>
           </Card>
-          <Card className={"fullwidth" + (this.state.focused === "" ? "" : " focused series-" + this.state.focused)}>
+          <Card
+            className={classNames("fullwidth", {
+              focused: this.state.focused !== "",
+              ["series-" + this.state.focused]: this.state.focused !== "",
+            })}
+          >
             <TimelineTable
               profiles={this.props.profiles}
               setFocus={this.setFocus}

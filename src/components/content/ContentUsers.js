@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
+import classNames from "classnames";
 import { queueTypes } from "../../util/propTypeTemplates";
 import {
   DataTable,
@@ -220,7 +221,7 @@ export class ContentUsers extends React.Component {
                         <DataTableHeadCell>Save</DataTableHeadCell>
                         <DataTableHeadCell>Delete</DataTableHeadCell>
                       </DataTableRow>
-                      <DataTableRow className={"progress-row" + (this.state.loading ? " loading" : "")}>
+                      <DataTableRow className={classNames("progress-row", { loading: this.state.loading })}>
                         <DataTableHeadCell colSpan={9}>
                           <LinearProgress />
                         </DataTableHeadCell>

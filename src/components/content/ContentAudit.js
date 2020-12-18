@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import classNames from "classnames";
 import { queueTypes, actionTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
@@ -29,7 +30,7 @@ export class ContentAudit extends React.Component {
     return (
       <div className="admin-main">
         <div className="log-container">
-          <Card className={"log" + (this.props.actions.length === 0 ? " placeholder" : "")}>
+          <Card className={classNames("log", { placeholder: this.props.actions.length === 0 })}>
             <List twoLine className="three-line">
               {this.props.actions.map((action) => {
                 const timestamp = moment(action.timestamp);

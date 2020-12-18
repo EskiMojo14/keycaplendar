@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { setTypes } from "../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -86,7 +87,11 @@ export class SearchBarPersistent extends React.Component {
   render() {
     return (
       <MenuSurfaceAnchor className="search-bar-anchor">
-        <div className={"search-bar search-bar--persistent" + (this.state.expanded ? " search-bar--expanded" : "")}>
+        <div
+          className={classNames("search-bar", "search-bar--persistent", {
+            "search-bar--expanded": this.state.expanded,
+          })}
+        >
           <TextField
             outlined
             className="search-bar-field"
@@ -249,13 +254,12 @@ export class SearchBarModal extends React.Component {
   render() {
     return (
       <div
-        className={
-          "search-bar search-bar--modal" +
-          (this.state.open ? " search-bar--expanded" : "") +
-          (this.state.opening ? " search-bar--opening" : "") +
-          (this.state.closing ? " search-bar--closing" : "") +
-          (this.state.animate ? " search-bar--animate" : "")
-        }
+        className={classNames("search-bar", "search-bar--modal", {
+          "search-bar--expanded": this.state.open,
+          "search-bar--opening": this.state.opening,
+          "search-bar--closing": this.state.closing,
+          "search-bar--animate": this.state.animate,
+        })}
       >
         <div className="search-bar-field-container">
           <TextField
@@ -389,7 +393,7 @@ export class SearchAppBar extends React.Component {
   render() {
     return (
       <>
-        <TopAppBar fixed className={"search-app-bar" + (this.props.open ? " search-app-bar--open" : "")}>
+        <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": this.props.open })}>
           <TopAppBarRow>
             <div className="search-bar search-bar--modal search-bar--expanded">
               <div className="search-bar-field-container">

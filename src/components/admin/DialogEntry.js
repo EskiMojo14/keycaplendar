@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import firebase from "../firebase";
+import classNames from "classnames";
 import { UserContext } from "../../util/contexts";
 import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -585,7 +586,7 @@ export class DialogCreate extends React.Component {
                           {(provided, snapshot) => (
                             <Card
                               outlined
-                              className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
+                              className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               style={getVendorStyle(provided, snapshot)}
@@ -739,7 +740,7 @@ export class DialogCreate extends React.Component {
               <Typography use="caption" tag="h3" className="sales-title">
                 Sales
               </Typography>
-              <div className={"sales-image" + (this.state.salesImageLoaded ? " loaded" : "")}>
+              <div className={classNames("sales-image", { loaded: this.state.salesImageLoaded })}>
                 <div className="sales-image-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -1372,7 +1373,7 @@ export class DialogEdit extends React.Component {
                             {(provided, snapshot) => (
                               <Card
                                 outlined
-                                className={"vendor-container" + (snapshot.isDragging ? " dragged" : "")}
+                                className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 style={getVendorStyle(provided, snapshot)}
@@ -1526,7 +1527,7 @@ export class DialogEdit extends React.Component {
                 <Typography use="caption" tag="h3" className="sales-title">
                   Sales
                 </Typography>
-                <div className={"sales-image" + (this.state.salesImageLoaded ? " loaded" : "")}>
+                <div className={classNames("sales-image", { loaded: this.state.salesImageLoaded })}>
                   <div className="sales-image-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                       <path d="M0 0h24v24H0V0z" fill="none" />

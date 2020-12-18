@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import "./FullScreenDialog.scss";
 
 export class FullScreenDialog extends React.Component {
@@ -48,14 +49,16 @@ export class FullScreenDialog extends React.Component {
       <>
         <div
           {...this.props}
-          className={
-            "full-screen-dialog" +
-            (this.state.open ? " full-screen-dialog--open" : "") +
-            (this.state.opening ? " full-screen-dialog--opening" : "") +
-            (this.state.closing ? " full-screen-dialog--closing" : "") +
-            (this.state.animate ? " full-screen-dialog--animate" : "") +
-            (this.props.className ? ` ${this.props.className}` : "")
-          }
+          className={classNames(
+            "full-screen-dialog",
+            {
+              "full-screen-dialog--open": this.state.open,
+              "full-screen-dialog--opening": this.state.opening,
+              "full-screen-dialog--closing": this.state.closing,
+              "full-screen-dialog--animate": this.state.animate,
+            },
+            this.props.className
+          )}
         >
           {this.props.children}
         </div>
@@ -67,7 +70,7 @@ export class FullScreenDialog extends React.Component {
 
 export const FullScreenDialogContent = (props) => {
   return (
-    <div {...props} className={"full-screen-dialog__content" + (props.className ? ` ${props.className}` : "")}>
+    <div {...props} className={classNames("full-screen-dialog__content", props.className)}>
       {props.children}
     </div>
   );

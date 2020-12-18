@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import classNames from "classnames";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -64,12 +65,12 @@ export const DurationCard = (props) => {
       </div>
     ) : null;
   return (
-    <Card className={"duration-card" + (props.data.name === "All" ? " full-span" : "")}>
+    <Card className={classNames("duration-card", { "full-span": props.data.name === "All" })}>
       <Typography use="headline5" tag="h1">
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
+        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
       </Typography>
       <div className="duration-container">
         {chart}

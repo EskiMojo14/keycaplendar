@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
@@ -141,7 +142,7 @@ export const DrawerNav = (props) => {
   const closeIcon = dismissible ? <IconButton className="rtl-flip" icon="chevron_left" onClick={props.close} /> : null;
   return (
     <Drawer
-      className={"nav" + (dismissible ? " rail" : "") + (props.bottomNav ? " drawer-bottom" : "")}
+      className={classNames("nav", { rail: dismissible, "drawer-bottom": props.bottomNav })}
       dismissible={dismissible}
       modal={!dismissible}
       open={props.open}
