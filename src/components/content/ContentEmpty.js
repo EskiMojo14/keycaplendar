@@ -5,7 +5,7 @@ import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 
 export const ContentEmpty = (props) => {
-  const { favorites } = useContext(UserContext);
+  const { favorites, hidden } = useContext(UserContext);
   return (
     <div className="empty-container">
       <img className="image" src={emptyImg} alt="Empty" />
@@ -15,6 +15,8 @@ export const ContentEmpty = (props) => {
       <Typography className="subtitle" use="body1" tag="p">
         {props.page === "favorites" && favorites.length === 0
           ? "No sets currently favorited."
+          : props.page === "hidden" && hidden.length === 0
+          ? "No sets currently hidden."
           : "No results, please adjust your filters/search."}
       </Typography>
     </div>

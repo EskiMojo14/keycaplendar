@@ -45,6 +45,17 @@ const settingsFunctions = {
   density: "setDensity",
 };
 
+const pageSort = {
+  calendar: "gbLaunch",
+  live: "gbEnd",
+  ic: "profile",
+  previous: "gbLaunch",
+  timeline: "gbLaunch",
+  archive: "profile",
+  favorites: "profile",
+  hidden: "profile",
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -77,9 +88,11 @@ class App extends React.Component {
         id: null,
       },
       favorites: [],
+      hidden: [],
       whitelist: {
         edited: [],
         favorites: false,
+        hidden: false,
         profiles: [],
         shipped: ["Shipped", "Not shipped"],
         vendorMode: "exclude",
@@ -126,20 +139,7 @@ class App extends React.Component {
         "settings",
       ];
       if (pages.includes(pageQuery)) {
-        this.setState({ page: pageQuery });
-        if (pageQuery === "calendar") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (pageQuery === "live") {
-          this.setState({ sort: "gbEnd" });
-        } else if (pageQuery === "ic") {
-          this.setState({ sort: "profile" });
-        } else if (pageQuery === "previous") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (pageQuery === "timeline") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (pageQuery === "archive") {
-          this.setState({ sort: "profile" });
-        }
+        this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
     if (params.has("profile") || params.has("profiles")) {
@@ -248,24 +248,9 @@ class App extends React.Component {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
-        this.setState({ page: page });
+        this.setState({ page: page, sort: pageSort[page] });
         this.setSearch("");
-        if (page === "calendar") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (page === "live") {
-          this.setState({ sort: "gbEnd" });
-        } else if (page === "ic") {
-          this.setState({ sort: "profile" });
-        } else if (page === "previous") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (page === "timeline") {
-          this.setState({ sort: "gbLaunch" });
-        } else if (page === "archive") {
-          this.setState({ sort: "profile" });
-        } else if (page === "favorites") {
-          this.setState({ sort: "profile" });
-        }
-        this.filterData(page);
+        this.filterData(page, this.state.sets, pageSort[page]);
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -466,7 +451,8 @@ class App extends React.Component {
     sort = this.state.sort,
     search = this.state.search,
     whitelist = this.state.whitelist,
-    favorites = this.state.favorites
+    favorites = this.state.favorites,
+    hidden = this.state.hidden
   ) => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -478,41 +464,53 @@ class App extends React.Component {
     let allDesigners = [];
     let groups = [];
 
+    const hiddenSets = sets.filter((set) => {
+      if (page === "hidden" || whitelist.hidden) {
+        return hidden.includes(set.id);
+      } else {
+        return !hidden.includes(set.id);
+      }
+    });
+
     // page logic
     if (page === "calendar") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setUTCHours(23, 59, 59, 999);
         return startDate > today || (startDate <= today && (endDate >= yesterday || set.gbEnd === ""));
       });
     } else if (page === "live") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setUTCHours(23, 59, 59, 999);
         return startDate <= today && (endDate >= yesterday || set.gbEnd === "");
       });
     } else if (page === "ic") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
         return !startDate || startDate === "" || set.gbLaunch.includes("Q");
       });
     } else if (page === "previous") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         const endDate = new Date(set.gbEnd);
         endDate.setUTCHours(23, 59, 59, 999);
         return endDate <= yesterday;
       });
     } else if (page === "timeline") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         return set.gbLaunch !== "" && !set.gbLaunch.includes("Q");
       });
     } else if (page === "archive") {
-      pageSets = sets;
+      pageSets = hiddenSets;
     } else if (page === "favorites") {
-      pageSets = sets.filter((set) => {
+      pageSets = hiddenSets.filter((set) => {
         return favorites.includes(set.id);
+      });
+    } else if (page === "hidden") {
+      pageSets = hiddenSets.filter((set) => {
+        return hidden.includes(set.id);
       });
     }
 
@@ -738,7 +736,7 @@ class App extends React.Component {
 
     const filteredPresets = this.state.presets.filter((preset) => preset.name !== "Default");
 
-    const defaultPreset = new Preset("Default", false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
+    const defaultPreset = new Preset("Default", false, false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
 
     const presets = [defaultPreset, ...filteredPresets];
 
@@ -893,9 +891,7 @@ class App extends React.Component {
           },
           { merge: true }
         )
-        .then(() => {
-          this.getFavorites();
-        })
+        .then(() => {})
         .catch((error) => {
           console.log("Failed to sync favorites: " + error);
           queue.notify({ title: "Failed to sync favorites: " + error });
@@ -926,6 +922,60 @@ class App extends React.Component {
         .catch((error) => {
           console.log("Failed to get favorites: " + error);
           queue.notify({ title: "Failed to get favorites: " + error });
+        });
+    }
+  };
+  toggleHidden = (id) => {
+    const hidden = addOrRemove([...this.state.hidden], id);
+    this.setState({ hidden: hidden });
+    this.filterData(
+      this.state.page,
+      this.state.sets,
+      this.state.sort,
+      this.state.search,
+      this.state.whitelist,
+      this.state.favorites,
+      hidden
+    );
+    if (this.state.user.id) {
+      db.collection("users")
+        .doc(this.state.user.id)
+        .set(
+          {
+            hidden: hidden,
+          },
+          { merge: true }
+        )
+        .then(() => {})
+        .catch((error) => {
+          console.log("Failed to sync hidden sets: " + error);
+          queue.notify({ title: "Failed to sync hidden sets: " + error });
+        });
+    }
+  };
+  getHidden = (id = this.state.user.id) => {
+    if (id) {
+      db.collection("users")
+        .doc(id)
+        .get()
+        .then((doc) => {
+          if (doc.exists && doc.data().hidden) {
+            const hidden = doc.data().hidden;
+            this.setState({ hidden: hidden });
+            this.filterData(
+              this.state.page,
+              this.state.sets,
+              this.state.sort,
+              this.state.search,
+              this.state.whitelist,
+              this.state.favorites,
+              hidden
+            );
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get hidden sets: " + error);
+          queue.notify({ title: "Failed to get hidden sets: " + error });
         });
     }
   };
@@ -1071,6 +1121,7 @@ class App extends React.Component {
               const defaultPreset = new Preset(
                 "Default",
                 false,
+                false,
                 this.state.profiles,
                 ["Shipped", "Not shipped"],
                 "exclude",
@@ -1081,6 +1132,7 @@ class App extends React.Component {
                   new Preset(
                     preset.name,
                     preset.whitelist.favorites,
+                    preset.whitelist.hidden,
                     preset.whitelist.profiles,
                     preset.whitelist.shipped,
                     preset.whitelist.vendorMode,
@@ -1134,6 +1186,7 @@ class App extends React.Component {
             });
           });
         this.getFavorites(user.uid);
+        this.getHidden(user.uid);
         this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
@@ -1326,6 +1379,8 @@ class App extends React.Component {
                 setUser: this.setUser,
                 favorites: this.state.favorites,
                 toggleFavorite: this.toggleFavorite,
+                hidden: this.state.hidden,
+                toggleHidden: this.toggleHidden,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
                 preset: this.state.preset,
