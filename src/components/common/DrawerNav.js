@@ -215,6 +215,7 @@ export const DrawerNav = (props) => {
             Archive
           </ListItem>
           {userOptions}
+          <ListDivider />
           <ListItem onClick={(e) => setPage("statistics")} activated={props.page === "statistics"}>
             <ListItemGraphic icon="bar_chart" />
             Statistics
