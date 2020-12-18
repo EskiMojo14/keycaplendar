@@ -111,10 +111,12 @@ export class ContentStatistics extends React.Component {
         setDate.setUTCFullYear(year);
         const lastYear = new Date();
         lastYear.setUTCFullYear(today.getUTCFullYear() - 1);
-        lastYear.setDate(1);
+        lastYear.setUTCMonth(1);
+        lastYear.setUTCDate(1);
         const nextYear = new Date();
-        nextYear.setUTCFullYear(today.getUTCFullYear() + 1);
-        nextYear.setDate(1);
+        nextYear.setUTCFullYear(today.getUTCFullYear() + 2);
+        nextYear.setUTCMonth(1);
+        nextYear.setDate(-1);
         return setDate >= lastYear && setDate <= nextYear;
       } else {
         return true;
