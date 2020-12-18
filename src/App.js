@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "./components/firebase";
 import moment from "moment";
 import { nanoid } from "nanoid";
+import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
@@ -1201,12 +1202,13 @@ class App extends React.Component {
 
   render() {
     const device = this.state.device;
+    const transitionClass = classNames({ "view-transition": this.state.transition });
     let content = this.state.deviceEdited ? (
       device === "desktop" ? (
         <DesktopContent
           allSets={this.state.sets}
           getData={this.getData}
-          className={this.state.transition ? "view-transition" : ""}
+          className={transitionClass}
           page={this.state.page}
           setPage={this.setPage}
           view={this.state.view}
@@ -1253,7 +1255,7 @@ class App extends React.Component {
         <TabletContent
           allSets={this.state.sets}
           getData={this.getData}
-          className={this.state.transition ? "view-transition" : ""}
+          className={transitionClass}
           page={this.state.page}
           setPage={this.setPage}
           view={this.state.view}
@@ -1300,7 +1302,7 @@ class App extends React.Component {
         <MobileContent
           allSets={this.state.sets}
           getData={this.getData}
-          className={this.state.transition ? "view-transition" : ""}
+          className={transitionClass}
           page={this.state.page}
           setPage={this.setPage}
           view={this.state.view}
@@ -1392,7 +1394,7 @@ class App extends React.Component {
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
-                <div className={"app density-" + this.state.density}>
+                <div className={classNames("app", `density-${this.state.density}`)}>
                   {content}
                   <SnackbarQueue messages={queue.messages} />
                   <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
