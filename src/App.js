@@ -77,6 +77,7 @@ class App extends React.Component {
         id: null,
       },
       favorites: [],
+      hidden: [],
       whitelist: {
         edited: [],
         favorites: false,
@@ -466,7 +467,8 @@ class App extends React.Component {
     sort = this.state.sort,
     search = this.state.search,
     whitelist = this.state.whitelist,
-    favorites = this.state.favorites
+    favorites = this.state.favorites,
+    hidden = this.state.hidden
   ) => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -513,6 +515,10 @@ class App extends React.Component {
     } else if (page === "favorites") {
       pageSets = sets.filter((set) => {
         return favorites.includes(set.id);
+      });
+    } else if (page === "hidden") {
+      pageSets = sets.filter((set) => {
+        return hidden.includes(set.id);
       });
     }
 
@@ -893,9 +899,7 @@ class App extends React.Component {
           },
           { merge: true }
         )
-        .then(() => {
-          this.getFavorites();
-        })
+        .then(() => {})
         .catch((error) => {
           console.log("Failed to sync favorites: " + error);
           queue.notify({ title: "Failed to sync favorites: " + error });
@@ -926,6 +930,64 @@ class App extends React.Component {
         .catch((error) => {
           console.log("Failed to get favorites: " + error);
           queue.notify({ title: "Failed to get favorites: " + error });
+        });
+    }
+  };
+  toggleHidden = (id) => {
+    const hidden = addOrRemove([...this.state.hidden], id);
+    this.setState({ hidden: hidden });
+    if (this.state.page === "hidden") {
+      this.filterData(
+        this.state.page,
+        this.state.sets,
+        this.state.sort,
+        this.state.search,
+        this.state.whitelist,
+        this.state.favorites,
+        hidden
+      );
+    }
+    if (this.state.user.id) {
+      db.collection("users")
+        .doc(this.state.user.id)
+        .set(
+          {
+            hidden: hidden,
+          },
+          { merge: true }
+        )
+        .then(() => {})
+        .catch((error) => {
+          console.log("Failed to sync hidden sets: " + error);
+          queue.notify({ title: "Failed to sync hidden sets: " + error });
+        });
+    }
+  };
+  getHidden = (id = this.state.user.id) => {
+    if (id) {
+      db.collection("users")
+        .doc(id)
+        .get()
+        .then((doc) => {
+          if (doc.exists && doc.data().hidden) {
+            const hidden = doc.data().hidden;
+            this.setState({ hidden: hidden });
+            if (this.state.page === "favorites") {
+              this.filterData(
+                this.state.page,
+                this.state.sets,
+                this.state.sort,
+                this.state.search,
+                this.state.whitelist,
+                this.state.favorites,
+                hidden
+              );
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get hidden sets: " + error);
+          queue.notify({ title: "Failed to get hidden sets: " + error });
         });
     }
   };
@@ -1134,6 +1196,7 @@ class App extends React.Component {
             });
           });
         this.getFavorites(user.uid);
+        this.getHidden(user.uid);
         this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
@@ -1326,6 +1389,8 @@ class App extends React.Component {
                 setUser: this.setUser,
                 favorites: this.state.favorites,
                 toggleFavorite: this.toggleFavorite,
+                hidden: this.state.hidden,
+                toggleHidden: this.toggleHidden,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
                 preset: this.state.preset,

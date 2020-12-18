@@ -287,8 +287,8 @@ export class DrawerDetails extends React.Component {
             ),
           }}
           className="hide"
-          //checked={this.context.favorites.includes(this.props.set.id)}
-          //onClick={() => this.context.toggleFavorite(this.props.set.id)}
+          checked={this.context.hidden.includes(this.props.set.id)}
+          onClick={() => this.context.toggleHidden(this.props.set.id)}
         />
       </Tooltip>
     ) : null;
