@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { List, ListItem, ListItemGraphic, ListDivider } from "@rmwc/list";
+import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../logo.svg";
 
 export const DrawerNav = (props) => {
-  const { user } = useContext(UserContext);
+  const { user, favorites, hidden } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const dismissible = device === "desktop";
   const setPage = (newPage) => {
@@ -43,6 +43,7 @@ export const DrawerNav = (props) => {
           }}
         />
         Favorites
+        <ListItemMeta>{favorites.length}</ListItemMeta>
       </ListItem>
       <ListItem onClick={(e) => setPage("hidden")} activated={props.page === "hidden"}>
         <ListItemGraphic
@@ -61,6 +62,7 @@ export const DrawerNav = (props) => {
           }}
         />
         Hidden
+        <ListItemMeta>{hidden.length}</ListItemMeta>
       </ListItem>
     </>
   ) : null;
