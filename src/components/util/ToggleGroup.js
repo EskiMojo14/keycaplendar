@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { Button } from "@rmwc/button";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ToggleGroup.scss";
 
 export const ToggleGroup = (props) => {
   return (
-    <div {...props} className={`toggle-group ${props.className}`}>
+    <div {...props} className={classNames("toggle-group", props.className)}>
       {props.children}
     </div>
   );
@@ -23,11 +24,13 @@ export const ToggleGroupButton = (props) => {
         <Button
           {...props}
           outlined
-          className={
-            (props.selected ? "mdc-button--selected" : "") +
-            (props.className ? ` ${props.className}` : "") +
-            (props.icon && !props.label ? " only-icon" : "")
-          }
+          className={classNames(
+            {
+              "mdc-button--selected": props.selected,
+              "only-icon": props.icon && !props.label,
+            },
+            props.className
+          )}
         />
       </Tooltip>
     );
@@ -36,11 +39,13 @@ export const ToggleGroupButton = (props) => {
     <Button
       {...props}
       outlined
-      className={
-        (props.selected ? "mdc-button--selected" : "") +
-        (props.className ? ` ${props.className}` : "") +
-        (props.icon && !props.label ? " only-icon" : "")
-      }
+      className={classNames(
+        {
+          "mdc-button--selected": props.selected,
+          "only-icon": props.icon && !props.label,
+        },
+        props.className
+      )}
     />
   );
 };

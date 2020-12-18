@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -333,7 +334,7 @@ export const DesktopAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "users" ? (
       <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
             anchorCorner="bottomLeft"
@@ -348,7 +349,7 @@ export const DesktopAppBar = (props) => {
             enterDelay={500}
             content="Sort"
             align="bottom"
-            className={props.userView === "table" ? "hidden" : ""}
+            className={classNames({ hidden: props.userView === "table" })}
           >
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
@@ -394,7 +395,7 @@ export const DesktopAppBar = (props) => {
     ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
-        <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
           <MenuSort
             page={props.page}
             sort={props.sort}
@@ -402,7 +403,12 @@ export const DesktopAppBar = (props) => {
             onSelect={props.setSort}
             onClose={closeSortMenu}
           />
-          <Tooltip enterDelay={500} content="Sort" align="bottom" className={props.page === "calendar" ? "hidden" : ""}>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={classNames({ hidden: props.page === "calendar" })}
+          >
             <TopAppBarActionItem icon="sort" style={{ "--animation-delay": 1 }} onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
@@ -764,7 +770,7 @@ export const TabletAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "users" ? (
       <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
             anchorCorner="bottomLeft"
@@ -779,7 +785,7 @@ export const TabletAppBar = (props) => {
             enterDelay={500}
             content="Sort"
             align="bottom"
-            className={props.userView === "table" ? "hidden" : ""}
+            className={classNames({ hidden: props.userView === "table" })}
           >
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
@@ -787,7 +793,7 @@ export const TabletAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
           <MenuSort
             page={props.page}
             sort={props.sort}
@@ -795,7 +801,12 @@ export const TabletAppBar = (props) => {
             onSelect={props.setSort}
             onClose={closeSortMenu}
           />
-          <Tooltip enterDelay={500} content="Sort" align="bottom" className={props.page === "calendar" ? "hidden" : ""}>
+          <Tooltip
+            enterDelay={500}
+            content="Sort"
+            align="bottom"
+            className={classNames({ hidden: props.page === "calendar" })}
+          >
             <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
@@ -1169,7 +1180,7 @@ export const MobileAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "users" ? (
       <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
             anchorCorner="bottomLeft"
@@ -1184,7 +1195,7 @@ export const MobileAppBar = (props) => {
             enterDelay={500}
             content="Sort"
             align="bottom"
-            className={props.userView === "table" ? "hidden" : ""}
+            className={classNames({ hidden: props.userView === "table" })}
           >
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
@@ -1192,7 +1203,7 @@ export const MobileAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
-        <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
           <MenuSort
             page={props.page}
             sort={props.sort}
@@ -1200,7 +1211,12 @@ export const MobileAppBar = (props) => {
             onSelect={props.setSort}
             onClose={closeSortMenu}
           />
-          <Tooltip enterDelay={500} className={props.page === "calendar" ? "hidden" : ""} content="Sort" align="bottom">
+          <Tooltip
+            enterDelay={500}
+            className={classNames({ hidden: props.page === "calendar" })}
+            content="Sort"
+            align="bottom"
+          >
             <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
@@ -1562,7 +1578,7 @@ export const BottomAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "users" ? (
       <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={props.userView === "table" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
             anchorCorner="bottomLeft"
@@ -1577,7 +1593,7 @@ export const BottomAppBar = (props) => {
             enterDelay={500}
             content="Sort"
             align="bottom"
-            className={props.userView === "table" ? "hidden" : ""}
+            className={classNames({ hidden: props.userView === "table" })}
           >
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
@@ -1585,7 +1601,7 @@ export const BottomAppBar = (props) => {
       </TopAppBarSection>
     ) : props.page === "settings" ? null : (
       <TopAppBarSection alignEnd className="actions">
-        <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
+        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
           <MenuSort
             page={props.page}
             sort={props.sort}
@@ -1593,7 +1609,12 @@ export const BottomAppBar = (props) => {
             onSelect={props.setSort}
             onClose={closeSortMenu}
           />
-          <Tooltip enterDelay={500} className={props.page === "calendar" ? "hidden" : ""} content="Sort" align="top">
+          <Tooltip
+            enterDelay={500}
+            className={classNames({ hidden: props.page === "calendar" })}
+            content="Sort"
+            align="top"
+          >
             <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
@@ -1728,7 +1749,7 @@ export const BottomAppBarIndent = (props) => {
   }
   const buttons = (
     <div className="actions">
-      <MenuSurfaceAnchor className={props.page === "calendar" ? "hidden" : ""}>
+      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
         <MenuSort
           page={props.page}
           sort={props.sort}
@@ -1736,7 +1757,12 @@ export const BottomAppBarIndent = (props) => {
           onSelect={props.setSort}
           onClose={closeSortMenu}
         />
-        <Tooltip enterDelay={500} className={props.page === "calendar" ? "hidden" : ""} content="Sort" align="top">
+        <Tooltip
+          enterDelay={500}
+          className={classNames({ hidden: props.page === "calendar" })}
+          content="Sort"
+          align="top"
+        >
           <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
         </Tooltip>
       </MenuSurfaceAnchor>

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
@@ -61,7 +62,7 @@ export const AutocompleteMobile = (props) => {
     return item.toLowerCase().includes(props.query.toLowerCase());
   });
   return (
-    <div className={"autocomplete-mobile" + (props.open ? " autocomplete-mobile--open" : "")}>
+    <div className={classNames("autocomplete-mobile", { "autocomplete-mobile--open": props.open })}>
       <List>
         {props.query.length >= props.minChars
           ? matchingItems.map((item) => {

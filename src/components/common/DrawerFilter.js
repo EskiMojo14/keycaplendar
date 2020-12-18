@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
+import classNames from "classnames";
 import { Preset } from "../../util/constructors";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove } from "../../util/functions";
@@ -145,7 +146,7 @@ export const DrawerFilter = (props) => {
             value: preset.name,
           }))}
           onChange={selectPresetFn}
-          className={modified ? "modified" : ""}
+          className={classNames({ modified: modified })}
         />
         <div className="preset-buttons">
           <Button

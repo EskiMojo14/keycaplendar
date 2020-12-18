@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import firebase from "../firebase";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { queueTypes } from "../../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
@@ -78,7 +79,7 @@ export const ContentSettings = (props) => {
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
-      <Card className={"mdc-list--two-line" + (user.nickname !== "" ? " three-line" : "")}>
+      <Card className={classNames("mdc-list--two-line", { "three-line": user.nickname !== "" })}>
         <ListItem disabled className="account">
           <BadgeAnchor className="avatar">
             <Avatar src={user.avatar} size="xlarge" />

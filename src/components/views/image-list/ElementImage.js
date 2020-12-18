@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import classNames from "classnames";
 import { setTypes } from "../../../util/propTypeTemplates";
 import {
   ImageListItem,
@@ -58,7 +59,7 @@ export const ElementImage = (props) => {
     <Ripple>
       <ImageListItem
         onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
-        className={"image-list-item" + (props.selected ? " selected" : "")}
+        className={classNames("image-list-item", { selected: props.selected })}
       >
         <div className="container">
           <div className="link-icon-container">
