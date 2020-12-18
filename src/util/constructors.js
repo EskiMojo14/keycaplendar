@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 export function Preset(
   name = "",
   favorites = false,
+  hidden = false,
   profiles = [],
   shipped = [],
   vendorMode = "",
@@ -13,6 +14,7 @@ export function Preset(
   this.id = id;
   this.whitelist = {
     favorites: favorites,
+    hidden: hidden,
     profiles: profiles,
     shipped: shipped,
     vendorMode: vendorMode,
