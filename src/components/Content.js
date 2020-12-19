@@ -511,7 +511,7 @@ export class DesktopContent extends React.Component {
     });
   };
   setUserSortIndex = (index) => {
-    const props = ["displayName", "email", "nickname"];
+    const props = ["displayName", "email", "nickname", "designer", "editor", "admin"];
     this.setState({
       userSort: props[index],
       userReverseSort: false,

@@ -62,48 +62,32 @@
       justify-content: center;
       align-items: flex-start;
       flex-wrap: wrap;
-      width: 1088px;
       max-width: calc(100% + 16px);
     }
-    width: 512px;
-    max-width: 100%;
     margin: 8px;
-    .rmwc-collapsible-list {
-      @include util.divider-border(bottom);
-      &__handle > .mdc-list-item {
+    flex: 1 1 256px;
+    .mdc-list {
+      padding: 0;
+      &-item {
+        user-select: text;
         .rmwc-avatar.mdc-list-item__graphic {
           width: 48px;
           height: 48px;
-        }
-      }
-      &__children-inner {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: stretch;
-        align-items: center;
-        .text-field-container {
-          padding: 16px;
-          flex-grow: 1;
-          display: flex;
-        }
-        .roles-form {
-          padding: 16px;
-          padding-top: 0;
-          .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            .mdc-form-field {
-              @include rtl.reflexive-box(margin, right, 8px);
-              &:last-child {
-                @include rtl.reflexive-box(margin, right, 0);
-              }
-            }
-          }
+          @include rtl.reflexive-box(margin, right, 16px);
         }
       }
     }
+    .text-field-container {
+      padding: 16px;
+      flex-grow: 1;
+      display: flex;
+      .mdc-text-field,
+      .mdc-menu-surface--anchor {
+        width: 100%;
+      }
+    }
     .mdc-card__actions {
-      justify-content: flex-end;
+      @include util.divider-border(top);
     }
   }
 }

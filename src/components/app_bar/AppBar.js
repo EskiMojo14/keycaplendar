@@ -344,6 +344,9 @@ export const DesktopAppBar = (props) => {
             <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
             <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
             <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+            <MenuItem selected={props.userSort === "designer"}>Designer</MenuItem>
+            <MenuItem selected={props.userSort === "editor"}>Editor</MenuItem>
+            <MenuItem selected={props.userSort === "admin"}>Admin</MenuItem>
           </Menu>
           <Tooltip
             enterDelay={500}
@@ -780,6 +783,9 @@ export const TabletAppBar = (props) => {
             <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
             <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
             <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+            <MenuItem selected={props.userSort === "designer"}>Designer</MenuItem>
+            <MenuItem selected={props.userSort === "editor"}>Editor</MenuItem>
+            <MenuItem selected={props.userSort === "admin"}>Admin</MenuItem>
           </Menu>
           <Tooltip
             enterDelay={500}
@@ -1190,6 +1196,9 @@ export const MobileAppBar = (props) => {
             <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
             <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
             <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+            <MenuItem selected={props.userSort === "designer"}>Designer</MenuItem>
+            <MenuItem selected={props.userSort === "editor"}>Editor</MenuItem>
+            <MenuItem selected={props.userSort === "admin"}>Admin</MenuItem>
           </Menu>
           <Tooltip
             enterDelay={500}
@@ -1588,6 +1597,9 @@ export const BottomAppBar = (props) => {
             <MenuItem selected={props.userSort === "displayName"}>Name</MenuItem>
             <MenuItem selected={props.userSort === "email"}>Email</MenuItem>
             <MenuItem selected={props.userSort === "nickname"}>Nickname</MenuItem>
+            <MenuItem selected={props.userSort === "designer"}>Designer</MenuItem>
+            <MenuItem selected={props.userSort === "editor"}>Editor</MenuItem>
+            <MenuItem selected={props.userSort === "admin"}>Admin</MenuItem>
           </Menu>
           <Tooltip
             enterDelay={500}

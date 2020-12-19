@@ -17,6 +17,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from 
 import { UserRow } from "../admin/users/UserRow";
 import { UserCard } from "../admin/users/UserCard";
 import "./ContentUsers.scss";
+import { DeviceContext } from "../../util/contexts";
 export class ContentUsers extends React.Component {
   constructor(props) {
     super(props);
@@ -246,18 +247,23 @@ export class ContentUsers extends React.Component {
               </Card>
             ) : (
               <div className="user-container">
-                {this.state.users.map((user, index) => {
-                  return (
-                    <UserCard
-                      user={user}
-                      key={user.email}
-                      delete={this.openDeleteDialog}
-                      getUsers={this.getUsers}
-                      snackbarQueue={this.props.snackbarQueue}
-                      allDesigners={this.props.allDesigners}
-                    />
-                  );
-                })}
+                <DeviceContext.Consumer>
+                  {(device) => {
+                    return this.state.users.map((user, index) => {
+                      return (
+                        <UserCard
+                          user={user}
+                          key={user.email}
+                          delete={this.openDeleteDialog}
+                          getUsers={this.getUsers}
+                          snackbarQueue={this.props.snackbarQueue}
+                          allDesigners={this.props.allDesigners}
+                          device={device}
+                        />
+                      );
+                    });
+                  }}
+                </DeviceContext.Consumer>
               </div>
             )}
           </div>
