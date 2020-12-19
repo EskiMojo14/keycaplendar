@@ -35,18 +35,19 @@ export const DrawerFilter = (props) => {
   };
 
   const newPreset = () => {
-    const { favorites, profiles, shipped, vendorMode, vendors } = props.whitelist;
-    const newPreset = new Preset("", favorites, profiles, shipped, vendorMode, vendors);
+    const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
+    const newPreset = new Preset("", favorites, hidden, profiles, shipped, vendorMode, vendors);
     props.openPreset(newPreset);
   };
 
   const savePreset = () => {
     if (preset.name !== "Default") {
-      const { favorites, profiles, shipped, vendorMode, vendors } = props.whitelist;
+      const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
       const modifiedPreset = {
         ...preset,
         whitelist: {
           favorites: favorites,
+          hidden: hidden,
           profiles: profiles,
           shipped: shipped,
           vendorMode: vendorMode,
