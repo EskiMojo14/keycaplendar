@@ -75,6 +75,7 @@
   &.drawer-bottom {
     width: 100%;
     height: auto;
+    max-height: 100%;
     border-width: 1px 0 0;
     border-top-style: solid;
     &.mdc-drawer--animate {

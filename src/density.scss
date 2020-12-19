@@ -120,6 +120,15 @@
         min-height: 0;
         height: top-app-bar.$row-height + $diff;
       }
+      .mdc-drawer__title {
+        &::before {
+          height: 36px + $diff / 2;
+        }
+        &::after {
+          height: 20px + $diff / 2;
+          vertical-align: -20px - $diff / 2;
+        }
+      }
       .mdc-list-item {
         height: density.prop-value(
           (

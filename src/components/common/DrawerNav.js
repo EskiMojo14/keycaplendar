@@ -141,7 +141,14 @@ export const DrawerNav = (props) => {
       </ListItem>
     </>
   ) : null;
-  const closeIcon = dismissible ? <IconButton className="rtl-flip" icon="chevron_left" onClick={props.close} /> : null;
+  const closeIcon =
+    dismissible || props.bottomNav ? (
+      <IconButton
+        className={classNames({ "rtl-flip": !props.bottomNav })}
+        icon={props.bottomNav ? "close" : "chevron_left"}
+        onClick={props.close}
+      />
+    ) : null;
   return (
     <Drawer
       className={classNames("nav", { rail: dismissible, "drawer-bottom": props.bottomNav })}

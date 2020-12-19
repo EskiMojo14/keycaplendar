@@ -36,6 +36,7 @@
       align-items: center;
       @include util.divider-border(bottom);
       box-sizing: border-box;
+      padding-bottom: 0;
       .mdc-drawer__title {
         margin-bottom: 0;
         font-family: Courgette, Lato, sans-serif;
