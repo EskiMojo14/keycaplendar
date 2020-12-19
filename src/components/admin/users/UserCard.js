@@ -36,17 +36,6 @@ export class UserCard extends React.Component {
       this.setState({ user: this.props.user, edited: false });
     }
   }
-  handleChange = (e) => {
-    const newUser = this.state.user;
-    newUser[e.target.name] = e.target.checked;
-    if (e.target.name === "admin" && e.target.checked) {
-      newUser.editor = true;
-    }
-    this.setState({
-      user: newUser,
-      edited: true,
-    });
-  };
   handleFocus = (e) => {
     this.setState({
       focused: e.target.name,
@@ -57,19 +46,17 @@ export class UserCard extends React.Component {
       focused: "",
     });
   };
-  handleTextChange = (e) => {
-    const newUser = this.state.user;
-    newUser[e.target.name] = e.target.value;
+  handleChange = (e) => {
+    const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
-      user: newUser,
+      user: user,
       edited: true,
     });
   };
   selectValue = (prop, value) => {
-    const newUser = this.state.user;
-    newUser[prop] = value;
+    const user = { ...this.state.user, [prop]: value };
     this.setState({
-      user: newUser,
+      user: user,
       edited: true,
     });
   };
@@ -187,7 +174,7 @@ export class UserCard extends React.Component {
           <ListItem ripple={false} className="three-line">
             <Avatar src={user.photoURL} className="mdc-list-item__graphic" size="xlarge" />
             <ListItemText>
-              <div className="overline">{user.nickname}</div>
+              <div className="overline">{this.props.user.nickname}</div>
               <ListItemPrimaryText>{user.displayName}</ListItemPrimaryText>
               <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
             </ListItemText>
@@ -201,7 +188,7 @@ export class UserCard extends React.Component {
               label="Nickname"
               className="nickname"
               name="nickname"
-              onChange={this.handleTextChange}
+              onChange={this.handleChange}
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
               value={this.state.user.nickname}

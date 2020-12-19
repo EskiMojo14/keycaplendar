@@ -30,19 +30,15 @@ export class UserRow extends React.Component {
   componentDidMount() {
     this.setState({ user: this.props.user });
   }
-  componentDidUpdate() {
-    if (this.props.user !== this.state.user) {
+  componentDidUpdate(prevProps) {
+    if (this.props.user !== prevProps.user && this.props.user !== this.state.user) {
       this.setState({ user: this.props.user, edited: false });
     }
   }
   handleChange = (e) => {
-    const newUser = this.state.user;
-    newUser[e.target.name] = e.target.checked;
-    if (e.target.name === "admin" && e.target.checked) {
-      newUser.editor = true;
-    }
+    const user = { ...this.state.user, [e.target.name]: e.target.checked };
     this.setState({
-      user: newUser,
+      user: user,
       edited: true,
     });
   };
@@ -57,18 +53,16 @@ export class UserRow extends React.Component {
     });
   };
   handleTextChange = (e) => {
-    const newUser = this.state.user;
-    newUser[e.target.name] = e.target.value;
+    const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
-      user: newUser,
+      user: user,
       edited: true,
     });
   };
   selectValue = (prop, value) => {
-    const newUser = this.state.user;
-    newUser[prop] = value;
+    const user = { ...this.state.user, [prop]: value };
     this.setState({
-      user: newUser,
+      user: user,
       edited: true,
     });
   };
