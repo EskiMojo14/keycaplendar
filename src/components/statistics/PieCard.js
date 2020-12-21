@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -21,7 +22,7 @@ export const StatusCard = (props) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
+        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
       </Typography>
       <div className="pie-container">
         <div className="table-container">
@@ -66,10 +67,18 @@ export const StatusCard = (props) => {
           <ChartistGraph
             className="ct-octave"
             data={{
-              series: [props.data.ic, props.data.preGb, props.data.liveGb, props.data.postGb],
+              series: [
+                { meta: "IC:&nbsp;", value: props.data.ic },
+                { meta: "Pre GB:&nbsp;", value: props.data.preGb },
+                { meta: "Live GB:&nbsp;", value: props.data.liveGb },
+                { meta: "Post GB:&nbsp;", value: props.data.postGb },
+              ],
               labels: [" ", " ", " ", " "],
             }}
             type={"Pie"}
+            options={{
+              plugins: [chartistTooltip({ metaIsHTML: true })],
+            }}
           />
         </div>
       </div>
@@ -84,7 +93,7 @@ export const ShippedCard = (props) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${(props.data.total > 1 ? "s" : "")}`}
+        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
       </Typography>
       <div className="pie-container">
         <div className="table-container">
@@ -117,10 +126,16 @@ export const ShippedCard = (props) => {
           <ChartistGraph
             className="ct-octave"
             data={{
-              series: [props.data.unshipped, props.data.shipped],
+              series: [
+                { meta: "Not shipped:&nbsp;", value: props.data.unshipped },
+                { meta: "Shipped:&nbsp;", value: props.data.shipped },
+              ],
               labels: [" ", " "],
             }}
             type={"Pie"}
+            options={{
+              plugins: [chartistTooltip({ metaIsHTML: true })],
+            }}
           />
         </div>
       </div>

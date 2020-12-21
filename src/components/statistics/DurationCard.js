@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -15,6 +17,25 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import "./DurationCard.scss";
+
+const customPoint = (data) => {
+  if (data.type === "point") {
+    const circle = new Chartist.Svg(
+      "circle",
+      {
+        cx: [data.x],
+        cy: [data.y],
+        r: [6],
+        "ct:value": data.value.y,
+        "ct:meta": data.meta,
+      },
+      "ct-stroked-point"
+    );
+    data.element.replace(circle);
+  }
+};
+
+const listener = { draw: (e) => customPoint(e) };
 
 export const DurationCard = (props) => {
   const chart =
@@ -58,8 +79,10 @@ export const DurationCard = (props) => {
                   flipTitle: true,
                 },
               }),
+              chartistTooltip({ pointClass: "ct-stroked-point" }),
             ],
           }}
+          listener={listener}
           type={"Line"}
         />
       </div>

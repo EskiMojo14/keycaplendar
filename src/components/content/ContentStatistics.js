@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all } from "mathjs";
 import classNames from "classnames";
@@ -24,6 +26,25 @@ function camelize(str) {
 function countInArray(arr, val) {
   return arr.reduce((count, item) => count + (item === val), 0);
 }
+
+const customPoint = (data) => {
+  if (data.type === "point") {
+    const circle = new Chartist.Svg(
+      "circle",
+      {
+        cx: [data.x],
+        cy: [data.y],
+        r: [6],
+        "ct:value": data.value.y,
+        "ct:meta": data.meta,
+      },
+      "ct-stroked-point"
+    );
+    data.element.replace(circle);
+  }
+};
+
+const listener = { draw: (e) => customPoint(e) };
 
 const math = create(all);
 
@@ -717,12 +738,16 @@ export class ContentStatistics extends React.Component {
             flipTitle: true,
           },
         }),
+        chartistTooltip({ pointClass: "ct-stroked-point" }),
       ],
     };
 
     const profileChartData = {
       labels: this.state.timelineData.months[this.props.statistics.timeline],
-      series: this.state.timelineData.profileCountData[this.props.statistics.timeline],
+      series: this.state.timelineData.profileCountData[this.props.statistics.timeline].map((value, index) => ({
+        meta: `${this.props.profiles[index]}:&nbsp;`,
+        value: value,
+      })),
     };
 
     const profileChartOptions = {
@@ -759,6 +784,7 @@ export class ContentStatistics extends React.Component {
             flipTitle: true,
           },
         }),
+        chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
       ],
     };
     const barGraph =
@@ -776,6 +802,7 @@ export class ContentStatistics extends React.Component {
           className="ct-double-octave"
           data={profileChartData}
           options={profileChartOptions}
+          listener={listener}
           type={"Line"}
         />
       ) : null;
@@ -791,6 +818,7 @@ export class ContentStatistics extends React.Component {
                 className="ct-double-octave"
                 data={countChartData}
                 options={countChartOptions}
+                listener={listener}
                 type={"Line"}
               />
             </div>
