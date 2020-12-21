@@ -57,6 +57,8 @@ const pageSort = {
   hidden: "profile",
 };
 
+const whitelistParams = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -143,18 +145,25 @@ class App extends React.Component {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
-    if (params.has("profile") || params.has("profiles")) {
-      if (params.has("profile")) {
-        const profile = [params.get("profile")];
-        this.setWhitelist("profiles", profile, false);
-      } else {
-        const profiles = params
-          .get("profiles")
-          .split(" ")
-          .map((profile) => profile.replace("-", " "));
-        this.setWhitelist("profiles", profiles, false);
+    const whitelistObj = {};
+    whitelistParams.forEach((param, index, array) => {
+      if (params.has(param)) {
+        if (param === "profile") {
+          whitelistObj.profiles = [params.get(param)];
+        } else if (param === "profiles" || param === "shipped" || param === "vendors") {
+          const array = params
+            .get(param)
+            .split(" ")
+            .map((item) => item.replace("-", " "));
+          whitelistObj[param] = array;
+        } else if (param === "vendorMode") {
+          whitelistObj[param] = params.get(param);
+        }
       }
-    }
+      if (index === array.length - 1) {
+        this.setWhitelist("all", whitelistObj, false);
+      }
+    });
     this.getData();
   };
   acceptCookies = () => {
@@ -466,7 +475,7 @@ class App extends React.Component {
     let groups = [];
 
     const hiddenSets = sets.filter((set) => {
-      if (page === "hidden" || whitelist.hidden) {
+      if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
         return hidden.includes(set.id);
       } else {
         return !hidden.includes(set.id);
@@ -606,7 +615,9 @@ class App extends React.Component {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
-      const favoritesBool = !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id));
+      const favoritesBool = this.state.user.email
+        ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
+        : true;
       if (set.vendors.length > 0) {
         return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
       } else {
@@ -781,7 +792,7 @@ class App extends React.Component {
     document.documentElement.scrollTop = 0;
     this.filterData(this.state.page, this.state.sets, this.state.sort, query);
   };
-  setUser = (user) => {
+  setUser = (user = {}) => {
     const blankUser = {
       email: null,
       name: null,
@@ -826,11 +837,14 @@ class App extends React.Component {
       if (this.state.sets.length > 0) {
         this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
       }
-      if (clearUrl) {
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("profile") || params.has("profiles")) {
-          params.delete("profile");
-          params.delete("profiles");
+    }
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      whitelistParams.forEach((param, index, array) => {
+        if (params.has(param)) {
+          params.delete(param);
+        }
+        if (index === array.length - 1) {
           if (params.has("page")) {
             const page = params.get("page");
             window.history.pushState(
@@ -845,7 +859,7 @@ class App extends React.Component {
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
-      }
+      });
     }
   };
   setDevice = () => {
@@ -1191,7 +1205,7 @@ class App extends React.Component {
         this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
-        this.setUser({});
+        this.setUser();
       }
     });
   }

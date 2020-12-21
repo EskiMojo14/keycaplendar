@@ -19,6 +19,8 @@ import "./DrawerFilter.scss";
 
 const shippedArray = ["Shipped", "Not shipped"];
 
+const whitelistParams = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
+
 export const DrawerFilter = (props) => {
   const { user, preset, presets, selectPreset } = useContext(UserContext);
   const device = useContext(DeviceContext);
@@ -104,17 +106,39 @@ export const DrawerFilter = (props) => {
 
   const copyLink = () => {
     const params = new URLSearchParams(window.location.search);
-    const editedArray = props.whitelist.profiles.map((profile) => profile.replace(" ", "-"));
-    if (editedArray.length === props.profiles.length) {
-      params.delete("profile");
-      params.delete("profiles");
-    } else if (editedArray.length === 1) {
-      params.delete("profiles");
-      params.set("profile", editedArray.join(" "));
-    } else {
-      params.delete("profile");
-      params.set("profiles", editedArray.join(" "));
-    }
+    whitelistParams.forEach((param) => {
+      if (param === "profile") {
+        if (props.whitelist.profiles.length === 1) {
+          params.set(param, props.whitelist.profiles.map((profile) => profile.replace(" ", "-")).join(" "));
+        } else {
+          params.delete(param);
+        }
+      } else if (param === "vendorMode") {
+        if (props.whitelist.vendorMode !== "exclude") {
+          params.set(param, props.whitelist[param]);
+        } else {
+          params.delete(param);
+        }
+      } else if (param === "profiles" || param === "shipped" || param === "vendors") {
+        if (param === "profiles") {
+          if (props.whitelist.profiles.length > 1 && props.whitelist.profiles.length !== props.profiles.length) {
+            params.set(param, props.whitelist.profiles.map((profile) => profile.replace(" ", "-")).join(" "));
+          } else {
+            params.delete(param);
+          }
+        } else {
+          const lengths = {
+            shipped: 2,
+            vendors: 0,
+          };
+          if (props.whitelist[param].length !== lengths[param]) {
+            params.set(param, props.whitelist[param].map((item) => item.replace(" ", "-")).join(" "));
+          } else {
+            params.delete(param);
+          }
+        }
+      }
+    });
     const url = window.location.href.split("?")[0] + "?" + params.toString();
     navigator.clipboard
       .writeText(url)
@@ -303,6 +327,9 @@ export const DrawerFilter = (props) => {
         {closeIcon}
       </DrawerHeader>
       {presetMenu}
+      <div className="copy-button">
+        <Button outlined label="Copy link" onClick={copyLink} disabled={preset.name === "Default" && !modified} />
+      </div>
       <DrawerContent>
         {userOptions}
         <div className="group">
@@ -320,20 +347,6 @@ export const DrawerFilter = (props) => {
               label="None"
               onClick={() => {
                 uncheckAll("profiles");
-              }}
-            />
-            <Button
-              disabled={
-                props.whitelist.profiles.length === props.profiles.length || props.whitelist.profiles.length === 0
-              }
-              label="Copy link"
-              onClick={() => {
-                if (
-                  props.whitelist.profiles.length !== props.profiles.length &&
-                  props.whitelist.profiles.length !== 0
-                ) {
-                  copyLink();
-                }
               }}
             />
           </div>

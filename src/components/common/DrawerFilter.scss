@@ -70,6 +70,14 @@
       }
     }
   }
+  .copy-button {
+    display: flex;
+    padding: 16px;
+    @include util.divider-border(bottom);
+    .mdc-button {
+      flex: 1 1 100%;
+    }
+  }
   .mdc-drawer__content {
     padding: 16px;
     .group {

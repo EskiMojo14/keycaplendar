@@ -26,7 +26,7 @@ export const ContentSettings = (props) => {
       .auth()
       .signOut()
       .then(() => {
-        setUser({});
+        setUser();
       })
       .catch((error) => {
         console.log("Error signing out: " + error);
