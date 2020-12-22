@@ -31,15 +31,21 @@ import {
 import "./ContentUsers.scss";
 
 const length = 1000;
+const rows = 25;
 export class ContentUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
       sortedUsers: [],
+      paginatedUsers: [],
       deleteDialogOpen: false,
       deletedUser: { displayName: "" },
       nextPageToken: null,
+      rowsPerPage: rows,
+      page: 1,
+      firstIndex: 0,
+      lastIndex: 0,
     };
   }
   getUsers = () => {
@@ -120,12 +126,17 @@ export class ContentUsers extends React.Component {
         return 0;
       }
     });
-    this.setState({
-      sortedUsers: users,
-    });
+    this.setState({ sortedUsers: users });
+    this.paginateUsers(users);
     if (this.props.loading) {
       this.props.toggleLoading();
     }
+  };
+  paginateUsers = (users = this.state.sortedUsers, page = this.state.page, rowsPerPage = this.state.rowsPerPage) => {
+    const paginatedUsers = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const firstIndex = users.indexOf(paginatedUsers[0]);
+    const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
+    this.setState({ paginatedUsers: paginatedUsers, firstIndex: firstIndex, lastIndex: lastIndex });
   };
   openDeleteDialog = (user) => {
     this.setState({
@@ -168,12 +179,22 @@ export class ContentUsers extends React.Component {
         }
       });
   };
+  setRowsPerPage = (e) => {
+    const val = parseInt(e.target.value);
+    this.setState({ rowsPerPage: val, page: 1 });
+    this.paginateUsers(this.state.sortedUsers, 1, val);
+  };
+  setPage = (num) => {
+    this.setState({ page: num });
+    this.paginateUsers(this.state.sortedUsers, num);
+  };
   componentDidMount() {
     this.getUsers();
   }
   componentDidUpdate(prevProps) {
     if (this.props.sort !== prevProps.sort || this.props.reverseSort !== prevProps.reverseSort) {
       this.sortUsers();
+      this.setPage(1);
     }
   }
   render() {
@@ -246,7 +267,7 @@ export class ContentUsers extends React.Component {
                       </DataTableRow>
                     </DataTableHead>
                     <DataTableBody>
-                      {this.state.sortedUsers.map((user, index) => {
+                      {this.state.paginatedUsers.map((user, index) => {
                         return (
                           <UserRow
                             user={user}
@@ -272,14 +293,53 @@ export class ContentUsers extends React.Component {
                     <DataTablePaginationTrailing>
                       <DataTablePaginationRowsPerPage>
                         <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
-                        <DataTablePaginationRowsPerPageSelect options={["50", "100", "150"]} enhanced />
+                        <DataTablePaginationRowsPerPageSelect
+                          value={this.state.rowsPerPage.toString()}
+                          options={Array(3)
+                            .fill(rows)
+                            .map((number, index) => (number * (index + 1)).toString())}
+                          onChange={this.setRowsPerPage}
+                          enhanced
+                        />
                       </DataTablePaginationRowsPerPage>
                       <DataTablePaginationNavigation>
-                        <DataTablePaginationTotal>1-10 of 100</DataTablePaginationTotal>
-                        <DataTablePaginationButton className="rtl-flip" icon="first_page" />
-                        <DataTablePaginationButton className="rtl-flip" icon="chevron_left" />
-                        <DataTablePaginationButton className="rtl-flip" icon="chevron_right" />
-                        <DataTablePaginationButton className="rtl-flip" icon="last_page" />
+                        <DataTablePaginationTotal>
+                          {`${this.state.firstIndex + 1}-${this.state.lastIndex + 1} of ${
+                            this.state.sortedUsers.length
+                          }`}
+                        </DataTablePaginationTotal>
+                        <DataTablePaginationButton
+                          className="rtl-flip"
+                          icon="first_page"
+                          disabled={this.state.firstIndex === 0}
+                          onClick={() => {
+                            this.setPage(1);
+                          }}
+                        />
+                        <DataTablePaginationButton
+                          className="rtl-flip"
+                          icon="chevron_left"
+                          disabled={this.state.firstIndex === 0}
+                          onClick={() => {
+                            this.setPage(this.state.page - 1);
+                          }}
+                        />
+                        <DataTablePaginationButton
+                          className="rtl-flip"
+                          icon="chevron_right"
+                          disabled={this.state.lastIndex === this.state.sortedUsers.length - 1}
+                          onClick={() => {
+                            this.setPage(this.state.page + 1);
+                          }}
+                        />
+                        <DataTablePaginationButton
+                          className="rtl-flip"
+                          icon="last_page"
+                          disabled={this.state.lastIndex === this.state.sortedUsers.length - 1}
+                          onClick={() => {
+                            this.setPage(Math.ceil(this.state.sortedUsers.length / this.state.rowsPerPage));
+                          }}
+                        />
                       </DataTablePaginationNavigation>
                     </DataTablePaginationTrailing>
                   </DataTablePagination>
