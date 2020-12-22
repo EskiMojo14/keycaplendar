@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "../firebase";
 import classNames from "classnames";
 import { queueTypes } from "../../util/propTypeTemplates";
+import { DeviceContext } from "../../util/contexts";
 import {
   DataTable,
   DataTableContent,
@@ -11,20 +12,34 @@ import {
   DataTableHeadCell,
   DataTableBody,
 } from "@rmwc/data-table";
+import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { UserRow } from "../admin/users/UserRow";
 import { UserCard } from "../admin/users/UserCard";
+import {
+  DataTablePagination,
+  DataTablePaginationTrailing,
+  DataTablePaginationRowsPerPage,
+  DataTablePaginationRowsPerPageLabel,
+  DataTablePaginationRowsPerPageSelect,
+  DataTablePaginationNavigation,
+  DataTablePaginationTotal,
+  DataTablePaginationButton,
+} from "../util/DataTablePagination";
 import "./ContentUsers.scss";
-import { DeviceContext } from "../../util/contexts";
+
+const length = 1000;
 export class ContentUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
+      sortedUsers: [],
       deleteDialogOpen: false,
       deletedUser: { displayName: "" },
+      nextPageToken: null,
     };
   }
   getUsers = () => {
@@ -32,7 +47,7 @@ export class ContentUsers extends React.Component {
       this.props.toggleLoading();
     }
     const listUsersFn = firebase.functions().httpsCallable("listUsers");
-    listUsersFn()
+    listUsersFn({ length: length, nextPageToken: this.state.nextPageToken })
       .then((result) => {
         if (result) {
           if (result.data.error) {
@@ -44,7 +59,9 @@ export class ContentUsers extends React.Component {
             if (this.props.loading) {
               this.props.toggleLoading();
             }
-            this.sortUsers(result.data);
+            const users = [...this.state.users, ...result.data.users];
+            this.sortUsers(users);
+            this.setState({ users: users, nextPageToken: result.data.nextPageToken });
           }
         }
       })
@@ -104,7 +121,7 @@ export class ContentUsers extends React.Component {
       }
     });
     this.setState({
-      users: users,
+      sortedUsers: users,
     });
     if (this.props.loading) {
       this.props.toggleLoading();
@@ -229,7 +246,7 @@ export class ContentUsers extends React.Component {
                       </DataTableRow>
                     </DataTableHead>
                     <DataTableBody>
-                      {this.state.users.map((user, index) => {
+                      {this.state.sortedUsers.map((user, index) => {
                         return (
                           <UserRow
                             user={user}
@@ -243,13 +260,36 @@ export class ContentUsers extends React.Component {
                       })}
                     </DataTableBody>
                   </DataTableContent>
+                  <DataTablePagination>
+                    <div className="button-container">
+                      <Button
+                        label={"Next " + length}
+                        outlined
+                        disabled={!this.state.nextPageToken}
+                        onClick={this.getUsers}
+                      />
+                    </div>
+                    <DataTablePaginationTrailing>
+                      <DataTablePaginationRowsPerPage>
+                        <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
+                        <DataTablePaginationRowsPerPageSelect options={["50", "100", "150"]} enhanced />
+                      </DataTablePaginationRowsPerPage>
+                      <DataTablePaginationNavigation>
+                        <DataTablePaginationTotal>1-10 of 100</DataTablePaginationTotal>
+                        <DataTablePaginationButton className="rtl-flip" icon="first_page" />
+                        <DataTablePaginationButton className="rtl-flip" icon="chevron_left" />
+                        <DataTablePaginationButton className="rtl-flip" icon="chevron_right" />
+                        <DataTablePaginationButton className="rtl-flip" icon="last_page" />
+                      </DataTablePaginationNavigation>
+                    </DataTablePaginationTrailing>
+                  </DataTablePagination>
                 </DataTable>
               </Card>
             ) : (
               <div className="user-container">
                 <DeviceContext.Consumer>
                   {(device) => {
-                    return this.state.users.map((user, index) => {
+                    return this.state.sortedUsers.map((user, index) => {
                       return (
                         <UserCard
                           user={user}
