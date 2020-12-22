@@ -53,6 +53,11 @@
           }
         }
       }
+      .button-container {
+        align-self: center;
+        @include rtl.reflexive-box(margin, right, auto);
+        padding: 8px;
+      }
     }
   }
   .user {

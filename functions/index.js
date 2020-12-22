@@ -272,12 +272,9 @@ exports.listUsers = functions.https.onCall(async (data, context) => {
       error: "Current user is not an admin. Access is not permitted.",
     };
   }
-  // List batch of users, 1000 at a time.
-  const users = await admin
-    .auth()
-    .listUsers(1000)
-    .then((result) => {
-      const newArray = result.users.map((user) => {
+  const listUsers = async (nextPageToken) => {
+    const processResult = (result) => {
+      const users = result.users.map((user) => {
         if (user.customClaims) {
           return {
             displayName: user.displayName,
@@ -300,12 +297,31 @@ exports.listUsers = functions.https.onCall(async (data, context) => {
           };
         }
       });
-      return newArray;
-    })
-    .catch((error) => {
-      return { error: "Error listing users: " + error };
-    });
-  return users;
+      return { users: users, nextPageToken: result.pageToken };
+    };
+    if (nextPageToken) {
+      const result = await admin
+        .auth()
+        .listUsers(data.length, nextPageToken)
+        .then((result) => processResult(result))
+        .catch((error) => {
+          return { error: "Error listing users: " + error };
+        });
+      return result;
+    } else {
+      const result = await admin
+        .auth()
+        .listUsers(data.length)
+        .then((result) => processResult(result))
+        .catch((error) => {
+          return { error: "Error listing users: " + error };
+        });
+      return result;
+    }
+  };
+  // List batch of users, 1000 at a time.
+  const result = await listUsers(data.nextPageToken);
+  return result;
 });
 
 exports.deleteUser = functions.https.onCall(async (data, context) => {

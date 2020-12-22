@@ -1,0 +1,63 @@
+@use "@material/rtl/_index" as rtl;
+@use "@material/typography/_index" as typography;
+@use "../../util";
+
+.mdc-data-table__pagination {
+  @include typography.typography(body2);
+  @include util.divider-border(top);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  &-trailing {
+    @include rtl.reflexive-box(margin, left, 4px);
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  &-navigation {
+    align-items: center;
+    display: flex;
+  }
+  &-button {
+    @include rtl.reflexive-box(margin, right, 4px);
+  }
+  &-total {
+    @include rtl.reflexive-property(margin, $left-value: 14px, $right-value: 36px);
+    white-space: nowrap;
+  }
+  &-rows-per-page {
+    @include rtl.reflexive-box(margin, right, 22px);
+    align-items: center;
+    display: inline-flex;
+    &-label {
+      @include rtl.reflexive-box(margin, right, 12px);
+
+      white-space: nowrap;
+    }
+    &-select {
+      margin: 8px 0;
+      &.mdc-select.mdc-select--outlined .mdc-select {
+        &__anchor,
+        &__selected-text {
+          height: 36px;
+        }
+        &__selected-text {
+          min-width: 80px;
+          padding-top: 4px;
+          padding-bottom: 2px;
+        }
+        &__dropdown-icon {
+          bottom: 6px;
+        }
+        &__menu {
+          min-width: 80px;
+          width: 100%;
+          .mdc-list-item {
+            height: 36px;
+          }
+        }
+      }
+    }
+  }
+}
