@@ -1,3 +1,4 @@
+@use "@material/animation/_index" as animation;
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "@material/typography/_index" as typography;
@@ -108,6 +109,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     overflow: hidden;
+    position: relative;
     .mdc-chip-set {
       position: relative;
       height: 100%;
@@ -120,6 +122,11 @@
       scroll-behavior: smooth;
       .mdc-chip {
         flex-shrink: 0;
+      }
+      .padding-fix {
+        width: 12px;
+        flex-shrink: 0;
+        order: 9999;
       }
     }
     &-container {

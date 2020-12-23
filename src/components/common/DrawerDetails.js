@@ -378,6 +378,7 @@ export class DrawerDetails extends React.Component {
         <div className="search-chips-container">
           <div className="search-chips">
             <ChipSet id="search-chip-set" choice>
+              <div className="padding-fix" />
               {chips.map((value, index) => {
                 return (
                   <Chip
