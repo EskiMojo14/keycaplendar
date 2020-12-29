@@ -1217,7 +1217,7 @@ class App extends React.Component {
   render() {
     const device = this.state.device;
     const transitionClass = classNames({ "view-transition": this.state.transition });
-    let content = this.state.deviceEdited ? (
+    const content = this.state.deviceEdited ? (
       device === "desktop" ? (
         <DesktopContent
           allSets={this.state.sets}
@@ -1408,7 +1408,9 @@ class App extends React.Component {
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
-                <div className={classNames("app", `density-${this.state.density}`)}>
+                <div
+                  className={classNames("app", { [`density-${this.state.density}`]: this.state.device === "desktop" })}
+                >
                   {content}
                   <SnackbarQueue messages={queue.messages} />
                   <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
