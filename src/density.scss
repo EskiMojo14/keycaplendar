@@ -86,7 +86,7 @@
   .mdc-tab-bar {
     @include tab-bar.density($density);
   }
-  .mdc-text-field:not(.search-bar-field) {
+  .mdc-text-field:not(.search-bar__field) {
     &:not(.mdc-text-field--outlined) {
       @include textfield.density($density);
     }
@@ -264,7 +264,7 @@
         $density,
         height
       );
-      .search-bar-field.mdc-text-field {
+      .search-bar__field.mdc-text-field {
         @include shape.radius(
           shape.resolve-percentage-radius(
             density.prop-value(

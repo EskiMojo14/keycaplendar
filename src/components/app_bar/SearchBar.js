@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import BEMHelper from "../../util/bemHelper";
 import { setTypes } from "../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -10,6 +11,8 @@ import { Autocomplete, AutocompleteMobile } from "../util/Autocomplete";
 import "./SearchBar.scss";
 
 const bodyScroll = require("body-scroll-toggle");
+
+const bemClasses = new BEMHelper("search-bar");
 
 export class SearchBarPersistent extends React.Component {
   constructor(props) {
@@ -86,15 +89,18 @@ export class SearchBarPersistent extends React.Component {
   };
   render() {
     return (
-      <MenuSurfaceAnchor className="search-bar-anchor">
+      <MenuSurfaceAnchor className={bemClasses("anchor")}>
         <div
-          className={classNames("search-bar", "search-bar--persistent", {
-            "search-bar--expanded": this.state.expanded,
+          className={bemClasses({
+            modifiers: {
+              persistent: true,
+              expanded: this.state.expanded,
+            },
           })}
         >
           <TextField
             outlined
-            className="search-bar-field"
+            className={bemClasses("field")}
             value={this.props.search}
             autoComplete="off"
             placeholder="Search"
@@ -254,18 +260,21 @@ export class SearchBarModal extends React.Component {
   render() {
     return (
       <div
-        className={classNames("search-bar", "search-bar--modal", {
-          "search-bar--expanded": this.state.open,
-          "search-bar--opening": this.state.opening,
-          "search-bar--closing": this.state.closing,
-          "search-bar--animate": this.state.animate,
+        className={bemClasses({
+          modifiers: {
+            modal: true,
+            expanded: this.state.open,
+            opening: this.state.opening,
+            closing: this.state.closing,
+            animate: this.state.animate,
+          },
         })}
       >
-        <div className="search-bar-field-container">
+        <div className={bemClasses("field-container")}>
           <TextField
             id="search"
             outlined
-            className="search-bar-field"
+            className={bemClasses("field")}
             value={this.props.search}
             autoComplete="off"
             placeholder="Search"
@@ -395,12 +404,12 @@ export class SearchAppBar extends React.Component {
       <>
         <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": this.props.open })}>
           <TopAppBarRow>
-            <div className="search-bar search-bar--modal search-bar--expanded">
-              <div className="search-bar-field-container">
+            <div className={bemClasses({ modifiers: "modal expanded" })}>
+              <div className={bemClasses("field-container")}>
                 <TextField
                   id="search"
                   outlined
-                  className="search-bar-field"
+                  className={bemClasses("field")}
                   value={this.props.search}
                   autoComplete="off"
                   placeholder="Search"

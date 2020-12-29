@@ -627,7 +627,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
       }
     }
     .search-bar {
-      &--persistent .search-bar-field.mdc-text-field {
+      &--persistent .search-bar__field.mdc-text-field {
         background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)), 0.15);
         .mdc-text-field__input {
           &::placeholder {
@@ -675,7 +675,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
       }
       &--modal {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
-        .search-bar-field.mdc-text-field {
+        .search-bar__field.mdc-text-field {
           .mdc-text-field__input {
             &::placeholder {
               color: map-get($variables, text-medium);
