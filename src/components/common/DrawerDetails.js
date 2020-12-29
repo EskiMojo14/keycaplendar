@@ -10,6 +10,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
+import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./DrawerDetails.scss";
 
 export class DrawerDetails extends React.Component {
@@ -169,23 +170,24 @@ export class DrawerDetails extends React.Component {
           </Typography>
           <List twoLine>
             {sortedVendors.map((vendor) => {
-              return vendor.storeLink !== "" ? (
-                <a key={vendor.name} href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+              return (
+                <ConditionalWrapper
+                  key={vendor.name}
+                  condition={vendor.storeLink !== ""}
+                  wrapper={(children) => (
+                    <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                      {children}
+                    </a>
+                  )}
+                >
                   <ListItem>
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
                     </ListItemText>
-                    <ListItemMeta icon="launch" />
+                    {vendor.storeLink !== "" ? <ListItemMeta icon="launch" /> : null}
                   </ListItem>
-                </a>
-              ) : (
-                <ListItem key={vendor.name} disabled>
-                  <ListItemText>
-                    <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
-                    <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
-                  </ListItemText>
-                </ListItem>
+                </ConditionalWrapper>
               );
             })}
           </List>
