@@ -68,7 +68,8 @@ $graph-colors: (
   palette.$pink-500,
   palette.$blue-grey-500,
   palette.$grey-500,
-  palette.$brown-500
+  palette.$brown-500,
+  black
 );
 
 $graph-colors-dark: (
@@ -90,10 +91,11 @@ $graph-colors-dark: (
   palette.$pink-300,
   palette.$blue-grey-300,
   palette.$grey-300,
-  palette.$brown-300
+  palette.$brown-300,
+  white
 );
 
-$letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s);
+$letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
 
 @mixin theme($theme, $dark: false) {
   $text-colors: (
