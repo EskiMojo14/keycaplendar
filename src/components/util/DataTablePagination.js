@@ -1,12 +1,14 @@
 import React from "react";
-import classNames from "classnames";
+import BEMHelper from "../../util/bemHelper";
 import { Select } from "@rmwc/select";
 import { IconButton } from "@rmwc/icon-button";
 import "./DataTablePagination.scss";
 
+const bemClasses = new BEMHelper("mdc-data-table");
+
 export const DataTablePagination = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -14,7 +16,7 @@ export const DataTablePagination = (props) => {
 
 export const DataTablePaginationTrailing = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination-trailing", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination-trailing", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -22,7 +24,7 @@ export const DataTablePaginationTrailing = (props) => {
 
 export const DataTablePaginationRowsPerPage = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination-rows-per-page", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination-rows-per-page", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -30,7 +32,7 @@ export const DataTablePaginationRowsPerPage = (props) => {
 
 export const DataTablePaginationRowsPerPageLabel = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination-rows-per-page-label", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination-rows-per-page-label", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -41,7 +43,7 @@ export const DataTablePaginationRowsPerPageSelect = (props) => {
     <Select
       {...props}
       outlined
-      className={classNames("mdc-data-table__pagination-rows-per-page-select", props.className)}
+      className={bemClasses({ element: "pagination-rows-per-page-select", extra: props.className })}
     >
       {props.children}
     </Select>
@@ -50,7 +52,7 @@ export const DataTablePaginationRowsPerPageSelect = (props) => {
 
 export const DataTablePaginationNavigation = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination-navigation", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination-navigation", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -58,7 +60,7 @@ export const DataTablePaginationNavigation = (props) => {
 
 export const DataTablePaginationTotal = (props) => {
   return (
-    <div {...props} className={classNames("mdc-data-table__pagination-total", props.className)}>
+    <div {...props} className={bemClasses({ element: "pagination-total", extra: props.className })}>
       {props.children}
     </div>
   );
@@ -66,7 +68,7 @@ export const DataTablePaginationTotal = (props) => {
 
 export const DataTablePaginationButton = (props) => {
   return (
-    <IconButton {...props} className={classNames("mdc-data-table__pagination-button", props.className)}>
+    <IconButton {...props} className={bemClasses({ element: "pagination-button", extra: props.className })}>
       {props.children}
     </IconButton>
   );

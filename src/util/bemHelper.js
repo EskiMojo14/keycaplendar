@@ -1,5 +1,7 @@
-const withDefaults = require("react-bem-helper").withDefaults;
+import { withDefaults } from "react-bem-helper";
 
-module.exports = withDefaults({
+export const customHelper = withDefaults({
   outputIsString: true,
 });
+
+export default customHelper;
