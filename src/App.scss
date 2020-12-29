@@ -355,12 +355,14 @@
     min-height: 1.5rem;
   }
 }
-.mdc-chip[disabled] {
-  cursor: default;
-  .mdc-chip__ripple {
-    &::before,
-    &::after {
-      content: none;
+.mdc-chip {
+  &[disabled] {
+    cursor: default;
+    .mdc-chip__ripple {
+      &::before,
+      &::after {
+        content: none;
+      }
     }
   }
 }

@@ -24,6 +24,7 @@
   }
   .mdc-chip {
     @include chips.density($density);
+    @include chips.shape-radius(50%, false, $density);
   }
   .mdc-data-table {
     @include data-table.density($density);
