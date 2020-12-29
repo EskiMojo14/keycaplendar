@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
+import BEMHelper from "../../util/bemHelper";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
@@ -57,16 +58,15 @@ export const Autocomplete = (props) => {
   );
 };
 
+const bemClasses = new BEMHelper("autocomplete-mobile");
+
 export const AutocompleteMobile = (props) => {
   const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
   const matchingItems = array.filter((item) => {
     return item.toLowerCase().includes(query.toLowerCase());
   });
   return (
-    <div
-      {...filteredProps}
-      className={classNames("autocomplete-mobile", { "autocomplete-mobile--open": open }, className)}
-    >
+    <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
       <List>
         {query.length >= minChars
           ? matchingItems.map((item) => {
