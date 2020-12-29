@@ -1,37 +1,36 @@
 import React from "react";
 import PropTypes from "prop-types";
+import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
-import reactStringReplace from "react-string-replace";
 
 export const Autocomplete = (props) => {
-  const matchingItems = props.array.filter((item) => {
-    return item.toLowerCase().includes(props.query.toLowerCase());
+  const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
+  const matchingItems = array.filter((item) => {
+    return item.toLowerCase().includes(query.toLowerCase());
   });
   const firstFour = matchingItems.slice(0, 4);
   return (
     <Menu
-      className="autocomplete"
+      {...filteredProps}
+      className={classNames("autocomplete", className)}
       focusOnOpen={false}
-      open={props.open && props.query.length >= props.minChars && matchingItems.length > 0}
+      open={open && query.length >= minChars && matchingItems.length > 0}
       anchorCorner="bottomLeft"
       onSelect={(e) => {
-        props.select(props.prop, matchingItems[e.detail.index]);
+        select(prop, matchingItems[e.detail.index]);
         document.activeElement.blur();
       }}
-      onFocus={props.onFocus}
-      onBlur={props.onBlur}
-      fixed={props.fixed}
     >
-      {props.query.length >= props.minChars
-        ? props.open
+      {query.length >= minChars
+        ? open
           ? matchingItems.map((item) => {
               return (
                 <MenuItem key={item}>
-                  {props.query.length > 0
-                    ? reactStringReplace(item, props.query, (match, i) => (
+                  {query.length > 0
+                    ? reactStringReplace(item, query, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>
@@ -43,8 +42,8 @@ export const Autocomplete = (props) => {
           : firstFour.map((item) => {
               return (
                 <MenuItem key={item}>
-                  {props.query.length > 0
-                    ? reactStringReplace(item, props.query, (match, i) => (
+                  {query.length > 0
+                    ? reactStringReplace(item, query, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>
@@ -57,19 +56,24 @@ export const Autocomplete = (props) => {
     </Menu>
   );
 };
+
 export const AutocompleteMobile = (props) => {
-  const matchingItems = props.array.filter((item) => {
-    return item.toLowerCase().includes(props.query.toLowerCase());
+  const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
+  const matchingItems = array.filter((item) => {
+    return item.toLowerCase().includes(query.toLowerCase());
   });
   return (
-    <div className={classNames("autocomplete-mobile", { "autocomplete-mobile--open": props.open })}>
+    <div
+      {...filteredProps}
+      className={classNames("autocomplete-mobile", { "autocomplete-mobile--open": open }, className)}
+    >
       <List>
-        {props.query.length >= props.minChars
+        {query.length >= minChars
           ? matchingItems.map((item) => {
               return (
-                <ListItem key={item} onClick={() => props.select(props.prop, item)}>
-                  {props.query.length > 0
-                    ? reactStringReplace(item, props.query, (match, i) => (
+                <ListItem key={item} onClick={() => select(prop, item)}>
+                  {query.length > 0
+                    ? reactStringReplace(item, query, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>
@@ -98,12 +102,5 @@ Autocomplete.propTypes = {
 };
 
 AutocompleteMobile.propTypes = {
-  array: PropTypes.arrayOf(PropTypes.string),
-  minChars: PropTypes.number,
-  onBlur: PropTypes.func,
-  onFocus: PropTypes.func,
-  open: PropTypes.bool,
-  prop: PropTypes.string,
-  query: PropTypes.string,
-  select: PropTypes.func,
+  ...Autocomplete.propTypes,
 };
