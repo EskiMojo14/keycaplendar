@@ -1,6 +1,8 @@
 import React from "react";
-import classNames from "classnames";
+import BEMHelper from "../../util/bemHelper";
 import "./FullScreenDialog.scss";
+
+const bemClasses = new BEMHelper("full-screen-dialog");
 
 export class FullScreenDialog extends React.Component {
   constructor(props) {
@@ -45,20 +47,20 @@ export class FullScreenDialog extends React.Component {
     }, 400);
   };
   render() {
+    const { open, ...props } = this.props;
     return (
       <>
         <div
-          {...this.props}
-          className={classNames(
-            "full-screen-dialog",
-            {
-              "full-screen-dialog--open": this.state.open,
-              "full-screen-dialog--opening": this.state.opening,
-              "full-screen-dialog--closing": this.state.closing,
-              "full-screen-dialog--animate": this.state.animate,
+          {...props}
+          className={bemClasses({
+            modifiers: {
+              open: this.state.open,
+              opening: this.state.opening,
+              closing: this.state.closing,
+              animate: this.state.animate,
             },
-            this.props.className
-          )}
+            extra: this.props.className,
+          })}
         >
           {this.props.children}
         </div>
@@ -70,7 +72,7 @@ export class FullScreenDialog extends React.Component {
 
 export const FullScreenDialogContent = (props) => {
   return (
-    <div {...props} className={classNames("full-screen-dialog__content", props.className)}>
+    <div {...props} className={bemClasses({ element: "content", extra: props.className })}>
       {props.children}
     </div>
   );

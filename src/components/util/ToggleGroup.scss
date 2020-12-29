@@ -2,18 +2,18 @@
 
 .toggle-group {
   display: flex;
-  .mdc-button {
+  .toggle-group__button {
     flex-grow: 1;
     @include rtl.reflexive-box(margin, right, -1px);
     min-width: 0;
     .mdc-button__ripple {
       border-radius: inherit;
     }
-    &:not(.mdc-button--selected) {
+    &:not(.toggle-group__button--selected) {
       border-left-color: var(--lighter-color);
       border-right-color: var(--lighter-color);
     }
-    &.only-icon .mdc-button__icon {
+    &.toggle-group__button--only-icon .mdc-button__icon {
       margin: 0;
     }
     html:not([dir="rtl"]) & {
@@ -26,12 +26,12 @@
         border-bottom-right-radius: 0;
       }
       &:first-child {
-        &:not(.mdc-button--selected) {
+        &:not(.toggle-group__button--selected) {
           border-left-color: var(--divider-color);
         }
       }
       &:last-child {
-        &:not(.mdc-button--selected) {
+        &:not(.toggle-group__button--selected) {
           border-right-color: var(--divider-color);
         }
       }
@@ -46,12 +46,12 @@
         border-bottom-left-radius: 0;
       }
       &:first-child {
-        &:not(.mdc-button--selected) {
+        &:not(.toggle-group__button--selected) {
           border-right-color: var(--divider-color);
         }
       }
       &:last-child {
-        &:not(.mdc-button--selected) {
+        &:not(.toggle-group__button--selected) {
           border-left-color: var(--divider-color);
         }
       }

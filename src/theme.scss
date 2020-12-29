@@ -1121,7 +1121,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
   }
 
   .toggle-group {
-    .mdc-button {
+    &__button {
       @include button.ink-color(map-get($variables, text-medium));
       @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
       @include ripple.states-selected(
@@ -1149,10 +1149,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
   }
 
   @if ($dark != true) {
-    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.mdc-button--selected) {
+    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.toggle-group__button--selected) {
       border-left-color: rgba(map-get($variables, on-primary), 0.38);
     }
-    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.mdc-button--selected) {
+    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.toggle-group__button--selected) {
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
     }
   }
