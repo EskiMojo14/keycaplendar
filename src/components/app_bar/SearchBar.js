@@ -299,7 +299,7 @@ export class SearchBarModal extends React.Component {
           />
         </div>
         <AutocompleteMobile
-          open={this.state.focused}
+          open={this.state.focused && this.state.open}
           prop="search"
           array={this.state.searchTerms}
           query={this.props.search}
@@ -434,7 +434,7 @@ export class SearchAppBar extends React.Component {
                 />
               </div>
               <AutocompleteMobile
-                open={this.state.focused}
+                open={this.state.focused && this.props.open}
                 prop="search"
                 array={this.state.searchTerms}
                 query={this.props.search}
