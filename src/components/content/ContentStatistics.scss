@@ -86,55 +86,25 @@
   }
 }
 
+$tabs: timeline, status, shipped, duration;
+
 .tab-container {
   display: flex;
   overflow: hidden;
   max-width: 100%;
   align-items: flex-start;
-  &.timeline {
-    .stats-tab.status,
-    .stats-tab.shipped,
-    .stats-tab.duration {
-      max-height: 100vh;
-    }
-  }
-  &.status {
-    .stats-tab {
-      transform: translateX(-100%);
-      @include rtl.rtl {
-        transform: translateX(100%);
+  @each $tab in $tabs {
+    $index: index($tabs, $tab) - 1;
+    &.#{$tab} {
+      .stats-tab {
+        transform: translateX(-100% * $index);
+        @include rtl.rtl {
+          transform: translateX(100% * $index);
+        }
+        &:not(.#{$tab}) {
+          max-height: 100vh;
+        }
       }
-    }
-    .stats-tab.timeline,
-    .stats-tab.shipped,
-    .stats-tab.duration {
-      max-height: 100vh;
-    }
-  }
-  &.shipped {
-    .stats-tab {
-      transform: translateX(-200%);
-      @include rtl.rtl {
-        transform: translateX(200%);
-      }
-    }
-    .stats-tab.timeline,
-    .stats-tab.status,
-    .stats-tab.duration {
-      max-height: 100vh;
-    }
-  }
-  &.duration {
-    .stats-tab {
-      transform: translateX(-300%);
-      @include rtl.rtl {
-        transform: translateX(300%);
-      }
-    }
-    .stats-tab.timeline,
-    .stats-tab.status,
-    .stats-tab.stats-tab.shipped {
-      max-height: 100vh;
     }
   }
 }
