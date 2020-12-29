@@ -1,52 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
+import BEMHelper from "../../util/bemHelper";
+import { ConditionalWrapper } from "./ConditionalWrapper";
 import { Button } from "@rmwc/button";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ToggleGroup.scss";
 
+const bemClasses = new BEMHelper("toggle-group");
+
 export const ToggleGroup = (props) => {
   return (
-    <div {...props} className={classNames("toggle-group", props.className)}>
+    <div {...props} className={bemClasses({ extra: props.className })}>
       {props.children}
     </div>
   );
 };
 
 export const ToggleGroupButton = (props) => {
-  if (props.tooltip) {
-    return (
-      <Tooltip
-        enterDelay={props.tooltip.enterDelay ? props.tooltip.enterDelay : null}
-        align={props.tooltip.align ? props.tooltip.align : null}
-        content={props.tooltip.content ? props.tooltip.content : null}
-      >
-        <Button
-          {...props}
-          outlined
-          className={classNames(
-            {
-              "mdc-button--selected": props.selected,
-              "only-icon": props.icon && !props.label,
-            },
-            props.className
-          )}
-        />
-      </Tooltip>
-    );
-  }
+  const { tooltip, ...filteredProps } = props;
   return (
-    <Button
-      {...props}
-      outlined
-      className={classNames(
-        {
-          "mdc-button--selected": props.selected,
-          "only-icon": props.icon && !props.label,
-        },
-        props.className
-      )}
-    />
+    <ConditionalWrapper condition={tooltip} wrapper={(children) => <Tooltip {...tooltip}>{children}</Tooltip>}>
+      <Button
+        {...filteredProps}
+        outlined
+        className={bemClasses(
+          "button",
+          { "only-icon": props.icon && !props.label, selected: props.selected },
+          props.className
+        )}
+      />
+    </ConditionalWrapper>
   );
 };
 
@@ -68,8 +51,6 @@ ToggleGroupButton.propTypes = {
   onClick: PropTypes.func,
   selected: PropTypes.bool,
   tooltip: PropTypes.shape({
-    enterDelay: PropTypes.number,
-    align: PropTypes.string,
     content: PropTypes.node.isRequired,
   }),
 };

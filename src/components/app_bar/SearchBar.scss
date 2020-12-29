@@ -13,7 +13,7 @@ $exit-time: 200ms;
   }
   &--persistent {
     height: 40px;
-    .search-bar-field.mdc-text-field {
+    .search-bar__field.mdc-text-field {
       height: 100%;
       width: 128px;
       transition: animation.standard(width, 250ms), elevation.transition-value();
@@ -36,7 +36,7 @@ $exit-time: 200ms;
       }
     }
     &.search-bar--expanded {
-      .search-bar-field.mdc-text-field {
+      .search-bar__field.mdc-text-field {
         width: 256px;
       }
     }
@@ -60,7 +60,7 @@ $exit-time: 200ms;
       transition: animation.standard(opacity, 150ms), animation.standard(transform, 150ms);
       outline: none;
     }
-    .search-bar-field-container {
+    .search-bar__field-container {
       width: 100%;
       height: 100%;
       display: flex;
@@ -68,7 +68,7 @@ $exit-time: 200ms;
       align-items: center;
       z-index: 4;
       position: relative;
-      .search-bar-field.mdc-text-field {
+      .search-bar__field.mdc-text-field {
         flex-grow: 1;
         @include shape.radius(0);
         &--with-leading-icon .mdc-text-field__icon,
@@ -87,7 +87,7 @@ $exit-time: 200ms;
         }
       }
     }
-    &.search-bar--animate .search-bar-field-container {
+    &.search-bar--animate .search-bar__field-container {
       opacity: 0;
       width: 64px;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
@@ -95,7 +95,7 @@ $exit-time: 200ms;
         opacity: 0;
       }
     }
-    &.search-bar--opening .search-bar-field-container {
+    &.search-bar--opening .search-bar__field-container {
       opacity: 1;
       width: 100%;
       .mdc-text-field--with-trailing-icon .mdc-text-field__icon ~ .mdc-text-field__icon {
@@ -104,7 +104,7 @@ $exit-time: 200ms;
       }
       transition-duration: $enter-time;
     }
-    &.search-bar--closing .search-bar-field-container {
+    &.search-bar--closing .search-bar__field-container {
       opacity: 0;
       width: 64px;
       transition-duration: $exit-time;
@@ -123,12 +123,12 @@ $exit-time: 200ms;
   @include elevation.elevation(0);
   transition: animation.standard(top, 200ms);
   top: -56px;
-  .search-bar-field-container {
+  .search-bar__field-container {
     transition: elevation.transition-value();
   }
   &--open {
     top: 0;
-    .search-bar-field-container {
+    .search-bar__field-container {
       @include elevation.elevation(4);
     }
   }
