@@ -170,6 +170,13 @@ class App extends React.Component {
         this.setWhitelist("all", whitelistObj, false);
       }
     });
+    if (params.has("statisticsTab")) {
+      const validTabs = ["timeline", "status", "shipped", "duration", "vendors"];
+      const urlTab = params.get("statisticsTab");
+      if (validTabs.includes(urlTab)) {
+        this.setStatisticsTab(urlTab);
+      }
+    }
     this.getData();
   };
   acceptCookies = () => {
