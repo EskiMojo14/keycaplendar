@@ -9,7 +9,6 @@ import { IconButton } from "@rmwc/icon-button";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
-import "./DrawerFilterStatistics.scss";
 
 const shippedArray = ["Shipped", "Not shipped"];
 
