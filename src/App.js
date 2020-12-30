@@ -28,6 +28,7 @@ const title = {
   timeline: "Timeline",
   archive: "Archive",
   favorites: "Favorites",
+  hidden: "Hidden",
   statistics: "Statistics",
   audit: "Audit Log",
   users: "Users",
