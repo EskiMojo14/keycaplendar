@@ -32,6 +32,9 @@
       display: none;
     }
   }
+  .search-bar--persistent {
+    @include rtl.reflexive-box(margin, right, 8px);
+  }
   .mdc-icon-button {
     opacity: 0;
     animation: animation.standard(fade-in-scale, 150ms) forwards;
