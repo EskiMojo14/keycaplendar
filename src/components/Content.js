@@ -731,7 +731,6 @@ export class DesktopContent extends React.Component {
           openPreset={this.openFilterPresetDrawer}
           deletePreset={this.openFilterPresetDeleteDialog}
         />
-        {auditFilterDrawer}
         {editorElements}
         {filterPresetElements}
       </>
@@ -792,6 +791,7 @@ export class DesktopContent extends React.Component {
           />
           <div className="content-container">
             {mainElements}
+            {auditFilterDrawer}
             <DrawerAppContent className={classNames("main", this.props.view, { content: this.props.content })}>
               {content}
               <Footer />
@@ -1449,8 +1449,6 @@ export class TabletContent extends React.Component {
           deletePreset={this.openFilterPresetDeleteDialog}
         />
         {filterPresetElements}
-        {auditFilterDrawer}
-        {auditDeleteDialog}
       </>
     ) : null;
     const timelineFilterDrawer =
@@ -1505,6 +1503,8 @@ export class TabletContent extends React.Component {
         {mainElements}
         {statsDialog}
         {timelineFilterDrawer}
+        {auditFilterDrawer}
+        {auditDeleteDialog}
       </div>
     );
   }
@@ -2257,8 +2257,6 @@ export class MobileContent extends React.Component {
           deletePreset={this.openFilterPresetDeleteDialog}
         />
         {filterPresetElements}
-        {auditFilterDrawer}
-        {auditDeleteDialog}
       </>
     ) : null;
     const timelineFilterDrawer =
@@ -2296,6 +2294,8 @@ export class MobileContent extends React.Component {
         {mainElements}
         {statsDialog}
         {timelineFilterDrawer}
+        {auditFilterDrawer}
+        {auditDeleteDialog}
       </div>
     );
   }

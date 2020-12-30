@@ -223,7 +223,8 @@
     height: 256px - (top-app-bar.$row-height + $diff);
   }
   .filter-drawer-open .main.content.card::before,
-  .details-drawer-open .main.content.card::before {
+  .details-drawer-open .main.content.card::before,
+  .audit .filter-drawer-open .main::before {
     height: 0;
   }
   .statistics {
