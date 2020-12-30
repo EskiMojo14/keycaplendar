@@ -588,7 +588,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
     @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
     @if ($dark != true) {
       .toggle-group {
-        .mdc-button {
+        .toggle-group__button {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
           @include button.outline-color(rgba(map-get($variables, on-primary), 0.38));
           @include ripple.states(
