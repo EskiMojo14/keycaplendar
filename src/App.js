@@ -825,9 +825,15 @@ class App extends React.Component {
   setStatisticsSort = (prop, query) => {
     this.setState({ statisticsSort: { ...this.state.statisticsSort, [prop]: query } });
   };
-  setStatisticsTab = (tab) => {
+  setStatisticsTab = (tab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      params.delete("statisticsTab");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   };
   setWhitelist = (prop, val, clearUrl = true) => {
     if (prop === "all") {
