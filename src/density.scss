@@ -218,6 +218,10 @@
       padding-top: top-app-bar.$row-height + $diff;
     }
   }
+  .main.content.card::before,
+  .audit .main::before {
+    height: 256px - (top-app-bar.$row-height + $diff);
+  }
   .statistics {
     .mdc-top-app-bar--fixed-adjust {
       padding-top: top-app-bar.$row-height + 48px + $diff * 2;
@@ -338,6 +342,10 @@
       &--fixed-adjust {
         padding-top: top-app-bar.$mobile-row-height + $diff;
       }
+    }
+    .main.content.card::before,
+    .audit .main::before {
+      height: 256px - (top-app-bar.$mobile-row-height + $diff);
     }
     .statistics {
       .mdc-top-app-bar--fixed-adjust {
