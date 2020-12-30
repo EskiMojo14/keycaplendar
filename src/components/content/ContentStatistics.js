@@ -887,12 +887,46 @@ export class ContentStatistics extends React.Component {
         chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
       ],
     };
+
+    const responsiveOptions = [
+      [
+        "(min-width: 960px) and (max-width: 1600px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) => {
+              return index % 2 === 0 ? value : null;
+            },
+          },
+        },
+      ],
+      [
+        "(min-width: 840px) and (max-width: 959px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) => {
+              return index % 3 === 0 ? value : null;
+            },
+          },
+        },
+      ],
+      [
+        "(max-width: 849px)",
+        {
+          axisX: {
+            labelInterpolationFnc: (value, index) => {
+              return index % 3 === 0 ? value : null;
+            },
+          },
+        },
+      ],
+    ];
     const barGraph =
       this.state.timelineData.profileChartType === "bar" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
           options={profileChartOptions}
+          responsiveOptions={responsiveOptions}
           type={"Bar"}
         />
       ) : null;
@@ -903,6 +937,7 @@ export class ContentStatistics extends React.Component {
           data={profileChartData}
           options={profileChartOptions}
           listener={listener}
+          responsiveOptions={responsiveOptions}
           type={"Line"}
         />
       ) : null;
@@ -919,6 +954,7 @@ export class ContentStatistics extends React.Component {
                 data={countChartData}
                 options={countChartOptions}
                 listener={listener}
+                responsiveOptions={responsiveOptions}
                 type={"Line"}
               />
             </div>
