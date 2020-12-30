@@ -245,7 +245,7 @@ export class ContentStatistics extends React.Component {
       allMonths.forEach((month) => {
         timelineData.months[property].push(moment(month).format("MMM YY"));
       });
-      this.props.profiles.forEach((profile) => {
+      timelineWhitelist.profiles.forEach((profile) => {
         timelineData.profileCount[property][camelize(profile)] = [];
       });
       timelineData.months[property].forEach((month) => {
@@ -260,7 +260,7 @@ export class ContentStatistics extends React.Component {
         timelineData.monthData[property][month] = {};
         timelineData.monthData[property][month].count = filteredSets.length;
         timelineData.countData[property].push(filteredSets.length);
-        this.props.profiles.forEach((profile) => {
+        timelineWhitelist.profiles.forEach((profile) => {
           const profileSets = filteredSets.filter((set) => {
             return set.profile === profile;
           });
@@ -268,7 +268,7 @@ export class ContentStatistics extends React.Component {
           timelineData.monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
         });
       });
-      this.props.profiles.forEach((profile) => {
+      timelineWhitelist.profiles.forEach((profile) => {
         timelineData.profileCountData[property].push(timelineData.profileCount[property][camelize(profile)]);
       });
     });
@@ -888,7 +888,7 @@ export class ContentStatistics extends React.Component {
     const profileChartData = {
       labels: this.state.timelineData.months[this.props.statistics.timeline],
       series: this.state.timelineData.profileCountData[this.props.statistics.timeline].map((value, index) => ({
-        meta: `${this.props.profiles[index]}:&nbsp;`,
+        meta: `${this.props.statistics.timelineWhitelist.profiles[index]}:&nbsp;`,
         value: value,
       })),
     };
@@ -1061,7 +1061,7 @@ export class ContentStatistics extends React.Component {
             })}
           >
             <TimelineTable
-              profiles={this.props.profiles}
+              profiles={this.props.statistics.timelineWhitelist.profiles}
               setFocus={this.setFocus}
               months={this.state.timelineData.months}
               statistics={this.props.statistics}
