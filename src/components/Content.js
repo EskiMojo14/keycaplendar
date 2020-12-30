@@ -33,6 +33,8 @@ import "./Content.scss";
 
 const bodyScroll = require("body-scroll-toggle");
 
+const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
@@ -518,13 +520,7 @@ export class DesktopContent extends React.Component {
     });
   };
   componentDidUpdate(prevProps) {
-    if (
-      this.props.page !== prevProps.page &&
-      (this.props.page === "statistics" ||
-        this.props.page === "audit" ||
-        this.props.page === "users" ||
-        this.props.page === "settings")
-    ) {
+    if (this.props.page !== prevProps.page && !mainPages.includes(this.props.page)) {
       if (this.state.filterDrawerOpen) {
         this.closeFilterDrawer();
       }
@@ -607,11 +603,7 @@ export class DesktopContent extends React.Component {
       <ContentEmpty page={this.props.page} />
     );
     const editorElements =
-      (this.context.user.isEditor || this.context.user.isDesigner) &&
-      this.props.page !== "statistics" &&
-      this.props.page !== "audit" &&
-      this.props.page !== "users" &&
-      this.props.page !== "settings" ? (
+      this.context.user.isEditor || this.context.user.isDesigner ? (
         <div className="editor-elements">
           <Fab className="create-fab" icon="add" label="Create" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -678,18 +670,56 @@ export class DesktopContent extends React.Component {
           deleteActionFn={this.deleteAuditAction}
         />
       ) : null;
-    const filterPresetElements = this.context.user.email ? (
+    const filterPresetElements =
+      this.context.user.email && mainPages.includes(this.props.page) ? (
+        <>
+          <DrawerFilterPreset
+            open={this.state.filterPresetDrawerOpen}
+            close={this.closeFilterPresetDrawer}
+            preset={this.state.filterPreset}
+          />
+          <DialogDeleteFilterPreset
+            open={this.state.filterPresetDeleteDialogOpen}
+            close={this.closeFilterPresetDeleteDialog}
+            preset={this.state.deleteFilterPreset}
+          />
+        </>
+      ) : null;
+    const mainElements = mainPages.includes(this.props.page) ? (
       <>
-        <DrawerFilterPreset
-          open={this.state.filterPresetDrawerOpen}
-          close={this.closeFilterPresetDrawer}
-          preset={this.state.filterPreset}
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerDetails
+              view={this.props.view}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+              openSales={this.openSalesDialog}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
+        <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
+        <DrawerFilter
+          view={this.props.view}
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
+          openPreset={this.openFilterPresetDrawer}
+          deletePreset={this.openFilterPresetDeleteDialog}
         />
-        <DialogDeleteFilterPreset
-          open={this.state.filterPresetDeleteDialogOpen}
-          close={this.closeFilterPresetDeleteDialog}
-          preset={this.state.deleteFilterPreset}
-        />
+        {auditFilterDrawer}
+        {editorElements}
+        {filterPresetElements}
       </>
     ) : null;
     return (
@@ -735,43 +765,11 @@ export class DesktopContent extends React.Component {
             setStatisticsTab={this.props.setStatisticsTab}
           />
           <div className="content-container">
-            <DeviceContext.Consumer>
-              {(device) => (
-                <DrawerDetails
-                  view={this.props.view}
-                  set={this.state.detailSet}
-                  open={this.state.detailsDrawerOpen}
-                  close={this.closeDetailsDrawer}
-                  edit={this.openEditDrawer}
-                  delete={this.openDeleteDialog}
-                  search={this.props.search}
-                  setSearch={this.props.setSearch}
-                  toggleLichTheme={this.props.toggleLichTheme}
-                  openSales={this.openSalesDialog}
-                  device={device}
-                />
-              )}
-            </DeviceContext.Consumer>
-            <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-            <DrawerFilter
-              view={this.props.view}
-              profiles={this.props.profiles}
-              vendors={this.props.allVendors}
-              open={this.state.filterDrawerOpen}
-              close={this.closeFilterDrawer}
-              setWhitelist={this.props.setWhitelist}
-              whitelist={this.props.whitelist}
-              snackbarQueue={this.props.snackbarQueue}
-              openPreset={this.openFilterPresetDrawer}
-              deletePreset={this.openFilterPresetDeleteDialog}
-            />
-            {auditFilterDrawer}
+            {mainElements}
             <DrawerAppContent className={classNames("main", this.props.view, { content: this.props.content })}>
               {content}
               <Footer />
             </DrawerAppContent>
-            {editorElements}
-            {filterPresetElements}
           </div>
         </DrawerAppContent>
         {auditDeleteDialog}
@@ -1286,11 +1284,7 @@ export class TabletContent extends React.Component {
       <ContentEmpty page={this.props.page} />
     );
     const editorElements =
-      (this.context.user.isEditor || this.context.user.isDesigner) &&
-      this.props.page !== "statistics" &&
-      this.props.page !== "audit" &&
-      this.props.page !== "users" &&
-      this.props.page !== "settings" ? (
+      this.context.user.isEditor || this.context.user.isDesigner ? (
         <>
           <Fab key="CreateFab" className="create-fab" icon="add" onClick={this.openCreateDrawer} />
           <DrawerCreate
@@ -1381,6 +1375,45 @@ export class TabletContent extends React.Component {
         />
       </>
     ) : null;
+    const mainElements = mainPages.includes(this.props.page) ? (
+      <>
+        {editorElements}
+        <DeviceContext.Consumer>
+          {(device) => (
+            <DrawerDetails
+              view={this.props.view}
+              set={this.state.detailSet}
+              open={this.state.detailsDrawerOpen}
+              close={this.closeDetailsDrawer}
+              edit={this.openEditDrawer}
+              delete={this.openDeleteDialog}
+              search={this.props.search}
+              setSearch={this.props.setSearch}
+              toggleLichTheme={this.props.toggleLichTheme}
+              openSales={this.openSalesDialog}
+              device={device}
+            />
+          )}
+        </DeviceContext.Consumer>
+        <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
+        <DrawerFilter
+          view={this.props.view}
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.props.setWhitelist}
+          whitelist={this.props.whitelist}
+          snackbarQueue={this.props.snackbarQueue}
+          openPreset={this.openFilterPresetDrawer}
+          deletePreset={this.openFilterPresetDeleteDialog}
+        />
+        {filterPresetElements}
+        {auditFilterDrawer}
+        {auditDeleteDialog}
+        {statsDialog}
+      </>
+    ) : null;
     return (
       <div className={classNames(this.props.className, this.props.page, "app-container")}>
         <DrawerNav
@@ -1418,41 +1451,7 @@ export class TabletContent extends React.Component {
           {content}
           <Footer />
         </main>
-        {editorElements}
-        <DeviceContext.Consumer>
-          {(device) => (
-            <DrawerDetails
-              view={this.props.view}
-              set={this.state.detailSet}
-              open={this.state.detailsDrawerOpen}
-              close={this.closeDetailsDrawer}
-              edit={this.openEditDrawer}
-              delete={this.openDeleteDialog}
-              search={this.props.search}
-              setSearch={this.props.setSearch}
-              toggleLichTheme={this.props.toggleLichTheme}
-              openSales={this.openSalesDialog}
-              device={device}
-            />
-          )}
-        </DeviceContext.Consumer>
-        <DialogSales open={this.state.salesDialogOpen} close={this.closeSalesDialog} set={this.state.salesSet} />
-        <DrawerFilter
-          view={this.props.view}
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.props.setWhitelist}
-          whitelist={this.props.whitelist}
-          snackbarQueue={this.props.snackbarQueue}
-          openPreset={this.openFilterPresetDrawer}
-          deletePreset={this.openFilterPresetDeleteDialog}
-        />
-        {filterPresetElements}
-        {auditFilterDrawer}
-        {auditDeleteDialog}
-        {statsDialog}
+        {mainElements}
       </div>
     );
   }
@@ -1975,11 +1974,7 @@ export class MobileContent extends React.Component {
       <ContentEmpty page={this.props.page} />
     );
     const editorElements =
-      (this.context.user.isEditor || this.context.user.isDesigner) &&
-      this.props.page !== "statistics" &&
-      this.props.page !== "audit" &&
-      this.props.page !== "users" &&
-      this.props.page !== "settings" ? (
+      this.context.user.isEditor || this.context.user.isDesigner ? (
         <>
           <Fab
             className={classNames("create-fab", { middle: this.props.bottomNav })}
@@ -2114,9 +2109,7 @@ export class MobileContent extends React.Component {
     const search =
       this.props.bottomNav &&
       (this.context.user.isEditor || this.context.user.isDesigner) &&
-      this.props.page !== "statistics" &&
-      this.props.page !== "audit" &&
-      this.props.page !== "users" ? (
+      mainPages.includes(this.props.page) ? (
         <SearchAppBar
           open={this.state.searchBarOpen}
           openBar={this.openSearchBar}
@@ -2162,27 +2155,8 @@ export class MobileContent extends React.Component {
         />
       </>
     ) : null;
-    return (
-      <div
-        className={classNames(this.props.className, this.props.page, "app-container", {
-          "offset-snackbar": this.context.user.isEditor || this.context.user.isDesigner,
-          "bottom-nav": this.props.bottomNav,
-        })}
-      >
-        {search}
-        <DrawerNav
-          view={this.props.view}
-          bottomNav={this.props.bottomNav}
-          open={this.state.navDrawerOpen}
-          page={this.props.page}
-          setPage={this.props.setPage}
-          close={this.closeNavDrawer}
-        />
-        {appBar}
-        <main className={classNames("main", this.props.view, { content: this.props.content })}>
-          {content}
-          <Footer />
-        </main>
+    const mainElements = mainPages.includes(this.props.page) ? (
+      <>
         {editorElements}
         <DeviceContext.Consumer>
           {(device) => (
@@ -2218,6 +2192,30 @@ export class MobileContent extends React.Component {
         {auditFilterDrawer}
         {auditDeleteDialog}
         {statsDialog}
+      </>
+    ) : null;
+    return (
+      <div
+        className={classNames(this.props.className, this.props.page, "app-container", {
+          "offset-snackbar": this.context.user.isEditor || this.context.user.isDesigner,
+          "bottom-nav": this.props.bottomNav,
+        })}
+      >
+        <DrawerNav
+          view={this.props.view}
+          bottomNav={this.props.bottomNav}
+          open={this.state.navDrawerOpen}
+          page={this.props.page}
+          setPage={this.props.setPage}
+          close={this.closeNavDrawer}
+        />
+        {search}
+        {appBar}
+        <main className={classNames("main", this.props.view, { content: this.props.content })}>
+          {content}
+          <Footer />
+        </main>
+        {mainElements}
       </div>
     );
   }
