@@ -17,6 +17,7 @@ import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
 import { DialogSales } from "./common/DialogSales";
 import { DialogStatistics } from "./statistics/DialogStatistics";
+import { DrawerFilterStatistics } from "./statistics/DrawerFilterStatistics";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
 import { DrawerFilter } from "./common/DrawerFilter";
 import { DrawerDetails } from "./common/DrawerDetails";
@@ -107,6 +108,7 @@ export class DesktopContent extends React.Component {
         image: "",
         profile: "",
       },
+      statisticsFilterDrawerOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -355,6 +357,18 @@ export class DesktopContent extends React.Component {
         image: "",
         profile: "",
       },
+    });
+  };
+  openStatisticsFilterDrawer = () => {
+    this.openModal();
+    this.setState({
+      statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
+    });
+  };
+  closeStatisticsFilterDrawer = () => {
+    this.closeModal();
+    this.setState({
+      statisticsFilterDrawerOpen: false,
     });
   };
   openAuditDeleteDialog = (action) => {
@@ -722,6 +736,17 @@ export class DesktopContent extends React.Component {
         {filterPresetElements}
       </>
     ) : null;
+    const timelineFilterDrawer =
+      this.props.page === "statistics" && this.props.statisticsTab === "timeline" ? (
+        <DrawerFilterStatistics
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.statisticsFilterDrawerOpen}
+          close={this.closeStatisticsFilterDrawer}
+          setWhitelist={this.props.setTimelineWhitelist}
+          statistics={this.props.statistics}
+        />
+      ) : null;
     return (
       <div className={classNames(this.props.className, this.props.page, "app-container")}>
         <DrawerNav
@@ -744,6 +769,7 @@ export class DesktopContent extends React.Component {
             openNav={this.openNavDrawer}
             toggleFilter={this.toggleFilterDrawer}
             toggleAuditFilter={this.toggleAuditFilterDrawer}
+            openStatisticsFilter={this.openStatisticsFilterDrawer}
             getActions={this.getAuditActions}
             view={this.props.view}
             setView={this.props.setView}
@@ -772,6 +798,7 @@ export class DesktopContent extends React.Component {
             </DrawerAppContent>
           </div>
         </DrawerAppContent>
+        {timelineFilterDrawer}
         {auditDeleteDialog}
       </div>
     );
@@ -853,6 +880,7 @@ export class TabletContent extends React.Component {
         profile: "",
       },
       statisticsDialogOpen: false,
+      statisticsFilterDrawerOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -1069,6 +1097,18 @@ export class TabletContent extends React.Component {
   closeStatisticsDialog = () => {
     this.closeModal();
     this.setState({ statisticsDialogOpen: false });
+  };
+  openStatisticsFilterDrawer = () => {
+    this.openModal();
+    this.setState({
+      statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
+    });
+  };
+  closeStatisticsFilterDrawer = () => {
+    this.closeModal();
+    this.setState({
+      statisticsFilterDrawerOpen: false,
+    });
   };
   openAuditDeleteDialog = (action) => {
     this.setState({
@@ -1411,9 +1451,19 @@ export class TabletContent extends React.Component {
         {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
-        {statsDialog}
       </>
     ) : null;
+    const timelineFilterDrawer =
+      this.props.page === "statistics" && this.props.statisticsTab === "timeline" ? (
+        <DrawerFilterStatistics
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.statisticsFilterDrawerOpen}
+          close={this.closeStatisticsFilterDrawer}
+          setWhitelist={this.props.setTimelineWhitelist}
+          statistics={this.props.statistics}
+        />
+      ) : null;
     return (
       <div className={classNames(this.props.className, this.props.page, "app-container")}>
         <DrawerNav
@@ -1429,6 +1479,7 @@ export class TabletContent extends React.Component {
           openNav={this.openNavDrawer}
           openFilter={this.openFilterDrawer}
           openAuditFilter={this.openAuditFilterDrawer}
+          openStatisticsFilter={this.openStatisticsFilterDrawer}
           getActions={this.getAuditActions}
           view={this.props.view}
           setView={this.props.setView}
@@ -1452,6 +1503,8 @@ export class TabletContent extends React.Component {
           <Footer />
         </main>
         {mainElements}
+        {statsDialog}
+        {timelineFilterDrawer}
       </div>
     );
   }
@@ -1531,8 +1584,9 @@ export class MobileContent extends React.Component {
         image: "",
         profile: "",
       },
-      statisticsDialogOpen: false,
       searchBarOpen: false,
+      statisticsDialogOpen: false,
+      statisticsFilterDrawerOpen: false,
       auditActions: [],
       auditActionsFiltered: [],
       auditFilterAction: "none",
@@ -1743,6 +1797,13 @@ export class MobileContent extends React.Component {
       });
     }, 250);
   };
+  openSearchBar = () => {
+    this.setState({ searchBarOpen: true });
+    document.getElementById("search").focus();
+  };
+  closeSearchBar = () => {
+    this.setState({ searchBarOpen: false });
+  };
   openStatisticsDialog = () => {
     this.openModal();
     this.setState({ statisticsDialogOpen: true });
@@ -1751,12 +1812,17 @@ export class MobileContent extends React.Component {
     this.closeModal();
     this.setState({ statisticsDialogOpen: false });
   };
-  openSearchBar = () => {
-    this.setState({ searchBarOpen: true });
-    document.getElementById("search").focus();
+  openStatisticsFilterDrawer = () => {
+    this.openModal();
+    this.setState({
+      statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
+    });
   };
-  closeSearchBar = () => {
-    this.setState({ searchBarOpen: false });
+  closeStatisticsFilterDrawer = () => {
+    this.closeModal();
+    this.setState({
+      statisticsFilterDrawerOpen: false,
+    });
   };
   openAuditDeleteDialog = (action) => {
     this.setState({
@@ -2049,6 +2115,7 @@ export class MobileContent extends React.Component {
             loading={this.props.loading}
             openFilter={this.openFilterDrawer}
             openAuditFilter={this.openAuditFilterDrawer}
+            openStatisticsFilter={this.openStatisticsFilterDrawer}
             getActions={this.getAuditActions}
             openNav={this.openNavDrawer}
             view={this.props.view}
@@ -2076,6 +2143,7 @@ export class MobileContent extends React.Component {
         loading={this.props.loading}
         openFilter={this.openFilterDrawer}
         openAuditFilter={this.openAuditFilterDrawer}
+        openStatisticsFilter={this.openStatisticsFilterDrawer}
         getActions={this.getAuditActions}
         openNav={this.openNavDrawer}
         view={this.props.view}
@@ -2191,9 +2259,19 @@ export class MobileContent extends React.Component {
         {filterPresetElements}
         {auditFilterDrawer}
         {auditDeleteDialog}
-        {statsDialog}
       </>
     ) : null;
+    const timelineFilterDrawer =
+      this.props.page === "statistics" && this.props.statisticsTab === "timeline" ? (
+        <DrawerFilterStatistics
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.statisticsFilterDrawerOpen}
+          close={this.closeStatisticsFilterDrawer}
+          setWhitelist={this.props.setTimelineWhitelist}
+          statistics={this.props.statistics}
+        />
+      ) : null;
     return (
       <div
         className={classNames(this.props.className, this.props.page, "app-container", {
@@ -2216,6 +2294,8 @@ export class MobileContent extends React.Component {
           <Footer />
         </main>
         {mainElements}
+        {statsDialog}
+        {timelineFilterDrawer}
       </div>
     );
   }

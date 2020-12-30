@@ -131,6 +131,13 @@ export const DesktopAppBar = (props) => {
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
         <TopAppBarSection alignEnd>
+          <Tooltip enterDelay={500} content="Filter" align="bottom">
+            <TopAppBarActionItem
+              style={{ "--animation-delay": 0 }}
+              icon="filter_list"
+              onClick={props.openStatisticsFilter}
+            />
+          </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statistics.timeline === "icDate"}
@@ -582,6 +589,13 @@ export const TabletAppBar = (props) => {
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
         <TopAppBarSection alignEnd>
+          <Tooltip enterDelay={500} content="Filter" align="bottom">
+            <TopAppBarActionItem
+              style={{ "--animation-delay": 0 }}
+              icon="filter_list"
+              onClick={props.openStatisticsFilter}
+            />
+          </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statistics.timeline === "icDate"}
@@ -997,6 +1011,13 @@ export const MobileAppBar = (props) => {
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
         <TopAppBarSection alignEnd>
+          <Tooltip enterDelay={500} content="Filter" align="bottom">
+            <TopAppBarActionItem
+              style={{ "--animation-delay": 0 }}
+              icon="filter_list"
+              onClick={props.openStatisticsFilter}
+            />
+          </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statistics.timeline === "icDate"}
@@ -1397,6 +1418,13 @@ export const BottomAppBar = (props) => {
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
         <TopAppBarSection alignEnd>
+          <Tooltip enterDelay={500} content="Filter" align="bottom">
+            <TopAppBarActionItem
+              style={{ "--animation-delay": 0 }}
+              icon="filter_list"
+              onClick={props.openStatisticsFilter}
+            />
+          </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statistics.timeline === "icDate"}
@@ -1839,6 +1867,7 @@ DesktopAppBar.propTypes = {
   getActions: PropTypes.func,
   loading: PropTypes.bool,
   openNav: PropTypes.func,
+  openStatisticsFilter: PropTypes.func,
   page: PropTypes.string,
   search: PropTypes.string,
   setSearch: PropTypes.func,
@@ -1869,6 +1898,7 @@ TabletAppBar.propTypes = {
   openFilter: PropTypes.func,
   openNav: PropTypes.func,
   openStatisticsDialog: PropTypes.func,
+  openStatisticsFilter: PropTypes.func,
   page: PropTypes.string,
   search: PropTypes.string,
   setSearch: PropTypes.func,
@@ -1894,6 +1924,7 @@ MobileAppBar.propTypes = {
   openFilter: PropTypes.func,
   openNav: PropTypes.func,
   openStatisticsDialog: PropTypes.func,
+  openStatisticsFilter: PropTypes.func,
   page: PropTypes.string,
   search: PropTypes.string,
   setSearch: PropTypes.func,
@@ -1919,6 +1950,7 @@ BottomAppBar.propTypes = {
   openFilter: PropTypes.func,
   openNav: PropTypes.func,
   openStatisticsDialog: PropTypes.func,
+  openStatisticsFilter: PropTypes.func,
   page: PropTypes.string,
   search: PropTypes.string,
   setSearch: PropTypes.func,

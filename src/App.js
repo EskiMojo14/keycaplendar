@@ -112,6 +112,13 @@ class App extends React.Component {
       lichTheme: false,
       statistics: {
         timeline: "gbLaunch",
+        timelineWhitelist: {
+          edited: [],
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "exclude",
+          vendors: [],
+        },
         status: "profile",
         shipped: "profile",
         durationCat: "gbLaunch",
@@ -786,6 +793,9 @@ class App extends React.Component {
     if (!whitelist.edited.includes("profiles")) {
       this.setWhitelist("profiles", allProfiles, false);
     }
+    if (!this.state.statistics.timelineWhitelist.edited.includes("profiles")) {
+      this.setTimelineWhitelist("profiles", allProfiles);
+    }
   };
   setDensity = (density, write = true) => {
     this.setState({ density: density });
@@ -879,6 +889,23 @@ class App extends React.Component {
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
+      });
+    }
+  };
+  setTimelineWhitelist = (prop, val) => {
+    if (prop === "all") {
+      const edited = Object.keys(val);
+      const whitelist = { ...this.state.statistics.timelineWhitelist, ...val, edited: edited };
+      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
+      this.setState({ statistics: statisticsObject });
+    } else {
+      const edited = this.state.statistics.timelineWhitelist.edited.includes(prop)
+        ? this.state.statistics.timelineWhitelist.edited
+        : [...this.state.statistics.timelineWhitelist.edited, prop];
+      const whitelist = { ...this.state.statistics.timelineWhitelist, [prop]: val, edited: edited };
+      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
+      this.setState({
+        statistics: statisticsObject,
       });
     }
   };
@@ -1281,6 +1308,7 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          setTimelineWhitelist={this.setTimelineWhitelist}
           density={this.state.density}
           setDensity={this.setDensity}
           snackbarQueue={queue}
@@ -1328,6 +1356,7 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          setTimelineWhitelist={this.setTimelineWhitelist}
           density={this.state.density}
           setDensity={this.setDensity}
           snackbarQueue={queue}
@@ -1377,6 +1406,7 @@ class App extends React.Component {
           setStatisticsSort={this.setStatisticsSort}
           statisticsTab={this.state.statisticsTab}
           setStatisticsTab={this.setStatisticsTab}
+          setTimelineWhitelist={this.setTimelineWhitelist}
           density={this.state.density}
           setDensity={this.setDensity}
           snackbarQueue={queue}
