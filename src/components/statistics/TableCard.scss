@@ -1,6 +1,6 @@
 @use "@material/shape/_index" as shape;
 
-.stats-tab .mdc-card.duration-card {
+.stats-tab .mdc-card.table-card {
   grid-column: span 2;
   .mdc-typography--headline5 {
     margin-top: 0;
@@ -10,13 +10,13 @@
     margin-top: 0;
     margin-bottom: 16px;
   }
-  .duration-container {
+  .content-container {
     display: flex;
     flex-direction: column;
-    .duration-chart-container {
+    .chart-container {
       max-width: 100%;
       overflow: auto;
-      .ct-chart {
+      .ct-chart.min-width {
         min-width: 1280px;
       }
     }
@@ -36,19 +36,19 @@
 }
 
 @media (max-width: 1199px) {
-  .stats-tab .mdc-card.duration-card {
+  .stats-tab .mdc-card.table-card {
     grid-column: span 3;
   }
 }
 
 @media (max-width: 839px) {
-  .stats-tab .mdc-card.duration-card {
+  .stats-tab .mdc-card.table-card {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 479px) {
-  .stats-tab .mdc-card.duration-card {
+  .stats-tab .mdc-card.table-card {
     grid-column: span 1;
   }
 }

@@ -12,7 +12,7 @@ import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard, ShippedCard } from "../statistics/PieCard";
-import { DurationCard } from "../statistics/DurationCard";
+import { TableCard } from "../statistics/TableCard";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
 
@@ -116,6 +116,20 @@ export class ContentStatistics extends React.Component {
             names: [],
             data: [],
           },
+        },
+      },
+      vendorsData: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
         },
       },
       focused: "",
@@ -543,9 +557,6 @@ export class ContentStatistics extends React.Component {
                 const endDate = moment(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
                 const length = endDate.diff(startDate, property === "icDate" ? "months" : "days");
                 data.push(length);
-                if (length > 500) {
-                  console.log(set.colorway, length);
-                }
               });
             Object.keys(durationData[property]).forEach((prop) => {
               durationData[property][prop].data.sort((a, b) => {
@@ -607,11 +618,100 @@ export class ContentStatistics extends React.Component {
         });
       });
     });
+    //vendors
+    let vendorsData = {
+      profile: {
+        names: [],
+        data: [],
+      },
+      designer: {
+        names: [],
+        data: [],
+      },
+      vendor: {
+        names: [],
+        data: [],
+      },
+    };
+    const vendorSets = pastSets.filter((set) => set.vendors);
+
+    vendorSets.forEach((set) => {
+      if (!vendorsData.profile.names.includes(set.profile)) {
+        vendorsData.profile.names.push(set.profile);
+      }
+      set.designer.forEach((designer) => {
+        if (!vendorsData.designer.names.includes(designer)) {
+          vendorsData.designer.names.push(designer);
+        }
+      });
+      set.vendors.forEach((vendor) => {
+        if (!vendorsData.vendor.names.includes(vendor.name)) {
+          vendorsData.vendor.names.push(vendor.name);
+        }
+      });
+    });
+
+    Object.keys(vendorsData).forEach((prop) => {
+      vendorsData[prop].names.sort(function (a, b) {
+        var x = a.toLowerCase();
+        var y = b.toLowerCase();
+        if (x < y) {
+          return -1;
+        }
+        if (x > y) {
+          return 1;
+        }
+        return 0;
+      });
+      vendorsData[prop].names = ["All"].concat(vendorsData[prop].names);
+      vendorsData[prop].names.forEach((name) => {
+        let propSets = [];
+        if (name === "All") {
+          propSets = vendorSets;
+        } else if (prop === "designer") {
+          propSets = vendorSets.filter((set) => set.designer.includes(name));
+        } else if (prop === "vendor") {
+          propSets = vendorSets.filter((set) => set.vendors.map((vendor) => vendor.name).includes(name));
+        } else {
+          propSets = vendorSets.filter((set) => set[prop] === name);
+        }
+        const lengthArray = propSets.map((set) => set.vendors.length).sort();
+        const labels = math.range(0, math.max(lengthArray), 1, true).toArray();
+        const countArray = labels.map((val, index) => countInArray(lengthArray, index));
+        const range = math.max(lengthArray) - math.min(lengthArray);
+        const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
+        vendorsData[prop].data.push({
+          name: name,
+          total: propSets.length,
+          mean: math.round(math.mean(lengthArray), 2),
+          median: math.median(lengthArray),
+          mode: math.mode(lengthArray),
+          range: rangeDisplay,
+          standardDev: math.round(math.std(lengthArray), 2),
+          chartData: [labels, countArray],
+        });
+      });
+
+      vendorsData[prop].data.sort((a, b) => {
+        var x = this.props.statisticsSort.vendors === "total" ? a.total : a.name.toLowerCase();
+        var y = this.props.statisticsSort.vendors === "total" ? b.total : a.name.toLowerCase();
+        if (x < y) {
+          return this.props.statisticsSort.vendors === "total" ? 1 : -1;
+        }
+        if (x > y) {
+          return this.props.statisticsSort.vendors === "total" ? -1 : 1;
+        }
+        return 0;
+      });
+    });
+
+    //set state
     this.setState({
       timelineData: timelineData,
       statusData: statusData,
       shippedData: shippedData,
       durationData: durationData,
+      vendorsData: vendorsData,
     });
   };
   sortData = () => {
@@ -903,9 +1003,20 @@ export class ContentStatistics extends React.Component {
         <div className="stats-tab stats-grid duration">
           {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
             (data) => {
-              return <DurationCard key={data.name} data={data} durationCat={this.props.statistics.durationCat} />;
+              return (
+                <TableCard
+                  key={data.name}
+                  data={data}
+                  unit={`Time ${this.props.statistics.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                />
+              );
             }
           )}
+        </div>
+        <div className="stats-tab stats-grid vendors">
+          {this.state.vendorsData[this.props.statistics.vendors].data.map((data) => {
+            return <TableCard key={data.name} data={data} unit="Vendors" />;
+          })}
         </div>
       </div>
     );

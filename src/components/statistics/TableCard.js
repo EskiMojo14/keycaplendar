@@ -16,7 +16,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
-import "./DurationCard.scss";
+import "./TableCard.scss";
 
 const customPoint = (data) => {
   if (data.type === "point") {
@@ -37,75 +37,80 @@ const customPoint = (data) => {
 
 const listener = { draw: (e) => customPoint(e) };
 
-export const DurationCard = (props) => {
-  const chart =
-    props.data.name === "All" ? (
-      <div className="duration-chart-container">
-        <ChartistGraph
-          className={props.data.name === "All" ? "ct-double-octave" : "ct-octave"}
-          data={{
-            series: [props.data.chartData[1]],
-            labels: props.data.chartData[0],
-          }}
-          options={{
-            showArea: true,
-            chartPadding: {
-              top: 16,
-              right: 0,
-              bottom: 16,
-              left: 16,
-            },
-            axisY: {
-              onlyInteger: true,
-            },
-            plugins: [
-              chartistPluginAxisTitle({
-                axisX: {
-                  axisTitle: "Time",
-                  axisClass: "ct-axis-title",
-                  offset: {
-                    x: 0,
-                    y: 40,
-                  },
-                  textAnchor: "middle",
-                },
-                axisY: {
-                  axisTitle: "Count",
-                  axisClass: "ct-axis-title",
-                  offset: {
-                    x: 0,
-                    y: 24,
-                  },
-                  flipTitle: true,
-                },
-              }),
-              chartistTooltip({ pointClass: "ct-stroked-point" }),
-            ],
-          }}
-          listener={listener}
-          type={"Line"}
-        />
-      </div>
-    ) : null;
+export const TableCard = (props) => {
   return (
-    <Card className={classNames("duration-card", { "full-span": props.data.name === "All" })}>
+    <Card className={classNames("table-card", { "full-span": props.data.name === "All" })}>
       <Typography use="headline5" tag="h1">
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
         {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
       </Typography>
-      <div className="duration-container">
-        {chart}
+      <div className="content-container">
+        <div className="chart-container">
+          <ChartistGraph
+            className={classNames("ct-double-octave", {
+              "min-width": props.data.name === "All",
+            })}
+            data={{
+              series: [props.data.chartData[1]],
+              labels: props.data.chartData[0],
+            }}
+            options={{
+              showArea: true,
+              chartPadding: {
+                top: 16,
+                right: 0,
+                bottom: 16,
+                left: 16,
+              },
+              axisX: {
+                labelInterpolationFnc: (value, index) => {
+                  return props.data.chartData[0].length >= 16
+                    ? index % (props.data.chartData[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
+                      ? value
+                      : null
+                    : value;
+                },
+              },
+              axisY: {
+                onlyInteger: true,
+              },
+              plugins: [
+                chartistPluginAxisTitle({
+                  axisX: {
+                    axisTitle: props.unit.split(" ")[0],
+                    axisClass: "ct-axis-title",
+                    offset: {
+                      x: 0,
+                      y: 40,
+                    },
+                    textAnchor: "middle",
+                  },
+                  axisY: {
+                    axisTitle: "Count",
+                    axisClass: "ct-axis-title",
+                    offset: {
+                      x: 0,
+                      y: 24,
+                    },
+                    flipTitle: true,
+                  },
+                }),
+                chartistTooltip({ pointClass: "ct-stroked-point" }),
+              ],
+            }}
+            listener={listener}
+            type="Line"
+          />
+        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Average</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>
-                    Time {props.durationCat === "icDate" ? "(months)" : "(days)"}
-                  </DataTableHeadCell>
+                  <DataTableHeadCell alignEnd>{props.unit}</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -140,9 +145,9 @@ export const DurationCard = (props) => {
   );
 };
 
-export default DurationCard;
+export default TableCard;
 
-DurationCard.propTypes = {
+TableCard.propTypes = {
   data: PropTypes.shape({
     chartData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
     mean: PropTypes.number,
@@ -153,5 +158,5 @@ DurationCard.propTypes = {
     standardDev: PropTypes.number,
     total: PropTypes.number,
   }),
-  durationCat: PropTypes.string,
+  unit: PropTypes.string,
 };
