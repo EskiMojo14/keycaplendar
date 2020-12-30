@@ -222,6 +222,10 @@
   .audit .main::before {
     height: 256px - (top-app-bar.$row-height + $diff);
   }
+  .filter-drawer-open .main.content.card::before,
+  .details-drawer-open .main.content.card::before {
+    height: 0;
+  }
   .statistics {
     .mdc-top-app-bar--fixed-adjust {
       padding-top: top-app-bar.$row-height + 48px + $diff * 2;
@@ -346,6 +350,10 @@
     .main.content.card::before,
     .audit .main::before {
       height: 256px - (top-app-bar.$mobile-row-height + $diff);
+    }
+    .filter-drawer-open .main.content.card::before,
+    .details-drawer-open .main.content.card::before {
+      height: 0;
     }
     .statistics {
       .mdc-top-app-bar--fixed-adjust {
