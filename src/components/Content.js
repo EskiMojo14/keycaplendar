@@ -360,11 +360,13 @@ export class DesktopContent extends React.Component {
     });
   };
   openStatisticsFilterDrawer = () => {
+    this.openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
+    this.closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
@@ -742,7 +744,7 @@ export class DesktopContent extends React.Component {
           open={this.state.statisticsFilterDrawerOpen}
           close={this.closeStatisticsFilterDrawer}
           setWhitelist={this.props.setTimelineWhitelist}
-          whitelist={this.props.statistics.timelineWhitelist}
+          statistics={this.props.statistics}
         />
       ) : null;
     return (
@@ -1097,11 +1099,13 @@ export class TabletContent extends React.Component {
     this.setState({ statisticsDialogOpen: false });
   };
   openStatisticsFilterDrawer = () => {
+    this.openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
+    this.closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
@@ -1457,7 +1461,7 @@ export class TabletContent extends React.Component {
           open={this.state.statisticsFilterDrawerOpen}
           close={this.closeStatisticsFilterDrawer}
           setWhitelist={this.props.setTimelineWhitelist}
-          whitelist={this.props.statistics.timelineWhitelist}
+          statistics={this.props.statistics}
         />
       ) : null;
     return (
@@ -1809,11 +1813,13 @@ export class MobileContent extends React.Component {
     this.setState({ statisticsDialogOpen: false });
   };
   openStatisticsFilterDrawer = () => {
+    this.openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
+    this.closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
@@ -2263,7 +2269,7 @@ export class MobileContent extends React.Component {
           open={this.state.statisticsFilterDrawerOpen}
           close={this.closeStatisticsFilterDrawer}
           setWhitelist={this.props.setTimelineWhitelist}
-          whitelist={this.props.statistics.timelineWhitelist}
+          statistics={this.props.statistics}
         />
       ) : null;
     return (

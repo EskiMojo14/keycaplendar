@@ -14,8 +14,9 @@ import "./DrawerFilterStatistics.scss";
 const shippedArray = ["Shipped", "Not shipped"];
 
 export const DrawerFilterStatistics = (props) => {
+  const whitelist = props.statistics.timelineWhitelist;
   const handleChange = (name, prop) => {
-    const original = props.whitelist[prop];
+    const original = whitelist[prop];
     const edited = addOrRemove(original, name).sort(function (a, b) {
       var x = a.toLowerCase();
       var y = b.toLowerCase();
@@ -46,7 +47,6 @@ export const DrawerFilterStatistics = (props) => {
     <Drawer modal open={props.open} onClose={props.close} className="filter-drawer drawer-right">
       <DrawerHeader>
         <DrawerTitle>Filters</DrawerTitle>
-
         <Tooltip enterDelay={500} content="Close" align="bottom">
           <IconButton className="close-icon" icon="close" onClick={props.close} />
         </Tooltip>
@@ -77,7 +77,7 @@ export const DrawerFilterStatistics = (props) => {
                   <Chip
                     key={"profile-" + profile}
                     label={profile}
-                    selected={props.whitelist.profiles.includes(profile)}
+                    selected={whitelist.profiles.includes(profile)}
                     checkmark
                     onInteraction={() => handleChange(profile, "profiles")}
                   />
@@ -111,7 +111,7 @@ export const DrawerFilterStatistics = (props) => {
                   <Chip
                     key={"shipped-" + prop}
                     label={prop}
-                    selected={props.whitelist.shipped.includes(prop)}
+                    selected={whitelist.shipped.includes(prop)}
                     checkmark
                     onInteraction={() => handleChange(prop, "shipped")}
                   />
@@ -131,14 +131,14 @@ export const DrawerFilterStatistics = (props) => {
                 onClick={() => {
                   props.setWhitelist("vendorMode", "include");
                 }}
-                selected={props.whitelist.vendorMode === "include"}
+                selected={whitelist.vendorMode === "include"}
               />
               <ToggleGroupButton
                 label="Exclude"
                 onClick={() => {
                   props.setWhitelist("vendorMode", "exclude");
                 }}
-                selected={props.whitelist.vendorMode === "exclude"}
+                selected={whitelist.vendorMode === "exclude"}
               />
             </ToggleGroup>
           </div>
@@ -163,7 +163,7 @@ export const DrawerFilterStatistics = (props) => {
                   <Chip
                     key={"profile-" + vendor}
                     label={vendor}
-                    selected={props.whitelist.vendors.includes(vendor)}
+                    selected={whitelist.vendors.includes(vendor)}
                     checkmark
                     onInteraction={() => handleChange(vendor, "vendors")}
                   />
