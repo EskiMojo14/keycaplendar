@@ -133,6 +133,7 @@ export class ContentStatistics extends React.Component {
         },
       },
       focused: "",
+      dataCreated: false,
     };
   }
   createData = () => {
@@ -160,10 +161,48 @@ export class ContentStatistics extends React.Component {
     });
 
     //timeline
-    let timelineData = this.state.timelineData;
+    let timelineData = {
+      months: { icDate: [], gbLaunch: [] },
+      monthData: { icDate: {}, gbLaunch: {} },
+      countData: { icDate: [], gbLaunch: [] },
+      profileCount: { icDate: {}, gbLaunch: {} },
+      profileCountData: { icDate: [], gbLaunch: [] },
+      profileChartType: "bar",
+    };
+    const { edited, ...timelineWhitelist } = this.props.statistics.timelineWhitelist;
+    const checkVendors = (set) => {
+      let bool = timelineWhitelist.vendorMode === "exclude";
+      Object.keys(set.vendors).forEach((key) => {
+        const vendor = set.vendors[key];
+        if (timelineWhitelist.vendorMode === "exclude") {
+          if (timelineWhitelist.vendors.includes(vendor.name)) {
+            bool = false;
+          }
+        } else {
+          if (timelineWhitelist.vendors.includes(vendor.name)) {
+            bool = true;
+          }
+        }
+      });
+      return bool;
+    };
+    const timelineSets = limitedSets.filter((set) => {
+      const shippedBool =
+        (timelineWhitelist.shipped.includes("Shipped") && set.shipped) ||
+        (timelineWhitelist.shipped.includes("Not shipped") && !set.shipped);
+      if (set.vendors.length > 0) {
+        return checkVendors(set) && timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+      } else {
+        if (timelineWhitelist.vendors.length === 1 && timelineWhitelist.vendorMode === "include") {
+          return false;
+        } else {
+          return timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+        }
+      }
+    });
     const properties = ["icDate", "gbLaunch"];
     properties.forEach((property) => {
-      limitedSets.forEach((set) => {
+      timelineSets.forEach((set) => {
         if (set[property] && !set[property].includes("Q")) {
           const month = moment(set[property]).format("YYYY-MM");
           if (!timelineData.months[property].includes(month)) {
@@ -210,7 +249,7 @@ export class ContentStatistics extends React.Component {
         timelineData.profileCount[property][camelize(profile)] = [];
       });
       timelineData.months[property].forEach((month) => {
-        let filteredSets = limitedSets.filter((set) => {
+        let filteredSets = timelineSets.filter((set) => {
           if (set[property] && !set[property].includes("Q")) {
             const setMonth = moment(set[property]).format("MMM YY");
             return setMonth === month;
@@ -712,6 +751,7 @@ export class ContentStatistics extends React.Component {
       shippedData: shippedData,
       durationData: durationData,
       vendorsData: vendorsData,
+      dataCreated: true,
     });
   };
   sortData = () => {
@@ -795,6 +835,9 @@ export class ContentStatistics extends React.Component {
       setTimeout(() => {
         this.forceUpdate();
       }, 400);
+    }
+    if (this.props.statistics.timelineWhitelist !== prevProps.statistics.timelineWhitelist && this.state.dataCreated) {
+      this.createData();
     }
     if (this.props.statisticsSort !== prevProps.statisticsSort) {
       this.sortData();
