@@ -105,6 +105,10 @@
   }
 }
 
+.statistics .mdc-top-app-bar--fixed-adjust {
+  padding-top: top-app-bar.$row-height + 48px;
+}
+
 @media (min-width: 600px) {
   .mdc-top-app-bar.bottom-app-bar {
     .mdc-top-app-bar__row {
@@ -137,8 +141,4 @@
       width: 100%;
     }
   }
-}
-
-.statistics .mdc-top-app-bar--fixed-adjust {
-  padding-top: top-app-bar.$row-height + 48px;
 }
