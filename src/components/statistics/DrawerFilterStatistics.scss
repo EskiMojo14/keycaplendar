@@ -1,0 +1,111 @@
+@use "@material/rtl/_index" as rtl;
+@use "../../util";
+
+.mdc-drawer.filter-drawer {
+  user-select: none;
+  &.mdc-drawer--modal {
+    top: 0;
+  }
+  div.subheader {
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    padding-bottom: 16px;
+    box-sizing: border-box;
+  }
+  .mdc-drawer__header {
+    display: flex;
+    align-items: center;
+    @include util.divider-border(bottom);
+    .mdc-drawer__title {
+      flex: auto 1;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+    .close-icon {
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+  .preset {
+    &-collapsible {
+      @include util.divider-border(bottom);
+      .mdc-list-item {
+        padding: 0 16px;
+      }
+    }
+    &-group {
+      padding: 16px;
+      .mdc-select {
+        &__anchor {
+          width: 100%;
+        }
+        &__menu {
+          width: 320px - 32px;
+        }
+        margin: 16px 0;
+        &.modified {
+          .mdc-select__selected-text::after {
+            content: "*";
+          }
+        }
+      }
+    }
+    &-button {
+      display: flex;
+      .mdc-button {
+        flex: 0 1 100%;
+      }
+    }
+    &-buttons {
+      display: flex;
+      .mdc-button {
+        flex: 0 1 50%;
+        &:first-child {
+          @include rtl.reflexive-box(margin, right, 8px);
+        }
+        &:last-child {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
+  }
+  .copy-button {
+    display: flex;
+    padding: 16px;
+    @include util.divider-border(bottom);
+    .mdc-button {
+      flex: 1 1 100%;
+    }
+  }
+  .mdc-drawer__content {
+    padding: 16px;
+    .group {
+      &:not(:last-child) {
+        @include util.divider-border(bottom);
+        margin-bottom: 16px;
+      }
+      .filter-toggle-button-container {
+        .toggle-group {
+          justify-content: stretch;
+          .mdc-button {
+            flex-grow: 1;
+          }
+        }
+      }
+      .filter-toggle-button-container,
+      .filter-button-container {
+        margin-bottom: 8px;
+      }
+      .filter-button-container .mdc-button {
+        @include rtl.reflexive-box(margin, right, 8px);
+      }
+      .filter-chip-container {
+        padding-bottom: 16px;
+        .mdc-chip-set {
+          margin: -8px;
+        }
+      }
+    }
+  }
+}

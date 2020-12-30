@@ -112,6 +112,12 @@ class App extends React.Component {
       lichTheme: false,
       statistics: {
         timeline: "gbLaunch",
+        timelineWhitelist: {
+          profiles: [],
+          shipped: ["Shipped", "Not shipped"],
+          vendorMode: "exclude",
+          vendors: [],
+        },
         status: "profile",
         shipped: "profile",
         durationCat: "gbLaunch",
