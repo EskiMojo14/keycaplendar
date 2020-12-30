@@ -180,7 +180,7 @@ export class DrawerDetails extends React.Component {
                     </a>
                   )}
                 >
-                  <ListItem>
+                  <ListItem disabled={!vendor.storeLink || vendor.storeLink === ""}>
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
