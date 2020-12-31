@@ -22,7 +22,7 @@ export class DialogStatistics extends React.Component {
       });
     }
   }
-  setStatistics = (stats) => {
+  handleChange = (stats) => {
     this.setState({
       statistics: stats,
     });
@@ -52,7 +52,7 @@ export class DialogStatistics extends React.Component {
           <List className="statistics-list">
             <ListItem
               onClick={() => {
-                this.setStatistics("profile");
+                this.handleChange("profile");
               }}
             >
               Profile
@@ -62,7 +62,7 @@ export class DialogStatistics extends React.Component {
             </ListItem>
             <ListItem
               onClick={() => {
-                this.setStatistics("designer");
+                this.handleChange("designer");
               }}
             >
               Designer
@@ -72,7 +72,7 @@ export class DialogStatistics extends React.Component {
             </ListItem>
             <ListItem
               onClick={() => {
-                this.setStatistics("vendor");
+                this.handleChange("vendor");
               }}
             >
               Vendor
