@@ -231,9 +231,6 @@
   .ct-axis-title {
     @include typography.typography(caption);
   }
-  .ct-label {
-    white-space: nowrap;
-  }
   .ct-stroked-point {
     pointer-events: all !important;
     stroke: transparent;
