@@ -715,20 +715,22 @@ export class ContentStatistics extends React.Component {
           propSets = vendorSets.filter((set) => set[prop] === name);
         }
         const lengthArray = propSets.map((set) => set.vendors.length).sort();
-        const labels = math.range(0, math.max(lengthArray), 1, true).toArray();
-        const countArray = labels.map((val, index) => countInArray(lengthArray, index));
-        const range = math.max(lengthArray) - math.min(lengthArray);
-        const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
-        vendorsData[prop].data.push({
-          name: name,
-          total: propSets.length,
-          mean: math.round(math.mean(lengthArray), 2),
-          median: math.median(lengthArray),
-          mode: math.mode(lengthArray),
-          range: rangeDisplay,
-          standardDev: math.round(math.std(lengthArray), 2),
-          chartData: [labels, countArray],
-        });
+        if (lengthArray.length > 0) {
+          const labels = math.range(0, math.max(lengthArray), 1, true).toArray();
+          const countArray = labels.map((val, index) => countInArray(lengthArray, index));
+          const range = math.max(lengthArray) - math.min(lengthArray);
+          const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
+          vendorsData[prop].data.push({
+            name: name,
+            total: propSets.length,
+            mean: math.round(math.mean(lengthArray), 2),
+            median: math.median(lengthArray),
+            mode: math.mode(lengthArray),
+            range: rangeDisplay,
+            standardDev: math.round(math.std(lengthArray), 2),
+            chartData: [labels, countArray],
+          });
+        }
       });
 
       vendorsData[prop].data.sort((a, b) => {
