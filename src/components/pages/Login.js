@@ -8,7 +8,7 @@ import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc
 import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
 import "./Login.scss";
-import peach from "../../peach.svg";
+import peach from "../../media/peach.svg";
 
 export const Login = (props) => {
   const { user } = useContext(UserContext);

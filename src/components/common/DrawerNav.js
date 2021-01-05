@@ -6,7 +6,7 @@ import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
-import logo from "../../logo.svg";
+import logo from "../../media/logo.svg";
 
 export const DrawerNav = (props) => {
   const { user, favorites, hidden } = useContext(UserContext);

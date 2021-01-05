@@ -1,0 +1,46 @@
+@use "@material/elevation/_index" as elevation;
+
+.not-found-page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  .mdc-top-app-bar.mdc-top-app-bar--prominent {
+    position: static;
+    @include elevation.elevation(4);
+  }
+  .message-container {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    user-select: none;
+    padding: 16px;
+    box-sizing: border-box;
+    .image {
+      height: 240px;
+      width: 240px;
+      path {
+        fill: var(--divider-color);
+      }
+    }
+    .title {
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .subtitle {
+      margin: 0;
+      text-align: center;
+    }
+    a {
+      text-decoration: none;
+      .mdc-button {
+        margin-top: 16px;
+      }
+    }
+  }
+}

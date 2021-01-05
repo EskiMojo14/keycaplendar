@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import emptyImg from "../../empty.svg";
+import emptyImg from "../../media/empty.svg";
 import { UserContext } from "../../util/contexts";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";

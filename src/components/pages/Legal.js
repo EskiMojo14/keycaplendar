@@ -89,7 +89,7 @@ export const TermsOfService = () => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      <TopAppBarFixedAdjust key="AppBarFixedAdjust" />
+      <TopAppBarFixedAdjust />
       <div className="legal-container">
         <Card className="legal">
           <Typography use="headline5">1. Terms</Typography>

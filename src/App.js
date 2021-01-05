@@ -6,9 +6,10 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
-import { Login } from "./components/admin/Login";
-import { EntryGuide } from "./components/guides/Guides";
-import { PrivacyPolicy, TermsOfService } from "./components/common/Legal";
+import { Login } from "./components/pages/Login";
+import { NotFound } from "./components/pages/NotFound";
+import { EntryGuide } from "./components/pages/guides/Guides";
+import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove } from "./util/functions";
@@ -1429,16 +1430,10 @@ class App extends React.Component {
               </DeviceContext.Provider>
             </UserContext.Provider>
           </Route>
-          <Route path="/privacy">
-            <PrivacyPolicy />
-          </Route>
-          <Route path="/terms">
-            <TermsOfService />
-          </Route>
-          <Route path="/guide/entries">
-            <EntryGuide />
-          </Route>
-          <Route path="/">
+          <Route path="/privacy" component={PrivacyPolicy} />
+          <Route path="/terms" component={TermsOfService} />
+          <Route path="/guide/entries" component={EntryGuide} />
+          <Route exact path="/">
             <UserContext.Provider
               value={{
                 user: this.state.user,
@@ -1468,6 +1463,7 @@ class App extends React.Component {
               </DeviceContext.Provider>
             </UserContext.Provider>
           </Route>
+          <Route component={NotFound} />
         </Switch>
       </Router>
     );
