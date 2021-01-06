@@ -14,12 +14,12 @@ export const ViewCompact = (props) => {
     <Card>
       <List twoLine>
         {props.sets.map((set, index) => {
-          const gbLaunch = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : moment.utc(set.gbLaunch);
+          const gbLaunch = set.gbLaunch.includes("Q") || !set.gbLaunch ? set.gbLaunch : moment.utc(set.gbLaunch);
           const gbEnd = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
           const icDate = moment.utc(set.icDate);
           const title = `${set.profile} ${set.colorway}`;
           let subtitle;
-          if (set.gbLaunch !== "" && set.gbEnd) {
+          if (set.gbLaunch && set.gbEnd) {
             subtitle = `${gbLaunch.format("Do\xa0MMM")}${
               (gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year()) || gbLaunch.year() !== gbEnd.year()
                 ? gbLaunch.format("\xa0YYYY")
@@ -29,11 +29,11 @@ export const ViewCompact = (props) => {
             }`;
           } else if (set.gbLaunch.includes("Q")) {
             subtitle = "GB expected " + gbLaunch;
-          } else if (set.gbMonth && set.gbLaunch !== "") {
+          } else if (set.gbMonth && set.gbLaunch) {
             subtitle = `GB expected ${
               gbLaunch.format("MMMM") + (gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : "")
             }`;
-          } else if (set.gbLaunch !== "") {
+          } else if (set.gbLaunch) {
             subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
               gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
             }`;
@@ -44,7 +44,7 @@ export const ViewCompact = (props) => {
           }
           let live = false;
           if (gbLaunch instanceof moment) {
-            live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || set.gbEnd === "");
+            live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
           }
           return (
             <ElementCompact

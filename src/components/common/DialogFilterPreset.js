@@ -22,19 +22,19 @@ export class DialogFilterPreset extends React.Component {
   }
   componentDidUpdate = (prevProps) => {
     if (this.props.preset.name !== prevProps.preset.name) {
-      this.setState({ name: this.props.preset.name, new: this.props.preset.name === "" });
+      this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
   };
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
   savePreset = () => {
-    if (this.state.name !== "") {
+    if (this.state.name) {
       const preset = {
         ...this.props.preset,
         name: this.state.name,
       };
-      if (this.props.preset.name === "") {
+      if (!this.props.preset.name) {
         this.context.newPreset(preset);
       } else {
         this.context.editPreset(preset);
@@ -52,7 +52,7 @@ export class DialogFilterPreset extends React.Component {
               <TopAppBarTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
-              <Button label="Save" onClick={this.savePreset} disabled={this.state.name === ""} />
+              <Button label="Save" onClick={this.savePreset} disabled={!this.state.name} />
             </TopAppBarSection>
           </TopAppBarRow>
         </TopAppBar>

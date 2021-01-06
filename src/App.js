@@ -221,11 +221,11 @@ class App extends React.Component {
   }
   checkCookies = () => {
     const accepted = this.getCookie("accepted");
-    if (accepted !== "" && accepted) {
+    if (accepted) {
       this.setState({ cookies: true });
       const checkCookie = (key, setFunction) => {
         const cookie = this.getCookie(key);
-        if (cookie !== "") {
+        if (cookie) {
           if (cookie !== "true" && cookie !== "false") {
             setTimeout(() => {
               setFunction(cookie, false);
@@ -242,7 +242,7 @@ class App extends React.Component {
       // legacy theme cookie conversion
 
       const legacyTheme = this.getCookie("theme");
-      if (legacyTheme !== "") {
+      if (legacyTheme) {
         if (legacyTheme === "light") {
           this.setManualTheme(false);
         } else {
@@ -419,9 +419,7 @@ class App extends React.Component {
           if (doc.data().profile) {
             const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
             const gbLaunch =
-              doc.data().gbMonth && doc.data().gbLaunch !== ""
-                ? doc.data().gbLaunch + "-" + lastOfMonth
-                : doc.data().gbLaunch;
+              doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
             sets.push({
               id: doc.id,
               profile: doc.data().profile,
@@ -494,17 +492,17 @@ class App extends React.Component {
       pageSets = hiddenSets.filter((set) => {
         const startDate = moment.utc(set.gbLaunch);
         const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate > today || (startDate <= today && (endDate >= yesterday || set.gbEnd === ""));
+        return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
       });
     } else if (page === "live") {
       pageSets = hiddenSets.filter((set) => {
         const startDate = moment.utc(set.gbLaunch);
         const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate <= today && (endDate >= yesterday || set.gbEnd === "");
+        return startDate <= today && (endDate >= yesterday || !set.gbEnd);
       });
     } else if (page === "ic") {
       pageSets = hiddenSets.filter((set) => {
-        return !set.gbLaunch || set.gbLaunch === "" || set.gbLaunch.includes("Q");
+        return !set.gbLaunch || set.gbLaunch.includes("Q");
       });
     } else if (page === "previous") {
       pageSets = hiddenSets.filter((set) => {
@@ -513,7 +511,7 @@ class App extends React.Component {
       });
     } else if (page === "timeline") {
       pageSets = hiddenSets.filter((set) => {
-        return set.gbLaunch !== "" && !set.gbLaunch.includes("Q");
+        return set.gbLaunch && !set.gbLaunch.includes("Q");
       });
     } else if (page === "archive") {
       pageSets = hiddenSets;
@@ -668,8 +666,7 @@ class App extends React.Component {
         return bool;
       });
     };
-
-    const searchedSets = search !== "" ? searchSets(search) : filteredSets;
+    const searchedSets = search ? searchSets(search) : filteredSets;
 
     // group display
     searchedSets.forEach((set) => {
@@ -752,7 +749,7 @@ class App extends React.Component {
       presets: presets,
     });
 
-    if (this.state.preset.name === "") {
+    if (!this.state.preset.name) {
       this.setState({ preset: defaultPreset });
     }
 

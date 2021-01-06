@@ -79,14 +79,14 @@ export const ContentSettings = (props) => {
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
-      <Card className={classNames("mdc-list--two-line", { "three-line": user.nickname !== "" })}>
+      <Card className={classNames("mdc-list--two-line", { "three-line": user.nickname })}>
         <ListItem disabled className="account">
           <BadgeAnchor className="avatar">
             <Avatar src={user.avatar} size="xlarge" />
             {userBadge}
           </BadgeAnchor>
           <ListItemText>
-            {user.nickname !== "" ? <div className="overline">{user.nickname}</div> : null}
+            {user.nickname ? <div className="overline">{user.nickname}</div> : null}
             <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
             <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
           </ListItemText>

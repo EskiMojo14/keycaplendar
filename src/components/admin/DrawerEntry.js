@@ -281,12 +281,12 @@ export class DrawerCreate extends React.Component {
 
   createEntry = () => {
     if (
-      this.state.profile !== "" &&
-      this.state.colorway !== "" &&
-      this.state.designer !== [] &&
-      this.state.icDate !== "" &&
-      this.state.details !== "" &&
-      this.state.imagePath !== ""
+      this.state.profile &&
+      this.state.colorway &&
+      this.state.designer.length > 0 &&
+      this.state.icDate &&
+      this.state.details &&
+      this.state.imagePath
     ) {
       const db = firebase.firestore();
       db.collection("keysets")
@@ -334,11 +334,11 @@ export class DrawerCreate extends React.Component {
 
   render() {
     const formFilled =
-      this.state.profile !== "" &&
-      this.state.colorway !== "" &&
-      this.state.designer !== [] &&
-      this.state.icDate !== "" &&
-      this.state.details !== "" &&
+      this.state.profile &&
+      this.state.colorway &&
+      this.state.designer.length > 0 &&
+      this.state.icDate &&
+      this.state.details &&
       this.state.image;
     const dateCard = this.state.gbMonth ? (
       <Card outlined className="date-container">
@@ -1153,11 +1153,11 @@ export class DrawerEdit extends React.Component {
 
   render() {
     const formFilled =
-      this.state.profile !== "" &&
-      this.state.colorway !== "" &&
-      this.state.designer !== [] &&
-      this.state.icDate !== "" &&
-      this.state.details !== "" &&
+      this.state.profile &&
+      this.state.colorway &&
+      this.state.designer.length > 0 &&
+      this.state.icDate &&
+      this.state.details &&
       this.state.image;
     const dateCard = this.state.gbMonth ? (
       <Card outlined className="date-container">

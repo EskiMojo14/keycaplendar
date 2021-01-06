@@ -324,11 +324,11 @@ export class DialogCreate extends React.Component {
 
   render() {
     const formFilled =
-      this.state.profile !== "" &&
-      this.state.colorway !== "" &&
-      this.state.designer !== [] &&
-      this.state.icDate !== "" &&
-      this.state.details !== "" &&
+      this.state.profile &&
+      this.state.colorway &&
+      this.state.designer.length > 0 &&
+      this.state.icDate &&
+      this.state.details &&
       this.state.image;
     const dateCard = this.state.gbMonth ? (
       <Card outlined className="date-container">
@@ -1137,11 +1137,11 @@ export class DialogEdit extends React.Component {
 
   render() {
     const formFilled =
-      this.state.profile !== "" &&
-      this.state.colorway !== "" &&
-      this.state.designer !== [] &&
-      this.state.icDate !== "" &&
-      this.state.details !== "" &&
+      this.state.profile &&
+      this.state.colorway &&
+      this.state.designer.length > 0 &&
+      this.state.icDate &&
+      this.state.details &&
       this.state.image;
     const dateCard = this.state.gbMonth ? (
       <Card outlined className="date-container">

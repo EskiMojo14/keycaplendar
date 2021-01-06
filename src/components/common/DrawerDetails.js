@@ -79,15 +79,15 @@ export class DrawerDetails extends React.Component {
       } else {
         verb = "Runs";
       }
-      if (set.gbLaunch !== "" && set.gbEnd) {
+      if (set.gbLaunch && set.gbEnd) {
         gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
           gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
         } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? gbEnd.format("\xa0YYYY") : ""}.`;
       } else if (set.gbLaunch.includes("Q")) {
         gb = "GB expected " + gbLaunch + ".";
-      } else if (set.gbMonth && set.gbLaunch !== "") {
+      } else if (set.gbMonth && set.gbLaunch) {
         gb = "Expected " + gbLaunch.format("MMMM") + ".";
-      } else if (set.gbLaunch !== "") {
+      } else if (set.gbLaunch) {
         gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
           gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
         }.`;
@@ -153,23 +153,20 @@ export class DrawerDetails extends React.Component {
               return (
                 <ConditionalWrapper
                   key={vendor.name}
-                  condition={vendor.storeLink !== ""}
+                  condition={vendor.storeLink}
                   wrapper={(children) => (
                     <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
                       {children}
                     </a>
                   )}
                 >
-                  <ListItem
-                    disabled={!vendor.storeLink || vendor.storeLink === ""}
-                    className={classNames({ "three-line": !!differentDate })}
-                  >
+                  <ListItem disabled={!vendor.storeLink} className={classNames({ "three-line": !!differentDate })}>
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
                       {differentDate}
                     </ListItemText>
-                    {vendor.storeLink !== "" ? <ListItemMeta icon="launch" /> : null}
+                    {vendor.storeLink ? <ListItemMeta icon="launch" /> : null}
                   </ListItem>
                 </ConditionalWrapper>
               );

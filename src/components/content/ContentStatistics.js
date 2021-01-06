@@ -140,7 +140,7 @@ export class ContentStatistics extends React.Component {
     const today = moment.utc();
     const yesterday = moment.utc().date(today.date() - 1);
     const limitedSets = this.props.sets.filter((set) => {
-      if (set.gbLaunch !== "" && !set.gbLaunch.includes("Q")) {
+      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
         const thisYear = moment().format("YYYY");
         return year >= thisYear - 2 && year <= thisYear + 1;
@@ -305,7 +305,7 @@ export class ContentStatistics extends React.Component {
       });
       statusData[prop].names.forEach((name) => {
         const icSets = limitedSets.filter((set) => {
-          const isIC = !set.gbLaunch || set.gbLaunch === "" || set.gbLaunch.includes("Q");
+          const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isIC;
@@ -342,7 +342,7 @@ export class ContentStatistics extends React.Component {
             startDate = moment.utc(set.gbLaunch);
           }
           const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-          const isLiveGb = startDate <= today && (endDate >= yesterday || set.gbEnd === "");
+          const isLiveGb = startDate <= today && (endDate >= yesterday || !set.gbEnd);
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isLiveGb;
@@ -1040,8 +1040,8 @@ export class ContentStatistics extends React.Component {
             </div>
             <div
               className={classNames("graph-container", {
-                focused: this.state.focused !== "",
-                ["series-" + this.state.focused]: this.state.focused !== "",
+                focused: this.state.focused,
+                ["series-" + this.state.focused]: this.state.focused,
               })}
             >
               {barGraph}
@@ -1050,8 +1050,8 @@ export class ContentStatistics extends React.Component {
           </Card>
           <Card
             className={classNames("fullwidth", {
-              focused: this.state.focused !== "",
-              ["series-" + this.state.focused]: this.state.focused !== "",
+              focused: this.state.focused,
+              ["series-" + this.state.focused]: this.state.focused,
             })}
           >
             <TimelineTable
