@@ -286,7 +286,7 @@ export class DrawerCreate extends React.Component {
       this.state.designer.length > 0 &&
       this.state.icDate &&
       this.state.details &&
-      this.state.imagePath
+      this.state.imageURL
     ) {
       const db = firebase.firestore();
       db.collection("keysets")
