@@ -504,8 +504,7 @@ class App extends React.Component {
       });
     } else if (page === "ic") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : moment.utc(set.gbLaunch);
-        return !startDate || startDate === "" || set.gbLaunch.includes("Q");
+        return !set.gbLaunch || set.gbLaunch === "" || set.gbLaunch.includes("Q");
       });
     } else if (page === "previous") {
       pageSets = hiddenSets.filter((set) => {
