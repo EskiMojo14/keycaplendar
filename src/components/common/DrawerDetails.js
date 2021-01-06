@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
+import classNames from "classnames";
+import moment from "moment";
 import { UserContext } from "../../util/contexts";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
@@ -169,7 +171,22 @@ export class DrawerDetails extends React.Component {
             Vendors
           </Typography>
           <List twoLine>
-            {sortedVendors.map((vendor) => {
+            {sortedVendors.map((vendor, index) => {
+              let differentDate;
+              if (vendor.endDate) {
+                const dateObject = moment.utc(vendor.endDate);
+                const todayObject = moment();
+                const dateVerb = todayObject > dateObject ? "Ended" : "Ends";
+                differentDate = (
+                  <div className="caption">
+                    <Typography use="caption">
+                      {`${dateVerb} ${dateObject.format("Do MMMM")} ${
+                        dateObject.year() !== todayObject.year() ? dateObject.format(" YYYY") : ""
+                      }`}
+                    </Typography>
+                  </div>
+                );
+              }
               return (
                 <ConditionalWrapper
                   key={vendor.name}
@@ -180,10 +197,14 @@ export class DrawerDetails extends React.Component {
                     </a>
                   )}
                 >
-                  <ListItem disabled={!vendor.storeLink || vendor.storeLink === ""}>
+                  <ListItem
+                    disabled={!vendor.storeLink || vendor.storeLink === ""}
+                    className={classNames({ "three-line": !!differentDate })}
+                  >
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                      {differentDate}
                     </ListItemText>
                     {vendor.storeLink !== "" ? <ListItemMeta icon="launch" /> : null}
                   </ListItem>

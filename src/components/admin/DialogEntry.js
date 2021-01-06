@@ -119,7 +119,7 @@ export class DialogCreate extends React.Component {
   selectVendor = (prop, value) => {
     const property = prop.slice(0, -1);
     const index = prop.slice(prop.length - 1);
-    let vendorsCopy = this.state.vendors;
+    let vendorsCopy = [...this.state.vendors];
     vendorsCopy[index][property] = value;
     this.setState({
       vendors: vendorsCopy,
@@ -176,7 +176,7 @@ export class DialogCreate extends React.Component {
   };
 
   handleChangeVendor = (e) => {
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
     vendors[index][field] = e.target.value;
@@ -185,41 +185,35 @@ export class DialogCreate extends React.Component {
     });
   };
 
+  handleChangeVendorEndDate = (e) => {
+    const field = e.target.name.replace(/\d/g, "");
+    const index = e.target.name.replace(/\D/g, "");
+    let vendors = [...this.state.vendors];
+    if (e.target.checked) {
+      vendors[index][field] = "";
+    } else {
+      delete vendors[index][field];
+    }
+    this.setState({
+      vendors: vendors,
+    });
+  };
+
   addVendor = () => {
-    let vendors = this.state.vendors;
     const emptyVendor = {
       id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
     };
-    vendors.push(emptyVendor);
-    this.setState({
-      vendors: vendors,
-    });
+    this.setState((prevState) => ({
+      vendors: [...prevState.vendors, emptyVendor],
+    }));
   };
 
   removeVendor = (index) => {
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     vendors.splice(index, 1);
-    this.setState({
-      vendors: vendors,
-    });
-  };
-
-  moveVendor = (index) => {
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = this.state.vendors;
-    array_move(vendors, index, index - 1);
     this.setState({
       vendors: vendors,
     });
@@ -237,7 +231,7 @@ export class DialogCreate extends React.Component {
       arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
       return arr; // for testing
     }
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     array_move(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
@@ -572,7 +566,13 @@ export class DialogCreate extends React.Component {
             />
             <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
             {dateCard}
-            <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange} />
+            <Checkbox
+              label="Shipped"
+              id="create-shipped"
+              name="shipped"
+              checked={this.state.shipped}
+              onChange={this.handleChange}
+            />
             <Typography use="caption" tag="h3" className="subheader">
               Vendors
             </Typography>
@@ -581,6 +581,29 @@ export class DialogCreate extends React.Component {
                 {(provided) => (
                   <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                     {this.state.vendors.map((vendor, index) => {
+                      const endDateField =
+                        vendor.endDate || vendor.endDate === "" ? (
+                          <TextField
+                            autoComplete="off"
+                            icon={{
+                              icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                  <path d="M0 0h24v24H0V0z" fill="none" />
+                                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                                  <path d="M4 5.01h16V8H4z" opacity=".3" />
+                                </svg>
+                              ),
+                            }}
+                            outlined
+                            label="End date"
+                            required
+                            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+                            value={vendor.endDate}
+                            name={"endDate" + index}
+                            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+                            onChange={this.handleChangeVendor}
+                          />
+                        ) : null;
                       return (
                         <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
                           {(provided, snapshot) => (
@@ -715,6 +738,15 @@ export class DialogCreate extends React.Component {
                                     children: "Must be valid link",
                                   }}
                                 />
+                                <Checkbox
+                                  className="end-date-field"
+                                  label="Different end date"
+                                  name={"endDate" + index}
+                                  id={"editEndDate" + index}
+                                  onChange={this.handleChangeVendorEndDate}
+                                  checked={!!vendor.endDate || vendor.endDate === ""}
+                                />
+                                {endDateField}
                               </div>
                             </Card>
                           )}
@@ -871,7 +903,7 @@ export class DialogEdit extends React.Component {
   selectVendor = (prop, value) => {
     const property = prop.slice(0, -1);
     const index = prop.slice(prop.length - 1);
-    let vendorsCopy = this.state.vendors;
+    let vendorsCopy = [...this.state.vendors];
     vendorsCopy[index][property] = value;
     this.setState({
       vendors: vendorsCopy,
@@ -952,10 +984,24 @@ export class DialogEdit extends React.Component {
   };
 
   handleChangeVendor = (e) => {
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
     vendors[index][field] = e.target.value;
+    this.setState({
+      vendors: vendors,
+    });
+  };
+
+  handleChangeVendorEndDate = (e) => {
+    const field = e.target.name.replace(/\d/g, "");
+    const index = e.target.name.replace(/\D/g, "");
+    let vendors = [...this.state.vendors];
+    if (e.target.checked) {
+      vendors[index][field] = "";
+    } else {
+      delete vendors[index][field];
+    }
     this.setState({
       vendors: vendors,
     });
@@ -968,40 +1014,20 @@ export class DialogEdit extends React.Component {
   };
 
   addVendor = () => {
-    let vendors = this.state.vendors;
     const emptyVendor = {
       id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
     };
-    vendors.push(emptyVendor);
-    this.setState({
-      vendors: vendors,
-    });
+    this.setState((prevState) => ({
+      vendors: [...prevState.vendors, emptyVendor],
+    }));
   };
 
   removeVendor = (index) => {
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     vendors.splice(index, 1);
-    this.setState({
-      vendors: vendors,
-    });
-  };
-
-  moveVendor = (index) => {
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = this.state.vendors;
-    array_move(vendors, index, index - 1);
     this.setState({
       vendors: vendors,
     });
@@ -1019,7 +1045,7 @@ export class DialogEdit extends React.Component {
       arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
       return arr; // for testing
     }
-    let vendors = this.state.vendors;
+    let vendors = [...this.state.vendors];
     array_move(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
@@ -1359,7 +1385,13 @@ export class DialogEdit extends React.Component {
               />
               <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
               {dateCard}
-              <Checkbox label="Shipped" name="shipped" checked={this.state.shipped} onChange={this.handleChange} />
+              <Checkbox
+                label="Shipped"
+                id="edit-shipped"
+                name="shipped"
+                checked={this.state.shipped}
+                onChange={this.handleChange}
+              />
               <Typography use="caption" tag="h3" className="subheader">
                 Vendors
               </Typography>
@@ -1368,6 +1400,29 @@ export class DialogEdit extends React.Component {
                   {(provided) => (
                     <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                       {this.state.vendors.map((vendor, index) => {
+                        const endDateField =
+                          vendor.endDate || vendor.endDate === "" ? (
+                            <TextField
+                              autoComplete="off"
+                              icon={{
+                                icon: (
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                                    <path d="M4 5.01h16V8H4z" opacity=".3" />
+                                  </svg>
+                                ),
+                              }}
+                              outlined
+                              label="End date"
+                              required
+                              pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+                              value={vendor.endDate}
+                              name={"endDate" + index}
+                              helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+                              onChange={this.handleChangeVendor}
+                            />
+                          ) : null;
                         return (
                           <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
                             {(provided, snapshot) => (
@@ -1502,6 +1557,15 @@ export class DialogEdit extends React.Component {
                                       children: "Must be valid link",
                                     }}
                                   />
+                                  <Checkbox
+                                    className="end-date-field"
+                                    label="Different end date"
+                                    name={"endDate" + index}
+                                    id={"editEndDate" + index}
+                                    onChange={this.handleChangeVendorEndDate}
+                                    checked={!!vendor.endDate || vendor.endDate === ""}
+                                  />
+                                  {endDateField}
                                 </div>
                               </Card>
                             )}
