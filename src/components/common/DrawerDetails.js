@@ -67,7 +67,9 @@ export class DrawerDetails extends React.Component {
       gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : moment.utc(set.gbLaunch);
       gbEnd = moment.utc(set.gbEnd);
       icDate = moment.utc(set.icDate);
-      ic = `IC posted ${icDate.format("Do\xa0MMMM")}${icDate.year() !== today.year() ? `\xa0${icDate.year()}` : ""}.`;
+      ic = `IC posted ${icDate.format("Do\xa0MMMM")}${
+        icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
+      }.`;
       if (gbLaunch <= today && gbEnd >= today) {
         verb = "Running";
       } else if (gbEnd <= today) {
@@ -79,15 +81,15 @@ export class DrawerDetails extends React.Component {
       }
       if (set.gbLaunch !== "" && set.gbEnd) {
         gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? `\xa0${gbLaunch.year()}` : ""
-        } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? `\xa0${gbEnd.year()}` : ""}.`;
+          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
+        } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? gbEnd.format("\xa0YYYY") : ""}.`;
       } else if (set.gbLaunch.includes("Q")) {
         gb = "GB expected " + gbLaunch + ".";
       } else if (set.gbMonth && set.gbLaunch !== "") {
         gb = "Expected " + gbLaunch.format("MMMM") + ".";
       } else if (set.gbLaunch !== "") {
         gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? `\xa0${gbLaunch.year()}` : ""
+          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
         }.`;
       } else {
         gb = false;

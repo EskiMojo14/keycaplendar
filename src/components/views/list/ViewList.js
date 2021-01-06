@@ -1,88 +1,51 @@
 import React from "react";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { setTypes } from "../../../util/propTypeTemplates";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
 
 export const ViewList = (props) => {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const nth = function (d) {
-    if (d > 3 && d < 21) return "th";
-    switch (d % 10) {
-      case 1:
-        return "st";
-      case 2:
-        return "nd";
-      case 3:
-        return "rd";
-      default:
-        return "th";
-    }
-  };
+  const today = moment.utc();
+  const yesterday = moment.utc().date(today.date() - 1);
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <List twoLine className="view-list three-line">
       {props.sets.map((set, index) => {
-        const gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
-        const gbEnd = new Date(set.gbEnd);
-        gbEnd.setUTCHours(23, 59, 59, 999);
-        const icDate = new Date(set.icDate);
+        const gbLaunch = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : moment.utc(set.gbLaunch);
+        const gbEnd = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        const icDate = moment.utc(set.icDate);
         const title = `${set.profile} ${set.colorway}`;
         let subtitle;
         if (set.gbLaunch !== "" && set.gbEnd) {
-          subtitle = `${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
-            month[gbLaunch.getUTCMonth()] +
-            ((gbLaunch.getUTCFullYear() !== today.getUTCFullYear() &&
-              gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()) ||
-            gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-              ? ` ${gbLaunch.getUTCFullYear()}`
-              : "")
-          } until ${gbEnd.getUTCDate() + nth(gbEnd.getUTCDate())}\xa0${
-            month[gbEnd.getUTCMonth()] +
-            (gbEnd.getUTCFullYear() !== today.getUTCFullYear() || gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-              ? ` ${gbEnd.getUTCFullYear()}`
-              : "")
+          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
+            (gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year()) || gbLaunch.year() !== gbEnd.year()
+              ? gbLaunch.format("\xa0YYYY")
+              : ""
+          } until ${gbEnd.format("Do\xa0MMMM")}${
+            gbEnd.year() !== today.year() || gbLaunch.year() !== gbEnd.year() ? gbEnd.format("\xa0YYYY") : ""
           }`;
         } else if (set.gbLaunch.includes("Q")) {
           subtitle = "GB expected " + gbLaunch;
         } else if (set.gbMonth && set.gbLaunch !== "") {
           subtitle = `GB expected ${
-            month[gbLaunch.getUTCMonth()] +
-            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbLaunch.getUTCFullYear()}` : "")
+            gbLaunch.format("MMMM") + (gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : "")
           }`;
         } else if (set.gbLaunch !== "") {
-          subtitle = `${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
-            month[gbLaunch.getUTCMonth()] +
-            (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbLaunch.getUTCFullYear()}` : "")
+          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
+            gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
           }`;
         } else {
-          subtitle = `IC posted ${icDate.getUTCDate() + nth(icDate.getUTCDate())}\xa0${
-            month[icDate.getUTCMonth()] +
-            (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ` ${icDate.getUTCFullYear()}` : "")
+          subtitle = `IC posted ${icDate.format("Do\xa0MMMM")}${
+            icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
           }`;
         }
-        const thisWeek = gbEnd.getTime() - 7 * oneDay < today.getTime() && gbEnd.getTime() > today.getTime();
+        const thisWeek = gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf();
         const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
         let live = false;
-        if (Object.prototype.toString.call(gbLaunch) === "[object Date]") {
-          live = gbLaunch.getTime() < today.getTime() && (gbEnd.getTime() > yesterday.getTime() || set.gbEnd === "");
+        if (gbLaunch instanceof moment) {
+          live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || set.gbEnd === "");
         }
         return (
           <ElementList
