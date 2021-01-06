@@ -428,7 +428,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
       background-color: mix(map-get($variables, on-surface), map-get($variables, surface), 80%);
       color: map-get($variables, surface);
     }
-    .overline {
+    .overline,
+    .caption {
       color: map-get($variables, text-medium);
     }
   }

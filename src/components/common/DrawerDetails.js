@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
+import classNames from "classnames";
 import { UserContext } from "../../util/contexts";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
@@ -169,7 +170,13 @@ export class DrawerDetails extends React.Component {
             Vendors
           </Typography>
           <List twoLine>
-            {sortedVendors.map((vendor) => {
+            {sortedVendors.map((vendor, index) => {
+              const differentDate =
+                index % 2 === 0 ? (
+                  <div className="caption">
+                    <Typography use="caption">Ends 6th November</Typography>
+                  </div>
+                ) : null;
               return (
                 <ConditionalWrapper
                   key={vendor.name}
@@ -180,10 +187,14 @@ export class DrawerDetails extends React.Component {
                     </a>
                   )}
                 >
-                  <ListItem disabled={!vendor.storeLink || vendor.storeLink === ""}>
+                  <ListItem
+                    disabled={!vendor.storeLink || vendor.storeLink === ""}
+                    className={classNames({ "three-line": index % 2 === 0 })}
+                  >
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
                       <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                      {differentDate}
                     </ListItemText>
                     {vendor.storeLink !== "" ? <ListItemMeta icon="launch" /> : null}
                   </ListItem>
