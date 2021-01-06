@@ -35,38 +35,11 @@ export class DrawerDetails extends React.Component {
   }
   render() {
     const dismissible = this.props.device === "desktop" && this.props.view !== "compact";
-    let set = this.props.set;
+    let set = { ...this.props.set };
     if (!set.image) {
       set.image = "";
     }
-    const today = new Date();
-    const month = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const nth = function (d) {
-      if (d > 3 && d < 21) return "th";
-      switch (d % 10) {
-        case 1:
-          return "st";
-        case 2:
-          return "nd";
-        case 3:
-          return "rd";
-        default:
-          return "th";
-      }
-    };
+    const today = moment.utc();
     let gbLaunch;
     let gbEnd;
     let icDate;
@@ -91,12 +64,11 @@ export class DrawerDetails extends React.Component {
       : [];
 
     if (set.icDate) {
-      gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
-      gbEnd = new Date(set.gbEnd);
-      icDate = new Date(set.icDate);
-      ic = `IC posted ${icDate.getUTCDate() + nth(icDate.getUTCDate())}\xa0${
-        month[icDate.getUTCMonth()] +
-        (icDate.getUTCFullYear() !== today.getUTCFullYear() ? ` ${icDate.getUTCFullYear()}` : "")
+      gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : moment.utc(set.gbLaunch);
+      gbEnd = moment.utc(set.gbEnd);
+      icDate = moment.utc(set.icDate);
+      ic = `IC posted ${icDate.format("Do\xa0MMMM")}${
+        icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
       }.`;
       if (gbLaunch <= today && gbEnd >= today) {
         verb = "Running";
@@ -108,25 +80,16 @@ export class DrawerDetails extends React.Component {
         verb = "Runs";
       }
       if (set.gbLaunch !== "" && set.gbEnd) {
-        gb = `${verb} from ${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
-          month[gbLaunch.getUTCMonth()] +
-          (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-            ? ` ${gbLaunch.getUTCFullYear()}`
-            : "")
-        } until ${gbEnd.getUTCDate() + nth(gbEnd.getUTCDate())}\xa0${
-          month[gbEnd.getUTCMonth()] +
-          (gbEnd.getUTCFullYear() !== today.getUTCFullYear() ? ` ${gbEnd.getUTCFullYear()}` : "")
-        }.`;
+        gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
+          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
+        } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? gbEnd.format("\xa0YYYY") : ""}.`;
       } else if (set.gbLaunch.includes("Q")) {
         gb = "GB expected " + gbLaunch + ".";
       } else if (set.gbMonth && set.gbLaunch !== "") {
-        gb = "Expected " + month[gbLaunch.getUTCMonth()] + ".";
+        gb = "Expected " + gbLaunch.format("MMMM") + ".";
       } else if (set.gbLaunch !== "") {
-        gb = `${verb} from ${gbLaunch.getUTCDate() + nth(gbLaunch.getUTCDate())}\xa0${
-          month[gbLaunch.getUTCMonth()] +
-          (gbLaunch.getUTCFullYear() !== today.getUTCFullYear() && gbLaunch.getUTCFullYear() !== gbEnd.getUTCFullYear()
-            ? ` ${gbLaunch.getUTCFullYear()}`
-            : "")
+        gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
+          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
         }.`;
       } else {
         gb = false;

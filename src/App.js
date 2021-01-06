@@ -307,25 +307,11 @@ class App extends React.Component {
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-    const currentDay = new Date();
+    const currentDay = moment();
     const fromArray = this.state.fromTimeTheme.split(":");
-    const fromTime = new Date(
-      currentDay.getFullYear(),
-      currentDay.getMonth(),
-      currentDay.getDate(),
-      parseInt(fromArray[0]),
-      parseInt(fromArray[1]),
-      "00"
-    );
+    const fromTime = moment().hours(fromArray[0]).minutes(fromArray[1]);
     const toArray = this.state.toTimeTheme.split(":");
-    const toTime = new Date(
-      currentDay.getFullYear(),
-      currentDay.getMonth(),
-      currentDay.getDate(),
-      parseInt(toArray[0]),
-      parseInt(toArray[1]),
-      "00"
-    );
+    const toTime = moment().hours(toArray[0]).minutes(toArray[1]);
     const timedBool = this.state.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
     return manualBool || systemBool || timedBool;
   };
@@ -486,9 +472,8 @@ class App extends React.Component {
     favorites = this.state.favorites,
     hidden = this.state.hidden
   ) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const today = moment.utc();
+    const yesterday = moment.utc().date(today.date() - 1);
     let pageSets = [];
     let allRegions = [];
     let allVendors = [];
@@ -507,28 +492,24 @@ class App extends React.Component {
     // page logic
     if (page === "calendar") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = new Date(set.gbLaunch);
-        const endDate = new Date(set.gbEnd);
-        endDate.setUTCHours(23, 59, 59, 999);
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
         return startDate > today || (startDate <= today && (endDate >= yesterday || set.gbEnd === ""));
       });
     } else if (page === "live") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = new Date(set.gbLaunch);
-        const endDate = new Date(set.gbEnd);
-        endDate.setUTCHours(23, 59, 59, 999);
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
         return startDate <= today && (endDate >= yesterday || set.gbEnd === "");
       });
     } else if (page === "ic") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
-        return !startDate || startDate === "" || set.gbLaunch.includes("Q");
+        return !set.gbLaunch || set.gbLaunch === "" || set.gbLaunch.includes("Q");
       });
     } else if (page === "previous") {
       pageSets = hiddenSets.filter((set) => {
-        const endDate = new Date(set.gbEnd);
-        endDate.setUTCHours(23, 59, 59, 999);
-        return endDate <= yesterday;
+        const endDate = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
+        return endDate && endDate <= yesterday;
       });
     } else if (page === "timeline") {
       pageSets = hiddenSets.filter((set) => {
@@ -691,24 +672,10 @@ class App extends React.Component {
     const searchedSets = search !== "" ? searchSets(search) : filteredSets;
 
     // group display
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
     searchedSets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const setDate = new Date(set[sort]);
-        let setMonth = `${months[setDate.getUTCMonth()]} ${setDate.getUTCFullYear()}`;
+        const setDate = moment.utc(set[sort]);
+        let setMonth = setDate.format("MMMM YYYY");
         if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
         }
@@ -734,10 +701,8 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const aMonth = "0" + (months.indexOf(a.slice(0, -5)) + 1);
-        const bMonth = "0" + (months.indexOf(b.slice(0, -5)) + 1);
-        const aDate = `${a.slice(-4)}-${aMonth.slice(-2)}-01`;
-        const bDate = `${b.slice(-4)}-${bMonth.slice(-2)}-01`;
+        const aDate = moment.utc(a, "MMMM YYYY");
+        const bDate = moment.utc(b, "MMMM YYYY");
         if (page === "previous" || page === "ic") {
           if (aDate < bDate) {
             return 1;

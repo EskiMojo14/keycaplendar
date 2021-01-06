@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
@@ -14,22 +15,8 @@ export const ContentGrid = (props) => {
     let filteredSets = [];
     sets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const month = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ];
-        const setDate = new Date(set[sort]);
-        let setMonth = `${month[setDate.getUTCMonth()]} ${setDate.getUTCFullYear()}`;
+        const setDate = moment.utc(set[sort]);
+        let setMonth = setDate.format("MMMM YYYY");
         if (setMonth === group) {
           filteredSets.push(set);
         }

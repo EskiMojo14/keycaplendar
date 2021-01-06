@@ -137,10 +137,8 @@ export class ContentStatistics extends React.Component {
     };
   }
   createData = () => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
+    const today = moment.utc();
+    const yesterday = moment.utc().date(today.date() - 1);
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch !== "" && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
@@ -307,8 +305,7 @@ export class ContentStatistics extends React.Component {
       });
       statusData[prop].names.forEach((name) => {
         const icSets = limitedSets.filter((set) => {
-          const startDate = set.gbLaunch.includes("Q") || set.gbLaunch === "" ? set.gbLaunch : new Date(set.gbLaunch);
-          const isIC = !startDate || startDate === "" || set.gbLaunch.includes("Q");
+          const isIC = !set.gbLaunch || set.gbLaunch === "" || set.gbLaunch.includes("Q");
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isIC;
@@ -322,8 +319,11 @@ export class ContentStatistics extends React.Component {
           }
         });
         const preGbSets = limitedSets.filter((set) => {
-          const startDate = new Date(set.gbLaunch);
-          const isPreGb = startDate > today;
+          let startDate;
+          if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+            startDate = moment.utc(set.gbLaunch);
+          }
+          const isPreGb = startDate && startDate > today;
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isPreGb;
@@ -337,8 +337,11 @@ export class ContentStatistics extends React.Component {
           }
         });
         const liveGbSets = limitedSets.filter((set) => {
-          const startDate = new Date(set.gbLaunch);
-          const endDate = new Date(set.gbEnd);
+          let startDate;
+          if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+            startDate = moment.utc(set.gbLaunch);
+          }
+          const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
           const isLiveGb = startDate <= today && (endDate >= yesterday || set.gbEnd === "");
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
@@ -353,8 +356,7 @@ export class ContentStatistics extends React.Component {
           }
         });
         const postGbSets = limitedSets.filter((set) => {
-          const endDate = new Date(set.gbEnd);
-          endDate.setUTCHours(23, 59, 59, 999);
+          const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
           const isPostGb = endDate <= yesterday;
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
@@ -405,8 +407,7 @@ export class ContentStatistics extends React.Component {
       },
     };
     const pastSets = limitedSets.filter((set) => {
-      const endDate = new Date(set.gbEnd);
-      endDate.setUTCHours(23, 59, 59, 999);
+      const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
     pastSets.forEach((set) => {
