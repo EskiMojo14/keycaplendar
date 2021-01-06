@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
+import moment from "moment";
 import { UserContext } from "../../util/contexts";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
@@ -171,12 +172,21 @@ export class DrawerDetails extends React.Component {
           </Typography>
           <List twoLine>
             {sortedVendors.map((vendor, index) => {
-              const differentDate =
-                index % 2 === 0 ? (
+              let differentDate;
+              if (vendor.endDate) {
+                const dateObject = moment.utc(vendor.endDate);
+                const todayObject = moment();
+                const dateVerb = todayObject > dateObject ? "Ended" : "Ends";
+                differentDate = (
                   <div className="caption">
-                    <Typography use="caption">Ends 6th November</Typography>
+                    <Typography use="caption">
+                      {`${dateVerb} ${dateObject.format("Do MMMM")} ${
+                        dateObject.year() !== todayObject.year() ? dateObject.format(" YYYY") : ""
+                      }`}
+                    </Typography>
                   </div>
-                ) : null;
+                );
+              }
               return (
                 <ConditionalWrapper
                   key={vendor.name}
@@ -189,7 +199,7 @@ export class DrawerDetails extends React.Component {
                 >
                   <ListItem
                     disabled={!vendor.storeLink || vendor.storeLink === ""}
-                    className={classNames({ "three-line": index % 2 === 0 })}
+                    className={classNames({ "three-line": !!differentDate })}
                   >
                     <ListItemText>
                       <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
