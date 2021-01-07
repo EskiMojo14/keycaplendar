@@ -730,6 +730,7 @@ export class DesktopContent extends React.Component {
           snackbarQueue={this.props.snackbarQueue}
           openPreset={this.openFilterPresetDrawer}
           deletePreset={this.openFilterPresetDeleteDialog}
+          sort={this.props.sort}
         />
         {editorElements}
         {filterPresetElements}
@@ -1447,6 +1448,7 @@ export class TabletContent extends React.Component {
           snackbarQueue={this.props.snackbarQueue}
           openPreset={this.openFilterPresetDrawer}
           deletePreset={this.openFilterPresetDeleteDialog}
+          sort={this.props.sort}
         />
         {filterPresetElements}
       </>
@@ -2255,6 +2257,7 @@ export class MobileContent extends React.Component {
           snackbarQueue={this.props.snackbarQueue}
           openPreset={this.openFilterPresetDialog}
           deletePreset={this.openFilterPresetDeleteDialog}
+          sort={this.props.sort}
         />
         {filterPresetElements}
       </>

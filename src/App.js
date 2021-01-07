@@ -13,7 +13,7 @@ import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs } from "./util/constants";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove } from "./util/functions";
+import { addOrRemove, normalise } from "./util/functions";
 import { Preset } from "./util/constructors";
 import "./App.scss";
 
@@ -609,9 +609,7 @@ class App extends React.Component {
         let setInfo = [
           set.profile,
           set.colorway,
-          replaceFunction(set.colorway)
-            .normalize("NFD")
-            .replace(/[^a-zA-Z0-9 ]/g, ""),
+          normalise(replaceFunction(set.colorway)),
           set.designer.join(" "),
           set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`),
         ];

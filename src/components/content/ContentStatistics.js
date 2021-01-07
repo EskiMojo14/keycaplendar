@@ -7,6 +7,7 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all } from "mathjs";
 import classNames from "classnames";
+import { camelise, countInArray } from "../../util/functions";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -15,17 +16,6 @@ import { StatusCard, ShippedCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
-
-function camelize(str) {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, "");
-}
-function countInArray(arr, val) {
-  return arr.reduce((count, item) => count + (item === val), 0);
-}
 
 const customPoint = (data) => {
   if (data.type === "point") {
@@ -235,7 +225,7 @@ export class ContentStatistics extends React.Component {
         timelineData.months[property].push(moment(month).format("MMM YY"));
       });
       timelineWhitelist.profiles.forEach((profile) => {
-        timelineData.profileCount[property][camelize(profile)] = [];
+        timelineData.profileCount[property][camelise(profile)] = [];
       });
       timelineData.months[property].forEach((month) => {
         let filteredSets = timelineSets.filter((set) => {
@@ -253,12 +243,12 @@ export class ContentStatistics extends React.Component {
           const profileSets = filteredSets.filter((set) => {
             return set.profile === profile;
           });
-          timelineData.profileCount[property][camelize(profile)].push(profileSets.length);
-          timelineData.monthData[property][month][camelize(profile)] = profileSets.length > 0 ? profileSets.length : "";
+          timelineData.profileCount[property][camelise(profile)].push(profileSets.length);
+          timelineData.monthData[property][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
         });
       });
       timelineWhitelist.profiles.forEach((profile) => {
-        timelineData.profileCountData[property].push(timelineData.profileCount[property][camelize(profile)]);
+        timelineData.profileCountData[property].push(timelineData.profileCount[property][camelise(profile)]);
       });
     });
     //status

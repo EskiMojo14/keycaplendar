@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { pageTitle, statsTabs } from "../../util/constants";
+import { capitalise } from "../../util/functions";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -438,7 +439,7 @@ export const DesktopAppBar = (props) => {
             onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
             {statsTabs.map((tab) => (
-              <Tab key={tab}>{tab}</Tab>
+              <Tab key={tab}>{capitalise(tab)}</Tab>
             ))}
           </TabBar>
         </TopAppBarSection>
@@ -842,7 +843,7 @@ export const TabletAppBar = (props) => {
             onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
             {statsTabs.map((tab) => (
-              <Tab key={tab}>{tab}</Tab>
+              <Tab key={tab}>{capitalise(tab)}</Tab>
             ))}
           </TabBar>
         </TopAppBarSection>
@@ -1250,7 +1251,7 @@ export const MobileAppBar = (props) => {
             onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
             {statsTabs.map((tab) => (
-              <Tab key={tab}>{tab}</Tab>
+              <Tab key={tab}>{capitalise(tab)}</Tab>
             ))}
           </TabBar>
         </TopAppBarSection>

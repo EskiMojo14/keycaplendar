@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { statisticsTypes } from "../../util/propTypeTemplates";
+import { camelise } from "../../util/functions";
 import {
   DataTable,
   DataTableContent,
@@ -11,17 +12,10 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { Ripple } from "@rmwc/ripple";
+
 import "./TimelineTable.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-
-function camelize(str) {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    })
-    .replace(/\s+/g, "");
-}
 
 export const TimelineTable = (props) => {
   return (
@@ -63,7 +57,7 @@ export const TimelineTable = (props) => {
                 {props.profiles.map((profile, index) => {
                   return (
                     <DataTableCell isNumeric key={profile} className={"cell-" + letters[index]}>
-                      {props.monthData[props.statistics.timeline][month][camelize(profile)]}
+                      {props.monthData[props.statistics.timeline][month][camelise(profile)]}
                     </DataTableCell>
                   );
                 })}

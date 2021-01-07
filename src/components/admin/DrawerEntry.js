@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "../firebase";
 import classNames from "classnames";
 import { UserContext } from "../../util/contexts";
+import { camelise, normalise } from "../../util/functions";
 import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
@@ -233,14 +234,7 @@ export class DrawerCreate extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName =
-      this.state.profile.toLowerCase() +
-      this.state.colorway
-        .normalize("NFD")
-        .replace(/[^a-zA-Z0-9]/g, "")
-        .replace(/\W+(.)/g, function (match, chr) {
-          return chr.toUpperCase();
-        });
+    const fileName = camelise(normalise(`${this.state.profile} ${this.state.colorway}`));
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -1072,14 +1066,7 @@ export class DrawerEdit extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName =
-      this.state.profile.toLowerCase() +
-      this.state.colorway
-        .normalize("NFD")
-        .replace(/[^a-zA-Z0-9]/g, "")
-        .replace(/\W+(.)/g, function (match, chr) {
-          return chr.toUpperCase();
-        });
+    const fileName = camelise(normalise(`${this.state.profile} ${this.state.colorway}`));
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
