@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { whitelistTypes, queueTypes } from "../../util/propTypeTemplates";
+import { whitelistShipped } from "../../util/constants";
 import { addOrRemove } from "../../util/functions";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -9,8 +10,6 @@ import { IconButton } from "@rmwc/icon-button";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
-
-const shippedArray = ["Shipped", "Not shipped"];
 
 export const DrawerFilterStatistics = (props) => {
   const whitelist = props.statistics.timelineWhitelist;
@@ -35,7 +34,7 @@ export const DrawerFilterStatistics = (props) => {
   };
 
   const checkAll = (prop) => {
-    const array = prop === "shipped" ? shippedArray : props[prop];
+    const array = prop === "shipped" ? whitelistShipped : props[prop];
     setWhitelist(prop, array);
   };
 
@@ -105,7 +104,7 @@ export const DrawerFilterStatistics = (props) => {
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
-              {shippedArray.map((prop) => {
+              {whitelistShipped.map((prop) => {
                 return (
                   <Chip
                     key={"shipped-" + prop}

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { Preset } from "../../util/constructors";
+import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove } from "../../util/functions";
 import { whitelistTypes, queueTypes } from "../../util/propTypeTemplates";
@@ -16,10 +17,6 @@ import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilter.scss";
-
-const shippedArray = ["Shipped", "Not shipped"];
-
-const whitelistParams = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
 
 export const DrawerFilter = (props) => {
   const { user, preset, presets, selectPreset } = useContext(UserContext);
@@ -96,7 +93,7 @@ export const DrawerFilter = (props) => {
   };
 
   const checkAll = (prop) => {
-    const array = prop === "shipped" ? shippedArray : props[prop];
+    const array = prop === "shipped" ? whitelistShipped : props[prop];
     setWhitelist(prop, array);
   };
 
@@ -386,7 +383,7 @@ export const DrawerFilter = (props) => {
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
-              {shippedArray.map((prop) => {
+              {whitelistShipped.map((prop) => {
                 return (
                   <Chip
                     key={"shipped-" + prop}
@@ -467,6 +464,7 @@ DrawerFilter.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.string),
   setWhitelist: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
+  sort: PropTypes.string,
   vendors: PropTypes.arrayOf(PropTypes.string),
   view: PropTypes.string,
   whitelist: PropTypes.shape(whitelistTypes),

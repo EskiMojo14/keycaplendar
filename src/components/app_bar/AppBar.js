@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import { pageTitle, statsTabs } from "../../util/constants";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -100,21 +101,6 @@ export const DesktopAppBar = (props) => {
       </svg>
     );
   }
-  const title = {
-    calendar: "Calendar",
-    live: "Live GBs",
-    ic: "IC Tracker",
-    previous: "Previous Sets",
-    account: "Account",
-    timeline: "Timeline",
-    archive: "Archive",
-    favorites: "Favorites",
-    hidden: "Hidden",
-    statistics: "Statistics",
-    audit: "Audit Log",
-    users: "Users",
-    settings: "Settings",
-  };
   const refreshButton = props.loading ? (
     <CircularProgress />
   ) : (
@@ -443,20 +429,17 @@ export const DesktopAppBar = (props) => {
         </MenuSurfaceAnchor>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped", "duration", "vendors"];
-  const statsTabs =
+  const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
         <TopAppBarSection alignStart>
           <TabBar
-            activeTabIndex={tabs.indexOf(props.statisticsTab)}
-            onActivate={(e) => props.setStatisticsTab(tabs[e.detail.index])}
+            activeTabIndex={statsTabs.indexOf(props.statisticsTab)}
+            onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
-            <Tab>Timeline</Tab>
-            <Tab>Status</Tab>
-            <Tab>Shipped</Tab>
-            <Tab>Duration</Tab>
-            <Tab>Vendors</Tab>
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{tab}</Tab>
+            ))}
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -467,11 +450,11 @@ export const DesktopAppBar = (props) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
         </TopAppBarRow>
-        {statsTabs}
+        {tabs}
         <LinearProgress closed={!props.loading} />
       </TopAppBar>
       <TopAppBarFixedAdjust />
@@ -558,21 +541,6 @@ export const TabletAppBar = (props) => {
       </svg>
     );
   }
-  const title = {
-    calendar: "Calendar",
-    live: "Live GBs",
-    ic: "IC Tracker",
-    previous: "Previous Sets",
-    account: "Account",
-    timeline: "Timeline",
-    archive: "Archive",
-    favorites: "Favorites",
-    hidden: "Hidden",
-    statistics: "Statistics",
-    audit: "Audit Log",
-    users: "Users",
-    settings: "Settings",
-  };
   const refreshButton = props.loading ? (
     <CircularProgress />
   ) : (
@@ -865,20 +833,17 @@ export const TabletAppBar = (props) => {
         </div>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped", "duration", "vendors"];
-  const statsTabs =
+  const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
         <TopAppBarSection alignStart>
           <TabBar
-            activeTabIndex={tabs.indexOf(props.statisticsTab)}
-            onActivate={(e) => props.setStatisticsTab(tabs[e.detail.index])}
+            activeTabIndex={statsTabs.indexOf(props.statisticsTab)}
+            onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
-            <Tab>Timeline</Tab>
-            <Tab>Status</Tab>
-            <Tab>Shipped</Tab>
-            <Tab>Duration</Tab>
-            <Tab>Vendors</Tab>
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{tab}</Tab>
+            ))}
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -889,11 +854,11 @@ export const TabletAppBar = (props) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
           {buttons}
         </TopAppBarRow>
-        {statsTabs}
+        {tabs}
         <LinearProgress closed={!props.loading} />
       </TopAppBar>
       <TopAppBarFixedAdjust />
@@ -981,19 +946,8 @@ export const MobileAppBar = (props) => {
     );
   }
   const title = {
-    calendar: "Calendar",
-    live: "Live GBs",
-    ic: "IC Tracker",
-    previous: "Previous Sets",
-    account: "Account",
-    timeline: "Timeline",
-    archive: "Archive",
-    favorites: "Favorites",
-    hidden: "Hidden",
+    ...pageTitle,
     statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
-    audit: "Audit Log",
-    users: "Users",
-    settings: "Settings",
   };
   const refreshButton = props.loading ? (
     <CircularProgress />
@@ -1287,20 +1241,17 @@ export const MobileAppBar = (props) => {
         </div>
       </TopAppBarSection>
     );
-  const tabs = ["timeline", "status", "shipped", "duration", "vendors"];
-  const statsTabs =
+  const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
         <TopAppBarSection alignStart>
           <TabBar
-            activeTabIndex={tabs.indexOf(props.statisticsTab)}
-            onActivate={(e) => props.setStatisticsTab(tabs[e.detail.index])}
+            activeTabIndex={statsTabs.indexOf(props.statisticsTab)}
+            onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
-            <Tab>Timeline</Tab>
-            <Tab>Status</Tab>
-            <Tab>Shipped</Tab>
-            <Tab>Duration</Tab>
-            <Tab>Vendors</Tab>
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{tab}</Tab>
+            ))}
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -1315,7 +1266,7 @@ export const MobileAppBar = (props) => {
           </TopAppBarSection>
           {buttons}
         </TopAppBarRow>
-        {statsTabs}
+        {tabs}
         <LinearProgress closed={!props.loading} />
       </TopAppBar>
       <TopAppBarFixedAdjust />

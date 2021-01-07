@@ -11,6 +11,7 @@ import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
+import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs } from "./util/constants";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove } from "./util/functions";
 import { Preset } from "./util/constructors";
@@ -19,47 +20,6 @@ import "./App.scss";
 const db = firebase.firestore();
 
 const queue = createSnackbarQueue();
-
-const title = {
-  calendar: "Calendar",
-  live: "Live GBs",
-  ic: "IC Tracker",
-  previous: "Previous Sets",
-  account: "Account",
-  timeline: "Timeline",
-  archive: "Archive",
-  favorites: "Favorites",
-  hidden: "Hidden",
-  statistics: "Statistics",
-  audit: "Audit Log",
-  users: "Users",
-  settings: "Settings",
-};
-
-const settingsFunctions = {
-  view: "setView",
-  bottomNav: "setBottomNav",
-  applyTheme: "setApplyTheme",
-  lightTheme: "setLightTheme",
-  darkTheme: "setDarkTheme",
-  manualTheme: "setManualTheme",
-  fromTimeTheme: "setFromTimeTheme",
-  toTimeTheme: "setToTimeTheme",
-  density: "setDensity",
-};
-
-const pageSort = {
-  calendar: "gbLaunch",
-  live: "gbEnd",
-  ic: "profile",
-  previous: "gbLaunch",
-  timeline: "gbLaunch",
-  archive: "profile",
-  favorites: "profile",
-  hidden: "profile",
-};
-
-const whitelistParams = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
 
 class App extends React.Component {
   constructor(props) {
@@ -180,9 +140,8 @@ class App extends React.Component {
       }
     });
     if (params.has("statisticsTab")) {
-      const validTabs = ["timeline", "status", "shipped", "duration", "vendors"];
       const urlTab = params.get("statisticsTab");
-      if (validTabs.includes(urlTab)) {
+      if (statsTabs.includes(urlTab)) {
         this.setStatisticsTab(urlTab);
       }
     }
@@ -288,14 +247,14 @@ class App extends React.Component {
       setTimeout(() => {
         this.setState({ transition: false });
       }, 300);
-      document.title = "KeycapLendar: " + title[page];
+      document.title = "KeycapLendar: " + pageTitle[page];
       const params = new URLSearchParams(window.location.search);
       params.set("page", page);
       window.history.pushState(
         {
           page: page,
         },
-        "KeycapLendar: " + title[page],
+        "KeycapLendar: " + pageTitle[page],
         "?" + params.toString()
       );
     }
@@ -844,7 +803,7 @@ class App extends React.Component {
               {
                 page: page,
               },
-              "KeycapLendar: " + title[page],
+              "KeycapLendar: " + pageTitle[page],
               "?" + params.toString()
             );
           } else {
