@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "firebase";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
+import { mainPages } from "../util/constants";
 import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -33,8 +34,6 @@ import { Footer } from "./common/Footer";
 import "./Content.scss";
 
 const bodyScroll = require("body-scroll-toggle");
-
-const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
 
 export class DesktopContent extends React.Component {
   constructor(props) {

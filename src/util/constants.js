@@ -10,6 +10,8 @@ export const settingsFunctions = {
   density: "setDensity",
 };
 
+export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+
 export const pageTitle = {
   calendar: "Calendar",
   live: "Live GBs",
