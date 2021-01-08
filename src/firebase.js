@@ -20,7 +20,7 @@ firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
 /*if (process.env.NODE_ENV === "development") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5001");
+  firebase.functions().useEmulator("localhost", 5001);
 }*/
 
 export default firebase;
