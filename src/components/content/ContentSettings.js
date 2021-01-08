@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import firebase from "../firebase";
+import firebase from "../../firebase";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";

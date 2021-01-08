@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../../firebase";
+import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { userTypes, queueTypes } from "../../../util/propTypeTemplates";

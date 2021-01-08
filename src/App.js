@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "./components/firebase";
+import firebase from "./firebase";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import classNames from "classnames";

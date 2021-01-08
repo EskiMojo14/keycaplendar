@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../firebase";
+import firebase from "../../firebase";
 import classNames from "classnames";
 import { UserContext } from "../../util/contexts";
 import { camelise, normalise, iconObject } from "../../util/functions";
