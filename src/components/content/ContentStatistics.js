@@ -7,7 +7,7 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all } from "mathjs";
 import classNames from "classnames";
-import { camelise, countInArray } from "../../util/functions";
+import { camelise, countInArray, iconObject } from "../../util/functions";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -997,30 +997,24 @@ export class ContentStatistics extends React.Component {
               </Typography>
               <ToggleGroup>
                 <ToggleGroupButton
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                      </svg>
-                    ),
-                  }}
+                  icon={iconObject(
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
+                    </svg>
+                  )}
                   selected={this.state.timelineData.profileChartType === "bar"}
                   onClick={() => {
                     this.setProfileChartType("bar");
                   }}
                 />
                 <ToggleGroupButton
-                  icon={{
-                    strategy: "component",
-                    icon: (
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                      </svg>
-                    ),
-                  }}
+                  icon={iconObject(
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                    </svg>
+                  )}
                   selected={this.state.timelineData.profileChartType === "line"}
                   onClick={() => {
                     this.setProfileChartType("line");

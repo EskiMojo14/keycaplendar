@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "../firebase";
 import classNames from "classnames";
 import { UserContext } from "../../util/contexts";
-import { camelise, normalise } from "../../util/functions";
+import { camelise, normalise, iconObject } from "../../util/functions";
 import { setTypes, queueTypes } from "../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
@@ -629,23 +629,20 @@ export class DrawerCreate extends React.Component {
                                 </Typography>
                                 <Tooltip enterDelay={500} content="Delete" align="bottom">
                                   <IconButton
-                                    icon={{
-                                      strategy: "component",
-                                      icon: (
-                                        <div>
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            width="24"
-                                          >
-                                            <path d="M0 0h24v24H0V0z" fill="none" />
-                                            <path d="M8 9h8v10H8z" opacity=".3" />
-                                            <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                          </svg>
-                                        </div>
-                                      ),
-                                    }}
+                                    icon={iconObject(
+                                      <div>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                        >
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                          <path d="M8 9h8v10H8z" opacity=".3" />
+                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                        </svg>
+                                      </div>
+                                    )}
                                     onClick={(e) => {
                                       e.preventDefault();
                                       this.removeVendor(index);
@@ -1439,23 +1436,20 @@ export class DrawerEdit extends React.Component {
                                 </Typography>
                                 <Tooltip enterDelay={500} content="Delete" align="bottom">
                                   <IconButton
-                                    icon={{
-                                      strategy: "component",
-                                      icon: (
-                                        <div>
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            width="24"
-                                          >
-                                            <path d="M0 0h24v24H0V0z" fill="none" />
-                                            <path d="M8 9h8v10H8z" opacity=".3" />
-                                            <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                          </svg>
-                                        </div>
-                                      ),
-                                    }}
+                                    icon={iconObject(
+                                      <div>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          height="24"
+                                          viewBox="0 0 24 24"
+                                          width="24"
+                                        >
+                                          <path d="M0 0h24v24H0V0z" fill="none" />
+                                          <path d="M8 9h8v10H8z" opacity=".3" />
+                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                        </svg>
+                                      </div>
+                                    )}
                                     onClick={(e) => {
                                       e.preventDefault();
                                       this.removeVendor(index);
