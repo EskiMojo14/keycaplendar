@@ -11,7 +11,7 @@ import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs } from "./util/constants";
+import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, mainPages } from "./util/constants";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove, normalise } from "./util/functions";
 import { Preset } from "./util/constructors";
@@ -103,20 +103,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      const pages = [
-        "calendar",
-        "live",
-        "ic",
-        "previous",
-        "timeline",
-        "archive",
-        "favorites",
-        "statistics",
-        "audit",
-        "users",
-        "settings",
-      ];
-      if (pages.includes(pageQuery)) {
+      if (mainPages.includes(pageQuery)) {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }

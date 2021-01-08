@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { mainPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
+import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
@@ -72,7 +72,7 @@ export const DrawerNav = (props) => {
       </DrawerHeader>
       <DrawerContent>
         <List>
-          {mainPages.map((page) => {
+          {standardPages.map((page) => {
             return (
               <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
                 <ListItemGraphic icon={pageIcons[page]} />

@@ -1,26 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
+import { viewNames } from "../../util/constants";
 
 export const MenuView = (props) => {
+  const onSelect = (e) => {
+    props.setView(Object.keys(viewNames)[e.detail.index]);
+  };
   return (
-    <Menu
-      anchorCorner="bottomLeft"
-      open={props.open}
-      onSelect={props.onSelect}
-      onClose={props.onClose}
-      onMouseLeave={
-        props.cascading
-          ? props.onClose
-          : () => {
-              return;
-            }
-      }
-    >
-      <MenuItem selected={props.view === "card"}>Card</MenuItem>
-      <MenuItem selected={props.view === "list"}>List</MenuItem>
-      <MenuItem selected={props.view === "imageList"}>Image List</MenuItem>
-      <MenuItem selected={props.view === "compact"}>Compact</MenuItem>
+    <Menu anchorCorner="bottomLeft" open={props.open} onSelect={onSelect} onClose={props.onClose}>
+      {Object.keys(viewNames).map((key) => {
+        return (
+          <MenuItem key={key} selected={props.view === key}>
+            {viewNames[key]}
+          </MenuItem>
+        );
+      })}
     </Menu>
   );
 };

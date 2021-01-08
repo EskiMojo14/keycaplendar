@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { pageTitle, statsTabs } from "../../util/constants";
+import { pageTitle, statsTabs, noButtonPages, viewIcons, mainPages } from "../../util/constants";
 import { capitalise, iconObject } from "../../util/functions";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -22,6 +22,7 @@ import { MenuView } from "./MenuView";
 import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal } from "./SearchBar";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./AppBar.scss";
 
 export const DesktopAppBar = (props) => {
@@ -53,71 +54,41 @@ export const DesktopAppBar = (props) => {
   const closeUserViewMenu = () => {
     setUserViewMenuOpen(false);
   };
-  const setView = (index) => {
-    const views = ["card", "list", "imageList", "compact"];
-    props.setView(views[index]);
-  };
-  let viewIcon;
-  if (props.view === "card") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-        <path d="M10 7h5v9h-5z" opacity=".3" />
-      </svg>
-    );
-  } else if (props.view === "list") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-        <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-        <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-      </svg>
-    );
-  } else if (props.view === "imageList") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M11 12.5h3V16h-3zM11 7h3v3.5h-3zm-5 5.5h3V16H6zM6 7h3v3.5H6zm10 0h3v3.5h-3zm0 5.5h3V16h-3z"
-          opacity=".3"
+  const mainButtons = mainPages.includes(props.page) ? (
+    <>
+      <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
+      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
+        <MenuSort
+          page={props.page}
+          sort={props.sort}
+          open={sortMenuOpen}
+          onSelect={props.setSort}
+          onClose={closeSortMenu}
         />
-        <path d="M4 5v13h17V5H4zm5 11H6v-3.5h3V16zm0-5.5H6V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5z" />
-      </svg>
-    );
-  } else if (props.view === "compact") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M6 7h3v9H6zm5 0h3v9h-3zm5 0h3v9h-3z" opacity=".3" />
-        <path d="M4 5v13h17V5H4zm5 11H6V7h3v9zm5 0h-3V7h3v9zm5 0h-3V7h3v9z" />
-      </svg>
-    );
-  } else {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" />
-        <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" />
-      </svg>
-    );
-  }
-  const refreshButton = props.loading ? (
-    <CircularProgress />
-  ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          props.getActions();
-        }}
-      />
-    </Tooltip>
-  );
-  const buttons =
+        <Tooltip
+          enterDelay={500}
+          content="Sort"
+          align="bottom"
+          className={classNames({ hidden: props.page === "calendar" })}
+        >
+          <TopAppBarActionItem icon="sort" style={{ "--animation-delay": 1 }} onClick={openSortMenu} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <Tooltip enterDelay={500} content="Filter" align="bottom">
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
+      </Tooltip>
+      <MenuSurfaceAnchor>
+        <MenuView view={props.view} open={viewMenuOpen} setView={props.setView} onClose={closeViewMenu} />
+        <Tooltip enterDelay={500} content="View" align="bottom">
+          <TopAppBarActionItem onClick={openViewMenu} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+    </>
+  ) : null;
+  const statisticsButtons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem
               style={{ "--animation-delay": 0 }}
@@ -141,9 +112,9 @@ export const DesktopAppBar = (props) => {
               label="GB"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       ) : props.statisticsTab === "duration" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "alphabetical"}
@@ -237,9 +208,9 @@ export const DesktopAppBar = (props) => {
               label="Vendor"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       ) : (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
@@ -299,10 +270,24 @@ export const DesktopAppBar = (props) => {
               label="Vendor"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       )
-    ) : props.page === "audit" ? (
-      <TopAppBarSection alignEnd>
+    ) : null;
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
+  const auditButtons =
+    props.page === "audit" ? (
+      <>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
           <TopAppBarActionItem
             style={{ "--animation-delay": 2 }}
@@ -311,9 +296,11 @@ export const DesktopAppBar = (props) => {
           />
         </Tooltip>
         {refreshButton}
-      </TopAppBarSection>
-    ) : props.page === "users" ? (
-      <TopAppBarSection alignEnd>
+      </>
+    ) : null;
+  const usersButtons =
+    props.page === "users" ? (
+      <>
         <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
@@ -371,47 +358,8 @@ export const DesktopAppBar = (props) => {
             />
           </Tooltip>
         </MenuSurfaceAnchor>
-      </TopAppBarSection>
-    ) : props.page === "settings" ? null : (
-      <TopAppBarSection alignEnd>
-        <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
-        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-          <MenuSort
-            page={props.page}
-            sort={props.sort}
-            open={sortMenuOpen}
-            onSelect={props.setSort}
-            onClose={closeSortMenu}
-          />
-          <Tooltip
-            enterDelay={500}
-            content="Sort"
-            align="bottom"
-            className={classNames({ hidden: props.page === "calendar" })}
-          >
-            <TopAppBarActionItem icon="sort" style={{ "--animation-delay": 1 }} onClick={openSortMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.toggleFilter} />
-        </Tooltip>
-        <MenuSurfaceAnchor>
-          <MenuView
-            view={props.view}
-            open={viewMenuOpen}
-            onSelect={(evt) => setView(evt.detail.index)}
-            onClose={closeViewMenu}
-          />
-          <Tooltip enterDelay={500} content="View" align="bottom">
-            <TopAppBarActionItem
-              onClick={openViewMenu}
-              style={{ "--animation-delay": 3 }}
-              icon={iconObject(<div>{viewIcon}</div>)}
-            />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-      </TopAppBarSection>
-    );
+      </>
+    ) : null;
   const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -435,7 +383,15 @@ export const DesktopAppBar = (props) => {
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
-          {buttons}
+          <ConditionalWrapper
+            condition={!noButtonPages.includes(props.page)}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            {mainButtons}
+            {statisticsButtons}
+            {auditButtons}
+            {usersButtons}
+          </ConditionalWrapper>
         </TopAppBarRow>
         {tabs}
         <LinearProgress closed={!props.loading} />
@@ -462,10 +418,6 @@ export const TabletAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const setView = (index) => {
-    const views = ["card", "list", "imageList", "compact"];
-    props.setView(views[index]);
-  };
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
@@ -479,67 +431,52 @@ export const TabletAppBar = (props) => {
   const closeUserSortMenu = () => {
     setUserSortMenuOpen(false);
   };
-  let viewIcon;
-  if (props.view === "card") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-        <path d="M10 7h5v9h-5z" opacity=".3" />
-      </svg>
-    );
-  } else if (props.view === "list") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-        <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-        <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-      </svg>
-    );
-  } else if (props.view === "imageList") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M11 12.5h3V16h-3zM11 7h3v3.5h-3zm-5 5.5h3V16H6zM6 7h3v3.5H6zm10 0h3v3.5h-3zm0 5.5h3V16h-3z"
-          opacity=".3"
+  const mainButtons = mainPages.includes(props.page) ? (
+    <>
+      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
+        <MenuSort
+          page={props.page}
+          sort={props.sort}
+          open={sortMenuOpen}
+          onSelect={props.setSort}
+          onClose={closeSortMenu}
         />
-        <path d="M4 5v13h17V5H4zm5 11H6v-3.5h3V16zm0-5.5H6V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5z" />
-      </svg>
-    );
-  } else if (props.view === "compact") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M6 7h3v9H6zm5 0h3v9h-3zm5 0h3v9h-3z" opacity=".3" />
-        <path d="M4 5v13h17V5H4zm5 11H6V7h3v9zm5 0h-3V7h3v9zm5 0h-3V7h3v9z" />
-      </svg>
-    );
-  } else {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" />
-        <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" />
-      </svg>
-    );
-  }
-  const refreshButton = props.loading ? (
-    <CircularProgress />
-  ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          props.getActions();
-        }}
-      />
-    </Tooltip>
-  );
-  const buttons =
+        <Tooltip
+          enterDelay={500}
+          content="Sort"
+          align="bottom"
+          className={classNames({ hidden: props.page === "calendar" })}
+        >
+          <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <Tooltip enterDelay={500} content="Filter" align="bottom">
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+      </Tooltip>
+      <MenuSurfaceAnchor>
+        <MenuView view={props.view} open={viewMenuOpen} setView={props.setView} onClose={closeViewMenu} />
+        <Tooltip enterDelay={500} content="View" align="bottom">
+          <TopAppBarActionItem onClick={openViewMenu} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <div>
+        <SearchBarModal
+          open={searchOpen}
+          close={closeSearch}
+          search={props.search}
+          setSearch={props.setSearch}
+          sets={props.sets}
+        />
+        <Tooltip enterDelay={500} content="Search" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
+        </Tooltip>
+      </div>
+    </>
+  ) : null;
+  const statisticsButtons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem
               style={{ "--animation-delay": 0 }}
@@ -563,9 +500,9 @@ export const TabletAppBar = (props) => {
               label="GB"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       ) : props.statisticsTab === "duration" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "alphabetical"}
@@ -653,9 +590,9 @@ export const TabletAppBar = (props) => {
               )}
             />
           </Tooltip>
-        </TopAppBarSection>
+        </>
       ) : (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
@@ -709,17 +646,33 @@ export const TabletAppBar = (props) => {
               )}
             />
           </Tooltip>
-        </TopAppBarSection>
+        </>
       )
-    ) : props.page === "audit" ? (
-      <TopAppBarSection alignEnd>
+    ) : null;
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
+  const auditButtons =
+    props.page === "audit" ? (
+      <>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
           <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
-      </TopAppBarSection>
-    ) : props.page === "users" ? (
-      <TopAppBarSection alignEnd>
+      </>
+    ) : null;
+  const usersButtons =
+    props.page === "users" ? (
+      <>
         <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
@@ -743,58 +696,8 @@ export const TabletAppBar = (props) => {
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
-      </TopAppBarSection>
-    ) : props.page === "settings" ? null : (
-      <TopAppBarSection alignEnd>
-        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-          <MenuSort
-            page={props.page}
-            sort={props.sort}
-            open={sortMenuOpen}
-            onSelect={props.setSort}
-            onClose={closeSortMenu}
-          />
-          <Tooltip
-            enterDelay={500}
-            content="Sort"
-            align="bottom"
-            className={classNames({ hidden: props.page === "calendar" })}
-          >
-            <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
-        </Tooltip>
-        <MenuSurfaceAnchor>
-          <MenuView
-            view={props.view}
-            open={viewMenuOpen}
-            onSelect={(evt) => setView(evt.detail.index)}
-            onClose={closeViewMenu}
-          />
-          <Tooltip enterDelay={500} content="View" align="bottom">
-            <TopAppBarActionItem
-              onClick={openViewMenu}
-              style={{ "--animation-delay": 3 }}
-              icon={iconObject(<div>{viewIcon}</div>)}
-            />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <div>
-          <SearchBarModal
-            open={searchOpen}
-            close={closeSearch}
-            search={props.search}
-            setSearch={props.setSearch}
-            sets={props.sets}
-          />
-          <Tooltip enterDelay={500} content="Search" align="bottom">
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
-          </Tooltip>
-        </div>
-      </TopAppBarSection>
-    );
+      </>
+    ) : null;
   const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -818,7 +721,15 @@ export const TabletAppBar = (props) => {
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
-          {buttons}
+          <ConditionalWrapper
+            condition={!noButtonPages.includes(props.page)}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            {mainButtons}
+            {statisticsButtons}
+            {auditButtons}
+            {usersButtons}
+          </ConditionalWrapper>
         </TopAppBarRow>
         {tabs}
         <LinearProgress closed={!props.loading} />
@@ -845,10 +756,6 @@ export const MobileAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const setView = (index) => {
-    const views = ["card", "list", "imageList", "compact"];
-    props.setView(views[index]);
-  };
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
@@ -862,71 +769,56 @@ export const MobileAppBar = (props) => {
   const closeUserSortMenu = () => {
     setUserSortMenuOpen(false);
   };
-  let viewIcon;
-  if (props.view === "card") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-        <path d="M10 7h5v9h-5z" opacity=".3" />
-      </svg>
-    );
-  } else if (props.view === "list") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-        <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-        <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-      </svg>
-    );
-  } else if (props.view === "imageList") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M11 12.5h3V16h-3zM11 7h3v3.5h-3zm-5 5.5h3V16H6zM6 7h3v3.5H6zm10 0h3v3.5h-3zm0 5.5h3V16h-3z"
-          opacity=".3"
-        />
-        <path d="M4 5v13h17V5H4zm5 11H6v-3.5h3V16zm0-5.5H6V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5z" />
-      </svg>
-    );
-  } else if (props.view === "compact") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M6 7h3v9H6zm5 0h3v9h-3zm5 0h3v9h-3z" opacity=".3" />
-        <path d="M4 5v13h17V5H4zm5 11H6V7h3v9zm5 0h-3V7h3v9zm5 0h-3V7h3v9z" />
-      </svg>
-    );
-  } else {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" />
-        <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" />
-      </svg>
-    );
-  }
   const title = {
     ...pageTitle,
     statistics: props.statisticsTab !== "duration" ? "Statistics" : "",
   };
-  const refreshButton = props.loading ? (
-    <CircularProgress />
-  ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          props.getActions();
-        }}
-      />
-    </Tooltip>
-  );
-  const buttons =
+  const mainButtons = mainPages.includes(props.page) ? (
+    <>
+      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
+        <MenuSort
+          page={props.page}
+          sort={props.sort}
+          open={sortMenuOpen}
+          onSelect={props.setSort}
+          onClose={closeSortMenu}
+        />
+        <Tooltip
+          enterDelay={500}
+          className={classNames({ hidden: props.page === "calendar" })}
+          content="Sort"
+          align="bottom"
+        >
+          <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <Tooltip enterDelay={500} content="Filter" align="bottom">
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+      </Tooltip>
+      <MenuSurfaceAnchor>
+        <MenuView view={props.view} open={viewMenuOpen} setView={props.setView} onClose={closeViewMenu} />
+        <Tooltip enterDelay={500} content="View" align="bottom">
+          <TopAppBarActionItem onClick={openViewMenu} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <div>
+        <SearchBarModal
+          open={searchOpen}
+          close={closeSearch}
+          search={props.search}
+          setSearch={props.setSearch}
+          sets={props.sets}
+        />
+        <Tooltip enterDelay={500} content="Search" align="bottom">
+          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
+        </Tooltip>
+      </div>
+    </>
+  ) : null;
+  const statisticsButtons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem
               style={{ "--animation-delay": 0 }}
@@ -950,9 +842,9 @@ export const MobileAppBar = (props) => {
               label="GB"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       ) : props.statisticsTab === "duration" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "alphabetical"}
@@ -1040,9 +932,9 @@ export const MobileAppBar = (props) => {
               )}
             />
           </Tooltip>
-        </TopAppBarSection>
+        </>
       ) : (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
@@ -1096,17 +988,33 @@ export const MobileAppBar = (props) => {
               )}
             />
           </Tooltip>
-        </TopAppBarSection>
+        </>
       )
-    ) : props.page === "audit" ? (
-      <TopAppBarSection alignEnd>
+    ) : null;
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
+  const auditButtons =
+    props.page === "audit" ? (
+      <>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
           <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
-      </TopAppBarSection>
-    ) : props.page === "users" ? (
-      <TopAppBarSection alignEnd>
+      </>
+    ) : null;
+  const usersButtons =
+    props.page === "users" ? (
+      <>
         <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
@@ -1130,58 +1038,8 @@ export const MobileAppBar = (props) => {
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
-      </TopAppBarSection>
-    ) : props.page === "settings" ? null : (
-      <TopAppBarSection alignEnd className="actions">
-        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-          <MenuSort
-            page={props.page}
-            sort={props.sort}
-            open={sortMenuOpen}
-            onSelect={props.setSort}
-            onClose={closeSortMenu}
-          />
-          <Tooltip
-            enterDelay={500}
-            className={classNames({ hidden: props.page === "calendar" })}
-            content="Sort"
-            align="bottom"
-          >
-            <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
-        </Tooltip>
-        <MenuSurfaceAnchor>
-          <MenuView
-            view={props.view}
-            open={viewMenuOpen}
-            onSelect={(evt) => setView(evt.detail.index)}
-            onClose={closeViewMenu}
-          />
-          <Tooltip enterDelay={500} content="View" align="bottom">
-            <TopAppBarActionItem
-              onClick={openViewMenu}
-              style={{ "--animation-delay": 3 }}
-              icon={iconObject(<div>{viewIcon}</div>)}
-            />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <div>
-          <SearchBarModal
-            open={searchOpen}
-            close={closeSearch}
-            search={props.search}
-            setSearch={props.setSearch}
-            sets={props.sets}
-          />
-          <Tooltip enterDelay={500} content="Search" align="bottom">
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
-          </Tooltip>
-        </div>
-      </TopAppBarSection>
-    );
+      </>
+    ) : null;
   const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
@@ -1205,7 +1063,15 @@ export const MobileAppBar = (props) => {
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{title[props.page]}</TopAppBarTitle>
           </TopAppBarSection>
-          {buttons}
+          <ConditionalWrapper
+            condition={!noButtonPages.includes(props.page)}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            {mainButtons}
+            {statisticsButtons}
+            {auditButtons}
+            {usersButtons}
+          </ConditionalWrapper>
         </TopAppBarRow>
         {tabs}
         <LinearProgress closed={!props.loading} />
@@ -1232,10 +1098,6 @@ export const BottomAppBar = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const setView = (index) => {
-    const views = ["card", "list", "imageList", "compact"];
-    props.setView(views[index]);
-  };
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
@@ -1249,67 +1111,52 @@ export const BottomAppBar = (props) => {
   const closeUserSortMenu = () => {
     setUserSortMenuOpen(false);
   };
-  let viewIcon;
-  if (props.view === "card") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-        <path d="M10 7h5v9h-5z" opacity=".3" />
-      </svg>
-    );
-  } else if (props.view === "list") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-        <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-        <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-      </svg>
-    );
-  } else if (props.view === "imageList") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M11 12.5h3V16h-3zM11 7h3v3.5h-3zm-5 5.5h3V16H6zM6 7h3v3.5H6zm10 0h3v3.5h-3zm0 5.5h3V16h-3z"
-          opacity=".3"
+  const mainButtons = mainPages.includes(props.page) ? (
+    <>
+      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
+        <MenuSort
+          page={props.page}
+          sort={props.sort}
+          open={sortMenuOpen}
+          onSelect={props.setSort}
+          onClose={closeSortMenu}
         />
-        <path d="M4 5v13h17V5H4zm5 11H6v-3.5h3V16zm0-5.5H6V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5z" />
-      </svg>
-    );
-  } else if (props.view === "compact") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M6 7h3v9H6zm5 0h3v9h-3zm5 0h3v9h-3z" opacity=".3" />
-        <path d="M4 5v13h17V5H4zm5 11H6V7h3v9zm5 0h-3V7h3v9zm5 0h-3V7h3v9z" />
-      </svg>
-    );
-  } else {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" />
-        <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" />
-      </svg>
-    );
-  }
-  const refreshButton = props.loading ? (
-    <CircularProgress />
-  ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          props.getActions();
-        }}
-      />
-    </Tooltip>
-  );
-  const buttons =
+        <Tooltip
+          enterDelay={500}
+          className={classNames({ hidden: props.page === "calendar" })}
+          content="Sort"
+          align="top"
+        >
+          <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <Tooltip enterDelay={500} content="Filter" align="top">
+        <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
+      </Tooltip>
+      <MenuSurfaceAnchor>
+        <MenuView view={props.view} open={viewMenuOpen} setView={props.setView} onClose={closeViewMenu} />
+        <Tooltip enterDelay={500} content="View" align="top">
+          <TopAppBarActionItem onClick={openViewMenu} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+      <div>
+        <SearchBarModal
+          open={searchOpen}
+          close={closeSearch}
+          search={props.search}
+          setSearch={props.setSearch}
+          sets={props.sets}
+        />
+        <Tooltip enterDelay={500} content="Search" align="top">
+          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
+        </Tooltip>
+      </div>
+    </>
+  ) : null;
+  const statisticsButtons =
     props.page === "statistics" ? (
       props.statisticsTab === "timeline" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem
               style={{ "--animation-delay": 0 }}
@@ -1333,9 +1180,9 @@ export const BottomAppBar = (props) => {
               label="GB"
             />
           </ToggleGroup>
-        </TopAppBarSection>
+        </>
       ) : props.statisticsTab === "duration" ? (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort.duration === "alphabetical"}
@@ -1425,9 +1272,9 @@ export const BottomAppBar = (props) => {
               />
             </div>
           </Tooltip>
-        </TopAppBarSection>
+        </>
       ) : (
-        <TopAppBarSection alignEnd>
+        <>
           <ToggleGroup>
             <ToggleGroupButton
               selected={props.statisticsSort[props.statisticsTab] === "alphabetical"}
@@ -1481,17 +1328,33 @@ export const BottomAppBar = (props) => {
               )}
             />
           </Tooltip>
-        </TopAppBarSection>
+        </>
       )
-    ) : props.page === "audit" ? (
-      <TopAppBarSection alignEnd>
+    ) : null;
+  const refreshButton = props.loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          props.getActions();
+        }}
+      />
+    </Tooltip>
+  );
+  const auditButtons =
+    props.page === "audit" ? (
+      <>
         <Tooltip enterDelay={500} content="Filter" align="bottom">
           <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openAuditFilter} />
         </Tooltip>
         {refreshButton}
-      </TopAppBarSection>
-    ) : props.page === "users" ? (
-      <TopAppBarSection alignEnd>
+      </>
+    ) : null;
+  const userButtons =
+    props.page === "users" ? (
+      <>
         <MenuSurfaceAnchor className={classNames({ hidden: props.userView === "table" })}>
           <Menu
             open={userSortMenuOpen}
@@ -1515,72 +1378,19 @@ export const BottomAppBar = (props) => {
             <TopAppBarActionItem icon="sort" onClick={openUserSortMenu} />
           </Tooltip>
         </MenuSurfaceAnchor>
-      </TopAppBarSection>
-    ) : props.page === "settings" ? null : (
-      <TopAppBarSection alignEnd className="actions">
-        <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-          <MenuSort
-            page={props.page}
-            sort={props.sort}
-            open={sortMenuOpen}
-            onSelect={props.setSort}
-            onClose={closeSortMenu}
-          />
-          <Tooltip
-            enterDelay={500}
-            className={classNames({ hidden: props.page === "calendar" })}
-            content="Sort"
-            align="top"
-          >
-            <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSortMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <Tooltip enterDelay={500} content="Filter" align="top">
-          <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
-        </Tooltip>
-        <MenuSurfaceAnchor>
-          <MenuView
-            view={props.view}
-            open={viewMenuOpen}
-            onSelect={(evt) => setView(evt.detail.index)}
-            onClose={closeViewMenu}
-          />
-          <Tooltip enterDelay={500} content="View" align="top">
-            <TopAppBarActionItem
-              onClick={openViewMenu}
-              style={{ "--animation-delay": 3 }}
-              icon={iconObject(<div>{viewIcon}</div>)}
-            />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-        <div>
-          <SearchBarModal
-            open={searchOpen}
-            close={closeSearch}
-            search={props.search}
-            setSearch={props.setSearch}
-            sets={props.sets}
-          />
-          <Tooltip enterDelay={500} content="Search" align="top">
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
-          </Tooltip>
-        </div>
-      </TopAppBarSection>
-    );
-  const tabs = ["timeline", "status", "shipped", "duration", "vendors"];
-  const statsTabs =
+      </>
+    ) : null;
+  const tabs =
     props.page === "statistics" ? (
       <TopAppBarRow className="tab-row">
         <TopAppBarSection alignStart>
           <TabBar
-            activeTabIndex={tabs.indexOf(props.statisticsTab)}
-            onActivate={(e) => props.setStatisticsTab(tabs[e.detail.index])}
+            activeTabIndex={statsTabs.indexOf(props.statisticsTab)}
+            onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
           >
-            <Tab>Timeline</Tab>
-            <Tab>Status</Tab>
-            <Tab>Shipped</Tab>
-            <Tab>Duration</Tab>
-            <Tab>Vendors</Tab>
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{capitalise(tab)}</Tab>
+            ))}
           </TabBar>
         </TopAppBarSection>
       </TopAppBarRow>
@@ -1588,12 +1398,20 @@ export const BottomAppBar = (props) => {
   return (
     <>
       <TopAppBar className="bottom-app-bar">
-        {statsTabs}
+        {tabs}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
           </TopAppBarSection>
-          {buttons}
+          <ConditionalWrapper
+            condition={!noButtonPages.includes(props.page)}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            {mainButtons}
+            {statisticsButtons}
+            {auditButtons}
+            {userButtons}
+          </ConditionalWrapper>
         </TopAppBarRow>
         <LinearProgress closed={!props.loading} />
       </TopAppBar>
@@ -1616,55 +1434,6 @@ export const BottomAppBarIndent = (props) => {
   const closeViewMenu = () => {
     setViewMenuOpen(false);
   };
-  const setView = (index) => {
-    const views = ["card", "list", "imageList", "compact"];
-    props.setView(views[index]);
-  };
-  let viewIcon;
-  if (props.view === "card") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-        <path d="M10 7h5v9h-5z" opacity=".3" />
-      </svg>
-    );
-  } else if (props.view === "list") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-        <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-        <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-      </svg>
-    );
-  } else if (props.view === "imageList") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M11 12.5h3V16h-3zM11 7h3v3.5h-3zm-5 5.5h3V16H6zM6 7h3v3.5H6zm10 0h3v3.5h-3zm0 5.5h3V16h-3z"
-          opacity=".3"
-        />
-        <path d="M4 5v13h17V5H4zm5 11H6v-3.5h3V16zm0-5.5H6V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5zm5 5.5h-3v-3.5h3V16zm0-5.5h-3V7h3v3.5z" />
-      </svg>
-    );
-  } else if (props.view === "compact") {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M6 7h3v9H6zm5 0h3v9h-3zm5 0h3v9h-3z" opacity=".3" />
-        <path d="M4 5v13h17V5H4zm5 11H6V7h3v9zm5 0h-3V7h3v9zm5 0h-3V7h3v9z" />
-      </svg>
-    );
-  } else {
-    viewIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M5 5h15v3H5zm12 5h3v9h-3zm-7 0h5v9h-5zm-5 0h3v9H5z" opacity=".3" />
-        <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 19H5v-9h3v9zm7 0h-5v-9h5v9zm5 0h-3v-9h3v9zm0-11H5V5h15v3z" />
-      </svg>
-    );
-  }
   const buttons = (
     <div className="actions">
       <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
@@ -1688,18 +1457,9 @@ export const BottomAppBarIndent = (props) => {
         <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
       </Tooltip>
       <MenuSurfaceAnchor>
-        <MenuView
-          view={props.view}
-          open={viewMenuOpen}
-          onSelect={(evt) => setView(evt.detail.index)}
-          onClose={closeViewMenu}
-        />
+        <MenuView view={props.view} open={viewMenuOpen} setView={props.setView} onClose={closeViewMenu} />
         <Tooltip enterDelay={500} content="View" align="top">
-          <TopAppBarActionItem
-            onClick={openViewMenu}
-            style={{ "--animation-delay": 3 }}
-            icon={iconObject(<div>{viewIcon}</div>)}
-          />
+          <TopAppBarActionItem onClick={openViewMenu} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
         </Tooltip>
       </MenuSurfaceAnchor>
       <Tooltip enterDelay={500} content="Search" align="top">
