@@ -2094,11 +2094,7 @@ export class MobileContent extends React.Component {
       ) : null;
     const appBar = this.props.bottomNav ? (
       <div className="bottomNav">
-        {(this.context.user.isEditor || this.context.user.isDesigner) &&
-        this.props.page !== "statistics" &&
-        this.props.page !== "audit" &&
-        this.props.page !== "users" &&
-        this.props.page !== "settings" ? (
+        {(this.context.user.isEditor || this.context.user.isDesigner) && mainPages.includes(this.props.page) ? (
           <BottomAppBarIndent
             page={this.props.page}
             loading={this.props.loading}
