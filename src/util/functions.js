@@ -35,3 +35,10 @@ export const normalise = (str, includeSpace = true) => {
   const regex = includeSpace ? /[^a-zA-Z0-9 ]/g : /[^a-zA-Z0-9]/g;
   return str.normalize("NFD").replace(regex, "");
 };
+
+export const iconObject = (jsx) => {
+  return {
+    strategy: "component",
+    icon: jsx,
+  };
+};
