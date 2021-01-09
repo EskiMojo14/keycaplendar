@@ -34,8 +34,6 @@ import { SearchAppBar } from "./app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
 
-const bodyScroll = require("body-scroll-toggle");
-
 export class DesktopContent extends React.Component {
   constructor(props) {
     super(props);
