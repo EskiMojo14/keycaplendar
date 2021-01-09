@@ -21,3 +21,13 @@ export function Preset(
     vendors: vendors,
   };
 }
+
+export function Set(colorway = "", designer = [], details = "", icDate = "", id = "", image = "", profile = "") {
+  this.colorway = colorway;
+  this.designer = designer;
+  this.details = details;
+  this.icDate = icDate;
+  this.id = id;
+  this.image = image;
+  this.profile = profile;
+}

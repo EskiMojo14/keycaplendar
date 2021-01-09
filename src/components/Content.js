@@ -4,6 +4,7 @@ import firebase from "../firebase";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
+import { openModal, closeModal } from "../util/functions";
 import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -132,18 +133,6 @@ export class DesktopContent extends React.Component {
       userReverseSort: false,
     };
   }
-  openModal = () => {
-    if (window.scrollY > 0) {
-      document.querySelector("body").classList.add("scrolled");
-    }
-    bodyScroll.disable();
-  };
-  closeModal = () => {
-    setTimeout(() => {
-      document.querySelector("body").classList.remove("scrolled");
-    }, 20);
-    bodyScroll.enable();
-  };
   openNavDrawer = () => {
     this.setState({ navDrawerOpen: true });
   };
@@ -155,7 +144,7 @@ export class DesktopContent extends React.Component {
       this.closeDetailsDrawer();
       setTimeout(() => {
         if (this.props.view === "compact") {
-          this.openModal();
+          openModal();
         }
         this.setState((prevState) => {
           return { filterDrawerOpen: !prevState.filterDrawerOpen };
@@ -163,7 +152,7 @@ export class DesktopContent extends React.Component {
       }, 300);
     } else {
       if (this.props.view === "compact") {
-        this.openModal();
+        openModal();
       }
       this.setState((prevState) => {
         return { filterDrawerOpen: !prevState.filterDrawerOpen };
@@ -172,7 +161,7 @@ export class DesktopContent extends React.Component {
   };
   closeFilterDrawer = () => {
     if (this.props.view === "compact") {
-      this.closeModal();
+      closeModal();
     }
     this.setState({ filterDrawerOpen: false });
   };
@@ -181,16 +170,16 @@ export class DesktopContent extends React.Component {
       this.closeFilterDrawer();
       this.setState({ filterPreset: preset });
       setTimeout(() => {
-        this.openModal();
+        openModal();
         this.setState({ filterPresetDrawerOpen: true });
       }, 300);
     } else {
-      this.openModal();
+      openModal();
       this.setState({ filterPresetDrawerOpen: true, filterPreset: preset });
     }
   };
   closeFilterPresetDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       filterPresetDrawerOpen: false,
     });
@@ -211,11 +200,11 @@ export class DesktopContent extends React.Component {
     }, 300);
   };
   openFilterPresetDeleteDialog = (preset) => {
-    this.openModal();
+    openModal();
     this.setState({ filterPresetDeleteDialogOpen: true, deleteFilterPreset: preset });
   };
   closeFilterPresetDeleteDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       filterPresetDeleteDialogOpen: false,
     });
@@ -240,7 +229,7 @@ export class DesktopContent extends React.Component {
       this.closeFilterDrawer();
       setTimeout(() => {
         if (this.props.view === "compact") {
-          this.openModal();
+          openModal();
         }
         this.setState({
           detailsDrawerOpen: true,
@@ -249,7 +238,7 @@ export class DesktopContent extends React.Component {
       }, 300);
     } else {
       if (this.props.view === "compact") {
-        this.openModal();
+        openModal();
       }
       this.setState({
         detailsDrawerOpen: true,
@@ -259,7 +248,7 @@ export class DesktopContent extends React.Component {
   };
   closeDetailsDrawer = () => {
     if (this.props.view === "compact") {
-      this.closeModal();
+      closeModal();
     }
     this.setState({
       detailsDrawerOpen: false,
@@ -280,7 +269,7 @@ export class DesktopContent extends React.Component {
   };
   openSalesDialog = (set) => {
     if (this.props.view !== "compact") {
-      this.openModal();
+      openModal();
     }
     this.setState({
       salesDialogOpen: true,
@@ -289,7 +278,7 @@ export class DesktopContent extends React.Component {
   };
   closeSalesDialog = () => {
     if (this.props.view !== "compact") {
-      this.closeModal();
+      closeModal();
     }
     this.setState({
       salesDialogOpen: false,
@@ -309,17 +298,17 @@ export class DesktopContent extends React.Component {
     }, 250);
   };
   openCreateDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ createDrawerOpen: true });
   };
   closeCreateDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ createDrawerOpen: false });
   };
   openDeleteDialog = (set) => {
     this.closeDetailsDrawer();
     setTimeout(() => {
-      this.openModal();
+      openModal();
       this.setState({
         deleteDialogOpen: true,
         deleteSet: set,
@@ -327,7 +316,7 @@ export class DesktopContent extends React.Component {
     }, 200);
   };
   closeDeleteDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ deleteDialogOpen: false });
   };
   openDeleteSnackbar = () => {
@@ -337,14 +326,14 @@ export class DesktopContent extends React.Component {
     this.setState({ deleteSnackbarOpen: false });
   };
   openEditDrawer = (set) => {
-    this.openModal();
+    openModal();
     this.setState({
       editDrawerOpen: true,
       editSet: set,
     });
   };
   closeEditDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       editDrawerOpen: false,
       editSet: {
@@ -359,13 +348,13 @@ export class DesktopContent extends React.Component {
     });
   };
   openStatisticsFilterDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
@@ -904,36 +893,24 @@ export class TabletContent extends React.Component {
       userReverseSort: false,
     };
   }
-  openModal = () => {
-    if (window.scrollY > 0) {
-      document.querySelector("body").classList.add("scrolled");
-    }
-    bodyScroll.disable();
-  };
-  closeModal = () => {
-    setTimeout(() => {
-      document.querySelector("body").classList.remove("scrolled");
-    }, 20);
-    bodyScroll.enable();
-  };
   openNavDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ navDrawerOpen: true });
   };
   closeNavDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ navDrawerOpen: false });
   };
   openCreateDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ createDrawerOpen: true });
   };
   closeCreateDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ createDrawerOpen: false });
   };
   openEditDrawer = (set) => {
-    this.openModal();
+    openModal();
     if (this.state.detailsDrawerOpen) {
       this.closeDetailsDrawer();
       this.setState({ editSet: set });
@@ -950,7 +927,7 @@ export class TabletContent extends React.Component {
     }
   };
   closeEditDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       editDrawerOpen: false,
       editSet: {
@@ -967,7 +944,7 @@ export class TabletContent extends React.Component {
   openDeleteDialog = (set) => {
     this.closeDetailsDrawer();
     setTimeout(() => {
-      this.openModal();
+      openModal();
       this.setState({
         deleteDialogOpen: true,
         deleteSet: set,
@@ -975,7 +952,7 @@ export class TabletContent extends React.Component {
     }, 200);
   };
   closeDeleteDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ deleteDialogOpen: false });
   };
   openDeleteSnackbar = () => {
@@ -985,23 +962,23 @@ export class TabletContent extends React.Component {
     this.setState({ deleteSnackbarOpen: false });
   };
   openFilterDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ filterDrawerOpen: true });
   };
   closeFilterDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ filterDrawerOpen: false });
   };
   openFilterPresetDrawer = (preset) => {
     this.closeFilterDrawer();
     this.setState({ filterPreset: preset });
     setTimeout(() => {
-      this.openModal();
+      openModal();
       this.setState({ filterPresetDrawerOpen: true });
     }, 300);
   };
   closeFilterPresetDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       filterPresetDrawerOpen: false,
     });
@@ -1045,14 +1022,14 @@ export class TabletContent extends React.Component {
     }, 300);
   };
   openDetailsDrawer = (set) => {
-    this.openModal();
+    openModal();
     this.setState({
       detailsDrawerOpen: true,
       detailSet: set,
     });
   };
   closeDetailsDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       detailsDrawerOpen: false,
       detailSet: {
@@ -1091,21 +1068,21 @@ export class TabletContent extends React.Component {
     }, 250);
   };
   openStatisticsDialog = () => {
-    this.openModal();
+    openModal();
     this.setState({ statisticsDialogOpen: true });
   };
   closeStatisticsDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ statisticsDialogOpen: false });
   };
   openStatisticsFilterDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
@@ -1611,32 +1588,20 @@ export class MobileContent extends React.Component {
       userReverseSort: false,
     };
   }
-  openModal = () => {
-    if (window.scrollY > 0) {
-      document.querySelector("body").classList.add("scrolled");
-    }
-    bodyScroll.disable();
-  };
-  closeModal = () => {
-    setTimeout(() => {
-      document.querySelector("body").classList.remove("scrolled");
-    }, 20);
-    bodyScroll.enable();
-  };
   openNavDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ navDrawerOpen: true });
   };
   closeNavDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ navDrawerOpen: false });
   };
   openFilterDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({ filterDrawerOpen: true });
   };
   closeFilterDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ filterDrawerOpen: false });
   };
   openFilterPresetDialog = (preset) => {
@@ -1686,13 +1651,13 @@ export class MobileContent extends React.Component {
     }, 300);
   };
   openCreateDialog = () => {
-    this.openModal();
+    openModal();
     this.setState((prevState) => {
       return { createDialogOpen: !prevState.createDialogOpen };
     });
   };
   closeCreateDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ createDialogOpen: false });
   };
   openEditDialog = (set) => {
@@ -1700,13 +1665,13 @@ export class MobileContent extends React.Component {
       this.closeDetailsDrawer();
       this.setState({ editSet: set });
       setTimeout(() => {
-        this.openModal();
+        openModal();
         this.setState((prevState) => {
           return { editDialogOpen: !prevState.editDialogOpen };
         });
       }, 300);
     } else {
-      this.openModal();
+      openModal();
       this.setState({
         editDialogOpen: !this.state.editDialogOpen,
         editSet: set,
@@ -1718,7 +1683,7 @@ export class MobileContent extends React.Component {
       editDialogOpen: false,
     });
     setTimeout(() => {
-      this.closeModal();
+      closeModal();
       this.setState({
         editSet: {
           colorway: "",
@@ -1735,7 +1700,7 @@ export class MobileContent extends React.Component {
   openDeleteDialog = (set) => {
     this.closeDetailsDrawer();
     setTimeout(() => {
-      this.openModal();
+      openModal();
       this.setState({
         deleteDialogOpen: true,
         deleteSet: set,
@@ -1743,7 +1708,7 @@ export class MobileContent extends React.Component {
     }, 200);
   };
   closeDeleteDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ deleteDialogOpen: false });
   };
   openDeleteSnackbar = () => {
@@ -1753,14 +1718,14 @@ export class MobileContent extends React.Component {
     this.setState({ deleteSnackbarOpen: false });
   };
   openDetailsDrawer = (set) => {
-    this.openModal();
+    openModal();
     this.setState({
       detailsDrawerOpen: true,
       detailSet: set,
     });
   };
   closeDetailsDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       detailsDrawerOpen: false,
       detailSet: {
@@ -1806,21 +1771,21 @@ export class MobileContent extends React.Component {
     this.setState({ searchBarOpen: false });
   };
   openStatisticsDialog = () => {
-    this.openModal();
+    openModal();
     this.setState({ statisticsDialogOpen: true });
   };
   closeStatisticsDialog = () => {
-    this.closeModal();
+    closeModal();
     this.setState({ statisticsDialogOpen: false });
   };
   openStatisticsFilterDrawer = () => {
-    this.openModal();
+    openModal();
     this.setState({
       statisticsFilterDrawerOpen: !this.state.statisticsFilterDrawerOpen,
     });
   };
   closeStatisticsFilterDrawer = () => {
-    this.closeModal();
+    closeModal();
     this.setState({
       statisticsFilterDrawerOpen: false,
     });
