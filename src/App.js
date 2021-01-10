@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
-import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
+import { Content, DesktopContent, TabletContent, MobileContent } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
@@ -1173,7 +1173,7 @@ class App extends React.Component {
     const transitionClass = classNames({ "view-transition": this.state.transition });
     const content = this.state.deviceEdited ? (
       device === "desktop" ? (
-        <DesktopContent
+        <Content
           allSets={this.state.sets}
           getData={this.getData}
           className={transitionClass}

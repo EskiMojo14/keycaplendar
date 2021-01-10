@@ -1052,8 +1052,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t);
     color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6));
   }
 
-  .filter-drawer-open .main.card.content .outer-container:first-child .subheader,
-  .details-drawer-open .main.card.content .outer-container:first-child .subheader {
+  .drawer-open .main.card.content .outer-container:first-child .subheader {
     color: map-get($variables, text-medium);
   }
 

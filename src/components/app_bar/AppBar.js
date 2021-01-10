@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { pageTitle, statsTabs, noButtonPages, viewIcons, mainPages } from "../../util/constants";
-import { capitalise, iconObject } from "../../util/functions";
+import { capitalise, iconObject, boolFunctions } from "../../util/functions";
 import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -30,30 +30,10 @@ export const DesktopAppBar = (props) => {
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
   const [userViewMenuOpen, setUserViewMenuOpen] = useState(false);
-  const openSortMenu = () => {
-    setSortMenuOpen(true);
-  };
-  const closeSortMenu = () => {
-    setSortMenuOpen(false);
-  };
-  const openViewMenu = () => {
-    setViewMenuOpen(true);
-  };
-  const closeViewMenu = () => {
-    setViewMenuOpen(false);
-  };
-  const openUserSortMenu = () => {
-    setUserSortMenuOpen(true);
-  };
-  const closeUserSortMenu = () => {
-    setUserSortMenuOpen(false);
-  };
-  const openUserViewMenu = () => {
-    setUserViewMenuOpen(true);
-  };
-  const closeUserViewMenu = () => {
-    setUserViewMenuOpen(false);
-  };
+  const [closeSortMenu, openSortMenu] = boolFunctions(setSortMenuOpen);
+  const [closeViewMenu, openViewMenu] = boolFunctions(setViewMenuOpen);
+  const [closeUserSortMenu, openUserSortMenu] = boolFunctions(setUserSortMenuOpen);
+  const [closeUserViewMenu, openUserViewMenu] = boolFunctions(setUserViewMenuOpen);
   const mainButtons = mainPages.includes(props.page) ? (
     <>
       <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
@@ -273,31 +253,6 @@ export const DesktopAppBar = (props) => {
         </>
       )
     ) : null;
-  const refreshButton = props.loading ? (
-    <CircularProgress />
-  ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
-      <TopAppBarActionItem
-        icon="refresh"
-        onClick={() => {
-          props.getActions();
-        }}
-      />
-    </Tooltip>
-  );
-  const auditButtons =
-    props.page === "audit" ? (
-      <>
-        <Tooltip enterDelay={500} content="Filter" align="bottom">
-          <TopAppBarActionItem
-            style={{ "--animation-delay": 2 }}
-            icon="filter_list"
-            onClick={props.toggleAuditFilter}
-          />
-        </Tooltip>
-        {refreshButton}
-      </>
-    ) : null;
   const usersButtons =
     props.page === "users" ? (
       <>
@@ -389,7 +344,6 @@ export const DesktopAppBar = (props) => {
           >
             {mainButtons}
             {statisticsButtons}
-            {auditButtons}
             {usersButtons}
           </ConditionalWrapper>
         </TopAppBarRow>
@@ -406,30 +360,15 @@ export const TabletAppBar = (props) => {
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
-  const openSortMenu = () => {
-    setSortMenuOpen(true);
-  };
-  const closeSortMenu = () => {
-    setSortMenuOpen(false);
-  };
-  const openViewMenu = () => {
-    setViewMenuOpen(true);
-  };
-  const closeViewMenu = () => {
-    setViewMenuOpen(false);
-  };
+  const [closeSortMenu, openSortMenu] = boolFunctions(setSortMenuOpen);
+  const [closeViewMenu, openViewMenu] = boolFunctions(setViewMenuOpen);
+  const [closeUserSortMenu, openUserSortMenu] = boolFunctions(setUserSortMenuOpen);
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
   };
   const closeSearch = () => {
     setSearchOpen(false);
-  };
-  const openUserSortMenu = () => {
-    setUserSortMenuOpen(true);
-  };
-  const closeUserSortMenu = () => {
-    setUserSortMenuOpen(false);
   };
   const mainButtons = mainPages.includes(props.page) ? (
     <>
@@ -744,30 +683,15 @@ export const MobileAppBar = (props) => {
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
-  const openSortMenu = () => {
-    setSortMenuOpen(true);
-  };
-  const closeSortMenu = () => {
-    setSortMenuOpen(false);
-  };
-  const openViewMenu = () => {
-    setViewMenuOpen(true);
-  };
-  const closeViewMenu = () => {
-    setViewMenuOpen(false);
-  };
+  const [closeSortMenu, openSortMenu] = boolFunctions(setSortMenuOpen);
+  const [closeViewMenu, openViewMenu] = boolFunctions(setViewMenuOpen);
+  const [closeUserSortMenu, openUserSortMenu] = boolFunctions(setUserSortMenuOpen);
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
   };
   const closeSearch = () => {
     setSearchOpen(false);
-  };
-  const openUserSortMenu = () => {
-    setUserSortMenuOpen(true);
-  };
-  const closeUserSortMenu = () => {
-    setUserSortMenuOpen(false);
   };
   const title = {
     ...pageTitle,
@@ -1086,30 +1010,15 @@ export const BottomAppBar = (props) => {
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [userSortMenuOpen, setUserSortMenuOpen] = useState(false);
-  const openSortMenu = () => {
-    setSortMenuOpen(true);
-  };
-  const closeSortMenu = () => {
-    setSortMenuOpen(false);
-  };
-  const openViewMenu = () => {
-    setViewMenuOpen(true);
-  };
-  const closeViewMenu = () => {
-    setViewMenuOpen(false);
-  };
+  const [closeSortMenu, openSortMenu] = boolFunctions(setSortMenuOpen);
+  const [closeViewMenu, openViewMenu] = boolFunctions(setViewMenuOpen);
+  const [closeUserSortMenu, openUserSortMenu] = boolFunctions(setUserSortMenuOpen);
   const openSearch = () => {
     setSearchOpen(true);
     document.documentElement.scrollTop = 0;
   };
   const closeSearch = () => {
     setSearchOpen(false);
-  };
-  const openUserSortMenu = () => {
-    setUserSortMenuOpen(true);
-  };
-  const closeUserSortMenu = () => {
-    setUserSortMenuOpen(false);
   };
   const mainButtons = mainPages.includes(props.page) ? (
     <>
@@ -1422,18 +1331,8 @@ export const BottomAppBar = (props) => {
 export const BottomAppBarIndent = (props) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
-  const openSortMenu = () => {
-    setSortMenuOpen(true);
-  };
-  const closeSortMenu = () => {
-    setSortMenuOpen(false);
-  };
-  const openViewMenu = () => {
-    setViewMenuOpen(true);
-  };
-  const closeViewMenu = () => {
-    setViewMenuOpen(false);
-  };
+  const [closeSortMenu, openSortMenu] = boolFunctions(setSortMenuOpen);
+  const [closeViewMenu, openViewMenu] = boolFunctions(setViewMenuOpen);
   const buttons = (
     <div className="actions">
       <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>

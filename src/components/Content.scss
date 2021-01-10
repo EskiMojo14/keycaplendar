@@ -83,8 +83,7 @@
   content: none;
 }
 
-.filter-drawer-open .main.card::before,
-.details-drawer-open .main.card::before {
+.drawer-open .main.card::before {
   height: 0;
 }
 

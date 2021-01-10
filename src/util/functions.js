@@ -1,5 +1,3 @@
-import bodyScroll from "body-scroll-toggle";
-
 export const addOrRemove = (oldArray, value) => {
   const array = [...oldArray];
   const index = array.indexOf(value);
@@ -46,14 +44,18 @@ export const iconObject = (jsx) => {
 };
 
 export const openModal = () => {
-  if (window.scrollY > 0) {
-    document.querySelector("body").classList.add("scrolled");
-  }
-  bodyScroll.disable();
+  document.querySelector("body").classList.add("mdc-dialog-scroll-lock");
 };
 export const closeModal = () => {
-  setTimeout(() => {
-    document.querySelector("body").classList.remove("scrolled");
-  }, 20);
-  bodyScroll.enable();
+  document.querySelector("body").classList.remove("mdc-dialog-scroll-lock");
+};
+
+export const boolFunctions = (func) => {
+  const setFalse = () => {
+    func(false);
+  };
+  const setTrue = () => {
+    func(true);
+  };
+  return [setFalse, setTrue];
 };

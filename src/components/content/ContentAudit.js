@@ -2,16 +2,199 @@ import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import classNames from "classnames";
-import { queueTypes, actionTypes } from "../../util/propTypeTemplates";
+import firebase from "../../firebase";
+import { DeviceContext } from "../../util/contexts";
+import { queueTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
+import { CircularProgress } from "@rmwc/circular-progress";
+import { DrawerAppContent } from "@rmwc/drawer";
 import { List } from "@rmwc/list";
+import { Tooltip } from "@rmwc/tooltip";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarNavigationIcon,
+  TopAppBarTitle,
+  TopAppBarActionItem,
+  TopAppBarFixedAdjust,
+} from "@rmwc/top-app-bar";
+import { DrawerAuditFilter } from "../admin/audit_log/DrawerAuditFilter";
+import { DialogAuditDelete } from "../admin/audit_log/DialogAuditDelete";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";
+import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./ContentAudit.scss";
 
 export class ContentAudit extends React.Component {
-  componentDidMount() {
-    this.props.getActions();
+  constructor(props) {
+    super(props);
+    this.state = {
+      actions: [],
+      actionsFiltered: [],
+      filterAction: "none",
+      filterUser: "all",
+      length: 50,
+      filterOpen: false,
+      deleteOpen: false,
+      deleteAction: {
+        action: "",
+        changelogId: "",
+        documentId: "",
+        timestamp: "",
+        user: {
+          displayName: "",
+          email: "",
+          nickname: "",
+        },
+      },
+      users: [{ label: "All", value: "all" }],
+      loading: false,
+    };
   }
+  componentDidMount() {
+    this.getActions();
+  }
+  toggleLoading = () => {
+    this.setState({
+      loading: !this.state.loading,
+    });
+  };
+  toggleFilter = () => {
+    this.setState({
+      filterOpen: !this.state.filterOpen,
+    });
+  };
+  closeFilter = () => {
+    this.setState({
+      filterOpen: false,
+    });
+  };
+  openDelete = (action) => {
+    this.setState({
+      deleteOpen: true,
+      deleteAction: action,
+    });
+  };
+  closeDelete = () => {
+    this.setState({
+      deleteOpen: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        deleteAction: {
+          action: "",
+          changelogId: "",
+          documentId: "",
+          timestamp: "",
+          user: {
+            displayName: "",
+            email: "",
+            nickname: "",
+          },
+        },
+      });
+    }, 100);
+  };
+  handleFilterChange = (e, prop) => {
+    this.setState({
+      [prop]: e.target.value,
+    });
+    this.filterActions(
+      this.state.action,
+      prop === "filterAction" ? e.target.value : this.state.filterAction,
+      prop === "filterUser" ? e.target.value : this.state.filterUser
+    );
+  };
+  getActions = (num = this.state.length) => {
+    if (!this.loading) {
+      this.toggleLoading();
+    }
+    this.setState({ length: num });
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .orderBy("timestamp", "desc")
+      .limit(parseInt(num))
+      .get()
+      .then((querySnapshot) => {
+        let actions = [];
+        let users = [{ label: "All", value: "all" }];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.changelogId = doc.id;
+          actions.push(data);
+          if (users.filter((user) => user.value === data.user.nickname).length === 0) {
+            users.push({ label: data.user.nickname, value: data.user.nickname });
+          }
+        });
+
+        actions.sort(function (a, b) {
+          var x = a.timestamp.toLowerCase();
+          var y = b.timestamp.toLowerCase();
+          if (x < y) {
+            return 1;
+          }
+          if (x > y) {
+            return -1;
+          }
+          return 0;
+        });
+        this.setState({
+          actions: actions,
+          users: users,
+        });
+
+        this.filterActions(actions);
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        if (this.loading) {
+          this.toggleLoading();
+        }
+      });
+  };
+
+  filterActions = (
+    actions = this.state.actions,
+    filterAction = this.state.filterAction,
+    filterUser = this.state.filterUser
+  ) => {
+    let filteredActions = [...actions];
+
+    if (filterAction !== "none") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.action === filterAction;
+      });
+    }
+
+    if (filterUser !== "all") {
+      filteredActions = filteredActions.filter((action) => {
+        return action.user.nickname === filterUser;
+      });
+    }
+
+    this.setState({
+      actionsFiltered: filteredActions,
+    });
+    if (this.state.loading) {
+      this.toggleLoading();
+    }
+  };
+  deleteAction = (action) => {
+    const db = firebase.firestore();
+    db.collection("changelog")
+      .doc(action.changelogId)
+      .delete()
+      .then(() => {
+        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        this.getActions();
+        this.closeDelete();
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        this.closeDelete();
+      });
+  };
   render() {
     const properties = [
       "profile",
@@ -27,36 +210,92 @@ export class ContentAudit extends React.Component {
       "vendors",
       "sales",
     ];
+    const refreshButton = this.state.loading ? (
+      <CircularProgress />
+    ) : (
+      <Tooltip enterDelay={500} content="Refresh" align="bottom">
+        <TopAppBarActionItem
+          icon="refresh"
+          onClick={() => {
+            this.getActions();
+          }}
+        />
+      </Tooltip>
+    );
     return (
-      <div className="admin-main">
-        <div className="log-container">
-          <Card className={classNames("log", { placeholder: this.props.actions.length === 0 })}>
-            <List twoLine className="three-line">
-              {this.props.actions.map((action) => {
-                const timestamp = moment(action.timestamp);
-                return (
-                  <AuditEntry
-                    key={action.timestamp}
-                    action={action}
-                    timestamp={timestamp}
-                    openDeleteDialog={this.props.openDeleteDialog}
-                    properties={properties}
-                  />
-                );
-              })}
-            </List>
-          </Card>
+      <>
+        <TopAppBar fixed>
+          <TopAppBarRow>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
+              <TopAppBarTitle>Audit Log</TopAppBarTitle>
+            </TopAppBarSection>
+            <TopAppBarSection alignEnd>
+              <Tooltip enterDelay={500} content="Filter" align="bottom">
+                <TopAppBarActionItem icon="filter_list" onClick={this.toggleFilter} />
+              </Tooltip>
+              {refreshButton}
+            </TopAppBarSection>
+          </TopAppBarRow>
+        </TopAppBar>
+        <TopAppBarFixedAdjust />
+        <div className="content-container">
+          <DrawerAuditFilter
+            open={this.state.filterOpen}
+            close={this.closeFilter}
+            handleFilterChange={this.handleFilterChange}
+            filterAction={this.state.filterAction}
+            filterUser={this.state.filterUser}
+            users={this.state.users}
+            auditLength={this.state.length}
+            getActions={this.getActions}
+          />
+          <ConditionalWrapper
+            condition={this.context === "desktop"}
+            wrapper={(children) => (
+              <DrawerAppContent
+                className={classNames({ "drawer-open": this.state.filterOpen && this.context === "desktop" })}
+              >
+                {children}
+              </DrawerAppContent>
+            )}
+          >
+            <div className="admin-main">
+              <div className="log-container">
+                <Card className={classNames("log", { placeholder: this.state.actionsFiltered.length === 0 })}>
+                  <List twoLine className="three-line">
+                    {this.state.actionsFiltered.map((action) => {
+                      const timestamp = moment(action.timestamp);
+                      return (
+                        <AuditEntry
+                          key={action.timestamp}
+                          action={action}
+                          timestamp={timestamp}
+                          openDeleteDialog={this.openDelete}
+                          properties={properties}
+                        />
+                      );
+                    })}
+                  </List>
+                </Card>
+              </div>
+            </div>
+          </ConditionalWrapper>
+          <DialogAuditDelete
+            open={this.state.deleteOpen}
+            close={this.closeDelete}
+            deleteAction={this.state.deleteAction}
+            deleteActionFn={this.deleteAction}
+          />
         </div>
-      </div>
+      </>
     );
   }
 }
 export default ContentAudit;
 
+ContentAudit.contextType = DeviceContext;
+
 ContentAudit.propTypes = {
-  actions: PropTypes.arrayOf(PropTypes.shape(actionTypes)),
-  getActions: PropTypes.func,
-  loading: PropTypes.bool,
-  openDeleteDialog: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
 };
