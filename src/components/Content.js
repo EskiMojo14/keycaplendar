@@ -4,7 +4,7 @@ import firebase from "../firebase";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
-import { openModal, closeModal, boolFunctions } from "../util/functions";
+import { openModal, closeModal } from "../util/functions";
 import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
 import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -37,15 +37,33 @@ import "./Content.scss";
 export const Content = (props) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
-  const [navOpen, setNavOpen] = useState(device === "desktop");
-  const [closeNav, openNav] = boolFunctions(setNavOpen);
+  const [navOpen, setNavOpen] = useState(false);
+  const openNav = () => {
+    if (device !== "desktop") {
+      openModal();
+    }
+    setNavOpen(true);
+  };
+  const closeNav = () => {
+    if (device !== "desktop") {
+      closeModal();
+    }
+    setNavOpen(false);
+  };
   const contentAudit =
     props.page === "audit" && user.isAdmin ? (
-      <ContentAudit openNav={openNav} snackbarQueue={props.snackbarQueue} />
+      <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
     ) : null;
   return (
     <div className={classNames(props.className, props.page, "app-container")}>
-      <DrawerNav view={props.view} open={navOpen} close={closeNav} page={props.page} setPage={props.setPage} />
+      <DrawerNav
+        bottomNav={props.bottomNav}
+        view={props.view}
+        open={navOpen}
+        close={closeNav}
+        page={props.page}
+        setPage={props.setPage}
+      />
       <DrawerAppContent>{contentAudit}</DrawerAppContent>
     </div>
   );

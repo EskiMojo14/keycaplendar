@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
-import { Content, DesktopContent, TabletContent, MobileContent } from "./components/Content";
+import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
@@ -26,7 +26,6 @@ class App extends React.Component {
     super(props);
     this.state = {
       device: "desktop",
-      deviceEdited: false,
       bottomNav: false,
       page: "calendar",
       view: "card",
@@ -103,7 +102,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      if (mainPages.includes(pageQuery)) {
+      if (mainPages.includes(pageQuery) || true) {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
@@ -825,12 +824,14 @@ class App extends React.Component {
       if (vw !== lastWidth || i === 0) {
         if (vw >= 840) {
           device = "desktop";
+          this.setState({ device: device });
         } else if (vw < 840 && vw >= 480) {
           device = "tablet";
+          this.setState({ device: device });
         } else {
           device = "mobile";
+          this.setState({ device: device });
         }
-        this.setState({ device: device, deviceEdited: true });
         lastWidth = vw;
         i++;
       }
@@ -1169,158 +1170,7 @@ class App extends React.Component {
   }
 
   render() {
-    const device = this.state.device;
     const transitionClass = classNames({ "view-transition": this.state.transition });
-    const content = this.state.deviceEdited ? (
-      device === "desktop" ? (
-        <Content
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      ) : device === "tablet" ? (
-        <TabletContent
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      ) : (
-        <MobileContent
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          bottomNav={this.state.bottomNav}
-          setBottomNav={this.setBottomNav}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      )
-    ) : null;
-
     return (
       <Router>
         <Switch>
@@ -1362,7 +1212,55 @@ class App extends React.Component {
                 <div
                   className={classNames("app", { [`density-${this.state.density}`]: this.state.device === "desktop" })}
                 >
-                  {content}
+                  <Content
+                    allSets={this.state.sets}
+                    getData={this.getData}
+                    className={transitionClass}
+                    page={this.state.page}
+                    setPage={this.setPage}
+                    view={this.state.view}
+                    setView={this.setView}
+                    profiles={this.state.profiles}
+                    allDesigners={this.state.allDesigners}
+                    allVendors={this.state.allVendors}
+                    allRegions={this.state.allRegions}
+                    sets={this.state.filteredSets}
+                    groups={this.state.groups}
+                    loading={this.state.loading}
+                    toggleLoading={this.toggleLoading}
+                    sort={this.state.sort}
+                    setSort={this.setSort}
+                    content={this.state.content}
+                    search={this.state.search}
+                    setSearch={this.setSearch}
+                    applyTheme={this.state.applyTheme}
+                    setApplyTheme={this.setApplyTheme}
+                    lightTheme={this.state.lightTheme}
+                    setLightTheme={this.setLightTheme}
+                    darkTheme={this.state.darkTheme}
+                    setDarkTheme={this.setDarkTheme}
+                    manualTheme={this.state.manualTheme}
+                    setManualTheme={this.setManualTheme}
+                    fromTimeTheme={this.state.fromTimeTheme}
+                    setFromTimeTheme={this.setFromTimeTheme}
+                    toTimeTheme={this.state.toTimeTheme}
+                    setToTimeTheme={this.setToTimeTheme}
+                    toggleLichTheme={this.toggleLichTheme}
+                    bottomNav={this.state.bottomNav && this.state.device === "mobile"}
+                    setBottomNav={this.setBottomNav}
+                    setWhitelist={this.setWhitelist}
+                    whitelist={this.state.whitelist}
+                    statistics={this.state.statistics}
+                    setStatistics={this.setStatistics}
+                    statisticsSort={this.state.statisticsSort}
+                    setStatisticsSort={this.setStatisticsSort}
+                    statisticsTab={this.state.statisticsTab}
+                    setStatisticsTab={this.setStatisticsTab}
+                    setTimelineWhitelist={this.setTimelineWhitelist}
+                    density={this.state.density}
+                    setDensity={this.setDensity}
+                    snackbarQueue={queue}
+                  />
                   <SnackbarQueue messages={queue.messages} />
                   <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
                 </div>

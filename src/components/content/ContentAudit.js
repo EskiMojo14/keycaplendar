@@ -4,6 +4,7 @@ import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
+import { openModal, closeModal } from "../../util/functions";
 import { queueTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -60,22 +61,32 @@ export class ContentAudit extends React.Component {
     });
   };
   toggleFilter = () => {
+    if (this.state.filterOpen && this.context !== "desktop") {
+      closeModal();
+    } else if (this.context !== "desktop") {
+      openModal();
+    }
     this.setState({
       filterOpen: !this.state.filterOpen,
     });
   };
   closeFilter = () => {
+    if (this.context !== "desktop") {
+      closeModal();
+    }
     this.setState({
       filterOpen: false,
     });
   };
   openDelete = (action) => {
+    openModal();
     this.setState({
       deleteOpen: true,
       deleteAction: action,
     });
   };
   closeDelete = () => {
+    closeModal();
     this.setState({
       deleteOpen: false,
     });
@@ -224,7 +235,7 @@ export class ContentAudit extends React.Component {
     );
     return (
       <>
-        <TopAppBar fixed>
+        <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
@@ -238,56 +249,57 @@ export class ContentAudit extends React.Component {
             </TopAppBarSection>
           </TopAppBarRow>
         </TopAppBar>
-        <TopAppBarFixedAdjust />
-        <div className="content-container">
-          <DrawerAuditFilter
-            open={this.state.filterOpen}
-            close={this.closeFilter}
-            handleFilterChange={this.handleFilterChange}
-            filterAction={this.state.filterAction}
-            filterUser={this.state.filterUser}
-            users={this.state.users}
-            auditLength={this.state.length}
-            getActions={this.getActions}
-          />
-          <ConditionalWrapper
-            condition={this.context === "desktop"}
-            wrapper={(children) => (
-              <DrawerAppContent
-                className={classNames({ "drawer-open": this.state.filterOpen && this.context === "desktop" })}
-              >
-                {children}
-              </DrawerAppContent>
-            )}
-          >
-            <div className="admin-main">
-              <div className="log-container">
-                <Card className={classNames("log", { placeholder: this.state.actionsFiltered.length === 0 })}>
-                  <List twoLine className="three-line">
-                    {this.state.actionsFiltered.map((action) => {
-                      const timestamp = moment(action.timestamp);
-                      return (
-                        <AuditEntry
-                          key={action.timestamp}
-                          action={action}
-                          timestamp={timestamp}
-                          openDeleteDialog={this.openDelete}
-                          properties={properties}
-                        />
-                      );
-                    })}
-                  </List>
-                </Card>
+        {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
+        <div
+          className={classNames("content-container", {
+            "drawer-open": this.state.filterOpen && this.context === "desktop",
+          })}
+        >
+          <div className="main">
+            <DrawerAuditFilter
+              open={this.state.filterOpen}
+              close={this.closeFilter}
+              handleFilterChange={this.handleFilterChange}
+              filterAction={this.state.filterAction}
+              filterUser={this.state.filterUser}
+              users={this.state.users}
+              auditLength={this.state.length}
+              getActions={this.getActions}
+            />
+            <ConditionalWrapper
+              condition={this.context === "desktop"}
+              wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
+            >
+              <div className="admin-main">
+                <div className="log-container">
+                  <Card className={classNames("log", { placeholder: this.state.actionsFiltered.length === 0 })}>
+                    <List twoLine className="three-line">
+                      {this.state.actionsFiltered.map((action) => {
+                        const timestamp = moment(action.timestamp);
+                        return (
+                          <AuditEntry
+                            key={action.timestamp}
+                            action={action}
+                            timestamp={timestamp}
+                            openDeleteDialog={this.openDelete}
+                            properties={properties}
+                          />
+                        );
+                      })}
+                    </List>
+                  </Card>
+                </div>
               </div>
-            </div>
-          </ConditionalWrapper>
-          <DialogAuditDelete
-            open={this.state.deleteOpen}
-            close={this.closeDelete}
-            deleteAction={this.state.deleteAction}
-            deleteActionFn={this.deleteAction}
-          />
+            </ConditionalWrapper>
+            <DialogAuditDelete
+              open={this.state.deleteOpen}
+              close={this.closeDelete}
+              deleteAction={this.state.deleteAction}
+              deleteActionFn={this.deleteAction}
+            />
+          </div>
         </div>
+        {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
       </>
     );
   }

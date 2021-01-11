@@ -79,27 +79,18 @@
     height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
-.bottomNav + .main.card::before {
-  content: none;
+
+.bottom-app-bar.mdc-top-app-bar {
+  & ~ div .main::before {
+    content: none;
+  }
 }
 
 .drawer-open .main.card::before {
   height: 0;
 }
 
-.modal-drawer-open {
-  max-height: 100vh;
-  overflow: hidden;
-  &.mdc-drawer-app-content {
-    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
-  }
-}
-
 @media (max-width: top-app-bar.$mobile-breakpoint) {
-  .modal-drawer-open.mdc-drawer-app-content,
-  .content-container .main {
-    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
-  }
   .main.content.card::before,
   .audit .main::before {
     height: 256px - top-app-bar.$mobile-row-height;
