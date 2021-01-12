@@ -54,6 +54,29 @@ export const Content = (props) => {
     props.page === "audit" && user.isAdmin ? (
       <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
     ) : null;
+  const contentSettings =
+    props.page === "settings" ? (
+      <ContentSettings
+        openNav={openNav}
+        bottomNav={props.bottomNav}
+        setBottomNav={props.setBottomNav}
+        lightTheme={props.lightTheme}
+        setLightTheme={props.setLightTheme}
+        darkTheme={props.darkTheme}
+        setDarkTheme={props.setDarkTheme}
+        applyTheme={props.applyTheme}
+        setApplyTheme={props.setApplyTheme}
+        manualTheme={props.manualTheme}
+        setManualTheme={props.setManualTheme}
+        fromTimeTheme={props.fromTimeTheme}
+        setFromTimeTheme={props.setFromTimeTheme}
+        toTimeTheme={props.toTimeTheme}
+        setToTimeTheme={props.setToTimeTheme}
+        density={props.density}
+        setDensity={props.setDensity}
+        snackbarQueue={props.snackbarQueue}
+      />
+    ) : null;
   return (
     <div className={classNames(props.className, props.page, "app-container")}>
       <DrawerNav
@@ -64,7 +87,10 @@ export const Content = (props) => {
         page={props.page}
         setPage={props.setPage}
       />
-      <DrawerAppContent>{contentAudit}</DrawerAppContent>
+      <DrawerAppContent>
+        {contentAudit}
+        {contentSettings}
+      </DrawerAppContent>
     </div>
   );
 };
