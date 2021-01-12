@@ -24,6 +24,7 @@ import { DrawerAuditFilter } from "../admin/audit_log/DrawerAuditFilter";
 import { DialogAuditDelete } from "../admin/audit_log/DialogAuditDelete";
 import { AuditEntry } from "../admin/audit_log/AuditEntry";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
+import { Footer } from "../common/Footer";
 import "./ContentAudit.scss";
 
 export class ContentAudit extends React.Component {
@@ -299,6 +300,7 @@ export class ContentAudit extends React.Component {
             />
           </div>
         </div>
+        <Footer />
         {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
       </>
     );

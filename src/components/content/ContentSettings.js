@@ -24,6 +24,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { Footer } from "../common/Footer";
 import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
@@ -331,6 +332,7 @@ export const ContentSettings = (props) => {
           </div>
         </div>
       </div>
+      <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
