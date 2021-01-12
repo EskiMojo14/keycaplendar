@@ -54,6 +54,15 @@ export const Content = (props) => {
     props.page === "audit" && user.isAdmin ? (
       <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
     ) : null;
+  const contentUsers =
+    props.page === "users" && user.isAdmin ? (
+      <ContentUsers
+        openNav={openNav}
+        allDesigners={props.allDesigners}
+        snackbarQueue={props.snackbarQueue}
+        device={device}
+      />
+    ) : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings
@@ -89,6 +98,7 @@ export const Content = (props) => {
       />
       <DrawerAppContent>
         {contentAudit}
+        {contentUsers}
         {contentSettings}
       </DrawerAppContent>
     </div>
@@ -168,9 +178,6 @@ export class DesktopContent extends React.Component {
         profile: "",
       },
       statisticsFilterDrawerOpen: false,
-      userView: "table",
-      userSort: "editor",
-      userReverseSort: false,
     };
   }
   openNavDrawer = () => {
@@ -399,31 +406,6 @@ export class DesktopContent extends React.Component {
       statisticsFilterDrawerOpen: false,
     });
   };
-  setUserView = (index) => {
-    const views = ["card", "table"];
-    this.setState({
-      userView: views[index],
-    });
-  };
-  setUserSort = (sort) => {
-    let reverseSort;
-    if (sort === this.state.userSort) {
-      reverseSort = !this.state.userReverseSort;
-    } else {
-      reverseSort = false;
-    }
-    this.setState({
-      userSort: sort,
-      userReverseSort: reverseSort,
-    });
-  };
-  setUserSortIndex = (index) => {
-    const props = ["displayName", "email", "nickname", "designer", "editor", "admin"];
-    this.setState({
-      userSort: props[index],
-      userReverseSort: false,
-    });
-  };
   componentDidUpdate(prevProps) {
     if (this.props.page !== prevProps.page && !mainPages.includes(this.props.page)) {
       if (this.state.filterDrawerOpen) {
@@ -458,40 +440,6 @@ export class DesktopContent extends React.Component {
         setStatisticsSort={this.props.setStatisticsSort}
         allDesigners={this.props.allDesigners}
         allVendors={this.props.allVendors}
-      />
-    ) : this.props.page === "users" && this.context.user.isAdmin ? (
-      <DeviceContext.Consumer>
-        {(device) => (
-          <ContentUsers
-            loading={this.props.loading}
-            toggleLoading={this.props.toggleLoading}
-            view={this.state.userView}
-            sort={this.state.userSort}
-            setSort={this.setUserSort}
-            reverseSort={this.state.userReverseSort}
-            allDesigners={this.props.allDesigners}
-            snackbarQueue={this.props.snackbarQueue}
-            device={device}
-          />
-        )}
-      </DeviceContext.Consumer>
-    ) : this.props.page === "settings" ? (
-      <ContentSettings
-        lightTheme={this.props.lightTheme}
-        setLightTheme={this.props.setLightTheme}
-        darkTheme={this.props.darkTheme}
-        setDarkTheme={this.props.setDarkTheme}
-        applyTheme={this.props.applyTheme}
-        setApplyTheme={this.props.setApplyTheme}
-        manualTheme={this.props.manualTheme}
-        setManualTheme={this.props.setManualTheme}
-        fromTimeTheme={this.props.fromTimeTheme}
-        setFromTimeTheme={this.props.setFromTimeTheme}
-        toTimeTheme={this.props.toTimeTheme}
-        setToTimeTheme={this.props.setToTimeTheme}
-        density={this.props.density}
-        setDensity={this.props.setDensity}
-        snackbarQueue={this.props.snackbarQueue}
       />
     ) : (
       <ContentEmpty page={this.props.page} />
