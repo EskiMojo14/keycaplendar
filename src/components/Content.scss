@@ -72,7 +72,8 @@
     z-index: -1;
   }
   &.content.card::before,
-  .audit &::before {
+  .audit &::before,
+  &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
   .statistics &::before {
@@ -92,7 +93,8 @@
 
 @media (max-width: top-app-bar.$mobile-breakpoint) {
   .main.content.card::before,
-  .audit .main::before {
+  .audit .main::before,
+  .main.extended-app-bar::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
   .statistics .main::before {

@@ -219,7 +219,8 @@
     }
   }
   .main.content.card::before,
-  .audit .main::before {
+  .audit .main::before,
+  .main.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + $diff);
   }
   .drawer-open .main.content.card::before,
@@ -348,7 +349,8 @@
       }
     }
     .main.content.card::before,
-    .audit .main::before {
+    .audit .main::before,
+    .main.extended-app-bar::before {
       height: 256px - (top-app-bar.$mobile-row-height + $diff);
     }
     .drawer-open .main.content.card::before {
