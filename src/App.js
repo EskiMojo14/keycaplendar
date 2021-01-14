@@ -28,6 +28,7 @@ class App extends React.Component {
       device: "desktop",
       bottomNav: false,
       page: "calendar",
+      statisticsTab: "timeline",
       view: "card",
       transition: false,
       sort: "gbLaunch",
@@ -70,28 +71,6 @@ class App extends React.Component {
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
       lichTheme: false,
-      statistics: {
-        timeline: "gbLaunch",
-        timelineWhitelist: {
-          edited: [],
-          profiles: [],
-          shipped: ["Shipped", "Not shipped"],
-          vendorMode: "exclude",
-          vendors: [],
-        },
-        status: "profile",
-        shipped: "profile",
-        durationCat: "gbLaunch",
-        durationGroup: "profile",
-        vendors: "profile",
-      },
-      statisticsSort: {
-        status: "alphabetical",
-        shipped: "alphabetical",
-        duration: "alphabetical",
-        vendors: "alphabetical",
-      },
-      statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
       preset: new Preset(),
@@ -699,9 +678,6 @@ class App extends React.Component {
     if (!whitelist.edited.includes("profiles")) {
       this.setWhitelist("profiles", allProfiles, false);
     }
-    if (!this.state.statistics.timelineWhitelist.edited.includes("profiles")) {
-      this.setTimelineWhitelist("profiles", allProfiles);
-    }
   };
   setDensity = (density, write = true) => {
     this.setState({ density: density });
@@ -735,12 +711,6 @@ class App extends React.Component {
     };
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
     this.setState({ user: newUser });
-  };
-  setStatistics = (prop, query) => {
-    this.setState({ statistics: { ...this.state.statistics, [prop]: query } });
-  };
-  setStatisticsSort = (prop, query) => {
-    this.setState({ statisticsSort: { ...this.state.statisticsSort, [prop]: query } });
   };
   setStatisticsTab = (tab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
@@ -795,23 +765,6 @@ class App extends React.Component {
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
-      });
-    }
-  };
-  setTimelineWhitelist = (prop, val) => {
-    if (prop === "all") {
-      const edited = Object.keys(val);
-      const whitelist = { ...this.state.statistics.timelineWhitelist, ...val, edited: edited };
-      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
-      this.setState({ statistics: statisticsObject });
-    } else {
-      const edited = this.state.statistics.timelineWhitelist.edited.includes(prop)
-        ? this.state.statistics.timelineWhitelist.edited
-        : [...this.state.statistics.timelineWhitelist.edited, prop];
-      const whitelist = { ...this.state.statistics.timelineWhitelist, [prop]: val, edited: edited };
-      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
-      this.setState({
-        statistics: statisticsObject,
       });
     }
   };
@@ -1250,13 +1203,8 @@ class App extends React.Component {
                     setBottomNav={this.setBottomNav}
                     setWhitelist={this.setWhitelist}
                     whitelist={this.state.whitelist}
-                    statistics={this.state.statistics}
-                    setStatistics={this.setStatistics}
-                    statisticsSort={this.state.statisticsSort}
-                    setStatisticsSort={this.setStatisticsSort}
                     statisticsTab={this.state.statisticsTab}
                     setStatisticsTab={this.setStatisticsTab}
-                    setTimelineWhitelist={this.setTimelineWhitelist}
                     density={this.state.density}
                     setDensity={this.setDensity}
                     snackbarQueue={queue}

@@ -6,13 +6,11 @@ import { addOrRemove } from "../../util/functions";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { IconButton } from "@rmwc/icon-button";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 
 export const DrawerFilterStatistics = (props) => {
-  const whitelist = props.statistics.timelineWhitelist;
+  const whitelist = props.whitelist;
   const handleChange = (name, prop) => {
     const original = whitelist[prop];
     const edited = addOrRemove(original, name).sort(function (a, b) {
@@ -45,9 +43,6 @@ export const DrawerFilterStatistics = (props) => {
     <Drawer modal open={props.open} onClose={props.close} className="filter-drawer drawer-right">
       <DrawerHeader>
         <DrawerTitle>Filters</DrawerTitle>
-        <Tooltip enterDelay={500} content="Close" align="bottom">
-          <IconButton className="close-icon" icon="close" onClick={props.close} />
-        </Tooltip>
       </DrawerHeader>
       <DrawerContent>
         <div className="group">
