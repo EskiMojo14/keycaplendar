@@ -13,6 +13,7 @@ import { ContentAudit } from "./content/ContentAudit";
 import { ContentEmpty } from "./content/ContentEmpty";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentGrid } from "./content/ContentGrid";
+import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
@@ -45,6 +46,23 @@ export const Content = (props) => {
     }
     setNavOpen(false);
   };
+  const contentMain = mainPages.includes(props.page) ? (
+    <ContentMain
+      bottomNav={props.bottomNav}
+      navOpen={navOpen}
+      openNav={openNav}
+      content={props.content}
+      groups={props.groups}
+      sets={props.sets}
+      sort={props.sort}
+      page={props.page}
+      view={props.view}
+      setView={props.setView}
+      search={props.search}
+      setSearch={props.setSearch}
+      toggleLichTheme={props.toggleLichTheme}
+    />
+  ) : null;
   const contentStatistics =
     props.page === "statistics" ? (
       <ContentStatistics
@@ -106,6 +124,7 @@ export const Content = (props) => {
         setPage={props.setPage}
       />
       <DrawerAppContent>
+        {contentMain}
         {contentStatistics}
         {contentAudit}
         {contentUsers}
@@ -548,8 +567,6 @@ export class DesktopContent extends React.Component {
             openNav={this.openNavDrawer}
             view={this.props.view}
             setView={this.props.setView}
-            userView={this.state.userView}
-            setUserView={this.setUserView}
             sort={this.props.sort}
             setSort={this.props.setSort}
             userSort={this.state.userSort}
