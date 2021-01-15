@@ -61,6 +61,11 @@ export const Content = (props) => {
       search={props.search}
       setSearch={props.setSearch}
       toggleLichTheme={props.toggleLichTheme}
+      profiles={props.profiles}
+      allVendors={props.allVendors}
+      setWhitelist={props.setWhitelist}
+      whitelist={props.whitelist}
+      snackbarQueue={props.snackbarQueue}
     />
   ) : null;
   const contentStatistics =

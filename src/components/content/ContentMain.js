@@ -8,28 +8,75 @@ import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { ContentGrid } from "./ContentGrid";
 import { ContentEmpty } from "./ContentEmpty";
 import { DrawerDetails } from "../common/DrawerDetails";
+import { DrawerFilter } from "../common/DrawerFilter";
+import { DialogSales } from "../common/DialogSales";
 import { Footer } from "../common/Footer";
 import { BoolWrapper } from "../util/ConditionalWrapper";
 
 export const ContentMain = (props) => {
   const device = useContext(DeviceContext);
   const blankSet = new Set();
+
+  const [filterOpen, setFilterOpen] = useState(false);
+  const openFilter = (set) => {
+    const open = () => {
+      if (device !== "desktop") {
+        openModal();
+      }
+      setFilterOpen(true);
+    };
+    if (detailsOpen) {
+      closeFilter();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
+  };
+  const closeFilter = () => {
+    if (device !== "desktop") {
+      closeModal();
+    }
+    setFilterOpen(false);
+  };
+
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailSet, setDetailSet] = useState(blankSet);
   const openDetails = (set) => {
-    if (device !== "desktop") {
-      openModal();
+    const open = () => {
+      if (device !== "desktop") {
+        openModal();
+      }
+      setDetailsOpen(true);
+      setDetailSet(set);
+    };
+    if (filterOpen) {
+      closeFilter();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
     }
-    setDetailsOpen(true);
-    setDetailSet(set);
   };
   const closeDetails = () => {
     if (device !== "desktop") {
       closeModal();
     }
     setDetailsOpen(false);
-    setDetailSet(blankSet);
+    setTimeout(() => setDetailSet(blankSet), 300);
   };
+
+  const [salesOpen, setSalesOpen] = useState(false);
+  const [salesSet, setSalesSet] = useState(blankSet);
+  const openSales = (set) => {
+    openModal();
+    setSalesOpen(true);
+    setSalesSet(set);
+  };
+  const closeSales = () => {
+    closeModal();
+    setSalesOpen(false);
+    setTimeout(() => setSalesSet(blankSet), 300);
+  };
+
   const [editOpen, setEditOpen] = useState(false);
   const [editSet, setEditSet] = useState(blankSet);
   const openEdit = (set) => {
@@ -40,8 +87,9 @@ export const ContentMain = (props) => {
   const closeEdit = () => {
     closeModal();
     setEditOpen(false);
-    setEditSet(blankSet);
+    setTimeout(() => setEditSet(blankSet), 300);
   };
+
   const content = props.content ? (
     <ContentGrid
       groups={props.groups}
@@ -63,6 +111,19 @@ export const ContentMain = (props) => {
     <>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
+        <DrawerFilter
+          view={props.view}
+          profiles={props.profiles}
+          vendors={props.allVendors}
+          open={filterOpen}
+          close={closeFilter}
+          setWhitelist={props.setWhitelist}
+          whitelist={props.whitelist}
+          snackbarQueue={props.snackbarQueue}
+          //openPreset={this.openFilterPresetDrawer}
+          //deletePreset={this.openFilterPresetDeleteDialog}
+          sort={props.sort}
+        />
         <DrawerDetails
           view={props.view}
           set={detailSet}
@@ -73,7 +134,7 @@ export const ContentMain = (props) => {
           search={props.search}
           setSearch={props.setSearch}
           toggleLichTheme={props.toggleLichTheme}
-          //openSales={this.openSalesDialog}
+          openSales={openSales}
           device={device}
         />
         <BoolWrapper
@@ -84,6 +145,7 @@ export const ContentMain = (props) => {
           {content}
           <Footer />
         </BoolWrapper>
+        <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
       </div>
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
