@@ -70,7 +70,24 @@ $graph-colors: (
   palette.$grey-500,
   palette.$brown-500,
   palette.$red-300,
-  palette.$deep-orange-300
+  palette.$deep-orange-300,
+  palette.$orange-300,
+  palette.$amber-300,
+  palette.$yellow-300,
+  palette.$lime-300,
+  palette.$light-green-300,
+  palette.$green-300,
+  palette.$teal-300,
+  palette.$cyan-300,
+  palette.$light-blue-300,
+  palette.$blue-300,
+  palette.$indigo-300,
+  palette.$deep-purple-300,
+  palette.$purple-300,
+  palette.$pink-300,
+  palette.$blue-grey-300,
+  palette.$grey-300,
+  palette.$brown-300
 );
 
 $graph-colors-dark: (
@@ -94,10 +111,27 @@ $graph-colors-dark: (
   palette.$grey-300,
   palette.$brown-300,
   palette.$red-200,
-  palette.$deep-orange-200
+  palette.$deep-orange-200,
+  palette.$orange-200,
+  palette.$amber-200,
+  palette.$yellow-200,
+  palette.$lime-200,
+  palette.$light-green-200,
+  palette.$green-200,
+  palette.$teal-200,
+  palette.$cyan-200,
+  palette.$light-blue-200,
+  palette.$blue-200,
+  palette.$indigo-200,
+  palette.$deep-purple-200,
+  palette.$purple-200,
+  palette.$pink-200,
+  palette.$blue-grey-200,
+  palette.$grey-200,
+  palette.$brown-200
 );
 
-$letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u);
+$letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
 
 @mixin theme($theme, $dark: false) {
   $text-colors: (
