@@ -10,8 +10,6 @@ import { Ripple } from "@rmwc/ripple";
 import { Autocomplete, AutocompleteMobile } from "../util/Autocomplete";
 import "./SearchBar.scss";
 
-const bodyScroll = require("body-scroll-toggle");
-
 const bemClasses = new BEMHelper("search-bar");
 
 export class SearchBarPersistent extends React.Component {
@@ -208,13 +206,11 @@ export class SearchBarModal extends React.Component {
     this.setState({
       focused: true,
     });
-    bodyScroll.disable();
   };
   handleBlur = () => {
     this.setState({
       focused: false,
     });
-    bodyScroll.enable();
   };
   createSearchTerms = () => {
     let searchTerms = [];
@@ -347,13 +343,11 @@ export class SearchAppBar extends React.Component {
     this.setState({
       focused: true,
     });
-    bodyScroll.disable();
   };
   handleBlur = () => {
     this.setState({
       focused: false,
     });
-    bodyScroll.enable();
   };
   createSearchTerms = () => {
     let searchTerms = [];
