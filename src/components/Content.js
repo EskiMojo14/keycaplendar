@@ -62,7 +62,9 @@ export const Content = (props) => {
       setSearch={props.setSearch}
       toggleLichTheme={props.toggleLichTheme}
       profiles={props.profiles}
+      allDesigners={props.allDesigners}
       allVendors={props.allVendors}
+      allRegions={props.allRegions}
       setWhitelist={props.setWhitelist}
       whitelist={props.whitelist}
       snackbarQueue={props.snackbarQueue}
@@ -121,7 +123,12 @@ export const Content = (props) => {
       />
     ) : null;
   return (
-    <div className={classNames(props.className, props.page, "app-container")}>
+    <div
+      className={classNames(props.className, props.page, "app-container", {
+        "offset-snackbar": (user.isEditor || user.isDesigner) && device !== "desktop" && mainPages.includes(props.page),
+        "bottom-nav": props.bottomNav,
+      })}
+    >
       <DrawerNav
         bottomNav={props.bottomNav}
         view={props.view}

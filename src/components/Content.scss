@@ -71,8 +71,6 @@
     transition: animation.standard(height, 250ms);
     z-index: -1;
   }
-  &.content.card::before,
-  .audit &::before,
   &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
@@ -81,19 +79,16 @@
   }
 }
 
-.bottom-app-bar.mdc-top-app-bar {
-  & ~ div .main::before {
-    content: none;
-  }
+.bottom-nav .main::before {
+  content: none;
 }
 
-.drawer-open .main.card::before {
+.drawer-open .main.extended-app-bar::before,
+.drawer-open.main.extended-app-bar::before {
   height: 0;
 }
 
 @media (max-width: top-app-bar.$mobile-breakpoint) {
-  .main.content.card::before,
-  .audit .main::before,
   .main.extended-app-bar::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }

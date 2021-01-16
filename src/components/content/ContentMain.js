@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Set } from "../../util/constructors";
 import { openModal, closeModal, boolFunctions } from "../../util/functions";
+import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { ContentGrid } from "./ContentGrid";
@@ -13,10 +14,12 @@ import { DialogSales } from "../main/DialogSales";
 import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
 import { DialogFilterPreset } from "../main/DialogFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
+import { DrawerCreate, DrawerEdit } from "../admin/DrawerEntry";
+import { DialogCreate, DialogEdit } from "../admin/DialogEntry";
 import { DialogDelete } from "../admin/DialogDelete";
 import { SnackbarDeleted } from "../admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
-import { BoolWrapper } from "../util/ConditionalWrapper";
+import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 
 export const ContentMain = (props) => {
   const { user } = useContext(UserContext);
@@ -24,10 +27,10 @@ export const ContentMain = (props) => {
   const blankSet = new Set();
   const blankPreset = new Preset();
 
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = (set) => {
     const open = () => {
-      if (device !== "desktop") {
+      if (device !== "desktop" || props.view === "compact") {
         openModal();
       }
       setFilterOpen(true);
@@ -40,9 +43,7 @@ export const ContentMain = (props) => {
     }
   };
   const closeFilter = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
+    closeModal();
     setFilterOpen(false);
   };
 
@@ -50,7 +51,7 @@ export const ContentMain = (props) => {
   const [detailSet, setDetailSet] = useState(blankSet);
   const openDetails = (set) => {
     const open = () => {
-      if (device !== "desktop") {
+      if (device !== "desktop" || props.view === "compact") {
         openModal();
       }
       setDetailsOpen(true);
@@ -64,9 +65,7 @@ export const ContentMain = (props) => {
     }
   };
   const closeDetails = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
+    closeModal();
     setDetailsOpen(false);
     setTimeout(() => setDetailSet(blankSet), 300);
   };
@@ -80,6 +79,16 @@ export const ContentMain = (props) => {
   const closeSales = () => {
     setSalesOpen(false);
     setTimeout(() => setSalesSet(blankSet), 300);
+  };
+
+  const [createOpen, setCreateOpen] = useState(false);
+  const openCreate = () => {
+    openModal();
+    setCreateOpen(true);
+  };
+  const closeCreate = () => {
+    closeModal();
+    setCreateOpen(false);
   };
 
   const [editOpen, setEditOpen] = useState(false);
@@ -186,7 +195,70 @@ export const ContentMain = (props) => {
     </>
   ) : null;
 
-  const editorElements = user.isEditor || user.isDesigner ? <>{deleteElements}</> : null;
+  const editorElements =
+    user.isEditor || user.isDesigner ? (
+      <ConditionalWrapper
+        condition={device === "desktop"}
+        wrapper={(children) => <div className="editor-elements">{children}</div>}
+      >
+        <Fab
+          className={classNames("create-fab", { middle: props.bottomNav })}
+          icon="add"
+          label={device === "desktop" ? "Create" : null}
+          onClick={openCreate}
+        />
+        {device !== "mobile" ? (
+          <>
+            <DrawerCreate
+              open={createOpen}
+              close={closeCreate}
+              profiles={props.profiles}
+              allDesigners={props.allDesigners}
+              allVendors={props.allVendors}
+              allRegions={props.allRegions}
+              getData={props.getData}
+              snackbarQueue={props.snackbarQueue}
+            />
+            <DrawerEdit
+              open={editOpen}
+              close={closeEdit}
+              profiles={props.profiles}
+              allDesigners={props.allDesigners}
+              allVendors={props.allVendors}
+              allRegions={props.allRegions}
+              set={editSet}
+              getData={props.getData}
+              snackbarQueue={props.snackbarQueue}
+            />
+          </>
+        ) : (
+          <>
+            <DialogCreate
+              open={createOpen}
+              close={closeCreate}
+              profiles={props.profiles}
+              allDesigners={props.allDesigners}
+              allVendors={props.allVendors}
+              allRegions={props.allRegions}
+              getData={props.getData}
+              snackbarQueue={props.snackbarQueue}
+            />
+            <DialogEdit
+              open={editOpen}
+              close={closeEdit}
+              profiles={props.profiles}
+              allDesigners={props.allDesigners}
+              allVendors={props.allVendors}
+              allRegions={props.allRegions}
+              set={editSet}
+              getData={props.getData}
+              snackbarQueue={props.snackbarQueue}
+            />
+          </>
+        )}
+        {deleteElements}
+      </ConditionalWrapper>
+    ) : null;
 
   const content = props.content ? (
     <ContentGrid

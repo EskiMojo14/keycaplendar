@@ -254,7 +254,7 @@ export class ContentAudit extends React.Component {
             "drawer-open": this.state.filterOpen && this.context === "desktop",
           })}
         >
-          <div className="main">
+          <div className="main extended-app-bar">
             <DrawerAuditFilter
               open={this.state.filterOpen}
               close={this.closeFilter}

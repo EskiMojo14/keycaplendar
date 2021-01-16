@@ -218,13 +218,11 @@
       padding-top: top-app-bar.$row-height + $diff;
     }
   }
-  .main.content.card::before,
-  .audit .main::before,
   .main.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + $diff);
   }
-  .drawer-open .main.content.card::before,
-  .audit .drawer-open .main::before {
+  .drawer-open .main.extended-app-bar::before,
+  .drawer-open.main.extended-app-bar::before {
     height: 0;
   }
   .statistics {
@@ -348,12 +346,11 @@
         padding-top: top-app-bar.$mobile-row-height + $diff;
       }
     }
-    .main.content.card::before,
-    .audit .main::before,
     .main.extended-app-bar::before {
       height: 256px - (top-app-bar.$mobile-row-height + $diff);
     }
-    .drawer-open .main.content.card::before {
+    .drawer-open .main.extended-app-bar::before,
+    .drawer-open.main.extended-app-bar::before {
       height: 0;
     }
     .statistics {
