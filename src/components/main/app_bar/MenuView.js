@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { viewNames } from "../../util/constants";
+import { viewNames } from "../../../util/constants";
 
 export const MenuView = (props) => {
   const onSelect = (e) => {

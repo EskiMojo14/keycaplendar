@@ -8,6 +8,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { ContentGrid } from "./ContentGrid";
 import { ContentEmpty } from "./ContentEmpty";
+import { AppBar } from "../main/app_bar/AppBar";
 import { DrawerDetails } from "../main/DrawerDetails";
 import { DrawerFilter } from "../main/DrawerFilter";
 import { DialogSales } from "../main/DialogSales";
@@ -282,6 +283,21 @@ export const ContentMain = (props) => {
   });
   return (
     <>
+      <AppBar
+        openNav={props.openNav}
+        bottomNav={props.bottomNav}
+        indent={user.isDesigner || user.isEditor}
+        page={props.page}
+        view={props.view}
+        setView={props.setView}
+        sort={props.sort}
+        setSort={props.setSort}
+        search={props.search}
+        setSearch={props.setSearch}
+        sets={props.sets}
+        loading={props.loading}
+        openFilter={openFilter}
+      />
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter

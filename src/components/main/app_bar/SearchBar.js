@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import BEMHelper from "../../util/bemHelper";
-import { setTypes } from "../../util/propTypeTemplates";
+import BEMHelper from "../../../util/bemHelper";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
-import { Autocomplete, AutocompleteMobile } from "../util/Autocomplete";
+import { Autocomplete, AutocompleteMobile } from "../../util/Autocomplete";
 import "./SearchBar.scss";
 
 const bemClasses = new BEMHelper("search-bar");

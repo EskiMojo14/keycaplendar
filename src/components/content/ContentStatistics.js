@@ -1262,9 +1262,24 @@ export class ContentStatistics extends React.Component {
           statisticsTab={this.props.statisticsTab}
         />
       ) : null;
+    const tabRow = (
+      <TopAppBarRow className="tab-row">
+        <TopAppBarSection alignStart>
+          <TabBar
+            activeTabIndex={statsTabs.indexOf(this.props.statisticsTab)}
+            onActivate={(e) => this.props.setStatisticsTab(statsTabs[e.detail.index])}
+          >
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{capitalise(tab)}</Tab>
+            ))}
+          </TabBar>
+        </TopAppBarSection>
+      </TopAppBarRow>
+    );
     return (
       <>
         <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
+          {this.props.bottomNav ? tabRow : null}
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
@@ -1272,18 +1287,7 @@ export class ContentStatistics extends React.Component {
             </TopAppBarSection>
             <TopAppBarSection alignEnd>{buttons[this.props.statisticsTab]}</TopAppBarSection>
           </TopAppBarRow>
-          <TopAppBarRow className="tab-row">
-            <TopAppBarSection alignStart>
-              <TabBar
-                activeTabIndex={statsTabs.indexOf(this.props.statisticsTab)}
-                onActivate={(e) => this.props.setStatisticsTab(statsTabs[e.detail.index])}
-              >
-                {statsTabs.map((tab) => (
-                  <Tab key={tab}>{capitalise(tab)}</Tab>
-                ))}
-              </TabBar>
-            </TopAppBarSection>
-          </TopAppBarRow>
+          {this.props.bottomNav ? null : tabRow}
           <LinearProgress closed={this.state.dataCreated} />
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}

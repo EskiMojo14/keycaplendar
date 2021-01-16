@@ -5,7 +5,7 @@ import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal } from "../util/functions";
 import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
-import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./app_bar/AppBar";
+import { DesktopAppBar, TabletAppBar, MobileAppBar, BottomAppBar, BottomAppBarIndent } from "./main/app_bar/AppBar";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { Fab } from "@rmwc/fab";
@@ -26,7 +26,7 @@ import { DialogFilterPreset } from "./main/DialogFilterPreset";
 import { DialogDeleteFilterPreset } from "./main/DialogDeleteFilterPreset";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
-import { SearchAppBar } from "./app_bar/SearchBar";
+import { SearchAppBar } from "./main/app_bar/SearchBar";
 import { Footer } from "./common/Footer";
 import "./Content.scss";
 
@@ -51,11 +51,12 @@ export const Content = (props) => {
       bottomNav={props.bottomNav}
       navOpen={navOpen}
       openNav={openNav}
+      page={props.page}
       content={props.content}
       groups={props.groups}
       sets={props.sets}
       sort={props.sort}
-      page={props.page}
+      setSort={props.setSort}
       view={props.view}
       setView={props.setView}
       search={props.search}
