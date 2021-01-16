@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import classNames from "classnames";
-import { DeviceContext } from "../../util/contexts";
-import { Set } from "../../util/constructors";
+import { DeviceContext, UserContext } from "../../util/contexts";
+import { Preset, Set } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -10,12 +10,17 @@ import { ContentEmpty } from "./ContentEmpty";
 import { DrawerDetails } from "../common/DrawerDetails";
 import { DrawerFilter } from "../common/DrawerFilter";
 import { DialogSales } from "../common/DialogSales";
+import { DrawerFilterPreset } from "../common/DrawerFilterPreset";
+import { DialogFilterPreset } from "../common/DialogFilterPreset";
+import { DialogDeleteFilterPreset } from "../common/DialogDeleteFilterPreset";
 import { Footer } from "../common/Footer";
 import { BoolWrapper } from "../util/ConditionalWrapper";
 
 export const ContentMain = (props) => {
+  const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const blankSet = new Set();
+  const blankPreset = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = (set) => {
@@ -90,6 +95,63 @@ export const ContentMain = (props) => {
     setTimeout(() => setEditSet(blankSet), 300);
   };
 
+  const [filterPresetOpen, setFilterPresetOpen] = useState(false);
+  const [filterPreset, setFilterPreset] = useState(blankPreset);
+  const openFilterPreset = (preset) => {
+    const open = () => {
+      openModal();
+      setFilterPresetOpen(true);
+      setFilterPreset(preset);
+    };
+    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+      closeFilter();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
+  };
+  const closeFilterPreset = () => {
+    closeModal();
+    setFilterPresetOpen(false);
+    setTimeout(() => setFilterPreset(blankPreset), 300);
+  };
+
+  const [deleteFilterPresetOpen, setDeleteFilterPresetOpen] = useState(false);
+  const [deleteFilterPreset, setDeleteFilterPreset] = useState(blankPreset);
+  const openDeleteFilterPreset = (preset) => {
+    const open = () => {
+      openModal();
+      setDeleteFilterPresetOpen(true);
+      setDeleteFilterPreset(preset);
+    };
+    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+      closeFilter();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
+  };
+  const closeDeleteFilterPreset = () => {
+    closeModal();
+    setDeleteFilterPresetOpen(false);
+    setTimeout(() => setDeleteFilterPreset(blankPreset), 300);
+  };
+
+  const filterPresetElements = user.email ? (
+    <>
+      {device !== "mobile" ? (
+        <DrawerFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
+      ) : (
+        <DialogFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
+      )}
+      <DialogDeleteFilterPreset
+        open={deleteFilterPresetOpen}
+        close={closeDeleteFilterPreset}
+        preset={deleteFilterPreset}
+      />
+    </>
+  ) : null;
+
   const content = props.content ? (
     <ContentGrid
       groups={props.groups}
@@ -120,8 +182,8 @@ export const ContentMain = (props) => {
           setWhitelist={props.setWhitelist}
           whitelist={props.whitelist}
           snackbarQueue={props.snackbarQueue}
-          //openPreset={this.openFilterPresetDrawer}
-          //deletePreset={this.openFilterPresetDeleteDialog}
+          openPreset={openFilterPreset}
+          deletePreset={openDeleteFilterPreset}
           sort={props.sort}
         />
         <DrawerDetails
@@ -146,6 +208,7 @@ export const ContentMain = (props) => {
           <Footer />
         </BoolWrapper>
         <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
+        {filterPresetElements}
       </div>
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
