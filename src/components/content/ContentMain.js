@@ -33,10 +33,14 @@ export const ContentMain = (props) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = (set) => {
     const open = () => {
-      if (device !== "desktop" || props.view === "compact") {
-        openModal();
+      if (filterOpen && device === "desktop") {
+        closeFilter();
+      } else {
+        if (device !== "desktop" || props.view === "compact") {
+          openModal();
+        }
+        setFilterOpen(true);
       }
-      setFilterOpen(true);
     };
     if (detailsOpen) {
       closeDetails();
