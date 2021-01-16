@@ -537,11 +537,6 @@ ContentUsers.contextType = DeviceContext;
 ContentUsers.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   device: PropTypes.string,
-  loading: PropTypes.bool,
-  reverseSort: PropTypes.bool,
-  setSort: PropTypes.func,
+  openNav: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
-  sort: PropTypes.string,
-  toggleLoading: PropTypes.func,
-  view: PropTypes.string,
 };

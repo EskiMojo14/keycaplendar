@@ -309,5 +309,7 @@ export default ContentAudit;
 ContentAudit.contextType = DeviceContext;
 
 ContentAudit.propTypes = {
+  bottomNav: PropTypes.bool,
+  openNav: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
 };

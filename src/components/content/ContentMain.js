@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
+import PropTypes from "prop-types";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Set } from "../../util/constructors";
 import { openModal, closeModal, boolFunctions } from "../../util/functions";
+import { queueTypes, setTypes, whitelistTypes } from "../../util/propTypeTemplates";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -341,4 +343,30 @@ export const ContentMain = (props) => {
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
+};
+
+ContentMain.propTypes = {
+  bottomNav: PropTypes.bool,
+  navOpen: PropTypes.bool,
+  openNav: PropTypes.func,
+  page: PropTypes.string,
+  content: PropTypes.bool,
+  groups: PropTypes.arrayOf(PropTypes.string),
+  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
+  sort: PropTypes.string,
+  setSort: PropTypes.func,
+  view: PropTypes.string,
+  setView: PropTypes.func,
+  search: PropTypes.string,
+  setSearch: PropTypes.func,
+  toggleLichTheme: PropTypes.func,
+  profiles: PropTypes.arrayOf(PropTypes.string),
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
+  allVendors: PropTypes.arrayOf(PropTypes.string),
+  allRegions: PropTypes.arrayOf(PropTypes.string),
+  setWhitelist: PropTypes.func,
+  whitelist: PropTypes.shape(whitelistTypes),
+  snackbarQueue: PropTypes.shape(queueTypes),
+  loading: PropTypes.bool,
+  getData: PropTypes.func,
 };

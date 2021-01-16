@@ -23,8 +23,6 @@ export const userPages = ["favorites", "hidden"];
 
 export const adminPages = ["audit", "users"];
 
-export const noButtonPages = ["settings"];
-
 export const pageTitle = {
   calendar: "Calendar",
   live: "Live GBs",

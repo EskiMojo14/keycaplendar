@@ -164,7 +164,7 @@ export default ContentGrid;
 
 ContentGrid.propTypes = {
   closeDetails: PropTypes.func,
-  detailset: PropTypes.shape(setTypes()),
+  detailSet: PropTypes.shape(setTypes()),
   details: PropTypes.func,
   edit: PropTypes.func,
   groups: PropTypes.arrayOf(PropTypes.string),

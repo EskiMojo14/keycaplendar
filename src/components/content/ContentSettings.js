@@ -347,6 +347,7 @@ ContentSettings.propTypes = {
   fromTimeTheme: PropTypes.string,
   lightTheme: PropTypes.string,
   manualTheme: PropTypes.bool,
+  openNav: PropTypes.func,
   setApplyTheme: PropTypes.func,
   setBottomNav: PropTypes.func,
   setDarkTheme: PropTypes.func,

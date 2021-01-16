@@ -9,7 +9,7 @@ import { create, all } from "mathjs";
 import classNames from "classnames";
 import { statsTabs } from "../../util/constants";
 import { camelise, capitalise, countInArray, iconObject, openModal, closeModal } from "../../util/functions";
-import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
+import { setTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -1416,11 +1416,11 @@ ContentStatistics.contextType = DeviceContext;
 ContentStatistics.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allVendors: PropTypes.arrayOf(PropTypes.string),
+  bottomNav: PropTypes.bool,
   navOpen: PropTypes.bool,
+  openNav: PropTypes.func,
   profiles: PropTypes.arrayOf(PropTypes.string),
-  setStatisticsSort: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  statistics: PropTypes.shape(statisticsTypes),
-  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  setStatisticsTab: PropTypes.func,
   statisticsTab: PropTypes.string,
 };

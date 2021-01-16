@@ -101,10 +101,10 @@ export const DrawerNav = (props) => {
 export default DrawerNav;
 
 DrawerNav.propTypes = {
-  setPage: PropTypes.func,
+  bottomNav: PropTypes.bool,
   close: PropTypes.func,
-  device: PropTypes.string,
   open: PropTypes.bool,
   page: PropTypes.string,
+  setPage: PropTypes.func,
   view: PropTypes.string,
 };
