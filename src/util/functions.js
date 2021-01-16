@@ -44,10 +44,10 @@ export const iconObject = (jsx) => {
 };
 
 export const openModal = () => {
-  document.querySelector("body").classList.add("mdc-dialog-scroll-lock");
+  document.querySelector("body").classList.add("scroll-lock");
 };
 export const closeModal = () => {
-  document.querySelector("body").classList.remove("mdc-dialog-scroll-lock");
+  document.querySelector("body").classList.remove("scroll-lock");
 };
 
 export const boolFunctions = (func) => {

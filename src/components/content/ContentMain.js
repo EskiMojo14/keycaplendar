@@ -2,17 +2,19 @@ import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Set } from "../../util/constructors";
-import { openModal, closeModal } from "../../util/functions";
+import { openModal, closeModal, boolFunctions } from "../../util/functions";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { ContentGrid } from "./ContentGrid";
 import { ContentEmpty } from "./ContentEmpty";
-import { DrawerDetails } from "../common/DrawerDetails";
-import { DrawerFilter } from "../common/DrawerFilter";
-import { DialogSales } from "../common/DialogSales";
-import { DrawerFilterPreset } from "../common/DrawerFilterPreset";
-import { DialogFilterPreset } from "../common/DialogFilterPreset";
-import { DialogDeleteFilterPreset } from "../common/DialogDeleteFilterPreset";
+import { DrawerDetails } from "../main/DrawerDetails";
+import { DrawerFilter } from "../main/DrawerFilter";
+import { DialogSales } from "../main/DialogSales";
+import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
+import { DialogFilterPreset } from "../main/DialogFilterPreset";
+import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
+import { DialogDelete } from "../admin/DialogDelete";
+import { SnackbarDeleted } from "../admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import { BoolWrapper } from "../util/ConditionalWrapper";
 
@@ -22,7 +24,7 @@ export const ContentMain = (props) => {
   const blankSet = new Set();
   const blankPreset = new Preset();
 
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(true);
   const openFilter = (set) => {
     const open = () => {
       if (device !== "desktop") {
@@ -31,7 +33,7 @@ export const ContentMain = (props) => {
       setFilterOpen(true);
     };
     if (detailsOpen) {
-      closeFilter();
+      closeDetails();
       setTimeout(() => open(), 300);
     } else {
       open();
@@ -72,12 +74,10 @@ export const ContentMain = (props) => {
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState(blankSet);
   const openSales = (set) => {
-    openModal();
     setSalesOpen(true);
     setSalesSet(set);
   };
   const closeSales = () => {
-    closeModal();
     setSalesOpen(false);
     setTimeout(() => setSalesSet(blankSet), 300);
   };
@@ -93,6 +93,20 @@ export const ContentMain = (props) => {
     closeModal();
     setEditOpen(false);
     setTimeout(() => setEditSet(blankSet), 300);
+  };
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
+  const [closeDeleteSnackbar, openDeleteSnackbar] = boolFunctions(setDeleteSnackbarOpen);
+  const [deleteSet, setDeleteSet] = useState(blankSet);
+  const openDeleteDialog = (set) => {
+    closeDetails();
+    setDeleteDialogOpen(true);
+    setDeleteSet(set);
+  };
+  const closeDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setTimeout(() => setDeleteSet(blankSet), 300);
   };
 
   const [filterPresetOpen, setFilterPresetOpen] = useState(false);
@@ -152,6 +166,28 @@ export const ContentMain = (props) => {
     </>
   ) : null;
 
+  const deleteElements = user.isEditor ? (
+    <>
+      <DialogDelete
+        open={deleteDialogOpen}
+        close={closeDeleteDialog}
+        set={deleteSet}
+        openSnackbar={openDeleteSnackbar}
+        getData={props.getData}
+        snackbarQueue={props.snackbarQueue}
+      />
+      <SnackbarDeleted
+        open={deleteSnackbarOpen}
+        close={closeDeleteSnackbar}
+        set={deleteSet}
+        getData={props.getData}
+        snackbarQueue={props.snackbarQueue}
+      />
+    </>
+  ) : null;
+
+  const editorElements = user.isEditor || user.isDesigner ? <>{deleteElements}</> : null;
+
   const content = props.content ? (
     <ContentGrid
       groups={props.groups}
@@ -167,8 +203,11 @@ export const ContentMain = (props) => {
   ) : (
     <ContentEmpty page={props.page} />
   );
-  const drawerOpen = detailsOpen && device === "desktop";
-  const wrapperClasses = classNames("main", props.view, { "extended-app-bar": props.view === "card" && !drawerOpen });
+  const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
+  const wrapperClasses = classNames("main", props.view, {
+    "extended-app-bar": props.view === "card" && !props.bottomNav,
+    "drawer-open": drawerOpen,
+  });
   return (
     <>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
@@ -192,7 +231,7 @@ export const ContentMain = (props) => {
           open={detailsOpen}
           close={closeDetails}
           edit={openEdit}
-          //delete={this.openDeleteDialog}
+          delete={openDeleteDialog}
           search={props.search}
           setSearch={props.setSearch}
           toggleLichTheme={props.toggleLichTheme}
@@ -209,6 +248,7 @@ export const ContentMain = (props) => {
         </BoolWrapper>
         <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
         {filterPresetElements}
+        {editorElements}
       </div>
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>

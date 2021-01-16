@@ -17,13 +17,13 @@ import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentUsers } from "./content/ContentUsers";
 import { DialogDelete } from "./admin/DialogDelete";
-import { DialogSales } from "./common/DialogSales";
+import { DialogSales } from "./main/DialogSales";
 import { DialogCreate, DialogEdit } from "./admin/DialogEntry";
-import { DrawerFilter } from "./common/DrawerFilter";
-import { DrawerDetails } from "./common/DrawerDetails";
-import { DrawerFilterPreset } from "./common/DrawerFilterPreset";
-import { DialogFilterPreset } from "./common/DialogFilterPreset";
-import { DialogDeleteFilterPreset } from "./common/DialogDeleteFilterPreset";
+import { DrawerFilter } from "./main/DrawerFilter";
+import { DrawerDetails } from "./main/DrawerDetails";
+import { DrawerFilterPreset } from "./main/DrawerFilterPreset";
+import { DialogFilterPreset } from "./main/DialogFilterPreset";
+import { DialogDeleteFilterPreset } from "./main/DialogDeleteFilterPreset";
 import { DrawerCreate, DrawerEdit } from "./admin/DrawerEntry";
 import { SnackbarDeleted } from "./admin/SnackbarDeleted";
 import { SearchAppBar } from "./app_bar/SearchBar";
@@ -66,6 +66,8 @@ export const Content = (props) => {
       setWhitelist={props.setWhitelist}
       whitelist={props.whitelist}
       snackbarQueue={props.snackbarQueue}
+      loading={props.loading}
+      getData={props.getData}
     />
   ) : null;
   const contentStatistics =

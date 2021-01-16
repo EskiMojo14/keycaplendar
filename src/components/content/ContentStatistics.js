@@ -888,13 +888,11 @@ export class ContentStatistics extends React.Component {
     });
   };
   openCategoryDialog = () => {
-    openModal();
     this.setState({
       categoryDialogOpen: true,
     });
   };
   closeCategoryDialog = () => {
-    closeModal();
     this.setState({
       categoryDialogOpen: false,
     });

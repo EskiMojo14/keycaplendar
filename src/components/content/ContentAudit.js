@@ -80,14 +80,12 @@ export class ContentAudit extends React.Component {
     });
   };
   openDelete = (action) => {
-    openModal();
     this.setState({
       deleteOpen: true,
       deleteAction: action,
     });
   };
   closeDelete = () => {
-    closeModal();
     this.setState({
       deleteOpen: false,
     });
