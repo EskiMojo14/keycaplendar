@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
@@ -18,11 +18,15 @@ export const Content = (props) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const [navOpen, setNavOpen] = useState(false);
+  const [navEdited, setNavEdited] = useState(false);
   const openNav = () => {
     if (device !== "desktop") {
       openModal();
     }
     setNavOpen(true);
+    if (!navEdited && device !== "desktop") {
+      setNavEdited(true);
+    }
   };
   const closeNav = () => {
     if (device !== "desktop") {
@@ -30,6 +34,13 @@ export const Content = (props) => {
     }
     setNavOpen(false);
   };
+
+  useEffect(() => {
+    if (device === "desktop" && !navEdited) {
+      setNavOpen(true);
+    }
+  }, [device, navEdited]);
+
   const contentMain = mainPages.includes(props.page) ? (
     <ContentMain
       bottomNav={props.bottomNav}

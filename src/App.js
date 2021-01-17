@@ -25,7 +25,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      device: "desktop",
+      device: "tablet",
       bottomNav: false,
       page: "calendar",
       statisticsTab: "timeline",
@@ -777,13 +777,19 @@ class App extends React.Component {
       if (vw !== lastWidth || i === 0) {
         if (vw >= 840) {
           device = "desktop";
-          this.setState({ device: device });
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         } else if (vw < 840 && vw >= 480) {
           device = "tablet";
-          this.setState({ device: device });
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         } else {
           device = "mobile";
-          this.setState({ device: device });
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         }
         lastWidth = vw;
         i++;
