@@ -81,7 +81,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      if (urlPages.includes(pageQuery)) {
+      if (urlPages.includes(pageQuery) || process.env.NODE_ENV === "development") {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
