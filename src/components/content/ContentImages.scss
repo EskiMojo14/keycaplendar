@@ -25,6 +25,23 @@
           filter: grayscale(100%);
         }
       }
+      .container {
+        position: relative;
+        .checkbox-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: flex-end;
+          background: linear-gradient(rgba(black, 0.7), transparent);
+          .mdc-checkbox {
+            &__background {
+              border-radius: 50%;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -5,8 +5,10 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { capitalise } from "../../util/functions";
+import { capitalise, addOrRemove } from "../../util/functions";
+import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
+import { LinearProgress } from "@rmwc/linear-progress";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -47,13 +49,15 @@ export class ContentImages extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentFolder: "image-list",
+      currentFolder: "keysets",
       folders: [],
       images: [],
+      checkedImages: [],
       setImages: [],
       detailOpen: false,
       detailImage: blankImage,
       detailMetadata: {},
+      loading: false,
     };
   }
   componentDidMount() {
@@ -120,9 +124,10 @@ export class ContentImages extends React.Component {
       }
       return 0;
     });
-    this.setState({ images: images });
+    this.setState({ images: images, checkedImages: [], loading: false });
   };
   listAll = (path = "") => {
+    this.setState({ loading: true });
     storageRef
       .listAll()
       .then((res) => {
@@ -165,6 +170,10 @@ export class ContentImages extends React.Component {
   closeDetails = () => {
     this.setState({ detailOpen: false, detailImage: blankImage, detailMetadata: {} });
   };
+  handleChecked = (image) => {
+    const editedArray = addOrRemove([...this.state.checkedImages], image.fullPath);
+    this.setState({ checkedImages: editedArray });
+  };
   render() {
     const unusedImages = this.state.images.filter((image) => !this.state.setImages.includes(image.name));
     const usedImages = this.state.images.filter((image) => this.state.setImages.includes(image.name));
@@ -201,6 +210,7 @@ export class ContentImages extends React.Component {
               </ToggleGroup>
             </TopAppBarSection>
           </TopAppBarRow>
+          <LinearProgress closed={!this.state.loading} />
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
         <div
@@ -230,22 +240,36 @@ export class ContentImages extends React.Component {
                         {obj.array.map((image) => {
                           return (
                             <Ripple key={image.fullPath}>
-                              <ImageListItem
-                                className={classNames({ selected: image === this.state.detailImage })}
-                                onClick={() => this.openDetails(image)}
-                              >
-                                <ImageListImageAspectContainer
-                                  style={{
-                                    paddingBottom: "calc(100% /" + aspectRatios[this.state.currentFolder] + ")",
-                                  }}
-                                >
-                                  <LazyLoad debounce={false} offsetVertical={480}>
-                                    <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
-                                  </LazyLoad>
-                                </ImageListImageAspectContainer>
-                                <ImageListSupporting>
-                                  <ImageListLabel>{image.name}</ImageListLabel>
-                                </ImageListSupporting>
+                              <ImageListItem className={classNames({ selected: image === this.state.detailImage })}>
+                                <div className="container">
+                                  <div className="item-container" onClick={() => this.openDetails(image)}>
+                                    <ImageListImageAspectContainer
+                                      style={{
+                                        paddingBottom: "calc(100% /" + aspectRatios[this.state.currentFolder] + ")",
+                                      }}
+                                    >
+                                      <LazyLoad debounce={false} offsetVertical={480}>
+                                        <ImageListImage
+                                          tag="div"
+                                          style={{ backgroundImage: "url(" + image.src + ")" }}
+                                        />
+                                      </LazyLoad>
+                                    </ImageListImageAspectContainer>
+                                    <ImageListSupporting>
+                                      <ImageListLabel>{image.name}</ImageListLabel>
+                                    </ImageListSupporting>
+                                  </div>
+                                  <div className="checkbox-container">
+                                    <div className="checkbox">
+                                      <Checkbox
+                                        checked={this.state.checkedImages.includes(image.fullPath)}
+                                        onClick={() => {
+                                          this.handleChecked(image);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
                               </ImageListItem>
                             </Ripple>
                           );
