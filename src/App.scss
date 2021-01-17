@@ -156,6 +156,7 @@
 
 .mdc-image-list__item {
   @include shape.radius(medium);
+  overflow: hidden;
 }
 
 .mdc-linear-progress {

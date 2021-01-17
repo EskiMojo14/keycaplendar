@@ -9,7 +9,6 @@
 .outer-container .mdc-image-list__item {
   cursor: pointer;
   margin: 2px;
-  overflow: hidden;
   @include ripple.surface;
   @include ripple.radius-bounded;
   @include ripple.states(black);

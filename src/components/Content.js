@@ -97,7 +97,14 @@ export const Content = (props) => {
       />
     ) : null;
   const contentImages =
-    props.page === "images" && user.isAdmin ? <ContentImages openNav={openNav} bottomNav={props.bottomNav} /> : null;
+    props.page === "images" && user.isAdmin ? (
+      <ContentImages
+        openNav={openNav}
+        bottomNav={props.bottomNav}
+        sets={props.allSets}
+        snackbarQueue={props.snackbarQueue}
+      />
+    ) : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings

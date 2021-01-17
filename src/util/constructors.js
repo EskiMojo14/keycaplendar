@@ -31,3 +31,10 @@ export function Set(colorway = "", designer = [], details = "", icDate = "", id 
   this.image = image;
   this.profile = profile;
 }
+
+export function ImageObj(name = "", parent = "", fullPath = "", src = "") {
+  this.name = name;
+  this.parent = parent;
+  this.fullPath = fullPath;
+  this.src = src;
+}

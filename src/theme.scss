@@ -407,11 +407,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         @include ripple.states(map-get($variables, primary));
         .mdc-image-list__supporting {
           background-color: rgba(map-get($variables, on-primary), 0.75);
-          .primary-text,
-          .secondary-text,
-          .overline {
-            color: map-get($variables, primary);
-          }
+          color: map-get($variables, primary);
           .live-indicator,
           .shipped-indicator {
             fill: map-get($variables, primary);
