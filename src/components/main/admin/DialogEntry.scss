@@ -1,7 +1,7 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
-@use "../../util";
+@use "../../../util";
 .form {
   width: 100%;
   padding: 16px;

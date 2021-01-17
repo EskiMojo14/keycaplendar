@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../../firebase";
+import firebase from "../../../firebase";
 import classNames from "classnames";
-import { UserContext } from "../../util/contexts";
-import { camelise, normalise, iconObject } from "../../util/functions";
-import { setTypes, queueTypes } from "../../util/propTypeTemplates";
+import { UserContext } from "../../../util/contexts";
+import { camelise, normalise, iconObject } from "../../../util/functions";
+import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
 import { Button } from "@rmwc/button";
@@ -19,8 +19,8 @@ import { Tooltip } from "@rmwc/tooltip";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./ImageUpload";
-import { Autocomplete } from "../util/Autocomplete";
-import { FullScreenDialog, FullScreenDialogContent } from "../util/FullScreenDialog";
+import { Autocomplete } from "../../util/Autocomplete";
+import { FullScreenDialog, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
 const getVendorStyle = (provided, snapshot) => {

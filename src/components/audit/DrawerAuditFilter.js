@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { DeviceContext } from "../../../util/contexts";
+import { DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";

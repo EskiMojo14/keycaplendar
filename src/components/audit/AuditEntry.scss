@@ -1,7 +1,7 @@
 @use "@material/theme/color-palette" as palette;
 @use "@material/shape/_index" as shape;
 @use "@material/typography/_index" as typography;
-@use "../../../util";
+@use "../../util";
 
 .log .rmwc-collapsible-list {
   @include util.divider-border(bottom);

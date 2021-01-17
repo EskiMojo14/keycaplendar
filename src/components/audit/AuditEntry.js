@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { actionTypes } from "../../../util/propTypeTemplates";
+import { actionTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,

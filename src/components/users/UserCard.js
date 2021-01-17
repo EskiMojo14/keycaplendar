@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../../../firebase";
-import { userTypes, queueTypes } from "../../../util/propTypeTemplates";
-import { UserContext } from "../../../util/contexts";
-import { iconObject } from "../../../util/functions";
+import firebase from "../../firebase";
+import { userTypes, queueTypes } from "../../util/propTypeTemplates";
+import { UserContext } from "../../util/contexts";
+import { iconObject } from "../../util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -11,8 +11,8 @@ import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "../../util/Autocomplete";
-import { ToggleGroup, ToggleGroupButton } from "../../util/ToggleGroup";
+import { Autocomplete } from "../util/Autocomplete";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 
 export class UserCard extends React.Component {
   constructor(props) {

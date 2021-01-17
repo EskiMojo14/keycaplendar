@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../../../firebase";
-import { UserContext } from "../../../util/contexts";
-import { iconObject } from "../../../util/functions";
-import { userTypes, queueTypes } from "../../../util/propTypeTemplates";
+import firebase from "../../firebase";
+import { UserContext } from "../../util/contexts";
+import { iconObject } from "../../util/functions";
+import { userTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -11,7 +11,7 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "../../util/Autocomplete";
+import { Autocomplete } from "../util/Autocomplete";
 
 export class UserRow extends React.Component {
   constructor(props) {

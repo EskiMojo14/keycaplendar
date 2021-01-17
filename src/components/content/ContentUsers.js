@@ -28,8 +28,8 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { UserRow } from "../admin/users/UserRow";
-import { UserCard } from "../admin/users/UserCard";
+import { UserRow } from "../users/UserRow";
+import { UserCard } from "../users/UserCard";
 import {
   DataTablePagination,
   DataTablePaginationTrailing,

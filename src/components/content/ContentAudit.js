@@ -20,9 +20,9 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { DrawerAuditFilter } from "../admin/audit_log/DrawerAuditFilter";
-import { DialogAuditDelete } from "../admin/audit_log/DialogAuditDelete";
-import { AuditEntry } from "../admin/audit_log/AuditEntry";
+import { DrawerAuditFilter } from "../audit/DrawerAuditFilter";
+import { DialogAuditDelete } from "../audit/DialogAuditDelete";
+import { AuditEntry } from "../audit/AuditEntry";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import { Footer } from "../common/Footer";
 import "./ContentAudit.scss";

@@ -17,10 +17,10 @@ import { DialogSales } from "../main/DialogSales";
 import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
 import { DialogFilterPreset } from "../main/DialogFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
-import { DrawerCreate, DrawerEdit } from "../admin/DrawerEntry";
-import { DialogCreate, DialogEdit } from "../admin/DialogEntry";
-import { DialogDelete } from "../admin/DialogDelete";
-import { SnackbarDeleted } from "../admin/SnackbarDeleted";
+import { DrawerCreate, DrawerEdit } from "../main/admin/DrawerEntry";
+import { DialogCreate, DialogEdit } from "../main/admin/DialogEntry";
+import { DialogDelete } from "../main/admin/DialogDelete";
+import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 
