@@ -216,6 +216,15 @@ export const AuditEntry = (props) => {
                                   </a>
                                 </span>
                               </div>
+                              {beforeVendor.endDate ? (
+                                <div>
+                                  <span
+                                    className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  >
+                                    End date: {beforeVendor.endDate}
+                                  </span>
+                                </div>
+                              ) : null}
                             </DataTableCell>
                             <DataTableCell className="after">
                               <div>
@@ -245,6 +254,15 @@ export const AuditEntry = (props) => {
                                   </a>
                                 </span>
                               </div>
+                              {afterVendor.endDate ? (
+                                <div>
+                                  <span
+                                    className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  >
+                                    End date: {afterVendor.endDate}
+                                  </span>
+                                </div>
+                              ) : null}
                             </DataTableCell>
                           </DataTableRow>
                         );
@@ -342,6 +360,11 @@ export const AuditEntry = (props) => {
                                 </a>
                               </span>
                             </div>
+                            {docData.vendors[index].endDate ? (
+                              <div>
+                                <span className="highlight">End date: {docData.vendors[index].endDate}</span>
+                              </div>
+                            ) : null}
                           </DataTableCell>
                         </DataTableRow>
                       );
