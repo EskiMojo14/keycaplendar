@@ -1,0 +1,11 @@
+.details-drawer.image-details {
+  .image {
+    max-width: 100%;
+    max-height: 192px;
+    &-container {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+  }
+}

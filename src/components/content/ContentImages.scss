@@ -3,29 +3,29 @@
 .image-grid {
   flex-grow: 1;
   padding: 16px;
-  .display-container {
-    .subheader {
-      padding-bottom: 16px;
-    }
-    .mdc-image-list {
-      &__item {
-        margin: 2px;
-        width: calc((100% * 1 / 6) - 4px);
-        @include ripple.surface;
-        @include ripple.radius-bounded;
-        @include ripple.states(black);
-        cursor: pointer;
-        &.selected {
-          &::before {
-            opacity: 0.24;
-          }
-          .mdc-image-list__image {
-            filter: grayscale(100%);
-          }
+}
+.display-container {
+  padding-bottom: 16px;
+  .subheader {
+    padding-bottom: 16px;
+  }
+  .mdc-image-list {
+    &__item {
+      margin: 2px;
+      width: calc((100% * 1 / 6) - 4px);
+      @include ripple.surface;
+      @include ripple.radius-bounded;
+      @include ripple.states(black);
+      cursor: pointer;
+      &.selected {
+        &::before {
+          opacity: 0.24;
+        }
+        .mdc-image-list__image {
+          filter: grayscale(100%);
         }
       }
     }
-    padding-bottom: 16px;
   }
 }
 

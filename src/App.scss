@@ -445,6 +445,7 @@ svg.material-icons,
 .sales-image,
 .sales-image img,
 .details-image,
+.image-details .image,
 .image-display {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
 }

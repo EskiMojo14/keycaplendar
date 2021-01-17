@@ -4,7 +4,9 @@ import isEqual from "lodash.isequal";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
+import { DeviceContext } from "../../util/contexts";
 import { capitalise } from "../../util/functions";
+import { DrawerAppContent } from "@rmwc/drawer";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -23,9 +25,11 @@ import {
 } from "@rmwc/image-list";
 import { Ripple } from "@rmwc/ripple";
 import { Typography } from "@rmwc/typography";
+import { DrawerDetails } from "../images/DrawerDetails";
 import { Footer } from "../common/Footer";
-import "./ContentImages.scss";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { ConditionalWrapper } from "../util/ConditionalWrapper";
+import "./ContentImages.scss";
 
 const storage = firebase.storage();
 
@@ -106,8 +110,8 @@ export class ContentImages extends React.Component {
       return obj;
     });
     images.sort((a, b) => {
-      var nameA = a.name.toLowerCase();
-      var nameB = b.name.toLowerCase();
+      var nameA = a.name.replace(".png", "").toLowerCase();
+      var nameB = b.name.replace(".png", "").toLowerCase();
       if (nameA < nameB) {
         return -1;
       }
@@ -199,43 +203,60 @@ export class ContentImages extends React.Component {
           </TopAppBarRow>
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
-        <div className={classNames("content-container")}>
+        <div
+          className={classNames("content-container", {
+            "drawer-open": this.context === "desktop" && this.state.detailOpen,
+          })}
+        >
           <div className="main">
-            <div className="image-grid">
-              {display.map((obj) =>
-                obj.array.length > 0 ? (
-                  <div className="display-container" key={obj.title}>
-                    <div className="subheader">
-                      <Typography use="caption">{obj.title}</Typography>
-                    </div>
-                    <ImageList style={{ margin: -2 }} withTextProtection>
-                      {obj.array.map((image) => {
-                        return (
-                          <Ripple key={image.fullPath}>
-                            <ImageListItem
-                              className={classNames({ selected: image === this.state.detailImage })}
-                              onClick={() => this.openDetails(image)}
-                            >
-                              <ImageListImageAspectContainer
-                                style={{ paddingBottom: "calc(100% /" + aspectRatios[this.state.currentFolder] + ")" }}
+            <DrawerDetails
+              open={this.state.detailOpen}
+              close={this.closeDetails}
+              image={this.state.detailImage}
+              metadata={this.state.detailMetadata}
+            />
+            <ConditionalWrapper
+              condition={this.context === "desktop"}
+              wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
+            >
+              <div className="image-grid">
+                {display.map((obj) =>
+                  obj.array.length > 0 ? (
+                    <div className="display-container" key={obj.title}>
+                      <div className="subheader">
+                        <Typography use="caption">{obj.title}</Typography>
+                      </div>
+                      <ImageList style={{ margin: -2 }} withTextProtection>
+                        {obj.array.map((image) => {
+                          return (
+                            <Ripple key={image.fullPath}>
+                              <ImageListItem
+                                className={classNames({ selected: image === this.state.detailImage })}
+                                onClick={() => this.openDetails(image)}
                               >
-                                <LazyLoad debounce={false} offsetVertical={480}>
-                                  <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
-                                </LazyLoad>
-                              </ImageListImageAspectContainer>
-                              <ImageListSupporting>
-                                <ImageListLabel>{image.name}</ImageListLabel>
-                              </ImageListSupporting>
-                            </ImageListItem>
-                          </Ripple>
-                        );
-                      })}
-                    </ImageList>
-                  </div>
-                ) : null
-              )}
-            </div>
-            <Footer />
+                                <ImageListImageAspectContainer
+                                  style={{
+                                    paddingBottom: "calc(100% /" + aspectRatios[this.state.currentFolder] + ")",
+                                  }}
+                                >
+                                  <LazyLoad debounce={false} offsetVertical={480}>
+                                    <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
+                                  </LazyLoad>
+                                </ImageListImageAspectContainer>
+                                <ImageListSupporting>
+                                  <ImageListLabel>{image.name}</ImageListLabel>
+                                </ImageListSupporting>
+                              </ImageListItem>
+                            </Ripple>
+                          );
+                        })}
+                      </ImageList>
+                    </div>
+                  ) : null
+                )}
+              </div>
+              <Footer />
+            </ConditionalWrapper>
           </div>
         </div>
         {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
@@ -243,5 +264,7 @@ export class ContentImages extends React.Component {
     );
   }
 }
+
+ContentImages.contextType = DeviceContext;
 
 export default ContentImages;
