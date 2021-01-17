@@ -14,8 +14,17 @@ import { Radio } from "@rmwc/radio";
 import { Select } from "@rmwc/select";
 import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarNavigationIcon,
+  TopAppBarTitle,
+  TopAppBarFixedAdjust,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { Footer } from "../common/Footer";
 import "./ContentSettings.scss";
 
 export const ContentSettings = (props) => {
@@ -105,7 +114,7 @@ export const ContentSettings = (props) => {
     </div>
   ) : null;
   const bottomNav =
-    device === "mobile" && props.setBottomNav ? (
+    device === "mobile" ? (
       <div className="settings-group">
         <div className="subheader">
           <Typography use="caption">UI</Typography>
@@ -198,7 +207,7 @@ export const ContentSettings = (props) => {
       </FormField>
     );
   const density =
-    device !== "mobile" ? (
+    device === "desktop" ? (
       <div className="settings-group">
         <div className="subheader">
           <Typography use="caption">Density</Typography>
@@ -231,88 +240,101 @@ export const ContentSettings = (props) => {
       </div>
     ) : null;
   return (
-    <div className="admin-main">
-      <div className="settings-container">
-        <div className="settings">
-          {userDisplay}
-          {bottomNav}
-          <div className="settings-group">
-            <div className="subheader">
-              <Typography use="caption">Light theme</Typography>
+    <>
+      <TopAppBar fixed className={{ "bottom-app-bar": props.bottomNav }}>
+        <TopAppBarRow>
+          <TopAppBarSection alignStart>
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarTitle>Settings</TopAppBarTitle>
+          </TopAppBarSection>
+        </TopAppBarRow>
+      </TopAppBar>
+      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      <div className="admin-main">
+        <div className="settings-container">
+          <div className="settings">
+            {userDisplay}
+            {bottomNav}
+            <div className="settings-group">
+              <div className="subheader">
+                <Typography use="caption">Light theme</Typography>
+              </div>
+              <Card className="theme-card">
+                <List className="theme-list">
+                  <ListItem onClick={() => props.setLightTheme("light")} className="light">
+                    Light
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
+                    Sepia
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                </List>
+              </Card>
             </div>
-            <Card className="theme-card">
-              <List className="theme-list">
-                <ListItem onClick={() => props.setLightTheme("light")} className="light">
-                  Light
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-                <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
-                  Sepia
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-              </List>
-            </Card>
-          </div>
-          <div className="settings-group">
-            <div className="subheader">
-              <Typography use="caption">Dark theme</Typography>
+            <div className="settings-group">
+              <div className="subheader">
+                <Typography use="caption">Dark theme</Typography>
+              </div>
+              <Card className="theme-card">
+                <FormField className="theme-form-field">
+                  <Typography use="body2">Apply dark theme</Typography>
+                  <Select
+                    enhanced
+                    outlined
+                    value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
+                    options={["Manual", "Timed", "System"]}
+                    onChange={(e) => {
+                      setApplyTheme(e);
+                    }}
+                  />
+                </FormField>
+                {themeOptions}
+                <List className="theme-list">
+                  <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+                    Ocean
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
+                    Grey
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
+                    Deep Ocean
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
+                    Deep Purple
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                  <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
+                    Dark
+                    <ListItemMeta>
+                      <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
+                    </ListItemMeta>
+                  </ListItem>
+                </List>
+              </Card>
             </div>
-            <Card className="theme-card">
-              <FormField className="theme-form-field">
-                <Typography use="body2">Apply dark theme</Typography>
-                <Select
-                  enhanced
-                  outlined
-                  value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
-                  options={["Manual", "Timed", "System"]}
-                  onChange={(e) => {
-                    setApplyTheme(e);
-                  }}
-                />
-              </FormField>
-              {themeOptions}
-              <List className="theme-list">
-                <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
-                  Ocean
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-                <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
-                  Grey
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-                <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
-                  Deep Ocean
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-                <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
-                  Deep Purple
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-                <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
-                  Dark
-                  <ListItemMeta>
-                    <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
-                  </ListItemMeta>
-                </ListItem>
-              </List>
-            </Card>
+            {density}
           </div>
-          {density}
         </div>
       </div>
-    </div>
+      <Footer />
+      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+    </>
   );
 };
 
@@ -325,6 +347,7 @@ ContentSettings.propTypes = {
   fromTimeTheme: PropTypes.string,
   lightTheme: PropTypes.string,
   manualTheme: PropTypes.bool,
+  openNav: PropTypes.func,
   setApplyTheme: PropTypes.func,
   setBottomNav: PropTypes.func,
   setDarkTheme: PropTypes.func,

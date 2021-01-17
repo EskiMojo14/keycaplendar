@@ -71,38 +71,25 @@
     transition: animation.standard(height, 250ms);
     z-index: -1;
   }
-  &.content.card::before,
-  .audit &::before {
+  &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
   .statistics &::before {
     height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
-.bottomNav + .main.card::before {
+
+.bottom-nav .main::before {
   content: none;
 }
 
-.filter-drawer-open .main.card::before,
-.details-drawer-open .main.card::before {
+.drawer-open .main.extended-app-bar::before,
+.drawer-open.main.extended-app-bar::before {
   height: 0;
 }
 
-.modal-drawer-open {
-  max-height: 100vh;
-  overflow: hidden;
-  &.mdc-drawer-app-content {
-    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
-  }
-}
-
 @media (max-width: top-app-bar.$mobile-breakpoint) {
-  .modal-drawer-open.mdc-drawer-app-content,
-  .content-container .main {
-    max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
-  }
-  .main.content.card::before,
-  .audit .main::before {
+  .main.extended-app-bar::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
   .statistics .main::before {

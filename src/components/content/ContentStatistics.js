@@ -7,15 +7,32 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all } from "mathjs";
 import classNames from "classnames";
-import { camelise, countInArray, iconObject } from "../../util/functions";
-import { setTypes, statisticsTypes, statisticsSortTypes } from "../../util/propTypeTemplates";
+import { statsTabs } from "../../util/constants";
+import { camelise, capitalise, countInArray, iconObject, openModal, closeModal } from "../../util/functions";
+import { setTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { TabBar, Tab } from "@rmwc/tabs";
+import { Tooltip } from "@rmwc/tooltip";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarNavigationIcon,
+  TopAppBarTitle,
+  TopAppBarFixedAdjust,
+  TopAppBarActionItem,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import { Footer } from "../common/Footer";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard, ShippedCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
+import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
+import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
+import { DeviceContext } from "../../util/contexts";
 
 const customPoint = (data) => {
   if (data.type === "point") {
@@ -124,9 +141,32 @@ export class ContentStatistics extends React.Component {
       },
       focused: "",
       dataCreated: false,
+      settings: {
+        timeline: "gbLaunch",
+        status: "profile",
+        shipped: "profile",
+        durationCat: "gbLaunch",
+        durationGroup: "profile",
+        vendors: "profile",
+      },
+      whitelist: {
+        edited: [],
+        profiles: [],
+        shipped: ["Shipped", "Not shipped"],
+        vendorMode: "exclude",
+        vendors: [],
+      },
+      sort: {
+        status: "alphabetical",
+        shipped: "alphabetical",
+        duration: "alphabetical",
+        vendors: "alphabetical",
+      },
+      filterDrawerOpen: false,
+      categoryDialogOpen: false,
     };
   }
-  createData = () => {
+  createData = (whitelist = this.state.whitelist) => {
     const today = moment.utc();
     const yesterday = moment.utc().date(today.date() - 1);
     const limitedSets = this.props.sets.filter((set) => {
@@ -138,7 +178,6 @@ export class ContentStatistics extends React.Component {
         return true;
       }
     });
-
     //timeline
     let timelineData = {
       months: { icDate: [], gbLaunch: [] },
@@ -148,7 +187,7 @@ export class ContentStatistics extends React.Component {
       profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
     };
-    const { edited, ...timelineWhitelist } = this.props.statistics.timelineWhitelist;
+    const { edited, ...timelineWhitelist } = whitelist;
     const checkVendors = (set) => {
       let bool = timelineWhitelist.vendorMode === "exclude";
       Object.keys(set.vendors).forEach((key) => {
@@ -370,13 +409,13 @@ export class ContentStatistics extends React.Component {
         });
       });
       statusData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.status === "total" ? a.total : a.name.toLowerCase();
-        var y = this.props.statisticsSort.status === "total" ? b.total : a.name.toLowerCase();
+        var x = this.state.sort.status === "total" ? a.total : a.name.toLowerCase();
+        var y = this.state.sort.status === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
-          return this.props.statisticsSort.status === "total" ? 1 : -1;
+          return this.state.sort.status === "total" ? 1 : -1;
         }
         if (x > y) {
-          return this.props.statisticsSort.status === "total" ? -1 : 1;
+          return this.state.sort.status === "total" ? -1 : 1;
         }
         return 0;
       });
@@ -462,13 +501,13 @@ export class ContentStatistics extends React.Component {
         });
       });
       shippedData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.shipped === "total" ? a.total : a.name.toLowerCase();
-        var y = this.props.statisticsSort.shipped === "total" ? b.total : a.name.toLowerCase();
+        var x = this.state.sort.shipped === "total" ? a.total : a.name.toLowerCase();
+        var y = this.state.sort.shipped === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
-          return this.props.statisticsSort.shipped === "total" ? 1 : -1;
+          return this.state.sort.shipped === "total" ? 1 : -1;
         }
         if (x > y) {
-          return this.props.statisticsSort.shipped === "total" ? -1 : 1;
+          return this.state.sort.shipped === "total" ? -1 : 1;
         }
         return 0;
       });
@@ -585,20 +624,20 @@ export class ContentStatistics extends React.Component {
                   return a[0] === "all";
                 }
                 var x =
-                  this.props.statisticsSort.duration === "alphabetical"
+                  this.state.sort.duration === "alphabetical"
                     ? a.name.toLowerCase()
-                    : a[this.props.statisticsSort.duration === "duration" ? "mean" : "total"];
+                    : a[this.state.sort.duration === "duration" ? "mean" : "total"];
                 var y =
-                  this.props.statisticsSort.duration === "alphabetical"
+                  this.state.sort.duration === "alphabetical"
                     ? b.name.toLowerCase()
-                    : b[this.props.statisticsSort.duration === "duration" ? "mean" : "total"];
+                    : b[this.state.sort.duration === "duration" ? "mean" : "total"];
                 var c = a.name.toLowerCase();
                 var d = b.name.toLowerCase();
                 if (x < y) {
-                  return this.props.statisticsSort.duration === "alphabetical" ? -1 : 1;
+                  return this.state.sort.duration === "alphabetical" ? -1 : 1;
                 }
                 if (x > y) {
-                  return this.props.statisticsSort.duration === "alphabetical" ? 1 : -1;
+                  return this.state.sort.duration === "alphabetical" ? 1 : -1;
                 }
                 if (c < d) {
                   return -1;
@@ -716,13 +755,13 @@ export class ContentStatistics extends React.Component {
       });
 
       vendorsData[prop].data.sort((a, b) => {
-        var x = this.props.statisticsSort.vendors === "total" ? a.total : a.name.toLowerCase();
-        var y = this.props.statisticsSort.vendors === "total" ? b.total : a.name.toLowerCase();
+        var x = this.state.sort.vendors === "total" ? a.total : a.name.toLowerCase();
+        var y = this.state.sort.vendors === "total" ? b.total : a.name.toLowerCase();
         if (x < y) {
-          return this.props.statisticsSort.vendors === "total" ? 1 : -1;
+          return this.state.sort.vendors === "total" ? 1 : -1;
         }
         if (x > y) {
-          return this.props.statisticsSort.vendors === "total" ? -1 : 1;
+          return this.state.sort.vendors === "total" ? -1 : 1;
         }
         return 0;
       });
@@ -738,9 +777,9 @@ export class ContentStatistics extends React.Component {
       dataCreated: true,
     });
   };
-  sortData = () => {
+  sortData = (sort = this.state.sort) => {
     const key = this.props.statisticsTab + "Data";
-    let data = Object.assign({}, this.state[key]);
+    let data = { ...this.state[key] };
     if (this.props.statisticsTab === "duration") {
       Object.keys(data).forEach((property) => {
         Object.keys(data[property]).forEach((prop) => {
@@ -749,20 +788,20 @@ export class ContentStatistics extends React.Component {
               return a.name === "all";
             }
             var x =
-              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+              sort[this.props.statisticsTab] === "alphabetical"
                 ? a.name.toLowerCase()
-                : a[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+                : a[sort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
             var y =
-              this.props.statisticsSort[this.props.statisticsTab] === "alphabetical"
+              sort[this.props.statisticsTab] === "alphabetical"
                 ? b.name.toLowerCase()
-                : b[this.props.statisticsSort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
+                : b[sort[this.props.statisticsTab] === "duration" ? "mean" : "total"];
             var c = a.name.toLowerCase();
             var d = b.name.toLowerCase();
             if (x < y) {
-              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
+              return sort[this.props.statisticsTab] === "alphabetical" ? -1 : 1;
             }
             if (x > y) {
-              return this.props.statisticsSort[this.props.statisticsTab] === "alphabetical" ? 1 : -1;
+              return sort[this.props.statisticsTab] === "alphabetical" ? 1 : -1;
             }
             if (c < d) {
               return -1;
@@ -777,15 +816,15 @@ export class ContentStatistics extends React.Component {
     } else {
       Object.keys(data).forEach((prop) => {
         data[prop].data.sort((a, b) => {
-          var x = this.props.statisticsSort[this.props.statisticsTab] === "total" ? a.total : a.name.toLowerCase();
-          var y = this.props.statisticsSort[this.props.statisticsTab] === "total" ? b.total : b.name.toLowerCase();
+          var x = sort[this.props.statisticsTab] === "total" ? a.total : a.name.toLowerCase();
+          var y = sort[this.props.statisticsTab] === "total" ? b.total : b.name.toLowerCase();
           var c = a.name.toLowerCase();
           var d = b.name.toLowerCase();
           if (x < y) {
-            return this.props.statisticsSort[this.props.statisticsTab] === "total" ? 1 : -1;
+            return sort[this.props.statisticsTab] === "total" ? 1 : -1;
           }
           if (x > y) {
-            return this.props.statisticsSort[this.props.statisticsTab] === "total" ? -1 : 1;
+            return sort[this.props.statisticsTab] === "total" ? -1 : 1;
           }
           if (c < d) {
             return -1;
@@ -811,26 +850,72 @@ export class ContentStatistics extends React.Component {
       this.setState({ focused: letter });
     }
   };
-  componentDidMount() {
-    this.createData();
-  }
+  setSetting = (prop, query) => {
+    this.setState({ settings: { ...this.state.settings, [prop]: query } });
+  };
+  setSort = (prop, query) => {
+    const sort = { ...this.state.sort, [prop]: query };
+    this.setState({ sort: sort });
+    this.sortData(sort);
+  };
+  setWhitelist = (prop, val) => {
+    if (prop === "all") {
+      const edited = Object.keys(val);
+      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
+      this.setState({ whitelist: whitelist });
+      this.createData(whitelist);
+    } else {
+      const edited = this.state.whitelist.edited.includes(prop)
+        ? this.state.whitelist.edited
+        : [...this.state.whitelist.edited, prop];
+      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
+      this.setState({
+        whitelist: whitelist,
+      });
+      this.createData(whitelist);
+    }
+  };
+  openFilterDrawer = () => {
+    openModal();
+    this.setState({
+      filterDrawerOpen: true,
+    });
+  };
+  closeFilterDrawer = () => {
+    closeModal();
+    this.setState({
+      filterDrawerOpen: false,
+    });
+  };
+  openCategoryDialog = () => {
+    this.setState({
+      categoryDialogOpen: true,
+    });
+  };
+  closeCategoryDialog = () => {
+    this.setState({
+      categoryDialogOpen: false,
+    });
+  };
   componentDidUpdate(prevProps) {
     if (this.props.navOpen !== prevProps.navOpen) {
       setTimeout(() => {
         this.forceUpdate();
       }, 400);
     }
-    if (this.props.statistics.timelineWhitelist !== prevProps.statistics.timelineWhitelist && this.state.dataCreated) {
-      this.createData();
-    }
-    if (this.props.statisticsSort !== prevProps.statisticsSort) {
-      this.sortData();
+    if (
+      !this.state.whitelist.edited.includes("profiles") &&
+      this.props.profiles.length > 0 &&
+      !this.state.dataCreated &&
+      this.props.sets.length > 0
+    ) {
+      this.setWhitelist("profiles", this.props.profiles);
     }
   }
   render() {
     const countChartData = {
-      labels: this.state.timelineData.months[this.props.statistics.timeline],
-      series: [this.state.timelineData.countData[this.props.statistics.timeline]],
+      labels: this.state.timelineData.months[this.state.settings.timeline],
+      series: [this.state.timelineData.countData[this.state.settings.timeline]],
     };
     const countChartOptions = {
       showArea: true,
@@ -870,9 +955,9 @@ export class ContentStatistics extends React.Component {
     };
 
     const profileChartData = {
-      labels: this.state.timelineData.months[this.props.statistics.timeline],
-      series: this.state.timelineData.profileCountData[this.props.statistics.timeline].map((value, index) => ({
-        meta: `${this.props.statistics.timelineWhitelist.profiles[index]}:&nbsp;`,
+      labels: this.state.timelineData.months[this.state.settings.timeline],
+      series: this.state.timelineData.profileCountData[this.state.settings.timeline].map((value, index) => ({
+        meta: `${this.state.whitelist.profiles[index]}:&nbsp;`,
         value: value,
       })),
     };
@@ -968,128 +1053,374 @@ export class ContentStatistics extends React.Component {
           type={"Line"}
         />
       ) : null;
-    return (
-      <div className={classNames("tab-container", this.props.statisticsTab)}>
-        <div className="stats-tab timeline">
-          <Card className="count-graph">
-            <Typography use="headline5" tag="h1">
-              Sets per Month
-            </Typography>
-            <div className="graph-container">
-              <ChartistGraph
-                className="ct-double-octave"
-                data={countChartData}
-                options={countChartOptions}
-                listener={listener}
-                responsiveOptions={responsiveOptions}
-                type={"Line"}
-              />
-            </div>
-            <Typography use="caption" tag="p">
-              Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
-              included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
-            </Typography>
-          </Card>
-          <Card className="profile-graph">
-            <div className="title-container">
-              <Typography use="headline5" tag="h1">
-                Profile Breakdown
-              </Typography>
-              <ToggleGroup>
-                <ToggleGroupButton
-                  icon={iconObject(
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                    </svg>
-                  )}
-                  selected={this.state.timelineData.profileChartType === "bar"}
-                  onClick={() => {
-                    this.setProfileChartType("bar");
-                  }}
-                />
-                <ToggleGroupButton
-                  icon={iconObject(
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                    </svg>
-                  )}
-                  selected={this.state.timelineData.profileChartType === "line"}
-                  onClick={() => {
-                    this.setProfileChartType("line");
-                  }}
-                />
-              </ToggleGroup>
-            </div>
-            <div
-              className={classNames("graph-container", {
-                focused: this.state.focused,
-                ["series-" + this.state.focused]: this.state.focused,
-              })}
-            >
-              {barGraph}
-              {lineGraph}
-            </div>
-          </Card>
-          <Card
-            className={classNames("fullwidth", {
-              focused: this.state.focused,
-              ["series-" + this.state.focused]: this.state.focused,
-            })}
-          >
-            <TimelineTable
-              profiles={this.props.statistics.timelineWhitelist.profiles}
-              setFocus={this.setFocus}
-              months={this.state.timelineData.months}
-              statistics={this.props.statistics}
-              monthData={this.state.timelineData.monthData}
+    const filterDrawer =
+      this.props.statisticsTab === "timeline" ? (
+        <DrawerFilterStatistics
+          profiles={this.props.profiles}
+          vendors={this.props.allVendors}
+          open={this.state.filterDrawerOpen}
+          close={this.closeFilterDrawer}
+          setWhitelist={this.setWhitelist}
+          whitelist={this.state.whitelist}
+        />
+      ) : null;
+    const categoryButtons = (cat) =>
+      this.context === "desktop" ? (
+        <ToggleGroup>
+          <ToggleGroupButton
+            selected={this.state.settings[cat] === "profile"}
+            onClick={() => {
+              this.setSetting("durationGroup", "profile");
+            }}
+            label="Profile"
+          />
+          <ToggleGroupButton
+            selected={this.state.settings[cat] === "designer"}
+            onClick={() => {
+              this.setSetting("durationGroup", "designer");
+            }}
+            label="Designer"
+          />
+          <ToggleGroupButton
+            selected={this.state.settings[cat] === "vendor"}
+            onClick={() => {
+              this.setSetting("durationGroup", "vendor");
+            }}
+            label="Vendor"
+          />
+        </ToggleGroup>
+      ) : (
+        <Tooltip enterDelay={500} content="Category" align="top">
+          <TopAppBarActionItem
+            className="category-button"
+            onClick={this.openCategoryDialog}
+            style={{ "--animation-delay": 0 }}
+            icon={iconObject(
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <circle cx="17.5" cy="17.5" opacity=".3" r="2.5" />
+                  <path d="M5 15.5h4v4H5zm7-9.66L10.07 9h3.86z" opacity=".3" />
+                  <path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM11 13.5H3v8h8v-8zm-2 6H5v-4h4v4z" />
+                </svg>
+              </div>
+            )}
+          />
+        </Tooltip>
+      );
+    const genericButtons = (
+      <>
+        <ToggleGroup>
+          <ToggleGroupButton
+            selected={this.state.sort[this.props.statisticsTab] === "alphabetical"}
+            onClick={() => {
+              this.setSort(this.props.statisticsTab, "alphabetical");
+            }}
+            icon={iconObject(
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
+              </svg>
+            )}
+            tooltip={{
+              enterDelay: 500,
+              align: "bottom",
+              content: "Alphabetical",
+            }}
+          />
+          <ToggleGroupButton
+            selected={this.state.sort[this.props.statisticsTab] === "total"}
+            onClick={() => {
+              this.setSort(this.props.statisticsTab, "total");
+            }}
+            icon={iconObject(
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+              </svg>
+            )}
+            tooltip={{
+              enterDelay: 500,
+              align: "bottom",
+              content: "Total",
+            }}
+          />
+        </ToggleGroup>
+        {categoryButtons(this.props.statisticsTab)}
+      </>
+    );
+    const buttons = {
+      timeline: (
+        <>
+          <Tooltip enterDelay={500} content="Filter" align="bottom">
+            <TopAppBarActionItem icon="filter_list" onClick={this.openFilterDrawer} />
+          </Tooltip>
+          <ToggleGroup>
+            <ToggleGroupButton
+              selected={this.state.settings.timeline === "icDate"}
+              onClick={() => {
+                this.setSetting("timeline", "icDate");
+              }}
+              label="IC"
             />
-          </Card>
-        </div>
-        <div className="stats-tab stats-grid status">
-          {this.state.statusData[this.props.statistics.status].data.map((data) => {
-            return <StatusCard key={data.name} data={data} />;
-          })}
-        </div>
-        <div className="stats-tab stats-grid shipped">
-          {this.state.shippedData[this.props.statistics.shipped].data.map((data) => {
-            return <ShippedCard key={data.name} data={data} />;
-          })}
-        </div>
-        <div className="stats-tab stats-grid duration">
-          {this.state.durationData[this.props.statistics.durationCat][this.props.statistics.durationGroup].data.map(
-            (data) => {
-              return (
-                <TableCard
-                  key={data.name}
-                  data={data}
-                  unit={`Time ${this.props.statistics.durationCat === "icDate" ? "(months)" : "(days)"}`}
+            <ToggleGroupButton
+              selected={this.state.settings.timeline === "gbLaunch"}
+              onClick={() => {
+                this.setSetting("timeline", "gbLaunch");
+              }}
+              label="GB"
+            />
+          </ToggleGroup>
+        </>
+      ),
+      status: genericButtons,
+      shipped: genericButtons,
+      duration: (
+        <>
+          <ToggleGroup>
+            <ToggleGroupButton
+              selected={this.state.sort.duration === "alphabetical"}
+              onClick={() => {
+                this.setSort("duration", "alphabetical");
+              }}
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
+                </svg>
+              )}
+              tooltip={{
+                enterDelay: 500,
+                align: "bottom",
+                content: "Alphabetical",
+              }}
+            />
+            <ToggleGroupButton
+              selected={this.state.sort.duration === "total"}
+              onClick={() => {
+                this.setSort("duration", "total");
+              }}
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                </svg>
+              )}
+              tooltip={{
+                enterDelay: 500,
+                align: "bottom",
+                content: "Total",
+              }}
+            />
+            <ToggleGroupButton
+              selected={this.state.sort.duration === "duration"}
+              onClick={() => {
+                this.setSort("duration", "duration");
+              }}
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M5 8h14V6H5z" opacity=".3" />
+                  <path d="M7 11h2v2H7zm12-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-4 3h2v2h-2zm-4 0h2v2h-2z" />
+                </svg>
+              )}
+              tooltip={{
+                enterDelay: 500,
+                align: "bottom",
+                content: "Duration",
+              }}
+            />
+          </ToggleGroup>
+          <ToggleGroup>
+            <ToggleGroupButton
+              selected={this.state.settings.durationCat === "icDate"}
+              onClick={() => {
+                this.setSetting("durationCat", "icDate");
+              }}
+              label="IC"
+            />
+            <ToggleGroupButton
+              selected={this.state.settings.durationCat === "gbLaunch"}
+              onClick={() => {
+                this.setSetting("durationCat", "gbLaunch");
+              }}
+              label="GB"
+            />
+          </ToggleGroup>
+          {categoryButtons("durationGroup")}
+        </>
+      ),
+      vendors: genericButtons,
+    };
+    const categoryDialog =
+      this.props.statisticsTab !== "timeline" && this.context !== "desktop" ? (
+        <DialogStatistics
+          open={this.state.categoryDialogOpen}
+          onClose={this.closeCategoryDialog}
+          statistics={this.state.settings}
+          setStatistics={this.setSetting}
+          statisticsTab={this.props.statisticsTab}
+        />
+      ) : null;
+    const tabRow = (
+      <TopAppBarRow className="tab-row">
+        <TopAppBarSection alignStart>
+          <TabBar
+            activeTabIndex={statsTabs.indexOf(this.props.statisticsTab)}
+            onActivate={(e) => this.props.setStatisticsTab(statsTabs[e.detail.index])}
+          >
+            {statsTabs.map((tab) => (
+              <Tab key={tab}>{capitalise(tab)}</Tab>
+            ))}
+          </TabBar>
+        </TopAppBarSection>
+      </TopAppBarRow>
+    );
+    return (
+      <>
+        <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
+          {this.props.bottomNav ? tabRow : null}
+          <TopAppBarRow>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
+              <TopAppBarTitle>{this.context !== "mobile" ? "Statistics" : null}</TopAppBarTitle>
+            </TopAppBarSection>
+            <TopAppBarSection alignEnd>{buttons[this.props.statisticsTab]}</TopAppBarSection>
+          </TopAppBarRow>
+          {this.props.bottomNav ? null : tabRow}
+          <LinearProgress closed={this.state.dataCreated} />
+        </TopAppBar>
+        {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
+        <div className="main">
+          {filterDrawer}
+          {categoryDialog}
+          <div className={classNames("tab-container", this.props.statisticsTab)}>
+            <div className="stats-tab timeline">
+              <Card className="count-graph">
+                <Typography use="headline5" tag="h1">
+                  Sets per Month
+                </Typography>
+                <div className="graph-container">
+                  <ChartistGraph
+                    className="ct-double-octave"
+                    data={countChartData}
+                    options={countChartOptions}
+                    listener={listener}
+                    responsiveOptions={responsiveOptions}
+                    type={"Line"}
+                  />
+                </div>
+                <Typography use="caption" tag="p">
+                  Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets
+                  are included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
+                </Typography>
+              </Card>
+              <Card className="profile-graph">
+                <div className="title-container">
+                  <Typography use="headline5" tag="h1">
+                    Profile Breakdown
+                  </Typography>
+                  <ToggleGroup>
+                    <ToggleGroupButton
+                      icon={iconObject(
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
+                        </svg>
+                      )}
+                      selected={this.state.timelineData.profileChartType === "bar"}
+                      onClick={() => {
+                        this.setProfileChartType("bar");
+                      }}
+                    />
+                    <ToggleGroupButton
+                      icon={iconObject(
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                        </svg>
+                      )}
+                      selected={this.state.timelineData.profileChartType === "line"}
+                      onClick={() => {
+                        this.setProfileChartType("line");
+                      }}
+                    />
+                  </ToggleGroup>
+                </div>
+                <div
+                  className={classNames("graph-container", {
+                    focused: this.state.focused,
+                    ["series-" + this.state.focused]: this.state.focused,
+                  })}
+                >
+                  {barGraph}
+                  {lineGraph}
+                </div>
+              </Card>
+              <Card
+                className={classNames("fullwidth", {
+                  focused: this.state.focused,
+                  ["series-" + this.state.focused]: this.state.focused,
+                })}
+              >
+                <TimelineTable
+                  profiles={this.state.whitelist.profiles}
+                  setFocus={this.setFocus}
+                  months={this.state.timelineData.months}
+                  statistics={this.state.settings}
+                  monthData={this.state.timelineData.monthData}
                 />
-              );
-            }
-          )}
+              </Card>
+            </div>
+            <div className="stats-tab stats-grid status">
+              {this.state.statusData[this.state.settings.status].data.map((data) => {
+                return <StatusCard key={data.name} data={data} />;
+              })}
+            </div>
+            <div className="stats-tab stats-grid shipped">
+              {this.state.shippedData[this.state.settings.shipped].data.map((data) => {
+                return <ShippedCard key={data.name} data={data} />;
+              })}
+            </div>
+            <div className="stats-tab stats-grid duration">
+              {this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].data.map(
+                (data) => {
+                  return (
+                    <TableCard
+                      key={data.name}
+                      data={data}
+                      unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                    />
+                  );
+                }
+              )}
+            </div>
+            <div className="stats-tab stats-grid vendors">
+              {this.state.vendorsData[this.state.settings.vendors].data.map((data) => {
+                return <TableCard key={data.name} data={data} unit="Vendors" />;
+              })}
+            </div>
+          </div>
+          <Footer />
         </div>
-        <div className="stats-tab stats-grid vendors">
-          {this.state.vendorsData[this.props.statistics.vendors].data.map((data) => {
-            return <TableCard key={data.name} data={data} unit="Vendors" />;
-          })}
-        </div>
-      </div>
+        {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      </>
     );
   }
 }
 
 export default ContentStatistics;
 
+ContentStatistics.contextType = DeviceContext;
+
 ContentStatistics.propTypes = {
   allDesigners: PropTypes.arrayOf(PropTypes.string),
   allVendors: PropTypes.arrayOf(PropTypes.string),
+  bottomNav: PropTypes.bool,
   navOpen: PropTypes.bool,
+  openNav: PropTypes.func,
   profiles: PropTypes.arrayOf(PropTypes.string),
-  setStatisticsSort: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  statistics: PropTypes.shape(statisticsTypes),
-  statisticsSort: PropTypes.shape(statisticsSortTypes),
+  setStatisticsTab: PropTypes.func,
   statisticsTab: PropTypes.string,
 };

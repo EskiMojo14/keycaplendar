@@ -8,9 +8,6 @@
 .mdc-top-app-bar {
   &--fixed {
     top: 0;
-    .scrolled & {
-      @include elevation.elevation(4);
-    }
   }
   &__row.tab-row {
     height: 48px;

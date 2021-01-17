@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import PropTypes from "prop-types";
 import emptyImg from "../../media/empty.svg";
 import { UserContext } from "../../util/contexts";
 import { Typography } from "@rmwc/typography";
@@ -24,3 +25,7 @@ export const ContentEmpty = (props) => {
 };
 
 export default ContentEmpty;
+
+ContentEmpty.propTypes = {
+  page: PropTypes.string,
+};

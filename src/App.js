@@ -5,13 +5,13 @@ import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
-import { DesktopContent, TabletContent, MobileContent } from "./components/Content";
+import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, nonUserPages } from "./util/constants";
+import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, urlPages } from "./util/constants";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove, normalise } from "./util/functions";
 import { Preset } from "./util/constructors";
@@ -25,10 +25,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      device: "desktop",
-      deviceEdited: false,
+      device: "tablet",
       bottomNav: false,
       page: "calendar",
+      statisticsTab: "timeline",
       view: "card",
       transition: false,
       sort: "gbLaunch",
@@ -71,28 +71,6 @@ class App extends React.Component {
       fromTimeTheme: "21:00",
       toTimeTheme: "06:00",
       lichTheme: false,
-      statistics: {
-        timeline: "gbLaunch",
-        timelineWhitelist: {
-          edited: [],
-          profiles: [],
-          shipped: ["Shipped", "Not shipped"],
-          vendorMode: "exclude",
-          vendors: [],
-        },
-        status: "profile",
-        shipped: "profile",
-        durationCat: "gbLaunch",
-        durationGroup: "profile",
-        vendors: "profile",
-      },
-      statisticsSort: {
-        status: "alphabetical",
-        shipped: "alphabetical",
-        duration: "alphabetical",
-        vendors: "alphabetical",
-      },
-      statisticsTab: "timeline",
       density: "default",
       syncSettings: false,
       preset: new Preset(),
@@ -103,7 +81,7 @@ class App extends React.Component {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      if (nonUserPages.includes(pageQuery)) {
+      if (urlPages.includes(pageQuery)) {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
@@ -700,9 +678,6 @@ class App extends React.Component {
     if (!whitelist.edited.includes("profiles")) {
       this.setWhitelist("profiles", allProfiles, false);
     }
-    if (!this.state.statistics.timelineWhitelist.edited.includes("profiles")) {
-      this.setTimelineWhitelist("profiles", allProfiles);
-    }
   };
   setDensity = (density, write = true) => {
     this.setState({ density: density });
@@ -736,12 +711,6 @@ class App extends React.Component {
     };
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
     this.setState({ user: newUser });
-  };
-  setStatistics = (prop, query) => {
-    this.setState({ statistics: { ...this.state.statistics, [prop]: query } });
-  };
-  setStatisticsSort = (prop, query) => {
-    this.setState({ statisticsSort: { ...this.state.statisticsSort, [prop]: query } });
   };
   setStatisticsTab = (tab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
@@ -799,23 +768,6 @@ class App extends React.Component {
       });
     }
   };
-  setTimelineWhitelist = (prop, val) => {
-    if (prop === "all") {
-      const edited = Object.keys(val);
-      const whitelist = { ...this.state.statistics.timelineWhitelist, ...val, edited: edited };
-      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
-      this.setState({ statistics: statisticsObject });
-    } else {
-      const edited = this.state.statistics.timelineWhitelist.edited.includes(prop)
-        ? this.state.statistics.timelineWhitelist.edited
-        : [...this.state.statistics.timelineWhitelist.edited, prop];
-      const whitelist = { ...this.state.statistics.timelineWhitelist, [prop]: val, edited: edited };
-      const statisticsObject = { ...this.state.statistics, timelineWhitelist: whitelist };
-      this.setState({
-        statistics: statisticsObject,
-      });
-    }
-  };
   setDevice = () => {
     let i = 0;
     let device;
@@ -825,12 +777,20 @@ class App extends React.Component {
       if (vw !== lastWidth || i === 0) {
         if (vw >= 840) {
           device = "desktop";
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         } else if (vw < 840 && vw >= 480) {
           device = "tablet";
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         } else {
           device = "mobile";
+          if (this.state.device !== device) {
+            this.setState({ device: device });
+          }
         }
-        this.setState({ device: device, deviceEdited: true });
         lastWidth = vw;
         i++;
       }
@@ -1169,158 +1129,7 @@ class App extends React.Component {
   }
 
   render() {
-    const device = this.state.device;
     const transitionClass = classNames({ "view-transition": this.state.transition });
-    const content = this.state.deviceEdited ? (
-      device === "desktop" ? (
-        <DesktopContent
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      ) : device === "tablet" ? (
-        <TabletContent
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      ) : (
-        <MobileContent
-          allSets={this.state.sets}
-          getData={this.getData}
-          className={transitionClass}
-          page={this.state.page}
-          setPage={this.setPage}
-          view={this.state.view}
-          setView={this.setView}
-          profiles={this.state.profiles}
-          allDesigners={this.state.allDesigners}
-          allVendors={this.state.allVendors}
-          allRegions={this.state.allRegions}
-          sets={this.state.filteredSets}
-          groups={this.state.groups}
-          loading={this.state.loading}
-          toggleLoading={this.toggleLoading}
-          sort={this.state.sort}
-          setSort={this.setSort}
-          content={this.state.content}
-          search={this.state.search}
-          setSearch={this.setSearch}
-          applyTheme={this.state.applyTheme}
-          setApplyTheme={this.setApplyTheme}
-          lightTheme={this.state.lightTheme}
-          setLightTheme={this.setLightTheme}
-          darkTheme={this.state.darkTheme}
-          setDarkTheme={this.setDarkTheme}
-          manualTheme={this.state.manualTheme}
-          setManualTheme={this.setManualTheme}
-          fromTimeTheme={this.state.fromTimeTheme}
-          setFromTimeTheme={this.setFromTimeTheme}
-          toTimeTheme={this.state.toTimeTheme}
-          setToTimeTheme={this.setToTimeTheme}
-          toggleLichTheme={this.toggleLichTheme}
-          bottomNav={this.state.bottomNav}
-          setBottomNav={this.setBottomNav}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          statistics={this.state.statistics}
-          setStatistics={this.setStatistics}
-          statisticsSort={this.state.statisticsSort}
-          setStatisticsSort={this.setStatisticsSort}
-          statisticsTab={this.state.statisticsTab}
-          setStatisticsTab={this.setStatisticsTab}
-          setTimelineWhitelist={this.setTimelineWhitelist}
-          density={this.state.density}
-          setDensity={this.setDensity}
-          snackbarQueue={queue}
-        />
-      )
-    ) : null;
-
     return (
       <Router>
         <Switch>
@@ -1362,7 +1171,50 @@ class App extends React.Component {
                 <div
                   className={classNames("app", { [`density-${this.state.density}`]: this.state.device === "desktop" })}
                 >
-                  {content}
+                  <Content
+                    allSets={this.state.sets}
+                    getData={this.getData}
+                    className={transitionClass}
+                    page={this.state.page}
+                    setPage={this.setPage}
+                    view={this.state.view}
+                    setView={this.setView}
+                    profiles={this.state.profiles}
+                    allDesigners={this.state.allDesigners}
+                    allVendors={this.state.allVendors}
+                    allRegions={this.state.allRegions}
+                    sets={this.state.filteredSets}
+                    groups={this.state.groups}
+                    loading={this.state.loading}
+                    toggleLoading={this.toggleLoading}
+                    sort={this.state.sort}
+                    setSort={this.setSort}
+                    content={this.state.content}
+                    search={this.state.search}
+                    setSearch={this.setSearch}
+                    applyTheme={this.state.applyTheme}
+                    setApplyTheme={this.setApplyTheme}
+                    lightTheme={this.state.lightTheme}
+                    setLightTheme={this.setLightTheme}
+                    darkTheme={this.state.darkTheme}
+                    setDarkTheme={this.setDarkTheme}
+                    manualTheme={this.state.manualTheme}
+                    setManualTheme={this.setManualTheme}
+                    fromTimeTheme={this.state.fromTimeTheme}
+                    setFromTimeTheme={this.setFromTimeTheme}
+                    toTimeTheme={this.state.toTimeTheme}
+                    setToTimeTheme={this.setToTimeTheme}
+                    toggleLichTheme={this.toggleLichTheme}
+                    bottomNav={this.state.bottomNav && this.state.device === "mobile"}
+                    setBottomNav={this.setBottomNav}
+                    setWhitelist={this.setWhitelist}
+                    whitelist={this.state.whitelist}
+                    statisticsTab={this.state.statisticsTab}
+                    setStatisticsTab={this.setStatisticsTab}
+                    density={this.state.density}
+                    setDensity={this.setDensity}
+                    snackbarQueue={queue}
+                  />
                   <SnackbarQueue messages={queue.messages} />
                   <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
                 </div>

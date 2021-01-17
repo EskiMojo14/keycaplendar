@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import BEMHelper from "../../util/bemHelper";
-import { setTypes } from "../../util/propTypeTemplates";
+import BEMHelper from "../../../util/bemHelper";
+import { setTypes } from "../../../util/propTypeTemplates";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
-import { Autocomplete, AutocompleteMobile } from "../util/Autocomplete";
+import { Autocomplete, AutocompleteMobile } from "../../util/Autocomplete";
 import "./SearchBar.scss";
-
-const bodyScroll = require("body-scroll-toggle");
 
 const bemClasses = new BEMHelper("search-bar");
 
@@ -208,13 +206,11 @@ export class SearchBarModal extends React.Component {
     this.setState({
       focused: true,
     });
-    bodyScroll.disable();
   };
   handleBlur = () => {
     this.setState({
       focused: false,
     });
-    bodyScroll.enable();
   };
   createSearchTerms = () => {
     let searchTerms = [];
@@ -347,13 +343,11 @@ export class SearchAppBar extends React.Component {
     this.setState({
       focused: true,
     });
-    bodyScroll.disable();
   };
   handleBlur = () => {
     this.setState({
       focused: false,
     });
-    bodyScroll.enable();
   };
   createSearchTerms = () => {
     let searchTerms = [];

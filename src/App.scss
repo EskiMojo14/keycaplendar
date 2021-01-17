@@ -460,6 +460,10 @@ svg.material-icons,
   outline: none;
 }
 
+.scroll-lock {
+  overflow: hidden;
+}
+
 @keyframes fade-out {
   from {
     opacity: 1;

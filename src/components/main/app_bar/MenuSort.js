@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { sortNames, sortBlacklist } from "../../util/constants";
+import { sortNames, sortBlacklist } from "../../../util/constants";
 
 export const MenuSort = (props) => {
   return (
