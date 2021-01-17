@@ -17,7 +17,7 @@ export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "arc
 
 export const standardPages = ["calendar", "live", "ic", "previous", "timeline", "archive"];
 
-export const nonUserPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "statistics", "settings"];
+export const urlPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "statistics", "settings"];
 
 export const userPages = ["favorites", "hidden"];
 
