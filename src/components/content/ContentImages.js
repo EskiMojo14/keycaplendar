@@ -5,7 +5,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { capitalise, addOrRemove } from "../../util/functions";
+import { capitalise, addOrRemove, iconObject } from "../../util/functions";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -16,6 +16,7 @@ import {
   TopAppBarNavigationIcon,
   TopAppBarTitle,
   TopAppBarFixedAdjust,
+  TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import {
   ImageList,
@@ -174,6 +175,9 @@ export class ContentImages extends React.Component {
     const editedArray = addOrRemove([...this.state.checkedImages], image.fullPath);
     this.setState({ checkedImages: editedArray });
   };
+  clearChecked = () => {
+    this.setState({ checkedImages: [] });
+  };
   render() {
     const unusedImages = this.state.images.filter((image) => !this.state.setImages.includes(image.name));
     const usedImages = this.state.images.filter((image) => this.state.setImages.includes(image.name));
@@ -187,27 +191,53 @@ export class ContentImages extends React.Component {
         array: usedImages,
       },
     ];
+    const contextual = this.state.checkedImages.length > 0;
     return (
       <>
-        <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
+        <TopAppBar
+          fixed
+          className={classNames("is-contextual", { "bottom-app-bar": this.props.bottomNav, contextual: contextual })}
+        >
           <TopAppBarRow>
             <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle>Images</TopAppBarTitle>
+              {contextual ? (
+                <TopAppBarActionItem icon="close" onClick={this.clearChecked} />
+              ) : (
+                <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
+              )}
+              <TopAppBarTitle>{contextual ? `${this.state.checkedImages.length} selected` : "Images"}</TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
-              <ToggleGroup>
-                {this.state.folders.map((folder) => (
-                  <ToggleGroupButton
-                    key={folder}
-                    label={capitalise(folder)}
-                    selected={this.state.currentFolder === folder}
-                    onClick={() => {
-                      this.setFolder(folder);
-                    }}
+              {contextual ? (
+                <>
+                  <TopAppBarActionItem
+                    icon={iconObject(
+                      <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                          <path d="M0 0h24v24H0V0z" fill="none" />
+                          <path d="M8 9h8v10H8z" opacity=".3" />
+                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                        </svg>
+                      </div>
+                    )}
                   />
-                ))}
-              </ToggleGroup>
+                </>
+              ) : (
+                <>
+                  <ToggleGroup>
+                    {this.state.folders.map((folder) => (
+                      <ToggleGroupButton
+                        key={folder}
+                        label={capitalise(folder)}
+                        selected={this.state.currentFolder === folder}
+                        onClick={() => {
+                          this.setFolder(folder);
+                        }}
+                      />
+                    ))}
+                  </ToggleGroup>
+                </>
+              )}
             </TopAppBarSection>
           </TopAppBarRow>
           <LinearProgress closed={!this.state.loading} />

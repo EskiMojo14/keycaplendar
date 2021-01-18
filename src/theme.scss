@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @use "@material/button/_index" as button;
 @use "@material/card/_index" as card;
 @use "@material/checkbox/_index" as checkbox;
@@ -400,9 +402,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .mdc-image-list {
     .mdc-image-list__item {
-      .container::before {
-        background-color: map-get($variables, primary);
-      }
       &.selected {
         @include ripple.states(map-get($variables, primary));
         .mdc-image-list__supporting {
@@ -412,6 +411,22 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           .shipped-indicator {
             fill: map-get($variables, primary);
           }
+        }
+      }
+      .mdc-checkbox {
+        @include checkbox.container-colors(
+          rgba(white, 0.6),
+          transparent,
+          map-get($variables, secondary),
+          rgba(map-get($variables, secondary), 0.3)
+        );
+        &.mdc-checkbox--selected {
+          @include ripple.states(
+            map-get($variables, secondary),
+            false,
+            feature-targeting.all(),
+            ".mdc-checkbox__ripple"
+          );
         }
       }
     }
@@ -619,6 +634,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     );
     @include top-app-bar.ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
     @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
+    &.contextual {
+      $background: if(
+        $dark,
+        overlay-elevation(color.scale(map-get($variables, surface), $lightness: -50%), 4),
+        palette.$grey-900
+      );
+      @include top-app-bar.fill-color($background);
+      @include top-app-bar.ink-color(rgba(white, 0.87));
+      @include top-app-bar.icon-ink-color(rgba(white, 0.87));
+    }
     @if ($dark != true) {
       .toggle-group {
         .toggle-group__button {
