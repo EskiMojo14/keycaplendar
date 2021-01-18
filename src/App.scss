@@ -458,7 +458,8 @@ svg.material-icons,
 .sales-image img,
 .details-image,
 .image-details .image,
-.image-display {
+.image-display,
+.mdc-list-item__graphic.image {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
 }
 

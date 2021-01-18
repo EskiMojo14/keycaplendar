@@ -5,10 +5,21 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { capitalise, addOrRemove, iconObject } from "../../util/functions";
+import { addOrRemove, iconObject } from "../../util/functions";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
+import {
+  ImageList,
+  ImageListItem,
+  ImageListImageAspectContainer,
+  ImageListImage,
+  ImageListSupporting,
+  ImageListLabel,
+} from "@rmwc/image-list";
 import { LinearProgress } from "@rmwc/linear-progress";
+import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
+import { Ripple } from "@rmwc/ripple";
+import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -18,17 +29,9 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import {
-  ImageList,
-  ImageListItem,
-  ImageListImageAspectContainer,
-  ImageListImage,
-  ImageListSupporting,
-  ImageListLabel,
-} from "@rmwc/image-list";
-import { Ripple } from "@rmwc/ripple";
 import { Typography } from "@rmwc/typography";
 import { DrawerDetails } from "../images/DrawerDetails";
+import { DrawerSearch } from "../images/DrawerSearch";
 import { Footer } from "../common/Footer";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
@@ -52,12 +55,14 @@ export class ContentImages extends React.Component {
     this.state = {
       currentFolder: "keysets",
       folders: [],
+      folderOpen: false,
       images: [],
       checkedImages: [],
       setImages: [],
       detailOpen: false,
       detailImage: blankImage,
       detailMetadata: {},
+      searchOpen: true,
       loading: false,
     };
   }
@@ -139,7 +144,7 @@ export class ContentImages extends React.Component {
       });
     storageRef
       .child(path)
-      .listAll()
+      .list({ maxResults: 100 })
       .then((res) => {
         this.processItems(res.items);
       })
@@ -152,24 +157,52 @@ export class ContentImages extends React.Component {
     this.listAll(folder);
   };
   openDetails = (image) => {
-    if (this.state.detailImage === image) {
-      this.closeDetails();
+    const open = () => {
+      if (this.state.detailImage === image) {
+        this.closeDetails();
+      } else {
+        this.setState({ detailOpen: true, detailImage: image });
+        storageRef
+          .child(image.fullPath)
+          .getMetadata()
+          .then((metadata) => {
+            this.setState({ detailMetadata: metadata });
+          })
+          .catch((error) => {
+            this.props.snackbarQueue.notify({ title: "Failed to get metadata: " + error });
+            this.setState({ detailMetadata: {} });
+          });
+      }
+    };
+    if (this.state.searchOpen) {
+      this.closeSearch();
+      setTimeout(() => open(), 300);
     } else {
-      this.setState({ detailOpen: true, detailImage: image });
-      storageRef
-        .child(image.fullPath)
-        .getMetadata()
-        .then((metadata) => {
-          this.setState({ detailMetadata: metadata });
-        })
-        .catch((error) => {
-          this.props.snackbarQueue.notify({ title: "Failed to get metadata: " + error });
-          this.setState({ detailMetadata: {} });
-        });
+      open();
     }
   };
   closeDetails = () => {
     this.setState({ detailOpen: false, detailImage: blankImage, detailMetadata: {} });
+  };
+  openFolders = () => {
+    this.setState({ folderOpen: true });
+  };
+  closeFolders = () => {
+    this.setState({ folderOpen: false });
+  };
+  openSearch = () => {
+    const open = () => {
+      this.setState((prevState) => ({ searchOpen: !prevState.searchOpen }));
+    };
+    if (this.state.detailOpen) {
+      this.closeDetails();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
+  };
+  closeSearch = () => {
+    this.setState({ searchOpen: false });
   };
   handleChecked = (image) => {
     const editedArray = addOrRemove([...this.state.checkedImages], image.fullPath);
@@ -192,6 +225,7 @@ export class ContentImages extends React.Component {
       },
     ];
     const contextual = this.state.checkedImages.length > 0;
+    const tooltipAlign = this.props.bottomNav ? "top" : "bottom";
     return (
       <>
         <TopAppBar
@@ -201,7 +235,9 @@ export class ContentImages extends React.Component {
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               {contextual ? (
-                <TopAppBarActionItem icon="close" onClick={this.clearChecked} />
+                <Tooltip enterDelay={500} content="Close" align={tooltipAlign}>
+                  <TopAppBarActionItem icon="close" onClick={this.clearChecked} />
+                </Tooltip>
               ) : (
                 <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
               )}
@@ -210,32 +246,77 @@ export class ContentImages extends React.Component {
             <TopAppBarSection alignEnd>
               {contextual ? (
                 <>
-                  <TopAppBarActionItem
-                    icon={iconObject(
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                          <path d="M0 0h24v24H0V0z" fill="none" />
-                          <path d="M8 9h8v10H8z" opacity=".3" />
-                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                        </svg>
-                      </div>
-                    )}
-                  />
+                  <Tooltip enterDelay={500} content="Delete" align={tooltipAlign}>
+                    <TopAppBarActionItem
+                      icon={iconObject(
+                        <div>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M8 9h8v10H8z" opacity=".3" />
+                            <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                          </svg>
+                        </div>
+                      )}
+                    />
+                  </Tooltip>
                 </>
               ) : (
                 <>
-                  <ToggleGroup>
-                    {this.state.folders.map((folder) => (
-                      <ToggleGroupButton
-                        key={folder}
-                        label={capitalise(folder)}
-                        selected={this.state.currentFolder === folder}
-                        onClick={() => {
-                          this.setFolder(folder);
-                        }}
-                      />
-                    ))}
-                  </ToggleGroup>
+                  <Tooltip enterDelay={500} content="Search" align={tooltipAlign}>
+                    <TopAppBarActionItem icon="search" onClick={this.openSearch} />
+                  </Tooltip>
+                  {this.context === "mobile" ? (
+                    <MenuSurfaceAnchor>
+                      <Tooltip enterDelay={500} content="Folder" align={tooltipAlign}>
+                        <TopAppBarActionItem
+                          icon={iconObject(
+                            <div>
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                  d="M13.17 6l-.59-.59L11.17 4H6v12h16V6h-8.83zm4.33 4.5L21 15H7l4.5-6 3.5 4.51 2.5-3.01z"
+                                  opacity=".3"
+                                />
+                                <path d="M2 6H0v5h.01L0 20c0 1.1.9 2 2 2h18v-2H2V6zm5 9h14l-3.5-4.5-2.5 3.01L11.5 9zM22 4h-8l-2-2H6c-1.1 0-1.99.9-1.99 2L4 16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 12H6V4h5.17l1.41 1.41.59.59H22v10z" />
+                              </svg>
+                            </div>
+                          )}
+                          onClick={this.openFolders}
+                        />
+                      </Tooltip>
+                      <Menu
+                        open={this.state.folderOpen}
+                        onClose={this.closeFolders}
+                        anchorCorner="bottomLeft"
+                        className="folder-menu"
+                      >
+                        {this.state.folders.map((folder) => (
+                          <MenuItem
+                            key={folder}
+                            selected={this.state.currentFolder === folder}
+                            onClick={() => {
+                              this.setFolder(folder);
+                            }}
+                          >
+                            {`${folder}/`}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </MenuSurfaceAnchor>
+                  ) : (
+                    <ToggleGroup>
+                      {this.state.folders.map((folder) => (
+                        <ToggleGroupButton
+                          key={folder}
+                          label={folder}
+                          selected={this.state.currentFolder === folder}
+                          onClick={() => {
+                            this.setFolder(folder);
+                          }}
+                        />
+                      ))}
+                    </ToggleGroup>
+                  )}
                 </>
               )}
             </TopAppBarSection>
@@ -249,6 +330,12 @@ export class ContentImages extends React.Component {
           })}
         >
           <div className="main">
+            <DrawerSearch
+              open={this.state.searchOpen}
+              close={this.closeSearch}
+              images={this.state.images}
+              unusedImages={unusedImages}
+            />
             <DrawerDetails
               open={this.state.detailOpen}
               close={this.closeDetails}

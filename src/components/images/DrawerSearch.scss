@@ -1,0 +1,47 @@
+@use "@material/rtl/_index" as rtl;
+@use "../../util";
+
+.search-drawer {
+  .mdc-drawer__header {
+    display: flex;
+    align-items: center;
+    @include util.divider-border(bottom);
+    .mdc-drawer__title {
+      flex: auto 1;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+    .close-icon {
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
+  .search-bar {
+    flex-grow: 1;
+    &__container {
+      display: flex;
+      padding: 16px;
+      @include util.divider-border(bottom);
+    }
+  }
+  .mdc-drawer__content {
+    .mdc-list {
+      &-item {
+        padding: 0 16px;
+        &__graphic {
+          width: 85px;
+          height: 48px;
+          background-size: cover;
+          background-position: center;
+          @include rtl.reflexive-box(margin, right, 16px);
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        &__meta {
+          @include rtl.reflexive-box(margin, left, auto);
+        }
+      }
+    }
+  }
+}

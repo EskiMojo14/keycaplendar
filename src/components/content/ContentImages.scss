@@ -7,6 +7,13 @@
   flex-grow: 1;
   padding: 16px;
 }
+
+.folder-menu {
+  .mdc-list-item {
+    white-space: nowrap;
+  }
+}
+
 .display-container {
   padding-bottom: 16px;
   .subheader {
