@@ -27,14 +27,6 @@
       @include ripple.radius-bounded;
       @include ripple.states(black);
       cursor: pointer;
-      &.selected {
-        &::before {
-          opacity: 0.24;
-        }
-        .mdc-image-list__image {
-          filter: grayscale(100%);
-        }
-      }
       .container {
         position: relative;
         .checkbox-container {

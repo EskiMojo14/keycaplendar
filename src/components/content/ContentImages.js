@@ -62,11 +62,12 @@ export class ContentImages extends React.Component {
       detailOpen: false,
       detailImage: blankImage,
       detailMetadata: {},
-      searchOpen: true,
+      searchOpen: false,
       loading: false,
     };
   }
   componentDidMount() {
+    this.getFolders();
     this.listAll(this.state.currentFolder);
     this.createSetImageList();
   }
@@ -111,7 +112,7 @@ export class ContentImages extends React.Component {
     });
     this.setState({ folders: folders });
   };
-  processItems = (items) => {
+  processItems = (items, append) => {
     const images = items.map((itemRef) => {
       const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
         itemRef.fullPath
@@ -119,7 +120,8 @@ export class ContentImages extends React.Component {
       const obj = new ImageObj(itemRef.name, itemRef.parent, itemRef.fullPath, src);
       return obj;
     });
-    images.sort((a, b) => {
+    const allImages = append ? [...this.state.images, ...images] : images;
+    allImages.sort((a, b) => {
       var nameA = a.name.replace(".png", "").toLowerCase();
       var nameB = b.name.replace(".png", "").toLowerCase();
       if (nameA < nameB) {
@@ -130,10 +132,9 @@ export class ContentImages extends React.Component {
       }
       return 0;
     });
-    this.setState({ images: images, checkedImages: [], loading: false });
+    this.setState({ images: allImages, checkedImages: [], loading: false });
   };
-  listAll = (path = "") => {
-    this.setState({ loading: true });
+  getFolders = () => {
     storageRef
       .listAll()
       .then((res) => {
@@ -142,15 +143,25 @@ export class ContentImages extends React.Component {
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Failed to list top level folders: " + error });
       });
-    storageRef
-      .child(path)
-      .list({ maxResults: 100 })
-      .then((res) => {
-        this.processItems(res.items);
-      })
-      .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Failed to list images: " + error });
-      });
+  };
+  listAll = (path = "") => {
+    const paginatedListAll = (nextPageToken) => {
+      this.setState({ loading: true });
+      storageRef
+        .child(path)
+        .list({ maxResults: 100, pageToken: nextPageToken })
+        .then((res) => {
+          this.processItems(res.items, !!nextPageToken);
+          if (res.nextPageToken) {
+            paginatedListAll(res.nextPageToken);
+          }
+        })
+        .catch((error) => {
+          this.props.snackbarQueue.notify({ title: "Failed to list images: " + error });
+          this.setState({ loading: false });
+        });
+    };
+    paginatedListAll();
   };
   setFolder = (folder) => {
     this.setState({ currentFolder: folder });
@@ -351,7 +362,7 @@ export class ContentImages extends React.Component {
                   obj.array.length > 0 ? (
                     <div className="display-container" key={obj.title}>
                       <div className="subheader">
-                        <Typography use="caption">{obj.title}</Typography>
+                        <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
                       </div>
                       <ImageList style={{ margin: -2 }} withTextProtection>
                         {obj.array.map((image) => {
