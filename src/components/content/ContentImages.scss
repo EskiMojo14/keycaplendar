@@ -1,5 +1,6 @@
 @use "@material/checkbox/_index" as checkbox;
 @use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
 
 @use '@material/feature-targeting/_index' as feature-targeting;
 
@@ -17,7 +18,12 @@
 .display-container {
   padding-bottom: 16px;
   .subheader {
+    display: flex;
+    align-items: center;
     padding-bottom: 16px;
+    .mdc-typography--caption {
+      flex-grow: 1;
+    }
   }
   .mdc-image-list {
     &__item {

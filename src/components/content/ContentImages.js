@@ -6,6 +6,7 @@ import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
 import { addOrRemove, iconObject } from "../../util/functions";
+import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
 import {
@@ -112,7 +113,7 @@ export class ContentImages extends React.Component {
     });
     this.setState({ folders: folders });
   };
-  processItems = (items, append) => {
+  processItems = (items, append = false) => {
     const images = items.map((itemRef) => {
       const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
         itemRef.fullPath
@@ -215,8 +216,12 @@ export class ContentImages extends React.Component {
   closeSearch = () => {
     this.setState({ searchOpen: false });
   };
-  handleChecked = (image) => {
-    const editedArray = addOrRemove([...this.state.checkedImages], image.fullPath);
+  toggleImageChecked = (image) => {
+    const editedArray = addOrRemove([...this.state.checkedImages], image);
+    this.setState({ checkedImages: editedArray });
+  };
+  toggleImageCheckedArray = (array, append = false) => {
+    const editedArray = append ? [...this.state.checkedImages, ...array] : array;
     this.setState({ checkedImages: editedArray });
   };
   clearChecked = () => {
@@ -363,6 +368,13 @@ export class ContentImages extends React.Component {
                     <div className="display-container" key={obj.title}>
                       <div className="subheader">
                         <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
+                        {obj.title === "Unused images" ? (
+                          <Button
+                            className="subheader-button"
+                            label="Check all"
+                            onClick={() => this.toggleImageCheckedArray(obj.array)}
+                          />
+                        ) : null}
                       </div>
                       <ImageList style={{ margin: -2 }} withTextProtection>
                         {obj.array.map((image) => {
@@ -390,9 +402,9 @@ export class ContentImages extends React.Component {
                                   <div className="checkbox-container">
                                     <div className="checkbox">
                                       <Checkbox
-                                        checked={this.state.checkedImages.includes(image.fullPath)}
+                                        checked={this.state.checkedImages.includes(image)}
                                         onClick={() => {
-                                          this.handleChecked(image);
+                                          this.toggleImageChecked(image);
                                         }}
                                       />
                                     </div>
