@@ -33,6 +33,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { DrawerDetails } from "../images/DrawerDetails";
 import { DrawerSearch } from "../images/DrawerSearch";
+import { DialogDelete } from "../images/DialogDelete";
 import { Footer } from "../common/Footer";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
@@ -64,6 +65,7 @@ export class ContentImages extends React.Component {
       detailImage: blankImage,
       detailMetadata: {},
       searchOpen: false,
+      deleteOpen: false,
       loading: false,
     };
   }
@@ -216,6 +218,12 @@ export class ContentImages extends React.Component {
   closeSearch = () => {
     this.setState({ searchOpen: false });
   };
+  openDelete = () => {
+    this.setState({ deleteOpen: true });
+  };
+  closeDelete = () => {
+    this.setState({ deleteOpen: false });
+  };
   toggleImageChecked = (image) => {
     const editedArray = addOrRemove([...this.state.checkedImages], image);
     this.setState({ checkedImages: editedArray });
@@ -273,6 +281,7 @@ export class ContentImages extends React.Component {
                           </svg>
                         </div>
                       )}
+                      onClick={this.openDelete}
                     />
                   </Tooltip>
                 </>
@@ -357,6 +366,12 @@ export class ContentImages extends React.Component {
               close={this.closeDetails}
               image={this.state.detailImage}
               metadata={this.state.detailMetadata}
+            />
+            <DialogDelete
+              open={this.state.deleteOpen && this.state.checkedImages.length > 0}
+              close={this.closeDelete}
+              images={this.state.checkedImages}
+              toggleImageChecked={this.toggleImageChecked}
             />
             <ConditionalWrapper
               condition={this.context === "desktop"}
