@@ -1,8 +1,11 @@
 @use "@material/rtl/_index" as rtl;
-@use "@material/ripple/_index" as ripple;
 
 .delete-image-dialog {
   .chips-container {
-    margin: -8px;
+    margin: 0 -8px;
+  }
+  .checkbox-container {
+    flex-grow: 1;
+    @include rtl.reflexive-box(margin, right, 16px);
   }
 }

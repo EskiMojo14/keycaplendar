@@ -386,7 +386,7 @@ export class ContentImages extends React.Component {
                         {obj.title === "Unused images" ? (
                           <Button
                             className="subheader-button"
-                            label="Check all"
+                            label="Select all"
                             onClick={() => this.toggleImageCheckedArray(obj.array)}
                           />
                         ) : null}
