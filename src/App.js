@@ -13,7 +13,7 @@ import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, urlPages } from "./util/constants";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove, normalise } from "./util/functions";
+import { addOrRemove, normalise, replaceFunction } from "./util/functions";
 import { Preset } from "./util/constructors";
 import "./App.scss";
 
@@ -555,19 +555,6 @@ class App extends React.Component {
     });
 
     // search logic
-
-    const replaceChars = [
-      ["β", "B"],
-      ["æ", "ae"],
-    ];
-
-    const replaceFunction = (string) => {
-      let val = string;
-      replaceChars.forEach((set) => {
-        val = val.replace(set[0], set[1]);
-      });
-      return val;
-    };
 
     const searchSets = (search) => {
       return filteredSets.filter((set) => {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import firebase from "../../../firebase";
 import classNames from "classnames";
 import { UserContext } from "../../../util/contexts";
-import { camelise, normalise, iconObject } from "../../../util/functions";
+import { formatFileName, iconObject } from "../../../util/functions";
 import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { nanoid } from "nanoid";
@@ -243,7 +243,7 @@ export class DialogCreate extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = camelise(normalise(`${this.state.profile} ${this.state.colorway}`));
+    const fileName = formatFileName(`${this.state.profile} ${this.state.colorway}`);
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -1047,7 +1047,7 @@ export class DialogEdit extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = camelise(normalise(`${this.state.profile} ${this.state.colorway}`));
+    const fileName = formatFileName(`${this.state.profile} ${this.state.colorway}`);
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(

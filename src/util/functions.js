@@ -1,3 +1,5 @@
+import { replaceChars } from "./constants";
+
 export const addOrRemove = (oldArray, value) => {
   const array = [...oldArray];
   const index = array.indexOf(value);
@@ -27,13 +29,25 @@ export const camelise = (str, chr = " ") => {
     .join("");
 };
 
-export const countInArray = (arr, val) => {
-  return arr.reduce((count, item) => count + (item === val), 0);
-};
-
 export const normalise = (str, includeSpace = true) => {
   const regex = includeSpace ? /[^a-zA-Z0-9 ]/g : /[^a-zA-Z0-9]/g;
   return str.normalize("NFD").replace(regex, "");
+};
+
+export const replaceFunction = (string) => {
+  let val = string;
+  replaceChars.forEach((set) => {
+    val = val.replace(set[0], set[1]);
+  });
+  return val;
+};
+
+export const formatFileName = (str) => {
+  return camelise(normalise(replaceFunction(str)));
+};
+
+export const countInArray = (arr, val) => {
+  return arr.reduce((count, item) => count + (item === val), 0);
 };
 
 export const iconObject = (jsx) => {

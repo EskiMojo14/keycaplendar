@@ -1,6 +1,12 @@
 import React from "react";
 import { iconObject } from "./functions";
 
+export const replaceChars = [
+  ["β", "B"],
+  ["æ", "ae"],
+  ["🅱️", "B"],
+];
+
 export const settingsFunctions = {
   view: "setView",
   bottomNav: "setBottomNav",
