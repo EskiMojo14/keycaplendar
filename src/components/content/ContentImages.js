@@ -371,6 +371,7 @@ export class ContentImages extends React.Component {
               open={this.state.deleteOpen && this.state.checkedImages.length > 0}
               close={this.closeDelete}
               images={this.state.checkedImages}
+              folders={this.state.folders}
               toggleImageChecked={this.toggleImageChecked}
             />
             <ConditionalWrapper

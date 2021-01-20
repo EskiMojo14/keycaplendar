@@ -9,6 +9,15 @@ export const DialogDelete = (props) => {
   const handleChange = (e) => {
     setDeleteAllVersions(e.target.checked);
   };
+  const createArray = (allVersions = deleteAllVersions) => {
+    if (allVersions) {
+      const array = props.images.map((image) => props.folders.map((folder) => `${folder}/${image.name}`)).flat(1);
+      return array;
+    } else {
+      const array = props.images.map((image) => image.fullPath);
+      return array;
+    }
+  };
   return (
     <Dialog open={props.open} onClose={props.close} className="delete-image-dialog">
       <DialogTitle>Delete image{props.images.length > 1 ? "s" : null}</DialogTitle>
