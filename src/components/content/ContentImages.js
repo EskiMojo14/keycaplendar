@@ -71,7 +71,7 @@ export class ContentImages extends React.Component {
   }
   componentDidMount() {
     this.getFolders();
-    this.listAll(this.state.currentFolder);
+    this.listAll();
     this.createSetImageList();
   }
   componentDidUpdate(prevProps) {
@@ -147,7 +147,7 @@ export class ContentImages extends React.Component {
         this.props.snackbarQueue.notify({ title: "Failed to list top level folders: " + error });
       });
   };
-  listAll = (path = "") => {
+  listAll = (path = this.state.currentFolder) => {
     const paginatedListAll = (nextPageToken) => {
       this.setState({ loading: true });
       storageRef
@@ -234,6 +234,9 @@ export class ContentImages extends React.Component {
   };
   clearChecked = () => {
     this.setState({ checkedImages: [] });
+  };
+  setLoading = (bool) => {
+    this.setState({ loading: bool });
   };
   render() {
     const unusedImages = this.state.images.filter((image) => !this.state.setImages.includes(image.name));
@@ -373,6 +376,9 @@ export class ContentImages extends React.Component {
               images={this.state.checkedImages}
               folders={this.state.folders}
               toggleImageChecked={this.toggleImageChecked}
+              setLoading={this.setLoading}
+              listAll={this.listAll}
+              snackbarQueue={this.props.snackbarQueue}
             />
             <ConditionalWrapper
               condition={this.context === "desktop"}
