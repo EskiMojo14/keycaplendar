@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @use "@material/button/_index" as button;
 @use "@material/card/_index" as card;
 @use "@material/checkbox/_index" as checkbox;
@@ -242,6 +244,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
     }
   }
+  .mdc-chip {
+    @include chips.fill-color-accessible(mix(map-get($variables, on-surface), map-get($variables, surface), 12%));
+  }
 
   .mdc-dialog {
     @include dialog.container-fill-color(
@@ -252,6 +257,15 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     @include dialog.content-ink-color(map-get($variables, text-medium));
     .primary {
       color: map-get($variables, text-high);
+    }
+    .mdc-chip {
+      @include chips.fill-color-accessible(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
+          12%
+        )
+      );
     }
   }
 
@@ -400,22 +414,31 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .mdc-image-list {
     .mdc-image-list__item {
-      .container::before {
-        background-color: map-get($variables, primary);
-      }
       &.selected {
         @include ripple.states(map-get($variables, primary));
         .mdc-image-list__supporting {
           background-color: rgba(map-get($variables, on-primary), 0.75);
-          .primary-text,
-          .secondary-text,
-          .overline {
-            color: map-get($variables, primary);
-          }
+          color: map-get($variables, primary);
           .live-indicator,
           .shipped-indicator {
             fill: map-get($variables, primary);
           }
+        }
+      }
+      .mdc-checkbox {
+        @include checkbox.container-colors(
+          rgba(white, 0.6),
+          transparent,
+          map-get($variables, secondary),
+          rgba(map-get($variables, secondary), 0.3)
+        );
+        &.mdc-checkbox--selected {
+          @include ripple.states(
+            map-get($variables, secondary),
+            false,
+            feature-targeting.all(),
+            ".mdc-checkbox__ripple"
+          );
         }
       }
     }
@@ -623,6 +646,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     );
     @include top-app-bar.ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
     @include top-app-bar.icon-ink-color(if($dark, map-get($variables, text-high), map-get($variables, on-primary)));
+    &.contextual {
+      $background: if(
+        $dark,
+        overlay-elevation(color.scale(map-get($variables, surface), $lightness: -50%), 4),
+        palette.$grey-900
+      );
+      @include top-app-bar.fill-color($background);
+      @include top-app-bar.ink-color(rgba(white, 0.87));
+      @include top-app-bar.icon-ink-color(rgba(white, 0.87));
+    }
     @if ($dark != true) {
       .toggle-group {
         .toggle-group__button {
@@ -735,7 +768,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         }
       }
     }
-    &.bottom-app-bar {
+    &.bottom-app-bar--ident {
       .mdc-top-app-bar__section:not(.indent) {
         background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
       }

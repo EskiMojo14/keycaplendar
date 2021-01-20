@@ -8,9 +8,10 @@ import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTy
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
-import { ContentStatistics } from "./content/ContentStatistics";
+import { ContentImages } from "./content/ContentImages";
 import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
+import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentUsers } from "./content/ContentUsers";
 import "./Content.scss";
 
@@ -95,6 +96,15 @@ export const Content = (props) => {
         device={device}
       />
     ) : null;
+  const contentImages =
+    props.page === "images" && user.isAdmin ? (
+      <ContentImages
+        openNav={openNav}
+        bottomNav={props.bottomNav}
+        sets={props.allSets}
+        snackbarQueue={props.snackbarQueue}
+      />
+    ) : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings
@@ -138,6 +148,7 @@ export const Content = (props) => {
         {contentStatistics}
         {contentAudit}
         {contentUsers}
+        {contentImages}
         {contentSettings}
       </DrawerAppContent>
     </div>

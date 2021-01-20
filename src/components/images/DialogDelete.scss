@@ -1,0 +1,11 @@
+@use "@material/rtl/_index" as rtl;
+
+.delete-image-dialog {
+  .chips-container {
+    margin: 0 -8px;
+  }
+  .checkbox-container {
+    flex-grow: 1;
+    @include rtl.reflexive-box(margin, right, 16px);
+  }
+}

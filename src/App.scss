@@ -67,6 +67,7 @@
 @use "@rmwc/tooltip/tooltip";
 
 @use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
 @use "@material/list/_index" as list;
 @use "@material/theme/color-palette" as palette;
 @use "@material/rtl/_index" as rtl;
@@ -156,6 +157,7 @@
 
 .mdc-image-list__item {
   @include shape.radius(medium);
+  overflow: hidden;
 }
 
 .mdc-linear-progress {
@@ -196,6 +198,17 @@
           content: none;
         }
       }
+    }
+  }
+}
+
+.mdc-top-app-bar {
+  &.is-contextual {
+    transition: elevation.transition-value(), background-color 100ms linear, color 100ms linear;
+    .mdc-top-app-bar__navigation-icon,
+    .mdc-top-app-bar__action-item,
+    .mdc-top-app-bar__title {
+      transition: color 100ms linear;
     }
   }
 }
@@ -444,7 +457,9 @@ svg.material-icons,
 .sales-image,
 .sales-image img,
 .details-image,
-.image-display {
+.image-details .image,
+.image-display,
+.mdc-list-item__graphic.image {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
 }
 

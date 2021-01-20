@@ -11,6 +11,15 @@
     width: 100%;
     @include rtl.reflexive-position(right, 0);
     transition: elevation.transition-value(), animation.standard(width, 150ms);
+    &.is-contextual {
+      transition: elevation.transition-value(), animation.standard(width, 150ms), background-color 100ms linear,
+        color 100ms linear;
+      .mdc-top-app-bar__navigation-icon,
+      .mdc-top-app-bar__action-item,
+      .mdc-top-app-bar__title {
+        transition: color 100ms linear;
+      }
+    }
     .mdc-top-app-bar__navigation-icon {
       transition-property: width, height, padding;
       transition-duration: 120ms;

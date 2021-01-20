@@ -1,8 +1,10 @@
+rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      allow read;
-      allow write: if request.auth.token.editor == true || request.auth.token.designer == true;
+      allow get;
+      allow list: if request.auth.token.admin == true;
+      allow write: if request.auth.token.editor == true || request.auth.token.designer == true || request.auth.token.admin == true;
     }
   }
 }
