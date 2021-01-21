@@ -1070,21 +1070,21 @@ export class ContentStatistics extends React.Component {
           <ToggleGroupButton
             selected={this.state.settings[cat] === "profile"}
             onClick={() => {
-              this.setSetting("durationGroup", "profile");
+              this.setSetting(cat, "profile");
             }}
             label="Profile"
           />
           <ToggleGroupButton
             selected={this.state.settings[cat] === "designer"}
             onClick={() => {
-              this.setSetting("durationGroup", "designer");
+              this.setSetting(cat, "designer");
             }}
             label="Designer"
           />
           <ToggleGroupButton
             selected={this.state.settings[cat] === "vendor"}
             onClick={() => {
-              this.setSetting("durationGroup", "vendor");
+              this.setSetting(cat, "vendor");
             }}
             label="Vendor"
           />
