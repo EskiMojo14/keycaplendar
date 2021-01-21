@@ -29,9 +29,9 @@ $exit-time: 200ms;
       &__input {
         padding-top: 16px;
       }
-      .leading-icon-ripple {
-        @include ripple.surface();
-        @include ripple.radius-unbounded();
+      .mdc-icon-button {
+        height: 36px;
+        width: 36px;
         padding: (40px - 24px - 4px) / 2;
       }
     }
@@ -79,11 +79,6 @@ $exit-time: 200ms;
         }
         .mdc-notched-outline {
           display: none;
-        }
-        .leading-icon-ripple {
-          @include ripple.surface();
-          @include ripple.radius-unbounded();
-          padding: 12px;
         }
       }
     }

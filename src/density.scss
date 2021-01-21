@@ -288,7 +288,20 @@
             small
           )
         );
-        .leading-icon-ripple {
+        .mdc-icon-button {
+          $size: density.prop-value(
+            (
+              height: (
+                default: 36px,
+                maximum: 36px,
+                minimum: 24px,
+              ),
+            ),
+            $density,
+            height
+          );
+          height: $size;
+          width: $size;
           padding: (
               density.prop-value(
                   (
