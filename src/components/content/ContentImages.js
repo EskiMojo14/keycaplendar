@@ -61,6 +61,7 @@ export class ContentImages extends React.Component {
       images: [],
       checkedImages: [],
       setImages: [],
+      duplicateSetImages: [],
       detailOpen: false,
       detailImage: blankImage,
       detailMetadata: {},
@@ -95,7 +96,8 @@ export class ContentImages extends React.Component {
       }
       return 0;
     });
-    this.setState({ setImages: setImages });
+    const findDuplicates = (arr) => arr.filter((item, index) => arr.indexOf(item) !== index);
+    this.setState({ setImages: setImages, duplicateSetImages: findDuplicates(setImages) });
   };
   processPrefixes = (prefixes) => {
     const folders = prefixes.map((folderRef) => {
@@ -241,10 +243,15 @@ export class ContentImages extends React.Component {
   render() {
     const unusedImages = this.state.images.filter((image) => !this.state.setImages.includes(image.name));
     const usedImages = this.state.images.filter((image) => this.state.setImages.includes(image.name));
+    const duplicateImages = usedImages.filter((image) => this.state.duplicateSetImages.includes(image.name));
     const display = [
       {
         title: "Unused images",
         array: unusedImages,
+      },
+      {
+        title: "Duplicate images",
+        array: duplicateImages,
       },
       {
         title: "Used images",
