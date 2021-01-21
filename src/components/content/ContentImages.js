@@ -5,7 +5,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { addOrRemove, iconObject } from "../../util/functions";
+import { addOrRemove, getStorageFolders, iconObject } from "../../util/functions";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -99,24 +99,6 @@ export class ContentImages extends React.Component {
     const findDuplicates = (arr) => arr.filter((item, index) => arr.indexOf(item) !== index);
     this.setState({ setImages: setImages, duplicateSetImages: findDuplicates(setImages) });
   };
-  processPrefixes = (prefixes) => {
-    const folders = prefixes.map((folderRef) => {
-      return folderRef.fullPath;
-    });
-    const sortOrder = ["keysets", "card", "list", "image-list"];
-    folders.sort((a, b) => {
-      const nameA = sortOrder.indexOf(a);
-      const nameB = sortOrder.indexOf(b);
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    this.setState({ folders: folders });
-  };
   processItems = (items, append = false) => {
     const images = items.map((itemRef) => {
       const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
@@ -139,15 +121,21 @@ export class ContentImages extends React.Component {
     });
     this.setState({ images: allImages, checkedImages: [], loading: false });
   };
-  getFolders = () => {
-    storageRef
-      .listAll()
-      .then((res) => {
-        this.processPrefixes(res.prefixes);
-      })
-      .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Failed to list top level folders: " + error });
-      });
+  getFolders = async () => {
+    const folders = await getStorageFolders();
+    const sortOrder = ["keysets", "card", "list", "image-list"];
+    folders.sort((a, b) => {
+      const nameA = sortOrder.indexOf(a);
+      const nameB = sortOrder.indexOf(b);
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+    this.setState({ folders: folders });
   };
   listAll = (path = this.state.currentFolder) => {
     const paginatedListAll = (nextPageToken) => {

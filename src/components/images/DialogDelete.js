@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import firebase from "../../firebase";
+import { batchStorageDelete } from "../../util/functions";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogDelete.scss";
-
-const storage = firebase.storage();
-
-const storageRef = storage.ref();
 
 export const DialogDelete = (props) => {
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
@@ -26,22 +22,7 @@ export const DialogDelete = (props) => {
   const deleteImages = () => {
     const array = createArray();
     props.setLoading(true);
-    Promise.all(
-      array.map((path) => {
-        const ref = storageRef.child(path);
-        return ref
-          .getMetadata()
-          .then((metadata) => {
-            // file exists
-            return ref.delete();
-          })
-          .catch((error) => {
-            // file doesn't exist
-            console.log(error);
-            return Promise.resolve();
-          });
-      })
-    )
+    batchStorageDelete(array)
       .then(() => {
         props.snackbarQueue.notify({ title: "Successfully deleted files." });
         props.close();

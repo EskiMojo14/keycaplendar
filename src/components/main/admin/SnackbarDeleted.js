@@ -2,12 +2,9 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
+import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
 import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
-
-const storage = firebase.storage();
-
-const storageRef = storage.ref();
 
 export const SnackbarDeleted = (props) => {
   const { user } = useContext(UserContext);
@@ -37,27 +34,9 @@ export const SnackbarDeleted = (props) => {
     close(true);
   };
   const deleteImages = async (name) => {
-    const topLevel = await storageRef.listAll();
-    const folders = topLevel.prefixes.map((folderRef) => {
-      return folderRef.fullPath;
-    });
+    const folders = await getStorageFolders();
     const allImages = folders.map((folder) => `${folder}/${name}`);
-    Promise.all(
-      allImages.map((path) => {
-        const ref = storageRef.child(path);
-        return ref
-          .getMetadata()
-          .then((metadata) => {
-            // file exists
-            return ref.delete();
-          })
-          .catch((error) => {
-            // file doesn't exist
-            console.log(error);
-            return Promise.resolve();
-          });
-      })
-    )
+    batchStorageDelete(allImages)
       .then(() => {
         props.snackbarQueue.notify({ title: "Successfully deleted thumbnails." });
       })

@@ -1,4 +1,9 @@
 import { replaceChars } from "./constants";
+import firebase from "../firebase";
+
+const storage = firebase.storage();
+
+const storageRef = storage.ref();
 
 export const addOrRemove = (oldArray, value) => {
   const array = [...oldArray];
@@ -85,4 +90,31 @@ export const formatBytes = (bytes, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
+
+export const getStorageFolders = async () => {
+  const topLevel = await storageRef.listAll();
+  const folders = topLevel.prefixes.map((folderRef) => {
+    return folderRef.fullPath;
+  });
+  return folders;
+};
+
+export const batchStorageDelete = (array = []) => {
+  return Promise.all(
+    array.map((path) => {
+      const ref = storageRef.child(path);
+      return ref
+        .getMetadata()
+        .then((metadata) => {
+          // file exists
+          return ref.delete();
+        })
+        .catch((error) => {
+          // file doesn't exist
+          console.log(error);
+          return Promise.resolve();
+        });
+    })
+  );
 };

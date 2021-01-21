@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import firebase from "../../../firebase";
 import classNames from "classnames";
-import { UserContext } from "../../../util/contexts";
-import { formatFileName, iconObject } from "../../../util/functions";
-import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import moment from "moment";
 import { nanoid } from "nanoid";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import firebase from "../../../firebase";
+import { UserContext } from "../../../util/contexts";
+import { formatFileName, iconObject, getStorageFolders, batchStorageDelete } from "../../../util/functions";
+import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { Button } from "@rmwc/button";
@@ -234,7 +235,9 @@ export class DrawerCreate extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = formatFileName(`${this.state.profile} ${this.state.colorway}`);
+    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+      .utc()
+      .format("YYYYMMDDHHmmSS")}`;
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -1063,7 +1066,9 @@ export class DrawerEdit extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = formatFileName(`${this.state.profile} ${this.state.colorway}`);
+    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+      .utc()
+      .format("YYYYMMDDHHmmSS")}`;
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -1085,12 +1090,24 @@ export class DrawerEdit extends React.Component {
         this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
         imageRef
           .getDownloadURL()
-          .then((downloadURL) => {
+          .then(async (downloadURL) => {
             this.setState({
               imageURL: downloadURL,
               loading: false,
             });
             this.editEntry();
+            const fileNameRegex = /keysets%2F(.*)\?/;
+            const imageName = this.props.set.image.match(fileNameRegex)[1];
+            const folders = await getStorageFolders();
+            const allImages = folders.map((folder) => `${folder}/${imageName}`);
+            batchStorageDelete(allImages)
+              .then(() => {
+                this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
+              })
+              .catch((error) => {
+                this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                console.log(error);
+              });
           })
           .catch((error) => {
             this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
