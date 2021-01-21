@@ -47,19 +47,16 @@ export const AuditEntry = (props) => {
   const arrayProps = ["designer"];
   const urlProps = ["image", "details", "sales"];
   const boolProps = ["gbMonth", "shipped"];
+  const icons = {
+    created: "add_circle_outline",
+    updated: "update",
+    deleted: "remove_circle_outline",
+  };
   return (
     <CollapsibleList
       handle={
         <ListItem>
-          <ListItemGraphic
-            icon={
-              props.action.action !== "created"
-                ? props.action.action === "updated"
-                  ? "update"
-                  : "remove_circle_outline"
-                : "add_circle_outline"
-            }
-          />
+          <ListItemGraphic icon={icons[props.action.action]} />
           <ListItemText>
             <div className="overline">{props.action.action}</div>
             <ListItemPrimaryText>
