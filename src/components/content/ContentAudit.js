@@ -130,10 +130,11 @@ export class ContentAudit extends React.Component {
         let users = [{ label: "All", value: "all" }];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          data.action = data.before ? (data.after.profile ? "updated" : "deleted") : "created";
+          data.action =
+            data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
           data.changelogId = doc.id;
           actions.push(data);
-          if (users.filter((user) => user.value === data.user.nickname).length === 0) {
+          if (!users.map((user) => user.value).includes(data.user.nickname)) {
             users.push({ label: data.user.nickname, value: data.user.nickname });
           }
         });

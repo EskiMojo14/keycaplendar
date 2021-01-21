@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import isEqual from "lodash.isequal";
 import { actionTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import {
@@ -43,6 +44,9 @@ export const AuditEntry = (props) => {
       <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.user.email}</DataTableCell>
     </DataTableRow>
   ) : null;
+  const arrayProps = ["designer"];
+  const urlProps = ["image", "details", "sales"];
+  const boolProps = ["gbMonth", "shipped"];
   return (
     <CollapsibleList
       handle={
@@ -83,17 +87,17 @@ export const AuditEntry = (props) => {
           <DataTableBody>
             {props.properties.map((property, index) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-              if (props.action.action === "updated" && props.action.before[property] !== props.action.after[property]) {
+              if (
+                props.action.action === "updated" &&
+                isEqual(props.action.before[property], props.action.after[property])
+              ) {
                 const beforeProp = props.action.before[property] ? props.action.before[property] : "";
                 const afterProp = props.action.after[property] ? props.action.after[property] : "";
                 if (
-                  property !== "designer" &&
+                  !arrayProps.includes(property) &&
                   property !== "vendors" &&
-                  property !== "image" &&
-                  property !== "details" &&
-                  property !== "sales" &&
-                  property !== "gbMonth" &&
-                  property !== "shipped"
+                  !urlProps.includes(property) &&
+                  !boolProps.includes(property)
                 ) {
                   return (
                     <DataTableRow key={property + index}>
@@ -106,30 +110,19 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "designer") {
-                  const arrayCompare = (before, after) => {
-                    return !(
-                      before.length === after.length &&
-                      before.sort().every(function (value, index) {
-                        return value === after.sort()[index];
-                      })
-                    );
-                  };
-                  if (arrayCompare(beforeProp, afterProp)) {
-                    return (
-                      <DataTableRow key={property + index}>
-                        <DataTableCell>{property}</DataTableCell>
-                        <DataTableCell className="before">
-                          <span className="highlight">{beforeProp.join(", ")}</span>
-                        </DataTableCell>
-                        <DataTableCell className="after">
-                          <span className="highlight">{afterProp.join(", ")}</span>
-                        </DataTableCell>
-                      </DataTableRow>
-                    );
-                  }
-                  return null;
-                } else if (property === "vendors") {
+                } else if (arrayProps.includes(property) && beforeProp && afterProp) {
+                  return (
+                    <DataTableRow key={property + index}>
+                      <DataTableCell>{property}</DataTableCell>
+                      <DataTableCell className="before">
+                        <span className="highlight">{beforeProp.join(", ")}</span>
+                      </DataTableCell>
+                      <DataTableCell className="after">
+                        <span className="highlight">{afterProp.join(", ")}</span>
+                      </DataTableCell>
+                    </DataTableRow>
+                  );
+                } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
                   const beforeVendors = props.action.before.vendors;
 
                   beforeVendors.sort(function (a, b) {
@@ -271,7 +264,7 @@ export const AuditEntry = (props) => {
                     return rows;
                   };
                   return buildRows();
-                } else if (property === "image" || property === "details" || property === "sales") {
+                } else if (urlProps.includes(property)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -291,7 +284,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "gbMonth" || property === "shipped") {
+                } else if (boolProps.includes(property)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -309,13 +302,10 @@ export const AuditEntry = (props) => {
                 const docData = props.action.action === "created" ? props.action.after : props.action.before;
                 const prop = docData[property] ? docData[property] : "";
                 if (
-                  property !== "designer" &&
+                  !arrayProps.includes(property) &&
                   property !== "vendors" &&
-                  property !== "image" &&
-                  property !== "details" &&
-                  property !== "sales" &&
-                  property !== "gbMonth" &&
-                  property !== "shipped"
+                  !urlProps.includes(property) &&
+                  !boolProps.includes(property)
                 ) {
                   return (
                     <DataTableRow key={property + index}>
@@ -325,7 +315,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "designer") {
+                } else if (arrayProps.includes(property) && prop) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -334,7 +324,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "vendors") {
+                } else if (property === "vendors" && docData.vendors) {
                   const buildRows = () => {
                     let rows = [];
                     const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
@@ -372,7 +362,7 @@ export const AuditEntry = (props) => {
                     return rows;
                   };
                   return buildRows();
-                } else if (property === "image" || property === "details" || property === "sales") {
+                } else if (urlProps.includes(property)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -385,7 +375,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "gbMonth" || property === "shipped") {
+                } else if (boolProps.includes(property)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
