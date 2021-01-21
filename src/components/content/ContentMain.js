@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Set } from "../../util/constructors";
-import { openModal, closeModal, boolFunctions } from "../../util/functions";
+import { openModal, closeModal } from "../../util/functions";
 import { queueTypes, setTypes, whitelistTypes } from "../../util/propTypeTemplates";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -113,7 +113,6 @@ export const ContentMain = (props) => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
-  const [closeDeleteSnackbar, openDeleteSnackbar] = boolFunctions(setDeleteSnackbarOpen);
   const [deleteSet, setDeleteSet] = useState(blankSet);
   const openDeleteDialog = (set) => {
     closeDetails();
@@ -122,6 +121,14 @@ export const ContentMain = (props) => {
   };
   const closeDeleteDialog = () => {
     setDeleteDialogOpen(false);
+  };
+
+  const openDeleteSnackbar = () => {
+    setDeleteSnackbarOpen(true);
+  };
+
+  const closeDeleteSnackbar = () => {
+    setDeleteSnackbarOpen(false);
     setTimeout(() => setDeleteSet(blankSet), 300);
   };
 
