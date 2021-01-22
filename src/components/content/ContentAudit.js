@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
@@ -275,12 +274,10 @@ export class ContentAudit extends React.Component {
                   <Card className={classNames("log", { placeholder: this.state.actionsFiltered.length === 0 })}>
                     <List twoLine className="three-line">
                       {this.state.actionsFiltered.map((action) => {
-                        const timestamp = moment(action.timestamp);
                         return (
                           <AuditEntry
                             key={action.timestamp}
                             action={action}
-                            timestamp={timestamp}
                             openDeleteDialog={this.openDelete}
                             properties={properties}
                           />

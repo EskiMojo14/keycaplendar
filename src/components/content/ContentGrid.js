@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
+import { format } from "date-fns";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
@@ -12,28 +12,16 @@ import "./ContentGrid.scss";
 
 export const ContentGrid = (props) => {
   const filterSets = (sets, group, sort, page) => {
-    let filteredSets = [];
-    sets.forEach((set) => {
+    let filteredSets = sets.filter((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const setDate = moment.utc(set[sort]);
-        let setMonth = setDate.format("MMMM YYYY");
-        if (setMonth === group) {
-          filteredSets.push(set);
-        }
+        let setMonth = format(new Date(set[sort]), "MMMM yyyy");
+        return setMonth === group;
       } else if (sort === "vendor") {
-        if (set.vendors[0]) {
-          if (set.vendors[0].name === group) {
-            filteredSets.push(set);
-          }
-        }
+        return set.vendors[0] && set.vendors[0].name === group;
       } else if (sort === "designer") {
-        if (set.designer.includes(group)) {
-          filteredSets.push(set);
-        }
+        return set.designer.includes(group);
       } else {
-        if (set[sort] === group) {
-          filteredSets.push(set);
-        }
+        return set[sort] === group;
       }
     });
     filteredSets.sort((a, b) => {

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
-import moment from "moment";
+import { format, isSameYear, isThisYear } from "date-fns";
 import { UserContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
 import { setTypes } from "../../util/propTypeTemplates";
@@ -40,7 +40,7 @@ export class DrawerDetails extends React.Component {
     if (!set.image) {
       set.image = "";
     }
-    const today = moment.utc();
+    const today = new Date();
     let gbLaunch;
     let gbEnd;
     let icDate;
@@ -65,12 +65,10 @@ export class DrawerDetails extends React.Component {
       : [];
 
     if (set.icDate) {
-      gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : moment.utc(set.gbLaunch);
-      gbEnd = moment.utc(set.gbEnd);
-      icDate = moment.utc(set.icDate);
-      ic = `IC posted ${icDate.format("Do\xa0MMMM")}${
-        icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
-      }.`;
+      gbLaunch = set.gbLaunch.includes("Q") ? set.gbLaunch : new Date(set.gbLaunch);
+      gbEnd = new Date(set.gbEnd);
+      icDate = new Date(set.icDate);
+      ic = `IC posted ${format(icDate, "do\xa0MMMM")}${!isThisYear(icDate) ? format(icDate, "\xa0yyyy") : ""}.`;
       if (gbLaunch <= today && gbEnd >= today) {
         verb = "Running";
       } else if (gbEnd <= today) {
@@ -81,16 +79,16 @@ export class DrawerDetails extends React.Component {
         verb = "Runs";
       }
       if (set.gbLaunch && set.gbEnd) {
-        gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
-        } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? gbEnd.format("\xa0YYYY") : ""}.`;
+        gb = `${verb} from ${format(gbLaunch, "do\xa0MMMM")}${
+          !isThisYear(gbLaunch) && !isSameYear(gbLaunch, gbEnd) ? format(gbLaunch, "\xa0yyyy") : ""
+        } until ${format(gbEnd, "do\xa0MMMM")}${!isThisYear(gbEnd) ? format(gbEnd, "\xa0yyyy") : ""}.`;
       } else if (set.gbLaunch.includes("Q")) {
         gb = "GB expected " + gbLaunch + ".";
       } else if (set.gbMonth && set.gbLaunch) {
-        gb = "Expected " + gbLaunch.format("MMMM") + ".";
+        gb = "Expected " + format(gbLaunch, "MMMM") + ".";
       } else if (set.gbLaunch) {
-        gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
+        gb = `${verb} from ${format(gbLaunch, "do\xa0MMMM")}${
+          !isThisYear(gbLaunch) && !isSameYear(gbLaunch, gbEnd) ? format(gbLaunch, "\xa0yyyy") : ""
         }.`;
       } else {
         gb = false;
@@ -138,14 +136,14 @@ export class DrawerDetails extends React.Component {
             {sortedVendors.map((vendor, index) => {
               let differentDate;
               if (vendor.endDate) {
-                const dateObject = moment.utc(vendor.endDate);
-                const todayObject = moment();
+                const dateObject = new Date(vendor.endDate);
+                const todayObject = new Date();
                 const dateVerb = todayObject > dateObject ? "Ended" : "Ends";
                 differentDate = (
                   <div className="caption">
                     <Typography use="caption">
-                      {`${dateVerb} ${dateObject.format("Do MMMM")} ${
-                        dateObject.year() !== todayObject.year() ? dateObject.format(" YYYY") : ""
+                      {`${dateVerb} ${format(dateObject, "do MMMM")} ${
+                        !isThisYear(dateObject) ? format(dateObject, " yyyy") : ""
                       }`}
                     </Typography>
                   </div>
