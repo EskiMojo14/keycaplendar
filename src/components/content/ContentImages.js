@@ -386,13 +386,11 @@ export class ContentImages extends React.Component {
                     <div className="display-container" key={obj.title}>
                       <div className="subheader">
                         <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
-                        {obj.title === "Unused images" ? (
-                          <Button
-                            className="subheader-button"
-                            label="Select all"
-                            onClick={() => this.toggleImageCheckedArray(obj.array)}
-                          />
-                        ) : null}
+                        <Button
+                          className="subheader-button"
+                          label="Select all"
+                          onClick={() => this.toggleImageCheckedArray(obj.array)}
+                        />
                       </div>
                       <ImageList style={{ margin: -2 }} withTextProtection>
                         {obj.array.map((image) => {
