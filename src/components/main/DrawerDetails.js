@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
-import { format, isSameYear, isThisYear } from "date-fns";
+import { format, isSameYear, isThisYear, isPast, isFuture } from "date-fns";
 import { UserContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
 import { setTypes } from "../../util/propTypeTemplates";
@@ -40,7 +40,6 @@ export class DrawerDetails extends React.Component {
     if (!set.image) {
       set.image = "";
     }
-    const today = new Date();
     let gbLaunch;
     let gbEnd;
     let icDate;
@@ -69,11 +68,11 @@ export class DrawerDetails extends React.Component {
       gbEnd = new Date(set.gbEnd);
       icDate = new Date(set.icDate);
       ic = `IC posted ${format(icDate, "do\xa0MMMM")}${!isThisYear(icDate) ? format(icDate, "\xa0yyyy") : ""}.`;
-      if (gbLaunch <= today && gbEnd >= today) {
+      if (isPast(gbLaunch) && isFuture(gbEnd)) {
         verb = "Running";
-      } else if (gbEnd <= today) {
+      } else if (isPast(gbEnd)) {
         verb = "Ran";
-      } else if (gbLaunch > today) {
+      } else if (isFuture(gbLaunch)) {
         verb = "Will run";
       } else {
         verb = "Runs";
@@ -108,18 +107,17 @@ export class DrawerDetails extends React.Component {
           }
         }
       });
-      shippedLine =
-        gbEnd <= today ? (
-          this.props.set.shipped ? (
-            <Typography use="body2" tag="p">
-              This set has shipped.
-            </Typography>
-          ) : (
-            <Typography use="body2" tag="p">
-              This set has not shipped.
-            </Typography>
-          )
-        ) : null;
+      shippedLine = isPast(gbEnd) ? (
+        this.props.set.shipped ? (
+          <Typography use="body2" tag="p">
+            This set has shipped.
+          </Typography>
+        ) : (
+          <Typography use="body2" tag="p">
+            This set has not shipped.
+          </Typography>
+        )
+      ) : null;
     }
     const gbLine = gb ? (
       <Typography use="body2" tag="p">
@@ -137,8 +135,7 @@ export class DrawerDetails extends React.Component {
               let differentDate;
               if (vendor.endDate) {
                 const dateObject = new Date(vendor.endDate);
-                const todayObject = new Date();
-                const dateVerb = todayObject > dateObject ? "Ended" : "Ends";
+                const dateVerb = isPast(dateObject) ? "Ended" : "Ends";
                 differentDate = (
                   <div className="caption">
                     <Typography use="caption">

@@ -7,14 +7,13 @@ import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
 import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
-
 import "./ContentGrid.scss";
 
 export const ContentGrid = (props) => {
   const filterSets = (sets, group, sort, page) => {
     let filteredSets = sets.filter((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        let setMonth = format(new Date(set[sort]), "MMMM yyyy");
+        let setMonth = set[sort] ? format(new Date(set[sort]), "MMMM yyyy") : null;
         return setMonth === group;
       } else if (sort === "vendor") {
         return set.vendors[0] && set.vendors[0].name === group;
