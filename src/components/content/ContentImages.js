@@ -56,7 +56,7 @@ export class ContentImages extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentFolder: "keysets",
+      currentFolder: "thumbs",
       folders: [],
       folderOpen: false,
       images: [],
@@ -124,7 +124,7 @@ export class ContentImages extends React.Component {
   };
   getFolders = async () => {
     const folders = await getStorageFolders();
-    const sortOrder = ["keysets", "card", "list", "image-list"];
+    const sortOrder = ["thumbs", "card", "list", "image-list"];
     folders.sort((a, b) => {
       const nameA = sortOrder.indexOf(a);
       const nameB = sortOrder.indexOf(b);
