@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "./firebase";
-import { getDaysInMonth, format, parse, isPast, isFuture } from "date-fns";
+import { getDaysInMonth, format, parse, isPast, isFuture, isAfter, isBefore } from "date-fns";
 import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -420,14 +420,14 @@ class App extends React.Component {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setUTCHours(23, 59, 59, 999);
-        return isFuture(startDate) || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
+        return isFuture(startDate) || (isPast(startDate) && (isAfter(endDate, yesterday) || !set.gbEnd));
       });
     } else if (page === "live") {
       pageSets = hiddenSets.filter((set) => {
         const startDate = new Date(set.gbLaunch);
         const endDate = new Date(set.gbEnd);
         endDate.setUTCHours(23, 59, 59, 999);
-        return isPast(startDate) && (endDate >= yesterday || !set.gbEnd);
+        return isPast(startDate) && (isAfter(endDate, yesterday) || !set.gbEnd);
       });
     } else if (page === "ic") {
       pageSets = hiddenSets.filter((set) => {
@@ -438,7 +438,7 @@ class App extends React.Component {
         const endDateObj = new Date(set.gbEnd);
         endDateObj.setUTCHours(23, 59, 59, 999);
         const endDate = set.gbEnd ? endDateObj : null;
-        return endDate && endDate <= yesterday;
+        return endDate && isBefore(endDate, yesterday);
       });
     } else if (page === "timeline") {
       pageSets = hiddenSets.filter((set) => {

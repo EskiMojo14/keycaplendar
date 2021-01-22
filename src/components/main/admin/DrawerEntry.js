@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import moment from "moment";
+import { format } from "date-fns";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
@@ -215,9 +215,10 @@ export class DrawerCreate extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
+    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${format(
+      new Date(),
+      "yyyyMMddHHmmSS"
+    )}`;
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
@@ -1026,9 +1027,10 @@ export class DrawerEdit extends React.Component {
     this.setState({ loading: true });
     const storageRef = firebase.storage().ref();
     const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
+    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${format(
+      new Date(),
+      "yyyyMMddHHmmSS"
+    )}`;
     const imageRef = keysetsRef.child(fileName + ".png");
     const uploadTask = imageRef.put(this.state.image);
     uploadTask.on(
