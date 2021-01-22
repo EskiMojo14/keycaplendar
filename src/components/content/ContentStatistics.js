@@ -4,7 +4,16 @@ import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
-import moment from "moment";
+import {
+  format,
+  add,
+  differenceInCalendarMonths,
+  isFuture,
+  isPast,
+  isBefore,
+  isAfter,
+  differenceInCalendarDays,
+} from "date-fns";
 import { create, all } from "mathjs";
 import classNames from "classnames";
 import { statsTabs } from "../../util/constants";
@@ -167,12 +176,13 @@ export class ContentStatistics extends React.Component {
     };
   }
   createData = (whitelist = this.state.whitelist) => {
-    const today = moment.utc();
-    const yesterday = moment.utc().date(today.date() - 1);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setUTCDate(today.getUTCDate() - 1);
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
-        const thisYear = moment().format("YYYY");
+        const thisYear = today.getUTCFullYear();
         return year >= thisYear - 2 && year <= thisYear + 1;
       } else {
         return true;
@@ -222,7 +232,7 @@ export class ContentStatistics extends React.Component {
     properties.forEach((property) => {
       timelineSets.forEach((set) => {
         if (set[property] && !set[property].includes("Q")) {
-          const month = moment(set[property]).format("YYYY-MM");
+          const month = format(new Date(set[property]), "yyyy-MM");
           if (!timelineData.months[property].includes(month)) {
             timelineData.months[property].push(month);
           }
@@ -237,18 +247,15 @@ export class ContentStatistics extends React.Component {
         }
         return 0;
       });
-      const monthDiff = (dateFrom, dateTo) => {
-        return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
-      };
       const length =
-        monthDiff(
-          moment(timelineData.months[property][0]),
-          moment(timelineData.months[property][timelineData.months[property].length - 1])
+        differenceInCalendarMonths(
+          new Date(timelineData.months[property][timelineData.months[property].length - 1]),
+          new Date(timelineData.months[property][0])
         ) + 1;
       let i;
       let allMonths = [];
       for (i = 0; i < length; i++) {
-        allMonths.push(moment(timelineData.months[property][0]).add(i, "M").format("YYYY-MM"));
+        allMonths.push(format(add(new Date(timelineData.months[property][0]), { months: i }), "yyyy-MM"));
       }
       allMonths.sort(function (a, b) {
         if (a < b) {
@@ -261,7 +268,7 @@ export class ContentStatistics extends React.Component {
       });
       timelineData.months[property] = [];
       allMonths.forEach((month) => {
-        timelineData.months[property].push(moment(month).format("MMM YY"));
+        timelineData.months[property].push(format(new Date(month), "MMM yy"));
       });
       timelineWhitelist.profiles.forEach((profile) => {
         timelineData.profileCount[property][camelise(profile)] = [];
@@ -269,7 +276,7 @@ export class ContentStatistics extends React.Component {
       timelineData.months[property].forEach((month) => {
         let filteredSets = timelineSets.filter((set) => {
           if (set[property] && !set[property].includes("Q")) {
-            const setMonth = moment(set[property]).format("MMM YY");
+            const setMonth = format(new Date(set[property]), "MMM yy");
             return setMonth === month;
           } else {
             return false;
@@ -350,9 +357,9 @@ export class ContentStatistics extends React.Component {
         const preGbSets = limitedSets.filter((set) => {
           let startDate;
           if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = moment.utc(set.gbLaunch);
+            startDate = new Date(set.gbLaunch);
           }
-          const isPreGb = startDate && startDate > today;
+          const isPreGb = startDate && isFuture(startDate);
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isPreGb;
@@ -368,10 +375,11 @@ export class ContentStatistics extends React.Component {
         const liveGbSets = limitedSets.filter((set) => {
           let startDate;
           if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = moment.utc(set.gbLaunch);
+            startDate = new Date(set.gbLaunch);
           }
-          const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-          const isLiveGb = startDate <= today && (endDate >= yesterday || !set.gbEnd);
+          const endDate = new Date(set.gbEnd);
+          endDate.setUTCHours(23, 59, 59, 999);
+          const isLiveGb = startDate && isPast(startDate) && (isAfter(endDate, yesterday) || !set.gbEnd);
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isLiveGb;
@@ -385,8 +393,9 @@ export class ContentStatistics extends React.Component {
           }
         });
         const postGbSets = limitedSets.filter((set) => {
-          const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-          const isPostGb = endDate <= yesterday;
+          const endDate = new Date(set.gbEnd);
+          endDate.setUTCHours(23, 59, 59, 999);
+          const isPostGb = isBefore(endDate, yesterday);
           if (prop === "vendor") {
             return set.vendors.findIndex((vendor) => {
               return vendor.name === name && isPostGb;
@@ -436,8 +445,9 @@ export class ContentStatistics extends React.Component {
       },
     };
     const pastSets = limitedSets.filter((set) => {
-      const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-      return endDate <= yesterday;
+      const endDate = new Date(set.gbEnd);
+      endDate.setUTCHours(23, 59, 59, 999);
+      return isBefore(endDate, yesterday);
     });
     pastSets.forEach((set) => {
       if (!shippedData.profile.names.includes(set.profile)) {
@@ -589,9 +599,12 @@ export class ContentStatistics extends React.Component {
           let data = [];
           if (name === "All") {
             propSets.forEach((set) => {
-              const startDate = moment(set[property]);
-              const endDate = moment(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
-              const length = endDate.diff(startDate, property === "icDate" ? "months" : "days");
+              const startDate = new Date(set[property]);
+              const endDate = new Date(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+              const length =
+                property === "icDate"
+                  ? differenceInCalendarMonths(endDate, startDate)
+                  : differenceInCalendarDays(endDate, startDate);
               data.push(length);
             });
           } else {
@@ -613,9 +626,12 @@ export class ContentStatistics extends React.Component {
                 return bool;
               })
               .forEach((set) => {
-                const startDate = moment(set[property]);
-                const endDate = moment(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
-                const length = endDate.diff(startDate, property === "icDate" ? "months" : "days");
+                const startDate = new Date(set[property]);
+                const endDate = new Date(set[property === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                const length =
+                  property === "icDate"
+                    ? differenceInCalendarMonths(endDate, startDate)
+                    : differenceInCalendarDays(endDate, startDate);
                 data.push(length);
               });
             Object.keys(durationData[property]).forEach((prop) => {
