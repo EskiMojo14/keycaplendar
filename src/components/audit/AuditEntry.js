@@ -86,7 +86,7 @@ export const AuditEntry = (props) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 props.action.action === "updated" &&
-                isEqual(props.action.before[property], props.action.after[property])
+                !isEqual(props.action.before[property], props.action.after[property])
               ) {
                 const beforeProp = props.action.before[property] ? props.action.before[property] : "";
                 const afterProp = props.action.after[property] ? props.action.after[property] : "";
@@ -148,22 +148,6 @@ export const AuditEntry = (props) => {
                     return 0;
                   });
 
-                  function objectCompare(object1, object2) {
-                    const keys1 = Object.keys(object1);
-                    const keys2 = Object.keys(object2);
-
-                    if (keys1.length !== keys2.length) {
-                      return false;
-                    }
-
-                    for (let key of keys1) {
-                      if (object1[key] !== object2[key]) {
-                        return false;
-                      }
-                    }
-
-                    return true;
-                  }
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   const buildRows = () => {
                     let rows = [];
@@ -174,7 +158,7 @@ export const AuditEntry = (props) => {
                       const afterVendor = afterVendors[index]
                         ? afterVendors[index]
                         : { name: "", region: "", storeLink: "" };
-                      if (!objectCompare(afterVendor, beforeVendor)) {
+                      if (!isEqual(afterVendor, beforeVendor)) {
                         rows.push(
                           <DataTableRow key={afterVendor.name + index}>
                             <DataTableCell>{property + index}</DataTableCell>
