@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { format, isThisYear, isSameYear, isPast, isBefore } from "date-fns";
+import { format, isThisYear, isSameYear, isPast, isAfter } from "date-fns";
 import { setTypes } from "../../../util/propTypeTemplates";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
@@ -45,7 +45,7 @@ export const ViewList = (props) => {
         const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
         let live = false;
         if (gbLaunch) {
-          live = isPast(gbLaunch) && (isBefore(gbEnd, yesterday) || !set.gbEnd);
+          live = isPast(gbLaunch) && (isAfter(gbEnd, yesterday) || !set.gbEnd);
         }
         return (
           <ElementList

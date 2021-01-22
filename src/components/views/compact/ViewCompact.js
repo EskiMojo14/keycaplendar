@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { format, isThisYear, isSameYear, isPast, isBefore } from "date-fns";
+import { format, isThisYear, isSameYear, isPast, isAfter } from "date-fns";
 import { setTypes } from "../../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
@@ -44,7 +44,7 @@ export const ViewCompact = (props) => {
           }
           let live = false;
           if (gbLaunch) {
-            live = isPast(gbLaunch) && (isBefore(gbEnd, yesterday) || !set.gbEnd);
+            live = isPast(gbLaunch) && (isAfter(gbEnd, yesterday) || !set.gbEnd);
           }
           return (
             <ElementCompact
