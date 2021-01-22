@@ -1345,7 +1345,7 @@ export class DialogEdit extends React.Component {
                 onChange={this.handleChange}
               />
               <ImageUpload
-                image={this.state.image.replace("keysets%2F", "thumbs%2F")}
+                image={this.state.newImage ? this.state.image : this.state.image.replace("keysets%2F", "thumbs%2F")}
                 setImage={this.setImage}
                 snackbarQueue={this.props.snackbarQueue}
               />
