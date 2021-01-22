@@ -85,14 +85,45 @@ exports.createThumbsAuto = functions.storage.object().onFinalize(async (object) 
       console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
     });
 
-  const streams = [cardUploadStream, listUploadStream, imageListUploadStream];
+  const thumbsFilePath = path.join("thumbs/", fileName);
+  // Create write stream for uploading thumbnail
+  const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
 
-  //return new Promise((resolve, reject) => imageListUploadStream.on("finish", resolve).on("error", reject));
-  return await Promise.all(
+  // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+  const thumbsPipeline = sharp();
+  thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
+
+  bucket.file(filePath).createReadStream().pipe(thumbsPipeline);
+
+  thumbsUploadStream
+    .on("finish", () => {
+      console.log("Created generic thumbnail for " + fileName);
+    })
+    .on("error", (err) => {
+      console.log("Failed to create generic thumbnail for " + fileName + ": " + err);
+    });
+
+  const streams = [cardUploadStream, listUploadStream, imageListUploadStream, thumbsUploadStream];
+
+  const allPromises = Promise.all(
     streams.map((stream) => {
       return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
     })
   );
+
+  allPromises
+    .then(() => {
+      // delete original if all thumbnails created
+      return bucket.deleteFiles({
+        maxResults: 1,
+        prefix: filePath,
+      });
+    })
+    .catch((error) => {
+      console.log("Failed to create thumbnail for " + fileName + ": " + error);
+    });
+
+  return await allPromises;
 });
 
 const runtimeOpts = {
@@ -122,79 +153,23 @@ exports.createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, 
     for (const file of files) {
       const fileName = path.basename(file.name);
       console.log(fileName);
-      const cardPromise = new Promise((resolve, reject) => {
-        const cardFilePath = path.join("card/", fileName);
-        // Create write stream for uploading thumbnail
-        const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
+      const thumbsFilePath = path.join("thumbs/", fileName);
+      // Create write stream for uploading thumbnail
+      const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
 
-        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-        const cardPipeline = sharp();
-        cardPipeline.resize(320, 180).pipe(cardUploadStream);
+      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+      const thumbsPipeline = sharp();
+      thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
 
-        file.createReadStream().pipe(cardPipeline);
+      file.createReadStream().pipe(thumbsPipeline);
 
-        cardUploadStream
-          .on("finish", () => {
-            console.log("Created card thumbnail for " + fileName);
-            resolve();
-          })
-          .on("error", (err) => {
-            console.log("Failed to create card thumbnail for " + fileName + ": " + err);
-            reject(err);
-          });
-      });
-
-      const listPromise = new Promise((resolve, reject) => {
-        const listFilePath = path.join("list/", fileName);
-        // Create write stream for uploading thumbnail
-        const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
-
-        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-        const listPipeline = sharp();
-        listPipeline.resize(100, 56).pipe(listUploadStream);
-
-        file.createReadStream().pipe(listPipeline);
-
-        listUploadStream
-          .on("finish", () => {
-            console.log("Created list thumbnail for " + fileName);
-            resolve();
-          })
-          .on("error", (err) => {
-            console.log("Failed to create list thumbnail for " + fileName + ": " + err);
-            reject(err);
-          });
-      });
-
-      const imageListPromise = new Promise((resolve, reject) => {
-        const imageListFilePath = path.join("image-list/", fileName);
-        // Create write stream for uploading thumbnail
-        const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
-
-        // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-        const imageListPipeline = sharp();
-        imageListPipeline.resize(320, 320).pipe(imageListUploadStream);
-
-        file.createReadStream().pipe(imageListPipeline);
-
-        imageListUploadStream
-          .on("finish", () => {
-            console.log("Created image list thumbnail for " + fileName);
-            resolve();
-          })
-          .on("error", (err) => {
-            console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
-            reject(err);
-          });
-      });
-      const thumbnailPromises = [cardPromise, listPromise, imageListPromise];
-      Promise.all(thumbnailPromises)
-        .then(() => {
+      thumbsUploadStream
+        .on("finish", () => {
+          console.log("Created generic thumbnail for " + fileName);
           increase();
-          return false;
         })
-        .catch((err) => {
-          console.log("Failed to create thumbnails for" + fileName + ": " + err);
+        .on("error", (err) => {
+          console.log("Failed to generic thumbnail for " + fileName + ": " + err);
         });
       if (filesProcessed === files.length) {
         resolve();

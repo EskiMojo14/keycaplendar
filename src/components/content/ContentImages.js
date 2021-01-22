@@ -47,6 +47,7 @@ const aspectRatios = {
   "image-list": 1,
   card: 16 / 9,
   list: 16 / 9,
+  thumbs: 16 / 9,
 };
 
 const blankImage = new ImageObj();

@@ -136,29 +136,9 @@ export class DialogCreate extends React.Component {
   };
 
   setImage = (image) => {
-    //resize image to 480px height
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = reader.result;
-      img.onload = () => {
-        const elem = document.createElement("canvas");
-        const width = img.width * (480 / img.height);
-        const height = 480;
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext("2d");
-        // img.width and img.height will contain the original dimensions
-        ctx.drawImage(img, 0, 0, width, height);
-        ctx.canvas.toBlob((blob) => {
-          this.setState({
-            image: blob,
-          });
-        }, "image/png");
-        reader.onerror = (error) => this.props.snackbarQueue.notify({ title: "Failed to set image:" + error });
-      };
-    };
+    this.setState({
+      image: image,
+    });
   };
 
   handleChange = (e) => {
@@ -935,30 +915,10 @@ export class DialogEdit extends React.Component {
   };
 
   setImage = (image) => {
-    //resize image to 480px height
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = reader.result;
-      img.onload = () => {
-        const elem = document.createElement("canvas");
-        const width = img.width * (480 / img.height);
-        const height = 480;
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext("2d");
-        // img.width and img.height will contain the original dimensions
-        ctx.drawImage(img, 0, 0, width, height);
-        ctx.canvas.toBlob((blob) => {
-          this.setState({
-            image: blob,
-            newImage: true,
-          });
-        }, "image/png");
-        reader.onerror = (error) => this.props.snackbarQueue.notify({ title: "Failed to set image: " + error });
-      };
-    };
+    this.setState({
+      image: image,
+      newImage: true,
+    });
   };
 
   handleChange = (e) => {
@@ -1384,7 +1344,11 @@ export class DialogEdit extends React.Component {
                 }}
                 onChange={this.handleChange}
               />
-              <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
+              <ImageUpload
+                image={this.state.image.replace("keysets%2F", "thumbs%2F")}
+                setImage={this.setImage}
+                snackbarQueue={this.props.snackbarQueue}
+              />
               {dateCard}
               <Checkbox
                 label="Shipped"
