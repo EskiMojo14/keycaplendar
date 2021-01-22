@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "./firebase";
-import { getDaysInMonth, format, parse, isPast, isFuture, isAfter, isBefore } from "date-fns";
+import moment from "moment";
 import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -231,13 +231,11 @@ class App extends React.Component {
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-    const currentDay = new Date();
+    const currentDay = moment();
     const fromArray = this.state.fromTimeTheme.split(":");
-    const fromTime = new Date();
-    fromTime.setHours(fromArray[0], fromArray[1]);
+    const fromTime = moment().hours(fromArray[0]).minutes(fromArray[1]);
     const toArray = this.state.toTimeTheme.split(":");
-    const toTime = new Date();
-    toTime.setHours(toArray[0], toArray[1]);
+    const toTime = moment().hours(toArray[0]).minutes(toArray[1]);
     const timedBool = this.state.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
     return manualBool || systemBool || timedBool;
   };
@@ -343,7 +341,7 @@ class App extends React.Component {
         let sets = [];
         querySnapshot.forEach((doc) => {
           if (doc.data().profile) {
-            const lastOfMonth = getDaysInMonth(new Date(doc.data().gbLaunch));
+            const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
             sets.push({
@@ -396,9 +394,8 @@ class App extends React.Component {
     favorites = this.state.favorites,
     hidden = this.state.hidden
   ) => {
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setUTCDate(today.getUTCDate() - 1);
+    const today = moment.utc();
+    const yesterday = moment.utc().date(today.date() - 1);
     let pageSets = [];
     let allRegions = [];
     let allVendors = [];
@@ -417,17 +414,15 @@ class App extends React.Component {
     // page logic
     if (page === "calendar") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = new Date(set.gbLaunch);
-        const endDate = new Date(set.gbEnd);
-        endDate.setUTCHours(23, 59, 59, 999);
-        return isFuture(startDate) || (isPast(startDate) && (isAfter(endDate, yesterday) || !set.gbEnd));
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
       });
     } else if (page === "live") {
       pageSets = hiddenSets.filter((set) => {
-        const startDate = new Date(set.gbLaunch);
-        const endDate = new Date(set.gbEnd);
-        endDate.setUTCHours(23, 59, 59, 999);
-        return isPast(startDate) && (isAfter(endDate, yesterday) || !set.gbEnd);
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        return startDate <= today && (endDate >= yesterday || !set.gbEnd);
       });
     } else if (page === "ic") {
       pageSets = hiddenSets.filter((set) => {
@@ -435,10 +430,8 @@ class App extends React.Component {
       });
     } else if (page === "previous") {
       pageSets = hiddenSets.filter((set) => {
-        const endDateObj = new Date(set.gbEnd);
-        endDateObj.setUTCHours(23, 59, 59, 999);
-        const endDate = set.gbEnd ? endDateObj : null;
-        return endDate && isBefore(endDate, yesterday);
+        const endDate = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
+        return endDate && endDate <= yesterday;
       });
     } else if (page === "timeline") {
       pageSets = hiddenSets.filter((set) => {
@@ -587,9 +580,9 @@ class App extends React.Component {
     // group display
     searchedSets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const setDate = new Date(set[sort]);
-        const setMonth = format(setDate, "MMMM yyyy");
-        if (!groups.includes(setMonth)) {
+        const setDate = moment.utc(set[sort]);
+        let setMonth = setDate.format("MMMM YYYY");
+        if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
         }
       } else if (sort === "vendor") {
@@ -614,8 +607,8 @@ class App extends React.Component {
     });
     groups.sort(function (a, b) {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const aDate = parse(a, "MMMM yyyy", new Date());
-        const bDate = parse(b, "MMMM yyyy", new Date());
+        const aDate = moment.utc(a, "MMMM YYYY");
+        const bDate = moment.utc(b, "MMMM YYYY");
         if (page === "previous" || page === "ic") {
           if (aDate < bDate) {
             return 1;

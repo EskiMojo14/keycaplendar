@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import { format } from "date-fns";
 import { actionTypes } from "../../util/propTypeTemplates";
 import { Button } from "@rmwc/button";
 import {
@@ -66,7 +65,7 @@ export const AuditEntry = (props) => {
                 : `${props.action.before.profile} ${props.action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {`${props.action.user.nickname}, ${format(new Date(props.action.timestamp), "do MMM yyyy HH:mm")}`}
+              {`${props.action.user.nickname}, ${props.timestamp.format("Do MMM YYYY HH:mm")}`}
             </ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
@@ -395,4 +394,7 @@ AuditEntry.propTypes = {
   action: PropTypes.shape(actionTypes),
   openDeleteDialog: PropTypes.func,
   properties: PropTypes.arrayOf(PropTypes.string),
+  timestamp: PropTypes.shape({
+    format: PropTypes.func.isRequired,
+  }),
 };

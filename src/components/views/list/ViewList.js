@@ -1,51 +1,51 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { format, isThisYear, isSameYear, isPast, isAfter } from "date-fns";
+import moment from "moment";
 import { setTypes } from "../../../util/propTypeTemplates";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
 
 export const ViewList = (props) => {
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setUTCDate(today.getUTCDate() - 1);
+  const today = moment.utc();
+  const yesterday = moment.utc().date(today.date() - 1);
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <List twoLine className="view-list three-line">
       {props.sets.map((set, index) => {
-        const gbLaunch = set.gbLaunch.includes("Q") || !set.gbLaunch ? set.gbLaunch : new Date(set.gbLaunch);
-        const gbEnd = new Date(set.gbEnd);
-        gbEnd.setUTCHours(23, 59, 59, 999);
-        const icDate = new Date(set.icDate);
+        const gbLaunch = set.gbLaunch.includes("Q") || !set.gbLaunch ? set.gbLaunch : moment.utc(set.gbLaunch);
+        const gbEnd = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        const icDate = moment.utc(set.icDate);
         const title = `${set.profile} ${set.colorway}`;
         let subtitle;
         if (set.gbLaunch && set.gbEnd) {
-          subtitle = `${format(gbLaunch, "do\xa0MMMM")}${
-            (!isThisYear(gbLaunch) && !isSameYear(gbLaunch, gbEnd)) || !isSameYear(gbLaunch, gbEnd)
-              ? format(gbLaunch, "\xa0yyyy")
+          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
+            (gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year()) || gbLaunch.year() !== gbEnd.year()
+              ? gbLaunch.format("\xa0YYYY")
               : ""
-          } until ${format(gbEnd, "do\xa0MMMM")}${
-            !isThisYear(gbEnd) || !isSameYear(gbLaunch, gbEnd) ? format(gbEnd, "\xa0yyyy") : ""
+          } until ${gbEnd.format("Do\xa0MMMM")}${
+            gbEnd.year() !== today.year() || gbLaunch.year() !== gbEnd.year() ? gbEnd.format("\xa0YYYY") : ""
           }`;
         } else if (set.gbLaunch.includes("Q")) {
           subtitle = "GB expected " + gbLaunch;
         } else if (set.gbMonth && set.gbLaunch) {
           subtitle = `GB expected ${
-            format(gbLaunch, "MMMM") + (!isThisYear(gbLaunch) ? format(gbLaunch, "\xa0yyyy") : "")
+            gbLaunch.format("MMMM") + (gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : "")
           }`;
         } else if (set.gbLaunch) {
-          subtitle = `${format(gbLaunch, "do\xa0MMMM")}${!isThisYear(gbLaunch) ? format(gbLaunch, "\xa0yyyy") : ""}`;
+          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
+            gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
+          }`;
         } else {
-          subtitle = `IC posted ${format(icDate, "do\xa0MMMM")}${
-            !isThisYear(icDate) ? format(icDate, "\xa0yyyy") : ""
+          subtitle = `IC posted ${icDate.format("Do\xa0MMMM")}${
+            icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
           }`;
         }
         const thisWeek = gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf();
         const daysLeft = Math.ceil(Math.abs((gbEnd - today) / oneDay));
         let live = false;
-        if (gbLaunch) {
-          live = isPast(gbLaunch) && (isAfter(gbEnd, yesterday) || !set.gbEnd);
+        if (gbLaunch instanceof moment) {
+          live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
         }
         return (
           <ElementList

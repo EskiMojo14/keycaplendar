@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { format, parseISO } from "date-fns";
+import moment from "moment";
 import { DeviceContext } from "../../util/contexts";
 import { formatBytes } from "../../util/functions";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
@@ -64,9 +64,7 @@ export const DrawerDetails = (props) => {
                 <ListItemPrimaryText>{metadata[key]}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
-                    ? props.metadata[key]
-                      ? format(parseISO(props.metadata[key]), "do MMMM yyyy, HH:mm:ss")
-                      : null
+                    ? moment.utc(props.metadata[key]).format("Do MMMM YYYY, HH:mm:ss")
                     : key === "size"
                     ? formatBytes(props.metadata[key])
                     : props.metadata[key]}

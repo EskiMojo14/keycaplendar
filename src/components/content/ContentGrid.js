@@ -1,26 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { format } from "date-fns";
+import moment from "moment";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
 import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
+
 import "./ContentGrid.scss";
 
 export const ContentGrid = (props) => {
   const filterSets = (sets, group, sort, page) => {
-    let filteredSets = sets.filter((set) => {
+    let filteredSets = [];
+    sets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        let setMonth = set[sort] ? format(new Date(set[sort]), "MMMM yyyy") : null;
-        return setMonth === group;
+        const setDate = moment.utc(set[sort]);
+        let setMonth = setDate.format("MMMM YYYY");
+        if (setMonth === group) {
+          filteredSets.push(set);
+        }
       } else if (sort === "vendor") {
-        return set.vendors[0] && set.vendors[0].name === group;
+        if (set.vendors[0]) {
+          if (set.vendors[0].name === group) {
+            filteredSets.push(set);
+          }
+        }
       } else if (sort === "designer") {
-        return set.designer.includes(group);
+        if (set.designer.includes(group)) {
+          filteredSets.push(set);
+        }
       } else {
-        return set[sort] === group;
+        if (set[sort] === group) {
+          filteredSets.push(set);
+        }
       }
     });
     filteredSets.sort((a, b) => {
