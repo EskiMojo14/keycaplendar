@@ -587,9 +587,11 @@ class App extends React.Component {
         }
       } else if (sort === "vendor") {
         if (set.vendors[0]) {
-          if (!groups.includes(set.vendors[0].name)) {
-            groups.push(set.vendors[0].name);
-          }
+          set.vendors.forEach((vendor) => {
+            if (!groups.includes(vendor.name)) {
+              groups.push(vendor.name);
+            }
+          });
         }
       } else if (sort === "designer") {
         if (set.designer[0]) {

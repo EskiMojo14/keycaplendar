@@ -7,33 +7,21 @@ import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
 import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
-
 import "./ContentGrid.scss";
 
 export const ContentGrid = (props) => {
   const filterSets = (sets, group, sort, page) => {
-    let filteredSets = [];
-    sets.forEach((set) => {
+    const filteredSets = sets.filter((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const setDate = moment.utc(set[sort]);
-        let setMonth = setDate.format("MMMM YYYY");
-        if (setMonth === group) {
-          filteredSets.push(set);
-        }
+        const setMonth = setDate.format("MMMM YYYY");
+        return setMonth === group;
       } else if (sort === "vendor") {
-        if (set.vendors[0]) {
-          if (set.vendors[0].name === group) {
-            filteredSets.push(set);
-          }
-        }
+        return set.vendors.map((vendor) => vendor.name).includes(group);
       } else if (sort === "designer") {
-        if (set.designer.includes(group)) {
-          filteredSets.push(set);
-        }
+        return set.designer.includes(group);
       } else {
-        if (set[sort] === group) {
-          filteredSets.push(set);
-        }
+        return set[sort] === group;
       }
     });
     filteredSets.sort((a, b) => {
