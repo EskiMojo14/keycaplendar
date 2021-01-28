@@ -6,10 +6,10 @@ import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
+import { TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
-import { FullScreenDialog, FullScreenDialogContent } from "../util/FullScreenDialog";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import "./DialogFilterPreset.scss";
 
 export class DialogFilterPreset extends React.Component {
@@ -45,7 +45,7 @@ export class DialogFilterPreset extends React.Component {
   render() {
     return (
       <FullScreenDialog open={this.props.open} onClose={this.props.close} className="filter-preset-dialog">
-        <TopAppBar>
+        <FullScreenDialogAppBar>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={this.props.close} />
@@ -55,7 +55,7 @@ export class DialogFilterPreset extends React.Component {
               <Button label="Save" onClick={this.savePreset} disabled={!this.state.name} />
             </TopAppBarSection>
           </TopAppBarRow>
-        </TopAppBar>
+        </FullScreenDialogAppBar>
         <div className="field-container">
           <TextField
             outlined

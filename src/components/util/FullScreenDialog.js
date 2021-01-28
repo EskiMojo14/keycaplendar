@@ -1,74 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BEMHelper from "../../util/bemHelper";
+import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import "./FullScreenDialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");
 
-export class FullScreenDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      opening: false,
-      closing: false,
-      animate: false,
-      open: false,
-    };
-  }
-  componentDidMount() {
-    this.setState({ open: this.props.open });
-  }
-  componentDidUpdate(prevProps) {
-    if (this.props.open !== prevProps.open) {
-      if (this.props.open) {
-        this.openDialog();
-      } else {
-        this.closeDialog();
-      }
+export const FullScreenDialog = (props) => {
+  const [open, setOpen] = useState(!!props.open);
+  const [opening, setOpening] = useState(false);
+  const [animate, setAnimate] = useState(false);
+  const [closing, setClosing] = useState(false);
+  useEffect(() => {
+    if (props.open) {
+      openDialog();
+    } else {
+      closeDialog();
     }
-  }
-  openDialog = () => {
-    this.setState({ open: true, animate: true });
+  }, [props.open]); // eslint-disable-line react-hooks/exhaustive-deps
+  const openDialog = () => {
+    setOpen(true);
+    setAnimate(true);
     setTimeout(() => {
-      this.setState({ opening: true });
+      setOpening(true);
     }, 1);
     setTimeout(() => {
-      this.setState({ animate: false, opening: false });
+      setAnimate(false);
+      setOpening(false);
     }, 450);
   };
-  closeDialog = () => {
-    this.setState({
-      closing: true,
-    });
+  const closeDialog = () => {
+    setClosing(true);
     setTimeout(() => {
-      if (this.props.onClose) {
-        this.props.onClose();
+      if (props.onClose) {
+        props.onClose();
       }
-      this.setState({ open: false, closing: false });
+      setOpen(false);
+      setClosing(false);
     }, 400);
   };
-  render() {
-    const { open, ...props } = this.props;
-    return (
-      <>
-        <div
-          {...props}
-          className={bemClasses({
-            modifiers: {
-              open: this.state.open,
-              opening: this.state.opening,
-              closing: this.state.closing,
-              animate: this.state.animate,
-            },
-            extra: this.props.className,
-          })}
-        >
-          {this.props.children}
-        </div>
-        <div className="full-screen-dialog-scrim"></div>
-      </>
-    );
-  }
-}
+  const { open: propsOpen, ...filteredProps } = props;
+  return (
+    <>
+      <div
+        {...filteredProps}
+        className={bemClasses({
+          modifiers: {
+            open: open,
+            opening: opening,
+            closing: closing,
+            animate: animate,
+          },
+          extra: props.className,
+        })}
+      >
+        {props.children}
+      </div>
+      <div className="full-screen-dialog-scrim"></div>
+    </>
+  );
+};
+
+export const FullScreenDialogAppBar = (props) => {
+  return (
+    <>
+      <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: props.className })}>
+        {props.children}
+      </TopAppBar>
+      <TopAppBarFixedAdjust />
+    </>
+  );
+};
 
 export const FullScreenDialogContent = (props) => {
   return (

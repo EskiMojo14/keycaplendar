@@ -17,11 +17,11 @@ import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
-import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
+import { TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
-import { FullScreenDialog, FullScreenDialogContent } from "../../util/FullScreenDialog";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
 const getVendorStyle = (provided, snapshot) => {
@@ -405,7 +405,7 @@ export class DialogCreate extends React.Component {
     );
     return (
       <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="create-dialog">
-        <TopAppBar>
+        <FullScreenDialogAppBar>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={this.closeDialog} />
@@ -425,7 +425,7 @@ export class DialogCreate extends React.Component {
             </TopAppBarSection>
           </TopAppBarRow>
           <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-        </TopAppBar>
+        </FullScreenDialogAppBar>
         <FullScreenDialogContent>
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>
@@ -1202,7 +1202,7 @@ export class DialogEdit extends React.Component {
     );
     return (
       <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="edit-dialog">
-        <TopAppBar>
+        <FullScreenDialogAppBar>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={this.closeDialog} />
@@ -1225,9 +1225,8 @@ export class DialogEdit extends React.Component {
               />
             </TopAppBarSection>
           </TopAppBarRow>
-
           <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-        </TopAppBar>
+        </FullScreenDialogAppBar>
         <FullScreenDialogContent>
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>

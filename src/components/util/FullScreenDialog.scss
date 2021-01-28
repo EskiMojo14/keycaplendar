@@ -61,7 +61,7 @@ $exit-time: 400ms;
       opacity: 0;
     }
   }
-  .mdc-top-app-bar {
+  &__app-bar {
     flex-shrink: 0;
     flex-grow: 0;
     position: relative;
