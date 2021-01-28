@@ -424,7 +424,7 @@ export class DialogCreate extends React.Component {
               />
             </TopAppBarSection>
           </TopAppBarRow>
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
         </TopAppBar>
         <FullScreenDialogContent>
           <div className="banner">
@@ -1226,7 +1226,7 @@ export class DialogEdit extends React.Component {
             </TopAppBarSection>
           </TopAppBarRow>
 
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
         </TopAppBar>
         <FullScreenDialogContent>
           <div className="banner">

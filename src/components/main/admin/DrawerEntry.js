@@ -423,7 +423,7 @@ export class DrawerCreate extends React.Component {
       <Drawer modal open={this.props.open} onClose={this.closeDrawer} className="entry-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>Create Entry</DrawerTitle>
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
           <Button
             outlined
             label="Save"
@@ -1220,7 +1220,7 @@ export class DrawerEdit extends React.Component {
       <Drawer modal open={this.props.open} onClose={this.props.close} className="entry-drawer drawer-right">
         <DrawerHeader>
           <DrawerTitle>Edit Entry</DrawerTitle>
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress} />
+          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
           <Button
             outlined
             label="Save"
