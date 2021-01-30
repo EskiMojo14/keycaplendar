@@ -84,6 +84,7 @@
     @include elevation.elevation(4);
   }
   &.bottom-app-bar--indent {
+    @include elevation.elevation(0);
     background-color: transparent;
     filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2)) drop-shadow(0px 4px 2.5px rgba(0, 0, 0, 0.14))
       drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.12));
