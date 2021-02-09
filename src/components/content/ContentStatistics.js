@@ -7,7 +7,10 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all } from "mathjs";
 import classNames from "classnames";
+import SwipeableViews from "react-swipeable-views";
+import { virtualize } from "react-swipeable-views-utils";
 import { statsTabs } from "../../util/constants";
+import { DeviceContext } from "../../util/contexts";
 import { camelise, capitalise, countInArray, iconObject, openModal, closeModal } from "../../util/functions";
 import { setTypes } from "../../util/propTypeTemplates";
 import { Card } from "@rmwc/card";
@@ -32,7 +35,6 @@ import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
-import { DeviceContext } from "../../util/contexts";
 
 const customPoint = (data) => {
   if (data.type === "point") {
@@ -54,6 +56,8 @@ const customPoint = (data) => {
 const listener = { draw: (e) => customPoint(e) };
 
 const math = create(all);
+
+const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 export class ContentStatistics extends React.Component {
   constructor(props) {
@@ -897,6 +901,9 @@ export class ContentStatistics extends React.Component {
       categoryDialogOpen: false,
     });
   };
+  handleChangeIndex = (index) => {
+    this.props.setStatisticsTab(statsTabs[index]);
+  };
   componentDidUpdate(prevProps) {
     if (this.props.navOpen !== prevProps.navOpen) {
       setTimeout(() => {
@@ -1276,6 +1283,129 @@ export class ContentStatistics extends React.Component {
         </TopAppBarSection>
       </TopAppBarRow>
     );
+    const slideRenderer = (params) => {
+      const { index, key } = params;
+      const tab = statsTabs[index];
+      const tabs = {
+        timeline: (
+          <div className="stats-tab timeline" key={key}>
+            <Card className="count-graph">
+              <Typography use="headline5" tag="h1">
+                Sets per Month
+              </Typography>
+              <div className="graph-container">
+                <ChartistGraph
+                  className="ct-double-octave"
+                  data={countChartData}
+                  options={countChartOptions}
+                  listener={listener}
+                  responsiveOptions={responsiveOptions}
+                  type={"Line"}
+                />
+              </div>
+              <Typography use="caption" tag="p">
+                Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets
+                are included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
+              </Typography>
+            </Card>
+            <Card className="profile-graph">
+              <div className="title-container">
+                <Typography use="headline5" tag="h1">
+                  Profile Breakdown
+                </Typography>
+                <ToggleGroup>
+                  <ToggleGroupButton
+                    icon={iconObject(
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
+                      </svg>
+                    )}
+                    selected={this.state.timelineData.profileChartType === "bar"}
+                    onClick={() => {
+                      this.setProfileChartType("bar");
+                    }}
+                  />
+                  <ToggleGroupButton
+                    icon={iconObject(
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                      </svg>
+                    )}
+                    selected={this.state.timelineData.profileChartType === "line"}
+                    onClick={() => {
+                      this.setProfileChartType("line");
+                    }}
+                  />
+                </ToggleGroup>
+              </div>
+              <div
+                className={classNames("graph-container", {
+                  focused: this.state.focused,
+                  ["series-" + this.state.focused]: this.state.focused,
+                })}
+              >
+                {barGraph}
+                {lineGraph}
+              </div>
+            </Card>
+            <Card
+              className={classNames("fullwidth", {
+                focused: this.state.focused,
+                ["series-" + this.state.focused]: this.state.focused,
+              })}
+            >
+              <TimelineTable
+                profiles={this.state.whitelist.profiles}
+                setFocus={this.setFocus}
+                months={this.state.timelineData.months}
+                statistics={this.state.settings}
+                monthData={this.state.timelineData.monthData}
+              />
+            </Card>
+          </div>
+        ),
+        status: (
+          <div className="stats-tab stats-grid status" key={key}>
+            {this.state.statusData[this.state.settings.status].data.map((data) => {
+              return <StatusCard key={data.name} data={data} />;
+            })}
+          </div>
+        ),
+        shipped: (
+          <div className="stats-tab stats-grid shipped" key={key}>
+            {this.state.shippedData[this.state.settings.shipped].data.map((data) => {
+              return <ShippedCard key={data.name} data={data} />;
+            })}
+          </div>
+        ),
+        duration: (
+          <div className="stats-tab stats-grid duration" key={key}>
+            {this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].data.map(
+              (data) => {
+                return (
+                  <TableCard
+                    key={data.name}
+                    data={data}
+                    unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                  />
+                );
+              }
+            )}
+          </div>
+        ),
+        vendors: (
+          <div className="stats-tab stats-grid vendors" key={key}>
+            {this.state.vendorsData[this.state.settings.vendors].data.map((data) => {
+              return <TableCard key={data.name} data={data} unit="Vendors" />;
+            })}
+          </div>
+        ),
+      };
+      return tabs[tab] ? tabs[tab] : <div key={key} />;
+    };
+
     return (
       <>
         <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
@@ -1294,113 +1424,18 @@ export class ContentStatistics extends React.Component {
         <div className="main">
           {filterDrawer}
           {categoryDialog}
-          <div className={classNames("tab-container", this.props.statisticsTab)}>
-            <div className="stats-tab timeline">
-              <Card className="count-graph">
-                <Typography use="headline5" tag="h1">
-                  Sets per Month
-                </Typography>
-                <div className="graph-container">
-                  <ChartistGraph
-                    className="ct-double-octave"
-                    data={countChartData}
-                    options={countChartOptions}
-                    listener={listener}
-                    responsiveOptions={responsiveOptions}
-                    type={"Line"}
-                  />
-                </div>
-                <Typography use="caption" tag="p">
-                  Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets
-                  are included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
-                </Typography>
-              </Card>
-              <Card className="profile-graph">
-                <div className="title-container">
-                  <Typography use="headline5" tag="h1">
-                    Profile Breakdown
-                  </Typography>
-                  <ToggleGroup>
-                    <ToggleGroupButton
-                      icon={iconObject(
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                          <path d="M0 0h24v24H0V0z" fill="none" />
-                          <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                        </svg>
-                      )}
-                      selected={this.state.timelineData.profileChartType === "bar"}
-                      onClick={() => {
-                        this.setProfileChartType("bar");
-                      }}
-                    />
-                    <ToggleGroupButton
-                      icon={iconObject(
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                          <path d="M0 0h24v24H0V0z" fill="none" />
-                          <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                        </svg>
-                      )}
-                      selected={this.state.timelineData.profileChartType === "line"}
-                      onClick={() => {
-                        this.setProfileChartType("line");
-                      }}
-                    />
-                  </ToggleGroup>
-                </div>
-                <div
-                  className={classNames("graph-container", {
-                    focused: this.state.focused,
-                    ["series-" + this.state.focused]: this.state.focused,
-                  })}
-                >
-                  {barGraph}
-                  {lineGraph}
-                </div>
-              </Card>
-              <Card
-                className={classNames("fullwidth", {
-                  focused: this.state.focused,
-                  ["series-" + this.state.focused]: this.state.focused,
-                })}
-              >
-                <TimelineTable
-                  profiles={this.state.whitelist.profiles}
-                  setFocus={this.setFocus}
-                  months={this.state.timelineData.months}
-                  statistics={this.state.settings}
-                  monthData={this.state.timelineData.monthData}
-                />
-              </Card>
-            </div>
-            <div className="stats-tab stats-grid status">
-              {this.state.statusData[this.state.settings.status].data.map((data) => {
-                return <StatusCard key={data.name} data={data} />;
-              })}
-            </div>
-            <div className="stats-tab stats-grid shipped">
-              {this.state.shippedData[this.state.settings.shipped].data.map((data) => {
-                return <ShippedCard key={data.name} data={data} />;
-              })}
-            </div>
-            <div className="stats-tab stats-grid duration">
-              {this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].data.map(
-                (data) => {
-                  return (
-                    <TableCard
-                      key={data.name}
-                      data={data}
-                      unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
-                    />
-                  );
-                }
-              )}
-            </div>
-            <div className="stats-tab stats-grid vendors">
-              {this.state.vendorsData[this.state.settings.vendors].data.map((data) => {
-                return <TableCard key={data.name} data={data} unit="Vendors" />;
-              })}
-            </div>
-          </div>
+          <VirtualizeSwipeableViews
+            className={classNames(this.props.statisticsTab)}
+            enableMouseEvents
+            springConfig={{
+              duration: "0.35s",
+              easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
+            slideCount={statsTabs.length}
+            index={statsTabs.indexOf(this.props.statisticsTab)}
+            onChangeIndex={this.handleChangeIndex}
+            slideRenderer={slideRenderer}
+          />
           <Footer />
         </div>
         {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
