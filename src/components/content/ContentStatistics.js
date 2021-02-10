@@ -1429,6 +1429,7 @@ export class ContentStatistics extends React.Component {
             springConfig={{
               duration: "0.35s",
               easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+              delay: "0s"
             }}
             slideCount={statsTabs.length}
             index={statsTabs.indexOf(this.props.statisticsTab)}
