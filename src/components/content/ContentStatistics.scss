@@ -87,7 +87,6 @@
 $tabs: timeline, status, shipped, duration, vendors;
 
 @each $tab in $tabs {
-  $index: index($tabs, $tab) - 1;
   .#{$tab} {
     .stats-tab {
       &:not(.#{$tab}) {

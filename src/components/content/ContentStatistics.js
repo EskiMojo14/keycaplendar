@@ -1425,7 +1425,7 @@ export class ContentStatistics extends React.Component {
           {filterDrawer}
           {categoryDialog}
           <VirtualizeSwipeableViews
-            className={classNames(this.props.statisticsTab)}
+            className={this.props.statisticsTab}
             enableMouseEvents
             springConfig={{
               duration: "0.35s",
