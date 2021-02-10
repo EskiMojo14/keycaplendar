@@ -92,6 +92,7 @@ $tabs: timeline, status, shipped, duration, vendors;
     .stats-tab {
       &:not(.#{$tab}) {
         max-height: 100vh;
+        overflow: hidden;
       }
     }
   }

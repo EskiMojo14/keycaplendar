@@ -475,6 +475,10 @@ svg.material-icons,
   outline: none;
 }
 
+:root {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .scroll-lock {
   overflow: hidden;
 }
