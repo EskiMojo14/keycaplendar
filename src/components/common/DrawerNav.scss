@@ -45,6 +45,7 @@
         flex-grow: 1;
       }
       .logo {
+        flex-shrink: 0;
         width: 40px;
         height: 40px;
         @include rtl.reflexive-property(margin, -8px, 8px);
