@@ -139,8 +139,11 @@ export class DrawerDetails extends React.Component {
               let differentDate;
               if (vendor.endDate) {
                 const dateObject = moment.utc(vendor.endDate);
-                const todayObject = moment();
-                const dateVerb = todayObject > dateObject ? "Ended" : "Ends";
+                const todayObject = moment().utc();
+                const yesterdayObject = moment()
+                  .utc()
+                  .date(todayObject.date() - 1);
+                const dateVerb = yesterdayObject > dateObject ? "Ended" : "Ends";
                 differentDate = (
                   <div className="caption">
                     <Typography use="caption">
