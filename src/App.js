@@ -410,7 +410,22 @@ class App extends React.Component {
         return !hidden.includes(set.id);
       }
     });
-
+    // console log sets with space at end of string
+    if (this.state.user.isAdmin) {
+      sets.forEach((set) => {
+        Object.keys(set).forEach((key) => {
+          const value = set[key];
+          if (typeof value === "string") {
+            const regex = / $/m;
+            const bool = regex.test(value);
+            if (bool) {
+              console.log(`${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>")}`);
+            }
+            return bool;
+          }
+        });
+      });
+    }
     // page logic
     if (page === "calendar") {
       pageSets = hiddenSets.filter((set) => {
