@@ -995,6 +995,9 @@ class App extends React.Component {
   };
   sortPresets = (presets) => {
     presets.sort(function (a, b) {
+      if (a.name === "Default" || b.name === "Default") {
+        return a.name === "Default" ? -1 : 1;
+      }
       var x = a.name.toLowerCase();
       var y = b.name.toLowerCase();
       if (x < y) {
@@ -1027,7 +1030,10 @@ class App extends React.Component {
   };
   deletePreset = (preset) => {
     const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
-    this.setState({ presets: this.sortPresets(presets), preset: presets[0] });
+    this.setState({
+      presets: this.sortPresets(presets),
+      preset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
+    });
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.presets) => {
