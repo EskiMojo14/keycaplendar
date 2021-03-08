@@ -1,10 +1,7 @@
 import React from "react";
-import * as RMWC from "@rmwc/types";
 import BEMHelper from "../../util/bemHelper";
 import { HTMLProps } from "../../util/types";
-import { ConditionalWrapper } from "./ConditionalWrapper";
-import { Button } from "@rmwc/button";
-import { Tooltip, TooltipProps } from "@rmwc/tooltip";
+import { Button, ButtonProps } from "@rmwc/button";
 import "./ToggleGroup.scss";
 
 const bemClasses = new BEMHelper("toggle-group");
@@ -17,27 +14,21 @@ export const ToggleGroup = (props: HTMLProps) => {
   );
 };
 
-type ToggleGroupButtonProps = HTMLProps & {
-  icon?: RMWC.IconPropT;
-  label: string;
-  onClick: () => void;
-  selected: boolean;
-  tooltip: TooltipProps;
-};
+type ToggleGroupButtonProps = HTMLProps &
+  ButtonProps & {
+    selected: boolean;
+  };
 
 export const ToggleGroupButton = (props: ToggleGroupButtonProps) => {
-  const { tooltip, ...filteredProps } = props;
   return (
-    <ConditionalWrapper condition={!!tooltip} wrapper={(children) => <Tooltip {...tooltip}>{children}</Tooltip>}>
-      <Button
-        {...filteredProps}
-        outlined
-        className={bemClasses(
-          "button",
-          { "only-icon": !!props.icon && !props.label, selected: props.selected },
-          props.className,
-        )}
-      />
-    </ConditionalWrapper>
+    <Button
+      {...props}
+      outlined
+      className={bemClasses(
+        "button",
+        { "only-icon": !!props.icon && !props.label, selected: props.selected },
+        props.className,
+      )}
+    />
   );
 };
