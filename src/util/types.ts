@@ -1,8 +1,10 @@
 import React from "react";
 
+export type HTMLProps = React.HTMLAttributes<HTMLElement>;
+
 export type IconObjectType = {
   strategy: string;
-  icon: React.ReactNode;
+  icon: JSX.Element;
 };
 
 export type WhitelistType = {
@@ -14,7 +16,7 @@ export type WhitelistType = {
   vendors: string[];
 };
 
-export type UserType = {
+export type CurrentUserType = {
   avatar: string;
   email: string;
   id: string;
@@ -23,6 +25,16 @@ export type UserType = {
   isEditor: boolean;
   name: string;
   nickname: string;
+};
+
+export type UserType = {
+  admin: boolean;
+  designer: boolean;
+  displayName: string;
+  editor: boolean;
+  email: string;
+  nickname: string;
+  photoURL: string;
 };
 
 export type SetType = {
@@ -39,10 +51,11 @@ export type SetType = {
   sales?: string;
   shipped?: boolean;
   vendors?: {
-    id: string;
+    id?: string;
     name: string;
     region: string;
     storeLink?: string;
+    endDate?: string;
   }[];
 };
 
@@ -65,24 +78,7 @@ export type QueueType = {
 };
 
 export type ActionSetType = {
-  colorway?: string;
-  designer?: string[];
-  details?: string;
-  gbEnd?: string;
-  gbLaunch?: string;
-  gbMonth?: boolean;
-  icDate?: string;
-  id?: string;
-  image?: string;
-  profile?: string;
-  sales?: string;
-  shipped?: boolean;
-  vendors?: {
-    id: string;
-    name: string;
-    region: string;
-    storeLink?: string;
-  }[];
+  [S in keyof SetType]?: SetType[S];
 };
 
 export type ActionType = {
@@ -105,7 +101,7 @@ export type PresetType = {
   whitelist: WhitelistType;
 };
 
-export type imageTypes = {
+export type ImageTypes = {
   name: string;
   parent: string;
   fullPath: string;

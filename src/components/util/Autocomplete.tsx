@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
 import BEMHelper from "../../util/bemHelper";
@@ -7,7 +6,18 @@ import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
 
-export const Autocomplete = (props) => {
+type AutocompleteProps = React.HTMLAttributes<HTMLElement> & {
+  array: string[];
+  minChars: number;
+  onBlur: () => void;
+  onFocus: () => void;
+  open: boolean;
+  prop: string;
+  query: string;
+  select: (prop: string, item: string) => void;
+};
+
+export const Autocomplete = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
   const matchingItems = array.filter((item) => {
     return item.toLowerCase().includes(query.toLowerCase());
@@ -22,7 +32,9 @@ export const Autocomplete = (props) => {
       anchorCorner="bottomLeft"
       onSelect={(e) => {
         select(prop, matchingItems[e.detail.index]);
-        document.activeElement.blur();
+        if (document.activeElement && document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
       }}
     >
       {query.length >= minChars
@@ -60,7 +72,7 @@ export const Autocomplete = (props) => {
 
 const bemClasses = new BEMHelper("autocomplete-mobile");
 
-export const AutocompleteMobile = (props) => {
+export const AutocompleteMobile = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
   const matchingItems = array.filter((item) => {
     return item.toLowerCase().includes(query.toLowerCase());
@@ -89,18 +101,3 @@ export const AutocompleteMobile = (props) => {
 };
 
 export default Autocomplete;
-
-Autocomplete.propTypes = {
-  array: PropTypes.arrayOf(PropTypes.string),
-  minChars: PropTypes.number,
-  onBlur: PropTypes.func,
-  onFocus: PropTypes.func,
-  open: PropTypes.bool,
-  prop: PropTypes.string,
-  query: PropTypes.string,
-  select: PropTypes.func,
-};
-
-AutocompleteMobile.propTypes = {
-  ...Autocomplete.propTypes,
-};

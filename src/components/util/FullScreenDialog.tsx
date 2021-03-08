@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import BEMHelper from "../../util/bemHelper";
+import { HTMLProps } from "../../util/types";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import "./FullScreenDialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");
 
-export const FullScreenDialog = (props) => {
+type FullScreenDialogProps = HTMLProps & {
+  open: boolean;
+  onClose: () => void;
+};
+
+export const FullScreenDialog = (props: FullScreenDialogProps) => {
   const [open, setOpen] = useState(!!props.open);
   const [opening, setOpening] = useState(false);
   const [animate, setAnimate] = useState(false);
@@ -39,7 +44,7 @@ export const FullScreenDialog = (props) => {
       setClosing(false);
     }, 400);
   };
-  const { open: propsOpen, ...filteredProps } = props;
+  const { open: propsOpen, onClose: _onClose, ...filteredProps } = props;
   return (
     <>
       <div
@@ -61,16 +66,7 @@ export const FullScreenDialog = (props) => {
   );
 };
 
-FullScreenDialog.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-};
-
-/* eslint-disable react/prop-types */
-
-export const FullScreenDialogAppBar = (props) => {
+export const FullScreenDialogAppBar = (props: HTMLProps) => {
   return (
     <>
       <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: props.className })}>
@@ -81,7 +77,7 @@ export const FullScreenDialogAppBar = (props) => {
   );
 };
 
-export const FullScreenDialogContent = (props) => {
+export const FullScreenDialogContent = (props: HTMLProps) => {
   return (
     <div {...props} className={bemClasses({ element: "content", extra: props.className })}>
       {props.children}
