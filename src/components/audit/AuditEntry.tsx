@@ -1,8 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import { actionTypes } from "../../util/propTypeTemplates";
+import { ActionSetType, ActionType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -25,7 +24,16 @@ import {
 import { Checkbox } from "@rmwc/checkbox";
 import "./AuditEntry.scss";
 
-export const AuditEntry = (props) => {
+type AuditEntryProps = {
+  action: ActionType;
+  openDeleteDialog: (action: ActionType) => void;
+  properties: string[];
+  timestamp: {
+    format: (format: string) => string;
+  };
+};
+
+export const AuditEntry = (props: AuditEntryProps) => {
   const documentRow = (
     <DataTableRow>
       <DataTableCell>documentId</DataTableCell>
@@ -44,10 +52,10 @@ export const AuditEntry = (props) => {
       <DataTableCell colSpan={props.action.action === "created" ? 1 : 2}>{props.action.user.email}</DataTableCell>
     </DataTableRow>
   ) : null;
-  const arrayProps = ["designer"];
-  const urlProps = ["image", "details", "sales"];
-  const boolProps = ["gbMonth", "shipped"];
-  const icons = {
+  const arrayProps: string[] = ["designer"];
+  const urlProps: string[] = ["image", "details", "sales"];
+  const boolProps: string[] = ["gbMonth", "shipped"];
+  const icons: { [key: string]: string } = {
     created: "add_circle_outline",
     updated: "update",
     deleted: "remove_circle_outline",
@@ -86,10 +94,17 @@ export const AuditEntry = (props) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 props.action.action === "updated" &&
-                !isEqual(props.action.before[property], props.action.after[property])
+                !isEqual(
+                  props.action.before[property as keyof ActionSetType],
+                  props.action.after[property as keyof ActionSetType],
+                )
               ) {
-                const beforeProp = props.action.before[property] ? props.action.before[property] : "";
-                const afterProp = props.action.after[property] ? props.action.after[property] : "";
+                const beforeProp = props.action.before[property as keyof ActionSetType]
+                  ? props.action.before[property as keyof ActionSetType]
+                  : "";
+                const afterProp = props.action.after[property as keyof ActionSetType]
+                  ? props.action.after[property as keyof ActionSetType]
+                  : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -107,7 +122,13 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && beforeProp && afterProp) {
+                } else if (
+                  arrayProps.includes(property) &&
+                  beforeProp &&
+                  afterProp &&
+                  beforeProp instanceof Array &&
+                  afterProp instanceof Array
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -123,8 +144,8 @@ export const AuditEntry = (props) => {
                   const beforeVendors = props.action.before.vendors;
 
                   beforeVendors.sort(function (a, b) {
-                    var x = a.region.toLowerCase();
-                    var y = b.region.toLowerCase();
+                    const x = a.region.toLowerCase();
+                    const y = b.region.toLowerCase();
                     if (x < y) {
                       return -1;
                     }
@@ -137,8 +158,8 @@ export const AuditEntry = (props) => {
                   const afterVendors = props.action.after.vendors;
 
                   afterVendors.sort(function (a, b) {
-                    var x = a.region.toLowerCase();
-                    var y = b.region.toLowerCase();
+                    const x = a.region.toLowerCase();
+                    const y = b.region.toLowerCase();
                     if (x < y) {
                       return -1;
                     }
@@ -150,8 +171,8 @@ export const AuditEntry = (props) => {
 
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   const buildRows = () => {
-                    let rows = [];
-                    moreVendors.forEach((vendor, index) => {
+                    const rows: JSX.Element[] = [];
+                    moreVendors.forEach((_vendor, index) => {
                       const beforeVendor = beforeVendors[index]
                         ? beforeVendors[index]
                         : { name: "", region: "", storeLink: "" };
@@ -186,7 +207,7 @@ export const AuditEntry = (props) => {
                                 >
                                   Link:{" "}
                                   <a href={beforeVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                    {beforeVendor.storeLink.match(domain)}
+                                    {beforeVendor.storeLink ? beforeVendor.storeLink.match(domain) : null}
                                   </a>
                                 </span>
                               </div>
@@ -224,7 +245,7 @@ export const AuditEntry = (props) => {
                                 >
                                   Link:{" "}
                                   <a href={afterVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                    {afterVendor.storeLink.match(domain)}
+                                    {afterVendor.storeLink ? afterVendor.storeLink.match(domain) : null}
                                   </a>
                                 </span>
                               </div>
@@ -238,14 +259,18 @@ export const AuditEntry = (props) => {
                                 </div>
                               ) : null}
                             </DataTableCell>
-                          </DataTableRow>
+                          </DataTableRow>,
                         );
                       }
                     });
                     return rows;
                   };
                   return buildRows();
-                } else if (urlProps.includes(property)) {
+                } else if (
+                  urlProps.includes(property) &&
+                  typeof beforeProp === "string" &&
+                  typeof afterProp === "string"
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -265,7 +290,11 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (boolProps.includes(property)) {
+                } else if (
+                  boolProps.includes(property) &&
+                  typeof beforeProp === "boolean" &&
+                  typeof afterProp === "boolean"
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -281,7 +310,7 @@ export const AuditEntry = (props) => {
                 return null;
               } else if (props.action.action === "created" || props.action.action === "deleted") {
                 const docData = props.action.action === "created" ? props.action.after : props.action.before;
-                const prop = docData[property] ? docData[property] : "";
+                const prop = docData[property as keyof ActionSetType] ? docData[property as keyof ActionSetType] : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -296,7 +325,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && prop) {
+                } else if (arrayProps.includes(property) && prop instanceof Array) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -307,43 +336,47 @@ export const AuditEntry = (props) => {
                   );
                 } else if (property === "vendors" && docData.vendors) {
                   const buildRows = () => {
-                    let rows = [];
+                    const rows: JSX.Element[] = [];
                     const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-                    docData.vendors.forEach((vendor, index) => {
-                      rows.push(
-                        <DataTableRow key={vendor.name + index}>
-                          <DataTableCell>{property + index}</DataTableCell>
-                          <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
-                            <div>
-                              <span className="highlight">ID: {docData.vendors[index].id}</span>
-                            </div>
-                            <div>
-                              <span className="highlight">Name: {docData.vendors[index].name}</span>
-                            </div>
-                            <div>
-                              <span className="highlight">Region: {docData.vendors[index].region}</span>
-                            </div>
-                            <div>
-                              <span className="highlight">
-                                Link:{" "}
-                                <a href={docData.vendors[index].storeLink} target="_blank" rel="noopener noreferrer">
-                                  {docData.vendors[index].storeLink.match(domain)}
-                                </a>
-                              </span>
-                            </div>
-                            {docData.vendors[index].endDate ? (
+                    if (docData.vendors) {
+                      docData.vendors.forEach((vendor, index) => {
+                        rows.push(
+                          <DataTableRow key={vendor.name + index}>
+                            <DataTableCell>{property + index}</DataTableCell>
+                            <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
                               <div>
-                                <span className="highlight">End date: {docData.vendors[index].endDate}</span>
+                                <span className="highlight">ID: {vendor.id}</span>
                               </div>
-                            ) : null}
-                          </DataTableCell>
-                        </DataTableRow>
-                      );
-                    });
+                              <div>
+                                <span className="highlight">Name: {vendor.name}</span>
+                              </div>
+                              <div>
+                                <span className="highlight">Region: {vendor.region}</span>
+                              </div>
+                              <div>
+                                <span className="highlight">
+                                  Link:{" "}
+                                  {vendor.storeLink ? (
+                                    <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                                      {vendor.storeLink.match(domain)}
+                                    </a>
+                                  ) : null}
+                                </span>
+                              </div>
+                              {vendor.endDate ? (
+                                <div>
+                                  <span className="highlight">End date: {vendor.endDate}</span>
+                                </div>
+                              ) : null}
+                            </DataTableCell>
+                          </DataTableRow>,
+                        );
+                      });
+                    }
                     return rows;
                   };
                   return buildRows();
-                } else if (urlProps.includes(property)) {
+                } else if (urlProps.includes(property) && typeof prop === "string") {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -356,7 +389,7 @@ export const AuditEntry = (props) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (boolProps.includes(property)) {
+                } else if (boolProps.includes(property) && typeof prop === "boolean") {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -389,12 +422,3 @@ export const AuditEntry = (props) => {
 };
 
 export default AuditEntry;
-
-AuditEntry.propTypes = {
-  action: PropTypes.shape(actionTypes),
-  openDeleteDialog: PropTypes.func,
-  properties: PropTypes.arrayOf(PropTypes.string),
-  timestamp: PropTypes.shape({
-    format: PropTypes.func.isRequired,
-  }),
-};

@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
 import { DeviceContext } from "../../util/contexts";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -10,7 +9,19 @@ import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import "./DrawerAuditFilter.scss";
 
-export const DrawerAuditFilter = (props) => {
+type DrawerAuditFilterProps = {
+  auditLength: number;
+  close: () => void;
+  device: string;
+  filterAction: string;
+  filterUser: string;
+  getActions: (num: number) => void;
+  handleFilterChange: (e: any, prop: string) => void;
+  open: boolean;
+  users: { label: string; value: string }[];
+};
+
+export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
   const [auditLength, setAuditLength] = useState(props.auditLength);
   const device = useContext(DeviceContext);
   const closeButton =
@@ -19,12 +30,12 @@ export const DrawerAuditFilter = (props) => {
         <IconButton className="close-icon" icon="close" onClick={props.close} />
       </Tooltip>
     ) : null;
-  const getActions = (num) => {
+  const getActions = (num: number) => {
     if (props.auditLength !== num) {
       props.getActions(num);
     }
   };
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setAuditLength(e.target.value);
     if (e.target.value >= 50 && e.target.value % 50 === 0) {
       getActions(e.target.value);
@@ -114,15 +125,3 @@ export const DrawerAuditFilter = (props) => {
 };
 
 export default DrawerAuditFilter;
-
-DrawerAuditFilter.propTypes = {
-  auditLength: PropTypes.number,
-  close: PropTypes.func,
-  device: PropTypes.string,
-  filterAction: PropTypes.string,
-  filterUser: PropTypes.string,
-  getActions: PropTypes.func,
-  handleFilterChange: PropTypes.func,
-  open: PropTypes.bool,
-  users: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.string })),
-};
