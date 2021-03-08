@@ -9,8 +9,6 @@ import "./Autocomplete.scss";
 type AutocompleteProps = React.HTMLAttributes<HTMLElement> & {
   array: string[];
   minChars: number;
-  onBlur: () => void;
-  onFocus: () => void;
   open: boolean;
   prop: string;
   query: string;
