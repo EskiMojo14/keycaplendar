@@ -1,13 +1,14 @@
 import { replaceChars } from "./constants";
 import firebase from "../firebase";
+import React from "react";
 
 const storage = firebase.storage();
 
 const storageRef = storage.ref();
 
-export const addOrRemove = (oldArray, value) => {
-  const array = [...oldArray];
-  const index = array.indexOf(value);
+export const addOrRemove = (oldArray: any[], value: any) => {
+  const array: any[] = [...oldArray];
+  const index: number = array.indexOf(value);
 
   if (index === -1) {
     array.push(value);
@@ -17,11 +18,11 @@ export const addOrRemove = (oldArray, value) => {
   return array;
 };
 
-export const capitalise = (str) => {
+export const capitalise = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const camelise = (str, chr = " ") => {
+export const camelise = (str: string, chr = " ") => {
   return str
     .split(chr)
     .map((word, index) => {
@@ -34,28 +35,28 @@ export const camelise = (str, chr = " ") => {
     .join("");
 };
 
-export const normalise = (str, includeSpace = true) => {
+export const normalise = (str: string, includeSpace = true) => {
   const regex = includeSpace ? /[^a-zA-Z0-9 ]/g : /[^a-zA-Z0-9]/g;
   return str.normalize("NFD").replace(regex, "");
 };
 
-export const replaceFunction = (string) => {
-  let val = string;
+export const replaceFunction = (str: string) => {
+  let val = str;
   replaceChars.forEach((set) => {
     val = val.replace(set[0], set[1]);
   });
   return val;
 };
 
-export const formatFileName = (str) => {
+export const formatFileName = (str: string) => {
   return camelise(normalise(replaceFunction(str)));
 };
 
-export const countInArray = (arr, val) => {
+export const countInArray = (arr: any[], val: any) => {
   return arr.reduce((count, item) => count + (item === val), 0);
 };
 
-export const iconObject = (jsx) => {
+export const iconObject = (jsx: React.ReactNode) => {
   return {
     strategy: "component",
     icon: jsx,
@@ -63,14 +64,20 @@ export const iconObject = (jsx) => {
 };
 
 export const openModal = () => {
-  document.querySelector("body").classList.add("scroll-lock");
+  const body = document.querySelector("body");
+  if (body) {
+    body.classList.add("scroll-lock");
+  }
 };
 
 export const closeModal = () => {
-  document.querySelector("body").classList.remove("scroll-lock");
+  const body = document.querySelector("body");
+  if (body) {
+    body.classList.remove("scroll-lock");
+  }
 };
 
-export const boolFunctions = (func) => {
+export const boolFunctions = (func: (bool: boolean) => void) => {
   const setFalse = () => {
     func(false);
   };
@@ -80,7 +87,7 @@ export const boolFunctions = (func) => {
   return [setFalse, setTrue];
 };
 
-export const formatBytes = (bytes, decimals = 2) => {
+export const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
@@ -106,7 +113,7 @@ export const batchStorageDelete = (array = []) => {
       const ref = storageRef.child(path);
       return ref
         .getMetadata()
-        .then((metadata) => {
+        .then(() => {
           // file exists
           return ref.delete();
         })
@@ -115,6 +122,6 @@ export const batchStorageDelete = (array = []) => {
           console.log(error);
           return Promise.resolve();
         });
-    })
+    }),
   );
 };
