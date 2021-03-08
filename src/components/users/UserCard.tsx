@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import firebase from "../../firebase";
-import { userTypes, queueTypes } from "../../util/propTypeTemplates";
 import { UserContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
+import { QueueType, UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -14,30 +13,54 @@ import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 
-export class UserCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {
-        nickname: "",
-        designer: false,
-        editor: false,
-        admin: false,
-      },
-      edited: false,
-      loading: false,
-      focused: "",
-    };
-  }
+type UserCardProps = {
+  allDesigners: string[];
+  delete: (user: UserType) => void;
+  device: string;
+  getUsers: () => void;
+  snackbarQueue: QueueType;
+  user: UserType;
+};
+
+type UserCardState = {
+  user: {
+    displayName: string;
+    email: string;
+    photoURL: string;
+    nickname: string;
+    designer: boolean;
+    editor: boolean;
+    admin: boolean;
+  };
+  edited: boolean;
+  loading: boolean;
+  focused: string;
+};
+
+export class UserCard extends React.Component<UserCardProps, UserCardState> {
+  state = {
+    user: {
+      displayName: "string",
+      email: "string",
+      photoURL: "string",
+      nickname: "string",
+      designer: false,
+      editor: false,
+      admin: false,
+    },
+    edited: false,
+    loading: false,
+    focused: "",
+  };
   componentDidMount() {
     this.setState({ user: this.props.user });
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: UserCardProps) {
     if (this.props.user !== prevProps.user && this.props.user !== this.state.user) {
       this.setState({ user: this.props.user, edited: false });
     }
   }
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -47,22 +70,22 @@ export class UserCard extends React.Component {
       focused: "",
     });
   };
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: any) => {
     const user = { ...this.state.user, [prop]: value };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  toggleRole = (role) => {
-    const user = { ...this.state.user, [role]: !this.state.user[role] };
+  toggleRole = (role: string) => {
+    const user = { ...this.state.user, [role]: !this.state.user[role as keyof UserType] };
     this.setState({ user: user, edited: true });
   };
   setRoles = () => {
@@ -76,11 +99,11 @@ export class UserCard extends React.Component {
       admin: this.state.user.admin,
     }).then((result) => {
       this.setState({ loading: false });
-      if (result.editor === this.state.editor && result.admin === this.state.admin) {
+      if (result.data.editor === this.state.user.editor && result.data.admin === this.state.user.admin) {
         this.props.snackbarQueue.notify({ title: "Successfully edited user permissions." });
         this.props.getUsers();
-      } else if (result.error) {
-        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions: " + result.error });
+      } else if (result.data.error) {
+        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions: " + result.data.error });
       } else {
         this.props.snackbarQueue.notify({ title: "Failed to edit user permissions." });
       }
@@ -206,9 +229,10 @@ export class UserCard extends React.Component {
                   <ToggleGroupButton
                     key={role}
                     label={role}
-                    icon={this.props.device === "desktop" ? iconObject(roleIcons[role]) : null}
-                    selected={user[role]}
-                    name={role}
+                    icon={
+                      this.props.device === "desktop" ? iconObject(roleIcons[role as keyof typeof roleIcons]) : null
+                    }
+                    selected={!!user[role as keyof typeof user]}
                     onClick={() => {
                       this.toggleRole(role);
                     }}
@@ -231,12 +255,3 @@ export class UserCard extends React.Component {
 UserCard.contextType = UserContext;
 
 export default UserCard;
-
-UserCard.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  delete: PropTypes.func,
-  device: PropTypes.string,
-  getUsers: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
-};

@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import firebase from "../../firebase";
 import { UserContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
-import { userTypes, queueTypes } from "../../util/propTypeTemplates";
+import { QueueType, UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -13,37 +12,60 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
 
-export class UserRow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {
-        nickname: "",
-        designer: false,
-        editor: false,
-        admin: false,
-      },
-      edited: false,
-      loading: false,
-      focused: "",
-    };
-  }
+type UserRowProps = {
+  allDesigners: string[];
+  delete: (user: UserType) => void;
+  getUsers: () => void;
+  snackbarQueue: QueueType;
+  user: UserType;
+};
+
+type UserCardState = {
+  user: {
+    displayName: string;
+    email: string;
+    photoURL: string;
+    nickname: string;
+    designer: boolean;
+    editor: boolean;
+    admin: boolean;
+  };
+  edited: boolean;
+  loading: boolean;
+  focused: string;
+};
+
+export class UserRow extends React.Component<UserRowProps, UserCardState> {
+  state = {
+    user: {
+      displayName: "string",
+      email: "string",
+      photoURL: "string",
+      nickname: "string",
+      designer: false,
+      editor: false,
+      admin: false,
+    },
+    edited: false,
+    loading: false,
+    focused: "",
+  };
   componentDidMount() {
     this.setState({ user: this.props.user });
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: UserRowProps) {
     if (this.props.user !== prevProps.user && this.props.user !== this.state.user) {
       this.setState({ user: this.props.user, edited: false });
     }
   }
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     const user = { ...this.state.user, [e.target.name]: e.target.checked };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -53,14 +75,14 @@ export class UserRow extends React.Component {
       focused: "",
     });
   };
-  handleTextChange = (e) => {
+  handleTextChange = (e: any) => {
     const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: string) => {
     const user = { ...this.state.user, [prop]: value };
     this.setState({
       user: user,
@@ -78,11 +100,11 @@ export class UserRow extends React.Component {
       admin: this.state.user.admin,
     }).then((result) => {
       this.setState({ loading: false });
-      if (result.editor === this.state.editor && result.admin === this.state.admin) {
+      if (result.data.editor === this.state.user.editor && result.data.admin === this.state.user.admin) {
         this.props.snackbarQueue.notify({ title: "Successfully edited user permissions." });
         this.props.getUsers();
-      } else if (result.error) {
-        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions: " + result.error });
+      } else if (result.data.error) {
+        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions: " + result.data.error });
       } else {
         this.props.snackbarQueue.notify({ title: "Failed to edit user permissions." });
       }
@@ -188,11 +210,3 @@ export class UserRow extends React.Component {
 UserRow.contextType = UserContext;
 
 export default UserRow;
-
-UserRow.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  delete: PropTypes.func,
-  getUsers: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-  user: PropTypes.shape(userTypes),
-};
