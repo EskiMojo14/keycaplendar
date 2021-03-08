@@ -6,6 +6,8 @@ import "./DataTablePagination.scss";
 
 const bemClasses = new BEMHelper("mdc-data-table");
 
+/* eslint-disable react/prop-types */
+
 export const DataTablePagination = (props) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination", extra: props.className })}>

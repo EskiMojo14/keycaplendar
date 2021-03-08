@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import BEMHelper from "../../util/bemHelper";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import "./FullScreenDialog.scss";
@@ -16,7 +17,7 @@ export const FullScreenDialog = (props) => {
     } else {
       closeDialog();
     }
-  }, [props.open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.open]);
   const openDialog = () => {
     setOpen(true);
     setAnimate(true);
@@ -59,6 +60,15 @@ export const FullScreenDialog = (props) => {
     </>
   );
 };
+
+FullScreenDialog.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  onClose: PropTypes.func,
+  open: PropTypes.bool,
+};
+
+/* eslint-disable react/prop-types */
 
 export const FullScreenDialogAppBar = (props) => {
   return (

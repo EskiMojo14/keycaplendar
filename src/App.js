@@ -220,7 +220,7 @@ class App extends React.Component {
           page: page,
         },
         "KeycapLendar: " + pageTitle[page],
-        "?" + params.toString()
+        "?" + params.toString(),
       );
     }
   };
@@ -392,7 +392,7 @@ class App extends React.Component {
     search = this.state.search,
     whitelist = this.state.whitelist,
     favorites = this.state.favorites,
-    hidden = this.state.hidden
+    hidden = this.state.hidden,
   ) => {
     const today = moment.utc();
     const yesterday = moment.utc().date(today.date() - 1);
@@ -733,7 +733,7 @@ class App extends React.Component {
       this.setState({ whitelist: whitelist });
       document.documentElement.scrollTop = 0;
       if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
       }
     } else {
       const edited = this.state.whitelist.edited.includes(prop)
@@ -745,7 +745,7 @@ class App extends React.Component {
       });
       document.documentElement.scrollTop = 0;
       if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.props.search, whitelist);
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
       }
     }
     if (clearUrl) {
@@ -762,7 +762,7 @@ class App extends React.Component {
                 page: page,
               },
               "KeycapLendar: " + pageTitle[page],
-              "?" + params.toString()
+              "?" + params.toString(),
             );
           } else {
             const questionParam = params.has("page") ? "?" + params.toString() : "/";
@@ -812,7 +812,7 @@ class App extends React.Component {
         this.state.sort,
         this.state.search,
         this.state.whitelist,
-        favorites
+        favorites,
       );
     }
     if (this.state.user.id) {
@@ -822,9 +822,8 @@ class App extends React.Component {
           {
             favorites: favorites,
           },
-          { merge: true }
+          { merge: true },
         )
-        .then(() => {})
         .catch((error) => {
           console.log("Failed to sync favorites: " + error);
           queue.notify({ title: "Failed to sync favorites: " + error });
@@ -847,7 +846,7 @@ class App extends React.Component {
                 this.state.sort,
                 this.state.search,
                 this.state.whitelist,
-                favorites
+                favorites,
               );
             }
           }
@@ -868,7 +867,7 @@ class App extends React.Component {
       this.state.search,
       this.state.whitelist,
       this.state.favorites,
-      hidden
+      hidden,
     );
     if (this.state.user.id) {
       db.collection("users")
@@ -877,9 +876,8 @@ class App extends React.Component {
           {
             hidden: hidden,
           },
-          { merge: true }
+          { merge: true },
         )
-        .then(() => {})
         .catch((error) => {
           console.log("Failed to sync hidden sets: " + error);
           queue.notify({ title: "Failed to sync hidden sets: " + error });
@@ -902,7 +900,7 @@ class App extends React.Component {
               this.state.search,
               this.state.whitelist,
               this.state.favorites,
-              hidden
+              hidden,
             );
           }
         })
@@ -924,7 +922,6 @@ class App extends React.Component {
       db.collection("users")
         .doc(this.state.user.id)
         .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
-        .then(() => {})
         .catch((error) => {
           console.log("Failed to set sync setting: " + error);
           queue.notify({ title: "Failed to set sync setting: " + error });
@@ -952,13 +949,10 @@ class App extends React.Component {
       const sync = () => {
         let settingObject = {};
         settingObject["settings." + setting] = value;
-        userDocRef
-          .update(settingObject)
-          .then(() => {})
-          .catch((error) => {
-            console.log("Failed to sync settings: " + error);
-            queue.notify({ title: "Failed to sync settings: " + error });
-          });
+        userDocRef.update(settingObject).catch((error) => {
+          console.log("Failed to sync settings: " + error);
+          queue.notify({ title: "Failed to sync settings: " + error });
+        });
       };
     }
   };
@@ -1042,7 +1036,6 @@ class App extends React.Component {
     db.collection("users")
       .doc(this.state.user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })
-      .then(() => {})
       .catch((error) => {
         console.log("Failed to sync presets: " + error);
         queue.notify({ title: "Failed to sync presets: " + error });
@@ -1064,7 +1057,7 @@ class App extends React.Component {
                 this.state.profiles,
                 ["Shipped", "Not shipped"],
                 "exclude",
-                []
+                [],
               );
               const dataPresets = data.filterPresets.map(
                 (preset) =>
@@ -1076,8 +1069,8 @@ class App extends React.Component {
                     preset.whitelist.shipped,
                     preset.whitelist.vendorMode,
                     preset.whitelist.vendors,
-                    preset.id
-                  )
+                    preset.id,
+                  ),
               );
               const presets = [defaultPreset, ...dataPresets];
               this.setState({ presets: presets });

@@ -8,7 +8,7 @@ export const SnackbarCookies = (props) => {
       open={props.open}
       onClose={props.accept}
       message="By using this site, you consent to use of cookies to store preferences."
-      action={[<SnackbarAction label="Accept" onClick={props.accept} />]}
+      action={[<SnackbarAction key="accept" label="Accept" onClick={props.accept} />]}
       timeout={200000}
     />
   );

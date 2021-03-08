@@ -31,7 +31,7 @@ export const setTypes = (isAction = false) => {
         name: PropTypes.string.isRequired,
         region: PropTypes.string.isRequired,
         storeLink: PropTypes.string,
-      })
+      }),
     ),
   };
 };
@@ -80,4 +80,11 @@ export const presetTypes = {
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   whitelist: PropTypes.shape(whitelistTypes),
+};
+
+export const imageTypes = {
+  name: PropTypes.string,
+  parent: PropTypes.string,
+  fullPath: PropTypes.string,
+  src: PropTypes.string,
 };

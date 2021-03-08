@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 import { DeviceContext } from "../../util/contexts";
 import { formatBytes } from "../../util/functions";
+import { imageTypes } from "../../util/propTypeTemplates";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
@@ -79,3 +81,15 @@ export const DrawerDetails = (props) => {
 };
 
 export default DrawerDetails;
+
+DrawerDetails.propTypes = {
+  close: PropTypes.func,
+  image: PropTypes.shape(imageTypes),
+  metadata: PropTypes.shape({
+    contentType: PropTypes.string,
+    size: PropTypes.number,
+    timeCreated: PropTypes.string,
+    updated: PropTypes.string,
+  }),
+  open: PropTypes.bool,
+};

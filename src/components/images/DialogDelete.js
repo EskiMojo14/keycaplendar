@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { batchStorageDelete } from "../../util/functions";
+import { imageTypes, queueTypes } from "../../util/propTypeTemplates";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
@@ -63,4 +65,15 @@ export const DialogDelete = (props) => {
       </DialogActions>
     </Dialog>
   );
+};
+
+DialogDelete.propTypes = {
+  close: PropTypes.func,
+  folders: PropTypes.arrayOf(PropTypes.string),
+  images: PropTypes.arrayOf(PropTypes.shape(imageTypes)),
+  listAll: PropTypes.func,
+  open: PropTypes.bool,
+  setLoading: PropTypes.func,
+  snackbarQueue: PropTypes.shape(queueTypes),
+  toggleImageChecked: PropTypes.func,
 };

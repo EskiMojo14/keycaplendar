@@ -25,5 +25,6 @@ MenuView.propTypes = {
   onClose: PropTypes.func,
   onSelect: PropTypes.func,
   open: PropTypes.bool,
+  setView: PropTypes.func,
   view: PropTypes.string,
 };

@@ -29,7 +29,7 @@ export const PrivacyPolicy = () => {
       <div className="legal-container">
         <Card className="legal">
           <Typography use="body2" tag="p">
-            Your privacy is important to us. It is KeycapLendar's policy to respect your privacy regarding any
+            Your privacy is important to us. It is KeycapLendar&apos;s policy to respect your privacy regarding any
             information we may collect from you across our website,{" "}
             <a href="http://keycaplendar.firebaseapp.com">http://keycaplendar.firebaseapp.com</a>, and other sites we
             own and operate.
@@ -105,7 +105,7 @@ export const TermsOfService = () => {
           <Typography use="body2" tag="ol" type="a">
             <Typography use="body2" tag="li">
               Permission is granted to temporarily download one copy of the materials (information or software) on
-              KeycapLendar's website for personal, non-commercial transitory viewing only. This is the grant of a
+              KeycapLendar&apos;s website for personal, non-commercial transitory viewing only. This is the grant of a
               licence, not a transfer of title, and under this licence you may not:
               <Typography use="body2" tag="ol" type="i">
                 <Typography use="body2" tag="li">
@@ -116,13 +116,13 @@ export const TermsOfService = () => {
                   non-commercial);
                 </Typography>
                 <Typography use="body2" tag="li">
-                  attempt to decompile or reverse engineer any software contained on KeycapLendar's website;
+                  attempt to decompile or reverse engineer any software contained on KeycapLendar&apos;s website;
                 </Typography>
                 <Typography use="body2" tag="li">
                   remove any copyright or other proprietary notations from the materials; or
                 </Typography>
                 <Typography use="body2" tag="li">
-                  transfer the materials to another person or "mirror" the materials on any other server.
+                  transfer the materials to another person or &ldquo;mirror&rdquo; the materials on any other server.
                 </Typography>
               </Typography>
             </Typography>
@@ -136,10 +136,10 @@ export const TermsOfService = () => {
           <Typography use="headline5">3. Disclaimer</Typography>
           <Typography use="body2" tag="ol" type="a">
             <Typography use="body2" tag="li">
-              The materials on KeycapLendar's website are provided on an 'as is' basis. KeycapLendar makes no
-              warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without
-              limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or
-              non-infringement of intellectual property or other violation of rights.
+              The materials on KeycapLendar&apos;s website are provided on an &lsquo;as is&rsquo; basis. KeycapLendar
+              makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties
+              including, without limitation, implied warranties or conditions of merchantability, fitness for a
+              particular purpose, or non-infringement of intellectual property or other violation of rights.
             </Typography>
             <Typography use="body2" tag="li">
               Further, KeycapLendar does not warrant or make any representations concerning the accuracy, likely
@@ -151,23 +151,23 @@ export const TermsOfService = () => {
           <Typography use="body2" tag="p">
             In no event shall KeycapLendar or its suppliers be liable for any damages (including, without limitation,
             damages for loss of data or profit, or due to business interruption) arising out of the use or inability to
-            use the materials on KeycapLendar's website, even if KeycapLendar or a KeycapLendar authorised
+            use the materials on KeycapLendar&apos;s website, even if KeycapLendar or a KeycapLendar authorised
             representative has been notified orally or in writing of the possibility of such damage. Because some
             jurisdictions do not allow limitations on implied warranties, or limitations of liability for consequential
             or incidental damages, these limitations may not apply to you.
           </Typography>
           <Typography use="headline5">5. Accuracy of materials</Typography>
           <Typography use="body2" tag="p">
-            The materials appearing on KeycapLendar's website could include technical, typographical, or photographic
-            errors. KeycapLendar does not warrant that any of the materials on its website are accurate, complete or
-            current. KeycapLendar may make changes to the materials contained on its website at any time without notice.
-            However KeycapLendar does not make any commitment to update the materials.
+            The materials appearing on KeycapLendar&apos;s website could include technical, typographical, or
+            photographic errors. KeycapLendar does not warrant that any of the materials on its website are accurate,
+            complete or current. KeycapLendar may make changes to the materials contained on its website at any time
+            without notice. However KeycapLendar does not make any commitment to update the materials.
           </Typography>
           <Typography use="headline5">6. Links</Typography>
           <Typography use="body2" tag="p">
             KeycapLendar has not reviewed all of the sites linked to its website and is not responsible for the contents
             of any such linked site. The inclusion of any link does not imply endorsement by KeycapLendar of the site.
-            Use of any such linked website is at the user's own risk.
+            Use of any such linked website is at the user&apos;s own risk.
           </Typography>
           <Typography use="headline5">7. Modifications</Typography>
           <Typography use="body2" tag="p">

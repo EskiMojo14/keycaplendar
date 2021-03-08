@@ -74,7 +74,7 @@ export default ViewCard;
 
 ViewCard.propTypes = {
   closeDetails: PropTypes.func,
-  detailset: PropTypes.shape(setTypes()),
+  detailSet: PropTypes.shape(setTypes()),
   details: PropTypes.func,
   edit: PropTypes.func,
   page: PropTypes.string,

@@ -108,7 +108,7 @@ export class UserCard extends React.Component {
               />
               <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z" />
             </svg>
-          </div>
+          </div>,
         )}
         disabled={!this.state.edited}
       />
@@ -126,7 +126,7 @@ export class UserCard extends React.Component {
                 <path d="M8 9h8v10H8z" opacity=".3" />
                 <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
               </svg>
-            </div>
+            </div>,
           )}
         />
       );
@@ -232,9 +232,10 @@ UserCard.contextType = UserContext;
 
 export default UserCard;
 
-UserCard.propType = {
-  allDesigner: PropTypes.arrayOf(PropTypes.string),
+UserCard.propTypes = {
+  allDesigners: PropTypes.arrayOf(PropTypes.string),
   delete: PropTypes.func,
+  device: PropTypes.string,
   getUsers: PropTypes.func,
   snackbarQueue: PropTypes.shape(queueTypes),
   user: PropTypes.shape(userTypes),
