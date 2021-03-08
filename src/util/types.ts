@@ -2,11 +2,6 @@ import React from "react";
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
-export type IconObjectType = {
-  strategy: string;
-  icon: JSX.Element;
-};
-
 export type WhitelistType = {
   favorites: boolean;
   hidden: boolean;

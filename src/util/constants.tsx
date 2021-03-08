@@ -1,6 +1,6 @@
 import React from "react";
+import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
-import { IconObjectType } from "./types";
 
 export const replaceChars: [string, string][] = [
   ["β", "B"],
@@ -56,7 +56,7 @@ export const pageTitle: { [key: string]: string } = {
   settings: "Settings",
 };
 
-export const pageIcons: { [key: string]: string | IconObjectType } = {
+export const pageIcons: { [key: string]: RMWC.IconPropT } = {
   calendar: iconObject(
     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
       <path d="M0 0h24v24H0V0z" fill="none" />
@@ -211,7 +211,7 @@ export const viewNames: { [key: string]: string } = {
   compact: "Compact",
 };
 
-export const viewIcons: { [key: string]: string | IconObjectType } = {
+export const viewIcons: { [key: string]: RMWC.IconPropT } = {
   card: iconObject(
     <div>
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
