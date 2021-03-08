@@ -1,8 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
-export const SnackbarCookies = (props) => {
+type SnackbarCookiesProps = {
+  open: boolean;
+  accept: () => void;
+};
+
+export const SnackbarCookies = (props: SnackbarCookiesProps) => {
   return (
     <Snackbar
       open={props.open}
@@ -15,8 +19,3 @@ export const SnackbarCookies = (props) => {
 };
 
 export default SnackbarCookies;
-
-SnackbarCookies.propTypes = {
-  open: PropTypes.bool,
-  accept: PropTypes.func,
-};

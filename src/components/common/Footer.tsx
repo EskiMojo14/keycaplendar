@@ -5,7 +5,7 @@ import { Tooltip } from "@rmwc/tooltip";
 import { iconObject } from "../../util/functions";
 import "./Footer.scss";
 
-export const Footer = () => {
+export const Footer: React.FC = () => {
   const cannonkeysLogo = (
     <svg
       className="cannonkeys"

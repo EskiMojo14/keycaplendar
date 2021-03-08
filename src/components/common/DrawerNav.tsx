@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
@@ -9,15 +8,26 @@ import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
 
-export const DrawerNav = (props) => {
+type DrawerNavProps = {
+  bottomNav: boolean;
+  close: () => void;
+  open: boolean;
+  page: string;
+  setPage: (page: string) => void;
+  view: string;
+};
+
+export const DrawerNav = (props: DrawerNavProps) => {
   const { user, favorites, hidden } = useContext(UserContext);
-  const quantities = {
+  const quantities: {
+    [key: string]: number;
+  } = {
     favorites: favorites.length,
     hidden: hidden.length,
   };
   const device = useContext(DeviceContext);
   const dismissible = device === "desktop";
-  const setPage = (page) => {
+  const setPage = (page: string) => {
     props.setPage(page);
     if (!dismissible) {
       props.close();
@@ -82,13 +92,13 @@ export const DrawerNav = (props) => {
           })}
           {userOptions}
           <ListDivider />
-          <ListItem onClick={(e) => setPage("statistics")} activated={props.page === "statistics"}>
+          <ListItem onClick={() => setPage("statistics")} activated={props.page === "statistics"}>
             <ListItemGraphic icon={pageIcons.statistics} />
             Statistics
           </ListItem>
           {adminOptions}
           <ListDivider />
-          <ListItem onClick={(e) => setPage("settings")} activated={props.page === "settings"}>
+          <ListItem onClick={() => setPage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
             Settings
           </ListItem>
@@ -99,12 +109,3 @@ export const DrawerNav = (props) => {
 };
 
 export default DrawerNav;
-
-DrawerNav.propTypes = {
-  bottomNav: PropTypes.bool,
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  page: PropTypes.string,
-  setPage: PropTypes.func,
-  view: PropTypes.string,
-};
