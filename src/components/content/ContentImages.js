@@ -451,7 +451,7 @@ ContentImages.contextType = DeviceContext;
 
 ContentImages.propTypes = {
   bottomNav: PropTypes.bool,
-  openNav: PropTypes.bool,
+  openNav: PropTypes.func,
   sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
   snackbarQueue: PropTypes.shape(queueTypes),
 };
