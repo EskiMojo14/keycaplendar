@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../../firebase";
 import { UserContext, DeviceContext } from "../../util/contexts";
@@ -10,7 +9,7 @@ import { Footer } from "../common/Footer";
 import "./Login.scss";
 import peach from "../../media/peach.svg";
 
-export const Login = (props) => {
+export const Login = () => {
   const { user } = useContext(UserContext);
 
   const device = useContext(DeviceContext);
@@ -57,7 +56,3 @@ export const Login = (props) => {
 };
 
 export default Login;
-
-Login.propTypes = {
-  device: PropTypes.string,
-};

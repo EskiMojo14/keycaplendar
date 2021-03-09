@@ -7,7 +7,7 @@ import { Footer } from "../common/Footer";
 import "./NotFound.scss";
 import { ReactComponent as Image } from "../../media/404.svg";
 
-export const NotFound = (props) => {
+export const NotFound = () => {
   return (
     <div className="not-found-page-container">
       <TopAppBar prominent>
