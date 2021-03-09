@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
-import { setTypes } from "../../../util/propTypeTemplates";
+import { SetType } from "../../../util/types";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
@@ -17,7 +16,22 @@ import { Typography } from "@rmwc/typography";
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementImage.scss";
 
-export const ElementImage = (props) => {
+type ElementImageProps = {
+  closeDetails: () => void;
+  daysLeft: number;
+  details: (set: SetType) => void;
+  image: string;
+  link: string;
+  live: boolean;
+  page: string;
+  selected: boolean;
+  set: SetType;
+  subtitle: string;
+  thisWeek: boolean;
+  title: string;
+};
+
+export const ElementImage = (props: ElementImageProps) => {
   const liveIndicator =
     props.live && props.page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
@@ -99,18 +113,3 @@ export const ElementImage = (props) => {
 };
 
 export default ElementImage;
-
-ElementImage.propTypes = {
-  closeDetails: PropTypes.func,
-  daysLeft: PropTypes.number,
-  details: PropTypes.func,
-  image: PropTypes.string,
-  link: PropTypes.string,
-  live: PropTypes.bool,
-  page: PropTypes.string,
-  selected: PropTypes.bool,
-  set: PropTypes.shape(setTypes()),
-  subtitle: PropTypes.string,
-  thisWeek: PropTypes.bool,
-  title: PropTypes.string,
-};

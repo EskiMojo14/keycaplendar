@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
-import { setTypes } from "../../../util/propTypeTemplates";
+import { SetType } from "../../../util/types";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -20,7 +19,24 @@ import {
 import { Tooltip } from "@rmwc/tooltip";
 import "./ElementCard.scss";
 
-export const ElementCard = (props) => {
+type ElementCardProps = {
+  closeDetails: () => void;
+  daysLeft: number;
+  designer: string;
+  details: (set: SetType) => void;
+  edit: (set: SetType) => void;
+  image: string;
+  link: string;
+  live: boolean;
+  page: string;
+  selected: boolean;
+  set: SetType;
+  subtitle: string;
+  thisWeek: boolean;
+  title: string;
+};
+
+export const ElementCard = (props: ElementCardProps) => {
   const { user, favorites, toggleFavorite } = useContext(UserContext);
   const liveIndicator =
     props.live && props.page !== "live" ? (
@@ -93,7 +109,7 @@ export const ElementCard = (props) => {
               opacity=".3"
             />
             <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
-          </svg>
+          </svg>,
         )}
         className="favorite"
         checked={favorites.includes(props.set.id)}
@@ -112,7 +128,7 @@ export const ElementCard = (props) => {
                 <path d="M5 18.08V19h.92l9.06-9.06-.92-.92z" opacity=".3" />
                 <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z" />
               </svg>
-            </div>
+            </div>,
           )}
           onClick={() => props.edit(props.set)}
         />
@@ -165,20 +181,3 @@ export const ElementCard = (props) => {
 };
 
 export default ElementCard;
-
-ElementCard.propTypes = {
-  closeDetails: PropTypes.func,
-  daysLeft: PropTypes.number,
-  designer: PropTypes.string,
-  details: PropTypes.func,
-  edit: PropTypes.func,
-  image: PropTypes.string,
-  link: PropTypes.string,
-  live: PropTypes.bool,
-  page: PropTypes.string,
-  selected: PropTypes.bool,
-  set: PropTypes.shape(setTypes()),
-  subtitle: PropTypes.string,
-  thisWeek: PropTypes.bool,
-  title: PropTypes.string,
-};

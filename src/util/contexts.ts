@@ -1,8 +1,10 @@
 import React from "react";
+import { Preset } from "./constructors";
+import { UserContextType } from "./types";
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-export const UserContext = React.createContext({
+export const UserContext = React.createContext<UserContextType>({
   user: {
     email: null,
     name: null,
@@ -20,7 +22,7 @@ export const UserContext = React.createContext({
   toggleHide: () => {},
   syncSettings: false,
   setSyncSettings: () => {},
-  preset: {},
+  preset: new Preset(),
   presets: [],
   selectPreset: () => {},
   newPreset: () => {},

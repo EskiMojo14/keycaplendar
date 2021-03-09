@@ -91,6 +91,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.isequal": "^4.5.5",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint-config-prettier": "^8.1.0",

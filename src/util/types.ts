@@ -102,3 +102,29 @@ export type ImageTypes = {
   fullPath: string;
   src: string;
 };
+
+export type UserContextType = {
+  user: {
+    email: string | null;
+    name: string | null;
+    avatar: string | null;
+    nickname: string;
+    isDesigner: boolean;
+    isEditor: boolean;
+    isAdmin: boolean;
+    id: string | null;
+  };
+  setUser: (user: CurrentUserType) => void;
+  favorites: string[];
+  toggleFavorite: (id: string) => void;
+  hidden: string[];
+  toggleHide: (id: string) => void;
+  syncSettings: boolean;
+  setSyncSettings: (bool: boolean, write?: boolean) => void;
+  preset: PresetType;
+  presets: PresetType[];
+  selectPreset: (presetName: string) => void;
+  newPreset: (preset: PresetType) => void;
+  editPreset: (preset: PresetType) => void;
+  deletePreset: (preset: PresetType) => void;
+};
