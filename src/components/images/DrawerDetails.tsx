@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import moment from "moment";
 import { DeviceContext } from "../../util/contexts";
 import { formatBytes } from "../../util/functions";
-import { imageTypes } from "../../util/propTypeTemplates";
+import { ImageType } from "../../util/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
@@ -11,7 +10,14 @@ import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import "./DrawerDetails.scss";
 
-export const DrawerDetails = (props) => {
+type DrawerDetailsProps = {
+  close: () => void;
+  image: ImageType;
+  metadata: { [key: string]: any };
+  open: boolean;
+};
+
+export const DrawerDetails = (props: DrawerDetailsProps) => {
   const device = useContext(DeviceContext);
   const dismissible = device === "desktop";
   const closeIcon = dismissible ? (
@@ -52,8 +58,8 @@ export const DrawerDetails = (props) => {
           {Object.keys(imageProps).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{imageProps[key]}</ListItemPrimaryText>
-                <ListItemSecondaryText>{props.image[key]}</ListItemSecondaryText>
+                <ListItemPrimaryText>{imageProps[key as keyof typeof imageProps]}</ListItemPrimaryText>
+                <ListItemSecondaryText>{props.image[key as keyof ImageType]}</ListItemSecondaryText>
               </ListItemText>
             </ListItem>
           ))}
@@ -63,7 +69,7 @@ export const DrawerDetails = (props) => {
           {Object.keys(metadata).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{metadata[key]}</ListItemPrimaryText>
+                <ListItemPrimaryText>{metadata[key as keyof typeof metadata]}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
                     ? moment.utc(props.metadata[key]).format("Do MMMM YYYY, HH:mm:ss")
@@ -81,15 +87,3 @@ export const DrawerDetails = (props) => {
 };
 
 export default DrawerDetails;
-
-DrawerDetails.propTypes = {
-  close: PropTypes.func,
-  image: PropTypes.shape(imageTypes),
-  metadata: PropTypes.shape({
-    contentType: PropTypes.string,
-    size: PropTypes.number,
-    timeCreated: PropTypes.string,
-    updated: PropTypes.string,
-  }),
-  open: PropTypes.bool,
-};

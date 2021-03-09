@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
-import PropTypes from "prop-types";
 import reactStringReplace from "react-string-replace";
 import { DeviceContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
-import { imageTypes } from "../../util/propTypeTemplates";
+import { ImageType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -20,7 +19,14 @@ import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
 import "./DrawerSearch.scss";
 
-export const DrawerSearch = (props) => {
+type DrawerSearchProps = {
+  close: () => void;
+  images: ImageType[];
+  open: boolean;
+  unusedImages: ImageType[];
+};
+
+export const DrawerSearch = (props: DrawerSearchProps) => {
   const device = useContext(DeviceContext);
   const dismissible = device === "desktop";
   const closeIcon = dismissible ? (
@@ -32,7 +38,7 @@ export const DrawerSearch = (props) => {
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setSearch(e.target.value);
   };
 
@@ -141,10 +147,3 @@ export const DrawerSearch = (props) => {
 };
 
 export default DrawerSearch;
-
-DrawerSearch.propTypes = {
-  close: PropTypes.func,
-  images: PropTypes.arrayOf(PropTypes.shape(imageTypes)),
-  open: PropTypes.bool,
-  unusedImages: PropTypes.arrayOf(PropTypes.shape(imageTypes)),
-};

@@ -107,7 +107,7 @@ export const getStorageFolders = async () => {
   return folders;
 };
 
-export const batchStorageDelete = (array = []) => {
+export const batchStorageDelete = (array: string[] = []) => {
   return Promise.all(
     array.map((path) => {
       const ref = storageRef.child(path);

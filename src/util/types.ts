@@ -96,7 +96,7 @@ export type PresetType = {
   whitelist: WhitelistType;
 };
 
-export type ImageTypes = {
+export type ImageType = {
   name: string;
   parent: string;
   fullPath: string;
