@@ -4,6 +4,7 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import debounce from "lodash.debounce";
 import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
@@ -76,6 +77,7 @@ class App extends React.Component {
       preset: new Preset(),
       presets: [],
     };
+    this.debouncedFilterData = debounce(this.filterData, 600, { trailing: true });
   }
   getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
@@ -385,6 +387,7 @@ class App extends React.Component {
         this.setState({ loading: false, content: false });
       });
   };
+
   filterData = (
     page = this.state.page,
     sets = this.state.sets,
@@ -683,6 +686,9 @@ class App extends React.Component {
       this.setWhitelist("profiles", allProfiles, false);
     }
   };
+
+  debouncedFilterData = () => {};
+
   setDensity = (density, write = true) => {
     this.setState({ density: density });
     if (write) {
@@ -700,7 +706,7 @@ class App extends React.Component {
       search: query,
     });
     document.documentElement.scrollTop = 0;
-    this.filterData(this.state.page, this.state.sets, this.state.sort, query);
+    this.debouncedFilterData(this.state.page, this.state.sets, this.state.sort, query);
   };
   setUser = (user = {}) => {
     const blankUser = {
