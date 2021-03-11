@@ -1,14 +1,21 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
 import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
+import { QueueType, SetType } from "../../../util/types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
-export const SnackbarDeleted = (props) => {
+type SnackbarDeletedProps = {
+  close: () => void;
+  getData: () => void;
+  open: boolean;
+  set: SetType;
+  snackbarQueue: QueueType;
+};
+
+export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const { user } = useContext(UserContext);
-  const recreateEntry = (e) => {
+  const recreateEntry = (e: any) => {
     e.preventDefault();
     const { id, ...set } = props.set;
     const db = firebase.firestore();
@@ -20,7 +27,7 @@ export const SnackbarDeleted = (props) => {
           gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
           latestEditor: user.id,
         },
-        { merge: true }
+        { merge: true },
       )
       .then(() => {
         console.log("Document recreated with ID: ", id);
@@ -33,7 +40,7 @@ export const SnackbarDeleted = (props) => {
       });
     close(true);
   };
-  const deleteImages = async (name) => {
+  const deleteImages = async (name: string) => {
     const folders = await getStorageFolders();
     const allImages = folders.map((folder) => `${folder}/${name}`);
     batchStorageDelete(allImages)
@@ -48,8 +55,11 @@ export const SnackbarDeleted = (props) => {
   const close = (recreated = false) => {
     if (!recreated) {
       const fileNameRegex = /keysets%2F(.*)\?/;
-      const imageName = props.set.image.match(fileNameRegex)[1];
-      deleteImages(imageName);
+      const regexMatch = props.set.image.match(fileNameRegex);
+      if (regexMatch) {
+        const imageName = regexMatch[1];
+        deleteImages(imageName);
+      }
     }
     props.close();
   };
@@ -65,11 +75,3 @@ export const SnackbarDeleted = (props) => {
 };
 
 export default SnackbarDeleted;
-
-SnackbarDeleted.propTypes = {
-  close: PropTypes.func,
-  getData: PropTypes.func,
-  open: PropTypes.bool,
-  set: PropTypes.shape(setTypes()),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};

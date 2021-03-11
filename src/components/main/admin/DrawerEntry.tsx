@@ -1,13 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
-import { formatFileName, iconObject, getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
+import { formatFileName, iconObject, getStorageFolders, batchStorageDelete, arrayMove } from "../../../util/functions";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { Button } from "@rmwc/button";
@@ -22,8 +20,9 @@ import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import "./DrawerEntry.scss";
+import { QueueType, SetType, VendorType } from "../../../util/types";
 
-const getVendorStyle = (provided, snapshot) => {
+const getVendorStyle = (provided: any) => {
   const style = provided.draggableProps.style;
   let transform = style.transform;
   if (style.transform) {
@@ -37,28 +36,66 @@ const getVendorStyle = (provided, snapshot) => {
   };
 };
 
-export class DrawerCreate extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      profile: "",
-      colorway: "",
-      designer: [],
-      icDate: "",
-      details: "",
-      sales: "",
-      image: null,
-      gbMonth: true,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-      vendors: [],
-      loading: false,
-      imageUploadProgress: 0,
-      imageURL: "",
-      salesImageLoaded: false,
-      focused: "",
-    };
+type DrawerCreateProps = {
+  allDesigners: string[];
+  allRegions: string[];
+  allVendors: string[];
+  close: () => void;
+  getData: () => void;
+  open: boolean;
+  profiles: string[];
+  snackbarQueue: QueueType;
+};
+
+type DrawerCreateState = {
+  profile: string;
+  colorway: string;
+  designer: string[];
+  icDate: string;
+  details: string;
+  sales: string;
+  image: Blob | File | null;
+  gbMonth: boolean;
+  gbLaunch: string;
+  gbEnd: string;
+  shipped: boolean;
+  vendors: VendorType[];
+  loading: boolean;
+  imageUploadProgress: number;
+  imageURL: string;
+  salesImageLoaded: boolean;
+  focused: string;
+};
+
+export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreateState> {
+  state: DrawerCreateState = {
+    profile: "",
+    colorway: "",
+    designer: [],
+    icDate: "",
+    details: "",
+    sales: "",
+    image: null,
+    gbMonth: true,
+    gbLaunch: "",
+    gbEnd: "",
+    shipped: false,
+    vendors: [],
+    loading: false,
+    imageUploadProgress: 0,
+    imageURL: "",
+    salesImageLoaded: false,
+    focused: "",
+  };
+
+  componentDidUpdate(prevProps: DrawerCreateProps) {
+    if (this.props.open !== prevProps.open) {
+      if (this.context.user.isEditor === false && this.context.user.isDesigner) {
+        this.setState({
+          designer: [this.context.user.nickname],
+        });
+      }
+    }
   }
 
   closeDrawer = () => {
@@ -83,13 +120,13 @@ export class DrawerCreate extends React.Component {
     });
   };
 
-  setImage = (image) => {
+  setImage = (image: Blob | File | null) => {
     this.setState({
       image: image,
     });
   };
 
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -107,65 +144,67 @@ export class DrawerCreate extends React.Component {
     });
   };
 
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState({
+      this.setState<never>({
         [prop]: [value],
         focused: "",
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [prop]: value,
         focused: "",
       });
     }
   };
 
-  selectVendor = (prop, value) => {
-    const property = prop.slice(0, -1);
-    const index = prop.slice(prop.length - 1);
-    let vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property] = value;
-    this.setState({
-      vendors: vendorsCopy,
-      focused: "",
-    });
+  selectVendor = (prop: string, value: string) => {
+    if (this.state.vendors instanceof Array) {
+      const property = prop.slice(0, -1);
+      const index = parseInt(prop.slice(prop.length - 1));
+      const vendorsCopy = [...this.state.vendors];
+      vendorsCopy[index][property as keyof VendorType] = value;
+      this.setState({
+        vendors: vendorsCopy,
+        focused: "",
+      });
+    }
   };
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     if (e.target.name === "designer") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
       });
     } else if (e.target.name === "shipped") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.checked,
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value,
       });
     }
   };
 
-  handleChangeVendor = (e) => {
-    let vendors = [...this.state.vendors];
+  handleChangeVendor = (e: any) => {
+    const vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field] = e.target.value;
+    vendors[index][field as keyof VendorType] = e.target.value;
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleChangeVendorEndDate = (e) => {
+  handleChangeVendorEndDate = (e: any) => {
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    let vendors = [...this.state.vendors];
+    const vendors = [...this.state.vendors];
     if (e.target.checked) {
-      vendors[index][field] = "";
+      vendors[index][field as keyof VendorType] = "";
     } else {
-      delete vendors[index][field];
+      delete vendors[index][field as keyof VendorType];
     }
     this.setState({
       vendors: vendors,
@@ -184,76 +223,68 @@ export class DrawerCreate extends React.Component {
     }));
   };
 
-  removeVendor = (index) => {
-    let vendors = [...this.state.vendors];
+  removeVendor = (index: number) => {
+    const vendors = [...this.state.vendors];
     vendors.splice(index, 1);
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleDragVendor = (result) => {
+  handleDragVendor = (result: any) => {
     if (!result.destination) return;
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = [...this.state.vendors];
-    array_move(vendors, result.source.index, result.destination.index);
+    const vendors = [...this.state.vendors];
+    arrayMove(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
     });
   };
 
   uploadImage = () => {
-    this.setState({ loading: true });
-    const storageRef = firebase.storage().ref();
-    const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
-    const imageRef = keysetsRef.child(fileName + ".png");
-    const uploadTask = imageRef.put(this.state.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        this.setState({ imageUploadProgress: progress });
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
-        this.setState({ loading: false });
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
-        imageRef
-          .getDownloadURL()
-          .then((downloadURL) => {
-            this.setState({
-              imageURL: downloadURL,
-              loading: false,
+    if (this.state.image instanceof Blob) {
+      this.setState({ loading: true });
+      const storageRef = firebase.storage().ref();
+      const keysetsRef = storageRef.child("keysets");
+      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+        .utc()
+        .format("YYYYMMDDHHmmSS")}`;
+      const imageRef = keysetsRef.child(fileName + ".png");
+      const uploadTask = imageRef.put(this.state.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ imageUploadProgress: progress });
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          this.setState({ loading: false });
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          imageRef
+            .getDownloadURL()
+            .then((downloadURL) => {
+              this.setState({
+                imageURL: downloadURL,
+                loading: false,
+              });
+              this.createEntry();
+            })
+            .catch((error) => {
+              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              this.setState({
+                loading: false,
+              });
             });
-            this.createEntry();
-          })
-          .catch((error) => {
-            this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
-            this.setState({
-              loading: false,
-            });
-          });
-      }
-    );
+        },
+      );
+    }
   };
 
   createEntry = () => {
@@ -295,19 +326,9 @@ export class DrawerCreate extends React.Component {
     }
   };
 
-  setSalesImageLoaded = (val) => {
-    this.setState({ salesImageLoaded: !!val });
+  setSalesImageLoaded = (val: boolean) => {
+    this.setState({ salesImageLoaded: val });
   };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.open !== prevProps.open) {
-      if (this.context.user.isEditor === false && this.context.user.isDesigner) {
-        this.setState({
-          designer: [this.context.user.nickname],
-        });
-      }
-    }
-  }
 
   render() {
     const formFilled =
@@ -429,7 +450,8 @@ export class DrawerCreate extends React.Component {
             label="Save"
             onClick={(e) => {
               if (formFilled) {
-                this.uploadImage(e);
+                e.preventDefault();
+                this.uploadImage();
               }
             }}
             disabled={!formFilled}
@@ -597,14 +619,14 @@ export class DrawerCreate extends React.Component {
                           />
                         ) : null;
                       return (
-                        <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
+                        <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
                           {(provided, snapshot) => (
                             <Card
                               outlined
                               className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={getVendorStyle(provided, snapshot)}
+                              style={getVendorStyle(provided)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
@@ -624,7 +646,7 @@ export class DrawerCreate extends React.Component {
                                           <path d="M8 9h8v10H8z" opacity=".3" />
                                           <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                                         </svg>
-                                      </div>
+                                      </div>,
                                     )}
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -805,61 +827,54 @@ export class DrawerCreate extends React.Component {
 
 DrawerCreate.contextType = UserContext;
 
-export class DrawerEdit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: "",
-      profile: "",
-      colorway: "",
-      designer: [],
-      icDate: "",
-      details: "",
-      sales: "",
-      image: "",
-      gbMonth: false,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-      vendors: [],
-      loading: false,
-      imageUploadProgress: 0,
-      imageURL: "",
-      newImage: false,
-      salesImageLoaded: false,
-      focused: "",
-    };
-  }
+type DrawerEditProps = DrawerCreateProps & {
+  set: SetType;
+};
 
-  setValues = () => {
-    let gbLaunch = "";
-    if (this.props.set.gbMonth) {
-      const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
-      const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
-      if (twoNumRegExp.test(this.props.set.gbLaunch)) {
-        gbLaunch = this.props.set.gbLaunch.slice(0, -3);
-      } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
-        gbLaunch = this.props.set.gbLaunch.slice(0, -2);
-      } else {
-        gbLaunch = this.props.set.gbLaunch;
-      }
-    } else {
-      gbLaunch = this.props.set.gbLaunch;
-    }
-    this.setState({
-      ...this.props.set,
-      sales: this.props.set.sales ? this.props.set.sales : "",
-      gbLaunch: gbLaunch,
-      shipped: this.props.set.shipped ? this.props.set.shipped : false,
-      vendors: this.props.set.vendors.map((vendor) => {
-        if (!vendor.id) {
-          vendor.id = nanoid();
-        }
-        return vendor;
-      }),
-    });
+type DrawerEditState = {
+  id: string;
+  profile: string;
+  colorway: string;
+  designer: string[];
+  icDate: string;
+  details: string;
+  sales: string;
+  image: Blob | File | string | null;
+  gbMonth: boolean;
+  gbLaunch: string;
+  gbEnd: string;
+  shipped: boolean;
+  vendors: VendorType[];
+  loading: boolean;
+  imageUploadProgress: number;
+  imageURL: string;
+  salesImageLoaded: boolean;
+  focused: string;
+};
+
+export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState> {
+  state: DrawerEditState = {
+    id: "",
+    profile: "",
+    colorway: "",
+    designer: [],
+    icDate: "",
+    details: "",
+    sales: "",
+    image: "",
+    gbMonth: false,
+    gbLaunch: "",
+    gbEnd: "",
+    shipped: false,
+    vendors: [],
+    loading: false,
+    imageUploadProgress: 0,
+    imageURL: "",
+    salesImageLoaded: false,
+    focused: "",
   };
-  componentDidUpdate(prevProps) {
+
+  componentDidUpdate(prevProps: DrawerEditProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
         this.setValues();
@@ -868,6 +883,40 @@ export class DrawerEdit extends React.Component {
       }
     }
   }
+
+  setValues = () => {
+    let gbLaunch = "";
+    if (this.props.set.gbLaunch) {
+      if (this.props.set.gbMonth) {
+        const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
+        const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
+        if (twoNumRegExp.test(this.props.set.gbLaunch)) {
+          gbLaunch = this.props.set.gbLaunch.slice(0, -3);
+        } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
+          gbLaunch = this.props.set.gbLaunch.slice(0, -2);
+        } else {
+          gbLaunch = this.props.set.gbLaunch;
+        }
+      } else {
+        gbLaunch = this.props.set.gbLaunch;
+      }
+    }
+    this.setState({
+      ...this.props.set,
+      gbMonth: typeof this.props.set.gbMonth === "boolean" ? this.props.set.gbMonth : false,
+      sales: this.props.set.sales ? this.props.set.sales : "",
+      gbLaunch: gbLaunch,
+      shipped: this.props.set.shipped ? this.props.set.shipped : false,
+      vendors: this.props.set.vendors
+        ? this.props.set.vendors.map((vendor) => {
+            if (!vendor.id) {
+              vendor.id = nanoid();
+            }
+            return vendor;
+          })
+        : [],
+    });
+  };
 
   closeDrawer = () => {
     this.setState({
@@ -887,20 +936,18 @@ export class DrawerEdit extends React.Component {
       loading: false,
       imageUploadProgress: 0,
       imageURL: "",
-      newImage: false,
       focused: "",
     });
     this.props.close();
   };
 
-  setImage = (image) => {
+  setImage = (image: File | Blob | null) => {
     this.setState({
       image: image,
-      newImage: true,
     });
   };
 
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -918,65 +965,65 @@ export class DrawerEdit extends React.Component {
     });
   };
 
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState({
+      this.setState<never>({
         [prop]: [value],
         focused: "",
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [prop]: value,
         focused: "",
       });
     }
   };
 
-  selectVendor = (prop, value) => {
+  selectVendor = (prop: string, value: string) => {
     const property = prop.slice(0, -1);
-    const index = prop.slice(prop.length - 1);
-    let vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property] = value;
+    const index = parseInt(prop.slice(prop.length - 1));
+    const vendorsCopy = [...this.state.vendors];
+    vendorsCopy[index][property as keyof VendorType] = value;
     this.setState({
       vendors: vendorsCopy,
       focused: "",
     });
   };
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     if (e.target.name === "designer") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
       });
     } else if (e.target.name === "shipped") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.checked,
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value,
       });
     }
   };
 
-  handleChangeVendor = (e) => {
-    let vendors = [...this.state.vendors];
+  handleChangeVendor = (e: any) => {
+    const vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field] = e.target.value;
+    vendors[index][field as keyof VendorType] = e.target.value;
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleChangeVendorEndDate = (e) => {
+  handleChangeVendorEndDate = (e: any) => {
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    let vendors = [...this.state.vendors];
+    const vendors = [...this.state.vendors];
     if (e.target.checked) {
-      vendors[index][field] = "";
+      vendors[index][field as keyof VendorType] = "";
     } else {
-      delete vendors[index][field];
+      delete vendors[index][field as keyof VendorType];
     }
     this.setState({
       vendors: vendors,
@@ -995,88 +1042,83 @@ export class DrawerEdit extends React.Component {
     }));
   };
 
-  removeVendor = (index) => {
-    let vendors = [...this.state.vendors];
+  removeVendor = (index: number) => {
+    const vendors = [...this.state.vendors];
     vendors.splice(index, 1);
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleDragVendor = (result) => {
+  handleDragVendor = (result: any) => {
     if (!result.destination) return;
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = [...this.state.vendors];
-    array_move(vendors, result.source.index, result.destination.index);
+    const vendors = [...this.state.vendors];
+    arrayMove(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
     });
   };
 
   uploadImage = () => {
-    this.setState({ loading: true });
-    const storageRef = firebase.storage().ref();
-    const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
-    const imageRef = keysetsRef.child(fileName + ".png");
-    const uploadTask = imageRef.put(this.state.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        this.setState({ imageUploadProgress: progress });
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
-        this.setState({ loading: false });
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
-        imageRef
-          .getDownloadURL()
-          .then(async (downloadURL) => {
-            this.setState({
-              imageURL: downloadURL,
-              loading: false,
-            });
-            this.editEntry();
-            const fileNameRegex = /keysets%2F(.*)\?/;
-            const imageName = this.props.set.image.match(fileNameRegex)[1];
-            const folders = await getStorageFolders();
-            const allImages = folders.map((folder) => `${folder}/${imageName}`);
-            batchStorageDelete(allImages)
-              .then(() => {
-                this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
-              })
-              .catch((error) => {
-                this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
-                console.log(error);
+    if (this.state.image instanceof Blob) {
+      this.setState({ loading: true });
+      const storageRef = firebase.storage().ref();
+      const keysetsRef = storageRef.child("keysets");
+      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+        .utc()
+        .format("YYYYMMDDHHmmSS")}`;
+      const imageRef = keysetsRef.child(fileName + ".png");
+      const uploadTask = imageRef.put(this.state.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ imageUploadProgress: progress });
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          this.setState({ loading: false });
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          imageRef
+            .getDownloadURL()
+            .then(async (downloadURL) => {
+              this.setState({
+                imageURL: downloadURL,
+                loading: false,
               });
-          })
-          .catch((error) => {
-            this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
-            this.setState({
-              loading: false,
+              this.editEntry();
+              const fileNameRegex = /keysets%2F(.*)\?/;
+              const regexMatch = this.props.set.image.match(fileNameRegex);
+              if (regexMatch) {
+                const imageName = regexMatch[1];
+                const folders = await getStorageFolders();
+                const allImages = folders.map((folder) => `${folder}/${imageName}`);
+                batchStorageDelete(allImages)
+                  .then(() => {
+                    this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
+                  })
+                  .catch((error) => {
+                    this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                    console.log(error);
+                  });
+              }
+            })
+            .catch((error) => {
+              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              this.setState({
+                loading: false,
+              });
             });
-          });
-      }
-    );
+        },
+      );
+    }
   };
 
   editEntry = () => {
@@ -1090,7 +1132,7 @@ export class DrawerEdit extends React.Component {
         icDate: this.state.icDate,
         details: this.state.details,
         sales: this.state.sales,
-        image: this.state.newImage ? this.state.imageURL : this.state.image,
+        image: typeof this.state.image === "string" ? this.state.image : this.state.imageURL,
         gbMonth: this.state.gbMonth,
         gbLaunch: this.state.gbLaunch,
         gbEnd: this.state.gbEnd,
@@ -1098,7 +1140,7 @@ export class DrawerEdit extends React.Component {
         vendors: this.state.vendors,
         latestEditor: this.context.user.id,
       })
-      .then((docRef) => {
+      .then(() => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
         this.closeDrawer();
         this.props.getData();
@@ -1108,8 +1150,8 @@ export class DrawerEdit extends React.Component {
       });
   };
 
-  setSalesImageLoaded = (val) => {
-    this.setState({ salesImageLoaded: !!val });
+  setSalesImageLoaded = (val: boolean) => {
+    this.setState({ salesImageLoaded: val });
   };
 
   render() {
@@ -1227,7 +1269,7 @@ export class DrawerEdit extends React.Component {
             onClick={(e) => {
               if (formFilled) {
                 e.preventDefault();
-                if (this.state.newImage) {
+                if (typeof this.state.image !== "string") {
                   this.uploadImage();
                 } else {
                   this.editEntry();
@@ -1353,7 +1395,11 @@ export class DrawerEdit extends React.Component {
               onChange={this.handleChange}
             />
             <ImageUpload
-              image={this.state.newImage ? this.state.image : this.state.image.replace("keysets%2F", "thumbs%2F")}
+              image={
+                typeof this.state.image === "string"
+                  ? this.state.image.replace("keysets%2F", "thumbs%2F")
+                  : this.state.image
+              }
               setImage={this.setImage}
               snackbarQueue={this.props.snackbarQueue}
               desktop
@@ -1398,14 +1444,14 @@ export class DrawerEdit extends React.Component {
                           />
                         ) : null;
                       return (
-                        <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
+                        <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
                           {(provided, snapshot) => (
                             <Card
                               outlined
                               className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={getVendorStyle(provided, snapshot)}
+                              style={getVendorStyle(provided)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
@@ -1425,7 +1471,7 @@ export class DrawerEdit extends React.Component {
                                           <path d="M8 9h8v10H8z" opacity=".3" />
                                           <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                                         </svg>
-                                      </div>
+                                      </div>,
                                     )}
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -1607,26 +1653,3 @@ export class DrawerEdit extends React.Component {
 DrawerEdit.contextType = UserContext;
 
 export default DrawerCreate;
-
-DrawerCreate.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  close: PropTypes.func,
-  getData: PropTypes.func,
-  open: PropTypes.bool,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};
-
-DrawerEdit.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  close: PropTypes.func,
-  getData: PropTypes.func,
-  open: PropTypes.bool,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  set: PropTypes.shape(setTypes()),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};

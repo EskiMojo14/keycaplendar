@@ -1,13 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
-import { formatFileName, iconObject, getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { setTypes, queueTypes } from "../../../util/propTypeTemplates";
+import { formatFileName, iconObject, getStorageFolders, batchStorageDelete, arrayMove } from "../../../util/functions";
+import { QueueType, SetType, VendorType } from "../../../util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -24,7 +23,8 @@ import { Autocomplete } from "../../util/Autocomplete";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
-const getVendorStyle = (provided, snapshot) => {
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+const getVendorStyle = (provided: any, _snapshot: any) => {
   const style = provided.draggableProps.style;
   let transform = style.transform;
   if (style.transform) {
@@ -38,30 +38,59 @@ const getVendorStyle = (provided, snapshot) => {
   };
 };
 
-export class DialogCreate extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      profile: "",
-      colorway: "",
-      designer: [],
-      icDate: "",
-      details: "",
-      sales: "",
-      image: null,
-      gbMonth: true,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-      vendors: [],
-      loading: false,
-      imageUploadProgress: 0,
-      imageURL: "",
-      salesImageLoaded: false,
-      focused: "",
-    };
-  }
-  componentDidUpdate(prevProps) {
+type DialogCreateProps = {
+  allDesigners: string[];
+  allRegions: string[];
+  allVendors: string[];
+  close: () => void;
+  getData: () => void;
+  open: boolean;
+  profiles: string[];
+  snackbarQueue: QueueType;
+};
+
+type DialogCreateState = {
+  profile: string;
+  colorway: string;
+  designer: string[];
+  icDate: string;
+  details: string;
+  sales: string;
+  image: Blob | File | null;
+  gbMonth: boolean;
+  gbLaunch: string;
+  gbEnd: string;
+  shipped: boolean;
+  vendors: VendorType[];
+  loading: boolean;
+  imageUploadProgress: number;
+  imageURL: string;
+  salesImageLoaded: boolean;
+  focused: string;
+};
+
+export class DialogCreate extends React.Component<DialogCreateProps, DialogCreateState> {
+  state: DialogCreateState = {
+    profile: "",
+    colorway: "",
+    designer: [],
+    icDate: "",
+    details: "",
+    sales: "",
+    image: null,
+    gbMonth: true,
+    gbLaunch: "",
+    gbEnd: "",
+    shipped: false,
+    vendors: [],
+    loading: false,
+    imageUploadProgress: 0,
+    imageURL: "",
+    salesImageLoaded: false,
+    focused: "",
+  };
+
+  componentDidUpdate(prevProps: DialogCreateProps) {
     if (this.props.open !== prevProps.open) {
       if (this.context.user.isEditor === false && this.context.user.isDesigner) {
         this.setState({
@@ -70,6 +99,7 @@ export class DialogCreate extends React.Component {
       }
     }
   }
+
   closeDialog = () => {
     this.setState({
       profile: "",
@@ -92,7 +122,7 @@ export class DialogCreate extends React.Component {
     this.props.close();
   };
 
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -104,29 +134,31 @@ export class DialogCreate extends React.Component {
     });
   };
 
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState({
+      this.setState<never>({
         [prop]: [value],
         focused: "",
       });
-    } else {
-      this.setState({
+    } else if (Object.keys(this.state).includes(prop)) {
+      this.setState<never>({
         [prop]: value,
         focused: "",
       });
     }
   };
 
-  selectVendor = (prop, value) => {
-    const property = prop.slice(0, -1);
-    const index = prop.slice(prop.length - 1);
-    let vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property] = value;
-    this.setState({
-      vendors: vendorsCopy,
-      focused: "",
-    });
+  selectVendor = (prop: string, value: string) => {
+    if (this.state.vendors instanceof Array) {
+      const property = prop.slice(0, -1);
+      const index = parseInt(prop.slice(prop.length - 1));
+      const vendorsCopy = [...this.state.vendors];
+      vendorsCopy[index][property as keyof VendorType] = value;
+      this.setState({
+        vendors: vendorsCopy,
+        focused: "",
+      });
+    }
   };
 
   toggleDate = () => {
@@ -135,46 +167,46 @@ export class DialogCreate extends React.Component {
     });
   };
 
-  setImage = (image) => {
+  setImage = (image: Blob | File | null) => {
     this.setState({
       image: image,
     });
   };
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     if (e.target.name === "designer") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
       });
     } else if (e.target.name === "shipped") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.checked,
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value,
       });
     }
   };
 
-  handleChangeVendor = (e) => {
-    let vendors = [...this.state.vendors];
+  handleChangeVendor = (e: any) => {
+    const vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field] = e.target.value;
+    vendors[index][field as keyof VendorType] = e.target.value;
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleChangeVendorEndDate = (e) => {
+  handleChangeVendorEndDate = (e: any) => {
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    let vendors = [...this.state.vendors];
+    const vendors = [...this.state.vendors];
     if (e.target.checked) {
-      vendors[index][field] = "";
+      vendors[index][field as keyof VendorType] = "";
     } else {
-      delete vendors[index][field];
+      delete vendors[index][field as keyof VendorType];
     }
     this.setState({
       vendors: vendors,
@@ -193,76 +225,68 @@ export class DialogCreate extends React.Component {
     }));
   };
 
-  removeVendor = (index) => {
-    let vendors = [...this.state.vendors];
+  removeVendor = (index: number) => {
+    const vendors = [...this.state.vendors];
     vendors.splice(index, 1);
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleDragVendor = (result) => {
+  handleDragVendor = (result: any) => {
     if (!result.destination) return;
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = [...this.state.vendors];
-    array_move(vendors, result.source.index, result.destination.index);
+    const vendors = [...this.state.vendors];
+    arrayMove(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
     });
   };
 
   uploadImage = () => {
-    this.setState({ loading: true });
-    const storageRef = firebase.storage().ref();
-    const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
-    const imageRef = keysetsRef.child(fileName + ".png");
-    const uploadTask = imageRef.put(this.state.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        this.setState({ imageUploadProgress: progress });
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
-        this.setState({ loading: false });
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
-        imageRef
-          .getDownloadURL()
-          .then((downloadURL) => {
-            this.setState({
-              imageURL: downloadURL,
-              loading: false,
+    if (this.state.image instanceof Blob) {
+      this.setState({ loading: true });
+      const storageRef = firebase.storage().ref();
+      const keysetsRef = storageRef.child("keysets");
+      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+        .utc()
+        .format("YYYYMMDDHHmmSS")}`;
+      const imageRef = keysetsRef.child(fileName + ".png");
+      const uploadTask = imageRef.put(this.state.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ imageUploadProgress: progress });
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          this.setState({ loading: false });
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          imageRef
+            .getDownloadURL()
+            .then((downloadURL) => {
+              this.setState({
+                imageURL: downloadURL,
+                loading: false,
+              });
+              this.createEntry();
+            })
+            .catch((error) => {
+              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              this.setState({
+                loading: false,
+              });
             });
-            this.createEntry();
-          })
-          .catch((error) => {
-            this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
-            this.setState({
-              loading: false,
-            });
-          });
-      }
-    );
+        },
+      );
+    }
   };
 
   createEntry = () => {
@@ -295,8 +319,8 @@ export class DialogCreate extends React.Component {
       });
   };
 
-  setSalesImageLoaded = (val) => {
-    this.setState({ salesImageLoaded: !!val });
+  setSalesImageLoaded = (val: boolean) => {
+    this.setState({ salesImageLoaded: val });
   };
 
   render() {
@@ -541,7 +565,12 @@ export class DialogCreate extends React.Component {
               }}
               onChange={this.handleChange}
             />
-            <ImageUpload image={this.state.image} setImage={this.setImage} snackbarQueue={this.props.snackbarQueue} />
+            <ImageUpload
+              image={this.state.image}
+              setImage={this.setImage}
+              snackbarQueue={this.props.snackbarQueue}
+              desktop={false}
+            />
             {dateCard}
             <Checkbox
               label="Shipped"
@@ -582,7 +611,7 @@ export class DialogCreate extends React.Component {
                           />
                         ) : null;
                       return (
-                        <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
+                        <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
                           {(provided, snapshot) => (
                             <Card
                               outlined
@@ -609,7 +638,7 @@ export class DialogCreate extends React.Component {
                                           <path d="M8 9h8v10H8z" opacity=".3" />
                                           <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                                         </svg>
-                                      </div>
+                                      </div>,
                                     )}
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -794,32 +823,53 @@ export class DialogCreate extends React.Component {
 
 DialogCreate.contextType = UserContext;
 
-export class DialogEdit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: "",
-      profile: "",
-      colorway: "",
-      designer: [],
-      icDate: "",
-      details: "",
-      sales: "",
-      image: "",
-      gbMonth: false,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-      vendors: [],
-      loading: false,
-      imageUploadProgress: 0,
-      imageURL: "",
-      newImage: false,
-      salesImageLoaded: false,
-      focused: "",
-    };
-  }
-  componentDidUpdate(prevProps) {
+type DialogEditProps = DialogCreateProps & {
+  set: SetType;
+};
+
+type DialogEditState = {
+  id: string;
+  profile: string;
+  colorway: string;
+  designer: string[];
+  icDate: string;
+  details: string;
+  sales: string;
+  image: Blob | File | string | null;
+  gbMonth: boolean;
+  gbLaunch: string;
+  gbEnd: string;
+  shipped: boolean;
+  vendors: VendorType[];
+  loading: boolean;
+  imageUploadProgress: number;
+  imageURL: string;
+  salesImageLoaded: boolean;
+  focused: string;
+};
+
+export class DialogEdit extends React.Component<DialogEditProps, DialogEditState> {
+  state: DialogEditState = {
+    id: "",
+    profile: "",
+    colorway: "",
+    designer: [],
+    icDate: "",
+    details: "",
+    sales: "",
+    image: "",
+    gbMonth: false,
+    gbLaunch: "",
+    gbEnd: "",
+    shipped: false,
+    vendors: [],
+    loading: false,
+    imageUploadProgress: 0,
+    imageURL: "",
+    salesImageLoaded: false,
+    focused: "",
+  };
+  componentDidUpdate(prevProps: DialogEditProps) {
     if (this.props.open !== prevProps.open && this.props.open) {
       this.setValues();
     }
@@ -842,13 +892,12 @@ export class DialogEdit extends React.Component {
       loading: false,
       imageUploadProgress: 0,
       imageURL: "",
-      newImage: false,
       focused: "",
     });
     this.props.close();
   };
 
-  handleFocus = (e) => {
+  handleFocus = (e: any) => {
     this.setState({
       focused: e.target.name,
     });
@@ -860,25 +909,25 @@ export class DialogEdit extends React.Component {
     });
   };
 
-  selectValue = (prop, value) => {
+  selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState({
+      this.setState<never>({
         [prop]: [value],
         focused: "",
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [prop]: value,
         focused: "",
       });
     }
   };
 
-  selectVendor = (prop, value) => {
+  selectVendor = (prop: string, value: string) => {
     const property = prop.slice(0, -1);
-    const index = prop.slice(prop.length - 1);
-    let vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property] = value;
+    const index = parseInt(prop.slice(prop.length - 1));
+    const vendorsCopy = [...this.state.vendors];
+    vendorsCopy[index][property as keyof VendorType] = value;
     this.setState({
       vendors: vendorsCopy,
       focused: "",
@@ -887,74 +936,78 @@ export class DialogEdit extends React.Component {
 
   setValues = () => {
     let gbLaunch = "";
-    if (this.props.set.gbMonth) {
-      const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
-      const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
-      if (twoNumRegExp.test(this.props.set.gbLaunch)) {
-        gbLaunch = this.props.set.gbLaunch.slice(0, -3);
-      } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
-        gbLaunch = this.props.set.gbLaunch.slice(0, -2);
+    if (this.props.set.gbLaunch) {
+      if (this.props.set.gbMonth) {
+        const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
+        const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
+        if (twoNumRegExp.test(this.props.set.gbLaunch)) {
+          gbLaunch = this.props.set.gbLaunch.slice(0, -3);
+        } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
+          gbLaunch = this.props.set.gbLaunch.slice(0, -2);
+        } else {
+          gbLaunch = this.props.set.gbLaunch;
+        }
       } else {
         gbLaunch = this.props.set.gbLaunch;
       }
-    } else {
-      gbLaunch = this.props.set.gbLaunch;
     }
     this.setState({
       ...this.props.set,
+      gbMonth: typeof this.props.set.gbMonth === "boolean" ? this.props.set.gbMonth : false,
       sales: this.props.set.sales ? this.props.set.sales : "",
       gbLaunch: gbLaunch,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
-      vendors: this.props.set.vendors.map((vendor) => {
-        if (!vendor.id) {
-          vendor.id = nanoid();
-        }
-        return vendor;
-      }),
+      vendors: this.props.set.vendors
+        ? this.props.set.vendors.map((vendor) => {
+            if (!vendor.id) {
+              vendor.id = nanoid();
+            }
+            return vendor;
+          })
+        : [],
     });
   };
 
-  setImage = (image) => {
+  setImage = (image: File | Blob | null) => {
     this.setState({
       image: image,
-      newImage: true,
     });
   };
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     if (e.target.name === "designer") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
       });
     } else if (e.target.name === "shipped") {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.checked,
       });
     } else {
-      this.setState({
+      this.setState<never>({
         [e.target.name]: e.target.value,
       });
     }
   };
 
-  handleChangeVendor = (e) => {
-    let vendors = [...this.state.vendors];
+  handleChangeVendor = (e: any) => {
+    const vendors = [...this.state.vendors];
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field] = e.target.value;
+    vendors[index][field as keyof VendorType] = e.target.value;
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleChangeVendorEndDate = (e) => {
+  handleChangeVendorEndDate = (e: any) => {
     const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    let vendors = [...this.state.vendors];
+    const vendors = [...this.state.vendors];
     if (e.target.checked) {
-      vendors[index][field] = "";
+      vendors[index][field as keyof VendorType] = "";
     } else {
-      delete vendors[index][field];
+      delete vendors[index][field as keyof VendorType];
     }
     this.setState({
       vendors: vendors,
@@ -979,88 +1032,83 @@ export class DialogEdit extends React.Component {
     }));
   };
 
-  removeVendor = (index) => {
-    let vendors = [...this.state.vendors];
+  removeVendor = (index: number) => {
+    const vendors = [...this.state.vendors];
     vendors.splice(index, 1);
     this.setState({
       vendors: vendors,
     });
   };
 
-  handleDragVendor = (result) => {
+  handleDragVendor = (result: any) => {
     if (!result.destination) return;
-    function array_move(arr, old_index, new_index) {
-      if (new_index >= arr.length) {
-        var k = new_index - arr.length + 1;
-        while (k--) {
-          arr.push(undefined);
-        }
-      }
-      arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      return arr; // for testing
-    }
-    let vendors = [...this.state.vendors];
-    array_move(vendors, result.source.index, result.destination.index);
+    const vendors = [...this.state.vendors];
+    arrayMove(vendors, result.source.index, result.destination.index);
     this.setState({
       vendors: vendors,
     });
   };
 
   uploadImage = () => {
-    this.setState({ loading: true });
-    const storageRef = firebase.storage().ref();
-    const keysetsRef = storageRef.child("keysets");
-    const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
-      .utc()
-      .format("YYYYMMDDHHmmSS")}`;
-    const imageRef = keysetsRef.child(fileName + ".png");
-    const uploadTask = imageRef.put(this.state.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        this.setState({ imageUploadProgress: progress });
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
-        this.setState({ loading: false });
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
-        imageRef
-          .getDownloadURL()
-          .then(async (downloadURL) => {
-            this.setState({
-              imageURL: downloadURL,
-              loading: false,
-            });
-            this.editEntry();
-            const fileNameRegex = /keysets%2F(.*)\?/;
-            const imageName = this.props.set.image.match(fileNameRegex)[1];
-            const folders = await getStorageFolders();
-            const allImages = folders.map((folder) => `${folder}/${imageName}`);
-            batchStorageDelete(allImages)
-              .then(() => {
-                this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
-              })
-              .catch((error) => {
-                this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
-                console.log(error);
+    if (this.state.image instanceof Blob) {
+      this.setState({ loading: true });
+      const storageRef = firebase.storage().ref();
+      const keysetsRef = storageRef.child("keysets");
+      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+        .utc()
+        .format("YYYYMMDDHHmmSS")}`;
+      const imageRef = keysetsRef.child(fileName + ".png");
+      const uploadTask = imageRef.put(this.state.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({ imageUploadProgress: progress });
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          this.setState({ loading: false });
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          imageRef
+            .getDownloadURL()
+            .then(async (downloadURL) => {
+              this.setState({
+                imageURL: downloadURL,
+                loading: false,
               });
-          })
-          .catch((error) => {
-            this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
-            this.setState({
-              loading: false,
+              this.editEntry();
+              const fileNameRegex = /keysets%2F(.*)\?/;
+              const regexMatch = this.props.set.image.match(fileNameRegex);
+              if (regexMatch) {
+                const imageName = regexMatch[1];
+                const folders = await getStorageFolders();
+                const allImages = folders.map((folder) => `${folder}/${imageName}`);
+                batchStorageDelete(allImages)
+                  .then(() => {
+                    this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
+                  })
+                  .catch((error) => {
+                    this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                    console.log(error);
+                  });
+              }
+            })
+            .catch((error) => {
+              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              this.setState({
+                loading: false,
+              });
             });
-          });
-      }
-    );
+        },
+      );
+    }
   };
 
   editEntry = () => {
@@ -1074,7 +1122,7 @@ export class DialogEdit extends React.Component {
         icDate: this.state.icDate,
         details: this.state.details,
         sales: this.state.sales,
-        image: this.state.newImage ? this.state.imageURL : this.state.image,
+        image: typeof this.state.image === "string" ? this.state.image : this.state.imageURL,
         gbMonth: this.state.gbMonth,
         gbLaunch: this.state.gbLaunch,
         gbEnd: this.state.gbEnd,
@@ -1082,7 +1130,7 @@ export class DialogEdit extends React.Component {
         vendors: this.state.vendors,
         latestEditor: this.context.user.id,
       })
-      .then((docRef) => {
+      .then(() => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
         this.closeDialog();
         this.props.getData();
@@ -1092,8 +1140,8 @@ export class DialogEdit extends React.Component {
       });
   };
 
-  setSalesImageLoaded = (val) => {
-    this.setState({ salesImageLoaded: !!val });
+  setSalesImageLoaded = (val: boolean) => {
+    this.setState({ salesImageLoaded: val });
   };
 
   render() {
@@ -1214,7 +1262,7 @@ export class DialogEdit extends React.Component {
                 onClick={(e) => {
                   e.preventDefault();
                   if (formFilled) {
-                    if (this.state.newImage) {
+                    if (typeof this.state.image !== "string") {
                       this.uploadImage();
                     } else {
                       this.editEntry();
@@ -1344,9 +1392,14 @@ export class DialogEdit extends React.Component {
                 onChange={this.handleChange}
               />
               <ImageUpload
-                image={this.state.newImage ? this.state.image : this.state.image.replace("keysets%2F", "thumbs%2F")}
+                image={
+                  typeof this.state.image !== "string"
+                    ? this.state.image
+                    : this.state.image.replace("keysets%2F", "thumbs%2F")
+                }
                 setImage={this.setImage}
                 snackbarQueue={this.props.snackbarQueue}
+                desktop={false}
               />
               {dateCard}
               <Checkbox
@@ -1388,7 +1441,11 @@ export class DialogEdit extends React.Component {
                             />
                           ) : null;
                         return (
-                          <Draggable key={vendor.id} draggableId={vendor.id} index={index}>
+                          <Draggable
+                            key={vendor.id}
+                            draggableId={vendor.id ? vendor.id : index.toString()}
+                            index={index}
+                          >
                             {(provided, snapshot) => (
                               <Card
                                 outlined
@@ -1415,7 +1472,7 @@ export class DialogEdit extends React.Component {
                                             <path d="M8 9h8v10H8z" opacity=".3" />
                                             <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                                           </svg>
-                                        </div>
+                                        </div>,
                                       )}
                                       onClick={(e) => {
                                         e.preventDefault();
@@ -1602,26 +1659,3 @@ export class DialogEdit extends React.Component {
 DialogEdit.contextType = UserContext;
 
 export default DialogCreate;
-
-DialogCreate.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  close: PropTypes.func,
-  getData: PropTypes.func,
-  open: PropTypes.bool,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};
-
-DialogEdit.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  close: PropTypes.func,
-  getData: PropTypes.func,
-  open: PropTypes.bool,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  set: PropTypes.shape(setTypes()),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};

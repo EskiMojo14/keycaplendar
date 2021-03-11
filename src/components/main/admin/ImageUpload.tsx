@@ -1,29 +1,41 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
-import { queueTypes } from "../../../util/propTypeTemplates";
+import { QueueType } from "../../../util/types";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import "./ImageUpload.scss";
 
-export class ImageUpload extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      imageBase64: "",
-      imageLink: "",
-      imageFromURL: true,
-      dragOver: false,
-      loading: false,
-      hasImage: false,
-    };
-  }
-  componentDidUpdate(prevProps) {
+type ImageUploadProps = {
+  desktop: boolean;
+  image: Blob | File | string | null;
+  setImage: (image: Blob | File | null) => void;
+  snackbarQueue: QueueType;
+};
+
+type ImageUploadState = {
+  imageBase64: string;
+  imageLink: string;
+  imageFromURL: boolean;
+  dragOver: boolean;
+  loading: boolean;
+  hasImage: boolean;
+};
+
+export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState> {
+  state = {
+    imageBase64: "",
+    imageLink: "",
+    imageFromURL: true,
+    dragOver: false,
+    loading: false,
+    hasImage: false,
+  };
+  componentDidUpdate(prevProps: ImageUploadProps) {
     if (this.props.image !== prevProps.image) {
       if (this.props.image) {
-        if (typeof this.props.image === "string" || this.props.image instanceof String) {
+        if (typeof this.props.image === "string") {
           this.setState({
             imageBase64: this.props.image,
             hasImage: true,
@@ -44,20 +56,20 @@ export class ImageUpload extends React.Component {
     }
   }
 
-  previewImage = (image) => {
-    let reader = new FileReader();
+  previewImage = (image: Blob | File) => {
+    const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onloadend = () => {
       this.setState({
-        imageBase64: reader.result,
+        imageBase64: reader.result as string,
         hasImage: true,
         loading: false,
       });
     };
   };
 
-  handleChange = (e) => {
-    this.setState({
+  handleChange = (e: any) => {
+    this.setState<never>({
       [e.target.name]: e.target.value,
     });
     const regex = RegExp("https?://.+.(?:jpg|jpeg|png)");
@@ -66,9 +78,9 @@ export class ImageUpload extends React.Component {
     }
   };
 
-  getImageFromURL = (url) => {
+  getImageFromURL = (url: string) => {
     this.setState({ loading: true });
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
 
     xhr.responseType = "blob";
@@ -80,29 +92,29 @@ export class ImageUpload extends React.Component {
     xhr.send();
   };
 
-  dragEnter = (e) => {
+  dragEnter = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ dragOver: true });
   };
 
-  dragLeave = (e) => {
+  dragLeave = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ dragOver: false });
   };
 
-  dragOver = (e) => {
+  dragOver = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  onDrop = (e) => {
+  onDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ loading: true });
-    let dt = e.dataTransfer;
-    let file = dt.files[0];
+    const dt = e.dataTransfer;
+    const file = dt.files[0];
     if (!file.type.includes("image")) {
       this.props.snackbarQueue.notify({ title: "Error: file is not an image." });
       this.setState({ dragOver: false, loading: false });
@@ -112,11 +124,11 @@ export class ImageUpload extends React.Component {
     }
   };
 
-  fileChange = (e) => {
+  fileChange = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ loading: true });
-    let file = e.target.files[0];
+    const file = e.target.files[0];
     this.props.setImage(file);
     this.setState({ dragOver: false });
   };
@@ -133,43 +145,45 @@ export class ImageUpload extends React.Component {
   };
 
   componentDidMount() {
-    let dropArea = document.getElementById("drop-area");
-    dropArea.addEventListener(
-      "dragenter",
-      (e) => {
-        if (!this.state.imageFromURL) {
-          this.dragEnter(e);
-        }
-      },
-      false
-    );
-    dropArea.addEventListener(
-      "dragleave",
-      (e) => {
-        if (!this.state.imageFromURL) {
-          this.dragLeave(e);
-        }
-      },
-      false
-    );
-    dropArea.addEventListener(
-      "dragover",
-      (e) => {
-        if (!this.state.imageFromURL) {
-          this.dragOver(e);
-        }
-      },
-      false
-    );
-    dropArea.addEventListener(
-      "drop",
-      (e) => {
-        if (!this.state.imageFromURL) {
-          this.onDrop(e);
-        }
-      },
-      false
-    );
+    const dropArea = document.getElementById("drop-area");
+    if (dropArea) {
+      dropArea.addEventListener(
+        "dragenter",
+        (e) => {
+          if (!this.state.imageFromURL) {
+            this.dragEnter(e);
+          }
+        },
+        false,
+      );
+      dropArea.addEventListener(
+        "dragleave",
+        (e) => {
+          if (!this.state.imageFromURL) {
+            this.dragLeave(e);
+          }
+        },
+        false,
+      );
+      dropArea.addEventListener(
+        "dragover",
+        (e) => {
+          if (!this.state.imageFromURL) {
+            this.dragOver(e);
+          }
+        },
+        false,
+      );
+      dropArea.addEventListener(
+        "drop",
+        (e) => {
+          if (!this.state.imageFromURL) {
+            this.onDrop(e);
+          }
+        },
+        false,
+      );
+    }
   }
   render() {
     const imageTextField = this.state.imageFromURL ? (
@@ -253,10 +267,3 @@ export class ImageUpload extends React.Component {
 }
 
 export default ImageUpload;
-
-ImageUpload.propTypes = {
-  desktop: PropTypes.bool,
-  image: PropTypes.oneOfType([PropTypes.instanceOf(Blob), PropTypes.string]),
-  setImage: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-};
