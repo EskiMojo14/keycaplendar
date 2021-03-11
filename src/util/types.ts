@@ -1,14 +1,24 @@
 import React from "react";
+import { whitelistShipped } from "./constants";
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
 export type WhitelistType = {
+  profiles: string[];
+  shipped: typeof whitelistShipped;
+  vendorMode: "include" | "exclude";
+  vendors: string[];
+};
+
+export type MainWhitelistType = WhitelistType & {
   favorites: boolean;
   hidden: boolean;
-  profiles: string[];
-  shipped: string[];
-  vendorMode: string;
-  vendors: string[];
+};
+
+export type PresetType = {
+  name: string;
+  id: string;
+  whitelist: MainWhitelistType;
 };
 
 export type CurrentUserType = {
@@ -32,12 +42,20 @@ export type UserType = {
   photoURL: string;
 };
 
+export type VendorType = {
+  id?: string;
+  name: string;
+  region: string;
+  storeLink?: string;
+  endDate?: string;
+};
+
 export type SetType = {
   colorway: string;
   designer: string[];
   details: string;
-  gbEnd?: string;
-  gbLaunch?: string;
+  gbEnd: string;
+  gbLaunch: string;
   gbMonth?: boolean;
   icDate: string;
   id: string;
@@ -45,13 +63,7 @@ export type SetType = {
   profile: string;
   sales?: string;
   shipped?: boolean;
-  vendors?: {
-    id?: string;
-    name: string;
-    region: string;
-    storeLink?: string;
-    endDate?: string;
-  }[];
+  vendors?: VendorType[];
 };
 
 export type StatisticsType = {
@@ -88,12 +100,6 @@ export type ActionType = {
     email: string;
     nickname?: string;
   };
-};
-
-export type PresetType = {
-  name: string;
-  id: string;
-  whitelist: WhitelistType;
 };
 
 export type ImageType = {

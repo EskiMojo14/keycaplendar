@@ -1,17 +1,17 @@
 import { nanoid } from "nanoid";
-import { WhitelistType } from "./types";
+import { MainWhitelistType } from "./types";
 
 export class Preset {
   name: string;
   id: string;
-  whitelist: WhitelistType;
+  whitelist: MainWhitelistType;
   constructor(
     name = "",
     favorites = false,
     hidden = false,
     profiles = [],
     shipped = [],
-    vendorMode = "",
+    vendorMode = "exclude",
     vendors = [],
     id = nanoid(),
   ) {
@@ -22,7 +22,7 @@ export class Preset {
       hidden: hidden,
       profiles: profiles,
       shipped: shipped,
-      vendorMode: vendorMode,
+      vendorMode: vendorMode as "exclude" | "include",
       vendors: vendors,
     };
   }

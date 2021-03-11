@@ -1,42 +1,55 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { whitelistTypes, queueTypes } from "../../util/propTypeTemplates";
 import { whitelistShipped } from "../../util/constants";
 import { addOrRemove } from "../../util/functions";
+import { QueueType, WhitelistType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 
-export const DrawerFilterStatistics = (props) => {
+type DrawerFilterStatisticsProps = {
+  close: () => void;
+  open: boolean;
+  profiles: string[];
+  setWhitelist: (prop: string, whitelist: any) => void;
+  snackbarQueue: QueueType;
+  vendors: string[];
+  whitelist: WhitelistType;
+};
+
+type checkAllType = "profiles" | "vendors" | "shipped";
+
+export const DrawerFilterStatistics = (props: DrawerFilterStatisticsProps) => {
   const whitelist = props.whitelist;
-  const handleChange = (name, prop) => {
-    const original = whitelist[prop];
-    const edited = addOrRemove(original, name).sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
-    setWhitelist(prop, edited);
+  const handleChange = (name: string, prop: string) => {
+    const original = whitelist[prop as keyof WhitelistType];
+    if (original instanceof Array) {
+      const edited: string[] = addOrRemove(original, name).sort(function (a, b) {
+        const x = a.toLowerCase();
+        const y = b.toLowerCase();
+        if (x < y) {
+          return -1;
+        }
+        if (x > y) {
+          return 1;
+        }
+        return 0;
+      });
+      setWhitelist(prop, edited);
+    }
   };
 
-  const setWhitelist = (prop, whitelist) => {
+  const setWhitelist = (prop: string, whitelist: any) => {
     props.setWhitelist(prop, whitelist);
   };
 
-  const checkAll = (prop) => {
+  const checkAll = (prop: checkAllType) => {
     const array = prop === "shipped" ? whitelistShipped : props[prop];
     setWhitelist(prop, array);
   };
 
-  const uncheckAll = (prop) => {
+  const uncheckAll = (prop: checkAllType) => {
     setWhitelist(prop, []);
   };
   return (
@@ -171,13 +184,3 @@ export const DrawerFilterStatistics = (props) => {
 };
 
 export default DrawerFilterStatistics;
-
-DrawerFilterStatistics.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  setWhitelist: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-  vendors: PropTypes.arrayOf(PropTypes.string),
-  whitelist: PropTypes.shape(whitelistTypes),
-};

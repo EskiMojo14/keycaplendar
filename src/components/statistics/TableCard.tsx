@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
@@ -18,7 +17,7 @@ import {
 } from "@rmwc/data-table";
 import "./TableCard.scss";
 
-const customPoint = (data) => {
+const customPoint = (data: any) => {
   if (data.type === "point") {
     const circle = new Chartist.Svg(
       "circle",
@@ -29,15 +28,29 @@ const customPoint = (data) => {
         "ct:value": data.value.y,
         "ct:meta": data.meta,
       },
-      "ct-stroked-point"
+      "ct-stroked-point",
     );
     data.element.replace(circle);
   }
 };
 
-const listener = { draw: (e) => customPoint(e) };
+const listener = { draw: (e: any) => customPoint(e) };
 
-export const TableCard = (props) => {
+type TableCardProps = {
+  data: {
+    chartData: number[][];
+    mean: number;
+    median: number;
+    mode: number[];
+    name: string;
+    range: string;
+    standardDev: number;
+    total: number;
+  };
+  unit: string;
+};
+
+export const TableCard = (props: TableCardProps) => {
   return (
     <Card className={classNames("table-card", { "full-span": props.data.name === "All" })}>
       <Typography use="headline5" tag="h1">
@@ -49,6 +62,7 @@ export const TableCard = (props) => {
       <div className="content-container">
         <div className="chart-container">
           <ChartistGraph
+            type="Line"
             className={classNames("ct-double-octave", {
               "min-width": props.data.name === "All",
             })}
@@ -65,7 +79,7 @@ export const TableCard = (props) => {
                 left: 16,
               },
               axisX: {
-                labelInterpolationFnc: (value, index) => {
+                labelInterpolationFnc: (value: number, index: number) => {
                   return props.data.chartData[0].length >= 16
                     ? index % (props.data.chartData[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
                       ? value
@@ -101,7 +115,6 @@ export const TableCard = (props) => {
               ],
             }}
             listener={listener}
-            type="Line"
           />
         </div>
         <div className="table-container">
@@ -146,17 +159,3 @@ export const TableCard = (props) => {
 };
 
 export default TableCard;
-
-TableCard.propTypes = {
-  data: PropTypes.shape({
-    chartData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
-    mean: PropTypes.number,
-    median: PropTypes.number,
-    mode: PropTypes.arrayOf(PropTypes.number),
-    name: PropTypes.string,
-    range: PropTypes.string,
-    standardDev: PropTypes.number,
-    total: PropTypes.number,
-  }),
-  unit: PropTypes.string,
-};

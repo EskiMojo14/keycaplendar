@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import { Card } from "@rmwc/card";
@@ -15,7 +14,18 @@ import {
 } from "@rmwc/data-table";
 import "./PieCard.scss";
 
-export const StatusCard = (props) => {
+type StatusCardProps = {
+  data: {
+    ic: number;
+    liveGb: number;
+    name: string;
+    postGb: number;
+    preGb: number;
+    total: number;
+  };
+};
+
+export const StatusCard = (props: StatusCardProps) => {
   return (
     <Card className="pie-card">
       <Typography use="headline5" tag="h1">
@@ -86,7 +96,16 @@ export const StatusCard = (props) => {
   );
 };
 
-export const ShippedCard = (props) => {
+type ShippedCardProps = {
+  data: {
+    name: string;
+    shipped: number;
+    total: number;
+    unshipped: number;
+  };
+};
+
+export const ShippedCard = (props: ShippedCardProps) => {
   return (
     <Card className="pie-card">
       <Typography use="headline5" tag="h1">
@@ -141,24 +160,4 @@ export const ShippedCard = (props) => {
       </div>
     </Card>
   );
-};
-
-StatusCard.propTypes = {
-  data: PropTypes.shape({
-    ic: PropTypes.number,
-    liveGb: PropTypes.number,
-    name: PropTypes.string,
-    postGb: PropTypes.number,
-    preGb: PropTypes.number,
-    total: PropTypes.number,
-  }),
-};
-
-ShippedCard.propTypes = {
-  data: PropTypes.shape({
-    name: PropTypes.string,
-    shipped: PropTypes.number,
-    total: PropTypes.number,
-    unshipped: PropTypes.number,
-  }),
 };

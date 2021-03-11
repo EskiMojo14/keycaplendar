@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { statisticsTypes } from "../../util/propTypeTemplates";
 import { camelise } from "../../util/functions";
+import { StatisticsType } from "../../util/types";
 import {
   DataTable,
   DataTableContent,
@@ -12,12 +11,25 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { Ripple } from "@rmwc/ripple";
-
 import "./TimelineTable.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
-export const TimelineTable = (props) => {
+type TimelineTableProps = {
+  monthData: {
+    gbLaunch: { [key: string]: { [key: string]: string | number } };
+    icDate: { [key: string]: { [key: string]: string | number } };
+  };
+  months: {
+    gbLaunch: string[];
+    icDate: string[];
+  };
+  profiles: string[];
+  setFocus: (id: string) => void;
+  statistics: StatisticsType;
+};
+
+export const TimelineTable = (props: TimelineTableProps) => {
   return (
     <DataTable className="timeline-table">
       <DataTableContent>
@@ -47,17 +59,21 @@ export const TimelineTable = (props) => {
           </DataTableRow>
         </DataTableHead>
         <DataTableBody>
-          {props.months[props.statistics.timeline].map((month) => {
+          {props.months[props.statistics.timeline as keyof typeof props.months].map((month) => {
             return (
               <DataTableRow key={month}>
                 <DataTableCell className="right-border">{month}</DataTableCell>
                 <DataTableCell className="right-border" isNumeric>
-                  {props.monthData[props.statistics.timeline][month].count}
+                  {props.monthData[props.statistics.timeline as keyof typeof props.monthData][month].count}
                 </DataTableCell>
                 {props.profiles.map((profile, index) => {
                   return (
                     <DataTableCell isNumeric key={profile} className={"cell-" + letters[index]}>
-                      {props.monthData[props.statistics.timeline][month][camelise(profile)]}
+                      {
+                        props.monthData[props.statistics.timeline as keyof typeof props.monthData][month][
+                          camelise(profile)
+                        ]
+                      }
                     </DataTableCell>
                   );
                 })}
@@ -71,17 +87,3 @@ export const TimelineTable = (props) => {
 };
 
 export default TimelineTable;
-
-TimelineTable.propTypes = {
-  monthData: PropTypes.shape({
-    gbLaunch: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
-    icDate: PropTypes.objectOf(PropTypes.objectOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))),
-  }),
-  months: PropTypes.shape({
-    gbLaunch: PropTypes.arrayOf(PropTypes.string),
-    icDate: PropTypes.arrayOf(PropTypes.string),
-  }),
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  setFocus: PropTypes.func,
-  statistics: PropTypes.shape(statisticsTypes),
-};

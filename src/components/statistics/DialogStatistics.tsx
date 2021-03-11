@@ -1,40 +1,49 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { statisticsTypes } from "../../util/propTypeTemplates";
+import { StatisticsType } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import "./DialogStatistics.scss";
 
-export class DialogStatistics extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      statistics: "profile",
-    };
-  }
-  componentDidUpdate(prevProps) {
+type DialogStatisticsProps = {
+  onClose: () => void;
+  open: boolean;
+  setStatistics: (prop: string, query: string) => void;
+  statistics: StatisticsType;
+  statisticsTab: string;
+};
+
+type DialogStatisticsState = {
+  statistics: string;
+};
+
+export class DialogStatistics extends React.Component<DialogStatisticsProps, DialogStatisticsState> {
+  state = {
+    statistics: "profile",
+  };
+  componentDidUpdate(prevProps: DialogStatisticsProps) {
     if (this.props.open !== prevProps.open && this.props.open === true) {
       this.setState({
         statistics: this.props.statistics[
-          this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab
+          (this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab) as keyof StatisticsType
         ],
       });
     }
   }
-  handleChange = (stats) => {
+  handleChange = (stats: string) => {
     this.setState({
       statistics: stats,
     });
   };
   setStatistics = () => {
     if (
-      this.props.statistics[this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab] !==
-      this.state.statistics
+      this.props.statistics[
+        (this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab) as keyof StatisticsType
+      ] !== this.state.statistics
     ) {
       this.props.setStatistics(
         this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab,
-        this.state.statistics
+        this.state.statistics,
       );
     }
   };
@@ -57,7 +66,7 @@ export class DialogStatistics extends React.Component {
             >
               Profile
               <ListItemMeta>
-                <Radio tabIndex="-1" checked={this.state.statistics === "profile"} readOnly />
+                <Radio tabIndex={-1} checked={this.state.statistics === "profile"} readOnly />
               </ListItemMeta>
             </ListItem>
             <ListItem
@@ -67,7 +76,7 @@ export class DialogStatistics extends React.Component {
             >
               Designer
               <ListItemMeta>
-                <Radio tabIndex="-1" checked={this.state.statistics === "designer"} readOnly />
+                <Radio tabIndex={-1} checked={this.state.statistics === "designer"} readOnly />
               </ListItemMeta>
             </ListItem>
             <ListItem
@@ -77,7 +86,7 @@ export class DialogStatistics extends React.Component {
             >
               Vendor
               <ListItemMeta>
-                <Radio tabIndex="-1" checked={this.state.statistics === "vendor"} readOnly />
+                <Radio tabIndex={-1} checked={this.state.statistics === "vendor"} readOnly />
               </ListItemMeta>
             </ListItem>
           </List>
@@ -94,11 +103,3 @@ export class DialogStatistics extends React.Component {
 }
 
 export default DialogStatistics;
-
-DialogStatistics.propTypes = {
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-  setStatistics: PropTypes.func,
-  statistics: PropTypes.shape(statisticsTypes),
-  statisticsTab: PropTypes.string,
-};

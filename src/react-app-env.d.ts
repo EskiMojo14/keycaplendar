@@ -1,4 +1,7 @@
 /// <reference types="react-scripts" />
+
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 declare module "react-lazy-load" {
   import { FC, ReactNode } from "react";
 
@@ -32,7 +35,7 @@ declare module "react-twemoji" {
   type Props = {
     children?: ReactNode;
     noWrapper?: boolean;
-    options?: {};
+    options?: Record<string, unknown>;
     tag?: string;
   };
 
@@ -40,3 +43,7 @@ declare module "react-twemoji" {
 
   export default Twemoji;
 }
+
+declare module "chartist-plugin-axistitle";
+declare module "chartist-plugin-tooltips-updated";
+declare module "react-chartist";
