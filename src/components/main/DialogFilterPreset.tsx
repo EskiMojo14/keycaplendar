@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { UserContext } from "../../util/contexts";
-import { presetTypes } from "../../util/propTypeTemplates";
+import { PresetType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -12,21 +11,29 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import "./DialogFilterPreset.scss";
 
-export class DialogFilterPreset extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      new: true,
-    };
-  }
-  componentDidUpdate = (prevProps) => {
+type DialogFilterPresetProps = {
+  close: () => void;
+  open: boolean;
+  preset: PresetType;
+};
+
+type DialogFilterPresetState = {
+  name: string;
+  new: boolean;
+};
+
+export class DialogFilterPreset extends React.Component<DialogFilterPresetProps, DialogFilterPresetState> {
+  state: DialogFilterPresetState = {
+    name: "",
+    new: true,
+  };
+  componentDidUpdate = (prevProps: DialogFilterPresetProps) => {
     if (this.props.preset.name !== prevProps.preset.name) {
       this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
   };
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange = (e: any) => {
+    this.setState<never>({ [e.target.name]: e.target.value });
   };
   savePreset = () => {
     if (this.state.name) {
@@ -133,11 +140,5 @@ export class DialogFilterPreset extends React.Component {
 }
 
 DialogFilterPreset.contextType = UserContext;
-
-DialogFilterPreset.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  preset: PropTypes.shape(presetTypes),
-};
 
 export default DialogFilterPreset;

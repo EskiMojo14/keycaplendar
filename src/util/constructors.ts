@@ -9,10 +9,10 @@ export class Preset {
     name = "",
     favorites = false,
     hidden = false,
-    profiles = [],
-    shipped = [],
+    profiles: string[] = [],
+    shipped: string[] = [],
     vendorMode = "exclude",
-    vendors = [],
+    vendors: string[] = [],
     id = nanoid(),
   ) {
     this.name = name;

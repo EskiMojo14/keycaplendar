@@ -6,7 +6,7 @@ const storage = firebase.storage();
 
 const storageRef = storage.ref();
 
-export const addOrRemove = (oldArray: any[], value: any) => {
+export function addOrRemove<T>(oldArray: T[], value: T): T[] {
   const array: any[] = [...oldArray];
   const index: number = array.indexOf(value);
 
@@ -16,7 +16,7 @@ export const addOrRemove = (oldArray: any[], value: any) => {
     array.splice(index, 1);
   }
   return array;
-};
+}
 
 export const capitalise = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);

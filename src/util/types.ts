@@ -15,6 +15,10 @@ export type MainWhitelistType = WhitelistType & {
   hidden: boolean;
 };
 
+export type AppWhitelistType = MainWhitelistType & {
+  edited: string[];
+};
+
 export type PresetType = {
   name: string;
   id: string;

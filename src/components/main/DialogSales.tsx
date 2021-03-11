@@ -1,13 +1,18 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { setTypes } from "../../util/propTypeTemplates";
+import { SetType } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogSales.scss";
 
-export const DialogSales = (props) => {
+type DialogSalesProps = {
+  close: () => void;
+  open: boolean;
+  set: SetType;
+};
+
+export const DialogSales = (props: DialogSalesProps) => {
   return (
     <Dialog className="sales-dialog" open={props.open} onClose={props.close}>
-      <DialogTitle>Sales - {`${props.set.profile} ${props.set.colorway}`}</DialogTitle>
+      <DialogTitle>{`Sales - ${props.set.profile} ${props.set.colorway}`}</DialogTitle>
       <DialogContent>
         <div className="sales-image">
           <img alt="Sales graph" src={props.set.sales} />
@@ -23,9 +28,3 @@ export const DialogSales = (props) => {
 };
 
 export default DialogSales;
-
-DialogSales.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  set: PropTypes.shape(setTypes()),
-};

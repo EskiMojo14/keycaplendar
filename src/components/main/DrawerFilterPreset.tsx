@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { UserContext } from "../../util/contexts";
-import { presetTypes } from "../../util/propTypeTemplates";
+import { PresetType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -11,21 +10,29 @@ import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilterPreset.scss";
 
-export class DrawerFilterPreset extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      new: true,
-    };
-  }
-  componentDidUpdate = (prevProps) => {
+type DrawerFilterPresetProps = {
+  close: () => void;
+  open: boolean;
+  preset: PresetType;
+};
+
+type DrawerFilterPresetState = {
+  name: string;
+  new: boolean;
+};
+
+export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps, DrawerFilterPresetState> {
+  state: DrawerFilterPresetState = {
+    name: "",
+    new: true,
+  };
+  componentDidUpdate = (prevProps: DrawerFilterPresetProps) => {
     if (this.props.preset.name !== prevProps.preset.name) {
       this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
   };
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange = (e: any) => {
+    this.setState<never>({ [e.target.name]: e.target.value });
   };
   savePreset = () => {
     if (this.state.name) {
@@ -125,11 +132,5 @@ export class DrawerFilterPreset extends React.Component {
 }
 
 DrawerFilterPreset.contextType = UserContext;
-
-DrawerFilterPreset.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  preset: PropTypes.shape(presetTypes),
-};
 
 export default DrawerFilterPreset;
