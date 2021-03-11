@@ -23,8 +23,7 @@ import { Autocomplete } from "../../util/Autocomplete";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const getVendorStyle = (provided: any, _snapshot: any) => {
+const getVendorStyle = (provided: any) => {
   const style = provided.draggableProps.style;
   let transform = style.transform;
   if (style.transform) {
@@ -618,7 +617,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                               className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              style={getVendorStyle(provided, snapshot)}
+                              style={getVendorStyle(provided)}
                             >
                               <div className="title-container">
                                 <Typography use="caption" className="vendor-title">
@@ -1452,7 +1451,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                                 className={classNames("vendor-container", { dragged: snapshot.isDragging })}
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
-                                style={getVendorStyle(provided, snapshot)}
+                                style={getVendorStyle(provided)}
                               >
                                 <div className="title-container">
                                   <Typography use="caption" className="vendor-title">
