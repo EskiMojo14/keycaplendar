@@ -1,5 +1,11 @@
 /// <reference types="react-scripts" />
 
+declare module "csstype" {
+  interface Properties {
+    "--animation-delay": number;
+  }
+}
+
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 declare module "react-lazy-load" {

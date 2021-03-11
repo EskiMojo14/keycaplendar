@@ -1,10 +1,9 @@
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { DeviceContext } from "../../../util/contexts";
 import { boolFunctions } from "../../../util/functions";
-import { setTypes } from "../../../util/propTypeTemplates";
+import { SetType } from "../../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -21,7 +20,23 @@ import { MenuSort } from "./MenuSort";
 import { SearchBarPersistent, SearchBarModal, SearchAppBar } from "./SearchBar";
 import "./AppBar.scss";
 
-export const AppBar = (props) => {
+type AppBarProps = {
+  bottomNav: boolean;
+  indent: boolean;
+  loading: boolean;
+  openFilter: () => void;
+  openNav: () => void;
+  page: string;
+  search: string;
+  setSearch: (search: string) => void;
+  setSort: (sort: string) => void;
+  setView: (view: string) => void;
+  sets: SetType[];
+  sort: string;
+  view: string;
+};
+
+export const AppBar = (props: AppBarProps) => {
   const device = useContext(DeviceContext);
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = boolFunctions(setSortOpen);
@@ -130,19 +145,3 @@ export const AppBar = (props) => {
 };
 
 export default AppBar;
-
-AppBar.propTypes = {
-  bottomNav: PropTypes.bool,
-  indent: PropTypes.bool,
-  loading: PropTypes.bool,
-  openFilter: PropTypes.func,
-  openNav: PropTypes.func,
-  page: PropTypes.string,
-  search: PropTypes.string,
-  setSearch: PropTypes.func,
-  setSort: PropTypes.func,
-  setView: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  sort: PropTypes.string,
-  view: PropTypes.string,
-};

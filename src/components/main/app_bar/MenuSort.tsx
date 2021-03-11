@@ -1,9 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { sortNames, sortBlacklist } from "../../../util/constants";
 
-export const MenuSort = (props) => {
+type MenuSortProps = {
+  onClose: () => void;
+  onSelect: (sort: string) => void;
+  open: boolean;
+  page: string;
+  sort: string;
+};
+
+export const MenuSort = (props: MenuSortProps) => {
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
       {Object.keys(sortNames).map((key) => {
@@ -17,11 +24,3 @@ export const MenuSort = (props) => {
   );
 };
 export default MenuSort;
-
-MenuSort.propTypes = {
-  onClose: PropTypes.func,
-  onSelect: PropTypes.func,
-  open: PropTypes.bool,
-  page: PropTypes.string,
-  sort: PropTypes.string,
-};

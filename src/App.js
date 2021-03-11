@@ -687,7 +687,9 @@ class App extends React.Component {
     }
   };
 
-  debouncedFilterData = () => {};
+  debouncedFilterData = () => {
+    // placeholder - gets overwritten in constructor
+  };
 
   setDensity = (density, write = true) => {
     this.setState({ density: density });

@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import BEMHelper from "../../../util/bemHelper";
 import { iconObject } from "../../../util/functions";
-import { setTypes } from "../../../util/propTypeTemplates";
+import { SetType } from "../../../util/types";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -13,12 +12,21 @@ import "./SearchBar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
 
-export class SearchBarPersistent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { expanded: false, focused: false, searchTerms: [] };
-  }
-  componentDidUpdate(prevProps) {
+type SearchBarPersistentProps = {
+  search: string;
+  setSearch: (search: string) => void;
+  sets: SetType[];
+};
+
+type SearchBarPersistentState = {
+  expanded: boolean;
+  focused: boolean;
+  searchTerms: string[];
+};
+
+export class SearchBarPersistent extends React.Component<SearchBarPersistentProps, SearchBarPersistentState> {
+  state: SearchBarPersistentState = { expanded: false, focused: false, searchTerms: [] };
+  componentDidUpdate(prevProps: SearchBarPersistentProps) {
     if (this.props.search !== prevProps.search) {
       this.setState({
         expanded: this.props.search.length !== 0,
@@ -26,7 +34,7 @@ export class SearchBarPersistent extends React.Component {
       this.createSearchTerms();
     }
   }
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     this.setState({
       expanded: e.target.value.length !== 0,
     });
@@ -43,8 +51,8 @@ export class SearchBarPersistent extends React.Component {
     });
   };
   createSearchTerms = () => {
-    let searchTerms = [];
-    const addSearchTerm = (term) => {
+    const searchTerms: string[] = [];
+    const addSearchTerm = (term: string) => {
       if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
@@ -56,14 +64,16 @@ export class SearchBarPersistent extends React.Component {
         set.designer.forEach((designer) => {
           addSearchTerm(designer);
         });
-        set.vendors.forEach((vendor) => {
-          addSearchTerm(vendor.name);
-        });
+        if (set.vendors) {
+          set.vendors.forEach((vendor) => {
+            addSearchTerm(vendor.name);
+          });
+        }
       });
     }
     searchTerms.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -74,7 +84,7 @@ export class SearchBarPersistent extends React.Component {
     });
     this.setState({ searchTerms: searchTerms });
   };
-  autoCompleteSearch = (prop, value) => {
+  autoCompleteSearch = (_prop: string, value: string) => {
     this.props.setSearch(value);
     this.setState({
       focused: false,
@@ -117,7 +127,7 @@ export class SearchBarPersistent extends React.Component {
                         />
                         <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z" />
                       </svg>
-                    </div>
+                    </div>,
                   )}
                   onClick={this.clearInput}
                 />
@@ -144,22 +154,36 @@ export class SearchBarPersistent extends React.Component {
   }
 }
 
-export class SearchBarModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      opening: false,
-      closing: false,
-      animate: false,
-      open: false,
-      focused: false,
-      searchTerms: [],
-    };
-  }
+type SearchBarModalProps = {
+  close: () => void;
+  open: boolean;
+  search: string;
+  setSearch: (search: string) => void;
+  sets: SetType[];
+};
+
+type SearchBarModalState = {
+  opening: boolean;
+  closing: boolean;
+  animate: boolean;
+  open: boolean;
+  focused: boolean;
+  searchTerms: string[];
+};
+
+export class SearchBarModal extends React.Component<SearchBarModalProps, SearchBarModalState> {
+  state: SearchBarModalState = {
+    opening: false,
+    closing: false,
+    animate: false,
+    open: false,
+    focused: false,
+    searchTerms: [],
+  };
   componentDidMount() {
     this.setState({ open: this.props.open });
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: SearchBarModalProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
         this.openBar();
@@ -178,7 +202,10 @@ export class SearchBarModal extends React.Component {
     this.setState({ open: true, animate: true });
     setTimeout(() => {
       this.setState({ opening: true });
-      document.getElementById("search").focus();
+      const bar = document.getElementById("search");
+      if (bar) {
+        bar.focus();
+      }
     }, 1);
     setTimeout(() => {
       this.setState({ animate: false, opening: false });
@@ -194,10 +221,7 @@ export class SearchBarModal extends React.Component {
       this.props.setSearch("");
     }, 200);
   }
-  handleChange = (e) => {
-    this.setState({
-      expanded: e.target.value.length !== 0,
-    });
+  handleChange = (e: any) => {
     this.props.setSearch(e.target.value);
   };
   handleFocus = () => {
@@ -211,8 +235,8 @@ export class SearchBarModal extends React.Component {
     });
   };
   createSearchTerms = () => {
-    let searchTerms = [];
-    const addSearchTerm = (term) => {
+    const searchTerms: string[] = [];
+    const addSearchTerm = (term: string) => {
       if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
@@ -224,14 +248,16 @@ export class SearchBarModal extends React.Component {
         set.designer.forEach((designer) => {
           addSearchTerm(designer);
         });
-        set.vendors.forEach((vendor) => {
-          addSearchTerm(vendor.name);
-        });
+        if (set.vendors) {
+          set.vendors.forEach((vendor) => {
+            addSearchTerm(vendor.name);
+          });
+        }
       });
     }
     searchTerms.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -242,7 +268,7 @@ export class SearchBarModal extends React.Component {
     });
     this.setState({ searchTerms: searchTerms });
   };
-  autoCompleteSearch = (prop, value) => {
+  autoCompleteSearch = (_prop: string, value: string) => {
     this.props.setSearch(value);
     this.setState({
       focused: false,
@@ -257,7 +283,7 @@ export class SearchBarModal extends React.Component {
         className={bemClasses({
           modifiers: {
             modal: true,
-            expanded: this.state.open,
+            open: this.state.open,
             opening: this.state.opening,
             closing: this.state.closing,
             animate: this.state.animate,
@@ -289,7 +315,7 @@ export class SearchBarModal extends React.Component {
                       />
                       <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z" />
                     </svg>
-                  </div>
+                  </div>,
                 )}
                 onClick={this.clearInput}
               />
@@ -313,15 +339,26 @@ export class SearchBarModal extends React.Component {
   }
 }
 
-export class SearchAppBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      focused: false,
-      searchTerms: [],
-    };
-  }
-  componentDidUpdate(prevProps) {
+type SearchAppBarProps = {
+  close: () => void;
+  open: boolean;
+  openBar: () => void;
+  search: string;
+  setSearch: (search: string) => void;
+  sets: SetType[];
+};
+
+type SearchAppBarState = {
+  focused: boolean;
+  searchTerms: string[];
+};
+
+export class SearchAppBar extends React.Component<SearchAppBarProps, SearchAppBarState> {
+  state: SearchAppBarState = {
+    focused: false,
+    searchTerms: [],
+  };
+  componentDidUpdate(prevProps: SearchAppBarProps) {
     if (this.props.search !== prevProps.search) {
       if (this.props.search.length > 0) {
         this.props.openBar();
@@ -330,10 +367,7 @@ export class SearchAppBar extends React.Component {
       this.createSearchTerms();
     }
   }
-  handleChange = (e) => {
-    this.setState({
-      expanded: e.target.value.length !== 0,
-    });
+  handleChange = (e: any) => {
     this.props.setSearch(e.target.value);
   };
   handleFocus = () => {
@@ -347,8 +381,8 @@ export class SearchAppBar extends React.Component {
     });
   };
   createSearchTerms = () => {
-    let searchTerms = [];
-    const addSearchTerm = (term) => {
+    const searchTerms: string[] = [];
+    const addSearchTerm = (term: string) => {
       if (!searchTerms.includes(term)) {
         searchTerms.push(term);
       }
@@ -360,14 +394,16 @@ export class SearchAppBar extends React.Component {
         set.designer.forEach((designer) => {
           addSearchTerm(designer);
         });
-        set.vendors.forEach((vendor) => {
-          addSearchTerm(vendor.name);
-        });
+        if (set.vendors) {
+          set.vendors.forEach((vendor) => {
+            addSearchTerm(vendor.name);
+          });
+        }
       });
     }
     searchTerms.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -378,7 +414,7 @@ export class SearchAppBar extends React.Component {
     });
     this.setState({ searchTerms: searchTerms });
   };
-  autoCompleteSearch = (prop, value) => {
+  autoCompleteSearch = (_prop: string, value: string) => {
     this.props.setSearch(value);
     this.setState({
       focused: false,
@@ -421,7 +457,7 @@ export class SearchAppBar extends React.Component {
                             />
                             <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13L12 10.59 8.41 7 7 8.41 10.59 12 7 15.59 8.41 17 12 13.41 15.59 17 17 15.59 13.41 12 17 8.41z" />
                           </svg>
-                        </div>
+                        </div>,
                       )}
                       onClick={this.clearInput}
                     />
@@ -450,26 +486,3 @@ export class SearchAppBar extends React.Component {
 }
 
 export default SearchBarPersistent;
-
-SearchBarPersistent.propTypes = {
-  search: PropTypes.string,
-  setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-};
-
-SearchBarModal.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  search: PropTypes.string,
-  setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-};
-
-SearchAppBar.propTypes = {
-  close: PropTypes.func,
-  open: PropTypes.bool,
-  openBar: PropTypes.func,
-  search: PropTypes.string,
-  setSearch: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-};
