@@ -1,11 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
 import { openModal, closeModal } from "../../util/functions";
-import { queueTypes } from "../../util/propTypeTemplates";
+import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -26,33 +25,52 @@ import { AuditEntry } from "../audit/AuditEntry";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import { Footer } from "../common/Footer";
 import "./ContentAudit.scss";
+import { Set } from "../../util/constructors";
 
-export class ContentAudit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      actions: [],
-      actionsFiltered: [],
-      filterAction: "none",
-      filterUser: "all",
-      length: 50,
-      filterOpen: false,
-      deleteOpen: false,
-      deleteAction: {
-        action: "",
-        changelogId: "",
-        documentId: "",
-        timestamp: "",
-        user: {
-          displayName: "",
-          email: "",
-          nickname: "",
-        },
+type ContentAuditProps = {
+  bottomNav: boolean;
+  openNav: () => void;
+  snackbarQueue: QueueType;
+};
+
+type ContentAuditState = {
+  actions: ActionType[];
+  actionsFiltered: ActionType[];
+  filterAction: string;
+  filterUser: string;
+  length: number;
+  filterOpen: boolean;
+  deleteOpen: boolean;
+  deleteAction: ActionType;
+  users: { label: string; value: string }[];
+  loading: boolean;
+};
+
+export class ContentAudit extends React.Component<ContentAuditProps, ContentAuditState> {
+  state: ContentAuditState = {
+    actions: [],
+    actionsFiltered: [],
+    filterAction: "none",
+    filterUser: "all",
+    length: 50,
+    filterOpen: false,
+    deleteOpen: false,
+    deleteAction: {
+      before: new Set(),
+      after: new Set(),
+      action: "",
+      changelogId: "",
+      documentId: "",
+      timestamp: "",
+      user: {
+        displayName: "",
+        email: "",
+        nickname: "",
       },
-      users: [{ label: "All", value: "all" }],
-      loading: false,
-    };
-  }
+    },
+    users: [{ label: "All", value: "all" }],
+    loading: false,
+  };
   componentDidMount() {
     this.getActions();
   }
@@ -79,7 +97,7 @@ export class ContentAudit extends React.Component {
       filterOpen: false,
     });
   };
-  openDelete = (action) => {
+  openDelete = (action: ActionType) => {
     this.setState({
       deleteOpen: true,
       deleteAction: action,
@@ -92,6 +110,8 @@ export class ContentAudit extends React.Component {
     setTimeout(() => {
       this.setState({
         deleteAction: {
+          before: new Set(),
+          after: new Set(),
           action: "",
           changelogId: "",
           documentId: "",
@@ -105,43 +125,43 @@ export class ContentAudit extends React.Component {
       });
     }, 100);
   };
-  handleFilterChange = (e, prop) => {
-    this.setState({
-      [prop]: e.target.value,
+  handleFilterChange = (e: any, prop: string) => {
+    this.setState<never>({
+      [prop as keyof ContentAuditState]: e.target.value,
     });
     this.filterActions(
-      this.state.action,
+      this.state.actions,
       prop === "filterAction" ? e.target.value : this.state.filterAction,
-      prop === "filterUser" ? e.target.value : this.state.filterUser
+      prop === "filterUser" ? e.target.value : this.state.filterUser,
     );
   };
   getActions = (num = this.state.length) => {
-    if (!this.loading) {
+    if (!this.state.loading) {
       this.toggleLoading();
     }
     this.setState({ length: num });
     const db = firebase.firestore();
     db.collection("changelog")
       .orderBy("timestamp", "desc")
-      .limit(parseInt(num))
+      .limit(num)
       .get()
       .then((querySnapshot) => {
-        let actions = [];
-        let users = [{ label: "All", value: "all" }];
+        const actions: ActionType[] = [];
+        const users = [{ label: "All", value: "all" }];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data.action =
             data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
           data.changelogId = doc.id;
-          actions.push(data);
+          actions.push(data as ActionType);
           if (!users.map((user) => user.value).includes(data.user.nickname)) {
             users.push({ label: data.user.nickname, value: data.user.nickname });
           }
         });
 
         actions.sort(function (a, b) {
-          var x = a.timestamp.toLowerCase();
-          var y = b.timestamp.toLowerCase();
+          const x = a.timestamp.toLowerCase();
+          const y = b.timestamp.toLowerCase();
           if (x < y) {
             return 1;
           }
@@ -150,6 +170,7 @@ export class ContentAudit extends React.Component {
           }
           return 0;
         });
+
         this.setState({
           actions: actions,
           users: users,
@@ -159,7 +180,7 @@ export class ContentAudit extends React.Component {
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
-        if (this.loading) {
+        if (this.state.loading) {
           this.toggleLoading();
         }
       });
@@ -168,7 +189,7 @@ export class ContentAudit extends React.Component {
   filterActions = (
     actions = this.state.actions,
     filterAction = this.state.filterAction,
-    filterUser = this.state.filterUser
+    filterUser = this.state.filterUser,
   ) => {
     let filteredActions = [...actions];
 
@@ -191,7 +212,7 @@ export class ContentAudit extends React.Component {
       this.toggleLoading();
     }
   };
-  deleteAction = (action) => {
+  deleteAction = (action: ActionType) => {
     const db = firebase.firestore();
     db.collection("changelog")
       .doc(action.changelogId)
@@ -235,7 +256,7 @@ export class ContentAudit extends React.Component {
     );
     return (
       <>
-        <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
+        <TopAppBar fixed className={classNames({ "bottom-app-bar": this.props.bottomNav })}>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
@@ -308,9 +329,3 @@ export class ContentAudit extends React.Component {
 export default ContentAudit;
 
 ContentAudit.contextType = DeviceContext;
-
-ContentAudit.propTypes = {
-  bottomNav: PropTypes.bool,
-  openNav: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-};

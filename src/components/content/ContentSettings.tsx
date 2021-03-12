@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
 import firebase from "../../firebase";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";
-import { queueTypes } from "../../util/propTypeTemplates";
+import { QueueType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -27,7 +26,28 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { Footer } from "../common/Footer";
 import "./ContentSettings.scss";
 
-export const ContentSettings = (props) => {
+type ContentSettingsProps = {
+  applyTheme: string;
+  bottomNav: boolean;
+  darkTheme: string;
+  density: string;
+  fromTimeTheme: string;
+  lightTheme: string;
+  manualTheme: boolean;
+  openNav: () => void;
+  setApplyTheme: (applyTheme: string) => void;
+  setBottomNav: (bottomNav: boolean) => void;
+  setDarkTheme: (darkTheme: string) => void;
+  setDensity: (density: string) => void;
+  setFromTimeTheme: (fromTimeTheme: string) => void;
+  setLightTheme: (lightTheme: string) => void;
+  setManualTheme: (manualTheme: boolean) => void;
+  setToTimeTheme: (toTimeTheme: string) => void;
+  snackbarQueue: QueueType;
+  toTimeTheme: string;
+};
+
+export const ContentSettings = (props: ContentSettingsProps) => {
   const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const signOut = () => {
@@ -35,14 +55,14 @@ export const ContentSettings = (props) => {
       .auth()
       .signOut()
       .then(() => {
-        setUser();
+        setUser({});
       })
       .catch((error) => {
         console.log("Error signing out: " + error);
         props.snackbarQueue.notify({ title: "Error signing out: " + error });
       });
   };
-  const setApplyTheme = (e) => {
+  const setApplyTheme = (e: any) => {
     const applyThemeOptions = ["manual", "timed", "system"];
     props.setApplyTheme(applyThemeOptions[e.detail.index]);
   };
@@ -90,10 +110,13 @@ export const ContentSettings = (props) => {
       </div>
       <Card className={classNames("mdc-list--two-line", { "three-line": user.nickname })}>
         <ListItem disabled className="account">
-          <BadgeAnchor className="avatar">
-            <Avatar src={user.avatar} size="xlarge" />
-            {userBadge}
-          </BadgeAnchor>
+          {user.avatar ? (
+            <BadgeAnchor className="avatar">
+              <Avatar src={user.avatar} size="xlarge" />
+              {userBadge}
+            </BadgeAnchor>
+          ) : null}
+
           <ListItemText>
             {user.nickname ? <div className="overline">{user.nickname}</div> : null}
             <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
@@ -156,7 +179,7 @@ export const ContentSettings = (props) => {
               type="time"
               value={props.fromTimeTheme}
               onChange={(e) => {
-                props.setFromTimeTheme(e.target.value);
+                props.setFromTimeTheme((e.target as HTMLInputElement).value);
               }}
             />
           </div>
@@ -184,7 +207,7 @@ export const ContentSettings = (props) => {
               type="time"
               value={props.toTimeTheme}
               onChange={(e) => {
-                props.setToTimeTheme(e.target.value);
+                props.setToTimeTheme((e.target as HTMLInputElement).value);
               }}
             />
           </div>
@@ -200,7 +223,7 @@ export const ContentSettings = (props) => {
             id="manualTheme"
             checked={props.manualTheme}
             onChange={(e) => {
-              props.setManualTheme(e.target.checked);
+              props.setManualTheme((e.target as HTMLInputElement).checked);
             }}
           />
         </div>
@@ -241,7 +264,7 @@ export const ContentSettings = (props) => {
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={{ "bottom-app-bar": props.bottomNav }}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -264,13 +287,13 @@ export const ContentSettings = (props) => {
                   <ListItem onClick={() => props.setLightTheme("light")} className="light">
                     Light
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.lightTheme === "light"} readOnly />
+                      <Radio tabIndex={-1} checked={props.lightTheme === "light"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
                     Sepia
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.lightTheme === "sepia"} readOnly />
+                      <Radio tabIndex={-1} checked={props.lightTheme === "sepia"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                 </List>
@@ -298,31 +321,31 @@ export const ContentSettings = (props) => {
                   <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
                     Ocean
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.darkTheme === "ocean"} readOnly />
+                      <Radio tabIndex={-1} checked={props.darkTheme === "ocean"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
                     Grey
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.darkTheme === "grey"} readOnly />
+                      <Radio tabIndex={-1} checked={props.darkTheme === "grey"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
                     Deep Ocean
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.darkTheme === "deep-ocean"} readOnly />
+                      <Radio tabIndex={-1} checked={props.darkTheme === "deep-ocean"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
                     Deep Purple
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.darkTheme === "deep"} readOnly />
+                      <Radio tabIndex={-1} checked={props.darkTheme === "deep"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
                     Dark
                     <ListItemMeta>
-                      <Radio tabIndex="-1" checked={props.darkTheme === "dark"} readOnly />
+                      <Radio tabIndex={-1} checked={props.darkTheme === "dark"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                 </List>
@@ -336,26 +359,4 @@ export const ContentSettings = (props) => {
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
-};
-
-ContentSettings.propTypes = {
-  applyTheme: PropTypes.string,
-  bottomNav: PropTypes.bool,
-  darkTheme: PropTypes.string,
-  density: PropTypes.string,
-  device: PropTypes.string,
-  fromTimeTheme: PropTypes.string,
-  lightTheme: PropTypes.string,
-  manualTheme: PropTypes.bool,
-  openNav: PropTypes.func,
-  setApplyTheme: PropTypes.func,
-  setBottomNav: PropTypes.func,
-  setDarkTheme: PropTypes.func,
-  setDensity: PropTypes.func,
-  setFromTimeTheme: PropTypes.func,
-  setLightTheme: PropTypes.func,
-  setManualTheme: PropTypes.func,
-  setToTimeTheme: PropTypes.func,
-  snackbarQueue: PropTypes.shape(queueTypes),
-  toTimeTheme: PropTypes.string,
 };

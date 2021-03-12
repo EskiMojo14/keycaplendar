@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import moment from "moment";
-import { setTypes } from "../../util/propTypeTemplates";
+import { SetType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -9,19 +8,33 @@ import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
 import "./ContentGrid.scss";
 
-export const ContentGrid = (props) => {
-  const filterSets = (sets, group, sort, page) => {
+type ContentGridProps = {
+  closeDetails: () => void;
+  detailSet: SetType;
+  details: (set: SetType) => void;
+  edit: (set: SetType) => void;
+  groups: string[];
+  page: string;
+  sets: SetType[];
+  sort: string;
+  view: string;
+};
+
+export const ContentGrid = (props: ContentGridProps) => {
+  const filterSets = (sets: SetType[], group: string, sort: string, page: string) => {
     const filteredSets = sets.filter((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const setDate = moment.utc(set[sort]);
         const setMonth = setDate.format("MMMM YYYY");
         return setMonth === group;
       } else if (sort === "vendor") {
-        return set.vendors.map((vendor) => vendor.name).includes(group);
+        if (set.vendors) {
+          return set.vendors.map((vendor) => vendor.name).includes(group);
+        }
       } else if (sort === "designer") {
         return set.designer.includes(group);
       } else {
-        return set[sort] === group;
+        return set[sort as keyof SetType] === group;
       }
     });
     filteredSets.sort((a, b) => {
@@ -86,7 +99,7 @@ export const ContentGrid = (props) => {
     });
     return filteredSets;
   };
-  const createGroup = (sets) => {
+  const createGroup = (sets: SetType[]) => {
     if (props.view === "card") {
       return (
         <ViewCard
@@ -148,16 +161,5 @@ export const ContentGrid = (props) => {
     </div>
   );
 };
-export default ContentGrid;
 
-ContentGrid.propTypes = {
-  closeDetails: PropTypes.func,
-  detailSet: PropTypes.shape(setTypes()),
-  details: PropTypes.func,
-  edit: PropTypes.func,
-  groups: PropTypes.arrayOf(PropTypes.string),
-  page: PropTypes.string,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  sort: PropTypes.string,
-  view: PropTypes.string,
-};
+export default ContentGrid;

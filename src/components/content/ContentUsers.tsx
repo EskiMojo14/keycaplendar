@@ -1,9 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import firebase from "../../firebase";
 import classNames from "classnames";
-import { queueTypes } from "../../util/propTypeTemplates";
+import { QueueType, UserType } from "../../util/types";
 import { DeviceContext } from "../../util/contexts";
+import { User } from "../../util/constructors";
 import { iconObject } from "../../util/functions";
 import {
   DataTable,
@@ -45,28 +45,53 @@ import "./ContentUsers.scss";
 
 const length = 1000;
 const rows = 25;
-export class ContentUsers extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: [],
-      sortedUsers: [],
-      paginatedUsers: [],
-      deleteDialogOpen: false,
-      deletedUser: { displayName: "" },
-      nextPageToken: null,
-      rowsPerPage: rows,
-      page: 1,
-      firstIndex: 0,
-      lastIndex: 0,
-      view: "table",
-      sort: "editor",
-      reverseSort: false,
-      loading: false,
-      viewMenuOpen: false,
-      sortMenuOpen: false,
-    };
-  }
+
+type ContentUsersProps = {
+  allDesigners: string[];
+  bottomNav: boolean;
+  device: string;
+  openNav: () => void;
+  snackbarQueue: QueueType;
+};
+
+type ContentUsersState = {
+  users: UserType[];
+  sortedUsers: UserType[];
+  paginatedUsers: UserType[];
+  deleteDialogOpen: boolean;
+  deletedUser: UserType;
+  nextPageToken: null;
+  rowsPerPage: number;
+  page: number;
+  firstIndex: number;
+  lastIndex: number;
+  view: string;
+  sort: string;
+  reverseSort: boolean;
+  loading: boolean;
+  viewMenuOpen: boolean;
+  sortMenuOpen: boolean;
+};
+
+export class ContentUsers extends React.Component<ContentUsersProps, ContentUsersState> {
+  state: ContentUsersState = {
+    users: [],
+    sortedUsers: [],
+    paginatedUsers: [],
+    deleteDialogOpen: false,
+    deletedUser: new User(),
+    nextPageToken: null,
+    rowsPerPage: rows,
+    page: 1,
+    firstIndex: 0,
+    lastIndex: 0,
+    view: "table",
+    sort: "editor",
+    reverseSort: false,
+    loading: false,
+    viewMenuOpen: false,
+    sortMenuOpen: false,
+  };
   getUsers = () => {
     if (!this.state.loading) {
       this.toggleLoading();
@@ -101,12 +126,14 @@ export class ContentUsers extends React.Component {
     users = this.state.users,
     sort = this.state.sort,
     reverseSort = this.state.reverseSort,
-    page = this.state.page,
+    page = this.state.page
   ) => {
     users.sort((a, b) => {
-      if (typeof a[sort] === "string") {
-        const x = a[sort].toLowerCase();
-        const y = b[sort].toLowerCase();
+      const aVal = a[sort as keyof UserType];
+      const bVal = b[sort as keyof UserType];
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        const x = aVal.toLowerCase();
+        const y = bVal.toLowerCase();
         if (x < y) {
           return reverseSort ? 1 : -1;
         }
@@ -127,8 +154,8 @@ export class ContentUsers extends React.Component {
         }
         return 0;
       } else {
-        const x = a[sort];
-        const y = b[sort];
+        const x = a[sort as keyof UserType];
+        const y = b[sort as keyof UserType];
         if (x < y) {
           return reverseSort ? -1 : 1;
         }
@@ -162,7 +189,7 @@ export class ContentUsers extends React.Component {
     const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
     this.setState({ paginatedUsers: paginatedUsers, firstIndex: firstIndex, lastIndex: lastIndex });
   };
-  openDeleteDialog = (user) => {
+  openDeleteDialog = (user: UserType) => {
     this.setState({
       deleteDialogOpen: true,
       deletedUser: user,
@@ -174,7 +201,7 @@ export class ContentUsers extends React.Component {
     });
     setTimeout(() => {
       this.setState({
-        deletedUser: { displayName: "" },
+        deletedUser: new User(),
       });
     }, 75);
   };
@@ -198,7 +225,7 @@ export class ContentUsers extends React.Component {
       viewMenuOpen: false,
     });
   };
-  deleteUser = (user) => {
+  deleteUser = (user: UserType) => {
     this.closeDeleteDialog();
     if (!this.state.loading) {
       this.toggleLoading();
@@ -223,22 +250,22 @@ export class ContentUsers extends React.Component {
         }
       });
   };
-  setRowsPerPage = (e) => {
+  setRowsPerPage = (e: any) => {
     const val = parseInt(e.target.value);
     this.setState({ rowsPerPage: val, page: 1 });
     this.paginateUsers(this.state.sortedUsers, 1, val);
   };
-  setPage = (num) => {
+  setPage = (num: number) => {
     this.setState({ page: num });
     this.paginateUsers(this.state.sortedUsers, num);
   };
-  setView = (index) => {
+  setView = (index: number) => {
     const views = ["card", "table"];
     this.setState({
       view: views[index],
     });
   };
-  setSort = (sort) => {
+  setSort = (sort: string) => {
     let reverseSort;
     if (sort === this.state.sort) {
       reverseSort = !this.state.reverseSort;
@@ -251,7 +278,7 @@ export class ContentUsers extends React.Component {
     });
     this.sortUsers(this.state.users, sort, reverseSort, 1);
   };
-  setSortIndex = (index) => {
+  setSortIndex = (index: number) => {
     const props = ["displayName", "email", "nickname", "designer", "editor", "admin"];
     this.setState({
       sort: props[index],
@@ -317,7 +344,7 @@ export class ContentUsers extends React.Component {
                       <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
                     </svg>
                   )}
-                </div>,
+                </div>
               )}
             />
           </Tooltip>
@@ -325,7 +352,7 @@ export class ContentUsers extends React.Component {
       ) : null;
     return (
       <>
-        <TopAppBar fixed className={{ "bottom-app-bar": this.props.bottomNav }}>
+        <TopAppBar fixed className={classNames({ "bottom-app-bar": this.props.bottomNav })}>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
@@ -358,7 +385,7 @@ export class ContentUsers extends React.Component {
                               User
                             </DataTableHeadCell>
                             <DataTableHeadCell
-                              sort={this.props.sort === "email" ? (this.state.reverseSort ? -1 : 1) : null}
+                              sort={this.state.sort === "email" ? (this.state.reverseSort ? -1 : 1) : null}
                               onClick={() => {
                                 this.setSort("email");
                               }}
@@ -407,7 +434,7 @@ export class ContentUsers extends React.Component {
                           </DataTableRow>
                         </DataTableHead>
                         <DataTableBody>
-                          {this.state.paginatedUsers.map((user, index) => {
+                          {this.state.paginatedUsers.map((user) => {
                             return (
                               <UserRow
                                 user={user}
@@ -487,7 +514,7 @@ export class ContentUsers extends React.Component {
                   </Card>
                 ) : (
                   <div className="user-container">
-                    {this.state.sortedUsers.map((user, index) => {
+                    {this.state.sortedUsers.map((user) => {
                       return (
                         <UserCard
                           user={user}
@@ -533,12 +560,3 @@ export class ContentUsers extends React.Component {
 export default ContentUsers;
 
 ContentUsers.contextType = DeviceContext;
-
-ContentUsers.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  bottomNav: PropTypes.bool,
-  device: PropTypes.string,
-  openNav: PropTypes.func,
-  sort: PropTypes.string,
-  snackbarQueue: PropTypes.shape(queueTypes),
-};

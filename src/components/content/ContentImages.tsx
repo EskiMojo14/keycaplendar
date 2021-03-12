@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import LazyLoad from "react-lazy-load";
@@ -7,7 +6,7 @@ import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
 import { addOrRemove, getStorageFolders, iconObject } from "../../util/functions";
-import { setTypes, queueTypes } from "../../util/propTypeTemplates";
+import { ImageType, QueueType, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -54,40 +53,66 @@ const aspectRatios = {
 
 const blankImage = new ImageObj();
 
-export class ContentImages extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentFolder: "thumbs",
-      folders: [],
-      folderOpen: false,
-      images: [],
-      checkedImages: [],
-      setImages: [],
-      duplicateSetImages: [],
-      detailOpen: false,
-      detailImage: blankImage,
-      detailMetadata: {},
-      searchOpen: false,
-      deleteOpen: false,
-      loading: false,
-    };
-  }
+type ContentImagesProps = {
+  bottomNav: boolean;
+  openNav: () => void;
+  sets: SetType[];
+  snackbarQueue: QueueType;
+};
+
+type ContentImagesState = {
+  currentFolder: string;
+  folders: string[];
+  folderOpen: boolean;
+  images: ImageType[];
+  checkedImages: ImageType[];
+  setImages: string[];
+  duplicateSetImages: string[];
+  detailOpen: boolean;
+  detailImage: ImageType;
+  detailMetadata: Record<string, unknown>;
+  searchOpen: boolean;
+  deleteOpen: boolean;
+  loading: boolean;
+};
+
+export class ContentImages extends React.Component<ContentImagesProps, ContentImagesState> {
+  state: ContentImagesState = {
+    currentFolder: "thumbs",
+    folders: [],
+    folderOpen: false,
+    images: [],
+    checkedImages: [],
+    setImages: [],
+    duplicateSetImages: [],
+    detailOpen: false,
+    detailImage: blankImage,
+    detailMetadata: {},
+    searchOpen: false,
+    deleteOpen: false,
+    loading: false,
+  };
   componentDidMount() {
     this.getFolders();
     this.listAll();
     this.createSetImageList();
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: ContentImagesProps) {
     if (!isEqual(prevProps.sets, this.props.sets)) {
       this.createSetImageList();
     }
   }
   createSetImageList = () => {
     const fileNameRegex = /keysets%2F(.*)\?/;
-    const setImages = this.props.sets.map((set) => {
-      return decodeURIComponent(set.image.match(fileNameRegex)[1]);
-    });
+    const setImages = this.props.sets
+      .map((set) => {
+        const regexMatch = set.image.match(fileNameRegex);
+        if (regexMatch) {
+          return decodeURIComponent(regexMatch[1]);
+        }
+        return "";
+      })
+      .filter((val) => !!val);
     setImages.sort((a, b) => {
       const nameA = a.toLowerCase();
       const nameB = b.toLowerCase();
@@ -99,21 +124,21 @@ export class ContentImages extends React.Component {
       }
       return 0;
     });
-    const findDuplicates = (arr) => arr.filter((item, index) => arr.indexOf(item) !== index);
+    const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
     this.setState({ setImages: setImages, duplicateSetImages: findDuplicates(setImages) });
   };
-  processItems = (items, append = false) => {
+  processItems = (items: firebase.storage.Reference[], append = false) => {
     const images = items.map((itemRef) => {
       const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
         itemRef.fullPath,
       )}?alt=media`;
-      const obj = new ImageObj(itemRef.name, itemRef.parent, itemRef.fullPath, src);
+      const obj = new ImageObj(itemRef.name, itemRef.parent ? itemRef.parent.fullPath : "", itemRef.fullPath, src);
       return obj;
     });
     const allImages = append ? [...this.state.images, ...images] : images;
     allImages.sort((a, b) => {
-      var nameA = a.name.replace(".png", "").toLowerCase();
-      var nameB = b.name.replace(".png", "").toLowerCase();
+      const nameA = a.name.replace(".png", "").toLowerCase();
+      const nameB = b.name.replace(".png", "").toLowerCase();
       if (nameA < nameB) {
         return -1;
       }
@@ -141,7 +166,7 @@ export class ContentImages extends React.Component {
     this.setState({ folders: folders });
   };
   listAll = (path = this.state.currentFolder) => {
-    const paginatedListAll = (nextPageToken) => {
+    const paginatedListAll = (nextPageToken?: string) => {
       this.setState({ loading: true });
       storageRef
         .child(path)
@@ -159,11 +184,11 @@ export class ContentImages extends React.Component {
     };
     paginatedListAll();
   };
-  setFolder = (folder) => {
+  setFolder = (folder: string) => {
     this.setState({ currentFolder: folder });
     this.listAll(folder);
   };
-  openDetails = (image) => {
+  openDetails = (image: ImageType) => {
     const open = () => {
       if (this.state.detailImage === image) {
         this.closeDetails();
@@ -217,18 +242,18 @@ export class ContentImages extends React.Component {
   closeDelete = () => {
     this.setState({ deleteOpen: false });
   };
-  toggleImageChecked = (image) => {
+  toggleImageChecked = (image: ImageType) => {
     const editedArray = addOrRemove([...this.state.checkedImages], image);
     this.setState({ checkedImages: editedArray });
   };
-  toggleImageCheckedArray = (array, append = false) => {
+  toggleImageCheckedArray = (array: ImageType[], append = false) => {
     const editedArray = append ? [...this.state.checkedImages, ...array] : array;
     this.setState({ checkedImages: editedArray });
   };
   clearChecked = () => {
     this.setState({ checkedImages: [] });
   };
-  setLoading = (bool) => {
+  setLoading = (bool: boolean) => {
     this.setState({ loading: bool });
   };
   render() {
@@ -403,7 +428,10 @@ export class ContentImages extends React.Component {
                                   <div className="item-container" onClick={() => this.openDetails(image)}>
                                     <ImageListImageAspectContainer
                                       style={{
-                                        paddingBottom: "calc(100% /" + aspectRatios[this.state.currentFolder] + ")",
+                                        paddingBottom:
+                                          "calc(100% /" +
+                                          aspectRatios[this.state.currentFolder as keyof typeof aspectRatios] +
+                                          ")",
                                       }}
                                     >
                                       <LazyLoad debounce={false} offsetVertical={480}>
@@ -448,12 +476,5 @@ export class ContentImages extends React.Component {
 }
 
 ContentImages.contextType = DeviceContext;
-
-ContentImages.propTypes = {
-  bottomNav: PropTypes.bool,
-  openNav: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  snackbarQueue: PropTypes.shape(queueTypes),
-};
 
 export default ContentImages;

@@ -1,7 +1,7 @@
 import React from "react";
 import { whitelistShipped } from "../../util/constants";
 import { addOrRemove } from "../../util/functions";
-import { QueueType, WhitelistType } from "../../util/types";
+import { QueueType, MainWhitelistType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -12,10 +12,10 @@ type DrawerFilterStatisticsProps = {
   close: () => void;
   open: boolean;
   profiles: string[];
-  setWhitelist: (prop: string, whitelist: any) => void;
+  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
   snackbarQueue: QueueType;
   vendors: string[];
-  whitelist: WhitelistType;
+  whitelist: MainWhitelistType;
 };
 
 type checkAllType = "profiles" | "vendors" | "shipped";
@@ -23,7 +23,7 @@ type checkAllType = "profiles" | "vendors" | "shipped";
 export const DrawerFilterStatistics = (props: DrawerFilterStatisticsProps) => {
   const whitelist = props.whitelist;
   const handleChange = (name: string, prop: string) => {
-    const original = whitelist[prop as keyof WhitelistType];
+    const original = whitelist[prop as keyof MainWhitelistType];
     if (original instanceof Array) {
       const edited: string[] = addOrRemove(original, name).sort(function (a, b) {
         const x = a.toLowerCase();

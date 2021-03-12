@@ -1,6 +1,24 @@
 import { nanoid } from "nanoid";
 import { MainWhitelistType } from "./types";
 
+export class Whitelist {
+  profiles: string[];
+  shipped: string[];
+  vendorMode: "exclude" | "include";
+  vendors: string[];
+  constructor(
+    profiles: string[] = [],
+    shipped: string[] = [],
+    vendorMode: "exclude" | "include" = "exclude",
+    vendors: string[] = [],
+  ) {
+    this.profiles = profiles;
+    this.shipped = shipped;
+    this.vendorMode = vendorMode as "exclude" | "include";
+    this.vendors = vendors;
+  }
+}
+
 export class Preset {
   name: string;
   id: string;
@@ -33,14 +51,28 @@ export class Set {
   designer: string[];
   details: string;
   icDate: string;
+  gbLaunch: string;
+  gbEnd: string;
   id: string;
   image: string;
   profile: string;
-  constructor(colorway = "", designer = [], details = "", icDate = "", id = "", image = "", profile = "") {
+  constructor(
+    colorway = "",
+    designer = [],
+    details = "",
+    icDate = "",
+    gbLaunch = "",
+    gbEnd = "",
+    id = "",
+    image = "",
+    profile = "",
+  ) {
     this.colorway = colorway;
     this.designer = designer;
     this.details = details;
     this.icDate = icDate;
+    this.gbLaunch = gbLaunch;
+    this.gbEnd = gbEnd;
     this.id = id;
     this.image = image;
     this.profile = profile;
@@ -57,5 +89,32 @@ export class ImageObj {
     this.parent = parent;
     this.fullPath = fullPath;
     this.src = src;
+  }
+}
+
+export class User {
+  admin: boolean;
+  designer: boolean;
+  displayName: string;
+  editor: boolean;
+  email: string;
+  nickname: string;
+  photoURL: string;
+  constructor(
+    email = "",
+    displayName = "",
+    photoURL = "",
+    nickname = "",
+    designer = false,
+    editor = false,
+    admin = false,
+  ) {
+    this.admin = admin;
+    this.designer = designer;
+    this.displayName = displayName;
+    this.editor = editor;
+    this.email = email;
+    this.nickname = nickname;
+    this.photoURL = photoURL;
   }
 }

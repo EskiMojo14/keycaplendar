@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Set } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
-import { queueTypes, setTypes, whitelistTypes } from "../../util/propTypeTemplates";
+import { MainWhitelistType, PresetType, QueueType, SetType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -24,14 +23,40 @@ import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 
-export const ContentMain = (props) => {
+type ContentMainProps = {
+  bottomNav: boolean;
+  navOpen: boolean;
+  openNav: () => void;
+  page: string;
+  content: boolean;
+  groups: string[];
+  sets: SetType[];
+  sort: string;
+  setSort: (sort: string) => void;
+  view: string;
+  setView: (view: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  toggleLichTheme: () => void;
+  profiles: string[];
+  allDesigners: string[];
+  allVendors: string[];
+  allRegions: string[];
+  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
+  whitelist: MainWhitelistType;
+  snackbarQueue: QueueType;
+  loading: boolean;
+  getData: () => void;
+};
+
+export const ContentMain = (props: ContentMainProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const blankSet = new Set();
   const blankPreset = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);
-  const openFilter = (set) => {
+  const openFilter = () => {
     const open = () => {
       if (filterOpen && device === "desktop") {
         closeFilter();
@@ -56,7 +81,7 @@ export const ContentMain = (props) => {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailSet, setDetailSet] = useState(blankSet);
-  const openDetails = (set) => {
+  const openDetails = (set: SetType) => {
     const open = () => {
       if (device !== "desktop" || props.view === "compact") {
         openModal();
@@ -79,7 +104,7 @@ export const ContentMain = (props) => {
 
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState(blankSet);
-  const openSales = (set) => {
+  const openSales = (set: SetType) => {
     setSalesOpen(true);
     setSalesSet(set);
   };
@@ -100,7 +125,7 @@ export const ContentMain = (props) => {
 
   const [editOpen, setEditOpen] = useState(false);
   const [editSet, setEditSet] = useState(blankSet);
-  const openEdit = (set) => {
+  const openEdit = (set: SetType) => {
     openModal();
     setEditOpen(true);
     setEditSet(set);
@@ -114,7 +139,7 @@ export const ContentMain = (props) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [deleteSet, setDeleteSet] = useState(blankSet);
-  const openDeleteDialog = (set) => {
+  const openDeleteDialog = (set: SetType) => {
     closeDetails();
     setDeleteDialogOpen(true);
     setDeleteSet(set);
@@ -134,7 +159,7 @@ export const ContentMain = (props) => {
 
   const [filterPresetOpen, setFilterPresetOpen] = useState(false);
   const [filterPreset, setFilterPreset] = useState(blankPreset);
-  const openFilterPreset = (preset) => {
+  const openFilterPreset = (preset: PresetType) => {
     const open = () => {
       openModal();
       setFilterPresetOpen(true);
@@ -155,7 +180,7 @@ export const ContentMain = (props) => {
 
   const [deleteFilterPresetOpen, setDeleteFilterPresetOpen] = useState(false);
   const [deleteFilterPreset, setDeleteFilterPreset] = useState(blankPreset);
-  const openDeleteFilterPreset = (preset) => {
+  const openDeleteFilterPreset = (preset: PresetType) => {
     const open = () => {
       openModal();
       setDeleteFilterPresetOpen(true);
@@ -354,30 +379,4 @@ export const ContentMain = (props) => {
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
-};
-
-ContentMain.propTypes = {
-  bottomNav: PropTypes.bool,
-  navOpen: PropTypes.bool,
-  openNav: PropTypes.func,
-  page: PropTypes.string,
-  content: PropTypes.bool,
-  groups: PropTypes.arrayOf(PropTypes.string),
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  sort: PropTypes.string,
-  setSort: PropTypes.func,
-  view: PropTypes.string,
-  setView: PropTypes.func,
-  search: PropTypes.string,
-  setSearch: PropTypes.func,
-  toggleLichTheme: PropTypes.func,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  setWhitelist: PropTypes.func,
-  whitelist: PropTypes.shape(whitelistTypes),
-  snackbarQueue: PropTypes.shape(queueTypes),
-  loading: PropTypes.bool,
-  getData: PropTypes.func,
 };

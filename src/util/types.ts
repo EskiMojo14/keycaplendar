@@ -1,6 +1,8 @@
 import React from "react";
 import { whitelistShipped } from "./constants";
 
+export type Obj<T = unknown> = Record<string, T>;
+
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
 export type WhitelistType = {
@@ -8,15 +10,12 @@ export type WhitelistType = {
   shipped: typeof whitelistShipped;
   vendorMode: "include" | "exclude";
   vendors: string[];
+  edited?: string[];
 };
 
 export type MainWhitelistType = WhitelistType & {
   favorites: boolean;
   hidden: boolean;
-};
-
-export type AppWhitelistType = MainWhitelistType & {
-  edited: string[];
 };
 
 export type PresetType = {
@@ -124,7 +123,7 @@ export type UserContextType = {
     isAdmin: boolean;
     id: string | null;
   };
-  setUser: (user: CurrentUserType) => void;
+  setUser: (user: Partial<CurrentUserType>) => void;
   favorites: string[];
   toggleFavorite: (id: string) => void;
   hidden: string[];

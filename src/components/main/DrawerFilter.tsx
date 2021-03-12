@@ -5,7 +5,7 @@ import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, iconObject } from "../../util/functions";
-import { AppWhitelistType, PresetType, QueueType } from "../../util/types";
+import { MainWhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -23,12 +23,12 @@ type DrawerFilterProps = {
   open: boolean;
   openPreset: (preset: PresetType) => void;
   profiles: string[];
-  setWhitelist: (prop: string, whitelist: AppWhitelistType | AppWhitelistType[keyof AppWhitelistType]) => void;
+  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
   snackbarQueue: QueueType;
   sort: string;
   vendors: string[];
   view: string;
-  whitelist: AppWhitelistType;
+  whitelist: MainWhitelistType;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
@@ -77,7 +77,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const handleChange = (name: string, prop: string) => {
-    const original = props.whitelist[prop as keyof AppWhitelistType];
+    const original = props.whitelist[prop as keyof MainWhitelistType];
     const edited =
       typeof original === "boolean"
         ? !original

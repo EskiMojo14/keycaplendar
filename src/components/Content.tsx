@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal } from "../util/functions";
-import { setTypes, whitelistTypes, statisticsTypes, statisticsSortTypes, queueTypes } from "../util/propTypeTemplates";
+import { MainWhitelistType, QueueType, SetType, StatisticsSortType, StatisticsType } from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -15,7 +14,57 @@ import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentUsers } from "./content/ContentUsers";
 import "./Content.scss";
 
-export const Content = (props) => {
+type ContentProps = {
+  allDesigners: string[];
+  allRegions: string[];
+  allSets: SetType[];
+  allVendors: string[];
+  applyTheme: string;
+  bottomNav: boolean;
+  className: string;
+  content: boolean;
+  darkTheme: string;
+  density: string;
+  device: string;
+  fromTimeTheme: string;
+  getData: () => void;
+  groups: string[];
+  lightTheme: string;
+  loading: boolean;
+  manualTheme: boolean;
+  page: string;
+  profiles: string[];
+  search: string;
+  setApplyTheme: (applyTheme: string) => void;
+  setBottomNav: (bottomNav: boolean) => void;
+  setDarkTheme: (darkTheme: string) => void;
+  setDensity: (density: string) => void;
+  setFromTimeTheme: (fromTimeTheme: string) => void;
+  setLightTheme: (lightTheme: string) => void;
+  setManualTheme: (manualTheme: boolean) => void;
+  setPage: (page: string) => void;
+  setSearch: (search: string) => void;
+  setSort: (sort: string) => void;
+  setStatistics: (prop: string, query: string) => void;
+  setStatisticsSort: (prop: string, query: string) => void;
+  setStatisticsTab: (tab: string) => void;
+  setToTimeTheme: (toTimeTheme: string) => void;
+  setView: (view: string) => void;
+  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
+  sets: SetType[];
+  snackbarQueue: QueueType;
+  sort: string;
+  statistics: StatisticsType;
+  statisticsSort: StatisticsSortType;
+  statisticsTab: string;
+  toTimeTheme: string;
+  toggleLichTheme: () => void;
+  toggleLoading: () => void;
+  view: string;
+  whitelist: MainWhitelistType;
+};
+
+export const Content = (props: ContentProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const [navOpen, setNavOpen] = useState(false);
@@ -81,6 +130,7 @@ export const Content = (props) => {
         setStatisticsTab={props.setStatisticsTab}
         allDesigners={props.allDesigners}
         allVendors={props.allVendors}
+        snackbarQueue={props.snackbarQueue}
       />
     ) : null;
   const contentAudit =
@@ -90,6 +140,7 @@ export const Content = (props) => {
   const contentUsers =
     props.page === "users" && user.isAdmin ? (
       <ContentUsers
+        bottomNav={props.bottomNav}
         openNav={openNav}
         allDesigners={props.allDesigners}
         snackbarQueue={props.snackbarQueue}
@@ -156,53 +207,3 @@ export const Content = (props) => {
 };
 
 export default Content;
-
-Content.propTypes = {
-  allDesigners: PropTypes.arrayOf(PropTypes.string),
-  allRegions: PropTypes.arrayOf(PropTypes.string),
-  allSets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  allVendors: PropTypes.arrayOf(PropTypes.string),
-  applyTheme: PropTypes.string,
-  bottomNav: PropTypes.bool,
-  className: PropTypes.string,
-  content: PropTypes.bool,
-  darkTheme: PropTypes.string,
-  density: PropTypes.string,
-  device: PropTypes.string,
-  fromTimeTheme: PropTypes.string,
-  getData: PropTypes.func,
-  groups: PropTypes.arrayOf(PropTypes.string),
-  lightTheme: PropTypes.string,
-  loading: PropTypes.bool,
-  manualTheme: PropTypes.bool,
-  page: PropTypes.string,
-  profiles: PropTypes.arrayOf(PropTypes.string),
-  search: PropTypes.string,
-  setApplyTheme: PropTypes.func,
-  setBottomNav: PropTypes.func,
-  setDarkTheme: PropTypes.func,
-  setDensity: PropTypes.func,
-  setFromTimeTheme: PropTypes.func,
-  setLightTheme: PropTypes.func,
-  setManualTheme: PropTypes.func,
-  setPage: PropTypes.func,
-  setSearch: PropTypes.func,
-  setSort: PropTypes.func,
-  setStatistics: PropTypes.func,
-  setStatisticsSort: PropTypes.func,
-  setStatisticsTab: PropTypes.func,
-  setToTimeTheme: PropTypes.func,
-  setView: PropTypes.func,
-  setWhitelist: PropTypes.func,
-  sets: PropTypes.arrayOf(PropTypes.shape(setTypes())),
-  snackbarQueue: PropTypes.shape(queueTypes),
-  sort: PropTypes.string,
-  statistics: PropTypes.shape(statisticsTypes),
-  statisticsSort: PropTypes.shape(statisticsSortTypes),
-  statisticsTab: PropTypes.string,
-  toTimeTheme: PropTypes.string,
-  toggleLichTheme: PropTypes.func,
-  toggleLoading: PropTypes.func,
-  view: PropTypes.string,
-  whitelist: PropTypes.shape(whitelistTypes),
-};

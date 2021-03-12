@@ -12,7 +12,6 @@ import "./DrawerAuditFilter.scss";
 type DrawerAuditFilterProps = {
   auditLength: number;
   close: () => void;
-  device: string;
   filterAction: string;
   filterUser: string;
   getActions: (num: number) => void;

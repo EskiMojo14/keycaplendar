@@ -1,11 +1,14 @@
 import React, { useContext } from "react";
-import PropTypes from "prop-types";
 import emptyImg from "../../media/empty.svg";
 import { UserContext } from "../../util/contexts";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 
-export const ContentEmpty = (props) => {
+type ContentEmptyProps = {
+  page: string;
+};
+
+export const ContentEmpty = (props: ContentEmptyProps) => {
   const { favorites, hidden } = useContext(UserContext);
   return (
     <div className="empty-container">
@@ -25,7 +28,3 @@ export const ContentEmpty = (props) => {
 };
 
 export default ContentEmpty;
-
-ContentEmpty.propTypes = {
-  page: PropTypes.string,
-};
