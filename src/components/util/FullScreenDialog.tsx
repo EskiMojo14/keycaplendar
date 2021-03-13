@@ -44,7 +44,8 @@ export const FullScreenDialog = (props: FullScreenDialogProps) => {
       setClosing(false);
     }, 400);
   };
-  const { open: propsOpen, onClose: _onClose, ...filteredProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { open: propsOpen, onClose, ...filteredProps } = props;
   return (
     <>
       <div

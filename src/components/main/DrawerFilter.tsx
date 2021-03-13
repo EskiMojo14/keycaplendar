@@ -37,6 +37,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const [modified, setModified] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { edited, ...whitelist } = props.whitelist;
     const equal = isEqual(preset.whitelist, whitelist);
     setModified(!equal);
