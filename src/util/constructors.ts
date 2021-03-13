@@ -1,6 +1,17 @@
 import { nanoid } from "nanoid";
 import { MainWhitelistType } from "./types";
 
+export class Interval {
+  intervalId;
+  constructor(callback: () => void, time: number) {
+    this.intervalId = setInterval(callback, time);
+  }
+  clear() {
+    clearTimeout(this.intervalId);
+    console.log("clear");
+  }
+}
+
 export class Whitelist {
   profiles: string[];
   shipped: string[];
@@ -10,7 +21,7 @@ export class Whitelist {
     profiles: string[] = [],
     shipped: string[] = [],
     vendorMode: "exclude" | "include" = "exclude",
-    vendors: string[] = [],
+    vendors: string[] = []
   ) {
     this.profiles = profiles;
     this.shipped = shipped;
@@ -31,7 +42,7 @@ export class Preset {
     shipped: string[] = [],
     vendorMode = "exclude",
     vendors: string[] = [],
-    id = nanoid(),
+    id = nanoid()
   ) {
     this.name = name;
     this.id = id;
@@ -65,7 +76,7 @@ export class Set {
     gbEnd = "",
     id = "",
     image = "",
-    profile = "",
+    profile = ""
   ) {
     this.colorway = colorway;
     this.designer = designer;
@@ -107,7 +118,7 @@ export class User {
     nickname = "",
     designer = false,
     editor = false,
-    admin = false,
+    admin = false
   ) {
     this.admin = admin;
     this.designer = designer;

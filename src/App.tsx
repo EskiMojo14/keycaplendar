@@ -13,93 +13,132 @@ import { EntryGuide } from "./components/pages/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, urlPages } from "./util/constants";
+import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove, normalise, replaceFunction } from "./util/functions";
-import { Preset } from "./util/constructors";
+import { CurrentUserType, MainWhitelistType, PresetType, SetType } from "./util/types";
 import "./App.scss";
 
 const db = firebase.firestore();
 
 const queue = createSnackbarQueue();
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      device: "tablet",
-      bottomNav: false,
-      page: "calendar",
-      statisticsTab: "timeline",
-      view: "card",
-      transition: false,
-      sort: "gbLaunch",
-      allDesigners: [],
-      allVendors: [],
-      allRegions: [],
-      sets: [],
+type AppProps = Record<string, never>;
+
+type AppState = {
+  device: string;
+  bottomNav: boolean;
+  page: string;
+  statisticsTab: string;
+  view: string;
+  transition: boolean;
+  sort: string;
+  allDesigners: string[];
+  allVendors: string[];
+  allRegions: string[];
+  sets: SetType[];
+  profiles: string[];
+  filteredSets: SetType[];
+  groups: string[];
+  loading: boolean;
+  content: boolean;
+  search: string;
+  user: CurrentUserType;
+  favorites: string[];
+  hidden: string[];
+  whitelist: MainWhitelistType;
+  cookies: boolean;
+  applyTheme: string;
+  lightTheme: string;
+  darkTheme: string;
+  manualTheme: boolean;
+  fromTimeTheme: string;
+  toTimeTheme: string;
+  lichTheme: boolean;
+  density: string;
+  syncSettings: boolean;
+  preset: PresetType;
+  presets: PresetType[];
+};
+
+class App extends React.Component<AppProps, AppState> {
+  state: AppState = {
+    device: "tablet",
+    bottomNav: false,
+    page: "calendar",
+    statisticsTab: "timeline",
+    view: "card",
+    transition: false,
+    sort: "gbLaunch",
+    allDesigners: [],
+    allVendors: [],
+    allRegions: [],
+    sets: [],
+    profiles: [],
+    filteredSets: [],
+    groups: [],
+    loading: false,
+    content: true,
+    search: "",
+    user: {
+      email: "",
+      name: "",
+      avatar: "",
+      isEditor: false,
+      isAdmin: false,
+      nickname: "",
+      isDesigner: false,
+      id: "",
+    },
+    favorites: [],
+    hidden: [],
+    whitelist: {
+      edited: [],
+      favorites: false,
+      hidden: false,
       profiles: [],
-      filteredSets: [],
-      groups: [],
-      loading: false,
-      content: true,
-      search: "",
-      user: {
-        email: null,
-        name: null,
-        avatar: null,
-        isEditor: false,
-        isAdmin: false,
-        nickname: "",
-        isDesigner: false,
-        id: null,
-      },
-      favorites: [],
-      hidden: [],
-      whitelist: {
-        edited: [],
-        favorites: false,
-        hidden: false,
-        profiles: [],
-        shipped: ["Shipped", "Not shipped"],
-        vendorMode: "exclude",
-        vendors: [],
-      },
-      cookies: true,
-      applyTheme: "manual",
-      lightTheme: "light",
-      darkTheme: "deep",
-      manualTheme: false,
-      fromTimeTheme: "21:00",
-      toTimeTheme: "06:00",
-      lichTheme: false,
-      density: "default",
-      syncSettings: false,
-      preset: new Preset(),
-      presets: [],
-    };
+      shipped: ["Shipped", "Not shipped"],
+      vendorMode: "exclude",
+      vendors: [],
+    },
+    cookies: true,
+    applyTheme: "manual",
+    lightTheme: "light",
+    darkTheme: "deep",
+    manualTheme: false,
+    fromTimeTheme: "21:00",
+    toTimeTheme: "06:00",
+    lichTheme: false,
+    density: "default",
+    syncSettings: false,
+    preset: new Preset(),
+    presets: [],
+  };
+  constructor(props: AppProps) {
+    super(props);
     this.debouncedFilterData = debounce(this.filterData, 600, { trailing: true });
   }
   getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      if (urlPages.includes(pageQuery) || process.env.NODE_ENV === "development") {
+      if ((pageQuery && urlPages.includes(pageQuery)) || (pageQuery && process.env.NODE_ENV === "development")) {
         this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
       }
     }
-    const whitelistObj = {};
+    const whitelistObj: MainWhitelistType = { ...this.state.whitelist };
     whitelistParams.forEach((param, index, array) => {
       if (params.has(param)) {
-        if (param === "profile") {
-          whitelistObj.profiles = [params.get(param)];
-        } else if (param === "profiles" || param === "shipped" || param === "vendors") {
-          const array = params
-            .get(param)
-            .split(" ")
-            .map((item) => item.replace("-", " "));
-          whitelistObj[param] = array;
-        } else if (param === "vendorMode") {
-          whitelistObj[param] = params.get(param);
+        const val = params.get(param);
+        if (val) {
+          if (param === "profile") {
+            whitelistObj.profiles = [val];
+          } else if (param === "profiles" || param === "shipped" || param === "vendors") {
+            const array = val.split(" ").map((item) => item.replace("-", " "));
+            whitelistObj[param] = array;
+          } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
+            whitelistObj[param] = val;
+          }
         }
       }
       if (index === array.length - 1) {
@@ -108,7 +147,7 @@ class App extends React.Component {
     });
     if (params.has("statisticsTab")) {
       const urlTab = params.get("statisticsTab");
-      if (statsTabs.includes(urlTab)) {
+      if (urlTab && statsTabs.includes(urlTab)) {
         this.setStatisticsTab(urlTab);
       }
     }
@@ -116,26 +155,26 @@ class App extends React.Component {
   };
   acceptCookies = () => {
     this.setState({ cookies: true });
-    this.setCookie("accepted", true, 356);
+    this.setCookie("accepted", "true", 356);
   };
   clearCookies = () => {
     this.setState({ cookies: false });
-    this.setCookie("accepted", false, -1);
+    this.setCookie("accepted", "false", -1);
   };
-  setCookie(cname, cvalue, exdays) {
+  setCookie(cname: string, cvalue: string, exdays: number) {
     if (this.state.cookies || cname === "accepted") {
-      let d = new Date();
+      const d = new Date();
       d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
       const expires = "expires=" + d.toUTCString();
       document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
   }
-  getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
+  getCookie(cname: string) {
+    const name = cname + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
       while (c.charAt(0) === " ") {
         c = c.substring(1);
       }
@@ -147,9 +186,9 @@ class App extends React.Component {
   }
   checkCookies = () => {
     const accepted = this.getCookie("accepted");
-    if (accepted) {
+    if (accepted && accepted === "true") {
       this.setState({ cookies: true });
-      const checkCookie = (key, setFunction) => {
+      const checkCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
         const cookie = this.getCookie(key);
         if (cookie) {
           if (cookie !== "true" && cookie !== "false") {
@@ -178,13 +217,13 @@ class App extends React.Component {
         this.setCookie("theme", legacyTheme, -1);
       }
       Object.keys(settingsFunctions).forEach((setting) => {
-        checkCookie(setting, this[settingsFunctions[setting]]);
+        checkCookie(setting, this[settingsFunctions[setting] as keyof App]);
       });
     } else {
       this.clearCookies();
     }
   };
-  setView = (view, write = true) => {
+  setView = (view: string, write = true) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -202,7 +241,7 @@ class App extends React.Component {
       this.syncSetting("view", view);
     }
   };
-  setPage = (page) => {
+  setPage = (page: string) => {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -222,7 +261,7 @@ class App extends React.Component {
           page: page,
         },
         "KeycapLendar: " + pageTitle[page],
-        "?" + params.toString(),
+        "?" + params.toString()
       );
     }
   };
@@ -235,48 +274,49 @@ class App extends React.Component {
 
     const currentDay = moment();
     const fromArray = this.state.fromTimeTheme.split(":");
-    const fromTime = moment().hours(fromArray[0]).minutes(fromArray[1]);
+    const fromTime = moment().hours(parseInt(fromArray[0])).minutes(parseInt(fromArray[1]));
     const toArray = this.state.toTimeTheme.split(":");
-    const toTime = moment().hours(toArray[0]).minutes(toArray[1]);
+    const toTime = moment().hours(parseInt(toArray[0])).minutes(parseInt(toArray[1]));
     const timedBool = this.state.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
     return manualBool || systemBool || timedBool;
   };
   checkTheme = async () => {
     const themeBool = await this.isDarkTheme();
-    document.querySelector("html").classList = this.state.lichTheme
-      ? "lich"
-      : themeBool === true || themeBool === "true"
-      ? this.state.darkTheme
-      : this.state.lightTheme;
-    document
-      .querySelector("meta[name=theme-color]")
-      .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+    const html = document.querySelector("html");
+    if (html) {
+      html.setAttribute("class", "");
+      html.classList.add(
+        this.state.lichTheme ? "lich" : themeBool === true ? this.state.darkTheme : this.state.lightTheme
+      );
+    }
+    const meta = document.querySelector("meta[name=theme-color]");
+    if (meta) {
+      meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+    }
   };
-  setApplyTheme = (applyTheme, write = true) => {
+  setApplyTheme = (applyTheme: string, write = true) => {
     this.setState({
       applyTheme: applyTheme,
     });
+    const timed = new Interval(this.checkTheme, 1000 * 60);
     if (applyTheme === "system") {
       setTimeout(this.checkTheme, 1);
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
         e.preventDefault();
         this.checkTheme();
       });
-    } else if (applyTheme === "timed") {
-      setTimeout(this.checkTheme, 1);
-      setInterval(this.checkTheme, 1000 * 60);
     } else {
       setTimeout(this.checkTheme, 1);
     }
     if (applyTheme !== "timed") {
-      clearInterval(this.checkTheme);
+      setTimeout(timed.clear, 1000 * 10);
     }
     if (write) {
       this.setCookie("applyTheme", applyTheme, 365);
       this.syncSetting("applyTheme", applyTheme);
     }
   };
-  setLightTheme = (theme, write = true) => {
+  setLightTheme = (theme: string, write = true) => {
     this.setState({ lightTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
@@ -284,7 +324,7 @@ class App extends React.Component {
       this.syncSetting("lightTheme", theme);
     }
   };
-  setDarkTheme = (theme, write = true) => {
+  setDarkTheme = (theme: string, write = true) => {
     this.setState({ darkTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
@@ -292,15 +332,15 @@ class App extends React.Component {
       this.syncSetting("darkTheme", theme);
     }
   };
-  setManualTheme = (bool, write = true) => {
+  setManualTheme = (bool: boolean, write = true) => {
     this.setState({ manualTheme: bool });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("manualTheme", bool, 365);
+      this.setCookie("manualTheme", bool.toString(), 365);
       this.syncSetting("manualTheme", bool);
     }
   };
-  setFromTimeTheme = (time, write = true) => {
+  setFromTimeTheme = (time: string, write = true) => {
     this.setState({ fromTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
@@ -308,7 +348,7 @@ class App extends React.Component {
       this.syncSetting("fromTimeTheme", time);
     }
   };
-  setToTimeTheme = (time, write = true) => {
+  setToTimeTheme = (time: string, write = true) => {
     this.setState({ toTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
@@ -322,11 +362,11 @@ class App extends React.Component {
     });
     setTimeout(this.checkTheme, 1);
   };
-  setBottomNav = (value, write = true) => {
+  setBottomNav = (value: boolean, write = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
     if (write) {
-      this.setCookie("bottomNav", value, 365);
+      this.setCookie("bottomNav", value.toString(), 365);
       this.syncSetting("bottomNav", value);
     }
   };
@@ -340,7 +380,7 @@ class App extends React.Component {
     db.collection("keysets")
       .get()
       .then((querySnapshot) => {
-        let sets = [];
+        const sets: SetType[] = [];
         querySnapshot.forEach((doc) => {
           if (doc.data().profile) {
             const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
@@ -365,8 +405,8 @@ class App extends React.Component {
         });
 
         sets.sort(function (a, b) {
-          var x = a.colorway.toLowerCase();
-          var y = b.colorway.toLowerCase();
+          const x = a.colorway.toLowerCase();
+          const y = b.colorway.toLowerCase();
           if (x < y) {
             return -1;
           }
@@ -395,16 +435,16 @@ class App extends React.Component {
     search = this.state.search,
     whitelist = this.state.whitelist,
     favorites = this.state.favorites,
-    hidden = this.state.hidden,
+    hidden = this.state.hidden
   ) => {
     const today = moment.utc();
     const yesterday = moment.utc().date(today.date() - 1);
-    let pageSets = [];
-    let allRegions = [];
-    let allVendors = [];
-    let allProfiles = [];
-    let allDesigners = [];
-    let groups = [];
+    let pageSets: SetType[] = [];
+    const allRegions: string[] = [];
+    const allVendors: string[] = [];
+    const allProfiles: string[] = [];
+    const allDesigners: string[] = [];
+    const groups: string[] = [];
 
     const hiddenSets = sets.filter((set) => {
       if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
@@ -417,7 +457,7 @@ class App extends React.Component {
     if (this.state.user.isAdmin) {
       sets.forEach((set) => {
         Object.keys(set).forEach((key) => {
-          const value = set[key];
+          const value = set[key as keyof SetType];
           if (typeof value === "string") {
             const regex = / $/m;
             const bool = regex.test(value);
@@ -469,7 +509,7 @@ class App extends React.Component {
 
     // lists
     sets.forEach((set) => {
-      if (set.vendors[0]) {
+      if (set.vendors) {
         set.vendors.forEach((vendor) => {
           if (!allVendors.includes(vendor.name)) {
             allVendors.push(vendor.name);
@@ -490,8 +530,8 @@ class App extends React.Component {
     });
 
     allVendors.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -502,8 +542,8 @@ class App extends React.Component {
     });
 
     allRegions.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -514,8 +554,8 @@ class App extends React.Component {
     });
 
     allProfiles.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -526,8 +566,8 @@ class App extends React.Component {
     });
 
     allDesigners.sort(function (a, b) {
-      var x = a.toLowerCase();
-      var y = b.toLowerCase();
+      const x = a.toLowerCase();
+      const y = b.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -538,22 +578,25 @@ class App extends React.Component {
     });
 
     // whitelist logic
-    const checkVendors = (set) => {
+    const checkVendors = (set: SetType) => {
       let bool = whitelist.vendorMode === "exclude";
-      Object.keys(set.vendors).forEach((key) => {
-        const vendor = set.vendors[key];
-        if (whitelist.vendorMode === "exclude") {
-          if (whitelist.vendors.includes(vendor.name)) {
-            bool = false;
+      const vendors = set.vendors;
+      if (vendors) {
+        vendors.forEach((vendor) => {
+          if (whitelist.vendorMode === "exclude") {
+            if (whitelist.vendors.includes(vendor.name)) {
+              bool = false;
+            }
+          } else {
+            if (whitelist.vendors.includes(vendor.name)) {
+              bool = true;
+            }
           }
-        } else {
-          if (whitelist.vendors.includes(vendor.name)) {
-            bool = true;
-          }
-        }
-      });
+        });
+      }
       return bool;
     };
+
     const filteredSets = pageSets.filter((set) => {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
@@ -561,7 +604,7 @@ class App extends React.Component {
       const favoritesBool = this.state.user.email
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
-      if (set.vendors.length > 0) {
+      if (set.vendors && set.vendors.length > 0) {
         return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
@@ -574,14 +617,14 @@ class App extends React.Component {
 
     // search logic
 
-    const searchSets = (search) => {
+    const searchSets = (search: string) => {
       return filteredSets.filter((set) => {
-        let setInfo = [
+        const setInfo = [
           set.profile,
           set.colorway,
           normalise(replaceFunction(set.colorway)),
           set.designer.join(" "),
-          set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`),
+          set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
         ];
         const array = search
           .toLowerCase()
@@ -599,12 +642,12 @@ class App extends React.Component {
     searchedSets.forEach((set) => {
       if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
         const setDate = moment.utc(set[sort]);
-        let setMonth = setDate.format("MMMM YYYY");
+        const setMonth = setDate.format("MMMM YYYY");
         if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
           groups.push(setMonth);
         }
       } else if (sort === "vendor") {
-        if (set.vendors[0]) {
+        if (set.vendors) {
           set.vendors.forEach((vendor) => {
             if (!groups.includes(vendor.name)) {
               groups.push(vendor.name);
@@ -612,7 +655,7 @@ class App extends React.Component {
           });
         }
       } else if (sort === "designer") {
-        if (set.designer[0]) {
+        if (set.designer) {
           set.designer.forEach((designer) => {
             if (!groups.includes(designer)) {
               groups.push(designer);
@@ -620,8 +663,9 @@ class App extends React.Component {
           });
         }
       } else {
-        if (!groups.includes(set[sort])) {
-          groups.push(set[sort]);
+        const val = set[sort as keyof SetType] as string;
+        if (!groups.includes(val)) {
+          groups.push(val);
         }
       }
     });
@@ -682,49 +726,59 @@ class App extends React.Component {
       this.setState({ preset: defaultPreset });
     }
 
-    if (!whitelist.edited.includes("profiles")) {
+    if (whitelist.edited && !whitelist.edited.includes("profiles")) {
       this.setWhitelist("profiles", allProfiles, false);
     }
   };
 
-  debouncedFilterData = () => {
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+  debouncedFilterData = (
+    _page = this.state.page,
+    _sets = this.state.sets,
+    _sort = this.state.sort,
+    _search = this.state.search,
+    _whitelist = this.state.whitelist,
+    _favorites = this.state.favorites,
+    _hidden = this.state.hidden
+  ) => {
     // placeholder - gets overwritten in constructor
   };
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
-  setDensity = (density, write = true) => {
+  setDensity = (density: string, write = true) => {
     this.setState({ density: density });
     if (write) {
       this.setCookie("density", density, 365);
       this.syncSetting("density", density);
     }
   };
-  setSort = (sortBy) => {
+  setSort = (sort: string) => {
     document.documentElement.scrollTop = 0;
-    this.setState({ sort: sortBy });
-    this.filterData(this.state.page, this.state.sets, sortBy);
+    this.setState({ sort: sort });
+    this.filterData(this.state.page, this.state.sets, sort);
   };
-  setSearch = (query) => {
+  setSearch = (query: string) => {
     this.setState({
       search: query,
     });
     document.documentElement.scrollTop = 0;
     this.debouncedFilterData(this.state.page, this.state.sets, this.state.sort, query);
   };
-  setUser = (user = {}) => {
+  setUser = (user: Partial<CurrentUserType>) => {
     const blankUser = {
-      email: null,
-      name: null,
-      avatar: null,
+      email: "",
+      name: "",
+      avatar: "",
       nickname: "",
       isDesigner: false,
       isEditor: false,
       isAdmin: false,
-      id: null,
+      id: "",
     };
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
     this.setState({ user: newUser });
   };
-  setStatisticsTab = (tab, clearUrl = true) => {
+  setStatisticsTab = (tab: string, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
     if (clearUrl) {
@@ -734,50 +788,61 @@ class App extends React.Component {
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
-  setWhitelist = (prop, val, clearUrl = true) => {
-    if (prop === "all") {
-      const edited = Object.keys(val);
-      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
-      this.setState({ whitelist: whitelist });
-      document.documentElement.scrollTop = 0;
-      if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
-      }
-    } else {
-      const edited = this.state.whitelist.edited.includes(prop)
-        ? this.state.whitelist.edited
-        : [...this.state.whitelist.edited, prop];
-      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-      this.setState({
-        whitelist: whitelist,
-      });
-      document.documentElement.scrollTop = 0;
-      if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
-      }
-    }
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      whitelistParams.forEach((param, index, array) => {
-        if (params.has(param)) {
-          params.delete(param);
+  setWhitelist = (
+    prop: string,
+    val: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType],
+    clearUrl = true
+  ) => {
+    if (val) {
+      if (prop === "all" && typeof val === "object" && !(val instanceof Array)) {
+        const edited = Object.keys(val).filter((key) => {
+          const value = val[key as keyof MainWhitelistType];
+          return value instanceof Array && value.length > 0;
+        });
+        const whitelist = { ...this.state.whitelist, ...val, edited: edited };
+        this.setState({ whitelist: whitelist });
+        document.documentElement.scrollTop = 0;
+        if (this.state.sets.length > 0) {
+          this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
         }
-        if (index === array.length - 1) {
-          if (params.has("page")) {
-            const page = params.get("page");
-            window.history.pushState(
-              {
-                page: page,
-              },
-              "KeycapLendar: " + pageTitle[page],
-              "?" + params.toString(),
-            );
-          } else {
-            const questionParam = params.has("page") ? "?" + params.toString() : "/";
-            window.history.pushState({}, "KeycapLendar", questionParam);
+      } else if (this.state.whitelist.edited) {
+        const edited = this.state.whitelist.edited.includes(prop)
+          ? this.state.whitelist.edited
+          : [...this.state.whitelist.edited, prop];
+        const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
+        this.setState({
+          whitelist: whitelist,
+        });
+        document.documentElement.scrollTop = 0;
+        if (this.state.sets.length > 0) {
+          this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
+        }
+      }
+      if (clearUrl) {
+        const params = new URLSearchParams(window.location.search);
+        whitelistParams.forEach((param, index, array) => {
+          if (params.has(param)) {
+            params.delete(param);
           }
-        }
-      });
+          if (index === array.length - 1) {
+            if (params.has("page")) {
+              const page = params.get("page");
+              if (page) {
+                window.history.pushState(
+                  {
+                    page: page,
+                  },
+                  "KeycapLendar: " + pageTitle[page],
+                  "?" + params.toString()
+                );
+              }
+            } else {
+              const questionParam = params.has("page") ? "?" + params.toString() : "/";
+              window.history.pushState({}, "KeycapLendar", questionParam);
+            }
+          }
+        });
+      }
     }
   };
   setDevice = () => {
@@ -810,7 +875,7 @@ class App extends React.Component {
     calculate();
     window.addEventListener("resize", calculate);
   };
-  toggleFavorite = (id) => {
+  toggleFavorite = (id: string) => {
     const favorites = addOrRemove([...this.state.favorites], id);
     this.setState({ favorites: favorites });
     if (this.state.page === "favorites") {
@@ -820,7 +885,7 @@ class App extends React.Component {
         this.state.sort,
         this.state.search,
         this.state.whitelist,
-        favorites,
+        favorites
       );
     }
     if (this.state.user.id) {
@@ -830,7 +895,7 @@ class App extends React.Component {
           {
             favorites: favorites,
           },
-          { merge: true },
+          { merge: true }
         )
         .catch((error) => {
           console.log("Failed to sync favorites: " + error);
@@ -844,18 +909,21 @@ class App extends React.Component {
         .doc(id)
         .get()
         .then((doc) => {
-          if (doc.exists && doc.data().favorites) {
-            const favorites = doc.data().favorites;
-            this.setState({ favorites: favorites });
-            if (this.state.page === "favorites") {
-              this.filterData(
-                this.state.page,
-                this.state.sets,
-                this.state.sort,
-                this.state.search,
-                this.state.whitelist,
-                favorites,
-              );
+          if (doc.exists) {
+            const data = doc.data();
+            if (data && data.favorites) {
+              const favorites = data.favorites;
+              this.setState({ favorites: favorites });
+              if (this.state.page === "favorites") {
+                this.filterData(
+                  this.state.page,
+                  this.state.sets,
+                  this.state.sort,
+                  this.state.search,
+                  this.state.whitelist,
+                  favorites
+                );
+              }
             }
           }
         })
@@ -865,7 +933,7 @@ class App extends React.Component {
         });
     }
   };
-  toggleHidden = (id) => {
+  toggleHidden = (id: string) => {
     const hidden = addOrRemove([...this.state.hidden], id);
     this.setState({ hidden: hidden });
     this.filterData(
@@ -875,7 +943,7 @@ class App extends React.Component {
       this.state.search,
       this.state.whitelist,
       this.state.favorites,
-      hidden,
+      hidden
     );
     if (this.state.user.id) {
       db.collection("users")
@@ -884,7 +952,7 @@ class App extends React.Component {
           {
             hidden: hidden,
           },
-          { merge: true },
+          { merge: true }
         )
         .catch((error) => {
           console.log("Failed to sync hidden sets: " + error);
@@ -898,18 +966,21 @@ class App extends React.Component {
         .doc(id)
         .get()
         .then((doc) => {
-          if (doc.exists && doc.data().hidden) {
-            const hidden = doc.data().hidden;
-            this.setState({ hidden: hidden });
-            this.filterData(
-              this.state.page,
-              this.state.sets,
-              this.state.sort,
-              this.state.search,
-              this.state.whitelist,
-              this.state.favorites,
-              hidden,
-            );
+          if (doc.exists) {
+            const data = doc.data();
+            if (data && data.hidden) {
+              const hidden = data.hidden;
+              this.setState({ hidden: hidden });
+              this.filterData(
+                this.state.page,
+                this.state.sets,
+                this.state.sort,
+                this.state.search,
+                this.state.whitelist,
+                this.state.favorites,
+                hidden
+              );
+            }
           }
         })
         .catch((error) => {
@@ -918,13 +989,13 @@ class App extends React.Component {
         });
     }
   };
-  setSyncSettings = (bool, write = true) => {
+  setSyncSettings = (bool: boolean, write = true) => {
     this.setState({ syncSettings: bool });
     if (write) {
-      let settingsObject = {};
+      const settingsObject: { [key: string]: any } = {};
       if (bool) {
         Object.keys(settingsFunctions).forEach((setting) => {
-          settingsObject[setting] = this.state[setting];
+          settingsObject[setting] = this.state[setting as keyof AppState];
         });
       }
       db.collection("users")
@@ -936,7 +1007,7 @@ class App extends React.Component {
         });
     }
   };
-  syncSetting = (setting, value) => {
+  syncSetting = (setting: string, value: any) => {
     if (this.state.user.id && this.state.syncSettings) {
       const userDocRef = db.collection("users").doc(this.state.user.id);
       userDocRef.get().then((doc) => {
@@ -955,7 +1026,7 @@ class App extends React.Component {
         }
       });
       const sync = () => {
-        let settingObject = {};
+        const settingObject: { [key: string]: any } = {};
         settingObject["settings." + setting] = value;
         userDocRef.update(settingObject).catch((error) => {
           console.log("Failed to sync settings: " + error);
@@ -972,15 +1043,15 @@ class App extends React.Component {
         .then((doc) => {
           if (doc.exists) {
             const data = doc.data();
-            if (data.syncSettings) {
+            if (data && data.syncSettings) {
               this.setState({ syncSettings: data.syncSettings });
-              const getSetting = (setting, setFunction) => {
+              const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
                 if (data.settings && data.settings[setting]) {
                   setFunction(data.settings[setting], false);
                 }
               };
               Object.keys(settingsFunctions).forEach((setting) => {
-                getSetting(setting, this[settingsFunctions[setting]]);
+                getSetting(setting, this[settingsFunctions[setting] as keyof App]);
               });
             }
           }
@@ -991,17 +1062,17 @@ class App extends React.Component {
         });
     }
   };
-  findPreset = (prop, val) => {
+  findPreset = (prop: keyof PresetType, val: string) => {
     const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
-  sortPresets = (presets) => {
+  sortPresets = (presets: PresetType[]) => {
     presets.sort(function (a, b) {
       if (a.name === "Default" || b.name === "Default") {
         return a.name === "Default" ? -1 : 1;
       }
-      var x = a.name.toLowerCase();
-      var y = b.name.toLowerCase();
+      const x = a.name.toLowerCase();
+      const y = b.name.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -1012,25 +1083,25 @@ class App extends React.Component {
     });
     return presets;
   };
-  selectPreset = (presetName) => {
+  selectPreset = (presetName: string) => {
     const preset = this.findPreset("name", presetName);
     this.setState({ preset: preset });
     this.setWhitelist("all", preset.whitelist);
   };
-  newPreset = (preset) => {
+  newPreset = (preset: PresetType) => {
     preset.id = nanoid();
     const presets = [...this.state.presets, preset];
     this.setState({ presets: this.sortPresets(presets), preset: preset });
     this.syncPresets(presets);
   };
-  editPreset = (preset) => {
+  editPreset = (preset: PresetType) => {
     const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
     const presets = [...this.state.presets];
     presets[index] = preset;
     this.setState({ presets: this.sortPresets(presets), preset: preset });
     this.syncPresets(presets);
   };
-  deletePreset = (preset) => {
+  deletePreset = (preset: PresetType) => {
     const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
     this.setState({
       presets: this.sortPresets(presets),
@@ -1057,7 +1128,7 @@ class App extends React.Component {
         .then((doc) => {
           if (doc.exists) {
             const data = doc.data();
-            if (data.filterPresets) {
+            if (data && data.filterPresets) {
               const defaultPreset = new Preset(
                 "Default",
                 false,
@@ -1065,22 +1136,9 @@ class App extends React.Component {
                 this.state.profiles,
                 ["Shipped", "Not shipped"],
                 "exclude",
-                [],
+                []
               );
-              const dataPresets = data.filterPresets.map(
-                (preset) =>
-                  new Preset(
-                    preset.name,
-                    preset.whitelist.favorites,
-                    preset.whitelist.hidden,
-                    preset.whitelist.profiles,
-                    preset.whitelist.shipped,
-                    preset.whitelist.vendorMode,
-                    preset.whitelist.vendors,
-                    preset.id,
-                  ),
-              );
-              const presets = [defaultPreset, ...dataPresets];
+              const presets = [defaultPreset, ...data.filterPresets];
               this.setState({ presets: presets });
             }
           }
@@ -1091,24 +1149,27 @@ class App extends React.Component {
         });
     }
   };
+  unregisterAuthObserver = () => {
+    // placeholder - gets defined when component mounts
+  };
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
     this.checkCookies();
     this.checkTheme();
-    document
-      .querySelector("meta[name=theme-color]")
-      .setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
-    document.querySelector("html").classList = this.state.theme;
+    const meta = document.querySelector("meta[name=theme-color]");
+    if (meta) {
+      meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+    }
     this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const getClaimsFn = firebase.functions().httpsCallable("getClaims");
         getClaimsFn()
           .then((result) => {
             this.setUser({
-              email: user.email,
-              name: user.displayName,
-              avatar: user.photoURL,
+              email: user.email ? user.email : "",
+              name: user.displayName ? user.displayName : "",
+              avatar: user.photoURL ? user.photoURL : "",
               id: user.uid,
               nickname: result.data.nickname,
               isDesigner: result.data.designer,
@@ -1119,9 +1180,9 @@ class App extends React.Component {
           .catch((error) => {
             queue.notify({ title: "Error verifying custom claims: " + error });
             this.setUser({
-              email: user.email,
-              name: user.displayName,
-              avatar: user.photoURL,
+              email: user.email ? user.email : "",
+              name: user.displayName ? user.displayName : "",
+              avatar: user.photoURL ? user.photoURL : "",
               id: user.uid,
             });
           });
@@ -1130,7 +1191,7 @@ class App extends React.Component {
         this.getPresets(user.uid);
         this.getSettings(user.uid);
       } else {
-        this.setUser();
+        this.setUser({});
       }
     });
   }
@@ -1149,6 +1210,18 @@ class App extends React.Component {
               value={{
                 user: this.state.user,
                 setUser: this.setUser,
+                favorites: this.state.favorites,
+                toggleFavorite: this.toggleFavorite,
+                hidden: this.state.hidden,
+                toggleHidden: this.toggleHidden,
+                syncSettings: this.state.syncSettings,
+                setSyncSettings: this.setSyncSettings,
+                preset: this.state.preset,
+                presets: this.state.presets,
+                selectPreset: this.selectPreset,
+                newPreset: this.newPreset,
+                editPreset: this.editPreset,
+                deletePreset: this.deletePreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>

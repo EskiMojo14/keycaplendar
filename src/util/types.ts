@@ -127,7 +127,7 @@ export type UserContextType = {
   favorites: string[];
   toggleFavorite: (id: string) => void;
   hidden: string[];
-  toggleHide: (id: string) => void;
+  toggleHidden: (id: string) => void;
   syncSettings: boolean;
   setSyncSettings: (bool: boolean, write?: boolean) => void;
   preset: PresetType;

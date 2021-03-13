@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal } from "../util/functions";
-import { MainWhitelistType, QueueType, SetType, StatisticsSortType, StatisticsType } from "../util/types";
+import { MainWhitelistType, QueueType, SetType } from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -25,7 +25,6 @@ type ContentProps = {
   content: boolean;
   darkTheme: string;
   density: string;
-  device: string;
   fromTimeTheme: string;
   getData: () => void;
   groups: string[];
@@ -45,8 +44,6 @@ type ContentProps = {
   setPage: (page: string) => void;
   setSearch: (search: string) => void;
   setSort: (sort: string) => void;
-  setStatistics: (prop: string, query: string) => void;
-  setStatisticsSort: (prop: string, query: string) => void;
   setStatisticsTab: (tab: string) => void;
   setToTimeTheme: (toTimeTheme: string) => void;
   setView: (view: string) => void;
@@ -54,8 +51,6 @@ type ContentProps = {
   sets: SetType[];
   snackbarQueue: QueueType;
   sort: string;
-  statistics: StatisticsType;
-  statisticsSort: StatisticsSortType;
   statisticsTab: string;
   toTimeTheme: string;
   toggleLichTheme: () => void;
