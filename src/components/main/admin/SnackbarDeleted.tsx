@@ -27,7 +27,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
           gbLaunch: props.set.gbMonth ? props.set.gbLaunch.slice(0, 7) : props.set.gbLaunch,
           latestEditor: user.id,
         },
-        { merge: true },
+        { merge: true }
       )
       .then(() => {
         console.log("Document recreated with ID: ", id);

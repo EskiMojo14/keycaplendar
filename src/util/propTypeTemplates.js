@@ -31,7 +31,7 @@ export const setTypes = (isAction = false) => {
         name: PropTypes.string.isRequired,
         region: PropTypes.string.isRequired,
         storeLink: PropTypes.string,
-      }),
+      })
     ),
   };
 };

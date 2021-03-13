@@ -43,7 +43,7 @@ export class DialogStatistics extends React.Component<DialogStatisticsProps, Dia
     ) {
       this.props.setStatistics(
         this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab,
-        this.state.statistics,
+        this.state.statistics
       );
     }
   };

@@ -130,7 +130,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
   processItems = (items: firebase.storage.Reference[], append = false) => {
     const images = items.map((itemRef) => {
       const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
-        itemRef.fullPath,
+        itemRef.fullPath
       )}?alt=media`;
       const obj = new ImageObj(itemRef.name, itemRef.parent ? itemRef.parent.fullPath : "", itemRef.fullPath, src);
       return obj;
@@ -305,7 +305,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                             <path d="M8 9h8v10H8z" opacity=".3" />
                             <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                           </svg>
-                        </div>,
+                        </div>
                       )}
                       onClick={this.openDelete}
                     />
@@ -330,7 +330,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                                 />
                                 <path d="M2 6H0v5h.01L0 20c0 1.1.9 2 2 2h18v-2H2V6zm5 9h14l-3.5-4.5-2.5 3.01L11.5 9zM22 4h-8l-2-2H6c-1.1 0-1.99.9-1.99 2L4 16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 12H6V4h5.17l1.41 1.41.59.59H22v10z" />
                               </svg>
-                            </div>,
+                            </div>
                           )}
                           onClick={this.openFolders}
                         />
@@ -462,7 +462,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                         })}
                       </ImageList>
                     </div>
-                  ) : null,
+                  ) : null
                 )}
               </div>
               <Footer />

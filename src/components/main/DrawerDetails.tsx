@@ -215,7 +215,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path d="M5 18.08V19h.92l9.06-9.06-.92-.92z" opacity=".3" />
                 <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z" />
-              </svg>,
+              </svg>
             )}
           />
           {this.context.user.isEditor ? (
@@ -229,7 +229,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                   <path d="M0 0h24v24H0V0z" fill="none" />
                   <path d="M8 9h8v10H8z" opacity=".3" />
                   <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                </svg>,
+                </svg>
               )}
               onClick={() => this.props.delete(this.props.set)}
             />
@@ -254,7 +254,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                 <circle cx="14.5" cy="7.5" r="1.5" />
                 <circle cx="17.5" cy="11.5" r="1.5" />
               </svg>
-            </div>,
+            </div>
           )}
         />
       ) : null;
@@ -271,7 +271,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                   opacity=".3"
                 />
                 <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
-              </svg>,
+              </svg>
             )}
             className="favorite"
             checked={this.context.favorites.includes(this.props.set.id)}
@@ -288,7 +288,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                   opacity=".3"
                 />
                 <path d="M12 4C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 13c-3.79 0-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6s7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17zm0-10c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7zm0 7c-1.38 0-2.5-1.12-2.5-2.5S10.62 9 12 9s2.5 1.12 2.5 2.5S13.38 14 12 14z" />
-              </svg>,
+              </svg>
             )}
             onIcon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -298,7 +298,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                   opacity=".3"
                 />
                 <path d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm2.28 4.49l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.06-1.07.14L13 9.21c.58.25 1.03.71 1.28 1.28zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
-              </svg>,
+              </svg>
             )}
             className="hide"
             checked={this.context.hidden.includes(this.props.set.id)}

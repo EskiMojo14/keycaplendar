@@ -96,7 +96,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                 props.action.action === "updated" &&
                 !isEqual(
                   props.action.before[property as keyof ActionSetType],
-                  props.action.after[property as keyof ActionSetType],
+                  props.action.after[property as keyof ActionSetType]
                 )
               ) {
                 const beforeProp = props.action.before[property as keyof ActionSetType]
@@ -259,7 +259,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                                 </div>
                               ) : null}
                             </DataTableCell>
-                          </DataTableRow>,
+                          </DataTableRow>
                         );
                       }
                     });
@@ -369,7 +369,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                                 </div>
                               ) : null}
                             </DataTableCell>
-                          </DataTableRow>,
+                          </DataTableRow>
                         );
                       });
                     }

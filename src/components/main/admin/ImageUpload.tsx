@@ -154,7 +154,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
             this.dragEnter(e);
           }
         },
-        false,
+        false
       );
       dropArea.addEventListener(
         "dragleave",
@@ -163,7 +163,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
             this.dragLeave(e);
           }
         },
-        false,
+        false
       );
       dropArea.addEventListener(
         "dragover",
@@ -172,7 +172,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
             this.dragOver(e);
           }
         },
-        false,
+        false
       );
       dropArea.addEventListener(
         "drop",
@@ -181,7 +181,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
             this.onDrop(e);
           }
         },
-        false,
+        false
       );
     }
   }

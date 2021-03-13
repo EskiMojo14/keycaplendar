@@ -27,7 +27,7 @@ export const ToggleGroupButton = (props: ToggleGroupButtonProps) => {
       className={bemClasses(
         "button",
         { "only-icon": !!props.icon && !props.label, selected: props.selected },
-        props.className,
+        props.className
       )}
     />
   );

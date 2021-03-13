@@ -28,7 +28,7 @@ const customPoint = (data: any) => {
         "ct:value": data.value.y,
         "ct:meta": data.meta,
       },
-      "ct-stroked-point",
+      "ct-stroked-point"
     );
     data.element.replace(circle);
   }
