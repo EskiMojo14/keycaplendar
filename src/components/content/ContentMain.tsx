@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
-import { Preset, Set } from "../../util/constructors";
+import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import { MainWhitelistType, PresetType, QueueType, SetType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
@@ -52,7 +52,7 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
-  const blankSet = new Set();
+  const blankSet = new Keyset();
   const blankPreset = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);

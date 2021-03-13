@@ -6,6 +6,10 @@ const storage = firebase.storage();
 
 const storageRef = storage.ref();
 
+export function uniqueArray<T>(oldArray: T[]): T[] {
+  return Array.from(new Set(oldArray));
+}
+
 export function addOrRemove<T>(oldArray: T[], value: T): T[] {
   const array: any[] = [...oldArray];
   const index: number = array.indexOf(value);

@@ -57,7 +57,7 @@ export class Preset {
   }
 }
 
-export class Set {
+export class Keyset {
   colorway: string;
   designer: string[];
   details: string;

@@ -12,11 +12,20 @@ import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/Guides";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import { pageTitle, settingsFunctions, pageSort, whitelistParams, statsTabs, urlPages } from "./util/constants";
+import {
+  pageTitle,
+  settingsFunctions,
+  pageSort,
+  whitelistParams,
+  statsTabs,
+  urlPages,
+  dateSorts,
+  arraySorts,
+} from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove, normalise, replaceFunction } from "./util/functions";
-import { CurrentUserType, MainWhitelistType, PresetType, SetType } from "./util/types";
+import { addOrRemove, normalise, replaceFunction, uniqueArray } from "./util/functions";
+import { ArraySortKeys, CurrentUserType, DateSortKeys, MainWhitelistType, PresetType, SetType } from "./util/types";
 import "./App.scss";
 
 const db = firebase.firestore();
@@ -439,20 +448,7 @@ class App extends React.Component<AppProps, AppState> {
   ) => {
     const today = moment.utc();
     const yesterday = moment.utc().date(today.date() - 1);
-    let pageSets: SetType[] = [];
-    const allRegions: string[] = [];
-    const allVendors: string[] = [];
-    const allProfiles: string[] = [];
-    const allDesigners: string[] = [];
-    const groups: string[] = [];
 
-    const hiddenSets = sets.filter((set) => {
-      if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
-        return hidden.includes(set.id);
-      } else {
-        return !hidden.includes(set.id);
-      }
-    });
     // console log sets with space at end of string
     if (this.state.user.isAdmin) {
       sets.forEach((set) => {
@@ -469,65 +465,18 @@ class App extends React.Component<AppProps, AppState> {
         });
       });
     }
-    // page logic
-    if (page === "calendar") {
-      pageSets = hiddenSets.filter((set) => {
-        const startDate = moment.utc(set.gbLaunch);
-        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
-      });
-    } else if (page === "live") {
-      pageSets = hiddenSets.filter((set) => {
-        const startDate = moment.utc(set.gbLaunch);
-        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate <= today && (endDate >= yesterday || !set.gbEnd);
-      });
-    } else if (page === "ic") {
-      pageSets = hiddenSets.filter((set) => {
-        return !set.gbLaunch || set.gbLaunch.includes("Q");
-      });
-    } else if (page === "previous") {
-      pageSets = hiddenSets.filter((set) => {
-        const endDate = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
-        return endDate && endDate <= yesterday;
-      });
-    } else if (page === "timeline") {
-      pageSets = hiddenSets.filter((set) => {
-        return set.gbLaunch && !set.gbLaunch.includes("Q");
-      });
-    } else if (page === "archive") {
-      pageSets = hiddenSets;
-    } else if (page === "favorites") {
-      pageSets = hiddenSets.filter((set) => {
-        return favorites.includes(set.id);
-      });
-    } else if (page === "hidden") {
-      pageSets = hiddenSets.filter((set) => {
-        return hidden.includes(set.id);
-      });
-    }
 
     // lists
-    sets.forEach((set) => {
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!allVendors.includes(vendor.name)) {
-            allVendors.push(vendor.name);
-          }
-          if (!allRegions.includes(vendor.region)) {
-            allRegions.push(vendor.region);
-          }
-        });
-      }
-      set.designer.forEach((designer) => {
-        if (!allDesigners.includes(designer)) {
-          allDesigners.push(designer);
-        }
-      });
-      if (!allProfiles.includes(set.profile)) {
-        allProfiles.push(set.profile);
-      }
-    });
+    const allVendors = uniqueArray(
+      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat()
+    );
+
+    const allRegions = uniqueArray(
+      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat()
+    );
+    const allDesigners = uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat());
+
+    const allProfiles = uniqueArray(sets.map((set) => set.profile));
 
     allVendors.sort(function (a, b) {
       const x = a.toLowerCase();
@@ -577,8 +526,43 @@ class App extends React.Component<AppProps, AppState> {
       return 0;
     });
 
-    // whitelist logic
-    const checkVendors = (set: SetType) => {
+    // filter bool functions
+
+    const hiddenBool = (set: SetType) => {
+      if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
+        return hidden.includes(set.id);
+      } else {
+        return !hidden.includes(set.id);
+      }
+    };
+
+    const pageBool = (set: SetType): boolean => {
+      if (page === "calendar") {
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
+      } else if (page === "live") {
+        const startDate = moment.utc(set.gbLaunch);
+        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+        return startDate <= today && (endDate >= yesterday || !set.gbEnd);
+      } else if (page === "ic") {
+        return !set.gbLaunch || set.gbLaunch.includes("Q");
+      } else if (page === "previous") {
+        const endDate = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
+        return !!(endDate && endDate <= yesterday);
+      } else if (page === "timeline") {
+        return !!(set.gbLaunch && !set.gbLaunch.includes("Q"));
+      } else if (page === "archive") {
+        return true;
+      } else if (page === "favorites") {
+        return favorites.includes(set.id);
+      } else if (page === "hidden") {
+        return hidden.includes(set.id);
+      }
+      return false;
+    };
+
+    const vendorBool = (set: SetType) => {
       let bool = whitelist.vendorMode === "exclude";
       const vendors = set.vendors;
       if (vendors) {
@@ -597,7 +581,7 @@ class App extends React.Component<AppProps, AppState> {
       return bool;
     };
 
-    const filteredSets = pageSets.filter((set) => {
+    const filterBool = (set: SetType) => {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
@@ -605,7 +589,7 @@ class App extends React.Component<AppProps, AppState> {
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
       if (set.vendors && set.vendors.length > 0) {
-        return checkVendors(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
+        return vendorBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
       } else {
         if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
           return false;
@@ -613,64 +597,50 @@ class App extends React.Component<AppProps, AppState> {
           return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
         }
       }
-    });
-
-    // search logic
-
-    const searchSets = (search: string) => {
-      return filteredSets.filter((set) => {
-        const setInfo = [
-          set.profile,
-          set.colorway,
-          normalise(replaceFunction(set.colorway)),
-          set.designer.join(" "),
-          set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
-        ];
-        const array = search
-          .toLowerCase()
-          .split(" ")
-          .map((term) => {
-            return setInfo.join(" ").toLowerCase().includes(term.toLowerCase());
-          });
-        const bool = !array.includes(false);
-        return bool;
-      });
     };
-    const searchedSets = search ? searchSets(search) : filteredSets;
+
+    const searchBool = (set: SetType) => {
+      const setInfo = [
+        set.profile,
+        set.colorway,
+        normalise(replaceFunction(set.colorway)),
+        set.designer.join(" "),
+        set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
+      ];
+      const array = search
+        .toLowerCase()
+        .split(" ")
+        .map((term) => {
+          return setInfo.join(" ").toLowerCase().includes(term.toLowerCase());
+        });
+      const bool = !array.includes(false);
+      return search.length > 0 ? bool : true;
+    };
+
+    const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
     // group display
-    searchedSets.forEach((set) => {
-      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const setDate = moment.utc(set[sort]);
-        const setMonth = setDate.format("MMMM YYYY");
-        if (!groups.includes(setMonth) && setMonth !== "undefined NaN") {
-          groups.push(setMonth);
-        }
+    const createGroups = (sets: SetType[]): string[] => {
+      if (dateSorts.includes(sort)) {
+        return sets
+          .map((set) => {
+            const setDate = moment.utc(set[sort as DateSortKeys]);
+            const setMonth = setDate.format("MMMM YYYY");
+            return setMonth === "Invalid date" ? "" : setMonth;
+          })
+          .filter((item) => !!item);
+      } else if (arraySorts.includes(sort)) {
+        return sets.map((set) => set[sort as ArraySortKeys]).flat();
       } else if (sort === "vendor") {
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            if (!groups.includes(vendor.name)) {
-              groups.push(vendor.name);
-            }
-          });
-        }
-      } else if (sort === "designer") {
-        if (set.designer) {
-          set.designer.forEach((designer) => {
-            if (!groups.includes(designer)) {
-              groups.push(designer);
-            }
-          });
-        }
+        return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
       } else {
-        const val = set[sort as keyof SetType] as string;
-        if (!groups.includes(val)) {
-          groups.push(val);
-        }
+        return sets.map((set) => `${set[sort as keyof SetType]}`);
       }
-    });
+    };
+    const groups = uniqueArray(createGroups(filteredSets));
+
     groups.sort(function (a, b) {
-      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
+      if (dateSorts.includes(sort)) {
         const aDate = moment.utc(a, "MMMM YYYY");
         const bDate = moment.utc(b, "MMMM YYYY");
         if (page === "previous" || page === "ic") {
@@ -711,13 +681,13 @@ class App extends React.Component<AppProps, AppState> {
 
     // set states
     this.setState({
-      filteredSets: searchedSets,
+      filteredSets: filteredSets,
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
       profiles: allProfiles,
       groups: groups,
-      content: searchedSets.length > 0,
+      content: filteredSets.length > 0,
       loading: false,
       presets: presets,
     });

@@ -5,6 +5,10 @@ export type Obj<T = unknown> = Record<string, T>;
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
+export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
+
+export type ArraySortKeys = "designer";
+
 export type WhitelistType = {
   profiles: string[];
   shipped: typeof whitelistShipped;

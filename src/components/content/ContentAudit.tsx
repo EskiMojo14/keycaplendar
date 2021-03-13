@@ -3,6 +3,7 @@ import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
+import { Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
@@ -25,7 +26,6 @@ import { AuditEntry } from "../audit/AuditEntry";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import { Footer } from "../common/Footer";
 import "./ContentAudit.scss";
-import { Set } from "../../util/constructors";
 
 type ContentAuditProps = {
   bottomNav: boolean;
@@ -56,8 +56,8 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     filterOpen: false,
     deleteOpen: false,
     deleteAction: {
-      before: new Set(),
-      after: new Set(),
+      before: new Keyset(),
+      after: new Keyset(),
       action: "",
       changelogId: "",
       documentId: "",
@@ -110,8 +110,8 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     setTimeout(() => {
       this.setState({
         deleteAction: {
-          before: new Set(),
-          after: new Set(),
+          before: new Keyset(),
+          after: new Keyset(),
           action: "",
           changelogId: "",
           documentId: "",
@@ -132,7 +132,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     this.filterActions(
       this.state.actions,
       prop === "filterAction" ? e.target.value : this.state.filterAction,
-      prop === "filterUser" ? e.target.value : this.state.filterUser,
+      prop === "filterUser" ? e.target.value : this.state.filterUser
     );
   };
   getActions = (num = this.state.length) => {
@@ -189,7 +189,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
   filterActions = (
     actions = this.state.actions,
     filterAction = this.state.filterAction,
-    filterUser = this.state.filterUser,
+    filterUser = this.state.filterUser
   ) => {
     let filteredActions = [...actions];
 
