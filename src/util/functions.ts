@@ -133,6 +133,6 @@ export const batchStorageDelete = (array: string[] = []) => {
           console.log(error);
           return Promise.resolve();
         });
-    }),
+    })
   );
 };
