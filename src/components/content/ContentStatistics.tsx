@@ -1247,7 +1247,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         />
       ) : null;
     const categoryButtons = (cat: string) => {
-      this.context === "desktop" ? (
+      return this.context === "desktop" ? (
         <ToggleGroup>
           <ToggleGroupButton
             selected={hasKey(this.state.settings, cat) && this.state.settings[cat] === "profile"}
