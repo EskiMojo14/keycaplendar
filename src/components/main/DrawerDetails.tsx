@@ -106,9 +106,9 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
         gb = "GB expected " + gbLaunch + ".";
       } else if (set.gbMonth && gbLaunch) {
         gb = "Expected " + gbLaunch.format("MMMM") + ".";
-      } else if (gbLaunch && gbEnd) {
+      } else if (gbLaunch) {
         gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-          gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
+          gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
         }.`;
       } else {
         gb = null;
