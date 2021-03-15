@@ -7,9 +7,6 @@ const storage = firebase.storage();
 const storageRef = storage.ref();
 
 export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
-  if (!(key in obj)) {
-    console.log(obj, key, key in obj);
-  }
   return key in obj;
 }
 
