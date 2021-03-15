@@ -125,7 +125,7 @@ class App extends React.Component<AppProps, AppState> {
   };
   constructor(props: AppProps) {
     super(props);
-    this.debouncedFilterData = debounce(this.filterData, 600, { trailing: true });
+    this.debouncedFilterData = debounce(this.filterData, 350, { trailing: true });
   }
   getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
