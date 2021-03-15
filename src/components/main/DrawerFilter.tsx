@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
-import { addOrRemove, iconObject } from "../../util/functions";
+import { addOrRemove, hasKey, iconObject } from "../../util/functions";
 import { MainWhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -78,47 +78,58 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const handleChange = (name: string, prop: string) => {
-    const original = props.whitelist[prop as keyof MainWhitelistType];
-    const edited =
-      typeof original === "boolean"
-        ? !original
-        : original instanceof Array
-        ? addOrRemove(original, name).sort(function (a, b) {
-            const x = a.toLowerCase();
-            const y = b.toLowerCase();
-            if (x < y) {
-              return -1;
-            }
-            if (x > y) {
-              return 1;
-            }
-            return 0;
-          })
-        : original === "include"
-        ? "exclude"
-        : "include";
-    if (typeof edited === "boolean") {
-      if (prop === "favorites" && edited && props.whitelist.hidden) {
-        props.setWhitelist("all", { ...props.whitelist, hidden: false, favorites: edited });
-      } else if (prop === "hidden" && edited && props.whitelist.favorites) {
-        props.setWhitelist("all", { ...props.whitelist, favorites: false, hidden: edited });
+    if (hasKey(props.whitelist, prop)) {
+      const original = props.whitelist[prop];
+      const edited =
+        typeof original === "boolean"
+          ? !original
+          : original instanceof Array
+          ? addOrRemove(original, name).sort(function (a, b) {
+              const x = a.toLowerCase();
+              const y = b.toLowerCase();
+              if (x < y) {
+                return -1;
+              }
+              if (x > y) {
+                return 1;
+              }
+              return 0;
+            })
+          : original === "include"
+          ? "exclude"
+          : "include";
+      if (typeof edited === "boolean") {
+        if (prop === "favorites" && edited && props.whitelist.hidden) {
+          props.setWhitelist("all", { ...props.whitelist, hidden: false, favorites: edited });
+        } else if (prop === "hidden" && edited && props.whitelist.favorites) {
+          props.setWhitelist("all", { ...props.whitelist, favorites: false, hidden: edited });
+        } else {
+          props.setWhitelist(prop, edited);
+        }
+      } else {
+        props.setWhitelist(prop, edited);
       }
-    } else {
-      props.setWhitelist(prop, edited);
     }
   };
 
   const checkAll = (prop: string) => {
-    const all = props[prop as keyof DrawerFilterProps];
-    if (all instanceof Array) {
-      const array = prop === "shipped" ? whitelistShipped : all;
-      props.setWhitelist(prop, array);
+    if (hasKey(props, prop)) {
+      const all = props[prop];
+      if (all instanceof Array) {
+        props.setWhitelist(prop, all);
+      }
+    } else if (prop === "shipped") {
+      props.setWhitelist(prop, whitelistShipped);
     }
   };
 
   const uncheckAll = (prop: string) => {
-    if (props[prop as keyof DrawerFilterProps] instanceof Array) {
-      const emptyArray: string[] = [];
+    const emptyArray: string[] = [];
+    if (hasKey(props, prop)) {
+      if (props[prop] instanceof Array) {
+        props.setWhitelist(prop, emptyArray);
+      }
+    } else if (prop === "shipped") {
       props.setWhitelist(prop, emptyArray);
     }
   };

@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { whitelistShipped } from "./constants";
 import { MainWhitelistType } from "./types";
 
 export class Interval {
@@ -17,16 +18,19 @@ export class Whitelist {
   shipped: string[];
   vendorMode: "exclude" | "include";
   vendors: string[];
+  edited: string[];
   constructor(
     profiles: string[] = [],
-    shipped: string[] = [],
+    shipped: string[] = whitelistShipped,
     vendorMode: "exclude" | "include" = "exclude",
-    vendors: string[] = []
+    vendors: string[] = [],
+    edited: string[] = []
   ) {
     this.profiles = profiles;
     this.shipped = shipped;
     this.vendorMode = vendorMode as "exclude" | "include";
     this.vendors = vendors;
+    this.edited = edited;
   }
 }
 

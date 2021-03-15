@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "../../firebase";
 import { UserContext } from "../../util/contexts";
-import { iconObject } from "../../util/functions";
+import { hasKey, iconObject } from "../../util/functions";
 import { QueueType, UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
@@ -85,8 +85,10 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
     });
   };
   toggleRole = (role: string) => {
-    const user = { ...this.state.user, [role]: !this.state.user[role as keyof UserType] };
-    this.setState({ user: user, edited: true });
+    if (hasKey(this.state.user, role)) {
+      const user = { ...this.state.user, [role]: !this.state.user[role] };
+      this.setState({ user: user, edited: true });
+    }
   };
   setRoles = () => {
     this.setState({ loading: true });
@@ -230,9 +232,9 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
                     key={role}
                     label={role}
                     icon={
-                      this.props.device === "desktop" ? iconObject(roleIcons[role as keyof typeof roleIcons]) : null
+                      this.props.device === "desktop" && hasKey(roleIcons, role) ? iconObject(roleIcons[role]) : null
                     }
-                    selected={!!user[role as keyof typeof user]}
+                    selected={hasKey(user, role) && !!user[role]}
                     onClick={() => {
                       this.toggleRole(role);
                     }}

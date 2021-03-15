@@ -4,7 +4,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
 import { Keyset } from "../../util/constructors";
-import { openModal, closeModal } from "../../util/functions";
+import { openModal, closeModal, hasKey } from "../../util/functions";
 import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -126,14 +126,16 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     }, 100);
   };
   handleFilterChange = (e: any, prop: string) => {
-    this.setState<never>({
-      [prop as keyof ContentAuditState]: e.target.value,
-    });
-    this.filterActions(
-      this.state.actions,
-      prop === "filterAction" ? e.target.value : this.state.filterAction,
-      prop === "filterUser" ? e.target.value : this.state.filterUser
-    );
+    if (hasKey(this.state, prop)) {
+      this.setState<never>({
+        [prop]: e.target.value,
+      });
+      this.filterActions(
+        this.state.actions,
+        prop === "filterAction" ? e.target.value : this.state.filterAction,
+        prop === "filterUser" ? e.target.value : this.state.filterUser
+      );
+    }
   };
   getActions = (num = this.state.length) => {
     if (!this.state.loading) {

@@ -5,7 +5,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { addOrRemove, getStorageFolders, iconObject } from "../../util/functions";
+import { addOrRemove, getStorageFolders, hasKey, iconObject } from "../../util/functions";
 import { ImageType, QueueType, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
@@ -428,10 +428,9 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                                   <div className="item-container" onClick={() => this.openDetails(image)}>
                                     <ImageListImageAspectContainer
                                       style={{
-                                        paddingBottom:
-                                          "calc(100% /" +
-                                          aspectRatios[this.state.currentFolder as keyof typeof aspectRatios] +
-                                          ")",
+                                        paddingBottom: hasKey(aspectRatios, this.state.currentFolder)
+                                          ? "calc(100% /" + aspectRatios[this.state.currentFolder] + ")"
+                                          : undefined,
                                       }}
                                     >
                                       <LazyLoad debounce={false} offsetVertical={480}>

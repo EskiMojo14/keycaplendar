@@ -5,7 +5,14 @@ import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
-import { formatFileName, iconObject, getStorageFolders, batchStorageDelete, arrayMove } from "../../../util/functions";
+import {
+  formatFileName,
+  iconObject,
+  getStorageFolders,
+  batchStorageDelete,
+  arrayMove,
+  hasKey,
+} from "../../../util/functions";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { Button } from "@rmwc/button";
@@ -162,12 +169,15 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     if (this.state.vendors instanceof Array) {
       const property = prop.slice(0, -1);
       const index = parseInt(prop.slice(prop.length - 1));
-      const vendorsCopy = [...this.state.vendors];
-      vendorsCopy[index][property as keyof VendorType] = value;
-      this.setState({
-        vendors: vendorsCopy,
-        focused: "",
-      });
+      const vendors = [...this.state.vendors];
+      const vendor = vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+        this.setState({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -189,22 +199,25 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
 
   handleChangeVendor = (e: any) => {
     const vendors = [...this.state.vendors];
-    const field = e.target.name.replace(/\d/g, "");
+    const property = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field as keyof VendorType] = e.target.value;
-    this.setState({
-      vendors: vendors,
-    });
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = e.target.value;
+      this.setState({
+        vendors: vendors,
+      });
+    }
   };
 
   handleChangeVendorEndDate = (e: any) => {
-    const field = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
     const vendors = [...this.state.vendors];
+    const index = e.target.name.replace(/\D/g, "");
+    const vendor = vendors[index];
     if (e.target.checked) {
-      vendors[index][field as keyof VendorType] = "";
+      vendor.endDate = "";
     } else {
-      delete vendors[index][field as keyof VendorType];
+      delete vendor.endDate;
     }
     this.setState({
       vendors: vendors,
@@ -982,12 +995,15 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
   selectVendor = (prop: string, value: string) => {
     const property = prop.slice(0, -1);
     const index = parseInt(prop.slice(prop.length - 1));
-    const vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property as keyof VendorType] = value;
-    this.setState({
-      vendors: vendorsCopy,
-      focused: "",
-    });
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = value;
+      this.setState({
+        vendors: vendors,
+        focused: "",
+      });
+    }
   };
 
   handleChange = (e: any) => {
@@ -1008,22 +1024,25 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
 
   handleChangeVendor = (e: any) => {
     const vendors = [...this.state.vendors];
-    const field = e.target.name.replace(/\d/g, "");
+    const property = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field as keyof VendorType] = e.target.value;
-    this.setState({
-      vendors: vendors,
-    });
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = e.target.value;
+      this.setState({
+        vendors: vendors,
+      });
+    }
   };
 
   handleChangeVendorEndDate = (e: any) => {
-    const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
     const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
     if (e.target.checked) {
-      vendors[index][field as keyof VendorType] = "";
+      vendor.endDate = "";
     } else {
-      delete vendors[index][field as keyof VendorType];
+      delete vendor.endDate;
     }
     this.setState({
       vendors: vendors,

@@ -5,7 +5,14 @@ import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
-import { formatFileName, iconObject, getStorageFolders, batchStorageDelete, arrayMove } from "../../../util/functions";
+import {
+  formatFileName,
+  iconObject,
+  getStorageFolders,
+  batchStorageDelete,
+  arrayMove,
+  hasKey,
+} from "../../../util/functions";
 import { QueueType, SetType, VendorType } from "../../../util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
@@ -151,12 +158,15 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     if (this.state.vendors instanceof Array) {
       const property = prop.slice(0, -1);
       const index = parseInt(prop.slice(prop.length - 1));
-      const vendorsCopy = [...this.state.vendors];
-      vendorsCopy[index][property as keyof VendorType] = value;
-      this.setState({
-        vendors: vendorsCopy,
-        focused: "",
-      });
+      const vendors = [...this.state.vendors];
+      const vendor = vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+        this.setState({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -190,22 +200,25 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
 
   handleChangeVendor = (e: any) => {
     const vendors = [...this.state.vendors];
-    const field = e.target.name.replace(/\d/g, "");
+    const property = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field as keyof VendorType] = e.target.value;
-    this.setState({
-      vendors: vendors,
-    });
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = e.target.value;
+      this.setState({
+        vendors: vendors,
+      });
+    }
   };
 
   handleChangeVendorEndDate = (e: any) => {
-    const field = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
     const vendors = [...this.state.vendors];
+    const index = e.target.name.replace(/\D/g, "");
+    const vendor = vendors[index];
     if (e.target.checked) {
-      vendors[index][field as keyof VendorType] = "";
+      vendor.endDate = "";
     } else {
-      delete vendors[index][field as keyof VendorType];
+      delete vendor.endDate;
     }
     this.setState({
       vendors: vendors,
@@ -925,12 +938,15 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
   selectVendor = (prop: string, value: string) => {
     const property = prop.slice(0, -1);
     const index = parseInt(prop.slice(prop.length - 1));
-    const vendorsCopy = [...this.state.vendors];
-    vendorsCopy[index][property as keyof VendorType] = value;
-    this.setState({
-      vendors: vendorsCopy,
-      focused: "",
-    });
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = value;
+      this.setState({
+        vendors: vendors,
+        focused: "",
+      });
+    }
   };
 
   setValues = () => {
@@ -991,22 +1007,25 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
 
   handleChangeVendor = (e: any) => {
     const vendors = [...this.state.vendors];
-    const field = e.target.name.replace(/\d/g, "");
+    const property = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
-    vendors[index][field as keyof VendorType] = e.target.value;
-    this.setState({
-      vendors: vendors,
-    });
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = e.target.value;
+      this.setState({
+        vendors: vendors,
+      });
+    }
   };
 
   handleChangeVendorEndDate = (e: any) => {
-    const field = e.target.name.replace(/\d/g, "");
     const index = e.target.name.replace(/\D/g, "");
     const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
     if (e.target.checked) {
-      vendors[index][field as keyof VendorType] = "";
+      vendor.endDate = "";
     } else {
-      delete vendors[index][field as keyof VendorType];
+      delete vendor.endDate;
     }
     this.setState({
       vendors: vendors,

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { QueueType, UserType } from "../../util/types";
 import { DeviceContext } from "../../util/contexts";
 import { User } from "../../util/constructors";
-import { iconObject } from "../../util/functions";
+import { hasKey, iconObject } from "../../util/functions";
 import {
   DataTable,
   DataTableContent,
@@ -129,51 +129,55 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
     page = this.state.page
   ) => {
     users.sort((a, b) => {
-      const aVal = a[sort as keyof UserType];
-      const bVal = b[sort as keyof UserType];
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        const x = aVal.toLowerCase();
-        const y = bVal.toLowerCase();
-        if (x < y) {
-          return reverseSort ? 1 : -1;
+      if (hasKey(a, sort) && hasKey(b, sort)) {
+        const aVal = a[sort];
+        const bVal = b[sort];
+        if (typeof aVal === "string" && typeof bVal === "string") {
+          const x = aVal.toLowerCase();
+          const y = bVal.toLowerCase();
+          if (x < y) {
+            return reverseSort ? 1 : -1;
+          }
+          if (x > y) {
+            return reverseSort ? -1 : 1;
+          }
+          if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
+            return 1;
+          }
+          if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
+            return -1;
+          }
+          if (a.email.toLowerCase() > b.email.toLowerCase()) {
+            return 1;
+          }
+          if (a.email.toLowerCase() < b.email.toLowerCase()) {
+            return -1;
+          }
+          return 0;
+        } else {
+          const x = a[sort];
+          const y = b[sort];
+          if (x < y) {
+            return reverseSort ? -1 : 1;
+          }
+          if (x > y) {
+            return reverseSort ? 1 : -1;
+          }
+          if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
+            return 1;
+          }
+          if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
+            return -1;
+          }
+          if (a.email.toLowerCase() > b.email.toLowerCase()) {
+            return 1;
+          }
+          if (a.email.toLowerCase() < b.email.toLowerCase()) {
+            return -1;
+          }
+          return 0;
         }
-        if (x > y) {
-          return reverseSort ? -1 : 1;
-        }
-        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-          return 1;
-        }
-        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-          return -1;
-        }
-        if (a.email.toLowerCase() > b.email.toLowerCase()) {
-          return 1;
-        }
-        if (a.email.toLowerCase() < b.email.toLowerCase()) {
-          return -1;
-        }
-        return 0;
       } else {
-        const x = a[sort as keyof UserType];
-        const y = b[sort as keyof UserType];
-        if (x < y) {
-          return reverseSort ? -1 : 1;
-        }
-        if (x > y) {
-          return reverseSort ? 1 : -1;
-        }
-        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-          return 1;
-        }
-        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-          return -1;
-        }
-        if (a.email.toLowerCase() > b.email.toLowerCase()) {
-          return 1;
-        }
-        if (a.email.toLowerCase() < b.email.toLowerCase()) {
-          return -1;
-        }
         return 0;
       }
     });

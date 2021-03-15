@@ -1,7 +1,8 @@
 import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import { ActionSetType, ActionType } from "../../util/types";
+import { hasKey } from "../../util/functions";
+import { ActionType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -94,17 +95,12 @@ export const AuditEntry = (props: AuditEntryProps) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 props.action.action === "updated" &&
-                !isEqual(
-                  props.action.before[property as keyof ActionSetType],
-                  props.action.after[property as keyof ActionSetType]
-                )
+                hasKey(props.action.before, property) &&
+                hasKey(props.action.after, property) &&
+                !isEqual(props.action.before[property], props.action.after[property])
               ) {
-                const beforeProp = props.action.before[property as keyof ActionSetType]
-                  ? props.action.before[property as keyof ActionSetType]
-                  : "";
-                const afterProp = props.action.after[property as keyof ActionSetType]
-                  ? props.action.after[property as keyof ActionSetType]
-                  : "";
+                const beforeProp = props.action.before[property] ? props.action.before[property] : "";
+                const afterProp = props.action.after[property] ? props.action.after[property] : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -310,7 +306,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                 return null;
               } else if (props.action.action === "created" || props.action.action === "deleted") {
                 const docData = props.action.action === "created" ? props.action.after : props.action.before;
-                const prop = docData[property as keyof ActionSetType] ? docData[property as keyof ActionSetType] : "";
+                const prop = hasKey(docData, property) && docData[property] ? docData[property] : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&

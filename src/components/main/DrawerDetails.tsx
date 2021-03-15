@@ -3,7 +3,8 @@ import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
 import { UserContext } from "../../util/contexts";
-import { iconObject } from "../../util/functions";
+import { hasKey, iconObject } from "../../util/functions";
+import { SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -13,7 +14,6 @@ import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./DrawerDetails.scss";
-import { SetType } from "../../util/types";
 
 type DrawerDetailsProps = {
   close: () => void;
@@ -119,16 +119,18 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
             chips.push(vendor.name);
           });
         } else {
-          const val = set[prop as keyof typeof set];
-          if (val && Array.isArray(val)) {
-            val.forEach((entry: any) => {
-              if (typeof entry === "string") {
-                chips.push(entry);
+          if (hasKey(set, prop)) {
+            const val = set[prop];
+            if (val && Array.isArray(val)) {
+              val.forEach((entry: any) => {
+                if (typeof entry === "string") {
+                  chips.push(entry);
+                }
+              });
+            } else {
+              if (typeof val === "string") {
+                chips.push(val);
               }
-            });
-          } else {
-            if (typeof val === "string") {
-              chips.push(val);
             }
           }
         }

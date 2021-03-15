@@ -6,6 +6,17 @@ const storage = firebase.storage();
 
 const storageRef = storage.ref();
 
+export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
+  if (!(key in obj)) {
+    console.log(obj, key, key in obj);
+  }
+  return key in obj;
+}
+
+export function hasOwnProperty<O, K extends PropertyKey>(obj: O, key: K): obj is O & Record<K, unknown> {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
 export function uniqueArray<T>(oldArray: T[]): T[] {
   return Array.from(new Set(oldArray));
 }

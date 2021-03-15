@@ -7,6 +7,7 @@ import { ViewList } from "../views/list/ViewList";
 import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
 import "./ContentGrid.scss";
+import { hasKey } from "../../util/functions";
 
 type ContentGridProps = {
   closeDetails: () => void;
@@ -23,18 +24,22 @@ type ContentGridProps = {
 export const ContentGrid = (props: ContentGridProps) => {
   const filterSets = (sets: SetType[], group: string, sort: string, page: string) => {
     const filteredSets = sets.filter((set) => {
-      if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
-        const setDate = moment.utc(set[sort]);
-        const setMonth = setDate.format("MMMM YYYY");
-        return setMonth === group;
-      } else if (sort === "vendor") {
-        if (set.vendors) {
-          return set.vendors.map((vendor) => vendor.name).includes(group);
+      if (hasKey(set, sort) || sort === "vendor") {
+        if (sort === "icDate" || sort === "gbLaunch" || sort === "gbEnd") {
+          const setDate = moment.utc(set[sort]);
+          const setMonth = setDate.format("MMMM YYYY");
+          return setMonth === group;
+        } else if (sort === "vendor") {
+          if (set.vendors) {
+            return set.vendors.map((vendor) => vendor.name).includes(group);
+          }
+        } else if (sort === "designer") {
+          return set.designer.includes(group);
+        } else {
+          return set[sort] === group;
         }
-      } else if (sort === "designer") {
-        return set.designer.includes(group);
       } else {
-        return set[sort as keyof SetType] === group;
+        return false;
       }
     });
     filteredSets.sort((a, b) => {

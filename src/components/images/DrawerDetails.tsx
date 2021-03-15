@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import moment from "moment";
 import { DeviceContext } from "../../util/contexts";
-import { formatBytes } from "../../util/functions";
+import { formatBytes, hasKey } from "../../util/functions";
 import { ImageType } from "../../util/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -58,8 +58,8 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           {Object.keys(imageProps).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{imageProps[key as keyof typeof imageProps]}</ListItemPrimaryText>
-                <ListItemSecondaryText>{props.image[key as keyof ImageType]}</ListItemSecondaryText>
+                <ListItemPrimaryText>{hasKey(imageProps, key) ? imageProps[key] : null}</ListItemPrimaryText>
+                <ListItemSecondaryText>{hasKey(props.image, key) ? props.image[key] : null}</ListItemSecondaryText>
               </ListItemText>
             </ListItem>
           ))}
@@ -69,7 +69,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           {Object.keys(metadata).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{metadata[key as keyof typeof metadata]}</ListItemPrimaryText>
+                <ListItemPrimaryText>{hasKey(metadata, key) ? metadata[key] : null}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
                     ? moment.utc(props.metadata[key]).format("Do MMMM YYYY, HH:mm:ss")

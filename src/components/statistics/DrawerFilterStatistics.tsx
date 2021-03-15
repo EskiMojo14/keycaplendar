@@ -1,6 +1,6 @@
 import React from "react";
 import { whitelistShipped } from "../../util/constants";
-import { addOrRemove } from "../../util/functions";
+import { addOrRemove, hasKey } from "../../util/functions";
 import { QueueType, WhitelistType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -23,20 +23,22 @@ type checkAllType = "profiles" | "vendors" | "shipped";
 export const DrawerFilterStatistics = (props: DrawerFilterStatisticsProps) => {
   const whitelist = props.whitelist;
   const handleChange = (name: string, prop: string) => {
-    const original = whitelist[prop as keyof WhitelistType];
-    if (original instanceof Array) {
-      const edited: string[] = addOrRemove(original, name).sort(function (a, b) {
-        const x = a.toLowerCase();
-        const y = b.toLowerCase();
-        if (x < y) {
-          return -1;
-        }
-        if (x > y) {
-          return 1;
-        }
-        return 0;
-      });
-      setWhitelist(prop, edited);
+    if (hasKey(whitelist, prop)) {
+      const original = whitelist[prop];
+      if (original instanceof Array) {
+        const edited: string[] = addOrRemove(original, name).sort(function (a, b) {
+          const x = a.toLowerCase();
+          const y = b.toLowerCase();
+          if (x < y) {
+            return -1;
+          }
+          if (x > y) {
+            return 1;
+          }
+          return 0;
+        });
+        setWhitelist(prop, edited);
+      }
     }
   };
 

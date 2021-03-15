@@ -1,5 +1,5 @@
 import React from "react";
-import { camelise } from "../../util/functions";
+import { camelise, hasKey } from "../../util/functions";
 import { StatisticsType } from "../../util/types";
 import {
   DataTable,
@@ -59,27 +59,29 @@ export const TimelineTable = (props: TimelineTableProps) => {
           </DataTableRow>
         </DataTableHead>
         <DataTableBody>
-          {props.months[props.statistics.timeline as keyof typeof props.months].map((month) => {
-            return (
-              <DataTableRow key={month}>
-                <DataTableCell className="right-border">{month}</DataTableCell>
-                <DataTableCell className="right-border" isNumeric>
-                  {props.monthData[props.statistics.timeline as keyof typeof props.monthData][month].count}
-                </DataTableCell>
-                {props.profiles.map((profile, index) => {
+          {hasKey(props.months, props.statistics.timeline)
+            ? props.months[props.statistics.timeline].map((month) => {
+                if (hasKey(props.monthData, props.statistics.timeline)) {
                   return (
-                    <DataTableCell isNumeric key={profile} className={"cell-" + letters[index]}>
-                      {
-                        props.monthData[props.statistics.timeline as keyof typeof props.monthData][month][
-                          camelise(profile)
-                        ]
-                      }
-                    </DataTableCell>
+                    <DataTableRow key={month}>
+                      <DataTableCell className="right-border">{month}</DataTableCell>
+                      <DataTableCell className="right-border" isNumeric>
+                        {props.monthData[props.statistics.timeline][month].count}
+                      </DataTableCell>
+                      {props.profiles.map((profile, index) => {
+                        if (hasKey(props.monthData, props.statistics.timeline)) {
+                          return (
+                            <DataTableCell isNumeric key={profile} className={"cell-" + letters[index]}>
+                              {props.monthData[props.statistics.timeline][month][camelise(profile)]}
+                            </DataTableCell>
+                          );
+                        }
+                      })}
+                    </DataTableRow>
                   );
-                })}
-              </DataTableRow>
-            );
-          })}
+                }
+              })
+            : null}
         </DataTableBody>
       </DataTableContent>
     </DataTable>

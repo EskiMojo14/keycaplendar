@@ -24,7 +24,7 @@ import {
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove, normalise, replaceFunction, uniqueArray } from "./util/functions";
+import { addOrRemove, hasKey, normalise, replaceFunction, uniqueArray } from "./util/functions";
 import { ArraySortKeys, CurrentUserType, DateSortKeys, MainWhitelistType, PresetType, SetType } from "./util/types";
 import "./App.scss";
 
@@ -226,7 +226,13 @@ class App extends React.Component<AppProps, AppState> {
         this.setCookie("theme", legacyTheme, -1);
       }
       Object.keys(settingsFunctions).forEach((setting) => {
-        checkCookie(setting, this[settingsFunctions[setting] as keyof App]);
+        if (hasKey(settingsFunctions, setting)) {
+          const key = settingsFunctions[setting];
+          if (hasKey<App>(this, key)) {
+            const func = this[key];
+            checkCookie(setting, func);
+          }
+        }
       });
     } else {
       this.clearCookies();
@@ -453,14 +459,16 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.user.isAdmin) {
       sets.forEach((set) => {
         Object.keys(set).forEach((key) => {
-          const value = set[key as keyof SetType];
-          if (typeof value === "string") {
-            const regex = / $/m;
-            const bool = regex.test(value);
-            if (bool) {
-              console.log(`${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>")}`);
+          if (hasKey(set, key)) {
+            const value = set[key];
+            if (typeof value === "string") {
+              const regex = / $/m;
+              const bool = regex.test(value);
+              if (bool) {
+                console.log(`${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>")}`);
+              }
+              return bool;
             }
-            return bool;
           }
         });
       });
@@ -634,7 +642,7 @@ class App extends React.Component<AppProps, AppState> {
       } else if (sort === "vendor") {
         return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
       } else {
-        return sets.map((set) => `${set[sort as keyof SetType]}`);
+        return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter((item) => !!item);
       }
     };
     const groups = uniqueArray(createGroups(filteredSets));
@@ -763,56 +771,58 @@ class App extends React.Component<AppProps, AppState> {
     val: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType],
     clearUrl = true
   ) => {
-    if (val) {
-      if (prop === "all" && typeof val === "object" && !(val instanceof Array)) {
-        const edited = Object.keys(val).filter((key) => {
-          const value = val[key as keyof MainWhitelistType];
-          return value instanceof Array && value.length > 0;
-        });
-        const whitelist = { ...this.state.whitelist, ...val, edited: edited };
-        this.setState({ whitelist: whitelist });
-        document.documentElement.scrollTop = 0;
-        if (this.state.sets.length > 0) {
-          this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
+    if (prop === "all" && typeof val === "object" && !(val instanceof Array)) {
+      const edited = Object.keys(val).filter((key) => {
+        if (hasKey(val, key)) {
+          const value = val[key];
+          return value && value instanceof Array && value.length > 0;
+        } else {
+          return false;
         }
-      } else if (this.state.whitelist.edited) {
-        const edited = this.state.whitelist.edited.includes(prop)
-          ? this.state.whitelist.edited
-          : [...this.state.whitelist.edited, prop];
-        const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-        this.setState({
-          whitelist: whitelist,
-        });
-        document.documentElement.scrollTop = 0;
-        if (this.state.sets.length > 0) {
-          this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
-        }
+      });
+      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
+      this.setState({ whitelist: whitelist });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
       }
-      if (clearUrl) {
-        const params = new URLSearchParams(window.location.search);
-        whitelistParams.forEach((param, index, array) => {
-          if (params.has(param)) {
-            params.delete(param);
-          }
-          if (index === array.length - 1) {
-            if (params.has("page")) {
-              const page = params.get("page");
-              if (page) {
-                window.history.pushState(
-                  {
-                    page: page,
-                  },
-                  "KeycapLendar: " + pageTitle[page],
-                  "?" + params.toString()
-                );
-              }
-            } else {
-              const questionParam = params.has("page") ? "?" + params.toString() : "/";
-              window.history.pushState({}, "KeycapLendar", questionParam);
+    } else if (this.state.whitelist.edited) {
+      const edited = this.state.whitelist.edited.includes(prop)
+        ? this.state.whitelist.edited
+        : [...this.state.whitelist.edited, prop];
+      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
+      this.setState({
+        whitelist: whitelist,
+      });
+      document.documentElement.scrollTop = 0;
+      if (this.state.sets.length > 0) {
+        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
+      }
+    }
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      whitelistParams.forEach((param, index, array) => {
+        if (params.has(param)) {
+          params.delete(param);
+        }
+        if (index === array.length - 1) {
+          if (params.has("page")) {
+            const page = params.get("page");
+            if (page) {
+              window.history.pushState(
+                {
+                  page: page,
+                },
+                "KeycapLendar: " + pageTitle[page],
+                "?" + params.toString()
+              );
             }
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
           }
-        });
-      }
+        }
+      });
     }
   };
   setDevice = () => {
@@ -965,7 +975,9 @@ class App extends React.Component<AppProps, AppState> {
       const settingsObject: { [key: string]: any } = {};
       if (bool) {
         Object.keys(settingsFunctions).forEach((setting) => {
-          settingsObject[setting] = this.state[setting as keyof AppState];
+          if (hasKey(this.state, setting)) {
+            settingsObject[setting] = this.state[setting];
+          }
         });
       }
       db.collection("users")
@@ -1020,8 +1032,15 @@ class App extends React.Component<AppProps, AppState> {
                   setFunction(data.settings[setting], false);
                 }
               };
+
               Object.keys(settingsFunctions).forEach((setting) => {
-                getSetting(setting, this[settingsFunctions[setting] as keyof App]);
+                if (hasKey(settingsFunctions, setting)) {
+                  const key = settingsFunctions[setting];
+                  if (hasKey<App>(this, key)) {
+                    const func = this[key];
+                    getSetting(setting, func);
+                  }
+                }
               });
             }
           }

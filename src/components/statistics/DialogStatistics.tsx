@@ -1,4 +1,5 @@
 import React from "react";
+import { hasKey } from "../../util/functions";
 import { StatisticsType } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
@@ -23,11 +24,12 @@ export class DialogStatistics extends React.Component<DialogStatisticsProps, Dia
   };
   componentDidUpdate(prevProps: DialogStatisticsProps) {
     if (this.props.open !== prevProps.open && this.props.open === true) {
-      this.setState({
-        statistics: this.props.statistics[
-          (this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab) as keyof StatisticsType
-        ],
-      });
+      const key = this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab;
+      if (hasKey(this.props.statistics, key)) {
+        this.setState({
+          statistics: this.props.statistics[key],
+        });
+      }
     }
   }
   handleChange = (stats: string) => {
@@ -36,15 +38,9 @@ export class DialogStatistics extends React.Component<DialogStatisticsProps, Dia
     });
   };
   setStatistics = () => {
-    if (
-      this.props.statistics[
-        (this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab) as keyof StatisticsType
-      ] !== this.state.statistics
-    ) {
-      this.props.setStatistics(
-        this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab,
-        this.state.statistics
-      );
+    const key = this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab;
+    if (hasKey(this.props.statistics, key) && this.props.statistics[key] !== this.state.statistics) {
+      this.props.setStatistics(key, this.state.statistics);
     }
   };
   render() {
