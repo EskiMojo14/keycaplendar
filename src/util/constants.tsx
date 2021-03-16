@@ -192,6 +192,8 @@ export const pageSortOrder: { [key: string]: SortOrderType } = {
   hidden: "ascending",
 };
 
+export const reverseSortDatePages = ["ic", "previous"];
+
 export const sortNames: { [key: string]: string } = {
   profile: "Profile",
   designer: "Designer",

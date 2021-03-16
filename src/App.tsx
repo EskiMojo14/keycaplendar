@@ -22,6 +22,7 @@ import {
   dateSorts,
   arraySorts,
   pageSortOrder,
+  reverseSortDatePages,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
@@ -273,7 +274,7 @@ class App extends React.Component<AppProps, AppState> {
       setTimeout(() => {
         this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
         this.setSearch("");
-        this.filterData(page, this.state.sets, pageSort[page]);
+        this.filterData(page, this.state.sets, pageSort[page], pageSortOrder[page]);
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -458,6 +459,7 @@ class App extends React.Component<AppProps, AppState> {
     page = this.state.page,
     sets = this.state.sets,
     sort = this.state.sort,
+    sortOrder = this.state.sortOrder,
     search = this.state.search,
     whitelist = this.state.whitelist,
     favorites = this.state.favorites,
@@ -662,29 +664,20 @@ class App extends React.Component<AppProps, AppState> {
       if (dateSorts.includes(sort)) {
         const aDate = moment.utc(a, "MMMM YYYY");
         const bDate = moment.utc(b, "MMMM YYYY");
-        if (page === "previous" || page === "ic") {
-          if (aDate < bDate) {
-            return 1;
-          }
-          if (aDate > bDate) {
-            return -1;
-          }
-        } else {
-          if (aDate < bDate) {
-            return -1;
-          }
-          if (aDate > bDate) {
-            return 1;
-          }
+        if (aDate < bDate) {
+          return sortOrder === "ascending" ? -1 : 1;
+        }
+        if (aDate > bDate) {
+          return sortOrder === "ascending" ? 1 : -1;
         }
       } else {
         const x = a.toLowerCase();
         const y = b.toLowerCase();
         if (x < y) {
-          return -1;
+          return sortOrder === "ascending" ? -1 : 1;
         }
         if (x > y) {
-          return 1;
+          return sortOrder === "ascending" ? 1 : -1;
         }
       }
       return 0;
@@ -725,6 +718,7 @@ class App extends React.Component<AppProps, AppState> {
     _page = this.state.page,
     _sets = this.state.sets,
     _sort = this.state.sort,
+    _sortOrder = this.state.sortOrder,
     _search = this.state.search,
     _whitelist = this.state.whitelist,
     _favorites = this.state.favorites,
@@ -733,6 +727,33 @@ class App extends React.Component<AppProps, AppState> {
     // placeholder - gets overwritten in constructor
   };
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+
+  sortData = (sort = this.state.sort, sortOrder = this.state.sortOrder, groups = this.state.groups) => {
+    const array = [...groups];
+    array.sort(function (a, b) {
+      if (dateSorts.includes(sort)) {
+        const aDate = moment.utc(a, "MMMM YYYY");
+        const bDate = moment.utc(b, "MMMM YYYY");
+        if (aDate < bDate) {
+          return sortOrder === "ascending" ? -1 : 1;
+        }
+        if (aDate > bDate) {
+          return sortOrder === "ascending" ? 1 : -1;
+        }
+      } else {
+        const x = a.toLowerCase();
+        const y = b.toLowerCase();
+        if (x < y) {
+          return sortOrder === "ascending" ? -1 : 1;
+        }
+        if (x > y) {
+          return sortOrder === "ascending" ? 1 : -1;
+        }
+      }
+      return 0;
+    });
+    this.setState({ groups: array });
+  };
 
   setDensity = (density: string, write = true) => {
     this.setState({ density: density });
@@ -743,19 +764,24 @@ class App extends React.Component<AppProps, AppState> {
   };
   setSort = (sort: string) => {
     document.documentElement.scrollTop = 0;
-    this.setState({ sort: sort });
-    this.filterData(this.state.page, this.state.sets, sort);
+    let sortOrder: SortOrderType = "ascending";
+    if (dateSorts.includes(sort) && reverseSortDatePages.includes(this.state.page)) {
+      sortOrder = "descending";
+    }
+    this.setState({ sort: sort, sortOrder: sortOrder });
+    this.filterData(this.state.page, this.state.sets, sort, sortOrder);
   };
   setSortOrder = (sortOrder: SortOrderType) => {
     document.documentElement.scrollTop = 0;
     this.setState({ sortOrder: sortOrder });
+    this.sortData(this.state.sort, sortOrder);
   };
   setSearch = (query: string) => {
     this.setState({
       search: query,
     });
     document.documentElement.scrollTop = 0;
-    this.debouncedFilterData(this.state.page, this.state.sets, this.state.sort, query);
+    this.debouncedFilterData(this.state.page, this.state.sets, this.state.sort, this.state.sortOrder, query);
   };
   setUser = (user: Partial<CurrentUserType>) => {
     const blankUser = {
@@ -799,7 +825,14 @@ class App extends React.Component<AppProps, AppState> {
       this.setState({ whitelist: whitelist });
       document.documentElement.scrollTop = 0;
       if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
+        this.filterData(
+          this.state.page,
+          this.state.sets,
+          this.state.sort,
+          this.state.sortOrder,
+          this.state.search,
+          whitelist
+        );
       }
     } else if (this.state.whitelist.edited) {
       const edited = this.state.whitelist.edited.includes(prop)
@@ -811,7 +844,14 @@ class App extends React.Component<AppProps, AppState> {
       });
       document.documentElement.scrollTop = 0;
       if (this.state.sets.length > 0) {
-        this.filterData(this.state.page, this.state.sets, this.state.sort, this.state.search, whitelist);
+        this.filterData(
+          this.state.page,
+          this.state.sets,
+          this.state.sort,
+          this.state.sortOrder,
+          this.state.search,
+          whitelist
+        );
       }
     }
     if (clearUrl) {
@@ -878,6 +918,7 @@ class App extends React.Component<AppProps, AppState> {
         this.state.page,
         this.state.sets,
         this.state.sort,
+        this.state.sortOrder,
         this.state.search,
         this.state.whitelist,
         favorites
@@ -914,6 +955,7 @@ class App extends React.Component<AppProps, AppState> {
                   this.state.page,
                   this.state.sets,
                   this.state.sort,
+                  this.state.sortOrder,
                   this.state.search,
                   this.state.whitelist,
                   favorites
@@ -935,6 +977,7 @@ class App extends React.Component<AppProps, AppState> {
       this.state.page,
       this.state.sets,
       this.state.sort,
+      this.state.sortOrder,
       this.state.search,
       this.state.whitelist,
       this.state.favorites,
@@ -970,6 +1013,7 @@ class App extends React.Component<AppProps, AppState> {
                 this.state.page,
                 this.state.sets,
                 this.state.sort,
+                this.state.sortOrder,
                 this.state.search,
                 this.state.whitelist,
                 this.state.favorites,
