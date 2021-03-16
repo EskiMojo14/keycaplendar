@@ -21,11 +21,20 @@ import {
   urlPages,
   dateSorts,
   arraySorts,
+  pageSortOrder,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
 import { addOrRemove, hasKey, normalise, replaceFunction, uniqueArray } from "./util/functions";
-import { ArraySortKeys, CurrentUserType, DateSortKeys, MainWhitelistType, PresetType, SetType } from "./util/types";
+import {
+  ArraySortKeys,
+  CurrentUserType,
+  DateSortKeys,
+  MainWhitelistType,
+  PresetType,
+  SetType,
+  SortOrderType,
+} from "./util/types";
 import "./App.scss";
 
 const db = firebase.firestore();
@@ -42,6 +51,7 @@ type AppState = {
   view: string;
   transition: boolean;
   sort: string;
+  sortOrder: SortOrderType;
   allDesigners: string[];
   allVendors: string[];
   allRegions: string[];
@@ -79,6 +89,7 @@ class App extends React.Component<AppProps, AppState> {
     view: "card",
     transition: false,
     sort: "gbLaunch",
+    sortOrder: "ascending",
     allDesigners: [],
     allVendors: [],
     allRegions: [],
@@ -132,7 +143,7 @@ class App extends React.Component<AppProps, AppState> {
     if (params.has("page")) {
       const pageQuery = params.get("page");
       if ((pageQuery && urlPages.includes(pageQuery)) || (pageQuery && process.env.NODE_ENV === "development")) {
-        this.setState({ page: pageQuery, sort: pageSort[pageQuery] });
+        this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
       }
     }
     const whitelistObj: MainWhitelistType = { ...this.state.whitelist };
@@ -260,7 +271,7 @@ class App extends React.Component<AppProps, AppState> {
     if (page !== this.state.page && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
-        this.setState({ page: page, sort: pageSort[page] });
+        this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
         this.setSearch("");
         this.filterData(page, this.state.sets, pageSort[page]);
         document.documentElement.scrollTop = 0;
@@ -734,6 +745,10 @@ class App extends React.Component<AppProps, AppState> {
     document.documentElement.scrollTop = 0;
     this.setState({ sort: sort });
     this.filterData(this.state.page, this.state.sets, sort);
+  };
+  setSortOrder = (sortOrder: SortOrderType) => {
+    document.documentElement.scrollTop = 0;
+    this.setState({ sortOrder: sortOrder });
   };
   setSearch = (query: string) => {
     this.setState({
@@ -1262,6 +1277,8 @@ class App extends React.Component<AppProps, AppState> {
                     toggleLoading={this.toggleLoading}
                     sort={this.state.sort}
                     setSort={this.setSort}
+                    sortOrder={this.state.sortOrder}
+                    setSortOrder={this.setSortOrder}
                     content={this.state.content}
                     search={this.state.search}
                     setSearch={this.setSearch}

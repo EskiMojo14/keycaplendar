@@ -18,6 +18,7 @@ type ContentGridProps = {
   page: string;
   sets: SetType[];
   sort: string;
+  sortOrder: string;
   view: string;
 };
 
