@@ -1,15 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { iconObject } from "../../../util/functions";
+import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarTitle,
-  TopAppBarFixedAdjust,
-  TopAppBarNavigationIcon,
-} from "@rmwc/top-app-bar";
-import { Typography } from "@rmwc/typography";
 import {
   DataTable,
   DataTableContent,
@@ -20,8 +13,16 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { Fab } from "@rmwc/fab";
-import { Button } from "@rmwc/button";
-import { iconObject } from "../../../util/functions";
+import { Icon } from "@rmwc/icon";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+} from "@rmwc/top-app-bar";
+import { Typography } from "@rmwc/typography";
 import "./Guides.scss";
 
 export const EntryGuide = () => {
@@ -143,7 +144,7 @@ export const EntryGuide = () => {
                 Profile*
               </Typography>
               <Typography use="body2" tag="p">
-                Hopefully self-explanatory.
+                The name of the profile, or the manufacturer in the case of Cherry profile.
               </Typography>
               <Typography use="caption" tag="p" className="secondary">
                 Use the autocomplete menu to ensure that the field matches existing entries exactly.
@@ -215,8 +216,8 @@ export const EntryGuide = () => {
                 and browsing or dragging the file in.
               </Typography>
               <Typography use="caption" tag="p" className="secondary">
-                Please note that images will be resized to 480px upon upload, and will be cropped to 16:9 or 1:1 when
-                displayed on the site. For this reason, angled renders/shots look better than straight on.
+                Please note that images will be resized upon upload, and will be cropped to 16:9 or 1:1 when displayed
+                on the site. For this reason, angled renders/shots look better than straight on.
               </Typography>
             </div>
             <div>
@@ -261,7 +262,24 @@ export const EntryGuide = () => {
                 <Typography use="button" tag="span">
                   ADD VENDOR
                 </Typography>{" "}
-                to add a vendor to the set.
+                to add a vendor to the set. You can drag the vendors to reorder using the handle (
+                <Icon icon="drag_handle" />
+                ), and delete with the delete icon. (
+                <Icon
+                  icon={iconObject(
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                      <path d="M0 0h24v24H0V0z" fill="none" />
+                      <path d="M8 9h8v10H8z" opacity=".3" />
+                      <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                    </svg>
+                  )}
+                />
+                )
+              </Typography>
+              <Typography use="caption" tag="p" className="secondary">
+                Note that reordering the vendors isn&apos;t necessary often as the details drawer will automatically
+                sort vendors alphabetically by region - it&apos;s just useful in the case of comparing to a list as
+                you&apos;re editing.
               </Typography>
               <Typography use="headline6" tag="h3">
                 Fields
@@ -364,6 +382,19 @@ export const EntryGuide = () => {
                 <Typography use="caption" tag="p" className="secondary">
                   This should be a direct link to the product/collection, not a link to the homepage of the store. If no
                   specific link exists yet, leave blank.
+                </Typography>
+              </div>
+              <div>
+                <Typography use="subtitle1" tag="h4">
+                  End date
+                </Typography>
+                <Typography use="body2" tag="p">
+                  The end date specific to the vendor, if different to the main set end date. Enter in ISO 8601 format (
+                  <span className="code">YYYY-MM-DD</span>).
+                </Typography>
+                <Typography use="caption" tag="p" className="secondary">
+                  Enable with the checkbox, and enter into the field that appears. The value will be cleared and the
+                  field will disappear if the checkbox is unchecked.
                 </Typography>
               </div>
             </div>
