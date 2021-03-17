@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
-import { MainWhitelistType, PresetType, QueueType, SetType } from "../../util/types";
+import { MainWhitelistType, PresetType, QueueType, SetType, SortOrderType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -33,6 +33,8 @@ type ContentMainProps = {
   sets: SetType[];
   sort: string;
   setSort: (sort: string) => void;
+  sortOrder: SortOrderType;
+  setSortOrder: (sortOrder: SortOrderType) => void;
   view: string;
   setView: (view: string) => void;
   search: string;
@@ -304,6 +306,7 @@ export const ContentMain = (props: ContentMainProps) => {
       groups={props.groups}
       sets={props.sets}
       sort={props.sort}
+      sortOrder={props.sortOrder}
       page={props.page}
       view={props.view}
       details={openDetails}
@@ -330,6 +333,8 @@ export const ContentMain = (props: ContentMainProps) => {
         setView={props.setView}
         sort={props.sort}
         setSort={props.setSort}
+        sortOrder={props.sortOrder}
+        setSortOrder={props.setSortOrder}
         search={props.search}
         setSearch={props.setSearch}
         sets={props.sets}

@@ -1,6 +1,7 @@
 import React from "react";
 import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
+import { SortOrderType } from "./types";
 
 export const replaceChars: [string, string][] = [
   ["β", "B"],
@@ -172,13 +173,26 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
 export const pageSort: { [key: string]: string } = {
   calendar: "gbLaunch",
   live: "gbEnd",
-  ic: "profile",
-  previous: "gbLaunch",
+  ic: "icDate",
+  previous: "gbEnd",
   timeline: "gbLaunch",
   archive: "profile",
   favorites: "profile",
   hidden: "profile",
 };
+
+export const pageSortOrder: { [key: string]: SortOrderType } = {
+  calendar: "ascending",
+  live: "ascending",
+  ic: "descending",
+  previous: "descending",
+  timeline: "ascending",
+  archive: "ascending",
+  favorites: "ascending",
+  hidden: "ascending",
+};
+
+export const reverseSortDatePages = ["ic", "previous"];
 
 export const sortNames: { [key: string]: string } = {
   profile: "Profile",

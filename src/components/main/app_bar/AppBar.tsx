@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { DeviceContext } from "../../../util/contexts";
 import { boolFunctions } from "../../../util/functions";
-import { SetType } from "../../../util/types";
+import { SetType, SortOrderType } from "../../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -30,9 +30,11 @@ type AppBarProps = {
   search: string;
   setSearch: (search: string) => void;
   setSort: (sort: string) => void;
+  setSortOrder: (sortOrder: SortOrderType) => void;
   setView: (view: string) => void;
   sets: SetType[];
   sort: string;
+  sortOrder: SortOrderType;
   view: string;
 };
 
@@ -84,7 +86,15 @@ export const AppBar = (props: AppBarProps) => {
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
       ) : null}
       <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-        <MenuSort page={props.page} sort={props.sort} open={sortOpen} onSelect={props.setSort} onClose={closeSort} />
+        <MenuSort
+          page={props.page}
+          sort={props.sort}
+          sortOrder={props.sortOrder}
+          open={sortOpen}
+          setSort={props.setSort}
+          setSortOrder={props.setSortOrder}
+          onClose={closeSort}
+        />
         <Tooltip
           enterDelay={500}
           content="Sort"
