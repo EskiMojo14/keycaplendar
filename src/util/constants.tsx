@@ -174,7 +174,7 @@ export const pageSort: { [key: string]: string } = {
   calendar: "gbLaunch",
   live: "gbEnd",
   ic: "icDate",
-  previous: "gbLaunch",
+  previous: "gbEnd",
   timeline: "gbLaunch",
   archive: "profile",
   favorites: "profile",
