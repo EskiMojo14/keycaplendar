@@ -173,7 +173,7 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
 export const pageSort: { [key: string]: string } = {
   calendar: "gbLaunch",
   live: "gbEnd",
-  ic: "profile",
+  ic: "icDate",
   previous: "gbLaunch",
   timeline: "gbLaunch",
   archive: "profile",
@@ -184,7 +184,7 @@ export const pageSort: { [key: string]: string } = {
 export const pageSortOrder: { [key: string]: SortOrderType } = {
   calendar: "ascending",
   live: "ascending",
-  ic: "ascending",
+  ic: "descending",
   previous: "descending",
   timeline: "ascending",
   archive: "ascending",
