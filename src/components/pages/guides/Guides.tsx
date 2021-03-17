@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { DeviceContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
@@ -24,11 +25,14 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import "./Guides.scss";
+import classNames from "classnames";
 
 export const EntryGuide = () => {
+  const device = useContext(DeviceContext);
+  const collapsible = device === "mobile";
   return (
     <>
-      <TopAppBar fixed>
+      <TopAppBar short={collapsible} fixed={!collapsible}>
         <TopAppBarRow>
           <TopAppBarSection>
             <Link to="/">
@@ -40,7 +44,7 @@ export const EntryGuide = () => {
       </TopAppBar>
       <TopAppBarFixedAdjust />
       <div className="guide-container-container">
-        <div className="guide-container">
+        <div className={classNames("guide-container", { "extended-app-bar": !collapsible })}>
           <Card className="guide">
             <Typography use="headline4" tag="h1">
               Actions

@@ -1304,7 +1304,11 @@ class App extends React.Component<AppProps, AppState> {
           </Route>
           <Route path="/privacy" component={PrivacyPolicy} />
           <Route path="/terms" component={TermsOfService} />
-          <Route path="/guide/entries" component={EntryGuide} />
+          <Route path="/guide/entries">
+            <DeviceContext.Provider value={this.state.device}>
+              <EntryGuide />
+            </DeviceContext.Provider>
+          </Route>
           <Route exact path="/">
             <UserContext.Provider
               value={{
