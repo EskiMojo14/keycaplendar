@@ -775,7 +775,7 @@ class App extends React.Component<AppProps, AppState> {
       this.syncSetting("density", density);
     }
   };
-  setSort = (sort: string) => {
+  setSort = (sort: string, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
     if (dateSorts.includes(sort) && reverseSortDatePages.includes(this.state.page)) {
@@ -783,11 +783,23 @@ class App extends React.Component<AppProps, AppState> {
     }
     this.setState({ sort: sort, sortOrder: sortOrder });
     this.filterData(this.state.page, this.state.sets, sort, sortOrder);
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      params.delete("sort");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   };
-  setSortOrder = (sortOrder: SortOrderType) => {
+  setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ sortOrder: sortOrder });
     this.sortData(this.state.sort, sortOrder);
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      params.delete("sortOrder");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   };
   setSearch = (query: string) => {
     this.setState({
