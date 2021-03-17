@@ -144,7 +144,20 @@ class App extends React.Component<AppProps, AppState> {
     if (params.has("page")) {
       const pageQuery = params.get("page");
       if ((pageQuery && urlPages.includes(pageQuery)) || (pageQuery && process.env.NODE_ENV === "development")) {
-        this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+        if (pageQuery !== "calendar") {
+          const sortQuery = params.get("sort");
+          const sortOrderQuery = params.get("sortOrder");
+          this.setState({
+            page: pageQuery,
+            sort: sortQuery ? sortQuery : pageSort[pageQuery],
+            sortOrder:
+              sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
+                ? sortOrderQuery
+                : pageSortOrder[pageQuery],
+          });
+        } else {
+          this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+        }
       }
     }
     const whitelistObj: MainWhitelistType = { ...this.state.whitelist };
