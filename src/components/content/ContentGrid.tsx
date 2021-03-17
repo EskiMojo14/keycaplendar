@@ -1,14 +1,14 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../util/types";
+import { dateSorts, pageSort, pageSortOrder } from "../../util/constants";
+import { hasKey } from "../../util/functions";
+import { SetType, SortOrderType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
 import { ViewImageList } from "../views/image-list/ViewImageList";
 import { ViewCompact } from "../views/compact/ViewCompact";
 import "./ContentGrid.scss";
-import { hasKey } from "../../util/functions";
-import { dateSorts } from "../../util/constants";
 
 type ContentGridProps = {
   closeDetails: () => void;
@@ -19,7 +19,7 @@ type ContentGridProps = {
   page: string;
   sets: SetType[];
   sort: string;
-  sortOrder: string;
+  sortOrder: SortOrderType;
   view: string;
 };
 
@@ -47,31 +47,51 @@ export const ContentGrid = (props: ContentGridProps) => {
         return false;
       }
     });
+    const defaultSort = pageSort[props.page];
+    const defaultSortOrder = pageSortOrder[props.page];
     const alphabeticalSort = (a: string, b: string) => {
       if (a > b) {
-        return props.sortOrder === "ascending" ? 1 : -1;
+        return 1;
       } else if (a < b) {
-        return props.sortOrder === "ascending" ? -1 : 1;
+        return -1;
       }
       return 0;
     };
-    filteredSets.sort((a, b) => {
+    const dateSort = (a: SetType, b: SetType, prop = props.sort, sortOrder = props.sortOrder) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (dateSorts.includes(props.sort) && hasKey(a, props.sort) && hasKey(b, props.sort)) {
-        const aProp = a[props.sort];
+      if (hasKey(a, prop) && hasKey(b, prop)) {
+        const aProp = a[prop];
         const aDate = aProp && typeof aProp === "string" && !aProp.includes("Q") ? moment.utc(aProp) : null;
-        const bProp = b[props.sort];
+        const bProp = b[prop];
         const bDate = bProp && typeof bProp === "string" && !bProp.includes("Q") ? moment.utc(bProp) : null;
+        const returnVal = sortOrder === "ascending" ? 1 : -1;
         if (aDate && bDate) {
           if (aDate > bDate) {
-            return props.sortOrder === "ascending" ? 1 : -1;
+            return returnVal;
           } else if (aDate < bDate) {
-            return props.sortOrder === "ascending" ? -1 : 1;
+            return -returnVal;
           }
           return alphabeticalSort(aName, bName);
         }
         return alphabeticalSort(aName, bName);
+      }
+      return alphabeticalSort(aName, bName);
+    };
+    filteredSets.sort((a, b) => {
+      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+      if (dateSorts.includes(props.sort)) {
+        if (props.sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
+          if (a.gbMonth && b.gbMonth) {
+            return alphabeticalSort(aName, bName);
+          } else {
+            return a.gbMonth ? 1 : -1;
+          }
+        }
+        return dateSort(a, b, props.sort, props.sortOrder);
+      } else if (dateSorts.includes(defaultSort)) {
+        return dateSort(a, b, defaultSort, defaultSortOrder);
       }
       return alphabeticalSort(aName, bName);
     });
