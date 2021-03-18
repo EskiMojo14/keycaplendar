@@ -381,16 +381,26 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
     });
     response.send(JSON.stringify(keysets));
   };
+  const validDateFilter = (dateFilter, exists = true) => {
+    return (
+      ((dateFilter && exists) || !exists) &&
+      (dateFilter === "icDate" || dateFilter === "gbLaunch" || dateFilter === "gbEnd")
+    );
+  };
+  const validDate = (date, exists = true) => {
+    const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
+    return ((dateFilter && exists) || !exists) && regex.test(date);
+  };
   const keysetsRef = db.collection("keysets");
-  if (request.query.dateFilter && request.query.before && request.query.after) {
+  if (validDateFilter(request.query.dateFilter) && validDate(request.query.before) && validDate(request.query.after)) {
     const filteredRef = keysetsRef
       .where(request.query.dateFilter, "<=", request.query.before)
       .where(request.query.dateFilter, ">=", request.query.after);
     returnKeysets(filteredRef);
-  } else if (request.query.dateFilter && request.query.before) {
+  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.before)) {
     const filteredRef = keysetsRef.where(request.query.dateFilter, "<=", request.query.before);
     returnKeysets(filteredRef);
-  } else if (request.query.dateFilter && request.query.after) {
+  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.after)) {
     const filteredRef = keysetsRef.where(request.query.dateFilter, ">=", request.query.after);
     returnKeysets(filteredRef);
   } else {
