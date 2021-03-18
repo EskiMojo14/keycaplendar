@@ -12,7 +12,11 @@ type DrawerFilterStatisticsProps = {
   close: () => void;
   open: boolean;
   profiles: string[];
-  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
+  setWhitelist: (
+    prop: string,
+    whitelist: WhitelistType | WhitelistType[keyof WhitelistType],
+    createAll?: boolean
+  ) => void;
   snackbarQueue: QueueType;
   vendors: string[];
   whitelist: WhitelistType;

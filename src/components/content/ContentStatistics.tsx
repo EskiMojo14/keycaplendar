@@ -148,8 +148,9 @@ type ContentStatisticsState = {
   shippedData: ShippedData;
   durationData: DurationData;
   vendorsData: VendorData;
+  sets: SetType[];
   focused: string;
-  dataCreated: boolean;
+  dataCreated: string[];
   settings: {
     timeline: string;
     status: string;
@@ -168,6 +169,10 @@ type ContentStatisticsState = {
   filterDrawerOpen: boolean;
   categoryDialogOpen: boolean;
 };
+
+const today = moment.utc();
+const yesterday = moment.utc().date(today.date() - 1);
+const properties = ["icDate", "gbLaunch"];
 
 export class ContentStatistics extends React.Component<ContentStatisticsProps, ContentStatisticsState> {
   state: ContentStatisticsState = {
@@ -251,8 +256,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     },
+    sets: [],
     focused: "",
-    dataCreated: false,
+    dataCreated: [],
     settings: {
       timeline: "gbLaunch",
       status: "profile",
@@ -271,9 +277,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     filterDrawerOpen: false,
     categoryDialogOpen: false,
   };
+
   createData = (whitelist = this.state.whitelist) => {
-    const today = moment.utc();
-    const yesterday = moment.utc().date(today.date() - 1);
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
@@ -283,6 +288,15 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         return true;
       }
     });
+    this.setState({ sets: limitedSets });
+    this.createTimelineData(limitedSets, whitelist);
+    this.createStatusData(limitedSets);
+    this.createShippedData(limitedSets);
+    this.createDurationData(limitedSets);
+    this.createVendorsData(limitedSets);
+  };
+
+  createTimelineData = (sets: SetType[], whitelist = this.state.whitelist) => {
     //timeline
     const timelineData: TimelineData = {
       months: { icDate: [], gbLaunch: [] },
@@ -312,7 +326,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
       return bool;
     };
-    const timelineSets = limitedSets.filter((set) => {
+    const timelineSets = sets.filter((set) => {
       const shippedBool =
         (timelineWhitelist.shipped.includes("Shipped") && set.shipped) ||
         (timelineWhitelist.shipped.includes("Not shipped") && !set.shipped);
@@ -327,7 +341,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         }
       }
     });
-    const properties = ["icDate", "gbLaunch"];
     properties.forEach((prop) => {
       timelineSets.forEach((set) => {
         if (hasKey(set, prop)) {
@@ -405,6 +418,18 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         });
       }
     });
+    this.setState((prevState) => {
+      return {
+        timelineData: timelineData,
+        dataCreated: prevState.dataCreated.includes("timeline")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "timeline"],
+      };
+    });
+  };
+
+  createStatusData = (sets: SetType[]) => {
+    console.log(sets);
     //status
     const statusData: StatusData = {
       profile: {
@@ -420,7 +445,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     };
-    limitedSets.forEach((set) => {
+    sets.forEach((set) => {
       if (!statusData.profile.names.includes(set.profile)) {
         statusData.profile.names.push(set.profile);
       }
@@ -451,7 +476,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           return 0;
         });
         statusData[prop].names.forEach((name) => {
-          const icSets = limitedSets.filter((set) => {
+          const icSets = sets.filter((set) => {
             const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
             if (prop === "vendor") {
               return set.vendors &&
@@ -466,7 +491,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && isIC;
             }
           });
-          const preGbSets = limitedSets.filter((set) => {
+          const preGbSets = sets.filter((set) => {
             let startDate;
             if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
               startDate = moment.utc(set.gbLaunch);
@@ -485,7 +510,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && isPreGb;
             }
           });
-          const liveGbSets = limitedSets.filter((set) => {
+          const liveGbSets = sets.filter((set) => {
             let startDate;
             if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
               startDate = moment.utc(set.gbLaunch);
@@ -505,7 +530,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && isLiveGb;
             }
           });
-          const postGbSets = limitedSets.filter((set) => {
+          const postGbSets = sets.filter((set) => {
             const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
             const isPostGb = endDate <= yesterday;
             if (prop === "vendor") {
@@ -543,6 +568,17 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         });
       }
     });
+    this.setState((prevState) => {
+      return {
+        statusData: statusData,
+        dataCreated: prevState.dataCreated.includes("status")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "status"],
+      };
+    });
+  };
+
+  createShippedData = (sets: SetType[]) => {
     //shipped
     const shippedData: ShippedData = {
       profile: {
@@ -558,7 +594,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     };
-    const pastSets = limitedSets.filter((set) => {
+    const pastSets = sets.filter((set) => {
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
@@ -641,6 +677,17 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         });
       }
     });
+    this.setState((prevState) => {
+      return {
+        shippedData: shippedData,
+        dataCreated: prevState.dataCreated.includes("shipped")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "shipped"],
+      };
+    });
+  };
+
+  createDurationData = (sets: SetType[]) => {
     //duration
     const durationData: DurationData = {
       icDate: {
@@ -672,7 +719,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         },
       },
     };
-    const dateSets = limitedSets.filter((set) => {
+    const dateSets = sets.filter((set) => {
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
     properties.forEach((property) => {
@@ -817,6 +864,17 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         });
       }
     });
+    this.setState((prevState) => {
+      return {
+        durationData: durationData,
+        dataCreated: prevState.dataCreated.includes("duration")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "duration"],
+      };
+    });
+  };
+
+  createVendorsData = (sets: SetType[]) => {
     //vendors
     const vendorsData: VendorData = {
       profile: {
@@ -832,6 +890,10 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     };
+    const pastSets = sets.filter((set) => {
+      const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+      return endDate <= yesterday;
+    });
     const vendorSets = pastSets.filter((set) => set.vendors);
 
     vendorSets.forEach((set) => {
@@ -911,17 +973,16 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         });
       }
     });
-
-    //set state
-    this.setState({
-      timelineData: timelineData,
-      statusData: statusData,
-      shippedData: shippedData,
-      durationData: durationData,
-      vendorsData: vendorsData,
-      dataCreated: true,
+    this.setState((prevState) => {
+      return {
+        vendorsData: vendorsData,
+        dataCreated: prevState.dataCreated.includes("vendors")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "vendors"],
+      };
     });
   };
+
   sortData = (sort = this.state.sort) => {
     const key = this.props.statisticsTab + "Data";
     if (hasKey(this.state, key)) {
@@ -1025,12 +1086,16 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.setState({ sort: sort });
     this.sortData(sort);
   };
-  setWhitelist = (prop: string, val: WhitelistType | WhitelistType[keyof WhitelistType]) => {
+  setWhitelist = (prop: string, val: WhitelistType | WhitelistType[keyof WhitelistType], createAll = false) => {
     if (prop === "all" && typeof val === "object") {
       const edited = Object.keys(val);
       const whitelist = { ...this.state.whitelist, ...val, edited: edited };
       this.setState({ whitelist: whitelist });
-      this.createData(whitelist);
+      if (createAll) {
+        this.createData(whitelist);
+      } else {
+        this.createTimelineData(this.state.sets, whitelist);
+      }
     } else {
       const edited = this.state.whitelist.edited
         ? this.state.whitelist.edited.includes(prop)
@@ -1041,7 +1106,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       this.setState({
         whitelist: whitelist,
       });
-      this.createData(whitelist);
+      if (createAll) {
+        this.createData(whitelist);
+      } else {
+        this.createTimelineData(this.state.sets, whitelist);
+      }
     }
   };
   openFilterDrawer = () => {
@@ -1079,10 +1148,10 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       this.state.whitelist.edited &&
       !this.state.whitelist.edited.includes("profiles") &&
       this.props.profiles.length > 0 &&
-      !this.state.dataCreated &&
+      this.state.dataCreated.length !== statsTabs.length &&
       this.props.sets.length > 0
     ) {
-      this.setWhitelist("profiles", this.props.profiles);
+      this.setWhitelist("profiles", this.props.profiles, true);
     }
   }
   render() {
@@ -1596,7 +1665,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             </TopAppBarSection>
           </TopAppBarRow>
           {this.props.bottomNav ? null : tabRow}
-          <LinearProgress closed={this.state.dataCreated} />
+          <LinearProgress closed={this.state.dataCreated.length === statsTabs.length} />
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
         <div className="main">
