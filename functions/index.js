@@ -370,16 +370,32 @@ exports.setRoles = functions.https.onCall(async (data, context) => {
 });
 
 exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
-  const keysetsRef = db.collection("keysets");
-  const snapshot = await keysetsRef.get();
-  const keysets = [];
-  snapshot.forEach((doc) => {
-    keysets.push({
-      id: doc.id,
-      ...doc.data(),
+  const returnKeysets = async (ref) => {
+    const snapshot = await ref.get();
+    const keysets = [];
+    snapshot.forEach((doc) => {
+      keysets.push({
+        id: doc.id,
+        ...doc.data(),
+      });
     });
-  });
-  response.send(JSON.stringify(keysets));
+    response.send(JSON.stringify(keysets));
+  };
+  const keysetsRef = db.collection("keysets");
+  if (request.query.dateFilter && request.query.before && request.query.after) {
+    const filteredRef = keysetsRef
+      .where(request.query.dateFilter, "<=", request.query.before)
+      .where(request.query.dateFilter, ">=", request.query.after);
+    returnKeysets(filteredRef);
+  } else if (request.query.dateFilter && request.query.before) {
+    const filteredRef = keysetsRef.where(request.query.dateFilter, "<=", request.query.before);
+    returnKeysets(filteredRef);
+  } else if (request.query.dateFilter && request.query.after) {
+    const filteredRef = keysetsRef.where(request.query.dateFilter, ">=", request.query.after);
+    returnKeysets(filteredRef);
+  } else {
+    returnKeysets(keysetsRef);
+  }
 });
 
 exports.getKeysetById = functions.https.onRequest(async (request, response) => {
