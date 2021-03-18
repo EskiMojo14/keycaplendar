@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 const sharp = require("sharp");
+const jwt = require("jsonwebtoken");
 const { Stream } = require("stream");
 
 const app = admin.initializeApp();
@@ -369,7 +370,63 @@ exports.setRoles = functions.https.onCall(async (data, context) => {
   return newUser.customClaims;
 });
 
+
+exports.apiAuth = functions.https.onRequest(async (request, response) => {
+  let key = request.body.key
+  let secret = request.body.secret
+  if (!key || !secret) {
+    return response.status(401).send({error: "Unauthorized"})
+  }
+  const usersRef = db.collection("users");
+  const snapshot = await usersRef
+    .where('apiKey', '==', key)
+    .where('apiSecret', '==', secret)
+    .get();
+  if (snapshot.empty) {
+    return response.status(401).send({error: "Unauthorized"})
+  }
+  var ts = Math.round((new Date()).getTime() / 1000);
+  var user = {}
+  let payload = {
+    apiAccess: null,
+    email: "",
+    iat: ts,
+    exp: ts + 1800
+
+  }
+  snapshot.forEach((doc) => {
+    user = {...doc.data()}
+  });
+  if (user.apiAccess !== true) return response.status(401).send({error: "Unauthorized"})
+  payload.email = user.email
+  payload.apiAccess = user.apiAccess
+
+  let accessToken = jwt.sign(payload, functions.config().jwt.secret, {
+    algorithm: "HS256"
+  })
+
+  return response.status(200).send({token: accessToken})
+})
+
+const verify = function (req) {
+  let accessToken = req.headers.authorization.split(" ")
+  if (accessToken.length !== 2 || !accessToken[1]) return false;
+  let payload
+  try {
+    payload = jwt.verify(accessToken[1], functions.config().jwt.secret)
+    return payload
+  } catch (e) {
+    console.error(e)
+    return false
+  }
+}
+
+
 exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
+  let auth = verify(request)
+  if (auth === false) {
+    return response.status(401).send({error: "Unauthorized"})
+  }
   const returnKeysets = async (ref) => {
     const snapshot = await ref.get();
     const keysets = [];
@@ -399,6 +456,10 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
 });
 
 exports.getKeysetById = functions.https.onRequest(async (request, response) => {
+  let auth = verify(request)
+  if (auth === false) {
+    return response.status(401).send({error: "Unauthorized"})
+  }
   const keysetsRef = db.collection("keysets");
   if (request.query.id) {
     const docRef = keysetsRef.doc(request.query.id);
