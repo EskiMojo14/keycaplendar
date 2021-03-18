@@ -368,3 +368,32 @@ exports.setRoles = functions.https.onCall(async (data, context) => {
   const newUser = await admin.auth().getUserByEmail(data.email);
   return newUser.customClaims;
 });
+
+exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
+  const keysetsRef = db.collection("keysets");
+  const snapshot = await keysetsRef.get();
+  const keysets = [];
+  snapshot.forEach((doc) => {
+    keysets.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
+  response.send(JSON.stringify(keysets));
+});
+
+exports.getKeysetById = functions.https.onRequest(async (request, response) => {
+  const keysetsRef = db.collection("keysets");
+  if (request.query.id) {
+    const docRef = keysetsRef.doc(request.query.id);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      response.send("No document with this ID.");
+    } else {
+      const keyset = { id: doc.id, ...doc.data() };
+      response.send(JSON.stringify(keyset));
+    }
+  } else {
+    response.send("No id provided.");
+  }
+});
