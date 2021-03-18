@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import classNames from "classnames";
 import { DeviceContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { Button } from "@rmwc/button";
@@ -25,7 +26,6 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import "./Guides.scss";
-import classNames from "classnames";
 
 export const EntryGuide = () => {
   const device = useContext(DeviceContext);

@@ -9,7 +9,7 @@ import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
-import { EntryGuide } from "./components/pages/guides/Guides";
+import { EntryGuide } from "./components/pages/guides/EntryGuide";
 import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import {
