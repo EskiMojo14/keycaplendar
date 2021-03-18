@@ -653,48 +653,7 @@ class App extends React.Component<AppProps, AppState> {
 
     const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-    // group display
-    const createGroups = (sets: SetType[]): string[] => {
-      if (dateSorts.includes(sort)) {
-        return sets
-          .map((set) => {
-            const setDate = moment.utc(set[sort as DateSortKeys]);
-            const setMonth = setDate.format("MMMM YYYY");
-            return setMonth === "Invalid date" ? "" : setMonth;
-          })
-          .filter((item) => !!item);
-      } else if (arraySorts.includes(sort)) {
-        return sets.map((set) => set[sort as ArraySortKeys]).flat();
-      } else if (sort === "vendor") {
-        return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
-      } else {
-        return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter((item) => !!item);
-      }
-    };
-    const groups = uniqueArray(createGroups(filteredSets));
-
-    groups.sort(function (a, b) {
-      if (dateSorts.includes(sort)) {
-        const aDate = moment.utc(a, "MMMM YYYY");
-        const bDate = moment.utc(b, "MMMM YYYY");
-        if (aDate < bDate) {
-          return sortOrder === "ascending" ? -1 : 1;
-        }
-        if (aDate > bDate) {
-          return sortOrder === "ascending" ? 1 : -1;
-        }
-      } else {
-        const x = a.toLowerCase();
-        const y = b.toLowerCase();
-        if (x < y) {
-          return sortOrder === "ascending" ? -1 : 1;
-        }
-        if (x > y) {
-          return sortOrder === "ascending" ? 1 : -1;
-        }
-      }
-      return 0;
-    });
+    this.createGroups(sort, sortOrder, filteredSets);
 
     // create default preset
 
@@ -711,7 +670,6 @@ class App extends React.Component<AppProps, AppState> {
       allVendors: allVendors,
       allDesigners: allDesigners,
       profiles: allProfiles,
-      groups: groups,
       content: filteredSets.length > 0,
       loading: false,
       presets: presets,
@@ -768,6 +726,51 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ groups: array });
   };
 
+  createGroups = (sort = this.state.sort, sortOrder = this.state.sortOrder, sets = this.state.filteredSets) => {
+    const createGroups = (sets: SetType[]): string[] => {
+      if (dateSorts.includes(sort)) {
+        return sets
+          .map((set) => {
+            const setDate = moment.utc(set[sort as DateSortKeys]);
+            const setMonth = setDate.format("MMMM YYYY");
+            return setMonth === "Invalid date" ? "" : setMonth;
+          })
+          .filter((item) => !!item);
+      } else if (arraySorts.includes(sort)) {
+        return sets.map((set) => set[sort as ArraySortKeys]).flat();
+      } else if (sort === "vendor") {
+        return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
+      } else {
+        return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter((item) => !!item);
+      }
+    };
+    const groups = uniqueArray(createGroups(sets));
+
+    groups.sort(function (a, b) {
+      if (dateSorts.includes(sort)) {
+        const aDate = moment.utc(a, "MMMM YYYY");
+        const bDate = moment.utc(b, "MMMM YYYY");
+        if (aDate < bDate) {
+          return sortOrder === "ascending" ? -1 : 1;
+        }
+        if (aDate > bDate) {
+          return sortOrder === "ascending" ? 1 : -1;
+        }
+      } else {
+        const x = a.toLowerCase();
+        const y = b.toLowerCase();
+        if (x < y) {
+          return sortOrder === "ascending" ? -1 : 1;
+        }
+        if (x > y) {
+          return sortOrder === "ascending" ? 1 : -1;
+        }
+      }
+      return 0;
+    });
+    this.setState({ groups: groups });
+  };
+
   setDensity = (density: string, write = true) => {
     this.setState({ density: density });
     if (write) {
@@ -782,7 +785,7 @@ class App extends React.Component<AppProps, AppState> {
       sortOrder = "descending";
     }
     this.setState({ sort: sort, sortOrder: sortOrder });
-    this.filterData(this.state.page, this.state.sets, sort, sortOrder);
+    this.createGroups(sort, sortOrder);
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sort");
