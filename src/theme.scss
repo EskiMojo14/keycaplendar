@@ -988,8 +988,20 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           }
         }
       }
+    }
+    .indicator {
+      &.post-gb {
+        background-color: map-get($variables, primary);
+      }
+      &.live-gb {
+        background-color: map-get($variables, secondary);
+      }
+    }
+  }
+  .timeline-card {
+    .timeline-chart-container {
       &.shipped .ct-chart {
-        .ct-series.ct-series-b {
+        .ct-series.ct-series-a {
           .ct-point,
           .ct-line,
           .ct-bar,
@@ -1006,12 +1018,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       }
     }
     .indicator {
-      &.shipped,
-      &.post-gb {
+      &.shipped {
         background-color: map-get($variables, primary);
-      }
-      &.live-gb {
-        background-color: map-get($variables, secondary);
       }
     }
   }

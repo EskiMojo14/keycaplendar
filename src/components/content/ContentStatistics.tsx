@@ -11,7 +11,17 @@ import { virtualize } from "react-swipeable-views-utils";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { Whitelist } from "../../util/constructors";
-import { camelise, capitalise, countInArray, iconObject, openModal, closeModal, hasKey } from "../../util/functions";
+import {
+  camelise,
+  capitalise,
+  countInArray,
+  iconObject,
+  openModal,
+  closeModal,
+  hasKey,
+  getSetMonthRange,
+  uniqueArray,
+} from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -29,8 +39,9 @@ import {
 import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
 import { TimelineTable } from "../statistics/TimelineTable";
-import { StatusCard, ShippedCard } from "../statistics/PieCard";
+import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
+import { ShippedCard } from "../statistics/TimelineCard";
 import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
@@ -112,6 +123,15 @@ type ShippedDataObject = {
   shipped: number;
   total: number;
   unshipped: number;
+  timeline: {
+    months: string[];
+    series: {
+      [key: string]: {
+        meta: string;
+        value: number;
+      };
+    }[];
+  };
 };
 
 type ShippedData = Record<Properties, DataObject<ShippedDataObject[]>>;
@@ -342,54 +362,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     properties.forEach((prop) => {
-      timelineSets.forEach((set) => {
-        if (hasKey(set, prop)) {
-          const val = set[prop];
-          if (val && typeof val === "string" && !val.includes("Q")) {
-            const month = moment(val).format("YYYY-MM");
-            if (hasKey(timelineData.months, prop) && !timelineData.months[prop].includes(month)) {
-              timelineData.months[prop].push(month);
-            }
-          }
-        }
-      });
       if (hasKey(timelineData.months, prop)) {
-        timelineData.months[prop].sort(function (a, b) {
-          if (a < b) {
-            return -1;
-          }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        });
-        const monthDiff = (dateFrom: moment.Moment, dateTo: moment.Moment) => {
-          return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
-        };
-        const length = hasKey(timelineData.months, prop)
-          ? monthDiff(
-              moment(timelineData.months[prop][0]),
-              moment(timelineData.months[prop][timelineData.months[prop].length - 1])
-            ) + 1
-          : 0;
-        let i;
-        const allMonths = [];
-        for (i = 0; i < length; i++) {
-          allMonths.push(moment(timelineData.months[prop][0]).add(i, "M").format("YYYY-MM"));
-        }
-        allMonths.sort(function (a, b) {
-          if (a < b) {
-            return -1;
-          }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        });
-        timelineData.months[prop] = [];
-        allMonths.forEach((month) => {
-          timelineData.months[prop].push(moment(month).format("MMM YY"));
-        });
+        timelineData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
         timelineWhitelist.profiles.forEach((profile) => {
           timelineData.profileCount[prop][camelise(profile)] = [];
         });
@@ -413,9 +387,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             timelineData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
           });
         });
-        timelineWhitelist.profiles.forEach((profile) => {
-          timelineData.profileCountData[prop].push(timelineData.profileCount[prop][camelise(profile)]);
-        });
+        timelineData.profileCountData[prop] = timelineWhitelist.profiles.map(
+          (profile) => timelineData.profileCount[prop][camelise(profile)]
+        );
       }
     });
     this.setState((prevState) => {
@@ -429,7 +403,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   };
 
   createStatusData = (sets: SetType[]) => {
-    console.log(sets);
     //status
     const statusData: StatusData = {
       profile: {
@@ -445,23 +418,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     };
-    sets.forEach((set) => {
-      if (!statusData.profile.names.includes(set.profile)) {
-        statusData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!statusData.designer.names.includes(designer)) {
-          statusData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!statusData.vendor.names.includes(vendor.name)) {
-            statusData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    statusData.profile.names = uniqueArray(sets.map((set) => set.profile));
+    statusData.designer.names = uniqueArray(sets.map((set) => set.designer).flat(1));
+    statusData.vendor.names = uniqueArray(
+      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
     Object.keys(statusData).forEach((prop) => {
       if (hasKey(statusData, prop)) {
         statusData[prop].names.sort(function (a, b) {
@@ -598,23 +559,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
-    pastSets.forEach((set) => {
-      if (!shippedData.profile.names.includes(set.profile)) {
-        shippedData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!shippedData.designer.names.includes(designer)) {
-          shippedData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!shippedData.vendor.names.includes(vendor.name)) {
-            shippedData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    shippedData.profile.names = uniqueArray(pastSets.map((set) => set.profile));
+    shippedData.designer.names = uniqueArray(pastSets.map((set) => set.designer).flat(1));
+    shippedData.vendor.names = uniqueArray(
+      pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
     Object.keys(shippedData).forEach((prop) => {
       if (hasKey(shippedData, prop)) {
         shippedData[prop].names.sort(function (a, b) {
@@ -657,11 +606,31 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && set.shipped !== true;
             }
           });
+          const months = getSetMonthRange([...shippedSets, ...unshippedSets], "gbEnd", "MMM YY");
+          const timelineData = months.map((month) => {
+            const shipped = shippedSets.filter((set) => {
+              const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+              return setEnd && setEnd === month;
+            });
+            const unshipped = unshippedSets.filter((set) => {
+              const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+              return setEnd && setEnd === month;
+            });
+            return {
+              shipped: { meta: "Shipped:&nbsp;", value: shipped.length },
+              unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
+            };
+          });
+          console.log(timelineData);
           shippedData[prop].data.push({
             name: name,
             shipped: shippedSets.length,
             unshipped: unshippedSets.length,
             total: shippedSets.length + unshippedSets.length,
+            timeline: {
+              months: months,
+              series: timelineData,
+            },
           });
         });
         shippedData[prop].data.sort((a, b) => {
@@ -733,23 +702,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         propSets = dateSets;
       }
       if (hasKey(durationData, prop)) {
-        propSets.forEach((set) => {
-          if (!durationData[prop].profile.names.includes(set.profile)) {
-            durationData[prop].profile.names.push(set.profile);
-          }
-          set.designer.forEach((designer) => {
-            if (!durationData[prop].designer.names.includes(designer)) {
-              durationData[prop].designer.names.push(designer);
-            }
-          });
-          if (set.vendors) {
-            set.vendors.forEach((vendor) => {
-              if (!durationData[prop].vendor.names.includes(vendor.name)) {
-                durationData[prop].vendor.names.push(vendor.name);
-              }
-            });
-          }
-        });
+        durationData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
+        durationData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
+        durationData[prop].vendor.names = uniqueArray(
+          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        );
 
         Object.keys(durationData[prop]).forEach((property) => {
           if (hasKey(durationData[prop], property)) {
@@ -896,23 +853,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     const vendorSets = pastSets.filter((set) => set.vendors);
 
-    vendorSets.forEach((set) => {
-      if (!vendorsData.profile.names.includes(set.profile)) {
-        vendorsData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!vendorsData.designer.names.includes(designer)) {
-          vendorsData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!vendorsData.vendor.names.includes(vendor.name)) {
-            vendorsData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    vendorsData.profile.names = uniqueArray(vendorSets.map((set) => set.profile));
+    vendorsData.designer.names = uniqueArray(vendorSets.map((set) => set.designer).flat(1));
+    vendorsData.vendor.names = uniqueArray(
+      vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
 
     Object.keys(vendorsData).forEach((prop) => {
       if (hasKey(vendorsData, prop)) {

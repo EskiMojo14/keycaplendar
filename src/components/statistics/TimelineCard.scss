@@ -1,0 +1,61 @@
+@use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
+
+.timeline-card {
+  .mdc-typography--headline5 {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+  .mdc-typography--subtitle2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .timeline-container {
+    display: flex;
+    flex-direction: column;
+    .timeline-chart-container {
+      &.shipped .ct-chart {
+        .ct-series {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+    }
+    .table-container {
+      flex-grow: 1;
+      .mdc-data-table {
+        width: 100%;
+        .mdc-data-table__table {
+          width: 100%;
+          .mdc-data-table__cell {
+            position: relative;
+            .indicator {
+              position: absolute;
+              width: 4px;
+              height: 100%;
+              @include rtl.reflexive-position(left, 0);
+              top: 0;
+              bottom: 0;
+              &.not-shipped,
+              &.pre-gb {
+                background-color: var(--divider-color);
+              }
+              &.ic {
+                background-color: var(--lighter-color);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
