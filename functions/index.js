@@ -406,15 +406,17 @@ exports.apiAuth = functions.https.onRequest(async (request, response) => {
 });
 
 const verify = function (req) {
-  const accessToken = req.headers.authorization.split(" ");
-  if (accessToken.length !== 2 || !accessToken[1]) return false;
-  let payload;
-  try {
-    payload = jwt.verify(accessToken[1], functions.config().jwt.secret);
-    return payload;
-  } catch (e) {
-    console.error(e);
-    return false;
+  if (req.headers.authorization) {
+    const accessToken = req.headers.authorization.split(" ");
+    if (accessToken.length !== 2 || !accessToken[1]) return false;
+    let payload;
+    try {
+      payload = jwt.verify(accessToken[1], functions.config().jwt.secret);
+      return payload;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 };
 
