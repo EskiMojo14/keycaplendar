@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  title: KeycapLendar API
+  version: '1.0'
+servers:
+  - url: 'https://keycaplendar.firebaseapp.com/'
+    description: Production
+paths:
+  /apiAuth:
+    post:
+      summary: Generate Token
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  token:
+                    type: string
+                    minLength: 1
+                required:
+                  - token
+      operationId: post-apiAuth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                key:
+                  type: string
+                  minLength: 1
+                secret:
+                  type: string
+                  minLength: 1
+              required:
+                - key
+                - secret
+      description: Using your api key and secret generate a session token that will be used in any other subsequent API requests.
+  /getAllKeysets:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - id
+                    - latestEditor
+                    - profile
+                    - gbMonth
+                    - sales
+                    - details
+                    - icDate
+                    - shipped
+                    - gbEnd
+                    - designer
+                    - gbLaunch
+                    - vendors
+                    - image
+                    - colorway
+                  properties:
+                    id:
+                      type: string
+                      minLength: 1
+                    latestEditor:
+                      type: string
+                      minLength: 1
+                    profile:
+                      type: string
+                      minLength: 1
+                    gbMonth:
+                      type: boolean
+                    sales:
+                      type: string
+                      minLength: 1
+                    details:
+                      type: string
+                      minLength: 1
+                    icDate:
+                      type: string
+                      minLength: 1
+                    shipped:
+                      type: boolean
+                    gbEnd:
+                      type: string
+                      minLength: 1
+                    designer:
+                      type: array
+                      items:
+                        required: []
+                        properties: {}
+                    gbLaunch:
+                      type: string
+                      minLength: 1
+                    vendors:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - id
+                          - region
+                          - name
+                          - storeLink
+                        properties:
+                          id:
+                            type: string
+                            minLength: 1
+                          region:
+                            type: string
+                            minLength: 1
+                          name:
+                            type: string
+                            minLength: 1
+                          storeLink:
+                            type: string
+                            minLength: 1
+                    image:
+                      type: string
+                      minLength: 1
+                    colorway:
+                      type: string
+                      minLength: 1
+              examples:
+                example-1:
+                  value:
+                    id: string
+                    latestEditor: string
+                    profile: string
+                    gbMonth: true
+                    sales: string
+                    details: string
+                    icDate: string
+                    shipped: true
+                    gbEnd: string
+                    designer:
+                      - {}
+                    gbLaunch: string
+                    vendors:
+                      - id: string
+                        region: string
+                        name: string
+                        storeLink: string
+                    image: string
+                    colorway: string
+      operationId: get-getAllKeysets
+      description: Return all the keysets in the database
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: dateFilter
+        - schema:
+            type: string
+          in: query
+          name: after
+        - schema:
+            type: string
+          in: query
+          name: before
+      security:
+        - Bearer Token: []
+    parameters: []
+  /getKeysetById:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: string
+                    minLength: 1
+                  latestEditor:
+                    type: string
+                    minLength: 1
+                  profile:
+                    type: string
+                    minLength: 1
+                  gbMonth:
+                    type: boolean
+                  sales:
+                    type: string
+                    minLength: 1
+                  details:
+                    type: string
+                    minLength: 1
+                  icDate:
+                    type: string
+                    minLength: 1
+                  shipped:
+                    type: boolean
+                  gbEnd:
+                    type: string
+                    minLength: 1
+                  designer:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                  gbLaunch:
+                    type: string
+                    minLength: 1
+                  vendors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - id
+                        - region
+                        - name
+                        - storeLink
+                      properties:
+                        id:
+                          type: string
+                          minLength: 1
+                        region:
+                          type: string
+                          minLength: 1
+                        name:
+                          type: string
+                          minLength: 1
+                        storeLink:
+                          type: string
+                          minLength: 1
+                  image:
+                    type: string
+                    minLength: 1
+                  colorway:
+                    type: string
+                    minLength: 1
+                required:
+                  - id
+                  - latestEditor
+                  - profile
+                  - gbMonth
+                  - sales
+                  - details
+                  - icDate
+                  - shipped
+                  - gbEnd
+                  - designer
+                  - gbLaunch
+                  - vendors
+                  - image
+                  - colorway
+      operationId: get-getKeysetById
+      description: Retreive one keyset from the database
+      security:
+        - Bearer Token: []
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: id
+          description: 'The Id of the keyset you want to retrieve, '
+          required: true
+    parameters: []
+components:
+  schemas:
+    Keyset:
+      description: ''
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        latestEditor:
+          type: string
+          minLength: 1
+        profile:
+          type: string
+          minLength: 1
+        gbMonth:
+          type: boolean
+        sales:
+          type: string
+          minLength: 1
+        details:
+          type: string
+          minLength: 1
+        icDate:
+          type: string
+          minLength: 1
+        shipped:
+          type: boolean
+        gbEnd:
+          type: string
+          minLength: 1
+        designer:
+          type: array
+          items:
+            required: []
+            properties: {}
+        gbLaunch:
+          type: string
+          minLength: 1
+        vendors:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            required:
+              - id
+              - region
+              - name
+              - storeLink
+            properties:
+              id:
+                type: string
+                minLength: 1
+              region:
+                type: string
+                minLength: 1
+              name:
+                type: string
+                minLength: 1
+              storeLink:
+                type: string
+                minLength: 1
+        image:
+          type: string
+          minLength: 1
+        colorway:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - latestEditor
+        - profile
+        - gbMonth
+        - sales
+        - details
+        - icDate
+        - shipped
+        - gbEnd
+        - designer
+        - gbLaunch
+        - vendors
+        - image
+        - colorway
+  securitySchemes:
+    Bearer Token:
+      type: http
+      scheme: bearer
+      description: Token used to authenticate all endpoints.
+security:
+  - API Key - 1: []
