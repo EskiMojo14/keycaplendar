@@ -377,7 +377,7 @@ exports.apiAuth = functions.https.onRequest(async (request, response) => {
   if (!key || !secret) {
     return response.status(401).send({error: "Unauthorized"})
   }
-  const usersRef = db.collection("users");
+  const usersRef = db.collection("apiUsers");
   const snapshot = await usersRef
     .where('apiKey', '==', key)
     .where('apiSecret', '==', secret)
