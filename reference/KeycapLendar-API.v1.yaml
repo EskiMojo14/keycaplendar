@@ -2,8 +2,13 @@ openapi: 3.0.0
 info:
   title: KeycapLendar API
   version: '1.0'
+  description: 'This is an API for https://keycaplendar.firebaseapp.com/'
+  contact:
+    name: Ben Durrant
+    email: keycaplendar@gmail.com
+    url: 'https://discord.com/invite/zrcN3qF'
 servers:
-  - url: 'https://keycaplendar.firebaseapp.com/'
+  - url: 'https://keycaplendar.firebaseapp.com'
     description: Production
 paths:
   /apiAuth:
