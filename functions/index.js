@@ -418,6 +418,7 @@ const verify = function (req) {
       return false;
     }
   }
+  return false;
 };
 
 exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
