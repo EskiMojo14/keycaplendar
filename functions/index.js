@@ -409,7 +409,9 @@ exports.apiAuth = functions.https.onRequest(async (request, response) => {
 })
 
 const verify = function (req) {
-  let accessToken = req.headers.authorization.split(" ")
+  let accessToken = req.headers.authorization
+  if (!accessToken) return false;
+  accessToken = accessToken.split(" ")
   if (accessToken.length !== 2 || !accessToken[1]) return false;
   let payload
   try {
