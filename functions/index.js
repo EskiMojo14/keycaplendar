@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 const sharp = require("sharp");
+const jwt = require("jsonwebtoken");
 const { Stream } = require("stream");
 
 const app = admin.initializeApp();
