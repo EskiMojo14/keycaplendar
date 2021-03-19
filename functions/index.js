@@ -3,7 +3,6 @@ const functions = require("firebase-functions");
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 const sharp = require("sharp");
-const jwt = require("jsonwebtoken");
 const { Stream } = require("stream");
 
 const app = admin.initializeApp();
@@ -370,64 +369,60 @@ exports.setRoles = functions.https.onCall(async (data, context) => {
   return newUser.customClaims;
 });
 
-
 exports.apiAuth = functions.https.onRequest(async (request, response) => {
-  let key = request.body.key
-  let secret = request.body.secret
+  const key = request.body.key;
+  const secret = request.body.secret;
   if (!key || !secret) {
-    return response.status(401).send({error: "Unauthorized"})
+    return response.status(401).send({ error: "Unauthorized" });
   }
   const usersRef = db.collection("apiUsers");
-  const snapshot = await usersRef
-    .where('apiKey', '==', key)
-    .where('apiSecret', '==', secret)
-    .get();
+  const snapshot = await usersRef.where("apiKey", "==", key).where("apiSecret", "==", secret).get();
   if (snapshot.empty) {
-    return response.status(401).send({error: "Unauthorized"})
+    return response.status(401).send({ error: "Unauthorized" });
   }
-  var ts = Math.round((new Date()).getTime() / 1000);
-  var user = {}
+  const ts = Math.round(new Date().getTime() / 1000);
+  let user = {};
   let payload = {
     apiAccess: null,
     email: "",
     iat: ts,
-    exp: ts + 1800
-
-  }
+    exp: ts + 1800,
+  };
   snapshot.forEach((doc) => {
-    user = {...doc.data()}
+    user = { ...doc.data() };
   });
-  if (user.apiAccess !== true) return response.status(401).send({error: "Unauthorized"})
-  payload.email = user.email
-  payload.apiAccess = user.apiAccess
+  if (user.apiAccess !== true) {
+    return response.status(401).send({ error: "Unauthorized" });
+  }
+  payload.email = user.email;
+  payload.apiAccess = user.apiAccess;
 
-  let accessToken = jwt.sign(payload, functions.config().jwt.secret, {
-    algorithm: "HS256"
-  })
+  const accessToken = jwt.sign(payload, functions.config().jwt.secret, {
+    algorithm: "HS256",
+  });
 
-  return response.status(200).send({token: accessToken})
-})
+  return response.status(200).send({ token: accessToken });
+});
 
 const verify = function (req) {
-  let accessToken = req.headers.authorization
-  if (!accessToken) return false;
-  accessToken = accessToken.split(" ")
-  if (accessToken.length !== 2 || !accessToken[1]) return false;
-  let payload
-  try {
-    payload = jwt.verify(accessToken[1], functions.config().jwt.secret)
-    return payload
-  } catch (e) {
-    console.error(e)
-    return false
+  if (req.headers.authorization) {
+    const accessToken = req.headers.authorization.split(" ");
+    if (accessToken.length !== 2 || !accessToken[1]) return false;
+    let payload;
+    try {
+      payload = jwt.verify(accessToken[1], functions.config().jwt.secret);
+      return payload;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
-}
-
+};
 
 exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
-  let auth = verify(request)
+  const auth = verify(request);
   if (auth === false) {
-    return response.status(401).send({error: "Unauthorized"})
+    return response.status(401).send({ error: "Unauthorized" });
   }
   const returnKeysets = async (ref) => {
     const snapshot = await ref.get();
@@ -440,16 +435,26 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
     });
     response.send(JSON.stringify(keysets));
   };
+  const validDateFilter = (dateFilter, exists = true) => {
+    return (
+      ((dateFilter && exists) || !exists) &&
+      (dateFilter === "icDate" || dateFilter === "gbLaunch" || dateFilter === "gbEnd")
+    );
+  };
+  const validDate = (date, exists = true) => {
+    const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
+    return ((dateFilter && exists) || !exists) && regex.test(date);
+  };
   const keysetsRef = db.collection("keysets");
-  if (request.query.dateFilter && request.query.before && request.query.after) {
+  if (validDateFilter(request.query.dateFilter) && validDate(request.query.before) && validDate(request.query.after)) {
     const filteredRef = keysetsRef
       .where(request.query.dateFilter, "<=", request.query.before)
       .where(request.query.dateFilter, ">=", request.query.after);
     returnKeysets(filteredRef);
-  } else if (request.query.dateFilter && request.query.before) {
+  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.before)) {
     const filteredRef = keysetsRef.where(request.query.dateFilter, "<=", request.query.before);
     returnKeysets(filteredRef);
-  } else if (request.query.dateFilter && request.query.after) {
+  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.after)) {
     const filteredRef = keysetsRef.where(request.query.dateFilter, ">=", request.query.after);
     returnKeysets(filteredRef);
   } else {
@@ -458,9 +463,9 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
 });
 
 exports.getKeysetById = functions.https.onRequest(async (request, response) => {
-  let auth = verify(request)
+  const auth = verify(request);
   if (auth === false) {
-    return response.status(401).send({error: "Unauthorized"})
+    return response.status(401).send({ error: "Unauthorized" });
   }
   const keysetsRef = db.collection("keysets");
   if (request.query.id) {
