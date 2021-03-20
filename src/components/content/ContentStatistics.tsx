@@ -559,6 +559,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
+    const months = getSetMonthRange(pastSets, "gbEnd", "MMM YY");
     shippedData.profile.names = uniqueArray(pastSets.map((set) => set.profile));
     shippedData.designer.names = uniqueArray(pastSets.map((set) => set.designer).flat(1));
     shippedData.vendor.names = uniqueArray(
@@ -606,7 +607,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && set.shipped !== true;
             }
           });
-          const months = getSetMonthRange([...shippedSets, ...unshippedSets], "gbEnd", "MMM YY");
           const timelineData = months.map((month) => {
             const shipped = shippedSets.filter((set) => {
               const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
@@ -621,7 +621,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
             };
           });
-          console.log(timelineData);
           shippedData[prop].data.push({
             name: name,
             shipped: shippedSets.length,
