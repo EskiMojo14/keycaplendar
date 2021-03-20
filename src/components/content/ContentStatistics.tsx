@@ -11,7 +11,17 @@ import { virtualize } from "react-swipeable-views-utils";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { Whitelist } from "../../util/constructors";
-import { camelise, capitalise, countInArray, iconObject, openModal, closeModal, hasKey } from "../../util/functions";
+import {
+  camelise,
+  capitalise,
+  countInArray,
+  iconObject,
+  openModal,
+  closeModal,
+  hasKey,
+  getSetMonthRange,
+  uniqueArray,
+} from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -29,8 +39,9 @@ import {
 import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
 import { TimelineTable } from "../statistics/TimelineTable";
-import { StatusCard, ShippedCard } from "../statistics/PieCard";
+import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
+import { ShippedCard } from "../statistics/TimelineCard";
 import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
@@ -112,6 +123,15 @@ type ShippedDataObject = {
   shipped: number;
   total: number;
   unshipped: number;
+  timeline: {
+    months: string[];
+    series: {
+      [key: string]: {
+        meta: string;
+        value: number;
+      };
+    }[];
+  };
 };
 
 type ShippedData = Record<Properties, DataObject<ShippedDataObject[]>>;
@@ -269,10 +289,10 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     },
     whitelist: new Whitelist(),
     sort: {
-      status: "alphabetical",
-      shipped: "alphabetical",
-      duration: "alphabetical",
-      vendors: "alphabetical",
+      status: "total",
+      shipped: "total",
+      duration: "total",
+      vendors: "total",
     },
     filterDrawerOpen: false,
     categoryDialogOpen: false,
@@ -342,54 +362,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     properties.forEach((prop) => {
-      timelineSets.forEach((set) => {
-        if (hasKey(set, prop)) {
-          const val = set[prop];
-          if (val && typeof val === "string" && !val.includes("Q")) {
-            const month = moment(val).format("YYYY-MM");
-            if (hasKey(timelineData.months, prop) && !timelineData.months[prop].includes(month)) {
-              timelineData.months[prop].push(month);
-            }
-          }
-        }
-      });
       if (hasKey(timelineData.months, prop)) {
-        timelineData.months[prop].sort(function (a, b) {
-          if (a < b) {
-            return -1;
-          }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        });
-        const monthDiff = (dateFrom: moment.Moment, dateTo: moment.Moment) => {
-          return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
-        };
-        const length = hasKey(timelineData.months, prop)
-          ? monthDiff(
-              moment(timelineData.months[prop][0]),
-              moment(timelineData.months[prop][timelineData.months[prop].length - 1])
-            ) + 1
-          : 0;
-        let i;
-        const allMonths = [];
-        for (i = 0; i < length; i++) {
-          allMonths.push(moment(timelineData.months[prop][0]).add(i, "M").format("YYYY-MM"));
-        }
-        allMonths.sort(function (a, b) {
-          if (a < b) {
-            return -1;
-          }
-          if (a > b) {
-            return 1;
-          }
-          return 0;
-        });
-        timelineData.months[prop] = [];
-        allMonths.forEach((month) => {
-          timelineData.months[prop].push(moment(month).format("MMM YY"));
-        });
+        timelineData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
         timelineWhitelist.profiles.forEach((profile) => {
           timelineData.profileCount[prop][camelise(profile)] = [];
         });
@@ -413,9 +387,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             timelineData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
           });
         });
-        timelineWhitelist.profiles.forEach((profile) => {
-          timelineData.profileCountData[prop].push(timelineData.profileCount[prop][camelise(profile)]);
-        });
+        timelineData.profileCountData[prop] = timelineWhitelist.profiles.map(
+          (profile) => timelineData.profileCount[prop][camelise(profile)]
+        );
       }
     });
     this.setState((prevState) => {
@@ -429,7 +403,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   };
 
   createStatusData = (sets: SetType[]) => {
-    console.log(sets);
     //status
     const statusData: StatusData = {
       profile: {
@@ -445,23 +418,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         data: [],
       },
     };
-    sets.forEach((set) => {
-      if (!statusData.profile.names.includes(set.profile)) {
-        statusData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!statusData.designer.names.includes(designer)) {
-          statusData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!statusData.vendor.names.includes(vendor.name)) {
-            statusData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    statusData.profile.names = uniqueArray(sets.map((set) => set.profile));
+    statusData.designer.names = uniqueArray(sets.map((set) => set.designer).flat(1));
+    statusData.vendor.names = uniqueArray(
+      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
     Object.keys(statusData).forEach((prop) => {
       if (hasKey(statusData, prop)) {
         statusData[prop].names.sort(function (a, b) {
@@ -598,23 +559,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
-    pastSets.forEach((set) => {
-      if (!shippedData.profile.names.includes(set.profile)) {
-        shippedData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!shippedData.designer.names.includes(designer)) {
-          shippedData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!shippedData.vendor.names.includes(vendor.name)) {
-            shippedData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    shippedData.profile.names = uniqueArray(pastSets.map((set) => set.profile));
+    shippedData.designer.names = uniqueArray(pastSets.map((set) => set.designer).flat(1));
+    shippedData.vendor.names = uniqueArray(
+      pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
     Object.keys(shippedData).forEach((prop) => {
       if (hasKey(shippedData, prop)) {
         shippedData[prop].names.sort(function (a, b) {
@@ -657,11 +606,31 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && set.shipped !== true;
             }
           });
+          const months = getSetMonthRange([...shippedSets, ...unshippedSets], "gbEnd", "MMM YY");
+          const timelineData = months.map((month) => {
+            const shipped = shippedSets.filter((set) => {
+              const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+              return setEnd && setEnd === month;
+            });
+            const unshipped = unshippedSets.filter((set) => {
+              const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+              return setEnd && setEnd === month;
+            });
+            return {
+              shipped: { meta: "Shipped:&nbsp;", value: shipped.length },
+              unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
+            };
+          });
+          console.log(timelineData);
           shippedData[prop].data.push({
             name: name,
             shipped: shippedSets.length,
             unshipped: unshippedSets.length,
             total: shippedSets.length + unshippedSets.length,
+            timeline: {
+              months: months,
+              series: timelineData,
+            },
           });
         });
         shippedData[prop].data.sort((a, b) => {
@@ -733,23 +702,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         propSets = dateSets;
       }
       if (hasKey(durationData, prop)) {
-        propSets.forEach((set) => {
-          if (!durationData[prop].profile.names.includes(set.profile)) {
-            durationData[prop].profile.names.push(set.profile);
-          }
-          set.designer.forEach((designer) => {
-            if (!durationData[prop].designer.names.includes(designer)) {
-              durationData[prop].designer.names.push(designer);
-            }
-          });
-          if (set.vendors) {
-            set.vendors.forEach((vendor) => {
-              if (!durationData[prop].vendor.names.includes(vendor.name)) {
-                durationData[prop].vendor.names.push(vendor.name);
-              }
-            });
-          }
-        });
+        durationData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
+        durationData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
+        durationData[prop].vendor.names = uniqueArray(
+          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        );
 
         Object.keys(durationData[prop]).forEach((property) => {
           if (hasKey(durationData[prop], property)) {
@@ -896,23 +853,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     const vendorSets = pastSets.filter((set) => set.vendors);
 
-    vendorSets.forEach((set) => {
-      if (!vendorsData.profile.names.includes(set.profile)) {
-        vendorsData.profile.names.push(set.profile);
-      }
-      set.designer.forEach((designer) => {
-        if (!vendorsData.designer.names.includes(designer)) {
-          vendorsData.designer.names.push(designer);
-        }
-      });
-      if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          if (!vendorsData.vendor.names.includes(vendor.name)) {
-            vendorsData.vendor.names.push(vendor.name);
-          }
-        });
-      }
-    });
+    vendorsData.profile.names = uniqueArray(vendorSets.map((set) => set.profile));
+    vendorsData.designer.names = uniqueArray(vendorSets.map((set) => set.designer).flat(1));
+    vendorsData.vendor.names = uniqueArray(
+      vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    );
 
     Object.keys(vendorsData).forEach((prop) => {
       if (hasKey(vendorsData, prop)) {
@@ -1363,23 +1308,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     const genericButtons = (
       <>
         <ToggleGroup>
-          <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
-            <ToggleGroupButton
-              selected={
-                hasKey(this.state.sort, this.props.statisticsTab) &&
-                this.state.sort[this.props.statisticsTab] === "alphabetical"
-              }
-              onClick={() => {
-                this.setSort(this.props.statisticsTab, "alphabetical");
-              }}
-              icon={iconObject(
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
-                </svg>
-              )}
-            />
-          </Tooltip>
           <Tooltip enterDelay={500} align="bottom" content="Total">
             <ToggleGroupButton
               selected={
@@ -1393,6 +1321,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                   <path d="M0 0h24v24H0V0z" fill="none" />
                   <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                </svg>
+              )}
+            />
+          </Tooltip>
+          <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
+            <ToggleGroupButton
+              selected={
+                hasKey(this.state.sort, this.props.statisticsTab) &&
+                this.state.sort[this.props.statisticsTab] === "alphabetical"
+              }
+              onClick={() => {
+                this.setSort(this.props.statisticsTab, "alphabetical");
+              }}
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
                 </svg>
               )}
             />

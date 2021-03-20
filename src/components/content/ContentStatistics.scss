@@ -80,6 +80,9 @@
       &.full-span {
         grid-column: span 4;
       }
+      &.half-span {
+        grid-column: span 2;
+      }
     }
   }
 }
@@ -100,8 +103,13 @@ $tabs: timeline, status, shipped, duration, vendors;
 @media (max-width: 1199px) {
   .stats-tab.stats-grid {
     grid-template-columns: repeat(3, 1fr);
-    .mdc-card.full-span {
-      grid-column: span 3;
+    .mdc-card {
+      &.full-span {
+        grid-column: span 3;
+      }
+      &.half-span {
+        grid-column: span 3;
+      }
     }
   }
 }
@@ -109,8 +117,11 @@ $tabs: timeline, status, shipped, duration, vendors;
 @media (max-width: 839px) {
   .stats-tab.stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    .mdc-card.full-span {
-      grid-column: span 2;
+    .mdc-card {
+      &.full-span,
+      &.half-span {
+        grid-column: span 2;
+      }
     }
   }
 }
@@ -118,8 +129,11 @@ $tabs: timeline, status, shipped, duration, vendors;
 @media (max-width: 479px) {
   .stats-tab.stats-grid {
     grid-template-columns: repeat(1, 1fr);
-    .mdc-card.full-span {
-      grid-column: span 1;
+    .mdc-card {
+      &.full-span,
+      &.half-span {
+        grid-column: span 1;
+      }
     }
   }
 }

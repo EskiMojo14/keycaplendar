@@ -1,6 +1,8 @@
 import { replaceChars } from "./constants";
 import firebase from "../firebase";
 import React from "react";
+import { SetType } from "./types";
+import moment from "moment";
 
 const storage = firebase.storage();
 
@@ -108,6 +110,34 @@ export const boolFunctions = (func: (bool: boolean) => void) => {
     func(true);
   };
   return [setFalse, setTrue];
+};
+
+export const getSetMonthRange = (sets: SetType[], prop: keyof SetType, format: string) => {
+  const setMonths = uniqueArray(
+    sets.map((set) => {
+      const val = set[prop];
+      return val && typeof val === "string" && !val.includes("Q") ? moment(val).format("YYYY-MM") : "";
+    })
+  ).filter((month) => !!month);
+  setMonths.sort(function (a, b) {
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  const monthDiff = (dateFrom: moment.Moment, dateTo: moment.Moment) => {
+    return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
+  };
+  const length = monthDiff(moment(setMonths[0]), moment(setMonths[setMonths.length - 1])) + 1;
+  let i;
+  const allMonths = [];
+  for (i = 0; i < length; i++) {
+    allMonths.push(moment(setMonths[0]).add(i, "M").format(format));
+  }
+  return allMonths;
 };
 
 export const formatBytes = (bytes: number, decimals = 2) => {
