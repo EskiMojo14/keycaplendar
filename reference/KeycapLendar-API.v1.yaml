@@ -60,7 +60,7 @@ paths:
       description: 'Using your API key and secret, generate a session token that will be used in any other subsequent API requests.'
   /getAllKeysets:
     get:
-      summary: Get all keysets
+      summary: Get All Keysets
       tags:
         - query
       responses:
