@@ -483,17 +483,36 @@ class App extends React.Component<AppProps, AppState> {
 
     // console log sets with space at end of string
     if (this.state.user.isAdmin) {
+      const testValue = (set: SetType, key: string, value: string) => {
+        const regex = /\s+$/m;
+        const regex2 = /^\s+/;
+        const bool = regex.test(value) || regex2.test(value);
+        if (bool) {
+          console.log(
+            `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
+          );
+        }
+      };
       sets.forEach((set) => {
         Object.keys(set).forEach((key) => {
           if (hasKey(set, key)) {
             const value = set[key];
             if (typeof value === "string") {
-              const regex = / $/m;
-              const bool = regex.test(value);
-              if (bool) {
-                console.log(`${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>")}`);
-              }
-              return bool;
+              testValue(set, key, value);
+            } else if (value instanceof Array) {
+              value.forEach((item: any) => {
+                if (typeof item === "string") {
+                  testValue(set, key, item);
+                } else if (typeof item === "object") {
+                  Object.keys(item).forEach((itemKey) => {
+                    if (hasKey(item, itemKey)) {
+                      if (typeof item[itemKey] === "string") {
+                        testValue(set, `${key} ${itemKey}`, item[itemKey]);
+                      }
+                    }
+                  });
+                }
+              });
             }
           }
         });
