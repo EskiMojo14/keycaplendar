@@ -2,8 +2,13 @@ openapi: 3.0.0
 info:
   title: KeycapLendar API
   version: '1.0'
+  contact:
+    name: Ben Durrant
+    email: keycaplendar@gmail.com
+    url: 'https://discord.gg/zrcN3qF'
+  termsOfService: 'https://keycaplendar.firebaseapp.com/terms'
 servers:
-  - url: 'https://keycaplendar.firebaseapp.com/'
+  - url: 'https://us-central1-keycaplendar.cloudfunctions.net'
     description: Production
 paths:
   /apiAuth:
@@ -43,7 +48,7 @@ paths:
               required:
                 - key
                 - secret
-      description: Using your api key and secret generate a session token that will be used in any other subsequent API requests.
+      description: 'Using your API key and secret, generate a session token that will be used in any other subsequent API requests.'
   /getAllKeysets:
     get:
       summary: Your GET endpoint
@@ -54,8 +59,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyset'
         '':
           content:
             application/json:
@@ -171,16 +177,25 @@ paths:
       parameters:
         - schema:
             type: string
+            enum:
+              - icDate
+              - gbLaunch
+              - gbEnd
           in: query
           name: dateFilter
+          description: Type of date to filter by.
         - schema:
             type: string
+            format: date
           in: query
           name: after
+          description: Filter sets by dateFilter property to after date.
         - schema:
             type: string
+            format: date
           in: query
           name: before
+          description: Filter sets by dateFilter property to before date.
       security:
         - Bearer Token: []
     parameters: []
@@ -194,88 +209,31 @@ paths:
           content:
             application/json:
               schema:
-                description: ''
-                type: object
-                properties:
-                  id:
-                    type: string
-                    minLength: 1
-                  latestEditor:
-                    type: string
-                    minLength: 1
-                  profile:
-                    type: string
-                    minLength: 1
-                  gbMonth:
-                    type: boolean
-                  sales:
-                    type: string
-                    minLength: 1
-                  details:
-                    type: string
-                    minLength: 1
-                  icDate:
-                    type: string
-                    minLength: 1
-                  shipped:
-                    type: boolean
-                  gbEnd:
-                    type: string
-                    minLength: 1
-                  designer:
-                    type: array
-                    items:
-                      required: []
-                      properties: {}
-                  gbLaunch:
-                    type: string
-                    minLength: 1
-                  vendors:
-                    type: array
-                    uniqueItems: true
-                    minItems: 1
-                    items:
-                      required:
-                        - id
-                        - region
-                        - name
-                        - storeLink
-                      properties:
-                        id:
-                          type: string
-                          minLength: 1
-                        region:
-                          type: string
-                          minLength: 1
-                        name:
-                          type: string
-                          minLength: 1
-                        storeLink:
-                          type: string
-                          minLength: 1
-                  image:
-                    type: string
-                    minLength: 1
-                  colorway:
-                    type: string
-                    minLength: 1
-                required:
-                  - id
-                  - latestEditor
-                  - profile
-                  - gbMonth
-                  - sales
-                  - details
-                  - icDate
-                  - shipped
-                  - gbEnd
-                  - designer
-                  - gbLaunch
-                  - vendors
-                  - image
-                  - colorway
+                $ref: '#/components/schemas/Keyset'
+              examples:
+                example-1:
+                  value:
+                    id: string
+                    latestEditor: string
+                    profile: string
+                    gbMonth: true
+                    sales: string
+                    details: string
+                    icDate: string
+                    shipped: true
+                    gbEnd: string
+                    designer:
+                      - {}
+                    gbLaunch: string
+                    vendors:
+                      - id: string
+                        region: string
+                        name: string
+                        storeLink: string
+                    image: string
+                    colorway: string
       operationId: get-getKeysetById
-      description: Retreive one keyset from the database
+      description: 'Retrieve one keyset from the database, by its ID.'
       security:
         - Bearer Token: []
       parameters:
@@ -283,7 +241,7 @@ paths:
             type: string
           in: query
           name: id
-          description: 'The Id of the keyset you want to retrieve, '
+          description: 'The ID of the keyset you want to retrieve '
           required: true
     parameters: []
 components:
@@ -320,8 +278,7 @@ components:
         designer:
           type: array
           items:
-            required: []
-            properties: {}
+            type: string
         gbLaunch:
           type: string
           minLength: 1
@@ -330,11 +287,7 @@ components:
           uniqueItems: true
           minItems: 1
           items:
-            required:
-              - id
-              - region
-              - name
-              - storeLink
+            type: object
             properties:
               id:
                 type: string
@@ -348,6 +301,11 @@ components:
               storeLink:
                 type: string
                 minLength: 1
+              endDate:
+                type: string
+            required:
+              - region
+              - name
         image:
           type: string
           minLength: 1
@@ -358,11 +316,8 @@ components:
         - id
         - latestEditor
         - profile
-        - gbMonth
-        - sales
         - details
         - icDate
-        - shipped
         - gbEnd
         - designer
         - gbLaunch
