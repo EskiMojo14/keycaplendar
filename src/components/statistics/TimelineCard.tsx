@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import { DeviceContext } from "../../util/contexts";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -43,7 +44,7 @@ const chartOptions = {
   chartPadding: {
     top: 16,
     right: 0,
-    bottom: 16,
+    bottom: 32,
     left: 16,
   },
   plugins: [
@@ -53,7 +54,7 @@ const chartOptions = {
         axisClass: "ct-axis-title",
         offset: {
           x: 0,
-          y: 40,
+          y: 48,
         },
         textAnchor: "middle",
       },
@@ -105,6 +106,7 @@ const responsiveOptions = [
 ];
 
 export const ShippedCard = (props: ShippedCardProps) => {
+  const device = useContext(DeviceContext);
   return (
     <Card className="timeline-card half-span">
       <Typography use="headline5" tag="h1">
@@ -142,13 +144,13 @@ export const ShippedCard = (props: ShippedCardProps) => {
         </div>
         <div className="timeline-chart-container shipped">
           <ChartistGraph
-            className="ct-double-octave"
+            className={device === "desktop" ? "ct-double-octave" : "ct-major-twelfth"}
             data={{
               series: [
                 props.data.timeline.series.map((item) => item.shipped),
                 props.data.timeline.series.map((item) => item.unshipped),
               ],
-              labels: props.data.timeline.months,
+              labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
             }}
             type={"Bar"}
             options={chartOptions}
