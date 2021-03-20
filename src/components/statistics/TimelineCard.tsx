@@ -50,7 +50,7 @@ const chartOptions = {
   plugins: [
     chartistPluginAxisTitle({
       axisX: {
-        axisTitle: "Month (GB End)",
+        axisTitle: "Month (GB end)",
         axisClass: "ct-axis-title",
         offset: {
           x: 0,
