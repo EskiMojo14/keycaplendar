@@ -42,7 +42,7 @@ import { Footer } from "../common/Footer";
 import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
-import { ShippedCard } from "../statistics/TimelineCard";
+import { ShippedCard, TimelinesCard } from "../statistics/TimelineCard";
 import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
@@ -113,12 +113,13 @@ type TimelinesDataObject = {
   total: number;
   timeline: {
     months: string[];
+    profiles: string[];
     series:
       | {
           meta: string;
           value: number;
         }[][]
-      | number[];
+      | number[][];
   };
 };
 
@@ -525,27 +526,29 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
               let timelineData;
               if (property === "vendor" || property === "designer") {
-                timelineData = months.map((month) => {
-                  const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
-                    return date && date === month;
-                  });
-                  return profiles.map((profile) => {
+                timelineData = profiles.map((profile) => {
+                  return months.map((month) => {
+                    const monthSets = filteredSets.filter((set) => {
+                      const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                      return date && date === month;
+                    });
                     const num = monthSets.filter((set) => set.profile === profile).length;
                     return {
-                      meta: `${profile}&nbsp;`,
+                      meta: `${profile}:&nbsp;`,
                       value: num,
                     };
                   });
                 });
               } else {
-                timelineData = months.map((month) => {
-                  const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
-                    return date && date === month;
-                  });
-                  return monthSets.length;
-                });
+                timelineData = [
+                  months.map((month) => {
+                    const monthSets = filteredSets.filter((set) => {
+                      const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                      return date && date === month;
+                    });
+                    return monthSets.length;
+                  }),
+                ];
               }
 
               data.push({
@@ -553,6 +556,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 total: filteredSets.length,
                 timeline: {
                   months: months,
+                  profiles: profiles,
                   series: timelineData,
                 },
               });
@@ -1773,6 +1777,24 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 monthData={this.state.timelineData.monthData}
               />
             </Card>
+          </div>
+        ),
+        timelines: (
+          <div className="stats-tab stats-grid timelines" key={key}>
+            {hasKey(this.state.timelinesData, this.state.settings.timelinesCat) &&
+            hasKey(this.state.timelinesData[this.state.settings.timelinesCat], this.state.settings.timelinesGroup)
+              ? this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup].data.map(
+                  (data) => {
+                    return (
+                      <TimelinesCard
+                        key={data.name}
+                        data={data}
+                        profileGroups={this.state.settings.timelinesGroup === "profile"}
+                      />
+                    );
+                  }
+                )
+              : null}
           </div>
         ),
         status: (

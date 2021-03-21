@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import classNames from "classnames";
 import { DeviceContext } from "../../util/contexts";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -34,42 +35,44 @@ type ShippedCardProps = {
   };
 };
 
-const chartOptions = {
-  showArea: true,
-  stackBars: true,
-  low: 0,
-  axisY: {
-    onlyInteger: true,
-  },
-  chartPadding: {
-    top: 16,
-    right: 0,
-    bottom: 32,
-    left: 16,
-  },
-  plugins: [
-    chartistPluginAxisTitle({
-      axisX: {
-        axisTitle: "Month (GB end)",
-        axisClass: "ct-axis-title",
-        offset: {
-          x: 0,
-          y: 48,
+const chartOptions = (monthLabel: string) => {
+  return {
+    showArea: true,
+    stackBars: true,
+    low: 0,
+    axisY: {
+      onlyInteger: true,
+    },
+    chartPadding: {
+      top: 16,
+      right: 0,
+      bottom: 32,
+      left: 16,
+    },
+    plugins: [
+      chartistPluginAxisTitle({
+        axisX: {
+          axisTitle: monthLabel,
+          axisClass: "ct-axis-title",
+          offset: {
+            x: 0,
+            y: 48,
+          },
+          textAnchor: "middle",
         },
-        textAnchor: "middle",
-      },
-      axisY: {
-        axisTitle: "Count",
-        axisClass: "ct-axis-title",
-        offset: {
-          x: 0,
-          y: 24,
+        axisY: {
+          axisTitle: "Count",
+          axisClass: "ct-axis-title",
+          offset: {
+            x: 0,
+            y: 24,
+          },
+          flipTitle: true,
         },
-        flipTitle: true,
-      },
-    }),
-    chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
-  ],
+      }),
+      chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
+    ],
+  };
 };
 
 const responsiveOptions = [
@@ -153,7 +156,56 @@ export const ShippedCard = (props: ShippedCardProps) => {
               labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
             }}
             type={"Bar"}
-            options={chartOptions}
+            options={chartOptions("Month (GB end)")}
+            responsiveOptions={responsiveOptions}
+          />
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+type TimelinesCardProps = {
+  profileGroups: boolean;
+  data: {
+    name: string;
+    total: number;
+    timeline: {
+      months: string[];
+      profiles: string[];
+      series:
+        | {
+            meta: string;
+            value: number;
+          }[][]
+        | number[][];
+    };
+  };
+};
+
+export const TimelinesCard = (props: TimelinesCardProps) => {
+  return (
+    <Card className="timeline-card full-span">
+      <Typography use="headline5" tag="h1">
+        {props.data.name}
+      </Typography>
+      <Typography use="subtitle2" tag="p">
+        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
+      </Typography>
+      <div className="timeline-container">
+        <div
+          className={classNames("timeline-chart-container timelines", {
+            single: props.profileGroups,
+          })}
+        >
+          <ChartistGraph
+            className="ct-double-octave"
+            data={{
+              series: props.data.timeline.series,
+              labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+            }}
+            type={"Bar"}
+            options={chartOptions("Month (GB start)")}
             responsiveOptions={responsiveOptions}
           />
         </div>
