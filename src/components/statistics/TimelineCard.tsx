@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
@@ -21,6 +22,25 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./TimelineCard.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+
+const customPoint = (data: any) => {
+  if (data.type === "point") {
+    const circle = new Chartist.Svg(
+      "circle",
+      {
+        cx: [data.x],
+        cy: [data.y],
+        r: [6],
+        "ct:value": data.value.y,
+        "ct:meta": data.meta,
+      },
+      "ct-stroked-point"
+    );
+    data.element.replace(circle);
+  }
+};
+
+const listener = { draw: (e: any) => customPoint(e) };
 
 type ShippedCardProps = {
   data: {
@@ -216,6 +236,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
+        listener={listener}
         options={chartOptions("Month (GB start)")}
         responsiveOptions={responsiveOptions}
       />
