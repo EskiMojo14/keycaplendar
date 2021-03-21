@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { DeviceContext } from "../../util/contexts";
 import { Card } from "@rmwc/card";
+import { ChipSet, Chip } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import {
   DataTable,
@@ -16,6 +17,8 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import "./TimelineCard.scss";
+
+const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
 type ShippedCardProps = {
   data: {
@@ -184,6 +187,10 @@ type TimelinesCardProps = {
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
+  const [focused, setFocused] = useState("");
+  const setFocus = (letter: string) => {
+    setFocused(letter !== focused ? letter : "");
+  };
   return (
     <Card className="timeline-card full-span">
       <Typography use="headline5" tag="h1">
@@ -196,6 +203,8 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         <div
           className={classNames("timeline-chart-container timelines", {
             single: props.profileGroups,
+            focused: focused,
+            ["series-" + focused]: focused,
           })}
         >
           <ChartistGraph
@@ -209,6 +218,26 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             responsiveOptions={responsiveOptions}
           />
         </div>
+        {!props.profileGroups ? (
+          <div className="timeline-chips-container focus-chips">
+            <ChipSet choice>
+              {props.data.timeline.profiles.map((profile, index) => {
+                return (
+                  <Chip
+                    key={profile}
+                    icon="fiber_manual_record"
+                    label={profile}
+                    selected={focused === letters[index]}
+                    onInteraction={() => {
+                      setFocus(letters[index]);
+                    }}
+                    className={"focus-chip-" + letters[index]}
+                  />
+                );
+              })}
+            </ChipSet>
+          </div>
+        ) : null}
       </div>
     </Card>
   );

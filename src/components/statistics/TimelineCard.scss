@@ -14,7 +14,6 @@
     display: flex;
     flex-direction: column;
     .timeline-chart-container {
-      padding-top: 16px;
       &.shipped .ct-chart {
         .ct-series {
           .ct-point,
@@ -32,6 +31,9 @@
       }
     }
     .table-container {
+      & + .timeline-chart-container {
+        padding-top: 16px;
+      }
       flex-grow: 1;
       .mdc-data-table {
         width: 100%;
@@ -57,6 +59,16 @@
           }
         }
       }
+    }
+  }
+}
+
+.timeline-card.full-span {
+  .timeline-chart-container {
+    max-width: 100%;
+    overflow: auto;
+    .ct-chart {
+      min-width: 680px;
     }
   }
 }
