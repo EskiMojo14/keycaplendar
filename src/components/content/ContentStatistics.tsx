@@ -25,6 +25,7 @@ import {
 } from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -39,7 +40,6 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
-import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
 import { ShippedCard, TimelinesCard } from "../statistics/TimelineCard";
@@ -47,6 +47,8 @@ import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
+
+const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -1762,20 +1764,22 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 {barGraph}
                 {lineGraph}
               </div>
-            </Card>
-            <Card
-              className={classNames("fullwidth", {
-                focused: this.state.focused,
-                ["series-" + this.state.focused]: this.state.focused,
-              })}
-            >
-              <TimelineTable
-                profiles={this.state.whitelist.profiles}
-                setFocus={this.setFocus}
-                months={this.state.timelineData.months}
-                statistics={this.state.settings}
-                monthData={this.state.timelineData.monthData}
-              />
+              <div className="chips-container focus-chips">
+                <ChipSet choice>
+                  {this.state.whitelist.profiles.map((profile, index) => (
+                    <Chip
+                      key={profile}
+                      icon="fiber_manual_record"
+                      label={profile}
+                      selected={this.state.focused === letters[index]}
+                      onInteraction={() => {
+                        this.setFocus(letters[index]);
+                      }}
+                      className={"focus-chip-" + letters[index]}
+                    />
+                  ))}
+                </ChipSet>
+              </div>
             </Card>
           </div>
         ),

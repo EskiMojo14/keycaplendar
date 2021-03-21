@@ -78,6 +78,10 @@ $tabs: timeline, timelines, status, shipped, duration, vendors;
           transition: animation.standard(fill, 200ms);
         }
       }
+      .chips-container {
+        padding-top: 8px;
+        margin: -8px;
+      }
     }
     &.fullwidth {
       padding: 0;

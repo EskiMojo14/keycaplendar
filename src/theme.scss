@@ -902,13 +902,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         fill: $color;
       }
     }
-    .timeline-table.mdc-data-table
-      .mdc-data-table__header-row
-      .mdc-data-table__header-cell.profile-title.title-#{$letter} {
+    .focus-chips .focus-chip-#{$letter} {
+      @include chips.leading-icon-color($color, 1);
       @include ripple.states($color);
-      .profile-indicator {
-        background-color: $color;
-      }
+      @include chips.selected-ink-color($color);
     }
     .focused {
       &:not(.series-#{$letter}) {
@@ -925,15 +922,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           .ct-stroked-point {
             fill: rgba($color, 0.1);
           }
-        }
-        .timeline-table.mdc-data-table
-          .mdc-data-table__header-row
-          .mdc-data-table__header-cell.profile-title.title-#{$letter}
-          .profile-indicator {
-          background-color: rgba($color, 0.1);
-        }
-        .timeline-table.mdc-data-table .mdc-data-table__row .mdc-data-table__cell.cell-#{$letter} {
-          color: map-get($variables, text-disabled);
         }
       }
     }
