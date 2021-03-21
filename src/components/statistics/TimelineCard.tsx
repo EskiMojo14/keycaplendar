@@ -4,6 +4,7 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { DeviceContext } from "../../util/contexts";
+import { iconObject } from "../../util/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
@@ -16,6 +17,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./TimelineCard.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -188,17 +190,76 @@ type TimelinesCardProps = {
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
   const [focused, setFocused] = useState("");
+  const [graphType, setGraphType] = useState("bar");
   const setFocus = (letter: string) => {
     setFocused(letter !== focused ? letter : "");
   };
+  const barChart =
+    graphType === "bar" ? (
+      <ChartistGraph
+        className="ct-double-octave"
+        data={{
+          series: props.data.timeline.series,
+          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+        }}
+        type={"Bar"}
+        options={chartOptions("Month (GB start)")}
+        responsiveOptions={responsiveOptions}
+      />
+    ) : null;
+  const lineChart =
+    graphType === "line" ? (
+      <ChartistGraph
+        className="ct-double-octave"
+        data={{
+          series: props.data.timeline.series,
+          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+        }}
+        type={"Line"}
+        options={chartOptions("Month (GB start)")}
+        responsiveOptions={responsiveOptions}
+      />
+    ) : null;
   return (
     <Card className="timeline-card full-span">
-      <Typography use="headline5" tag="h1">
-        {props.data.name}
-      </Typography>
-      <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
-      </Typography>
+      <div className="title-container">
+        <div className="text-container">
+          <Typography use="headline5" tag="h1">
+            {props.data.name}
+          </Typography>
+          <Typography use="subtitle2" tag="p">
+            {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
+          </Typography>
+        </div>
+        <div className="button-container">
+          <ToggleGroup>
+            <ToggleGroupButton
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
+                </svg>
+              )}
+              selected={graphType === "bar"}
+              onClick={() => {
+                setGraphType("bar");
+              }}
+            />
+            <ToggleGroupButton
+              icon={iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                </svg>
+              )}
+              selected={graphType === "line"}
+              onClick={() => {
+                setGraphType("line");
+              }}
+            />
+          </ToggleGroup>
+        </div>
+      </div>
       <div className="timeline-container">
         <div
           className={classNames("timeline-chart-container timelines", {
@@ -207,16 +268,8 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             ["series-" + focused]: focused,
           })}
         >
-          <ChartistGraph
-            className="ct-double-octave"
-            data={{
-              series: props.data.timeline.series,
-              labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
-            }}
-            type={"Bar"}
-            options={chartOptions("Month (GB start)")}
-            responsiveOptions={responsiveOptions}
-          />
+          {barChart}
+          {lineChart}
         </div>
         {!props.profileGroups ? (
           <div className="timeline-chips-container focus-chips">

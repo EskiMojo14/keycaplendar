@@ -10,6 +10,12 @@
     margin-top: 0;
     margin-bottom: 16px;
   }
+  .title-container {
+    display: flex;
+    .text-container {
+      flex-grow: 1;
+    }
+  }
   .timeline-container {
     display: flex;
     flex-direction: column;
