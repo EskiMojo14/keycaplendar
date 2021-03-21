@@ -1,0 +1,267 @@
+openapi: 3.0.0
+info:
+  title: KeycapLendar API
+  version: '1.0'
+  contact:
+    name: Ben Durrant
+    email: keycaplendar@gmail.com
+    url: 'https://discord.gg/zrcN3qF'
+  termsOfService: 'https://keycaplendar.firebaseapp.com/terms'
+  description: 'This is an API for https://keycaplendar.firebaseapp.com/'
+servers:
+  - url: 'https://us-central1-keycaplendar.cloudfunctions.net'
+    description: Production
+paths:
+  /apiAuth:
+    post:
+      summary: Generate Token
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  token:
+                    type: string
+                    minLength: 1
+                required:
+                  - token
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      operationId: post-apiAuth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                key:
+                  type: string
+                  minLength: 1
+                secret:
+                  type: string
+                  minLength: 1
+              required:
+                - key
+                - secret
+      description: 'Using your API key and secret, generate a session token that will be used in any other subsequent API requests.'
+  /getAllKeysets:
+    get:
+      summary: Get All Keysets
+      tags:
+        - query
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyset'
+              examples: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      operationId: get-getAllKeysets
+      description: Return all the keysets in the database
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - icDate
+              - gbLaunch
+              - gbEnd
+          in: query
+          name: dateFilter
+          description: Type of date to filter by.
+        - schema:
+            type: string
+            format: date
+          in: query
+          name: after
+          description: Filter sets by dateFilter property to after date.
+        - schema:
+            type: string
+            format: date
+          in: query
+          name: before
+          description: Filter sets by dateFilter property to before date.
+      security:
+        - Bearer Token: []
+    parameters: []
+  /getKeysetById:
+    get:
+      summary: Get Keyset by ID
+      tags:
+        - query
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keyset'
+              examples: {}
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      operationId: get-getKeysetById
+      description: 'Retrieve one keyset from the database, by its ID.'
+      security:
+        - Bearer Token: []
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: id
+          description: 'The ID of the keyset you want to retrieve '
+          required: true
+    parameters: []
+components:
+  schemas:
+    Keyset:
+      description: ''
+      type: object
+      x-examples:
+        Example - KAT Lich:
+          id: 4RISZuuZy4k9O6467FHm
+          sales: 'https://i.imgur.com/UCV1vMx.png'
+          shipped: true
+          gbEnd: '2020-01-31'
+          details: 'https://geekhack.org/index.php?topic=104129.0'
+          colorway: Lich
+          latestEditor: 9FrBmiMgVmYo4BMIDlJBaCWibSC3
+          gbMonth: false
+          profile: KAT
+          image: 'https://firebasestorage.googleapis.com/v0/b/keycaplendar.appspot.com/o/keysets%2FkatLichT20210122143399.png?alt=media&token=a6d1b787-228b-4457-ae46-a62109caa870'
+          designer:
+            - eskimojo
+          gbLaunch: '2020-01-07'
+          vendors:
+            - id: Bhn62oPLbYe4VtMTaYCTG
+              name: NovelKeys
+              storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
+              region: America
+            - storeLink: 'https://en.zfrontier.com/collections/groupbuy/products/copy-of-group-buy-kat-lich-1'
+              id: VnGLx7-bFLRiME_iO0sVk
+              region: Asia
+              name: zFrontier
+            - name: DeskHero
+              region: Canada
+              id: TQOZGn7SSdhSm-QL3DxkT
+              storeLink: 'https://www.deskhero.ca/products/kat-lich'
+            - region: China
+              id: NURNAzFPUHLSMQKHb2USI
+              name: zFrontier (CN)
+              storeLink: 'https://www.zfrontier.com/m/5713'
+            - id: U6lIiSkUOOMCgUc3tN3pD
+              storeLink: 'https://mykeyboard.eu/catalogue/category/group-buys/kat-lich_240/'
+              name: MyKeyboard
+              region: Europe
+            - region: Oceania
+              id: pgiBOMv_Ja7tZ25CL0LtA
+              storeLink: 'https://www.switchkeys.com.au/products/kat-liche-group-buy'
+              name: SwitchKeys
+            - name: FunKeys
+              storeLink: 'https://groupbuy.funkeys.com.ua/kat_lich'
+              region: 'Ukraine, Belarus, Russia'
+              id: Bk2nWoofBNVohF7vio_Rr
+          icDate: '2019-10-31'
+      properties:
+        id:
+          type: string
+        latestEditor:
+          type: string
+        profile:
+          type: string
+        gbMonth:
+          type: boolean
+        sales:
+          type: string
+        details:
+          type: string
+        icDate:
+          type: string
+        shipped:
+          type: boolean
+        gbEnd:
+          type: string
+        designer:
+          type: array
+          items:
+            type: string
+        gbLaunch:
+          type: string
+        vendors:
+          type: array
+          uniqueItems: true
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              region:
+                type: string
+              name:
+                type: string
+              storeLink:
+                type: string
+              endDate:
+                type: string
+            required:
+              - region
+              - name
+        image:
+          type: string
+        colorway:
+          type: string
+      required:
+        - id
+        - latestEditor
+        - profile
+        - details
+        - icDate
+        - gbEnd
+        - designer
+        - gbLaunch
+        - vendors
+        - image
+        - colorway
+  securitySchemes:
+    Bearer Token:
+      type: http
+      scheme: bearer
+      description: Token used to authenticate all endpoints.
+security:
+  - API Key - 1: []
