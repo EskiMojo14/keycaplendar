@@ -107,6 +107,13 @@ type TimelineData = {
   profileChartType: string;
 };
 
+type TimelinesDataObject = {
+  total: number;
+  timeline: number[] | { meta: string; value: number }[][];
+};
+
+type TimelinesData = Record<Categories, Record<Properties, DataObject<TimelinesDataObject[]>>>;
+
 type StatusDataObject = {
   ic: number;
   liveGb: number;
@@ -164,6 +171,7 @@ type VendorData = Record<Properties, DataObject<VendorDataObject[]>>;
 
 type ContentStatisticsState = {
   timelineData: TimelineData;
+  timelinesData: TimelinesData;
   statusData: StatusData;
   shippedData: ShippedData;
   durationData: DurationData;
@@ -173,6 +181,8 @@ type ContentStatisticsState = {
   dataCreated: string[];
   settings: {
     timeline: string;
+    timelinesCat: string;
+    timelinesGroup: string;
     status: string;
     shipped: string;
     durationCat: string;
@@ -181,6 +191,7 @@ type ContentStatisticsState = {
   };
   whitelist: WhitelistType;
   sort: {
+    timelines: string;
     status: string;
     shipped: string;
     duration: string;
@@ -203,6 +214,36 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       profileCount: { icDate: {}, gbLaunch: {} },
       profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
+    },
+    timelinesData: {
+      icDate: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
+      gbLaunch: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
     },
     statusData: {
       profile: {
@@ -281,6 +322,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     dataCreated: [],
     settings: {
       timeline: "gbLaunch",
+      timelinesCat: "gbLaunch",
+      timelinesGroup: "profile",
       status: "profile",
       shipped: "profile",
       durationCat: "gbLaunch",
@@ -289,6 +332,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     },
     whitelist: new Whitelist(),
     sort: {
+      timelines: "total",
       status: "total",
       shipped: "total",
       duration: "total",
@@ -310,6 +354,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     this.setState({ sets: limitedSets });
     this.createTimelineData(limitedSets, whitelist);
+    this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
     this.createDurationData(limitedSets);
@@ -398,6 +443,74 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         dataCreated: prevState.dataCreated.includes("timeline")
           ? prevState.dataCreated
           : [...prevState.dataCreated, "timeline"],
+      };
+    });
+  };
+
+  createTimelinesData = (sets: SetType[]) => {
+    const timelinesData: TimelinesData = {
+      icDate: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
+      gbLaunch: {
+        profile: {
+          names: [],
+          data: [],
+        },
+        designer: {
+          names: [],
+          data: [],
+        },
+        vendor: {
+          names: [],
+          data: [],
+        },
+      },
+    };
+    const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+    Object.keys(timelinesData).forEach((prop) => {
+      if (hasKey(timelinesData, prop)) {
+        const propSets = prop === "gbLaunch" ? gbSets : sets;
+        timelinesData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
+        timelinesData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
+        timelinesData[prop].vendor.names = uniqueArray(
+          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        );
+
+        Object.keys(timelinesData[prop]).forEach((property) => {
+          if (hasKey(timelinesData[prop], property)) {
+            timelinesData[prop][property].names.sort(function (a, b) {
+              const x = a.toLowerCase();
+              const y = b.toLowerCase();
+              if (x < y) {
+                return -1;
+              }
+              if (x > y) {
+                return 1;
+              }
+              return 0;
+            });
+          }
+        });
+      }
+    });
+    this.setState((prevState) => {
+      return {
+        timelinesData: timelinesData,
+        dataCreated: prevState.dataCreated.includes("timelines")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "timelines"],
       };
     });
   };
@@ -690,8 +803,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     const dateSets = sets.filter((set) => {
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
-    properties.forEach((property) => {
-      const prop = property;
+    properties.forEach((prop) => {
       let propSets: SetType[] = [];
       if (prop === "gbLaunch") {
         propSets = dateSets.filter((set) => {
@@ -1369,14 +1481,26 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           </ToggleGroup>
         </>
       ),
-      status: genericButtons,
-      shipped: genericButtons,
-      duration: (
+      timelines: (
         <>
           <ToggleGroup>
+            <Tooltip enterDelay={500} align="bottom" content="Total">
+              <ToggleGroupButton
+                selected={this.state.sort.timelines === "total"}
+                onClick={() => {
+                  this.setSort("duration", "total");
+                }}
+                icon={iconObject(
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                  </svg>
+                )}
+              />
+            </Tooltip>
             <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
               <ToggleGroupButton
-                selected={this.state.sort.duration === "alphabetical"}
+                selected={this.state.sort.timelines === "alphabetical"}
                 onClick={() => {
                   this.setSort("duration", "alphabetical");
                 }}
@@ -1388,6 +1512,31 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 )}
               />
             </Tooltip>
+          </ToggleGroup>
+          <ToggleGroup>
+            <ToggleGroupButton
+              selected={this.state.settings.timelinesCat === "icDate"}
+              onClick={() => {
+                this.setSetting("timelinesCat", "icDate");
+              }}
+              label="IC"
+            />
+            <ToggleGroupButton
+              selected={this.state.settings.timelinesCat === "gbLaunch"}
+              onClick={() => {
+                this.setSetting("timelinesCat", "gbLaunch");
+              }}
+              label="GB"
+            />
+          </ToggleGroup>
+          {categoryButtons("timelinesGroup")}
+        </>
+      ),
+      status: genericButtons,
+      shipped: genericButtons,
+      duration: (
+        <>
+          <ToggleGroup>
             <Tooltip enterDelay={500} align="bottom" content="Total">
               <ToggleGroupButton
                 selected={this.state.sort.duration === "total"}
@@ -1398,6 +1547,20 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                  </svg>
+                )}
+              />
+            </Tooltip>
+            <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
+              <ToggleGroupButton
+                selected={this.state.sort.duration === "alphabetical"}
+                onClick={() => {
+                  this.setSort("duration", "alphabetical");
+                }}
+                icon={iconObject(
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
                   </svg>
                 )}
               />
