@@ -5,9 +5,10 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { DeviceContext } from "../../util/contexts";
-import { iconObject } from "../../util/functions";
+import { addOrRemove, iconObject } from "../../util/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
+import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import {
   DataTable,
@@ -209,10 +210,14 @@ type TimelinesCardProps = {
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
-  const [focused, setFocused] = useState("");
+  const [focused, setFocused] = useState<string[]>([]);
   const [graphType, setGraphType] = useState("bar");
   const setFocus = (letter: string) => {
-    setFocused(letter !== focused ? letter : "");
+    const newFocused = addOrRemove(focused, letter);
+    setFocused(newFocused);
+  };
+  const clearFocus = () => {
+    setFocused([]);
   };
   const barChart =
     graphType === "bar" ? (
@@ -283,17 +288,21 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </div>
       <div className="timeline-container">
         <div
-          className={classNames("timeline-chart-container timelines", {
-            single: props.profileGroups,
-            focused: focused,
-            ["series-" + focused]: focused,
-          })}
+          className={classNames(
+            "timeline-chart-container timelines",
+            {
+              single: props.profileGroups,
+              focused: focused.length > 0,
+            },
+            focused.map((letter) => "series-" + letter)
+          )}
         >
           {barChart}
           {lineChart}
         </div>
         {!props.profileGroups ? (
           <div className="timeline-chips-container focus-chips">
+            <IconButton icon="clear" disabled={focused.length === 0} onClick={clearFocus} />
             <ChipSet choice>
               {props.data.timeline.profiles.map((profile, index) => {
                 return (
@@ -301,7 +310,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                     key={profile}
                     icon="fiber_manual_record"
                     label={profile}
-                    selected={focused === letters[index]}
+                    selected={focused.includes(letters[index])}
                     onInteraction={() => {
                       setFocus(letters[index]);
                     }}

@@ -19,23 +19,6 @@
   .timeline-container {
     display: flex;
     flex-direction: column;
-    .timeline-chart-container {
-      &.shipped .ct-chart {
-        .ct-series {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
-    }
     .table-container {
       & + .timeline-chart-container {
         padding-top: 16px;
@@ -64,6 +47,31 @@
             }
           }
         }
+      }
+    }
+    .timeline-chart-container {
+      &.shipped .ct-chart {
+        .ct-series {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+    }
+    .timeline-chips-container {
+      display: flex;
+      padding-top: 8px;
+      margin: -8px;
+      .mdc-chip-set {
+        flex-grow: 1;
       }
     }
   }

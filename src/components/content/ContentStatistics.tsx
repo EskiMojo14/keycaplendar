@@ -22,10 +22,12 @@ import {
   getSetMonthRange,
   uniqueArray,
   alphabeticalSort,
+  addOrRemove,
 } from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
+import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -190,7 +192,7 @@ type ContentStatisticsState = {
   durationData: DurationData;
   vendorsData: VendorData;
   sets: SetType[];
-  focused: string;
+  focused: string[];
   dataCreated: string[];
   settings: {
     timeline: string;
@@ -331,7 +333,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       },
     },
     sets: [],
-    focused: "",
+    focused: [],
     dataCreated: [],
     settings: {
       timeline: "gbLaunch",
@@ -1200,11 +1202,12 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.setState({ timelineData: { ...this.state.timelineData, profileChartType: type } });
   };
   setFocus = (letter: string) => {
-    if (letter === this.state.focused) {
-      this.setState({ focused: "" });
-    } else {
-      this.setState({ focused: letter });
-    }
+    this.setState((prevState) => {
+      return { focused: addOrRemove(prevState.focused, letter) };
+    });
+  };
+  clearFocus = () => {
+    this.setState({ focused: [] });
   };
   setSetting = (prop: string, query: string) => {
     this.setState({ settings: { ...this.state.settings, [prop]: query } });
@@ -1756,22 +1759,26 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 </ToggleGroup>
               </div>
               <div
-                className={classNames("graph-container", {
-                  focused: this.state.focused,
-                  ["series-" + this.state.focused]: this.state.focused,
-                })}
+                className={classNames(
+                  "graph-container",
+                  {
+                    focused: this.state.focused.length > 0,
+                  },
+                  this.state.focused.map((letter) => "series-" + letter)
+                )}
               >
                 {barGraph}
                 {lineGraph}
               </div>
               <div className="chips-container focus-chips">
+                <IconButton icon="clear" disabled={this.state.focused.length === 0} onClick={this.clearFocus} />
                 <ChipSet choice>
                   {this.state.whitelist.profiles.map((profile, index) => (
                     <Chip
                       key={profile}
                       icon="fiber_manual_record"
                       label={profile}
-                      selected={this.state.focused === letters[index]}
+                      selected={this.state.focused.includes(letters[index])}
                       onInteraction={() => {
                         this.setFocus(letters[index]);
                       }}

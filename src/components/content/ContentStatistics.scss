@@ -79,8 +79,12 @@ $tabs: timeline, timelines, status, shipped, duration, vendors;
         }
       }
       .chips-container {
+        display: flex;
         padding-top: 8px;
         margin: -8px;
+        .mdc-chip-set {
+          flex-grow: 1;
+        }
       }
     }
     &.fullwidth {
