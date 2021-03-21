@@ -32,6 +32,21 @@ export function addOrRemove<T>(oldArray: T[], value: T): T[] {
   return array;
 }
 
+export function alphabeticalSort(array: string[]) {
+  array.sort((a, b) => {
+    const x = a.toLowerCase();
+    const y = b.toLowerCase();
+    if (x < y) {
+      return -1;
+    }
+    if (x > y) {
+      return 1;
+    }
+    return 0;
+  });
+  return array;
+}
+
 export const capitalise = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };

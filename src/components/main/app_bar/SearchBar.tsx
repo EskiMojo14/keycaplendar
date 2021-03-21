@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import BEMHelper from "../../../util/bemHelper";
-import { iconObject } from "../../../util/functions";
+import { alphabeticalSort, iconObject } from "../../../util/functions";
 import { SetType } from "../../../util/types";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
@@ -71,17 +71,7 @@ export class SearchBarPersistent extends React.Component<SearchBarPersistentProp
         }
       });
     }
-    searchTerms.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
+    alphabeticalSort(searchTerms);
     this.setState({ searchTerms: searchTerms });
   };
   autoCompleteSearch = (_prop: string, value: string) => {
@@ -255,17 +245,7 @@ export class SearchBarModal extends React.Component<SearchBarModalProps, SearchB
         }
       });
     }
-    searchTerms.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
+    alphabeticalSort(searchTerms);
     this.setState({ searchTerms: searchTerms });
   };
   autoCompleteSearch = (_prop: string, value: string) => {
@@ -401,17 +381,7 @@ export class SearchAppBar extends React.Component<SearchAppBarProps, SearchAppBa
         }
       });
     }
-    searchTerms.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
+    alphabeticalSort(searchTerms);
     this.setState({ searchTerms: searchTerms });
   };
   autoCompleteSearch = (_prop: string, value: string) => {

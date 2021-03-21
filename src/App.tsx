@@ -26,7 +26,7 @@ import {
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove, hasKey, normalise, replaceFunction, uniqueArray } from "./util/functions";
+import { addOrRemove, alphabeticalSort, hasKey, normalise, replaceFunction, uniqueArray } from "./util/functions";
 import {
   ArraySortKeys,
   CurrentUserType,
@@ -520,64 +520,16 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     // lists
-    const allVendors = uniqueArray(
-      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat()
+    const allVendors = alphabeticalSort(
+      uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
 
-    const allRegions = uniqueArray(
-      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat()
+    const allRegions = alphabeticalSort(
+      uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat())
     );
-    const allDesigners = uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat());
+    const allDesigners = alphabeticalSort(uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat()));
 
-    const allProfiles = uniqueArray(sets.map((set) => set.profile));
-
-    allVendors.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
-
-    allRegions.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
-
-    allProfiles.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
-
-    allDesigners.sort(function (a, b) {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
+    const allProfiles = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
 
     // filter bool functions
 
