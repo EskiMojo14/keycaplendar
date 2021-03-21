@@ -7,6 +7,7 @@ info:
     email: keycaplendar@gmail.com
     url: 'https://discord.gg/zrcN3qF'
   termsOfService: 'https://keycaplendar.firebaseapp.com/terms'
+  description: 'This is an API for https://keycaplendar.firebaseapp.com/'
 servers:
   - url: 'https://us-central1-keycaplendar.cloudfunctions.net'
     description: Production
