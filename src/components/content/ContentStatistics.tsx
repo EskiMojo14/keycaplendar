@@ -21,6 +21,7 @@ import {
   hasKey,
   getSetMonthRange,
   uniqueArray,
+  alphabeticalSort,
 } from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
@@ -108,8 +109,17 @@ type TimelineData = {
 };
 
 type TimelinesDataObject = {
+  name: string;
   total: number;
-  timeline: number[] | { meta: string; value: number }[][];
+  timeline: {
+    months: string[];
+    series:
+      | {
+          meta: string;
+          value: number;
+        }[][]
+      | number[];
+  };
 };
 
 type TimelinesData = Record<Categories, Record<Properties, DataObject<TimelinesDataObject[]>>>;
@@ -482,6 +492,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     Object.keys(timelinesData).forEach((prop) => {
       if (hasKey(timelinesData, prop)) {
         const propSets = prop === "gbLaunch" ? gbSets : sets;
+        const months = getSetMonthRange(propSets, prop, "MMM YY");
         timelinesData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
         timelinesData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
         timelinesData[prop].vendor.names = uniqueArray(
@@ -490,17 +501,63 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
         Object.keys(timelinesData[prop]).forEach((property) => {
           if (hasKey(timelinesData[prop], property)) {
-            timelinesData[prop][property].names.sort(function (a, b) {
-              const x = a.toLowerCase();
-              const y = b.toLowerCase();
-              if (x < y) {
-                return -1;
+            alphabeticalSort(timelinesData[prop][property].names);
+            const data: TimelinesDataObject[] = [];
+            timelinesData[prop][property].names.forEach((name) => {
+              const filteredSets = propSets.filter((set) => {
+                let bool = false;
+                if (property === "vendor") {
+                  bool =
+                    set.vendors &&
+                    set.vendors.findIndex((vendor) => {
+                      return vendor.name === name;
+                    }) !== -1
+                      ? true
+                      : false;
+                } else if (property === "designer") {
+                  bool = set.designer.includes(name);
+                } else {
+                  bool = set[property] === name;
+                }
+                return bool;
+              });
+              const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
+
+              let timelineData;
+              if (property === "vendor" || property === "designer") {
+                timelineData = months.map((month) => {
+                  const monthSets = filteredSets.filter((set) => {
+                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                    return date && date === month;
+                  });
+                  return profiles.map((profile) => {
+                    const num = monthSets.filter((set) => set.profile === profile).length;
+                    return {
+                      meta: `${profile}&nbsp;`,
+                      value: num,
+                    };
+                  });
+                });
+              } else {
+                timelineData = months.map((month) => {
+                  const monthSets = filteredSets.filter((set) => {
+                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                    return date && date === month;
+                  });
+                  return monthSets.length;
+                });
               }
-              if (x > y) {
-                return 1;
-              }
-              return 0;
+
+              data.push({
+                name: name,
+                total: filteredSets.length,
+                timeline: {
+                  months: months,
+                  series: timelineData,
+                },
+              });
             });
+            timelinesData[prop][property].data = data;
           }
         });
       }
@@ -538,17 +595,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     );
     Object.keys(statusData).forEach((prop) => {
       if (hasKey(statusData, prop)) {
-        statusData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
+        alphabeticalSort(statusData[prop].names);
         statusData[prop].names.forEach((name) => {
           const icSets = sets.filter((set) => {
             const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
@@ -680,17 +727,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     );
     Object.keys(shippedData).forEach((prop) => {
       if (hasKey(shippedData, prop)) {
-        shippedData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
+        alphabeticalSort(shippedData[prop].names);
         shippedData[prop].names.forEach((name) => {
           const shippedSets = pastSets.filter((set) => {
             if (prop === "vendor") {
@@ -804,14 +841,12 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
     properties.forEach((prop) => {
-      let propSets: SetType[] = [];
-      if (prop === "gbLaunch") {
-        propSets = dateSets.filter((set) => {
-          return set.gbEnd.length === 10;
-        });
-      } else {
-        propSets = dateSets;
-      }
+      const propSets: SetType[] =
+        prop === "gbLaunch"
+          ? dateSets.filter((set) => {
+              return set.gbEnd.length === 10;
+            })
+          : dateSets;
       if (hasKey(durationData, prop)) {
         durationData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
         durationData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
@@ -821,17 +856,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
         Object.keys(durationData[prop]).forEach((property) => {
           if (hasKey(durationData[prop], property)) {
-            durationData[prop][property].names.sort(function (a, b) {
-              const x = a.toLowerCase();
-              const y = b.toLowerCase();
-              if (x < y) {
-                return -1;
-              }
-              if (x > y) {
-                return 1;
-              }
-              return 0;
-            });
+            alphabeticalSort(durationData[prop][property].names);
 
             durationData[prop][property].names = ["All"].concat(durationData[prop][property].names);
             durationData[prop][property].names.forEach((name) => {
@@ -972,17 +997,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
     Object.keys(vendorsData).forEach((prop) => {
       if (hasKey(vendorsData, prop)) {
-        vendorsData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
+        alphabeticalSort(vendorsData[prop].names);
         vendorsData[prop].names = ["All"].concat(vendorsData[prop].names);
         vendorsData[prop].names.forEach((name) => {
           let propSets = [];
@@ -1063,6 +1078,41 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                       sort[tab] === "alphabetical"
                         ? b.name.toLowerCase()
                         : b[sort[tab] === "duration" ? "mean" : "total"];
+                    const c = a.name.toLowerCase();
+                    const d = b.name.toLowerCase();
+                    if (x < y) {
+                      return sort[tab] === "alphabetical" ? -1 : 1;
+                    }
+                    if (x > y) {
+                      return sort[tab] === "alphabetical" ? 1 : -1;
+                    }
+                    if (c < d) {
+                      return -1;
+                    }
+                    if (c > d) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                }
+              });
+            }
+          });
+          this.setState<never>({
+            [key]: data,
+          });
+        } else if (tab === "timelines") {
+          const data = { ...stateData } as TimelinesData;
+          Object.keys(data).forEach((property) => {
+            if (hasKey(data, property)) {
+              Object.keys(data[property]).forEach((prop) => {
+                if (hasKey(data[property], prop)) {
+                  data[property][prop].data.sort((a, b) => {
+                    if (a.name === "All" || b.name === "All") {
+                      return a.name === "all" ? -1 : 1;
+                    }
+                    const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
+                    const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
                     const c = a.name.toLowerCase();
                     const d = b.name.toLowerCase();
                     if (x < y) {
