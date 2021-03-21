@@ -445,7 +445,7 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
   };
   const validDate = (date, exists = true) => {
     const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
-    return ((dateFilter && exists) || !exists) && regex.test(date);
+    return ((date && exists) || !exists) && regex.test(date);
   };
   const keysetsRef = db.collection("keysets");
   if (validDateFilter(request.query.dateFilter) && validDate(request.query.before) && validDate(request.query.after)) {
