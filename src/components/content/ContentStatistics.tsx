@@ -557,6 +557,25 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 },
               });
             });
+            data.sort((a, b) => {
+              const x = this.state.sort.timelines === "alphabetical" ? a.name.toLowerCase() : a.total;
+              const y = this.state.sort.timelines === "alphabetical" ? b.name.toLowerCase() : b.total;
+              const c = a.name.toLowerCase();
+              const d = b.name.toLowerCase();
+              if (x < y) {
+                return this.state.sort.timelines === "alphabetical" ? -1 : 1;
+              }
+              if (x > y) {
+                return this.state.sort.timelines === "alphabetical" ? 1 : -1;
+              }
+              if (c < d) {
+                return -1;
+              }
+              if (c > d) {
+                return 1;
+              }
+              return 0;
+            });
             timelinesData[prop][property].data = data;
           }
         });
@@ -901,14 +920,14 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                       }
                       const x =
                         this.state.sort.duration === "alphabetical"
-                          ? (a.name as string).toLowerCase()
+                          ? a.name.toLowerCase()
                           : a[this.state.sort.duration === "duration" ? "mean" : "total"];
                       const y =
                         this.state.sort.duration === "alphabetical"
-                          ? (b.name as string).toLowerCase()
+                          ? b.name.toLowerCase()
                           : b[this.state.sort.duration === "duration" ? "mean" : "total"];
-                      const c = (a.name as string).toLowerCase();
-                      const d = (b.name as string).toLowerCase();
+                      const c = a.name.toLowerCase();
+                      const d = b.name.toLowerCase();
                       if (x < y) {
                         return this.state.sort.duration === "alphabetical" ? -1 : 1;
                       }
@@ -1108,9 +1127,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               Object.keys(data[property]).forEach((prop) => {
                 if (hasKey(data[property], prop)) {
                   data[property][prop].data.sort((a, b) => {
-                    if (a.name === "All" || b.name === "All") {
-                      return a.name === "all" ? -1 : 1;
-                    }
                     const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
                     const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
                     const c = a.name.toLowerCase();
@@ -1538,7 +1554,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               <ToggleGroupButton
                 selected={this.state.sort.timelines === "total"}
                 onClick={() => {
-                  this.setSort("duration", "total");
+                  this.setSort("timelines", "total");
                 }}
                 icon={iconObject(
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -1552,7 +1568,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               <ToggleGroupButton
                 selected={this.state.sort.timelines === "alphabetical"}
                 onClick={() => {
-                  this.setSort("duration", "alphabetical");
+                  this.setSort("timelines", "alphabetical");
                 }}
                 icon={iconObject(
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
