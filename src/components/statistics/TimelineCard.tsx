@@ -192,6 +192,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
 };
 
 type TimelinesCardProps = {
+  allProfiles: string[];
   profileGroups: boolean;
   data: {
     name: string;
@@ -304,19 +305,22 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           <div className="timeline-chips-container focus-chips">
             <IconButton icon="clear" disabled={focused.length === 0} onClick={clearFocus} />
             <ChipSet choice>
-              {props.data.timeline.profiles.map((profile, index) => {
-                return (
-                  <Chip
-                    key={profile}
-                    icon="fiber_manual_record"
-                    label={profile}
-                    selected={focused.includes(letters[index])}
-                    onInteraction={() => {
-                      setFocus(letters[index]);
-                    }}
-                    className={"focus-chip-" + letters[index]}
-                  />
-                );
+              {props.allProfiles.map((profile, index) => {
+                if (props.data.timeline.profiles.includes(profile)) {
+                  return (
+                    <Chip
+                      key={profile}
+                      icon="fiber_manual_record"
+                      label={profile}
+                      selected={focused.includes(letters[index])}
+                      onInteraction={() => {
+                        setFocus(letters[index]);
+                      }}
+                      className={"focus-chip-" + letters[index]}
+                    />
+                  );
+                }
+                return null;
               })}
             </ChipSet>
           </div>

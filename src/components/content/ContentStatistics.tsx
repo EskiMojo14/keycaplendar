@@ -92,10 +92,7 @@ type Categories = "icDate" | "gbLaunch";
 
 type Properties = "profile" | "designer" | "vendor";
 
-type DataObject<T> = {
-  names: string[];
-  data: T;
-};
+type Sorts = "total" | "alphabetical";
 
 type TimelineData = {
   months: {
@@ -127,7 +124,7 @@ type TimelinesDataObject = {
   };
 };
 
-type TimelinesData = Record<Categories, Record<Properties, DataObject<TimelinesDataObject[]>>>;
+type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelinesDataObject[] }>>;
 
 type StatusDataObject = {
   ic: number;
@@ -138,7 +135,7 @@ type StatusDataObject = {
   total: number;
 };
 
-type StatusData = Record<Properties, DataObject<StatusDataObject[]>>;
+type StatusData = Record<Properties, StatusDataObject[]>;
 
 type ShippedDataObject = {
   name: string;
@@ -156,7 +153,7 @@ type ShippedDataObject = {
   };
 };
 
-type ShippedData = Record<Properties, DataObject<ShippedDataObject[]>>;
+type ShippedData = Record<Properties, ShippedDataObject[]>;
 
 type DurationDataObject = {
   chartData: number[][];
@@ -169,7 +166,7 @@ type DurationDataObject = {
   total: number;
 };
 
-type DurationData = Record<Categories, Record<Properties, DataObject<DurationDataObject[]>>>;
+type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
 type VendorDataObject = {
   chartData: number[][];
@@ -182,7 +179,7 @@ type VendorDataObject = {
   total: number;
 };
 
-type VendorData = Record<Properties, DataObject<VendorDataObject[]>>;
+type VendorData = Record<Properties, VendorDataObject[]>;
 
 type ContentStatisticsState = {
   timelineData: TimelineData;
@@ -195,22 +192,22 @@ type ContentStatisticsState = {
   focused: string[];
   dataCreated: string[];
   settings: {
-    timeline: string;
-    timelinesCat: string;
-    timelinesGroup: string;
-    status: string;
-    shipped: string;
-    durationCat: string;
-    durationGroup: string;
-    vendors: string;
+    timeline: Categories;
+    timelinesCat: Categories;
+    timelinesGroup: Properties;
+    status: Properties;
+    shipped: Properties;
+    durationCat: Categories;
+    durationGroup: Properties;
+    vendors: Properties;
   };
   whitelist: WhitelistType;
   sort: {
-    timelines: string;
-    status: string;
-    shipped: string;
-    duration: string;
-    vendors: string;
+    timelines: Sorts;
+    status: Sorts;
+    shipped: Sorts;
+    duration: Sorts | "duration";
+    vendors: Sorts;
   };
   filterDrawerOpen: boolean;
   categoryDialogOpen: boolean;
@@ -233,104 +230,59 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     timelinesData: {
       icDate: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
       gbLaunch: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
     },
     statusData: {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     },
     shippedData: {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     },
     durationData: {
       icDate: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
       gbLaunch: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     },
     vendorsData: {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     },
     sets: [],
     focused: [],
@@ -466,29 +418,29 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     const timelinesData: TimelinesData = {
       icDate: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
       gbLaunch: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
@@ -498,17 +450,22 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       if (hasKey(timelinesData, prop)) {
         const propSets = prop === "gbLaunch" ? gbSets : sets;
         const months = getSetMonthRange(propSets, prop, "MMM YY");
-        timelinesData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
-        timelinesData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
-        timelinesData[prop].vendor.names = uniqueArray(
-          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
+        const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
+        const vendorNames = alphabeticalSort(
+          uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
         );
+        const lists = {
+          profile: profileNames,
+          designer: designerNames,
+          vendor: vendorNames,
+        };
 
         Object.keys(timelinesData[prop]).forEach((property) => {
           if (hasKey(timelinesData[prop], property)) {
-            alphabeticalSort(timelinesData[prop][property].names);
             const data: TimelinesDataObject[] = [];
-            timelinesData[prop][property].names.forEach((name) => {
+            timelinesData[prop][property].profiles = profileNames;
+            lists[property].forEach((name) => {
               const filteredSets = propSets.filter((set) => {
                 let bool = false;
                 if (property === "vendor") {
@@ -530,7 +487,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
               let timelineData;
               if (property === "vendor" || property === "designer") {
-                timelineData = profiles.map((profile) => {
+                timelineData = profileNames.map((profile) => {
                   return months.map((month) => {
                     const monthSets = filteredSets.filter((set) => {
                       const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
@@ -602,28 +559,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createStatusData = (sets: SetType[]) => {
     //status
     const statusData: StatusData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
-    statusData.profile.names = uniqueArray(sets.map((set) => set.profile));
-    statusData.designer.names = uniqueArray(sets.map((set) => set.designer).flat(1));
-    statusData.vendor.names = uniqueArray(
-      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(sets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
     Object.keys(statusData).forEach((prop) => {
       if (hasKey(statusData, prop)) {
-        alphabeticalSort(statusData[prop].names);
-        statusData[prop].names.forEach((name) => {
+        lists[prop].forEach((name) => {
           const icSets = sets.filter((set) => {
             const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
             if (prop === "vendor") {
@@ -694,7 +646,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && isPostGb;
             }
           });
-          statusData[prop].data.push({
+          statusData[prop].push({
             name: name,
             ic: icSets.length,
             preGb: preGbSets.length,
@@ -703,7 +655,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
           });
         });
-        statusData[prop].data.sort((a, b) => {
+        statusData[prop].sort((a, b) => {
           const x = this.state.sort.status === "total" ? a.total : (a.name as string).toLowerCase();
           const y = this.state.sort.status === "total" ? b.total : (b.name as string).toLowerCase();
           if (x < y) {
@@ -729,33 +681,28 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createShippedData = (sets: SetType[]) => {
     //shipped
     const shippedData: ShippedData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
     const pastSets = sets.filter((set) => {
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
     const months = getSetMonthRange(pastSets, "gbEnd", "MMM YY");
-    shippedData.profile.names = uniqueArray(pastSets.map((set) => set.profile));
-    shippedData.designer.names = uniqueArray(pastSets.map((set) => set.designer).flat(1));
-    shippedData.vendor.names = uniqueArray(
-      pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
     Object.keys(shippedData).forEach((prop) => {
       if (hasKey(shippedData, prop)) {
-        alphabeticalSort(shippedData[prop].names);
-        shippedData[prop].names.forEach((name) => {
+        lists[prop].forEach((name) => {
           const shippedSets = pastSets.filter((set) => {
             if (prop === "vendor") {
               return set.vendors &&
@@ -798,7 +745,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
             };
           });
-          shippedData[prop].data.push({
+          shippedData[prop].push({
             name: name,
             shipped: shippedSets.length,
             unshipped: unshippedSets.length,
@@ -809,7 +756,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             },
           });
         });
-        shippedData[prop].data.sort((a, b) => {
+        shippedData[prop].sort((a, b) => {
           const x = this.state.sort.shipped === "total" ? a.total : (a.name as string).toLowerCase();
           const y = this.state.sort.shipped === "total" ? b.total : (b.name as string).toLowerCase();
           if (x < y) {
@@ -836,32 +783,14 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     //duration
     const durationData: DurationData = {
       icDate: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
       gbLaunch: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     };
     const dateSets = sets.filter((set) => {
@@ -875,18 +804,21 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             })
           : dateSets;
       if (hasKey(durationData, prop)) {
-        durationData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
-        durationData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
-        durationData[prop].vendor.names = uniqueArray(
-          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
+        const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
+        const vendorNames = alphabeticalSort(
+          uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
         );
+        const lists = {
+          profile: profileNames,
+          designer: designerNames,
+          vendor: vendorNames,
+        };
 
         Object.keys(durationData[prop]).forEach((property) => {
           if (hasKey(durationData[prop], property)) {
-            alphabeticalSort(durationData[prop][property].names);
-
-            durationData[prop][property].names = ["All"].concat(durationData[prop][property].names);
-            durationData[prop][property].names.forEach((name) => {
+            lists[property] = ["All"].concat(lists[property]);
+            lists[property].forEach((name) => {
               const data: number[] = [];
               if (name === "All") {
                 propSets.forEach((set) => {
@@ -922,7 +854,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                   });
                 Object.keys(durationData[prop]).forEach((key) => {
                   if (hasKey(durationData[prop], key)) {
-                    durationData[prop][key].data.sort((a, b) => {
+                    durationData[prop][key].sort((a, b) => {
                       if (a.name === "All" || b.name === "All") {
                         return a.name === "All" ? -1 : 1;
                       }
@@ -969,7 +901,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               });
               const range = math.max(data) - math.min(data);
               const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
-              durationData[prop][property].data.push({
+              durationData[prop][property].push({
                 name: name,
                 total: data.length,
                 mean: math.round(math.mean(data), 2),
@@ -997,18 +929,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createVendorsData = (sets: SetType[]) => {
     //vendors
     const vendorsData: VendorData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
     const pastSets = sets.filter((set) => {
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
@@ -1016,17 +939,21 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     const vendorSets = pastSets.filter((set) => set.vendors);
 
-    vendorsData.profile.names = uniqueArray(vendorSets.map((set) => set.profile));
-    vendorsData.designer.names = uniqueArray(vendorSets.map((set) => set.designer).flat(1));
-    vendorsData.vendor.names = uniqueArray(
-      vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
 
     Object.keys(vendorsData).forEach((prop) => {
       if (hasKey(vendorsData, prop)) {
-        alphabeticalSort(vendorsData[prop].names);
-        vendorsData[prop].names = ["All"].concat(vendorsData[prop].names);
-        vendorsData[prop].names.forEach((name) => {
+        lists[prop] = ["All"].concat(lists[prop]);
+        lists[prop].forEach((name) => {
           let propSets = [];
           if (name === "All") {
             propSets = vendorSets;
@@ -1045,7 +972,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             const countArray = labels.map((_val, index) => countInArray(lengthArray, index));
             const range = math.max(lengthArray) - math.min(lengthArray);
             const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
-            vendorsData[prop].data.push({
+            vendorsData[prop].push({
               name: name,
               total: propSets.length,
               mean: math.round(math.mean(lengthArray), 2),
@@ -1058,7 +985,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           }
         });
 
-        vendorsData[prop].data.sort((a, b) => {
+        vendorsData[prop].sort((a, b) => {
           const x = this.state.sort.vendors === "total" ? a.total : a.name.toLowerCase();
           const y = this.state.sort.vendors === "total" ? b.total : b.name.toLowerCase();
           if (x < y) {
@@ -1093,7 +1020,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             if (hasKey(data, property)) {
               Object.keys(data[property]).forEach((prop) => {
                 if (hasKey(data[property], prop)) {
-                  data[property][prop].data.sort((a, b) => {
+                  data[property][prop].sort((a, b) => {
                     if (a.name === "All" || b.name === "All") {
                       return a.name === "all" ? -1 : 1;
                     }
@@ -1166,7 +1093,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             if (hasKey(data, prop)) {
               const value = data[prop];
               type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
-              value.data.sort((a: DataObj, b: DataObj) => {
+              value.sort((a: DataObj, b: DataObj) => {
                 if (hasKey(sort, tab)) {
                   const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
                   const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
@@ -1792,65 +1719,55 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         ),
         timelines: (
           <div className="stats-tab stats-grid timelines" key={key}>
-            {hasKey(this.state.timelinesData, this.state.settings.timelinesCat) &&
-            hasKey(this.state.timelinesData[this.state.settings.timelinesCat], this.state.settings.timelinesGroup)
-              ? this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup].data.map(
-                  (data) => {
-                    return (
-                      <TimelinesCard
-                        key={data.name}
-                        data={data}
-                        profileGroups={this.state.settings.timelinesGroup === "profile"}
-                      />
-                    );
-                  }
-                )
-              : null}
+            {this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup].data.map(
+              (data) => {
+                return (
+                  <TimelinesCard
+                    key={data.name}
+                    data={data}
+                    profileGroups={this.state.settings.timelinesGroup === "profile"}
+                    allProfiles={
+                      this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup]
+                        .profiles
+                    }
+                  />
+                );
+              }
+            )}
           </div>
         ),
         status: (
           <div className="stats-tab stats-grid status" key={key}>
-            {hasKey(this.state.statusData, this.state.settings.status)
-              ? this.state.statusData[this.state.settings.status].data.map((data) => {
-                  return <StatusCard key={data.name} data={data} />;
-                })
-              : null}
+            {this.state.statusData[this.state.settings.status].map((data) => {
+              return <StatusCard key={data.name} data={data} />;
+            })}
           </div>
         ),
         shipped: (
           <div className="stats-tab stats-grid shipped" key={key}>
-            {hasKey(this.state.shippedData, this.state.settings.shipped)
-              ? this.state.shippedData[this.state.settings.shipped].data.map((data) => {
-                  return <ShippedCard key={data.name} data={data} />;
-                })
-              : null}
+            {this.state.shippedData[this.state.settings.shipped].map((data) => {
+              return <ShippedCard key={data.name} data={data} />;
+            })}
           </div>
         ),
         duration: (
           <div className="stats-tab stats-grid duration" key={key}>
-            {hasKey(this.state.durationData, this.state.settings.durationCat) &&
-            hasKey(this.state.durationData[this.state.settings.durationCat], this.state.settings.durationGroup)
-              ? this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].data.map(
-                  (data) => {
-                    return (
-                      <TableCard
-                        key={data.name}
-                        data={data}
-                        unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
-                      />
-                    );
-                  }
-                )
-              : null}
+            {this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].map((data) => {
+              return (
+                <TableCard
+                  key={data.name}
+                  data={data}
+                  unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                />
+              );
+            })}
           </div>
         ),
         vendors: (
           <div className="stats-tab stats-grid vendors" key={key}>
-            {hasKey(this.state.vendorsData, this.state.settings.vendors)
-              ? this.state.vendorsData[this.state.settings.vendors].data.map((data) => {
-                  return <TableCard key={data.name} data={data} unit="Vendors" />;
-                })
-              : null}
+            {this.state.vendorsData[this.state.settings.vendors].map((data) => {
+              return <TableCard key={data.name} data={data} unit="Vendors" />;
+            })}
           </div>
         ),
       };
