@@ -21,7 +21,10 @@ const db = admin.firestore();
 
 const storage = new Storage();
 
-const runtimeOpts = {
+const runtimeOpts: {
+  timeoutSeconds: number;
+  memory: "2GB";
+} = {
   timeoutSeconds: 540,
   memory: "2GB",
 };
@@ -34,114 +37,117 @@ exports.createThumbsAuto = functions
     const filePath = object.name; // File path in the bucket.
     const contentType = object.contentType; // File content type.
     // Exit if this is triggered on a file that is not an image.
-    if (!contentType.startsWith("image/")) {
+    if (!contentType || (contentType && !contentType.startsWith("image/"))) {
       return null;
     }
-    const fileName = path.basename(filePath);
-    if (!filePath.startsWith("keysets/")) {
-      return null;
-    }
+    if (filePath) {
+      const fileName = path.basename(filePath);
+      if (!filePath.startsWith("keysets/")) {
+        return null;
+      }
 
-    // Download file from bucket.
-    const bucket = storage.bucket(fileBucket);
+      // Download file from bucket.
+      const bucket = storage.bucket(fileBucket);
 
-    const metadata = {
-      contentType: contentType,
-    };
+      const metadata = {
+        contentType: contentType,
+      };
 
-    const cardFilePath = path.join("card/", fileName);
-    // Create write stream for uploading thumbnail
-    const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
+      const cardFilePath = path.join("card/", fileName);
+      // Create write stream for uploading thumbnail
+      const cardUploadStream = bucket.file(cardFilePath).createWriteStream({ metadata });
 
-    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-    const cardPipeline = sharp();
-    cardPipeline.resize(320, 180).pipe(cardUploadStream);
+      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+      const cardPipeline = sharp();
+      cardPipeline.resize(320, 180).pipe(cardUploadStream);
 
-    bucket.file(filePath).createReadStream().pipe(cardPipeline);
+      bucket.file(filePath).createReadStream().pipe(cardPipeline);
 
-    cardUploadStream
-      .on("finish", () => {
-        console.log("Created card thumbnail for " + fileName);
-      })
-      .on("error", (err) => {
-        console.log("Failed to create card thumbnail for " + fileName + ": " + err);
-      });
-
-    const listFilePath = path.join("list/", fileName);
-    // Create write stream for uploading thumbnail
-    const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
-
-    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-    const listPipeline = sharp();
-    listPipeline.resize(100, 56).pipe(listUploadStream);
-
-    bucket.file(filePath).createReadStream().pipe(listPipeline);
-
-    listUploadStream
-      .on("finish", () => {
-        console.log("Created list thumbnail for " + fileName);
-      })
-      .on("error", (err) => {
-        console.log("Failed to create list thumbnail for " + fileName + ": " + err);
-      });
-
-    const imageListFilePath = path.join("image-list/", fileName);
-    // Create write stream for uploading thumbnail
-    const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
-
-    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-    const imageListPipeline = sharp();
-    imageListPipeline.resize(320, 320).pipe(imageListUploadStream);
-
-    bucket.file(filePath).createReadStream().pipe(imageListPipeline);
-
-    imageListUploadStream
-      .on("finish", () => {
-        console.log("Created image list thumbnail for " + fileName);
-      })
-      .on("error", (err) => {
-        console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
-      });
-
-    const thumbsFilePath = path.join("thumbs/", fileName);
-    // Create write stream for uploading thumbnail
-    const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
-
-    // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
-    const thumbsPipeline = sharp();
-    thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
-
-    bucket.file(filePath).createReadStream().pipe(thumbsPipeline);
-
-    thumbsUploadStream
-      .on("finish", () => {
-        console.log("Created generic thumbnail for " + fileName);
-      })
-      .on("error", (err) => {
-        console.log("Failed to create generic thumbnail for " + fileName + ": " + err);
-      });
-
-    const streams = [cardUploadStream, listUploadStream, imageListUploadStream, thumbsUploadStream];
-
-    const allPromises = Promise.all(
-      streams.map((stream) => {
-        return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
-      })
-    );
-
-    allPromises
-      .then(() => {
-        // delete original if all thumbnails created
-        return bucket.deleteFiles({
-          maxResults: 1,
-          prefix: filePath,
+      cardUploadStream
+        .on("finish", () => {
+          console.log("Created card thumbnail for " + fileName);
+        })
+        .on("error", (err) => {
+          console.log("Failed to create card thumbnail for " + fileName + ": " + err);
         });
-      })
-      .catch((error) => {
-        console.log("Failed to create thumbnail for " + fileName + ": " + error);
-      });
 
-    return await allPromises;
+      const listFilePath = path.join("list/", fileName);
+      // Create write stream for uploading thumbnail
+      const listUploadStream = bucket.file(listFilePath).createWriteStream({ metadata });
+
+      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+      const listPipeline = sharp();
+      listPipeline.resize(100, 56).pipe(listUploadStream);
+
+      bucket.file(filePath).createReadStream().pipe(listPipeline);
+
+      listUploadStream
+        .on("finish", () => {
+          console.log("Created list thumbnail for " + fileName);
+        })
+        .on("error", (err) => {
+          console.log("Failed to create list thumbnail for " + fileName + ": " + err);
+        });
+
+      const imageListFilePath = path.join("image-list/", fileName);
+      // Create write stream for uploading thumbnail
+      const imageListUploadStream = bucket.file(imageListFilePath).createWriteStream({ metadata });
+
+      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+      const imageListPipeline = sharp();
+      imageListPipeline.resize(320, 320).pipe(imageListUploadStream);
+
+      bucket.file(filePath).createReadStream().pipe(imageListPipeline);
+
+      imageListUploadStream
+        .on("finish", () => {
+          console.log("Created image list thumbnail for " + fileName);
+        })
+        .on("error", (err) => {
+          console.log("Failed to create image list thumbnail for " + fileName + ": " + err);
+        });
+
+      const thumbsFilePath = path.join("thumbs/", fileName);
+      // Create write stream for uploading thumbnail
+      const thumbsUploadStream = bucket.file(thumbsFilePath).createWriteStream({ metadata });
+
+      // Create Sharp pipeline for resizing the image and use pipe to read from bucket read stream
+      const thumbsPipeline = sharp();
+      thumbsPipeline.resize(480, 270).pipe(thumbsUploadStream);
+
+      bucket.file(filePath).createReadStream().pipe(thumbsPipeline);
+
+      thumbsUploadStream
+        .on("finish", () => {
+          console.log("Created generic thumbnail for " + fileName);
+        })
+        .on("error", (err) => {
+          console.log("Failed to create generic thumbnail for " + fileName + ": " + err);
+        });
+
+      const streams = [cardUploadStream, listUploadStream, imageListUploadStream, thumbsUploadStream];
+
+      const allPromises = Promise.all(
+        streams.map((stream) => {
+          return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
+        })
+      );
+
+      allPromises
+        .then(() => {
+          // delete original if all thumbnails created
+          return bucket.deleteFiles({
+            maxResults: 1,
+            prefix: filePath,
+          });
+        })
+        .catch((error) => {
+          console.log("Failed to create thumbnail for " + fileName + ": " + error);
+        });
+
+      return await allPromises;
+    }
+    return null;
   });
 
 exports.createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
@@ -160,7 +166,7 @@ exports.createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, 
     contentType: "image/png",
   };
 
-  const filesPromise = new Promise(async (resolve, reject) => {
+  const filesPromise = new Promise<void>((resolve, reject) => {
     let filesProcessed = 0;
     const increase = () => filesProcessed++;
     for (const file of files) {
@@ -183,6 +189,7 @@ exports.createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, 
         })
         .on("error", (err) => {
           console.log("Failed to generic thumbnail for " + fileName + ": " + err);
+          reject(err);
         });
       if (filesProcessed === files.length) {
         resolve();
@@ -213,8 +220,9 @@ exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWr
   if (!change.before.data()) {
     console.log("Document created");
   }
-  if (change.after.data() && change.after.data().latestEditor) {
-    const user = await admin.auth().getUser(change.after.data().latestEditor);
+  const afterData = change.after.data();
+  if (afterData && afterData.latestEditor) {
+    const user = await admin.auth().getUser(afterData.latestEditor);
     db.collection("changelog")
       .add({
         documentId: context.params.keysetId,
@@ -224,7 +232,7 @@ exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWr
         user: {
           displayName: user.displayName,
           email: user.email,
-          nickname: user.customClaims.nickname,
+          nickname: user.customClaims ? user.customClaims.nickname : "",
         },
       })
       .then((docRef) => {
@@ -238,7 +246,7 @@ exports.onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWr
   } else {
     console.error("No user ID attached to action.");
   }
-  if (change.after.data() && !change.after.data().profile) {
+  if (afterData && !afterData.profile) {
     console.log("Document deleted");
     db.collection("keysets")
       .doc(context.params.keysetId)
@@ -260,8 +268,8 @@ exports.listUsers = functions.https.onCall(async (data, context) => {
       error: "Current user is not an admin. Access is not permitted.",
     };
   }
-  const listUsers = async (nextPageToken) => {
-    const processResult = (result) => {
+  const listUsers = async (nextPageToken: string) => {
+    const processResult = (result: admin.auth.ListUsersResult) => {
       const users = result.users.map((user) => {
         if (user.customClaims) {
           return {
@@ -383,26 +391,32 @@ exports.apiAuth = functions.https.onRequest(async (request, response) => {
   const key = request.body.key;
   const secret = request.body.secret;
   if (!key || !secret) {
-    return response.status(401).send({ error: "Unauthorized" });
+    response.status(401).send({ error: "Unauthorized" });
   }
   const usersRef = db.collection("apiUsers");
   const snapshot = await usersRef.where("apiKey", "==", key).where("apiSecret", "==", secret).get();
   if (snapshot.empty) {
-    return response.status(401).send({ error: "Unauthorized" });
+    response.status(401).send({ error: "Unauthorized" });
   }
   const ts = Math.round(new Date().getTime() / 1000);
-  let user = {};
-  let payload = {
-    apiAccess: null,
+  let user: {
+    apiAccess: boolean;
+    email: string;
+  } = {
+    apiAccess: false,
+    email: "",
+  };
+  const payload = {
+    apiAccess: false,
     email: "",
     iat: ts,
     exp: ts + 1800,
   };
   snapshot.forEach((doc) => {
-    user = { ...doc.data() };
+    user = { ...doc.data(), apiAccess: doc.data().apiAccess, email: doc.data().email };
   });
   if (user.apiAccess !== true) {
-    return response.status(401).send({ error: "Unauthorized" });
+    response.status(401).send({ error: "Unauthorized" });
   }
   payload.email = user.email;
   payload.apiAccess = user.apiAccess;
@@ -411,10 +425,10 @@ exports.apiAuth = functions.https.onRequest(async (request, response) => {
     algorithm: "HS256",
   });
 
-  return response.status(200).send({ token: accessToken });
+  response.status(200).send({ token: accessToken });
 });
 
-const verify = function (req) {
+const verify = (req: functions.Request) => {
   if (req.headers.authorization) {
     const accessToken = req.headers.authorization.split(" ");
     if (accessToken.length !== 2 || !accessToken[1]) return false;
@@ -433,11 +447,11 @@ const verify = function (req) {
 exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
   const auth = verify(request);
   if (auth === false) {
-    return response.status(401).send({ error: "Unauthorized" });
+    response.status(401).send({ error: "Unauthorized" });
   }
-  const returnKeysets = async (ref) => {
+  const returnKeysets = async (ref: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>) => {
     const snapshot = await ref.get();
-    const keysets = [];
+    const keysets: Record<string, unknown>[] = [];
     snapshot.forEach((doc) => {
       keysets.push({
         id: doc.id,
@@ -446,27 +460,27 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
     });
     response.send(JSON.stringify(keysets));
   };
-  const validDateFilter = (dateFilter, exists = true) => {
-    return (
-      ((dateFilter && exists) || !exists) &&
-      (dateFilter === "icDate" || dateFilter === "gbLaunch" || dateFilter === "gbEnd")
-    );
+  const validDateFilter = (dateFilter: string | undefined): dateFilter is string => {
+    return !!dateFilter && (dateFilter === "icDate" || dateFilter === "gbLaunch" || dateFilter === "gbEnd");
   };
-  const validDate = (date, exists = true) => {
-    const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
-    return ((date && exists) || !exists) && regex.test(date);
+  const validDate = (date: string | undefined): date is string => {
+    const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/;
+    return !!date && regex.test(date);
   };
   const keysetsRef = db.collection("keysets");
-  if (validDateFilter(request.query.dateFilter) && validDate(request.query.before) && validDate(request.query.after)) {
+  const dateFilterQuery = request.query.dateFilter as string | undefined;
+  const beforeDateQuery = request.query.before as string | undefined;
+  const afterDateQuery = request.query.date as string | undefined;
+  if (validDateFilter(dateFilterQuery) && validDate(beforeDateQuery) && validDate(afterDateQuery)) {
     const filteredRef = keysetsRef
-      .where(request.query.dateFilter, "<=", request.query.before)
-      .where(request.query.dateFilter, ">=", request.query.after);
+      .where(dateFilterQuery, "<=", beforeDateQuery)
+      .where(dateFilterQuery, ">=", afterDateQuery);
     returnKeysets(filteredRef);
-  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.before)) {
-    const filteredRef = keysetsRef.where(request.query.dateFilter, "<=", request.query.before);
+  } else if (validDateFilter(dateFilterQuery) && validDate(beforeDateQuery)) {
+    const filteredRef = keysetsRef.where(dateFilterQuery, "<=", beforeDateQuery);
     returnKeysets(filteredRef);
-  } else if (validDateFilter(request.query.dateFilter) && validDate(request.query.after)) {
-    const filteredRef = keysetsRef.where(request.query.dateFilter, ">=", request.query.after);
+  } else if (validDateFilter(dateFilterQuery) && validDate(afterDateQuery)) {
+    const filteredRef = keysetsRef.where(dateFilterQuery, ">=", afterDateQuery);
     returnKeysets(filteredRef);
   } else {
     returnKeysets(keysetsRef);
@@ -476,11 +490,11 @@ exports.getAllKeysets = functions.https.onRequest(async (request, response) => {
 exports.getKeysetById = functions.https.onRequest(async (request, response) => {
   const auth = verify(request);
   if (auth === false) {
-    return response.status(401).send({ error: "Unauthorized" });
+    response.status(401).send({ error: "Unauthorized" });
   }
   const keysetsRef = db.collection("keysets");
   if (request.query.id) {
-    const docRef = keysetsRef.doc(request.query.id);
+    const docRef = keysetsRef.doc(request.query.id as string);
     const doc = await docRef.get();
     if (!doc.exists) {
       response.send("No document with this ID.");

@@ -36,9 +36,33 @@
       "error",
       "double"
     ],
-    "object-curly-spacing": "off",
-    "@typescript-eslint/object-curly-spacing": [
-      "error"
+    "indent": [
+      "error",
+      2
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "tabWidth": 2,
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ],
+    "object-curly-spacing": [
+      "warn",
+      "always"
     ],
     // Removed rule "disallow the use of console" from recommended eslint rules
     "no-console": "off",
