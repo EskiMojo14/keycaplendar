@@ -70,7 +70,7 @@ export type SetType = {
   id: string;
   image: string;
   profile: string;
-  sales?: string;
+  sales?: { img: string; thirdParty: boolean };
   shipped?: boolean;
   vendors?: VendorType[];
 };

@@ -61,7 +61,7 @@ type DialogCreateState = {
   designer: string[];
   icDate: string;
   details: string;
-  sales: string;
+  sales: { img: string; thirdParty: boolean };
   image: Blob | File | null;
   gbMonth: boolean;
   gbLaunch: string;
@@ -82,7 +82,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     designer: [],
     icDate: "",
     details: "",
-    sales: "",
+    sales: { img: "", thirdParty: false },
     image: null,
     gbMonth: true,
     gbLaunch: "",
@@ -113,7 +113,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
       designer: [],
       icDate: "",
       details: "",
-      sales: "",
+      sales: { img: "", thirdParty: false },
       image: null,
       gbMonth: true,
       gbLaunch: "",
@@ -183,6 +183,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
   };
 
   handleChange = (e: any) => {
+    e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
@@ -190,6 +191,14 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     } else if (e.target.name === "shipped") {
       this.setState<never>({
         [e.target.name]: e.target.checked,
+      });
+    } else if (e.target.name === "salesImg") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, img: e.target.value } };
+      });
+    } else if (e.target.name === "salesThirdParty") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
       });
     } else {
       this.setState<never>({
@@ -800,7 +809,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                   </svg>
                 </div>
                 <img
-                  src={this.state.sales}
+                  src={this.state.sales.img}
                   alt=""
                   onLoad={() => {
                     this.setSalesImageLoaded(true);
@@ -817,12 +826,20 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                   outlined
                   label="URL"
                   pattern="https?:\/\/.+"
-                  value={this.state.sales}
-                  name="sales"
+                  value={this.state.sales.img}
+                  name="salesImg"
                   helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
+                />
+                <Checkbox
+                  className="sales-checkbox"
+                  label="Third party graph"
+                  name={"salesThirdParty"}
+                  id={"createSalesThirdParty"}
+                  onChange={this.handleChange}
+                  checked={this.state.sales.thirdParty}
                 />
               </div>
             </Card>
@@ -846,7 +863,7 @@ type DialogEditState = {
   designer: string[];
   icDate: string;
   details: string;
-  sales: string;
+  sales: { img: string; thirdParty: boolean };
   image: Blob | File | string | null;
   gbMonth: boolean;
   gbLaunch: string;
@@ -868,7 +885,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     designer: [],
     icDate: "",
     details: "",
-    sales: "",
+    sales: { img: "", thirdParty: false },
     image: "",
     gbMonth: false,
     gbLaunch: "",
@@ -894,7 +911,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
       designer: [],
       icDate: "",
       details: "",
-      sales: "",
+      sales: { img: "", thirdParty: false },
       image: "",
       gbMonth: false,
       gbLaunch: "",
@@ -969,7 +986,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     this.setState({
       ...this.props.set,
       gbMonth: typeof this.props.set.gbMonth === "boolean" ? this.props.set.gbMonth : false,
-      sales: this.props.set.sales ? this.props.set.sales : "",
+      sales: this.props.set.sales ? this.props.set.sales : { img: "", thirdParty: false },
       gbLaunch: gbLaunch,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
       vendors: this.props.set.vendors
@@ -990,6 +1007,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
   };
 
   handleChange = (e: any) => {
+    e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
@@ -997,6 +1015,14 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     } else if (e.target.name === "shipped") {
       this.setState<never>({
         [e.target.name]: e.target.checked,
+      });
+    } else if (e.target.name === "salesImg") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, img: e.target.value } };
+      });
+    } else if (e.target.name === "salesThirdParty") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
       });
     } else {
       this.setState<never>({
@@ -1640,7 +1666,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                     </svg>
                   </div>
                   <img
-                    src={this.state.sales}
+                    src={this.state.sales.img}
                     alt=""
                     onLoad={() => {
                       this.setSalesImageLoaded(true);
@@ -1657,12 +1683,20 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                     outlined
                     label="URL"
                     pattern="https?:\/\/.+"
-                    value={this.state.sales}
-                    name="sales"
+                    value={this.state.sales.img}
+                    name="salesImg"
                     helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                     onChange={this.handleChange}
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
+                  />
+                  <Checkbox
+                    className="sales-checkbox"
+                    label="Third party graph"
+                    name={"salesThirdParty"}
+                    id={"editSalesThirdParty"}
+                    onChange={this.handleChange}
+                    checked={this.state.sales.thirdParty}
                   />
                 </div>
               </Card>

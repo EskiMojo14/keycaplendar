@@ -60,7 +60,7 @@ type DrawerCreateState = {
   designer: string[];
   icDate: string;
   details: string;
-  sales: string;
+  sales: { img: string; thirdParty: boolean };
   image: Blob | File | null;
   gbMonth: boolean;
   gbLaunch: string;
@@ -81,7 +81,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     designer: [],
     icDate: "",
     details: "",
-    sales: "",
+    sales: { img: "", thirdParty: false },
     image: null,
     gbMonth: true,
     gbLaunch: "",
@@ -113,7 +113,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
       designer: [],
       icDate: "",
       details: "",
-      sales: "",
+      sales: { img: "", thirdParty: false },
       image: null,
       gbMonth: true,
       gbLaunch: "",
@@ -182,6 +182,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
   };
 
   handleChange = (e: any) => {
+    e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
@@ -189,6 +190,14 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     } else if (e.target.name === "shipped") {
       this.setState<never>({
         [e.target.name]: e.target.checked,
+      });
+    } else if (e.target.name === "salesImg") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, img: e.target.value } };
+      });
+    } else if (e.target.name === "salesThirdParty") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
       });
     } else {
       this.setState<never>({
@@ -805,7 +814,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                   </svg>
                 </div>
                 <img
-                  src={this.state.sales}
+                  src={this.state.sales.img}
                   alt=""
                   onLoad={() => {
                     this.setSalesImageLoaded(true);
@@ -822,12 +831,20 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                   outlined
                   label="URL"
                   pattern="https?:\/\/.+"
-                  value={this.state.sales}
-                  name="sales"
+                  value={this.state.sales.img}
+                  name="salesImg"
                   helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
+                />
+                <Checkbox
+                  className="sales-checkbox"
+                  label="Third party graph"
+                  name={"salesThirdParty"}
+                  id={"CreateSalesThirdParty"}
+                  onChange={this.handleChange}
+                  checked={this.state.sales.thirdParty}
                 />
               </div>
             </Card>
@@ -851,7 +868,7 @@ type DrawerEditState = {
   designer: string[];
   icDate: string;
   details: string;
-  sales: string;
+  sales: { img: string; thirdParty: boolean };
   image: Blob | File | string | null;
   gbMonth: boolean;
   gbLaunch: string;
@@ -873,7 +890,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     designer: [],
     icDate: "",
     details: "",
-    sales: "",
+    sales: { img: "", thirdParty: false },
     image: "",
     gbMonth: false,
     gbLaunch: "",
@@ -917,7 +934,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     this.setState({
       ...this.props.set,
       gbMonth: typeof this.props.set.gbMonth === "boolean" ? this.props.set.gbMonth : false,
-      sales: this.props.set.sales ? this.props.set.sales : "",
+      sales: this.props.set.sales ? this.props.set.sales : { img: "", thirdParty: false },
       gbLaunch: gbLaunch,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
       vendors: this.props.set.vendors
@@ -939,7 +956,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
       designer: [],
       icDate: "",
       details: "",
-      sales: "",
+      sales: { img: "", thirdParty: false },
       image: "",
       gbMonth: false,
       gbLaunch: "",
@@ -1007,6 +1024,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
   };
 
   handleChange = (e: any) => {
+    e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
         [e.target.name]: e.target.value.split(", "),
@@ -1014,6 +1032,14 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     } else if (e.target.name === "shipped") {
       this.setState<never>({
         [e.target.name]: e.target.checked,
+      });
+    } else if (e.target.name === "salesImg") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, img: e.target.value } };
+      });
+    } else if (e.target.name === "salesThirdParty") {
+      this.setState<never>((prevState) => {
+        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
       });
     } else {
       this.setState<never>({
@@ -1636,7 +1662,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                   </svg>
                 </div>
                 <img
-                  src={this.state.sales}
+                  src={this.state.sales.img}
                   alt=""
                   onLoad={() => {
                     this.setSalesImageLoaded(true);
@@ -1653,12 +1679,20 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                   outlined
                   label="URL"
                   pattern="https?:\/\/.+"
-                  value={this.state.sales}
-                  name="sales"
+                  value={this.state.sales.img}
+                  name="salesImg"
                   helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
+                />
+                <Checkbox
+                  className="sales-checkbox"
+                  label="Third party graph"
+                  name={"salesThirdParty"}
+                  id={"editSalesThirdParty"}
+                  onChange={this.handleChange}
+                  checked={this.state.sales.thirdParty}
                 />
               </div>
             </Card>
