@@ -426,6 +426,8 @@ class App extends React.Component<AppProps, AppState> {
             const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
+            const sales =
+              typeof doc.data().sales === "string" ? { img: doc.data().sales, thirdParty: false } : doc.data().sales;
             sets.push({
               id: doc.id,
               profile: doc.data().profile,
@@ -433,7 +435,7 @@ class App extends React.Component<AppProps, AppState> {
               designer: doc.data().designer,
               icDate: doc.data().icDate,
               details: doc.data().details,
-              sales: doc.data().sales,
+              sales: sales,
               image: doc.data().image,
               gbMonth: doc.data().gbMonth,
               gbLaunch: gbLaunch,

@@ -314,9 +314,10 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
-    const salesButton = this.props.set.sales ? (
-      <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
-    ) : null;
+    const salesButton =
+      this.props.set.sales && this.props.set.sales.img ? (
+        <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
+      ) : null;
     return (
       <Drawer
         dismissible={dismissible}
