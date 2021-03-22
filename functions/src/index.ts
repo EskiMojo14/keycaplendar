@@ -1,12 +1,21 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-const { Storage } = require("@google-cloud/storage");
-const path = require("path");
-const sharp = require("sharp");
-const jwt = require("jsonwebtoken");
-const { Stream } = require("stream");
+// // Start writing Firebase Functions
+// // https://firebase.google.com/docs/functions/typescript
+//
+// export const helloWorld = functions.https.onRequest((request, response) => {
+//   functions.logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });
 
-const app = admin.initializeApp();
+export {};
+
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { Storage } from "@google-cloud/storage";
+import * as path from "path";
+import * as sharp from "sharp";
+import * as jwt from "jsonwebtoken";
+
+admin.initializeApp();
 
 const db = admin.firestore();
 
