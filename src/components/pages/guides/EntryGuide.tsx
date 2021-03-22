@@ -406,10 +406,26 @@ export const EntryGuide = () => {
               <Typography use="headline5" tag="h2">
                 Sales
               </Typography>
-              <Typography use="body2" tag="p">
-                A direct link to a sales graph created by dvorcol. This can be including extras or excluding extras -
-                ideally this distinction should be clear in the image.
-              </Typography>
+              <div>
+                <Typography use="subtitle1" tag="h4">
+                  URL
+                </Typography>
+                <Typography use="body2" tag="p">
+                  A direct link to a sales graph, usually created by dvorcol. This can be including extras or excluding
+                  extras - ideally this distinction should be clear in the image.
+                </Typography>
+              </div>
+              <div>
+                <Typography use="subtitle1" tag="h4">
+                  Third party graph
+                </Typography>
+                <Typography use="body2" tag="p">
+                  Whether the sales graph was made by someone other than dvorcol.
+                </Typography>
+                <Typography use="caption" tag="p" className="secondary">
+                  Setting this to true will hide the &ldquo;Created by dvorcol&rdquo; credit in the sales dialog.
+                </Typography>
+              </div>
             </div>
           </Card>
         </div>
