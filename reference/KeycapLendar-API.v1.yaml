@@ -208,7 +208,15 @@ components:
         gbMonth:
           type: boolean
         sales:
-          type: string
+          oneOf:
+            - type: object
+              properties:
+                img:
+                  type: string
+                thirdParty:
+                  type: boolean
+            - type: string
+              properties: {}
         details:
           type: string
         icDate:
