@@ -112,7 +112,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
         }
         return "";
       })
-      .filter((val) => !!val);
+      .filter(Boolean);
     setImages.sort((a, b) => {
       const nameA = a.toLowerCase();
       const nameB = b.toLowerCase();
