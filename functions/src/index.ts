@@ -21,10 +21,7 @@ const db = admin.firestore();
 
 const storage = new Storage();
 
-const runtimeOpts: {
-  timeoutSeconds: number;
-  memory: "2GB";
-} = {
+const runtimeOpts: functions.RuntimeOptions = {
   timeoutSeconds: 540,
   memory: "2GB",
 };
