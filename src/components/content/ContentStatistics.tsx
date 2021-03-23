@@ -94,7 +94,7 @@ type Properties = "profile" | "designer" | "vendor";
 
 type Sorts = "total" | "alphabetical";
 
-type TimelineData = {
+type SummaryData = {
   months: {
     gbLaunch: string[];
     icDate: string[];
@@ -182,7 +182,7 @@ type VendorDataObject = {
 type VendorData = Record<Properties, VendorDataObject[]>;
 
 type ContentStatisticsState = {
-  timelineData: TimelineData;
+  summaryData: SummaryData;
   timelinesData: TimelinesData;
   statusData: StatusData;
   shippedData: ShippedData;
@@ -192,7 +192,7 @@ type ContentStatisticsState = {
   focused: string[];
   dataCreated: string[];
   settings: {
-    timeline: Categories;
+    summary: Categories;
     timelinesCat: Categories;
     timelinesGroup: Properties;
     status: Properties;
@@ -219,7 +219,7 @@ const properties = ["icDate", "gbLaunch"];
 
 export class ContentStatistics extends React.Component<ContentStatisticsProps, ContentStatisticsState> {
   state: ContentStatisticsState = {
-    timelineData: {
+    summaryData: {
       months: { icDate: [], gbLaunch: [] },
       monthData: { icDate: {}, gbLaunch: {} },
       countData: { icDate: [], gbLaunch: [] },
@@ -288,7 +288,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     focused: [],
     dataCreated: [],
     settings: {
-      timeline: "gbLaunch",
+      summary: "gbLaunch",
       timelinesCat: "gbLaunch",
       timelinesGroup: "profile",
       status: "profile",
@@ -320,7 +320,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     this.setState({ sets: limitedSets });
-    this.createTimelineData(limitedSets, whitelist);
+    this.createSummaryData(limitedSets, whitelist);
     this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
@@ -328,9 +328,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.createVendorsData(limitedSets);
   };
 
-  createTimelineData = (sets: SetType[], whitelist = this.state.whitelist) => {
-    //timeline
-    const timelineData: TimelineData = {
+  createSummaryData = (sets: SetType[], whitelist = this.state.whitelist) => {
+    //summary
+    const summaryData: SummaryData = {
       months: { icDate: [], gbLaunch: [] },
       monthData: { icDate: {}, gbLaunch: {} },
       countData: { icDate: [], gbLaunch: [] },
@@ -339,18 +339,18 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       profileChartType: "bar",
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited, ...timelineWhitelist } = whitelist;
+    const { edited, ...summaryWhitelist } = whitelist;
     const checkVendors = (set: SetType) => {
-      let bool = timelineWhitelist.vendorMode === "exclude";
+      let bool = summaryWhitelist.vendorMode === "exclude";
       const vendors = set.vendors;
       if (vendors) {
         vendors.forEach((vendor) => {
-          if (timelineWhitelist.vendorMode === "exclude") {
-            if (timelineWhitelist.vendors.includes(vendor.name)) {
+          if (summaryWhitelist.vendorMode === "exclude") {
+            if (summaryWhitelist.vendors.includes(vendor.name)) {
               bool = false;
             }
           } else {
-            if (timelineWhitelist.vendors.includes(vendor.name)) {
+            if (summaryWhitelist.vendors.includes(vendor.name)) {
               bool = true;
             }
           }
@@ -360,26 +360,26 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     };
     const timelineSets = sets.filter((set) => {
       const shippedBool =
-        (timelineWhitelist.shipped.includes("Shipped") && set.shipped) ||
-        (timelineWhitelist.shipped.includes("Not shipped") && !set.shipped);
+        (summaryWhitelist.shipped.includes("Shipped") && set.shipped) ||
+        (summaryWhitelist.shipped.includes("Not shipped") && !set.shipped);
       const vendors = set.vendors;
       if (vendors && vendors.length > 0) {
-        return checkVendors(set) && timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+        return checkVendors(set) && summaryWhitelist.profiles.includes(set.profile) && shippedBool;
       } else {
-        if (timelineWhitelist.vendors.length === 1 && timelineWhitelist.vendorMode === "include") {
+        if (summaryWhitelist.vendors.length === 1 && summaryWhitelist.vendorMode === "include") {
           return false;
         } else {
-          return timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+          return summaryWhitelist.profiles.includes(set.profile) && shippedBool;
         }
       }
     });
     properties.forEach((prop) => {
-      if (hasKey(timelineData.months, prop)) {
-        timelineData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
-        timelineWhitelist.profiles.forEach((profile) => {
-          timelineData.profileCount[prop][camelise(profile)] = [];
+      if (hasKey(summaryData.months, prop)) {
+        summaryData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
+        summaryWhitelist.profiles.forEach((profile) => {
+          summaryData.profileCount[prop][camelise(profile)] = [];
         });
-        timelineData.months[prop].forEach((month) => {
+        summaryData.months[prop].forEach((month) => {
           const filteredSets = timelineSets.filter((set) => {
             if (set[prop] && !set[prop].includes("Q")) {
               const setMonth = moment(set[prop]).format("MMM YY");
@@ -388,28 +388,28 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return false;
             }
           });
-          timelineData.monthData[prop][month] = {};
-          timelineData.monthData[prop][month].count = filteredSets.length;
-          timelineData.countData[prop].push(filteredSets.length);
-          timelineWhitelist.profiles.forEach((profile) => {
+          summaryData.monthData[prop][month] = {};
+          summaryData.monthData[prop][month].count = filteredSets.length;
+          summaryData.countData[prop].push(filteredSets.length);
+          summaryWhitelist.profiles.forEach((profile) => {
             const profileSets = filteredSets.filter((set) => {
               return set.profile === profile;
             });
-            timelineData.profileCount[prop][camelise(profile)].push(profileSets.length);
-            timelineData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
+            summaryData.profileCount[prop][camelise(profile)].push(profileSets.length);
+            summaryData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
           });
         });
-        timelineData.profileCountData[prop] = timelineWhitelist.profiles.map(
-          (profile) => timelineData.profileCount[prop][camelise(profile)]
+        summaryData.profileCountData[prop] = summaryWhitelist.profiles.map(
+          (profile) => summaryData.profileCount[prop][camelise(profile)]
         );
       }
     });
     this.setState((prevState) => {
       return {
-        timelineData: timelineData,
-        dataCreated: prevState.dataCreated.includes("timeline")
+        summaryData: summaryData,
+        dataCreated: prevState.dataCreated.includes("summary")
           ? prevState.dataCreated
-          : [...prevState.dataCreated, "timeline"],
+          : [...prevState.dataCreated, "summary"],
       };
     });
   };
@@ -1126,7 +1126,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     }
   };
   setProfileChartType = (type: string) => {
-    this.setState({ timelineData: { ...this.state.timelineData, profileChartType: type } });
+    this.setState({ summaryData: { ...this.state.summaryData, profileChartType: type } });
   };
   setFocus = (letter: string) => {
     this.setState((prevState) => {
@@ -1152,7 +1152,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       if (createAll) {
         this.createData(whitelist);
       } else {
-        this.createTimelineData(this.state.sets, whitelist);
+        this.createSummaryData(this.state.sets, whitelist);
       }
     } else {
       const edited = this.state.whitelist.edited
@@ -1167,7 +1167,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       if (createAll) {
         this.createData(whitelist);
       } else {
-        this.createTimelineData(this.state.sets, whitelist);
+        this.createSummaryData(this.state.sets, whitelist);
       }
     }
   };
@@ -1214,11 +1214,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   }
   render() {
     const countChartData =
-      hasKey(this.state.timelineData.months, this.state.settings.timeline) &&
-      hasKey(this.state.timelineData.countData, this.state.settings.timeline)
+      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
+      hasKey(this.state.summaryData.countData, this.state.settings.summary)
         ? {
-            labels: this.state.timelineData.months[this.state.settings.timeline],
-            series: [this.state.timelineData.countData[this.state.settings.timeline]],
+            labels: this.state.summaryData.months[this.state.settings.summary],
+            series: [this.state.summaryData.countData[this.state.settings.summary]],
           }
         : { labels: [], series: [] };
     const countChartOptions = {
@@ -1259,11 +1259,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     };
 
     const profileChartData =
-      hasKey(this.state.timelineData.months, this.state.settings.timeline) &&
-      hasKey(this.state.timelineData.countData, this.state.settings.timeline)
+      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
+      hasKey(this.state.summaryData.countData, this.state.settings.summary)
         ? {
-            labels: this.state.timelineData.months[this.state.settings.timeline],
-            series: this.state.timelineData.profileCountData[this.state.settings.timeline].map((value, index) => ({
+            labels: this.state.summaryData.months[this.state.settings.summary],
+            series: this.state.summaryData.profileCountData[this.state.settings.summary].map((value, index) => ({
               meta: `${this.state.whitelist.profiles[index]}:&nbsp;`,
               value: value,
             })),
@@ -1341,7 +1341,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       ],
     ];
     const barGraph =
-      this.state.timelineData.profileChartType === "bar" ? (
+      this.state.summaryData.profileChartType === "bar" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -1351,7 +1351,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         />
       ) : null;
     const lineGraph =
-      this.state.timelineData.profileChartType === "line" ? (
+      this.state.summaryData.profileChartType === "line" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -1362,7 +1362,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         />
       ) : null;
     const filterDrawer =
-      this.props.statisticsTab === "timeline" ? (
+      this.props.statisticsTab === "summary" ? (
         <DrawerFilterStatistics
           profiles={this.props.profiles}
           vendors={this.props.allVendors}
@@ -1460,23 +1460,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       </>
     );
     const buttons = {
-      timeline: (
+      summary: (
         <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem icon="filter_list" onClick={this.openFilterDrawer} />
           </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
-              selected={this.state.settings.timeline === "icDate"}
+              selected={this.state.settings.summary === "icDate"}
               onClick={() => {
-                this.setSetting("timeline", "icDate");
+                this.setSetting("summary", "icDate");
               }}
               label="IC"
             />
             <ToggleGroupButton
-              selected={this.state.settings.timeline === "gbLaunch"}
+              selected={this.state.settings.summary === "gbLaunch"}
               onClick={() => {
-                this.setSetting("timeline", "gbLaunch");
+                this.setSetting("summary", "gbLaunch");
               }}
               label="GB"
             />
@@ -1605,7 +1605,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       vendors: genericButtons,
     };
     const categoryDialog =
-      this.props.statisticsTab !== "timeline" && this.context !== "desktop" ? (
+      this.props.statisticsTab !== "summary" && this.context !== "desktop" ? (
         <DialogStatistics
           open={this.state.categoryDialogOpen}
           onClose={this.closeCategoryDialog}
@@ -1632,8 +1632,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const { index, key } = params;
       const tab = statsTabs[index];
       const tabs = {
-        timeline: (
-          <div className="stats-tab timeline" key={key}>
+        summary: (
+          <div className="stats-tab summary" key={key}>
             <Card className="count-graph">
               <Typography use="headline5" tag="h1">
                 Sets per Month
@@ -1666,7 +1666,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                         <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
                       </svg>
                     )}
-                    selected={this.state.timelineData.profileChartType === "bar"}
+                    selected={this.state.summaryData.profileChartType === "bar"}
                     onClick={() => {
                       this.setProfileChartType("bar");
                     }}
@@ -1678,7 +1678,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                         <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
                       </svg>
                     )}
-                    selected={this.state.timelineData.profileChartType === "line"}
+                    selected={this.state.summaryData.profileChartType === "line"}
                     onClick={() => {
                       this.setProfileChartType("line");
                     }}

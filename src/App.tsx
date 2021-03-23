@@ -86,7 +86,7 @@ class App extends React.Component<AppProps, AppState> {
     device: "tablet",
     bottomNav: false,
     page: "calendar",
-    statisticsTab: "timeline",
+    statisticsTab: "summary",
     view: "card",
     transition: false,
     sort: "gbLaunch",

@@ -1,7 +1,7 @@
 @use "@material/animation/_index" as animation;
 @use "@material/rtl/_index" as rtl;
 
-$tabs: timeline, timelines, status, shipped, duration, vendors;
+$tabs: summary, timelines, status, shipped, duration, vendors;
 
 @each $tab in $tabs {
   .#{$tab} {
