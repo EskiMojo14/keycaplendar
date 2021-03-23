@@ -708,13 +708,13 @@ class App extends React.Component<AppProps, AppState> {
             const setMonth = setDate.format("MMMM YYYY");
             return setMonth === "Invalid date" ? "" : setMonth;
           })
-          .filter((item) => !!item);
+          .filter(Boolean);
       } else if (arraySorts.includes(sort)) {
         return sets.map((set) => set[sort as ArraySortKeys]).flat();
       } else if (sort === "vendor") {
         return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
       } else {
-        return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter((item) => !!item);
+        return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter(Boolean);
       }
     };
     const groups = uniqueArray(createGroups(sets));

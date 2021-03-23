@@ -113,7 +113,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
           }
           return "";
         })
-        .filter((val) => !!val)
+        .filter(Boolean)
     );
     const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
     this.setState({ setImages: setImages, duplicateSetImages: findDuplicates(setImages) });
