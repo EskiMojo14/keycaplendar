@@ -118,7 +118,7 @@ export const getSetMonthRange = (sets: SetType[], prop: keyof SetType, format: s
       const val = set[prop];
       return val && typeof val === "string" && !val.includes("Q") ? moment(val).format("YYYY-MM") : "";
     })
-  ).filter((month) => !!month);
+  ).filter(Boolean);
   setMonths.sort(function (a, b) {
     if (a < b) {
       return -1;
