@@ -220,7 +220,7 @@ export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
 
 export const whitelistParams: string[] = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
 
-export const statsTabs: string[] = ["timeline", "status", "shipped", "duration", "vendors"];
+export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
 
 export const viewNames: { [key: string]: string } = {
   card: "Card",

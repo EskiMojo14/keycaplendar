@@ -76,11 +76,14 @@ export type SetType = {
 };
 
 export type StatisticsType = {
+  summary: string;
+  timelinesCat: string;
+  timelinesGroup: string;
+  status: string;
+  shipped: string;
   durationCat: string;
   durationGroup: string;
-  shipped: string;
-  status: string;
-  timeline: string;
+  vendors: string;
 };
 
 export type StatisticsSortType = {

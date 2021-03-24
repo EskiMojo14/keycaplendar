@@ -5,7 +5,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { addOrRemove, getStorageFolders, hasKey, iconObject } from "../../util/functions";
+import { addOrRemove, alphabeticalSort, getStorageFolders, hasKey, iconObject } from "../../util/functions";
 import { ImageType, QueueType, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
@@ -104,26 +104,17 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
   }
   createSetImageList = () => {
     const fileNameRegex = /keysets%2F(.*)\?/;
-    const setImages = this.props.sets
-      .map((set) => {
-        const regexMatch = set.image.match(fileNameRegex);
-        if (regexMatch) {
-          return decodeURIComponent(regexMatch[1]);
-        }
-        return "";
-      })
-      .filter(Boolean);
-    setImages.sort((a, b) => {
-      const nameA = a.toLowerCase();
-      const nameB = b.toLowerCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
+    const setImages = alphabeticalSort(
+      this.props.sets
+        .map((set) => {
+          const regexMatch = set.image.match(fileNameRegex);
+          if (regexMatch) {
+            return decodeURIComponent(regexMatch[1]);
+          }
+          return "";
+        })
+        .filter(Boolean)
+    );
     const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
     this.setState({ setImages: setImages, duplicateSetImages: findDuplicates(setImages) });
   };

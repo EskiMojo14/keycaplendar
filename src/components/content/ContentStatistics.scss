@@ -1,6 +1,19 @@
 @use "@material/animation/_index" as animation;
 @use "@material/rtl/_index" as rtl;
 
+$tabs: summary, timelines, status, shipped, duration, vendors;
+
+@each $tab in $tabs {
+  .#{$tab} {
+    .stats-tab {
+      &:not(.#{$tab}) {
+        max-height: 100vh;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
 .stats-tab {
   padding: 16px;
   margin: 0 auto;
@@ -65,6 +78,14 @@
           transition: animation.standard(fill, 200ms);
         }
       }
+      .chips-container {
+        display: flex;
+        padding-top: 8px;
+        margin: -8px;
+        .mdc-chip-set {
+          flex-grow: 1;
+        }
+      }
     }
     &.fullwidth {
       padding: 0;
@@ -82,19 +103,6 @@
       }
       &.half-span {
         grid-column: span 2;
-      }
-    }
-  }
-}
-
-$tabs: timeline, status, shipped, duration, vendors;
-
-@each $tab in $tabs {
-  .#{$tab} {
-    .stats-tab {
-      &:not(.#{$tab}) {
-        max-height: 100vh;
-        overflow: hidden;
       }
     }
   }

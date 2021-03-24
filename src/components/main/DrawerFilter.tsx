@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
-import { addOrRemove, hasKey, iconObject } from "../../util/functions";
+import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
 import { MainWhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -84,17 +84,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         typeof original === "boolean"
           ? !original
           : original instanceof Array
-          ? addOrRemove(original, name).sort(function (a, b) {
-              const x = a.toLowerCase();
-              const y = b.toLowerCase();
-              if (x < y) {
-                return -1;
-              }
-              if (x > y) {
-                return 1;
-              }
-              return 0;
-            })
+          ? alphabeticalSort(addOrRemove(original, name))
           : original === "include"
           ? "exclude"
           : "include";

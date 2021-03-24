@@ -21,9 +21,13 @@ import {
   hasKey,
   getSetMonthRange,
   uniqueArray,
+  alphabeticalSort,
+  addOrRemove,
 } from "../../util/functions";
 import { QueueType, SetType, WhitelistType } from "../../util/types";
 import { Card } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
+import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -38,14 +42,15 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
-import { TimelineTable } from "../statistics/TimelineTable";
 import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
-import { ShippedCard } from "../statistics/TimelineCard";
+import { ShippedCard, TimelinesCard } from "../statistics/TimelineCard";
 import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
+
+const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -87,12 +92,9 @@ type Categories = "icDate" | "gbLaunch";
 
 type Properties = "profile" | "designer" | "vendor";
 
-type DataObject<T> = {
-  names: string[];
-  data: T;
-};
+type Sorts = "total" | "alphabetical";
 
-type TimelineData = {
+type SummaryData = {
   months: {
     gbLaunch: string[];
     icDate: string[];
@@ -107,6 +109,23 @@ type TimelineData = {
   profileChartType: string;
 };
 
+type TimelinesDataObject = {
+  name: string;
+  total: number;
+  timeline: {
+    months: string[];
+    profiles: string[];
+    series:
+      | {
+          meta: string;
+          value: number;
+        }[][]
+      | number[][];
+  };
+};
+
+type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelinesDataObject[] }>>;
+
 type StatusDataObject = {
   ic: number;
   liveGb: number;
@@ -116,7 +135,7 @@ type StatusDataObject = {
   total: number;
 };
 
-type StatusData = Record<Properties, DataObject<StatusDataObject[]>>;
+type StatusData = Record<Properties, StatusDataObject[]>;
 
 type ShippedDataObject = {
   name: string;
@@ -134,7 +153,7 @@ type ShippedDataObject = {
   };
 };
 
-type ShippedData = Record<Properties, DataObject<ShippedDataObject[]>>;
+type ShippedData = Record<Properties, ShippedDataObject[]>;
 
 type DurationDataObject = {
   chartData: number[][];
@@ -147,7 +166,7 @@ type DurationDataObject = {
   total: number;
 };
 
-type DurationData = Record<Categories, Record<Properties, DataObject<DurationDataObject[]>>>;
+type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
 type VendorDataObject = {
   chartData: number[][];
@@ -160,31 +179,35 @@ type VendorDataObject = {
   total: number;
 };
 
-type VendorData = Record<Properties, DataObject<VendorDataObject[]>>;
+type VendorData = Record<Properties, VendorDataObject[]>;
 
 type ContentStatisticsState = {
-  timelineData: TimelineData;
+  summaryData: SummaryData;
+  timelinesData: TimelinesData;
   statusData: StatusData;
   shippedData: ShippedData;
   durationData: DurationData;
   vendorsData: VendorData;
   sets: SetType[];
-  focused: string;
+  focused: string[];
   dataCreated: string[];
   settings: {
-    timeline: string;
-    status: string;
-    shipped: string;
-    durationCat: string;
-    durationGroup: string;
-    vendors: string;
+    summary: Categories;
+    timelinesCat: Categories;
+    timelinesGroup: Properties;
+    status: Properties;
+    shipped: Properties;
+    durationCat: Categories;
+    durationGroup: Properties;
+    vendors: Properties;
   };
   whitelist: WhitelistType;
   sort: {
-    status: string;
-    shipped: string;
-    duration: string;
-    vendors: string;
+    timelines: Sorts;
+    status: Sorts;
+    shipped: Sorts;
+    duration: Sorts | "duration";
+    vendors: Sorts;
   };
   filterDrawerOpen: boolean;
   categoryDialogOpen: boolean;
@@ -196,7 +219,7 @@ const properties = ["icDate", "gbLaunch"];
 
 export class ContentStatistics extends React.Component<ContentStatisticsProps, ContentStatisticsState> {
   state: ContentStatisticsState = {
-    timelineData: {
+    summaryData: {
       months: { icDate: [], gbLaunch: [] },
       monthData: { icDate: {}, gbLaunch: {} },
       countData: { icDate: [], gbLaunch: [] },
@@ -204,83 +227,70 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       profileCountData: { icDate: [], gbLaunch: [] },
       profileChartType: "bar",
     },
-    statusData: {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
-    },
-    shippedData: {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
-    },
-    durationData: {
+    timelinesData: {
       icDate: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
       gbLaunch: {
         profile: {
-          names: [],
+          profiles: [],
           data: [],
         },
         designer: {
-          names: [],
+          profiles: [],
           data: [],
         },
         vendor: {
-          names: [],
+          profiles: [],
           data: [],
         },
       },
     },
-    vendorsData: {
-      profile: {
-        names: [],
-        data: [],
+    statusData: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
+    shippedData: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
+    durationData: {
+      icDate: {
+        profile: [],
+        designer: [],
+        vendor: [],
       },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
+      gbLaunch: {
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     },
+    vendorsData: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
     sets: [],
-    focused: "",
+    focused: [],
     dataCreated: [],
     settings: {
-      timeline: "gbLaunch",
+      summary: "gbLaunch",
+      timelinesCat: "gbLaunch",
+      timelinesGroup: "profile",
       status: "profile",
       shipped: "profile",
       durationCat: "gbLaunch",
@@ -289,6 +299,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     },
     whitelist: new Whitelist(),
     sort: {
+      timelines: "total",
       status: "total",
       shipped: "total",
       duration: "total",
@@ -309,16 +320,17 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     this.setState({ sets: limitedSets });
-    this.createTimelineData(limitedSets, whitelist);
+    this.createSummaryData(limitedSets, whitelist);
+    this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
     this.createDurationData(limitedSets);
     this.createVendorsData(limitedSets);
   };
 
-  createTimelineData = (sets: SetType[], whitelist = this.state.whitelist) => {
-    //timeline
-    const timelineData: TimelineData = {
+  createSummaryData = (sets: SetType[], whitelist = this.state.whitelist) => {
+    //summary
+    const summaryData: SummaryData = {
       months: { icDate: [], gbLaunch: [] },
       monthData: { icDate: {}, gbLaunch: {} },
       countData: { icDate: [], gbLaunch: [] },
@@ -327,18 +339,18 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       profileChartType: "bar",
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited, ...timelineWhitelist } = whitelist;
+    const { edited, ...summaryWhitelist } = whitelist;
     const checkVendors = (set: SetType) => {
-      let bool = timelineWhitelist.vendorMode === "exclude";
+      let bool = summaryWhitelist.vendorMode === "exclude";
       const vendors = set.vendors;
       if (vendors) {
         vendors.forEach((vendor) => {
-          if (timelineWhitelist.vendorMode === "exclude") {
-            if (timelineWhitelist.vendors.includes(vendor.name)) {
+          if (summaryWhitelist.vendorMode === "exclude") {
+            if (summaryWhitelist.vendors.includes(vendor.name)) {
               bool = false;
             }
           } else {
-            if (timelineWhitelist.vendors.includes(vendor.name)) {
+            if (summaryWhitelist.vendors.includes(vendor.name)) {
               bool = true;
             }
           }
@@ -348,26 +360,26 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     };
     const timelineSets = sets.filter((set) => {
       const shippedBool =
-        (timelineWhitelist.shipped.includes("Shipped") && set.shipped) ||
-        (timelineWhitelist.shipped.includes("Not shipped") && !set.shipped);
+        (summaryWhitelist.shipped.includes("Shipped") && set.shipped) ||
+        (summaryWhitelist.shipped.includes("Not shipped") && !set.shipped);
       const vendors = set.vendors;
       if (vendors && vendors.length > 0) {
-        return checkVendors(set) && timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+        return checkVendors(set) && summaryWhitelist.profiles.includes(set.profile) && shippedBool;
       } else {
-        if (timelineWhitelist.vendors.length === 1 && timelineWhitelist.vendorMode === "include") {
+        if (summaryWhitelist.vendors.length === 1 && summaryWhitelist.vendorMode === "include") {
           return false;
         } else {
-          return timelineWhitelist.profiles.includes(set.profile) && shippedBool;
+          return summaryWhitelist.profiles.includes(set.profile) && shippedBool;
         }
       }
     });
     properties.forEach((prop) => {
-      if (hasKey(timelineData.months, prop)) {
-        timelineData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
-        timelineWhitelist.profiles.forEach((profile) => {
-          timelineData.profileCount[prop][camelise(profile)] = [];
+      if (hasKey(summaryData.months, prop)) {
+        summaryData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
+        summaryWhitelist.profiles.forEach((profile) => {
+          summaryData.profileCount[prop][camelise(profile)] = [];
         });
-        timelineData.months[prop].forEach((month) => {
+        summaryData.months[prop].forEach((month) => {
           const filteredSets = timelineSets.filter((set) => {
             if (set[prop] && !set[prop].includes("Q")) {
               const setMonth = moment(set[prop]).format("MMM YY");
@@ -376,28 +388,170 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return false;
             }
           });
-          timelineData.monthData[prop][month] = {};
-          timelineData.monthData[prop][month].count = filteredSets.length;
-          timelineData.countData[prop].push(filteredSets.length);
-          timelineWhitelist.profiles.forEach((profile) => {
+          summaryData.monthData[prop][month] = {};
+          summaryData.monthData[prop][month].count = filteredSets.length;
+          summaryData.countData[prop].push(filteredSets.length);
+          summaryWhitelist.profiles.forEach((profile) => {
             const profileSets = filteredSets.filter((set) => {
               return set.profile === profile;
             });
-            timelineData.profileCount[prop][camelise(profile)].push(profileSets.length);
-            timelineData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
+            summaryData.profileCount[prop][camelise(profile)].push(profileSets.length);
+            summaryData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
           });
         });
-        timelineData.profileCountData[prop] = timelineWhitelist.profiles.map(
-          (profile) => timelineData.profileCount[prop][camelise(profile)]
+        summaryData.profileCountData[prop] = summaryWhitelist.profiles.map(
+          (profile) => summaryData.profileCount[prop][camelise(profile)]
         );
       }
     });
     this.setState((prevState) => {
       return {
-        timelineData: timelineData,
-        dataCreated: prevState.dataCreated.includes("timeline")
+        summaryData: summaryData,
+        dataCreated: prevState.dataCreated.includes("summary")
           ? prevState.dataCreated
-          : [...prevState.dataCreated, "timeline"],
+          : [...prevState.dataCreated, "summary"],
+      };
+    });
+  };
+
+  createTimelinesData = (sets: SetType[]) => {
+    const timelinesData: TimelinesData = {
+      icDate: {
+        profile: {
+          profiles: [],
+          data: [],
+        },
+        designer: {
+          profiles: [],
+          data: [],
+        },
+        vendor: {
+          profiles: [],
+          data: [],
+        },
+      },
+      gbLaunch: {
+        profile: {
+          profiles: [],
+          data: [],
+        },
+        designer: {
+          profiles: [],
+          data: [],
+        },
+        vendor: {
+          profiles: [],
+          data: [],
+        },
+      },
+    };
+    const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+    Object.keys(timelinesData).forEach((prop) => {
+      if (hasKey(timelinesData, prop)) {
+        const propSets = prop === "gbLaunch" ? gbSets : sets;
+        const months = getSetMonthRange(propSets, prop, "MMM YY");
+        const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
+        const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
+        const vendorNames = alphabeticalSort(
+          uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+        );
+        const lists = {
+          profile: profileNames,
+          designer: designerNames,
+          vendor: vendorNames,
+        };
+
+        Object.keys(timelinesData[prop]).forEach((property) => {
+          if (hasKey(timelinesData[prop], property)) {
+            const data: TimelinesDataObject[] = [];
+            timelinesData[prop][property].profiles = profileNames;
+            lists[property].forEach((name) => {
+              const filteredSets = propSets.filter((set) => {
+                let bool = false;
+                if (property === "vendor") {
+                  bool =
+                    set.vendors &&
+                    set.vendors.findIndex((vendor) => {
+                      return vendor.name === name;
+                    }) !== -1
+                      ? true
+                      : false;
+                } else if (property === "designer") {
+                  bool = set.designer.includes(name);
+                } else {
+                  bool = set[property] === name;
+                }
+                return bool;
+              });
+              const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
+
+              let timelineData;
+              if (property === "vendor" || property === "designer") {
+                timelineData = profileNames.map((profile) => {
+                  return months.map((month) => {
+                    const monthSets = filteredSets.filter((set) => {
+                      const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                      return date && date === month;
+                    });
+                    const num = monthSets.filter((set) => set.profile === profile).length;
+                    return {
+                      meta: `${profile}:&nbsp;`,
+                      value: num,
+                    };
+                  });
+                });
+              } else {
+                timelineData = [
+                  months.map((month) => {
+                    const monthSets = filteredSets.filter((set) => {
+                      const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                      return date && date === month;
+                    });
+                    return monthSets.length;
+                  }),
+                ];
+              }
+
+              data.push({
+                name: name,
+                total: filteredSets.length,
+                timeline: {
+                  months: months,
+                  profiles: profiles,
+                  series: timelineData,
+                },
+              });
+            });
+            data.sort((a, b) => {
+              const x = this.state.sort.timelines === "alphabetical" ? a.name.toLowerCase() : a.total;
+              const y = this.state.sort.timelines === "alphabetical" ? b.name.toLowerCase() : b.total;
+              const c = a.name.toLowerCase();
+              const d = b.name.toLowerCase();
+              if (x < y) {
+                return this.state.sort.timelines === "alphabetical" ? -1 : 1;
+              }
+              if (x > y) {
+                return this.state.sort.timelines === "alphabetical" ? 1 : -1;
+              }
+              if (c < d) {
+                return -1;
+              }
+              if (c > d) {
+                return 1;
+              }
+              return 0;
+            });
+            timelinesData[prop][property].data = data;
+          }
+        });
+      }
+    });
+    this.setState((prevState) => {
+      return {
+        timelinesData: timelinesData,
+        dataCreated: prevState.dataCreated.includes("timelines")
+          ? prevState.dataCreated
+          : [...prevState.dataCreated, "timelines"],
       };
     });
   };
@@ -405,38 +559,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createStatusData = (sets: SetType[]) => {
     //status
     const statusData: StatusData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
-    statusData.profile.names = uniqueArray(sets.map((set) => set.profile));
-    statusData.designer.names = uniqueArray(sets.map((set) => set.designer).flat(1));
-    statusData.vendor.names = uniqueArray(
-      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(sets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
     Object.keys(statusData).forEach((prop) => {
       if (hasKey(statusData, prop)) {
-        statusData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
-        statusData[prop].names.forEach((name) => {
+        lists[prop].forEach((name) => {
           const icSets = sets.filter((set) => {
             const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
             if (prop === "vendor") {
@@ -507,7 +646,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               return set[prop] === name && isPostGb;
             }
           });
-          statusData[prop].data.push({
+          statusData[prop].push({
             name: name,
             ic: icSets.length,
             preGb: preGbSets.length,
@@ -516,7 +655,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
           });
         });
-        statusData[prop].data.sort((a, b) => {
+        statusData[prop].sort((a, b) => {
           const x = this.state.sort.status === "total" ? a.total : (a.name as string).toLowerCase();
           const y = this.state.sort.status === "total" ? b.total : (b.name as string).toLowerCase();
           if (x < y) {
@@ -542,43 +681,28 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createShippedData = (sets: SetType[]) => {
     //shipped
     const shippedData: ShippedData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
     const pastSets = sets.filter((set) => {
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
       return endDate <= yesterday;
     });
     const months = getSetMonthRange(pastSets, "gbEnd", "MMM YY");
-    shippedData.profile.names = uniqueArray(pastSets.map((set) => set.profile));
-    shippedData.designer.names = uniqueArray(pastSets.map((set) => set.designer).flat(1));
-    shippedData.vendor.names = uniqueArray(
-      pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
     Object.keys(shippedData).forEach((prop) => {
       if (hasKey(shippedData, prop)) {
-        shippedData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
-        shippedData[prop].names.forEach((name) => {
+        lists[prop].forEach((name) => {
           const shippedSets = pastSets.filter((set) => {
             if (prop === "vendor") {
               return set.vendors &&
@@ -621,7 +745,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
             };
           });
-          shippedData[prop].data.push({
+          shippedData[prop].push({
             name: name,
             shipped: shippedSets.length,
             unshipped: unshippedSets.length,
@@ -632,7 +756,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             },
           });
         });
-        shippedData[prop].data.sort((a, b) => {
+        shippedData[prop].sort((a, b) => {
           const x = this.state.sort.shipped === "total" ? a.total : (a.name as string).toLowerCase();
           const y = this.state.sort.shipped === "total" ? b.total : (b.name as string).toLowerCase();
           if (x < y) {
@@ -659,70 +783,42 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     //duration
     const durationData: DurationData = {
       icDate: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
       gbLaunch: {
-        profile: {
-          names: [],
-          data: [],
-        },
-        designer: {
-          names: [],
-          data: [],
-        },
-        vendor: {
-          names: [],
-          data: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     };
     const dateSets = sets.filter((set) => {
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
-    properties.forEach((property) => {
-      const prop = property;
-      let propSets: SetType[] = [];
-      if (prop === "gbLaunch") {
-        propSets = dateSets.filter((set) => {
-          return set.gbEnd.length === 10;
-        });
-      } else {
-        propSets = dateSets;
-      }
+    properties.forEach((prop) => {
+      const propSets: SetType[] =
+        prop === "gbLaunch"
+          ? dateSets.filter((set) => {
+              return set.gbEnd.length === 10;
+            })
+          : dateSets;
       if (hasKey(durationData, prop)) {
-        durationData[prop].profile.names = uniqueArray(propSets.map((set) => set.profile));
-        durationData[prop].designer.names = uniqueArray(propSets.map((set) => set.designer).flat(1));
-        durationData[prop].vendor.names = uniqueArray(
-          propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+        const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
+        const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
+        const vendorNames = alphabeticalSort(
+          uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
         );
+        const lists = {
+          profile: profileNames,
+          designer: designerNames,
+          vendor: vendorNames,
+        };
 
         Object.keys(durationData[prop]).forEach((property) => {
           if (hasKey(durationData[prop], property)) {
-            durationData[prop][property].names.sort(function (a, b) {
-              const x = a.toLowerCase();
-              const y = b.toLowerCase();
-              if (x < y) {
-                return -1;
-              }
-              if (x > y) {
-                return 1;
-              }
-              return 0;
-            });
-
-            durationData[prop][property].names = ["All"].concat(durationData[prop][property].names);
-            durationData[prop][property].names.forEach((name) => {
+            lists[property] = ["All"].concat(lists[property]);
+            lists[property].forEach((name) => {
               const data: number[] = [];
               if (name === "All") {
                 propSets.forEach((set) => {
@@ -758,20 +854,20 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                   });
                 Object.keys(durationData[prop]).forEach((key) => {
                   if (hasKey(durationData[prop], key)) {
-                    durationData[prop][key].data.sort((a, b) => {
+                    durationData[prop][key].sort((a, b) => {
                       if (a.name === "All" || b.name === "All") {
                         return a.name === "All" ? -1 : 1;
                       }
                       const x =
                         this.state.sort.duration === "alphabetical"
-                          ? (a.name as string).toLowerCase()
+                          ? a.name.toLowerCase()
                           : a[this.state.sort.duration === "duration" ? "mean" : "total"];
                       const y =
                         this.state.sort.duration === "alphabetical"
-                          ? (b.name as string).toLowerCase()
+                          ? b.name.toLowerCase()
                           : b[this.state.sort.duration === "duration" ? "mean" : "total"];
-                      const c = (a.name as string).toLowerCase();
-                      const d = (b.name as string).toLowerCase();
+                      const c = a.name.toLowerCase();
+                      const d = b.name.toLowerCase();
                       if (x < y) {
                         return this.state.sort.duration === "alphabetical" ? -1 : 1;
                       }
@@ -805,7 +901,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               });
               const range = math.max(data) - math.min(data);
               const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
-              durationData[prop][property].data.push({
+              durationData[prop][property].push({
                 name: name,
                 total: data.length,
                 mean: math.round(math.mean(data), 2),
@@ -833,18 +929,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createVendorsData = (sets: SetType[]) => {
     //vendors
     const vendorsData: VendorData = {
-      profile: {
-        names: [],
-        data: [],
-      },
-      designer: {
-        names: [],
-        data: [],
-      },
-      vendor: {
-        names: [],
-        data: [],
-      },
+      profile: [],
+      designer: [],
+      vendor: [],
     };
     const pastSets = sets.filter((set) => {
       const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
@@ -852,27 +939,21 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     const vendorSets = pastSets.filter((set) => set.vendors);
 
-    vendorsData.profile.names = uniqueArray(vendorSets.map((set) => set.profile));
-    vendorsData.designer.names = uniqueArray(vendorSets.map((set) => set.designer).flat(1));
-    vendorsData.vendor.names = uniqueArray(
-      vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1)
+    const profileNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
 
     Object.keys(vendorsData).forEach((prop) => {
       if (hasKey(vendorsData, prop)) {
-        vendorsData[prop].names.sort(function (a, b) {
-          const x = a.toLowerCase();
-          const y = b.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
-        vendorsData[prop].names = ["All"].concat(vendorsData[prop].names);
-        vendorsData[prop].names.forEach((name) => {
+        lists[prop] = ["All"].concat(lists[prop]);
+        lists[prop].forEach((name) => {
           let propSets = [];
           if (name === "All") {
             propSets = vendorSets;
@@ -891,7 +972,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             const countArray = labels.map((_val, index) => countInArray(lengthArray, index));
             const range = math.max(lengthArray) - math.min(lengthArray);
             const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
-            vendorsData[prop].data.push({
+            vendorsData[prop].push({
               name: name,
               total: propSets.length,
               mean: math.round(math.mean(lengthArray), 2),
@@ -904,7 +985,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           }
         });
 
-        vendorsData[prop].data.sort((a, b) => {
+        vendorsData[prop].sort((a, b) => {
           const x = this.state.sort.vendors === "total" ? a.total : a.name.toLowerCase();
           const y = this.state.sort.vendors === "total" ? b.total : b.name.toLowerCase();
           if (x < y) {
@@ -939,7 +1020,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             if (hasKey(data, property)) {
               Object.keys(data[property]).forEach((prop) => {
                 if (hasKey(data[property], prop)) {
-                  data[property][prop].data.sort((a, b) => {
+                  data[property][prop].sort((a, b) => {
                     if (a.name === "All" || b.name === "All") {
                       return a.name === "all" ? -1 : 1;
                     }
@@ -974,13 +1055,45 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           this.setState<never>({
             [key]: data,
           });
+        } else if (tab === "timelines") {
+          const data = { ...stateData } as TimelinesData;
+          Object.keys(data).forEach((property) => {
+            if (hasKey(data, property)) {
+              Object.keys(data[property]).forEach((prop) => {
+                if (hasKey(data[property], prop)) {
+                  data[property][prop].data.sort((a, b) => {
+                    const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
+                    const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
+                    const c = a.name.toLowerCase();
+                    const d = b.name.toLowerCase();
+                    if (x < y) {
+                      return sort[tab] === "alphabetical" ? -1 : 1;
+                    }
+                    if (x > y) {
+                      return sort[tab] === "alphabetical" ? 1 : -1;
+                    }
+                    if (c < d) {
+                      return -1;
+                    }
+                    if (c > d) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                }
+              });
+            }
+          });
+          this.setState<never>({
+            [key]: data,
+          });
         } else {
           const data = { ...stateData } as StatusData | ShippedData | VendorData;
           Object.keys(data).forEach((prop) => {
             if (hasKey(data, prop)) {
               const value = data[prop];
               type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
-              value.data.sort((a: DataObj, b: DataObj) => {
+              value.sort((a: DataObj, b: DataObj) => {
                 if (hasKey(sort, tab)) {
                   const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
                   const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
@@ -1013,14 +1126,15 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     }
   };
   setProfileChartType = (type: string) => {
-    this.setState({ timelineData: { ...this.state.timelineData, profileChartType: type } });
+    this.setState({ summaryData: { ...this.state.summaryData, profileChartType: type } });
   };
   setFocus = (letter: string) => {
-    if (letter === this.state.focused) {
-      this.setState({ focused: "" });
-    } else {
-      this.setState({ focused: letter });
-    }
+    this.setState((prevState) => {
+      return { focused: addOrRemove(prevState.focused, letter) };
+    });
+  };
+  clearFocus = () => {
+    this.setState({ focused: [] });
   };
   setSetting = (prop: string, query: string) => {
     this.setState({ settings: { ...this.state.settings, [prop]: query } });
@@ -1038,7 +1152,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       if (createAll) {
         this.createData(whitelist);
       } else {
-        this.createTimelineData(this.state.sets, whitelist);
+        this.createSummaryData(this.state.sets, whitelist);
       }
     } else {
       const edited = this.state.whitelist.edited
@@ -1053,7 +1167,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       if (createAll) {
         this.createData(whitelist);
       } else {
-        this.createTimelineData(this.state.sets, whitelist);
+        this.createSummaryData(this.state.sets, whitelist);
       }
     }
   };
@@ -1100,11 +1214,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   }
   render() {
     const countChartData =
-      hasKey(this.state.timelineData.months, this.state.settings.timeline) &&
-      hasKey(this.state.timelineData.countData, this.state.settings.timeline)
+      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
+      hasKey(this.state.summaryData.countData, this.state.settings.summary)
         ? {
-            labels: this.state.timelineData.months[this.state.settings.timeline],
-            series: [this.state.timelineData.countData[this.state.settings.timeline]],
+            labels: this.state.summaryData.months[this.state.settings.summary],
+            series: [this.state.summaryData.countData[this.state.settings.summary]],
           }
         : { labels: [], series: [] };
     const countChartOptions = {
@@ -1145,11 +1259,11 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     };
 
     const profileChartData =
-      hasKey(this.state.timelineData.months, this.state.settings.timeline) &&
-      hasKey(this.state.timelineData.countData, this.state.settings.timeline)
+      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
+      hasKey(this.state.summaryData.countData, this.state.settings.summary)
         ? {
-            labels: this.state.timelineData.months[this.state.settings.timeline],
-            series: this.state.timelineData.profileCountData[this.state.settings.timeline].map((value, index) => ({
+            labels: this.state.summaryData.months[this.state.settings.summary],
+            series: this.state.summaryData.profileCountData[this.state.settings.summary].map((value, index) => ({
               meta: `${this.state.whitelist.profiles[index]}:&nbsp;`,
               value: value,
             })),
@@ -1227,7 +1341,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       ],
     ];
     const barGraph =
-      this.state.timelineData.profileChartType === "bar" ? (
+      this.state.summaryData.profileChartType === "bar" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -1237,7 +1351,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         />
       ) : null;
     const lineGraph =
-      this.state.timelineData.profileChartType === "line" ? (
+      this.state.summaryData.profileChartType === "line" ? (
         <ChartistGraph
           className="ct-double-octave"
           data={profileChartData}
@@ -1248,7 +1362,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         />
       ) : null;
     const filterDrawer =
-      this.props.statisticsTab === "timeline" ? (
+      this.props.statisticsTab === "summary" ? (
         <DrawerFilterStatistics
           profiles={this.props.profiles}
           vendors={this.props.allVendors}
@@ -1346,39 +1460,51 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       </>
     );
     const buttons = {
-      timeline: (
+      summary: (
         <>
           <Tooltip enterDelay={500} content="Filter" align="bottom">
             <TopAppBarActionItem icon="filter_list" onClick={this.openFilterDrawer} />
           </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
-              selected={this.state.settings.timeline === "icDate"}
+              selected={this.state.settings.summary === "icDate"}
               onClick={() => {
-                this.setSetting("timeline", "icDate");
+                this.setSetting("summary", "icDate");
               }}
               label="IC"
             />
             <ToggleGroupButton
-              selected={this.state.settings.timeline === "gbLaunch"}
+              selected={this.state.settings.summary === "gbLaunch"}
               onClick={() => {
-                this.setSetting("timeline", "gbLaunch");
+                this.setSetting("summary", "gbLaunch");
               }}
               label="GB"
             />
           </ToggleGroup>
         </>
       ),
-      status: genericButtons,
-      shipped: genericButtons,
-      duration: (
+      timelines: (
         <>
           <ToggleGroup>
+            <Tooltip enterDelay={500} align="bottom" content="Total">
+              <ToggleGroupButton
+                selected={this.state.sort.timelines === "total"}
+                onClick={() => {
+                  this.setSort("timelines", "total");
+                }}
+                icon={iconObject(
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                  </svg>
+                )}
+              />
+            </Tooltip>
             <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
               <ToggleGroupButton
-                selected={this.state.sort.duration === "alphabetical"}
+                selected={this.state.sort.timelines === "alphabetical"}
                 onClick={() => {
-                  this.setSort("duration", "alphabetical");
+                  this.setSort("timelines", "alphabetical");
                 }}
                 icon={iconObject(
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -1388,6 +1514,31 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 )}
               />
             </Tooltip>
+          </ToggleGroup>
+          <ToggleGroup>
+            <ToggleGroupButton
+              selected={this.state.settings.timelinesCat === "icDate"}
+              onClick={() => {
+                this.setSetting("timelinesCat", "icDate");
+              }}
+              label="IC"
+            />
+            <ToggleGroupButton
+              selected={this.state.settings.timelinesCat === "gbLaunch"}
+              onClick={() => {
+                this.setSetting("timelinesCat", "gbLaunch");
+              }}
+              label="GB"
+            />
+          </ToggleGroup>
+          {categoryButtons("timelinesGroup")}
+        </>
+      ),
+      status: genericButtons,
+      shipped: genericButtons,
+      duration: (
+        <>
+          <ToggleGroup>
             <Tooltip enterDelay={500} align="bottom" content="Total">
               <ToggleGroupButton
                 selected={this.state.sort.duration === "total"}
@@ -1398,6 +1549,20 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                     <path d="M0 0h24v24H0V0z" fill="none" />
                     <path d="M7.78,7C9.08,7.04 10,7.53 10.57,8.46C11.13,9.4 11.41,10.56 11.39,11.95C11.4,13.5 11.09,14.73 10.5,15.62C9.88,16.5 8.95,16.97 7.71,17C6.45,16.96 5.54,16.5 4.96,15.56C4.38,14.63 4.09,13.45 4.09,12C4.09,10.55 4.39,9.36 5,8.44C5.59,7.5 6.5,7.04 7.78,7M7.75,8.63C7.31,8.63 6.96,8.9 6.7,9.46C6.44,10 6.32,10.87 6.32,12C6.31,13.15 6.44,14 6.69,14.54C6.95,15.1 7.31,15.37 7.77,15.37C8.69,15.37 9.16,14.24 9.17,12C9.17,9.77 8.7,8.65 7.75,8.63M13.33,17V15.22L13.76,15.24L14.3,15.22L15.34,15.03C15.68,14.92 16,14.78 16.26,14.58C16.59,14.35 16.86,14.08 17.07,13.76C17.29,13.45 17.44,13.12 17.53,12.78L17.5,12.77C17.05,13.19 16.38,13.4 15.47,13.41C14.62,13.4 13.91,13.15 13.34,12.65C12.77,12.15 12.5,11.43 12.46,10.5C12.47,9.5 12.81,8.69 13.47,8.03C14.14,7.37 15,7.03 16.12,7C17.37,7.04 18.29,7.45 18.88,8.24C19.47,9 19.76,10 19.76,11.19C19.75,12.15 19.61,13 19.32,13.76C19.03,14.5 18.64,15.13 18.12,15.64C17.66,16.06 17.11,16.38 16.47,16.61C15.83,16.83 15.12,16.96 14.34,17H13.33M16.06,8.63C15.65,8.64 15.32,8.8 15.06,9.11C14.81,9.42 14.68,9.84 14.68,10.36C14.68,10.8 14.8,11.16 15.03,11.46C15.27,11.77 15.63,11.92 16.11,11.93C16.43,11.93 16.7,11.86 16.92,11.74C17.14,11.61 17.3,11.46 17.41,11.28C17.5,11.17 17.53,10.97 17.53,10.71C17.54,10.16 17.43,9.69 17.2,9.28C16.97,8.87 16.59,8.65 16.06,8.63M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75Z" />
+                  </svg>
+                )}
+              />
+            </Tooltip>
+            <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
+              <ToggleGroupButton
+                selected={this.state.sort.duration === "alphabetical"}
+                onClick={() => {
+                  this.setSort("duration", "alphabetical");
+                }}
+                icon={iconObject(
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M9.25,5L12.5,1.75L15.75,5H9.25M15.75,19L12.5,22.25L9.25,19H15.75M8.89,14.3H6L5.28,17H2.91L6,7H9L12.13,17H9.67L8.89,14.3M6.33,12.68H8.56L7.93,10.56L7.67,9.59L7.42,8.63H7.39L7.17,9.6L6.93,10.58L6.33,12.68M13.05,17V15.74L17.8,8.97V8.91H13.5V7H20.73V8.34L16.09,15V15.08H20.8V17H13.05Z" />
                   </svg>
                 )}
               />
@@ -1440,7 +1605,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       vendors: genericButtons,
     };
     const categoryDialog =
-      this.props.statisticsTab !== "timeline" && this.context !== "desktop" ? (
+      this.props.statisticsTab !== "summary" && this.context !== "desktop" ? (
         <DialogStatistics
           open={this.state.categoryDialogOpen}
           onClose={this.closeCategoryDialog}
@@ -1467,8 +1632,8 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const { index, key } = params;
       const tab = statsTabs[index];
       const tabs = {
-        timeline: (
-          <div className="stats-tab timeline" key={key}>
+        summary: (
+          <div className="stats-tab summary" key={key}>
             <Card className="count-graph">
               <Typography use="headline5" tag="h1">
                 Sets per Month
@@ -1501,7 +1666,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                         <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
                       </svg>
                     )}
-                    selected={this.state.timelineData.profileChartType === "bar"}
+                    selected={this.state.summaryData.profileChartType === "bar"}
                     onClick={() => {
                       this.setProfileChartType("bar");
                     }}
@@ -1513,7 +1678,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                         <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
                       </svg>
                     )}
-                    selected={this.state.timelineData.profileChartType === "line"}
+                    selected={this.state.summaryData.profileChartType === "line"}
                     onClick={() => {
                       this.setProfileChartType("line");
                     }}
@@ -1521,74 +1686,88 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 </ToggleGroup>
               </div>
               <div
-                className={classNames("graph-container", {
-                  focused: this.state.focused,
-                  ["series-" + this.state.focused]: this.state.focused,
-                })}
+                className={classNames(
+                  "graph-container",
+                  {
+                    focused: this.state.focused.length > 0,
+                  },
+                  this.state.focused.map((letter) => "series-" + letter)
+                )}
               >
                 {barGraph}
                 {lineGraph}
               </div>
+              <div className="chips-container focus-chips">
+                <IconButton icon="clear" disabled={this.state.focused.length === 0} onClick={this.clearFocus} />
+                <ChipSet choice>
+                  {this.state.whitelist.profiles.map((profile, index) => (
+                    <Chip
+                      key={profile}
+                      icon="fiber_manual_record"
+                      label={profile}
+                      selected={this.state.focused.includes(letters[index])}
+                      onInteraction={() => {
+                        this.setFocus(letters[index]);
+                      }}
+                      className={"focus-chip-" + letters[index]}
+                    />
+                  ))}
+                </ChipSet>
+              </div>
             </Card>
-            <Card
-              className={classNames("fullwidth", {
-                focused: this.state.focused,
-                ["series-" + this.state.focused]: this.state.focused,
-              })}
-            >
-              <TimelineTable
-                profiles={this.state.whitelist.profiles}
-                setFocus={this.setFocus}
-                months={this.state.timelineData.months}
-                statistics={this.state.settings}
-                monthData={this.state.timelineData.monthData}
-              />
-            </Card>
+          </div>
+        ),
+        timelines: (
+          <div className="stats-tab stats-grid timelines" key={key}>
+            {this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup].data.map(
+              (data) => {
+                return (
+                  <TimelinesCard
+                    key={data.name}
+                    data={data}
+                    profileGroups={this.state.settings.timelinesGroup === "profile"}
+                    allProfiles={
+                      this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup]
+                        .profiles
+                    }
+                  />
+                );
+              }
+            )}
           </div>
         ),
         status: (
           <div className="stats-tab stats-grid status" key={key}>
-            {hasKey(this.state.statusData, this.state.settings.status)
-              ? this.state.statusData[this.state.settings.status].data.map((data) => {
-                  return <StatusCard key={data.name} data={data} />;
-                })
-              : null}
+            {this.state.statusData[this.state.settings.status].map((data) => {
+              return <StatusCard key={data.name} data={data} />;
+            })}
           </div>
         ),
         shipped: (
           <div className="stats-tab stats-grid shipped" key={key}>
-            {hasKey(this.state.shippedData, this.state.settings.shipped)
-              ? this.state.shippedData[this.state.settings.shipped].data.map((data) => {
-                  return <ShippedCard key={data.name} data={data} />;
-                })
-              : null}
+            {this.state.shippedData[this.state.settings.shipped].map((data) => {
+              return <ShippedCard key={data.name} data={data} />;
+            })}
           </div>
         ),
         duration: (
           <div className="stats-tab stats-grid duration" key={key}>
-            {hasKey(this.state.durationData, this.state.settings.durationCat) &&
-            hasKey(this.state.durationData[this.state.settings.durationCat], this.state.settings.durationGroup)
-              ? this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].data.map(
-                  (data) => {
-                    return (
-                      <TableCard
-                        key={data.name}
-                        data={data}
-                        unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
-                      />
-                    );
-                  }
-                )
-              : null}
+            {this.state.durationData[this.state.settings.durationCat][this.state.settings.durationGroup].map((data) => {
+              return (
+                <TableCard
+                  key={data.name}
+                  data={data}
+                  unit={`Time ${this.state.settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                />
+              );
+            })}
           </div>
         ),
         vendors: (
           <div className="stats-tab stats-grid vendors" key={key}>
-            {hasKey(this.state.vendorsData, this.state.settings.vendors)
-              ? this.state.vendorsData[this.state.settings.vendors].data.map((data) => {
-                  return <TableCard key={data.name} data={data} unit="Vendors" />;
-                })
-              : null}
+            {this.state.vendorsData[this.state.settings.vendors].map((data) => {
+              return <TableCard key={data.name} data={data} unit="Vendors" />;
+            })}
           </div>
         ),
       };
