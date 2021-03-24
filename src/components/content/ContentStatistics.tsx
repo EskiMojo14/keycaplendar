@@ -8,6 +8,7 @@ import { create, all, MathJsStatic } from "mathjs";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
+import firebase from "../../firebase";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { Whitelist } from "../../util/constructors";
@@ -24,7 +25,15 @@ import {
   alphabeticalSort,
   addOrRemove,
 } from "../../util/functions";
-import { QueueType, SetType, WhitelistType } from "../../util/types";
+import {
+  QueueType,
+  SetType,
+  StatisticsSortType,
+  StatisticsType,
+  WhitelistType,
+  Categories,
+  Properties,
+} from "../../util/types";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -87,12 +96,6 @@ type ContentStatisticsProps = {
   snackbarQueue: QueueType;
   statisticsTab: string;
 };
-
-type Categories = "icDate" | "gbLaunch";
-
-type Properties = "profile" | "designer" | "vendor";
-
-type Sorts = "total" | "alphabetical";
 
 type SummaryData = {
   months: {
@@ -191,24 +194,9 @@ type ContentStatisticsState = {
   sets: SetType[];
   focused: string[];
   dataCreated: string[];
-  settings: {
-    summary: Categories;
-    timelinesCat: Categories;
-    timelinesGroup: Properties;
-    status: Properties;
-    shipped: Properties;
-    durationCat: Categories;
-    durationGroup: Properties;
-    vendors: Properties;
-  };
+  settings: StatisticsType;
   whitelist: WhitelistType;
-  sort: {
-    timelines: Sorts;
-    status: Sorts;
-    shipped: Sorts;
-    duration: Sorts | "duration";
-    vendors: Sorts;
-  };
+  sort: StatisticsSortType;
   filterDrawerOpen: boolean;
   categoryDialogOpen: boolean;
 };
@@ -320,6 +308,15 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     this.setState({ sets: limitedSets });
+    const cloudFn = firebase.functions().httpsCallable("createStatistics");
+    cloudFn({ sets: limitedSets, sort: this.state.sort })
+      .then((result) => {
+        console.log(result.data);
+      })
+      .catch((error) => {
+        this.props.snackbarQueue.notify({ title: "Error creating statistics: " + error });
+        console.log(error);
+      });
     this.createSummaryData(limitedSets, whitelist);
     this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);

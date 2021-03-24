@@ -75,21 +75,29 @@ export type SetType = {
   vendors?: VendorType[];
 };
 
+export type Categories = "icDate" | "gbLaunch";
+
+export type Properties = "profile" | "designer" | "vendor";
+
+export type Sorts = "total" | "alphabetical";
+
 export type StatisticsType = {
-  summary: string;
-  timelinesCat: string;
-  timelinesGroup: string;
-  status: string;
-  shipped: string;
-  durationCat: string;
-  durationGroup: string;
-  vendors: string;
+  summary: Categories;
+  timelinesCat: Categories;
+  timelinesGroup: Properties;
+  status: Properties;
+  shipped: Properties;
+  durationCat: Categories;
+  durationGroup: Properties;
+  vendors: Properties;
 };
 
 export type StatisticsSortType = {
-  duration: string;
-  shipped: string;
-  status: string;
+  timelines: Sorts;
+  status: Sorts;
+  shipped: Sorts;
+  duration: Sorts | "duration";
+  vendors: Sorts;
 };
 
 export type QueueType = {
