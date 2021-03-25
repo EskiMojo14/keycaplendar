@@ -22,6 +22,10 @@ export type SetType = {
   vendors?: VendorType[];
 };
 
+export type Categories = "icDate" | "gbLaunch";
+
+export type Properties = "profile" | "designer" | "vendor";
+
 export type Sorts = "total" | "alphabetical";
 
 export type StatisticsSortType = {
