@@ -17,9 +17,6 @@ export type WhitelistType = {
   vendorMode: "include" | "exclude";
   vendors: string[];
   edited?: string[];
-};
-
-export type MainWhitelistType = WhitelistType & {
   favorites: boolean;
   hidden: boolean;
 };
@@ -27,7 +24,7 @@ export type MainWhitelistType = WhitelistType & {
 export type PresetType = {
   name: string;
   id: string;
-  whitelist: MainWhitelistType;
+  whitelist: WhitelistType;
 };
 
 export type CurrentUserType = {

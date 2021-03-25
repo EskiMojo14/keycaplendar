@@ -7,28 +7,17 @@ import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
-import { Whitelist } from "../../util/constructors";
 import {
   capitalise,
   countInArray,
   iconObject,
-  openModal,
-  closeModal,
   hasKey,
   getSetMonthRange,
   uniqueArray,
   alphabeticalSort,
   addOrRemove,
 } from "../../util/functions";
-import {
-  QueueType,
-  SetType,
-  StatisticsSortType,
-  StatisticsType,
-  WhitelistType,
-  Categories,
-  Properties,
-} from "../../util/types";
+import { QueueType, SetType, StatisticsSortType, StatisticsType, Categories, Properties } from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -45,7 +34,6 @@ import { Footer } from "../common/Footer";
 import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
 import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCard";
-import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
@@ -161,9 +149,7 @@ type ContentStatisticsState = {
   focused: string[];
   dataCreated: string[];
   settings: StatisticsType;
-  whitelist: WhitelistType;
   sort: StatisticsSortType;
-  filterDrawerOpen: boolean;
   categoryDialogOpen: boolean;
 };
 
@@ -275,7 +261,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       durationGroup: "profile",
       vendors: "profile",
     },
-    whitelist: new Whitelist(),
     sort: {
       timelines: "total",
       status: "total",
@@ -283,11 +268,20 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       duration: "total",
       vendors: "total",
     },
-    filterDrawerOpen: false,
     categoryDialogOpen: false,
   };
 
-  createData = (whitelist = this.state.whitelist) => {
+  componentDidUpdate(prevProps: ContentStatisticsProps) {
+    if (
+      this.state.dataCreated.length !== statsTabs.length &&
+      this.props.sets.length > 0 &&
+      this.props.sets.length !== prevProps.sets.length
+    ) {
+      this.createData();
+    }
+  }
+
+  createData = () => {
     const limitedSets = this.props.sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
@@ -307,7 +301,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         this.props.snackbarQueue.notify({ title: "Error creating statistics: " + error });
         console.log(error);
       });*/
-    this.createSummaryData(limitedSets, whitelist);
+    this.createSummaryData(limitedSets);
     this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
@@ -315,7 +309,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.createVendorsData(limitedSets);
   };
 
-  createSummaryData = (sets: SetType[], whitelist = this.state.whitelist) => {
+  createSummaryData = (sets: SetType[]) => {
     //summary
     const summaryData: SummaryData = {
       count: {
@@ -349,44 +343,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         },
       },
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited, ...summaryWhitelist } = whitelist;
-    const checkVendors = (set: SetType) => {
-      let bool = summaryWhitelist.vendorMode === "exclude";
-      const vendors = set.vendors;
-      if (vendors) {
-        vendors.forEach((vendor) => {
-          if (summaryWhitelist.vendorMode === "exclude") {
-            if (summaryWhitelist.vendors.includes(vendor.name)) {
-              bool = false;
-            }
-          } else {
-            if (summaryWhitelist.vendors.includes(vendor.name)) {
-              bool = true;
-            }
-          }
-        });
-      }
-      return bool;
-    };
-    const filteredSets = sets.filter((set) => {
-      const shippedBool =
-        (summaryWhitelist.shipped.includes("Shipped") && set.shipped) ||
-        (summaryWhitelist.shipped.includes("Not shipped") && !set.shipped);
-      const vendors = set.vendors;
-      if (vendors && vendors.length > 0) {
-        return checkVendors(set) && summaryWhitelist.profiles.includes(set.profile) && shippedBool;
-      } else {
-        if (summaryWhitelist.vendors.length === 1 && summaryWhitelist.vendorMode === "include") {
-          return false;
-        } else {
-          return summaryWhitelist.profiles.includes(set.profile) && shippedBool;
-        }
-      }
-    });
-    const gbSets = filteredSets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+    const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
     categories.forEach((cat) => {
-      const catSets = cat === "gbLaunch" ? gbSets : filteredSets;
+      const catSets = cat === "gbLaunch" ? gbSets : sets;
 
       summaryData.count[cat].total = catSets.length;
       summaryData.profile[cat].data.total = catSets.length;
@@ -1159,45 +1118,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.setState({ sort: sort });
     this.sortData(sort);
   };
-  setWhitelist = (prop: string, val: WhitelistType | WhitelistType[keyof WhitelistType], createAll = false) => {
-    if (prop === "all" && typeof val === "object") {
-      const edited = Object.keys(val);
-      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
-      this.setState({ whitelist: whitelist });
-      if (createAll) {
-        this.createData(whitelist);
-      } else {
-        this.createSummaryData(this.state.sets, whitelist);
-      }
-    } else {
-      const edited = this.state.whitelist.edited
-        ? this.state.whitelist.edited.includes(prop)
-          ? this.state.whitelist.edited
-          : [...this.state.whitelist.edited, prop]
-        : [prop];
-      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-      this.setState({
-        whitelist: whitelist,
-      });
-      if (createAll) {
-        this.createData(whitelist);
-      } else {
-        this.createSummaryData(this.state.sets, whitelist);
-      }
-    }
-  };
-  openFilterDrawer = () => {
-    openModal();
-    this.setState({
-      filterDrawerOpen: true,
-    });
-  };
-  closeFilterDrawer = () => {
-    closeModal();
-    this.setState({
-      filterDrawerOpen: false,
-    });
-  };
   openCategoryDialog = () => {
     this.setState({
       categoryDialogOpen: true,
@@ -1211,30 +1131,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   handleChangeIndex = (index: number) => {
     this.props.setStatisticsTab(statsTabs[index]);
   };
-  componentDidUpdate(prevProps: ContentStatisticsProps) {
-    if (
-      this.state.whitelist.edited &&
-      !this.state.whitelist.edited.includes("profiles") &&
-      this.props.profiles.length > 0 &&
-      this.state.dataCreated.length !== statsTabs.length &&
-      this.props.sets.length > 0
-    ) {
-      this.setWhitelist("profiles", this.props.profiles, true);
-    }
-  }
   render() {
-    const filterDrawer =
-      this.props.statisticsTab === "summary" ? (
-        <DrawerFilterStatistics
-          profiles={this.props.profiles}
-          vendors={this.props.allVendors}
-          open={this.state.filterDrawerOpen}
-          close={this.closeFilterDrawer}
-          setWhitelist={this.setWhitelist}
-          whitelist={this.state.whitelist}
-          snackbarQueue={this.props.snackbarQueue}
-        />
-      ) : null;
     const categoryButtons = (cat: string) => {
       return this.context === "desktop" ? (
         <ToggleGroup>
@@ -1324,9 +1221,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     const buttons = {
       summary: (
         <>
-          <Tooltip enterDelay={500} content="Filter" align="bottom">
-            <TopAppBarActionItem icon="filter_list" onClick={this.openFilterDrawer} />
-          </Tooltip>
           <ToggleGroup>
             <ToggleGroupButton
               selected={this.state.settings.summary === "icDate"}
@@ -1585,7 +1479,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
         <div className="main">
-          {filterDrawer}
           {categoryDialog}
           <VirtualizeSwipeableViews
             className={this.props.statisticsTab}
