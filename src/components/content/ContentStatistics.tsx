@@ -168,7 +168,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         icDate: {
           profiles: [],
           data: {
-            name: "",
+            name: "Profile breakdown",
             total: 0,
             timeline: {
               months: [],
@@ -180,7 +180,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         gbLaunch: {
           profiles: [],
           data: {
-            name: "",
+            name: "Profile breakdown",
             total: 0,
             timeline: {
               months: [],
@@ -292,21 +292,29 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     this.setState({ sets: limitedSets });
-    /*const cloudFn = firebase.functions().httpsCallable("createStatistics");
+    const cloudFn = firebase.functions().httpsCallable("createStatistics");
     cloudFn({ sets: limitedSets, sort: this.state.sort })
       .then((result) => {
-        console.log(result.data);
+        const resultData: {
+          summaryData: SummaryData;
+          timelinesData: TimelinesData;
+          statusData: StatusData;
+          shippedData: ShippedData;
+          durationData: DurationData;
+          vendorsData: VendorData;
+        } = result.data;
+        this.setState({ dataCreated: Object.keys(resultData) /*, ...resultData*/ });
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error creating statistics: " + error });
         console.log(error);
-      });*/
-    this.createSummaryData(limitedSets);
+      });
+    /*this.createSummaryData(limitedSets);
     this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
     this.createDurationData(limitedSets);
-    this.createVendorsData(limitedSets);
+    this.createVendorsData(limitedSets);*/
   };
 
   createSummaryData = (sets: SetType[]) => {
