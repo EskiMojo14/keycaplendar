@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import classNames from "classnames";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { DeviceContext } from "../../../util/contexts";
-import { boolFunctions } from "../../../util/functions";
+import { useBoolStates } from "../../../util/functions";
 import { SetType, SortOrderType } from "../../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -41,10 +41,10 @@ type AppBarProps = {
 export const AppBar = (props: AppBarProps) => {
   const device = useContext(DeviceContext);
   const [sortOpen, setSortOpen] = useState(false);
-  const [closeSort, openSort] = boolFunctions(setSortOpen);
+  const [closeSort, openSort] = useBoolStates(setSortOpen);
 
   const [viewOpen, setViewOpen] = useState(false);
-  const [closeView, openView] = boolFunctions(setViewOpen);
+  const [closeView, openView] = useBoolStates(setViewOpen);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = () => {

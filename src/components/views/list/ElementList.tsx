@@ -63,7 +63,7 @@ export const ElementList = (props: ElementListProps) => {
     ) : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" className="time-indicator">
-      {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
+      {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
     </Typography>
   ) : null;
   return (

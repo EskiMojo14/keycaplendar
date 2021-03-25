@@ -1,8 +1,8 @@
-import { replaceChars } from "./constants";
-import firebase from "../firebase";
 import React from "react";
-import { SetType } from "./types";
 import moment from "moment";
+import firebase from "../firebase";
+import { replaceChars } from "./constants";
+import { SetType } from "./types";
 
 const storage = firebase.storage();
 
@@ -117,7 +117,7 @@ export const closeModal = () => {
   }
 };
 
-export const boolFunctions = (func: (bool: boolean) => void) => {
+export const useBoolStates = (func: (bool: boolean) => void) => {
   const setFalse = () => {
     func(false);
   };

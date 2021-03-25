@@ -48,9 +48,9 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   };
   return (
     <Dialog open={props.open} onClose={props.close} className="delete-image-dialog">
-      <DialogTitle>{`Delete image${props.images.length > 1 ? "s" : ""}`}</DialogTitle>
+      <DialogTitle>{`Delete image${props.images.length === 1 ? "" : "s"}`}</DialogTitle>
       <DialogContent>
-        {`The following image${props.images.length > 1 ? "s" : ""} will be deleted:`}
+        {`The following image${props.images.length === 1 ? "" : "s"} will be deleted:`}
         <div className="chips-container">
           <ChipSet>
             {props.images.map((image) => (

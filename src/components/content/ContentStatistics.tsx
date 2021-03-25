@@ -1,8 +1,4 @@
 import React from "react";
-import Chartist from "chartist";
-import ChartistGraph from "react-chartist";
-import chartistPluginAxisTitle from "chartist-plugin-axistitle";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 import { create, all, MathJsStatic } from "mathjs";
 import classNames from "classnames";
@@ -13,7 +9,6 @@ import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { Whitelist } from "../../util/constructors";
 import {
-  camelise,
   capitalise,
   countInArray,
   iconObject,
@@ -34,9 +29,6 @@ import {
   Categories,
   Properties,
 } from "../../util/types";
-import { Card } from "@rmwc/card";
-import { Chip, ChipSet } from "@rmwc/chip";
-import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -49,36 +41,14 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
 import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
-import { ShippedCard, TimelinesCard } from "../statistics/TimelineCard";
+import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCard";
 import { DrawerFilterStatistics } from "../statistics/DrawerFilterStatistics";
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
-
-const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-
-const customPoint = (data: any) => {
-  if (data.type === "point") {
-    const circle = new Chartist.Svg(
-      "circle",
-      {
-        cx: [data.x],
-        cy: [data.y],
-        r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
-      },
-      "ct-stroked-point"
-    );
-    data.element.replace(circle);
-  }
-};
-
-const listener = { draw: (e: any) => customPoint(e) };
 
 const math = create(all) as MathJsStatic;
 
@@ -97,22 +67,7 @@ type ContentStatisticsProps = {
   statisticsTab: string;
 };
 
-type SummaryData = {
-  months: {
-    gbLaunch: string[];
-    icDate: string[];
-  };
-  monthData: {
-    gbLaunch: { [key: string]: { [key: string]: string | number } };
-    icDate: { [key: string]: { [key: string]: string | number } };
-  };
-  countData: Record<Categories, number[]>;
-  profileCount: Record<Categories, { [key: string]: number[] }>;
-  profileCountData: Record<Categories, number[][]>;
-  profileChartType: string;
-};
-
-type TimelinesDataObject = {
+type TimelineDataObject = {
   name: string;
   total: number;
   timeline: {
@@ -127,7 +82,18 @@ type TimelinesDataObject = {
   };
 };
 
-type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelinesDataObject[] }>>;
+type CountDataObject = {
+  total: number;
+  months: string[];
+  series: number[][];
+};
+
+type SummaryData = {
+  count: Record<Categories, CountDataObject>;
+  profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
+};
+
+type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
 
 type StatusDataObject = {
   ic: number;
@@ -203,17 +169,41 @@ type ContentStatisticsState = {
 
 const today = moment.utc();
 const yesterday = moment.utc().date(today.date() - 1);
-const properties = ["icDate", "gbLaunch"];
+const categories: Categories[] = ["icDate", "gbLaunch"];
 
 export class ContentStatistics extends React.Component<ContentStatisticsProps, ContentStatisticsState> {
   state: ContentStatisticsState = {
     summaryData: {
-      months: { icDate: [], gbLaunch: [] },
-      monthData: { icDate: {}, gbLaunch: {} },
-      countData: { icDate: [], gbLaunch: [] },
-      profileCount: { icDate: {}, gbLaunch: {} },
-      profileCountData: { icDate: [], gbLaunch: [] },
-      profileChartType: "bar",
+      count: {
+        icDate: { total: 0, months: [], series: [] },
+        gbLaunch: { total: 0, months: [], series: [] },
+      },
+      profile: {
+        icDate: {
+          profiles: [],
+          data: {
+            name: "",
+            total: 0,
+            timeline: {
+              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+        },
+        gbLaunch: {
+          profiles: [],
+          data: {
+            name: "",
+            total: 0,
+            timeline: {
+              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+        },
+      },
     },
     timelinesData: {
       icDate: {
@@ -308,7 +298,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     });
     this.setState({ sets: limitedSets });
-    const cloudFn = firebase.functions().httpsCallable("createStatistics");
+    /*const cloudFn = firebase.functions().httpsCallable("createStatistics");
     cloudFn({ sets: limitedSets, sort: this.state.sort })
       .then((result) => {
         console.log(result.data);
@@ -316,7 +306,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error creating statistics: " + error });
         console.log(error);
-      });
+      });*/
     this.createSummaryData(limitedSets, whitelist);
     this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
@@ -328,12 +318,36 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   createSummaryData = (sets: SetType[], whitelist = this.state.whitelist) => {
     //summary
     const summaryData: SummaryData = {
-      months: { icDate: [], gbLaunch: [] },
-      monthData: { icDate: {}, gbLaunch: {} },
-      countData: { icDate: [], gbLaunch: [] },
-      profileCount: { icDate: {}, gbLaunch: {} },
-      profileCountData: { icDate: [], gbLaunch: [] },
-      profileChartType: "bar",
+      count: {
+        icDate: { total: 0, months: [], series: [] },
+        gbLaunch: { total: 0, months: [], series: [] },
+      },
+      profile: {
+        icDate: {
+          profiles: [],
+          data: {
+            name: "Profile breakdown",
+            total: 0,
+            timeline: {
+              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+        },
+        gbLaunch: {
+          profiles: [],
+          data: {
+            name: "Profile breakdown",
+            total: 0,
+            timeline: {
+              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+        },
+      },
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { edited, ...summaryWhitelist } = whitelist;
@@ -355,7 +369,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
       return bool;
     };
-    const timelineSets = sets.filter((set) => {
+    const filteredSets = sets.filter((set) => {
       const shippedBool =
         (summaryWhitelist.shipped.includes("Shipped") && set.shipped) ||
         (summaryWhitelist.shipped.includes("Not shipped") && !set.shipped);
@@ -370,36 +384,43 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
         }
       }
     });
-    properties.forEach((prop) => {
-      if (hasKey(summaryData.months, prop)) {
-        summaryData.months[prop] = getSetMonthRange(timelineSets, prop, "MMM YY");
-        summaryWhitelist.profiles.forEach((profile) => {
-          summaryData.profileCount[prop][camelise(profile)] = [];
+    const gbSets = filteredSets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
+    categories.forEach((cat) => {
+      const catSets = cat === "gbLaunch" ? gbSets : filteredSets;
+
+      summaryData.count[cat].total = catSets.length;
+      summaryData.profile[cat].data.total = catSets.length;
+
+      const months = getSetMonthRange(catSets, cat, "MMM YY");
+      summaryData.count[cat].months = months;
+      summaryData.profile[cat].data.timeline.months = months;
+
+      summaryData.count[cat].series = [
+        months.map((month) => {
+          return catSets.filter((set) => {
+            const setProp = set[cat];
+            const setMonth =
+              typeof setProp === "string" && !setProp.includes("Q") ? moment(setProp).format("MMM YY") : null;
+            return setMonth && setMonth === month;
+          }).length;
+        }),
+      ];
+
+      const profiles = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
+      summaryData.profile[cat].profiles = profiles;
+      summaryData.profile[cat].data.timeline.profiles = profiles;
+
+      summaryData.profile[cat].data.timeline.series = profiles.map((profile) => {
+        return months.map((month) => {
+          const length = catSets.filter((set) => {
+            const setProp = set[cat];
+            const setMonth =
+              typeof setProp === "string" && !setProp.includes("Q") ? moment(setProp).format("MMM YY") : null;
+            return setMonth && setMonth === month && set.profile === profile;
+          }).length;
+          return { meta: `${profile}&nbsp;`, value: length };
         });
-        summaryData.months[prop].forEach((month) => {
-          const filteredSets = timelineSets.filter((set) => {
-            if (set[prop] && !set[prop].includes("Q")) {
-              const setMonth = moment(set[prop]).format("MMM YY");
-              return setMonth === month;
-            } else {
-              return false;
-            }
-          });
-          summaryData.monthData[prop][month] = {};
-          summaryData.monthData[prop][month].count = filteredSets.length;
-          summaryData.countData[prop].push(filteredSets.length);
-          summaryWhitelist.profiles.forEach((profile) => {
-            const profileSets = filteredSets.filter((set) => {
-              return set.profile === profile;
-            });
-            summaryData.profileCount[prop][camelise(profile)].push(profileSets.length);
-            summaryData.monthData[prop][month][camelise(profile)] = profileSets.length > 0 ? profileSets.length : "";
-          });
-        });
-        summaryData.profileCountData[prop] = summaryWhitelist.profiles.map(
-          (profile) => summaryData.profileCount[prop][camelise(profile)]
-        );
-      }
+      });
     });
     this.setState((prevState) => {
       return {
@@ -460,7 +481,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
 
         Object.keys(timelinesData[prop]).forEach((property) => {
           if (hasKey(timelinesData[prop], property)) {
-            const data: TimelinesDataObject[] = [];
+            const data: TimelineDataObject[] = [];
             timelinesData[prop][property].profiles = profileNames;
             lists[property].forEach((name) => {
               const filteredSets = propSets.filter((set) => {
@@ -793,14 +814,14 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     const dateSets = sets.filter((set) => {
       return set.gbLaunch && set.gbLaunch.length === 10;
     });
-    properties.forEach((prop) => {
+    categories.forEach((cat) => {
       const propSets: SetType[] =
-        prop === "gbLaunch"
+        cat === "gbLaunch"
           ? dateSets.filter((set) => {
               return set.gbEnd.length === 10;
             })
           : dateSets;
-      if (hasKey(durationData, prop)) {
+      if (hasKey(durationData, cat)) {
         const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
         const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
         const vendorNames = alphabeticalSort(
@@ -812,16 +833,16 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           vendor: vendorNames,
         };
 
-        Object.keys(durationData[prop]).forEach((property) => {
-          if (hasKey(durationData[prop], property)) {
+        Object.keys(durationData[cat]).forEach((property) => {
+          if (hasKey(durationData[cat], property)) {
             lists[property] = ["All"].concat(lists[property]);
             lists[property].forEach((name) => {
               const data: number[] = [];
               if (name === "All") {
                 propSets.forEach((set) => {
-                  const startDate = moment(set[prop]);
-                  const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
-                  const length = endDate.diff(startDate, prop === "icDate" ? "months" : "days");
+                  const startDate = moment(set[cat]);
+                  const endDate = moment(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                  const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
                   data.push(length);
                 });
               } else {
@@ -844,14 +865,14 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                     return bool;
                   })
                   .forEach((set) => {
-                    const startDate = moment(set[prop]);
-                    const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
-                    const length = endDate.diff(startDate, prop === "icDate" ? "months" : "days");
+                    const startDate = moment(set[cat]);
+                    const endDate = moment(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                    const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
                     data.push(length);
                   });
-                Object.keys(durationData[prop]).forEach((key) => {
-                  if (hasKey(durationData[prop], key)) {
-                    durationData[prop][key].sort((a, b) => {
+                Object.keys(durationData[cat]).forEach((key) => {
+                  if (hasKey(durationData[cat], key)) {
+                    durationData[cat][key].sort((a, b) => {
                       if (a.name === "All" || b.name === "All") {
                         return a.name === "All" ? -1 : 1;
                       }
@@ -898,7 +919,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               });
               const range = math.max(data) - math.min(data);
               const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
-              durationData[prop][property].push({
+              durationData[cat][property].push({
                 name: name,
                 total: data.length,
                 mean: math.round(math.mean(data), 2),
@@ -1122,9 +1143,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       }
     }
   };
-  setProfileChartType = (type: string) => {
-    this.setState({ summaryData: { ...this.state.summaryData, profileChartType: type } });
-  };
   setFocus = (letter: string) => {
     this.setState((prevState) => {
       return { focused: addOrRemove(prevState.focused, letter) };
@@ -1194,11 +1212,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     this.props.setStatisticsTab(statsTabs[index]);
   };
   componentDidUpdate(prevProps: ContentStatisticsProps) {
-    if (this.props.navOpen !== prevProps.navOpen) {
-      setTimeout(() => {
-        this.forceUpdate();
-      }, 400);
-    }
     if (
       this.state.whitelist.edited &&
       !this.state.whitelist.edited.includes("profiles") &&
@@ -1210,154 +1223,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     }
   }
   render() {
-    const countChartData =
-      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
-      hasKey(this.state.summaryData.countData, this.state.settings.summary)
-        ? {
-            labels: this.state.summaryData.months[this.state.settings.summary],
-            series: [this.state.summaryData.countData[this.state.settings.summary]],
-          }
-        : { labels: [], series: [] };
-    const countChartOptions = {
-      showArea: true,
-      low: 0,
-      axisY: {
-        onlyInteger: true,
-      },
-      chartPadding: {
-        top: 16,
-        right: 0,
-        bottom: 16,
-        left: 16,
-      },
-      plugins: [
-        chartistPluginAxisTitle({
-          axisX: {
-            axisTitle: "Month",
-            axisClass: "ct-axis-title",
-            offset: {
-              x: 0,
-              y: 40,
-            },
-            textAnchor: "middle",
-          },
-          axisY: {
-            axisTitle: "Count",
-            axisClass: "ct-axis-title",
-            offset: {
-              x: 0,
-              y: 24,
-            },
-            flipTitle: true,
-          },
-        }),
-        chartistTooltip({ pointClass: "ct-stroked-point" }),
-      ],
-    };
-
-    const profileChartData =
-      hasKey(this.state.summaryData.months, this.state.settings.summary) &&
-      hasKey(this.state.summaryData.countData, this.state.settings.summary)
-        ? {
-            labels: this.state.summaryData.months[this.state.settings.summary],
-            series: this.state.summaryData.profileCountData[this.state.settings.summary].map((value, index) => ({
-              meta: `${this.state.whitelist.profiles[index]}:&nbsp;`,
-              value: value,
-            })),
-          }
-        : { labels: [], series: [] };
-
-    const profileChartOptions = {
-      showArea: true,
-      stackBars: true,
-      low: 0,
-      axisY: {
-        onlyInteger: true,
-      },
-      chartPadding: {
-        top: 16,
-        right: 0,
-        bottom: 16,
-        left: 16,
-      },
-      plugins: [
-        chartistPluginAxisTitle({
-          axisX: {
-            axisTitle: "Month",
-            axisClass: "ct-axis-title",
-            offset: {
-              x: 0,
-              y: 40,
-            },
-            textAnchor: "middle",
-          },
-          axisY: {
-            axisTitle: "Count",
-            axisClass: "ct-axis-title",
-            offset: {
-              x: 0,
-              y: 24,
-            },
-            flipTitle: true,
-          },
-        }),
-        chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
-      ],
-    };
-
-    const responsiveOptions = [
-      [
-        "(min-width: 960px) and (max-width: 1600px)",
-        {
-          axisX: {
-            labelInterpolationFnc: (value: any, index: number) => {
-              return index % 2 === 0 ? value : null;
-            },
-          },
-        },
-      ],
-      [
-        "(min-width: 840px) and (max-width: 959px)",
-        {
-          axisX: {
-            labelInterpolationFnc: (value: any, index: number) => {
-              return index % 3 === 0 ? value : null;
-            },
-          },
-        },
-      ],
-      [
-        "(max-width: 849px)",
-        {
-          axisX: {
-            labelInterpolationFnc: (value: any, index: number) => {
-              return index % 3 === 0 ? value : null;
-            },
-          },
-        },
-      ],
-    ];
-    const barGraph =
-      this.state.summaryData.profileChartType === "bar" ? (
-        <ChartistGraph
-          className="ct-double-octave"
-          data={profileChartData}
-          options={profileChartOptions}
-          responsiveOptions={responsiveOptions}
-          type={"Bar"}
-        />
-      ) : null;
-    const lineGraph =
-      this.state.summaryData.profileChartType === "line" ? (
-        <ChartistGraph
-          className="ct-double-octave"
-          data={profileChartData}
-          options={profileChartOptions}
-          listener={listener}
-          responsiveOptions={responsiveOptions}
-          type={"Line"}
-        />
-      ) : null;
     const filterDrawer =
       this.props.statisticsTab === "summary" ? (
         <DrawerFilterStatistics
@@ -1630,88 +1495,18 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       const tab = statsTabs[index];
       const tabs = {
         summary: (
-          <div className="stats-tab summary" key={key}>
-            <Card className="count-graph">
-              <Typography use="headline5" tag="h1">
-                Sets per Month
-              </Typography>
-              <div className="graph-container">
-                <ChartistGraph
-                  className="ct-double-octave"
-                  data={countChartData}
-                  options={countChartOptions}
-                  listener={listener}
-                  responsiveOptions={responsiveOptions}
-                  type={"Line"}
-                />
-              </div>
-              <Typography use="caption" tag="p">
-                Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets
-                are included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
-              </Typography>
-            </Card>
-            <Card className="profile-graph">
-              <div className="title-container">
-                <Typography use="headline5" tag="h1">
-                  Profile Breakdown
-                </Typography>
-                <ToggleGroup>
-                  <ToggleGroupButton
-                    icon={iconObject(
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                      </svg>
-                    )}
-                    selected={this.state.summaryData.profileChartType === "bar"}
-                    onClick={() => {
-                      this.setProfileChartType("bar");
-                    }}
-                  />
-                  <ToggleGroupButton
-                    icon={iconObject(
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                      </svg>
-                    )}
-                    selected={this.state.summaryData.profileChartType === "line"}
-                    onClick={() => {
-                      this.setProfileChartType("line");
-                    }}
-                  />
-                </ToggleGroup>
-              </div>
-              <div
-                className={classNames(
-                  "graph-container",
-                  {
-                    focused: this.state.focused.length > 0,
-                  },
-                  this.state.focused.map((letter) => "series-" + letter)
-                )}
-              >
-                {barGraph}
-                {lineGraph}
-              </div>
-              <div className="chips-container focus-chips">
-                <IconButton icon="clear" disabled={this.state.focused.length === 0} onClick={this.clearFocus} />
-                <ChipSet choice>
-                  {this.state.whitelist.profiles.map((profile, index) => (
-                    <Chip
-                      key={profile}
-                      icon="fiber_manual_record"
-                      label={profile}
-                      selected={this.state.focused.includes(letters[index])}
-                      onInteraction={() => {
-                        this.setFocus(letters[index]);
-                      }}
-                      className={"focus-chip-" + letters[index]}
-                    />
-                  ))}
-                </ChipSet>
-              </div>
-            </Card>
+          <div className="stats-tab stats-grid summary" key={key}>
+            <CountCard
+              title="Sets per month"
+              data={this.state.summaryData.count[this.state.settings.summary]}
+              //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
+              disclaimer
+            />
+            <TimelinesCard
+              allProfiles={this.state.summaryData.profile[this.state.settings.summary].profiles}
+              data={this.state.summaryData.profile[this.state.settings.summary].data}
+              //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
+            />
           </div>
         ),
         timelines: (
@@ -1727,6 +1522,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                       this.state.timelinesData[this.state.settings.timelinesCat][this.state.settings.timelinesGroup]
                         .profiles
                     }
+                    //category={this.state.settings.timelinesCat === "icDate" ? "IC date" : "GB start"}
                   />
                 );
               }
