@@ -1,4 +1,4 @@
-import { SetType } from "./types";
+import { StatisticsSetType } from "./types";
 import * as moment from "moment";
 
 export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => {
@@ -28,7 +28,11 @@ export const alphabeticalSort = (array: string[]): string[] => {
   return array;
 };
 
-export const getSetMonthRange = (sets: SetType[], prop: keyof SetType, format: string): string[] => {
+export const getSetMonthRange = (
+  sets: StatisticsSetType[],
+  prop: keyof StatisticsSetType,
+  format: string
+): string[] => {
   const setMonths = uniqueArray(
     sets.map((set) => {
       const val = set[prop];

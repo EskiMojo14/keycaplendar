@@ -1,9 +1,12 @@
 import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 import * as moment from "moment";
 import { utc } from "moment";
 import { create, all, MathJsStatic } from "mathjs";
-import { SetType, StatisticsSortType, Categories, Properties } from "./util/types";
+import { StatisticsSetType, Categories, Properties } from "./util/types";
 import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./util/functions";
+
+const db = admin.firestore();
 
 const math = create(all) as MathJsStatic;
 
@@ -37,7 +40,7 @@ const today = utc();
 const yesterday = utc().date(today.date() - 1);
 const categories: Categories[] = ["icDate", "gbLaunch"];
 
-const createSummaryData = (sets: SetType[]) => {
+const createSummaryData = (sets: StatisticsSetType[]) => {
   const summaryData: SummaryData = {
     count: {
       icDate: { total: 0, months: [], series: [] },
@@ -108,12 +111,12 @@ const createSummaryData = (sets: SetType[]) => {
       });
     });
   });
-  return summaryData;
+  return Promise.resolve(summaryData);
 };
 
 type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
 
-const createTimelinesData = (sets: SetType[], sort: string) => {
+const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
     icDate: {
       profile: {
@@ -222,15 +225,15 @@ const createTimelinesData = (sets: SetType[], sort: string) => {
             });
           });
           data.sort((a, b) => {
-            const x = sort === "alphabetical" ? a.name.toLowerCase() : a.total;
-            const y = sort === "alphabetical" ? b.name.toLowerCase() : b.total;
+            const x = a.total;
+            const y = b.total;
             const c = a.name.toLowerCase();
             const d = b.name.toLowerCase();
             if (x < y) {
-              return sort === "alphabetical" ? -1 : 1;
+              return 1;
             }
             if (x > y) {
-              return sort === "alphabetical" ? 1 : -1;
+              return -1;
             }
             if (c < d) {
               return -1;
@@ -245,7 +248,7 @@ const createTimelinesData = (sets: SetType[], sort: string) => {
       });
     }
   });
-  return timelinesData;
+  return Promise.resolve(timelinesData);
 };
 
 type StatusDataObject = {
@@ -259,7 +262,7 @@ type StatusDataObject = {
 
 type StatusData = Record<Properties, StatusDataObject[]>;
 
-const createStatusData = (sets: SetType[], sort: string) => {
+const createStatusData = (sets: StatisticsSetType[]) => {
   const statusData: StatusData = {
     profile: [],
     designer: [],
@@ -358,19 +361,19 @@ const createStatusData = (sets: SetType[], sort: string) => {
         });
       });
       statusData[prop].sort((a, b) => {
-        const x = sort === "total" ? a.total : (a.name as string).toLowerCase();
-        const y = sort === "total" ? b.total : (b.name as string).toLowerCase();
+        const x = a.total;
+        const y = b.total;
         if (x < y) {
-          return sort === "total" ? 1 : -1;
+          return 1;
         }
         if (x > y) {
-          return sort === "total" ? -1 : 1;
+          return -1;
         }
         return 0;
       });
     }
   });
-  return statusData;
+  return Promise.resolve(statusData);
 };
 
 type ShippedDataObject = {
@@ -391,7 +394,7 @@ type ShippedDataObject = {
 
 type ShippedData = Record<Properties, ShippedDataObject[]>;
 
-const createShippedData = (sets: SetType[], sort: string) => {
+const createShippedData = (sets: StatisticsSetType[]) => {
   const shippedData: ShippedData = {
     profile: [],
     designer: [],
@@ -469,19 +472,19 @@ const createShippedData = (sets: SetType[], sort: string) => {
         });
       });
       shippedData[prop].sort((a, b) => {
-        const x = sort === "total" ? a.total : (a.name as string).toLowerCase();
-        const y = sort === "total" ? b.total : (b.name as string).toLowerCase();
+        const x = a.total;
+        const y = b.total;
         if (x < y) {
-          return sort === "total" ? 1 : -1;
+          return 1;
         }
         if (x > y) {
-          return sort === "total" ? -1 : 1;
+          return -1;
         }
         return 0;
       });
     }
   });
-  return shippedData;
+  return Promise.resolve(shippedData);
 };
 
 type DurationDataObject = {
@@ -497,7 +500,7 @@ type DurationDataObject = {
 
 type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
-const createDurationData = (sets: SetType[], sort: string) => {
+const createDurationData = (sets: StatisticsSetType[]) => {
   const durationData: DurationData = {
     icDate: {
       profile: [],
@@ -514,7 +517,7 @@ const createDurationData = (sets: SetType[], sort: string) => {
     return set.gbLaunch && set.gbLaunch.length === 10;
   });
   categories.forEach((cat) => {
-    const propSets: SetType[] =
+    const propSets: StatisticsSetType[] =
       cat === "gbLaunch"
         ? dateSets.filter((set) => {
             return set.gbEnd.length === 10; // eslint-disable-line indent
@@ -575,17 +578,15 @@ const createDurationData = (sets: SetType[], sort: string) => {
                     if (a.name === "All" || b.name === "All") {
                       return a.name === "All" ? -1 : 1;
                     }
-                    const x =
-                      sort === "alphabetical" ? a.name.toLowerCase() : a[sort === "duration" ? "mean" : "total"];
-                    const y =
-                      sort === "alphabetical" ? b.name.toLowerCase() : b[sort === "duration" ? "mean" : "total"];
+                    const x = a.total;
+                    const y = b.total;
                     const c = a.name.toLowerCase();
                     const d = b.name.toLowerCase();
                     if (x < y) {
-                      return sort === "alphabetical" ? -1 : 1;
+                      return 1;
                     }
                     if (x > y) {
-                      return sort === "alphabetical" ? 1 : -1;
+                      return -1;
                     }
                     if (c < d) {
                       return -1;
@@ -629,7 +630,7 @@ const createDurationData = (sets: SetType[], sort: string) => {
       });
     }
   });
-  return durationData;
+  return Promise.resolve(durationData);
 };
 
 type VendorDataObject = {
@@ -645,7 +646,7 @@ type VendorDataObject = {
 
 type VendorData = Record<Properties, VendorDataObject[]>;
 
-const createVendorsData = (sets: SetType[], sort: string) => {
+const createVendorsData = (sets: StatisticsSetType[]) => {
   const vendorsData: VendorData = {
     profile: [],
     designer: [],
@@ -702,44 +703,93 @@ const createVendorsData = (sets: SetType[], sort: string) => {
       });
 
       vendorsData[prop].sort((a, b) => {
-        const x = sort === "total" ? a.total : a.name.toLowerCase();
-        const y = sort === "total" ? b.total : b.name.toLowerCase();
+        const x = a.total;
+        const y = b.total;
         if (x < y) {
-          return sort === "total" ? 1 : -1;
+          return 1;
         }
         if (x > y) {
-          return sort === "total" ? -1 : 1;
+          return -1;
         }
         return 0;
       });
     }
   });
-  return vendorsData;
-};
-
-type CreateStatisticsData = {
-  sets: SetType[];
-  sort: StatisticsSortType;
+  return Promise.resolve(vendorsData);
 };
 
 const runtimeOpts: functions.RuntimeOptions = {
-  timeoutSeconds: 540,
+  timeoutSeconds: 120,
   memory: "2GB",
 };
 
-export const createStatistics = functions.runWith(runtimeOpts).https.onCall((data: CreateStatisticsData, context) => {
-  const summaryData = createSummaryData(data.sets);
-  const timelinesData = createTimelinesData(data.sets, data.sort.timelines);
-  const statusData = createStatusData(data.sets, data.sort.status);
-  const shippedData = createShippedData(data.sets, data.sort.shipped);
-  const durationData = createDurationData(data.sets, data.sort.duration);
-  const vendorsData = createVendorsData(data.sets, data.sort.vendors);
-  return {
-    summaryData: summaryData,
-    timelinesData: timelinesData,
-    statusData: statusData,
-    shippedData: shippedData,
-    durationData: durationData,
-    vendorsData: vendorsData,
-  };
-});
+export const createStatistics = functions
+  .runWith(runtimeOpts)
+  /* .pubsub.schedule("every 60 minutes")
+  .onRun(async (context) => { */
+  .https.onCall(async (data, context) => {
+    const snapshot = await db.collection("keysets").get();
+    const sets: StatisticsSetType[] = snapshot.docs
+      .map((doc) => {
+        const lastOfMonth = moment(doc.data().gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]).daysInMonth();
+        const gbLaunch =
+          doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
+        return {
+          id: doc.id,
+          profile: doc.data().profile,
+          colorway: doc.data().colorway,
+          designer: doc.data().designer,
+          icDate: doc.data().icDate,
+          gbLaunch: gbLaunch,
+          gbEnd: doc.data().gbEnd,
+          shipped: doc.data().shipped,
+          vendors: doc.data().vendors,
+        };
+      })
+      .filter((set) => Boolean(set.colorway));
+    sets.sort((a, b) => {
+      const x = a.colorway.toLowerCase();
+      const y = b.colorway.toLowerCase();
+      if (x < y) {
+        return -1;
+      }
+      if (x > y) {
+        return 1;
+      }
+      return 0;
+    });
+    const limitedSets = sets.filter((set) => {
+      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+        const year = parseInt(set.gbLaunch.slice(0, 4));
+        const thisYear = moment().year();
+        return year >= thisYear - 2 && year <= thisYear + 1;
+      } else {
+        return true;
+      }
+    });
+    const summaryData = createSummaryData(limitedSets);
+    const timelinesData = createTimelinesData(limitedSets);
+    const statusData = createStatusData(limitedSets);
+    const shippedData = createShippedData(limitedSets);
+    const durationData = createDurationData(limitedSets);
+    const vendorsData = createVendorsData(limitedSets);
+    const statisticsData = {
+      summaryData: await summaryData,
+      timelinesData: await timelinesData,
+      statusData: await statusData,
+      shippedData: await shippedData,
+      durationData: await durationData,
+      vendorsData: await vendorsData,
+      // timestamp: context.timestamp,
+    };
+    /* const allPromises = Promise.all([summaryData, timelinesData, statusData, shippedData, durationData, vendorsData]);
+    allPromises
+      .then(() => {
+        const docRef = db.collection("app").doc("statisticsData");
+        const setPromise = docRef.set(statisticsData);
+        return setPromise.then(() => console.log("hi"));
+      })
+      .then(() => console.log("Statistics data generated and written successfully."))
+      .catch((error) => console.log(`Failed to write statistics data: ${error}`));*/
+    return Promise.resolve(statisticsData);
+  });

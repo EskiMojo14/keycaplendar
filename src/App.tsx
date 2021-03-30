@@ -423,7 +423,7 @@ class App extends React.Component<AppProps, AppState> {
         const sets: SetType[] = [];
         querySnapshot.forEach((doc) => {
           if (doc.data().profile) {
-            const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
+            const lastOfMonth = moment(doc.data().gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]).daysInMonth();
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
             const sales =

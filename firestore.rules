@@ -16,5 +16,9 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow delete: if request.auth != null && request.auth.uid == userId || request.auth.token.admin == true;
     }
+    match /app/{appInfo} {
+      allow read;
+      allow write: if false;
+    }
   }
 }
