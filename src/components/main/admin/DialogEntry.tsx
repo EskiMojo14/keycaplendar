@@ -61,6 +61,7 @@ type DialogCreateState = {
   designer: string[];
   icDate: string;
   details: string;
+  notes: string;
   sales: { img: string; thirdParty: boolean };
   image: Blob | File | null;
   gbMonth: boolean;
@@ -82,6 +83,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     designer: [],
     icDate: "",
     details: "",
+    notes: "",
     sales: { img: "", thirdParty: false },
     image: null,
     gbMonth: true,
@@ -113,6 +115,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
       designer: [],
       icDate: "",
       details: "",
+      notes: "",
       sales: { img: "", thirdParty: false },
       image: null,
       gbMonth: true,
@@ -319,6 +322,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
         designer: this.state.designer,
         icDate: this.state.icDate,
         details: this.state.details,
+        notes: this.state.notes,
         sales: this.state.sales,
         image: this.state.imageURL,
         gbMonth: this.state.gbMonth,
@@ -585,6 +589,18 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                 children: this.state.details.length > 0 ? "Must be valid link" : "Enter a link",
               }}
               onChange={this.handleChange}
+            />
+            <TextField
+              textarea
+              rows={2}
+              autoComplete="off"
+              outlined
+              label="Notes"
+              value={this.state.notes}
+              name="notes"
+              onChange={this.handleChange}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
             />
             <ImageUpload
               image={this.state.image}
@@ -863,6 +879,7 @@ type DialogEditState = {
   designer: string[];
   icDate: string;
   details: string;
+  notes: string;
   sales: { img: string; thirdParty: boolean };
   image: Blob | File | string | null;
   gbMonth: boolean;
@@ -885,6 +902,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     designer: [],
     icDate: "",
     details: "",
+    notes: "",
     sales: { img: "", thirdParty: false },
     image: "",
     gbMonth: false,
@@ -911,6 +929,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
       designer: [],
       icDate: "",
       details: "",
+      notes: "",
       sales: { img: "", thirdParty: false },
       image: "",
       gbMonth: false,
@@ -989,6 +1008,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
       sales: this.props.set.sales ? this.props.set.sales : { img: "", thirdParty: false },
       gbLaunch: gbLaunch,
       shipped: this.props.set.shipped ? this.props.set.shipped : false,
+      notes: this.props.set.notes ? this.props.set.notes : "",
       vendors: this.props.set.vendors
         ? this.props.set.vendors.map((vendor) => {
             if (!vendor.id) {
@@ -1165,6 +1185,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
         designer: this.state.designer,
         icDate: this.state.icDate,
         details: this.state.details,
+        notes: this.state.notes,
         sales: this.state.sales,
         image: typeof this.state.image === "string" ? this.state.image : this.state.imageURL,
         gbMonth: this.state.gbMonth,
@@ -1434,6 +1455,18 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                   children: this.state.details.length > 0 ? "Must be valid link" : "Enter a link",
                 }}
                 onChange={this.handleChange}
+              />
+              <TextField
+                textarea
+                rows={2}
+                autoComplete="off"
+                outlined
+                label="Notes"
+                value={this.state.notes}
+                name="notes"
+                onChange={this.handleChange}
+                onFocus={this.handleFocus}
+                onBlur={this.handleBlur}
               />
               <ImageUpload
                 image={

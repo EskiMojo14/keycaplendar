@@ -372,7 +372,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           color: map-get($variables, text-medium);
         }
       }
-      .mdc-typography--overline {
+      .mdc-typography--overline,
+      .mdc-typography--caption {
         color: map-get($variables, text-medium);
       }
       .mdc-typography--headline4,

@@ -60,6 +60,7 @@ export type SetType = {
   colorway: string;
   designer: string[];
   details: string;
+  notes?: string;
   gbEnd: string;
   gbLaunch: string;
   gbMonth?: boolean;
