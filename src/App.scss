@@ -450,8 +450,15 @@ svg.material-icons,
   }
 }
 
-.search-bar--persistent .search-bar__field.mdc-text-field {
-  @include shape.radius(shape.resolve-percentage-radius(40px, small));
+.mdc-text-field {
+  .search-bar--persistent &.search-bar__field {
+    @include shape.radius(shape.resolve-percentage-radius(40px, small));
+  }
+  &.mdc-text-field--textarea {
+    .mdc-text-field__input {
+      min-height: 56px - 8px;
+    }
+  }
 }
 
 .sales-image,

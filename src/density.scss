@@ -86,14 +86,21 @@
   .mdc-tab-bar {
     @include tab-bar.density($density);
   }
-  .mdc-text-field:not(.search-bar__field) {
-    &:not(.mdc-text-field--outlined) {
-      @include textfield.density($density);
+  .mdc-text-field {
+    &:not(.search-bar__field):not(.mdc-text-field--textarea) {
+      &:not(.mdc-text-field--outlined) {
+        @include textfield.density($density);
+      }
+      &.mdc-text-field--outlined {
+        @include textfield.outlined-density($density);
+        &.mdc-text-field--with-leading-icon {
+          @include textfield.outlined-with-leading-icon-density($density);
+        }
+      }
     }
-    &.mdc-text-field--outlined {
-      @include textfield.outlined-density($density);
-      &.mdc-text-field--with-leading-icon {
-        @include textfield.outlined-with-leading-icon-density($density);
+    &.mdc-text-field--textarea {
+      .mdc-text-field__input {
+        min-height: 56px - 8px + $diff;
       }
     }
   }
@@ -152,7 +159,8 @@
         .details-text {
           padding-bottom: 16px + $diff;
           .mdc-typography--headline4,
-          .mdc-typography--body2 {
+          .mdc-typography--body2,
+          .mdc-typography--caption {
             margin: (8px + $diff / 2) 0;
           }
         }

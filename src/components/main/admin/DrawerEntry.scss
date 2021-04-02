@@ -67,6 +67,9 @@
         margin-top: -16px;
         margin-bottom: 16px;
       }
+      &.mdc-text-field--textarea .mdc-text-field__input {
+        resize: none;
+      }
     }
     .mdc-form-field {
       margin-bottom: 16px;

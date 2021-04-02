@@ -435,6 +435,7 @@ class App extends React.Component<AppProps, AppState> {
               designer: doc.data().designer,
               icDate: doc.data().icDate,
               details: doc.data().details,
+              notes: doc.data().notes,
               sales: sales,
               image: doc.data().image,
               gbMonth: doc.data().gbMonth,

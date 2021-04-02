@@ -318,6 +318,11 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
       this.props.set.sales && this.props.set.sales.img ? (
         <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
       ) : null;
+    const notes = this.props.set.notes ? (
+      <Typography use="caption" tag="p">
+        {this.props.set.notes}
+      </Typography>
+    ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -352,6 +357,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
               <Typography use="body2" tag="p">
                 {ic}
               </Typography>
+              {notes}
             </div>
             <div className="details-button">
               <Button
