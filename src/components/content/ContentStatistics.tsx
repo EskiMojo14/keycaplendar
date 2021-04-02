@@ -321,7 +321,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     });
     this.setState({ sets: limitedSets });
     this.createSummaryData(limitedSets, whitelist);
-    this.createTimelinesData(limitedSets);
+    //this.createTimelinesData(limitedSets);
     this.createStatusData(limitedSets);
     this.createShippedData(limitedSets);
     this.createDurationData(limitedSets);
