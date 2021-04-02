@@ -204,6 +204,14 @@ export const EntryGuide = () => {
             </div>
             <div>
               <Typography use="headline5" tag="h2">
+                Notes
+              </Typography>
+              <Typography use="body2" tag="p">
+                Any additional information to be displayed in the details drawer, such as a maximum number of kits sold.
+              </Typography>
+            </div>
+            <div>
+              <Typography use="headline5" tag="h2">
                 Image*
               </Typography>
               <Typography use="body2" tag="p">
