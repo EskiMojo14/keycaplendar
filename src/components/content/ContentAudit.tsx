@@ -236,6 +236,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       "designer",
       "icDate",
       "details",
+      "notes",
       "gbMonth",
       "gbLaunch",
       "gbEnd",
