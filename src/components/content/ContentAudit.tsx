@@ -161,7 +161,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
           }
         });
 
-        alphabeticalSortProp(actions, "timestamp");
+        alphabeticalSortProp(actions, "timestamp", true);
 
         this.setState({
           actions: actions,

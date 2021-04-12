@@ -1122,7 +1122,7 @@ class App extends React.Component<AppProps, AppState> {
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
     const presets = [...this.state.presets, preset];
-    alphabeticalSortProp(presets, "name", "Default");
+    alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
   };
@@ -1130,13 +1130,13 @@ class App extends React.Component<AppProps, AppState> {
     const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
     const presets = [...this.state.presets];
     presets[index] = preset;
-    alphabeticalSortProp(presets, "name", "Default");
+    alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
   };
   deletePreset = (preset: PresetType) => {
     const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
-    alphabeticalSortProp(presets, "name", "Default");
+    alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({
       presets: presets,
       preset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
@@ -1145,7 +1145,9 @@ class App extends React.Component<AppProps, AppState> {
   };
   syncPresets = (presets = this.state.presets) => {
     const filteredPresets = presets.filter((preset) => preset.name !== "Default");
-    const sortedPresets = alphabeticalSortProp(filteredPresets, "name", "Default").map((preset) => ({ ...preset }));
+    const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false, "Default").map((preset) => ({
+      ...preset,
+    }));
     db.collection("users")
       .doc(this.state.user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })
