@@ -71,7 +71,7 @@ export function alphabeticalSort(array: string[], descending = false) {
 }
 
 /**
- *
+ * Sorts an array of objects by a specified prop, in alphabetical order.
  * @param array Array of identical objects.
  * @param prop Property to sort objects by.
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
