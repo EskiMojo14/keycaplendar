@@ -2,6 +2,9 @@ import { nanoid } from "nanoid";
 import { whitelistShipped } from "./constants";
 import { MainWhitelistType } from "./types";
 
+/**
+ * Creates interval with clear method.
+ */
 export class Interval {
   intervalId;
   constructor(callback: () => void, time: number) {
@@ -12,6 +15,10 @@ export class Interval {
     console.log("clear");
   }
 }
+/**
+ * Creates a standard whitelist object with specified values, or blank values if none specified.
+ * Useful for creating blank whitelist objects.
+ */
 
 export class Whitelist {
   profiles: string[];
@@ -33,6 +40,11 @@ export class Whitelist {
     this.edited = edited;
   }
 }
+
+/**
+ * Creates a standard whitelist preset object with specified values, or blank values if none specified.
+ * Useful for creating blank whitelist preset objects.
+ */
 
 export class Preset {
   name: string;
@@ -61,6 +73,10 @@ export class Preset {
   }
 }
 
+/**
+ * Creates a standard keyset object with specified values, or blank values if none specified.
+ * Useful for creating blank keyset objects.
+ */
 export class Keyset {
   colorway: string;
   designer: string[];
@@ -94,6 +110,10 @@ export class Keyset {
   }
 }
 
+/**
+ * Creates a standard image info object with specified values, or blank values if none specified.
+ * Useful for creating blank image info objects.
+ */
 export class ImageObj {
   name: string;
   parent: string;
@@ -106,6 +126,11 @@ export class ImageObj {
     this.src = src;
   }
 }
+
+/**
+ * Creates a standard user object with specified values, or blank values if none specified.
+ * Useful for creating blank user objects.
+ */
 
 export class User {
   admin: boolean;
