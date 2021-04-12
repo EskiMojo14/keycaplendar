@@ -1,26 +1,54 @@
+import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
 import { whitelistShipped } from "./constants";
 
+/**
+ * Alias for `Record<string, T>`.
+ */
+
 export type Obj<T = unknown> = Record<string, T>;
+
+/**
+ * Alias for standard HTML props.
+ */
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
+/**
+ * Possible values for sort orders.
+ */
+
 export type SortOrderType = "ascending" | "descending";
 
+/**
+ * Sort params which are dates.
+ */
+
 export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
+
+/**
+ * Sort params which are arrays.
+ */
 
 export type ArraySortKeys = "designer";
 
 export type WhitelistType = {
+  /** Array of allowed profiles. */
   profiles: string[];
+  /** Array of allowed shipped values. */
   shipped: typeof whitelistShipped;
+  /** Whether to `include` or `exclude` the specified `vendors`. */
   vendorMode: "include" | "exclude";
+  /** Array of vendors to either `include` or `exclude`. */
   vendors: string[];
+  /** Array of all keys that have been edited. */
   edited?: string[];
 };
 
 export type MainWhitelistType = WhitelistType & {
+  /** Whether to filter to only favourites. */
   favorites: boolean;
+  /** Whether to filter to only hidden sets. */
   hidden: boolean;
 };
 
@@ -31,13 +59,16 @@ export type PresetType = {
 };
 
 export type CurrentUserType = {
+  /** URL to avatar image. */
   avatar: string;
   email: string;
+  /** UID provided by Firebase Auth. */
   id: string;
   isAdmin: boolean;
   isDesigner: boolean;
   isEditor: boolean;
   name: string;
+  /** Custom nickname for user, for display. */
   nickname: string;
 };
 
@@ -55,6 +86,7 @@ export type VendorType = {
   id?: string;
   name: string;
   region: string;
+  /** Direct URL to product. */
   storeLink?: string;
   endDate?: string;
 };
@@ -71,7 +103,11 @@ export type SetType = {
   id: string;
   image: string;
   profile: string;
-  sales?: { img: string; thirdParty: boolean };
+  sales?: {
+    /** Direct URL to sales graph. */
+    img: string;
+    thirdParty: boolean;
+  };
   shipped?: boolean;
   vendors?: VendorType[];
 };
@@ -93,16 +129,15 @@ export type StatisticsSortType = {
   status: string;
 };
 
-export type QueueType = {
-  notify: (info: { [key: string]: any }) => void;
-};
+export type QueueType = ReturnType<typeof createSnackbarQueue>;
 
+/** SetType but with all keys set to optional, as an action can include "deleted" sets. */
 export type ActionSetType = {
   [S in keyof SetType]?: SetType[S];
 };
 
 export type ActionType = {
-  action: string;
+  action: "created" | "deleted" | "updated";
   after: ActionSetType;
   before: ActionSetType;
   changelogId: string;
@@ -119,6 +154,7 @@ export type ImageType = {
   name: string;
   parent: string;
   fullPath: string;
+  /** URL to image, for display. */
   src: string;
 };
 

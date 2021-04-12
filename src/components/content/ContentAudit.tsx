@@ -58,7 +58,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     deleteAction: {
       before: new Keyset(),
       after: new Keyset(),
-      action: "",
+      action: "created",
       changelogId: "",
       documentId: "",
       timestamp: "",
@@ -112,7 +112,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
         deleteAction: {
           before: new Keyset(),
           after: new Keyset(),
-          action: "",
+          action: "created",
           changelogId: "",
           documentId: "",
           timestamp: "",

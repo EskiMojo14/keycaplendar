@@ -1,10 +1,6 @@
 import { nanoid } from "nanoid";
 import { whitelistShipped } from "./constants";
 import { MainWhitelistType } from "./types";
-
-/**
- * Creates interval with clear method.
- */
 export class Interval {
   intervalId;
   constructor(callback: () => void, time: number) {
@@ -26,6 +22,15 @@ export class Whitelist {
   vendorMode: "exclude" | "include";
   vendors: string[];
   edited: string[];
+
+  /**
+   * @param profiles Array of allowed profiles.
+   * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
+   * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
+   * @param vendors Vendors to be included or excluded.
+   * @param edited Array of keys which have been edited.
+   */
+
   constructor(
     profiles: string[] = [],
     shipped: string[] = whitelistShipped,
@@ -50,13 +55,25 @@ export class Preset {
   name: string;
   id: string;
   whitelist: MainWhitelistType;
+
+  /**
+   * @param name Display name for preset.
+   * @param favorites Whether to only display favourites.
+   * @param hidden Whether to only display hidden sets.
+   * @param profiles Array of allowed profiles.
+   * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
+   * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
+   * @param vendors Vendors to be included or excluded.
+   * @param id Internal ID. Will be generated with `nanoid()` if not provided.
+   */
+
   constructor(
     name = "",
     favorites = false,
     hidden = false,
     profiles: string[] = [],
     shipped: string[] = [],
-    vendorMode = "exclude",
+    vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
     id = nanoid()
   ) {
@@ -67,7 +84,7 @@ export class Preset {
       hidden: hidden,
       profiles: profiles,
       shipped: shipped,
-      vendorMode: vendorMode as "exclude" | "include",
+      vendorMode: vendorMode,
       vendors: vendors,
     };
   }

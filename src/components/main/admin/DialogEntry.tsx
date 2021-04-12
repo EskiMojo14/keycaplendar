@@ -340,7 +340,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
-        this.props.snackbarQueue.notify({ title: "Error adding entry: ", error });
+        this.props.snackbarQueue.notify({ title: "Error adding entry: " + error });
       });
   };
 
