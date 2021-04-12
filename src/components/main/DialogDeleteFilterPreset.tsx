@@ -11,7 +11,7 @@ type DialogDeleteFilterPresetProps = {
 
 export const DialogDeleteFilterPreset = (props: DialogDeleteFilterPresetProps) => {
   const { deletePreset } = useContext(UserContext);
-  const deleteFn = (e: any) => {
+  const deleteFn = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     deletePreset(props.preset);
     props.close();

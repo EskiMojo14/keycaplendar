@@ -3,11 +3,19 @@ import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
 import { SortOrderType } from "./types";
 
+/**
+ * Character replacements to be used in `replaceFunction`.
+ */
+
 export const replaceChars: [string, string][] = [
   ["β", "B"],
   ["æ", "ae"],
   ["🅱️", "B"],
 ];
+
+/**
+ * Stores name of corresponding set function for each setting.
+ */
 
 export const settingsFunctions: { [key: string]: string } = {
   view: "setView",
@@ -21,9 +29,21 @@ export const settingsFunctions: { [key: string]: string } = {
   density: "setDensity",
 };
 
+/**
+ * Pages which adhere to the normal calendar format.
+ */
+
 export const mainPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
 
+/**
+ * Main pages which can be accessed without being logged in.
+ */
+
 export const standardPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+
+/**
+ * Pages to allow linking to using URL params. (e.g. {@link https://keycaplendar.firebaseapp.com/?page=ic}).
+ */
 
 export const urlPages: string[] = [
   "calendar",
@@ -36,9 +56,21 @@ export const urlPages: string[] = [
   "settings",
 ];
 
+/**
+ * Pages which require being logged in.
+ */
+
 export const userPages: string[] = ["favorites", "hidden"];
 
+/**
+ * Pages which can only be used by users with the admin permission.
+ */
+
 export const adminPages: string[] = ["audit", "users", "images"];
+
+/**
+ * Formatted page title to use within nav and app bar.
+ */
 
 export const pageTitle: { [key: string]: string } = {
   calendar: "Calendar",
@@ -56,6 +88,10 @@ export const pageTitle: { [key: string]: string } = {
   images: "Images",
   settings: "Settings",
 };
+
+/**
+ * Corresponding icons for each page, to use in the nav drawer.
+ */
 
 export const pageIcons: { [key: string]: RMWC.IconPropT } = {
   calendar: iconObject(
@@ -170,6 +206,10 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
   ),
 };
 
+/**
+ * Default sorts for each page.
+ */
+
 export const pageSort: { [key: string]: string } = {
   calendar: "gbLaunch",
   live: "gbEnd",
@@ -180,6 +220,10 @@ export const pageSort: { [key: string]: string } = {
   favorites: "profile",
   hidden: "profile",
 };
+
+/**
+ * Default sort orders for each page.
+ */
 
 export const pageSortOrder: { [key: string]: SortOrderType } = {
   calendar: "ascending",
@@ -192,7 +236,15 @@ export const pageSortOrder: { [key: string]: SortOrderType } = {
   hidden: "ascending",
 };
 
+/**
+ * Pages to default to descending sort order if specified sort is a date.
+ */
+
 export const reverseSortDatePages = ["ic", "previous"];
+
+/**
+ * Formatted names for each sort.
+ */
 
 export const sortNames: { [key: string]: string } = {
   profile: "Profile",
@@ -203,6 +255,10 @@ export const sortNames: { [key: string]: string } = {
   gbEnd: "End date",
 };
 
+/**
+ * Pages to *not* show specified sort on.
+ */
+
 export const sortBlacklist: { [key: string]: string[] } = {
   profile: [],
   designer: [],
@@ -212,15 +268,39 @@ export const sortBlacklist: { [key: string]: string[] } = {
   gbEnd: ["ic", "timeline", "archive", "favorites", "hidden"],
 };
 
+/**
+ * Sort params which are dates.
+ */
+
 export const dateSorts = ["icDate", "gbLaunch", "gbEnd"];
+
+/**
+ * Sort params which are arrays.
+ */
 
 export const arraySorts = ["designer"];
 
+/**
+ * Possible values for shipped whitelist items.
+ */
+
 export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
 
+/**
+ * Whitelist params which can be specified in the URL (e.g. {@link https://keycaplendar.firebaseapp.com/?profile=GMK})
+ *
+ */
+
 export const whitelistParams: string[] = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
+/**
+ * Tabs on the statistics page.
+ */
 
 export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
+
+/**
+ * Formatted names for each main view.
+ */
 
 export const viewNames: { [key: string]: string } = {
   card: "Card",
@@ -228,6 +308,10 @@ export const viewNames: { [key: string]: string } = {
   imageList: "Image List",
   compact: "Compact",
 };
+
+/**
+ * Corresponding icon for specified view, to be used in the app bar.
+ */
 
 export const viewIcons: { [key: string]: RMWC.IconPropT } = {
   card: iconObject(

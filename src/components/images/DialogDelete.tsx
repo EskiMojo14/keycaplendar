@@ -19,7 +19,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
   };
   const createArray = (allVersions = deleteAllVersions) => {

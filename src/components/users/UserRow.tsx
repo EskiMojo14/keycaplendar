@@ -58,14 +58,14 @@ export class UserRow extends React.Component<UserRowProps, UserCardState> {
       this.setState({ user: this.props.user, edited: false });
     }
   }
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const user = { ...this.state.user, [e.target.name]: e.target.checked };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -75,7 +75,7 @@ export class UserRow extends React.Component<UserRowProps, UserCardState> {
       focused: "",
     });
   };
-  handleTextChange = (e: any) => {
+  handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
       user: user,

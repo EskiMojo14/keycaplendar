@@ -31,7 +31,7 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
       this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
   };
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState<never>({ [e.target.name]: e.target.value });
   };
   savePreset = () => {

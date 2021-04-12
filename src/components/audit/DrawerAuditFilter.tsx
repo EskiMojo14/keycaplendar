@@ -34,10 +34,11 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
       props.getActions(num);
     }
   };
-  const handleChange = (e: any) => {
-    setAuditLength(e.target.value);
-    if (e.target.value >= 50 && e.target.value % 50 === 0) {
-      getActions(e.target.value);
+  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const length = parseInt(e.target.value);
+    setAuditLength(length);
+    if (length >= 50 && length % 50 === 0) {
+      getActions(length);
     }
   };
   return (
@@ -79,7 +80,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
               max={250}
               step={50}
               value={auditLength}
-              onChange={handleChange}
+              onChange={handleLengthChange}
             />
           </div>
         </div>

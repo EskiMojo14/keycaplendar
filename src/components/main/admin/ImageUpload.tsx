@@ -68,7 +68,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
     };
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState<never>({
       [e.target.name]: e.target.value,
     });
@@ -92,24 +92,24 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
     xhr.send();
   };
 
-  dragEnter = (e: any) => {
+  dragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ dragOver: true });
   };
 
-  dragLeave = (e: any) => {
+  dragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ dragOver: false });
   };
 
-  dragOver = (e: any) => {
+  dragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  onDrop = (e: any) => {
+  onDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ loading: true });
@@ -124,13 +124,16 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
     }
   };
 
-  fileChange = (e: any) => {
+  fileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ loading: true });
-    const file = e.target.files[0];
-    this.props.setImage(file);
-    this.setState({ dragOver: false });
+    const files = e.target.files;
+    if (files) {
+      const file = files[0];
+      this.props.setImage(file);
+      this.setState({ dragOver: false });
+    }
   };
 
   fromUrl = () => {
@@ -143,48 +146,6 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
       imageLink: "",
     });
   };
-
-  componentDidMount() {
-    const dropArea = document.getElementById("drop-area");
-    if (dropArea) {
-      dropArea.addEventListener(
-        "dragenter",
-        (e) => {
-          if (!this.state.imageFromURL) {
-            this.dragEnter(e);
-          }
-        },
-        false
-      );
-      dropArea.addEventListener(
-        "dragleave",
-        (e) => {
-          if (!this.state.imageFromURL) {
-            this.dragLeave(e);
-          }
-        },
-        false
-      );
-      dropArea.addEventListener(
-        "dragover",
-        (e) => {
-          if (!this.state.imageFromURL) {
-            this.dragOver(e);
-          }
-        },
-        false
-      );
-      dropArea.addEventListener(
-        "drop",
-        (e) => {
-          if (!this.state.imageFromURL) {
-            this.onDrop(e);
-          }
-        },
-        false
-      );
-    }
-  }
   render() {
     const imageTextField = this.state.imageFromURL ? (
       <TextField
@@ -252,8 +213,27 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
         </Typography>
         <div className="image-upload-form">
           <div
-            id="drop-area"
             className={classNames("image-display", { over: this.state.dragOver, image: this.state.hasImage })}
+            onDragEnter={(e) => {
+              if (!this.state.imageFromURL) {
+                this.dragEnter(e);
+              }
+            }}
+            onDragLeave={(e) => {
+              if (!this.state.imageFromURL) {
+                this.dragLeave(e);
+              }
+            }}
+            onDragOver={(e) => {
+              if (!this.state.imageFromURL) {
+                this.dragOver(e);
+              }
+            }}
+            onDrop={(e) => {
+              if (!this.state.imageFromURL) {
+                this.onDrop(e);
+              }
+            }}
           >
             {loadingIndicator}
             {areaInner}

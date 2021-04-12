@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import classNames from "classnames";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
+import { hasKey } from "../../util/functions";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -40,7 +41,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
           <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
-            {Object.keys(quantities).includes(page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
+            {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
           </ListItem>
         );
       })}

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
 import { Keyset } from "../../util/constructors";
-import { openModal, closeModal, hasKey } from "../../util/functions";
+import { openModal, closeModal, hasKey, alphabeticalSortProp } from "../../util/functions";
 import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -58,7 +58,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
     deleteAction: {
       before: new Keyset(),
       after: new Keyset(),
-      action: "",
+      action: "created",
       changelogId: "",
       documentId: "",
       timestamp: "",
@@ -112,7 +112,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
         deleteAction: {
           before: new Keyset(),
           after: new Keyset(),
-          action: "",
+          action: "created",
           changelogId: "",
           documentId: "",
           timestamp: "",
@@ -125,7 +125,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       });
     }, 100);
   };
-  handleFilterChange = (e: any, prop: string) => {
+  handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
     if (hasKey(this.state, prop)) {
       this.setState<never>({
         [prop]: e.target.value,
@@ -161,17 +161,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
           }
         });
 
-        actions.sort(function (a, b) {
-          const x = a.timestamp.toLowerCase();
-          const y = b.timestamp.toLowerCase();
-          if (x < y) {
-            return 1;
-          }
-          if (x > y) {
-            return -1;
-          }
-          return 0;
-        });
+        alphabeticalSortProp(actions, "timestamp", true);
 
         this.setState({
           actions: actions,
@@ -236,6 +226,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       "designer",
       "icDate",
       "details",
+      "notes",
       "gbMonth",
       "gbLaunch",
       "gbEnd",

@@ -38,7 +38,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
