@@ -14,7 +14,7 @@ API documentation is available on [Stoplight](https://keycaplendar.stoplight.io/
 
 Site code is stored in `/src`, and is built by running `npm run build` in the root directory. It compiles into `/public`.
 
-Firebase Functions code is stored in `/functions`, and is built by running `npm run build` within the `/functions` directory. It compiles into `/functions/lib`.
+Firebase Functions code is stored in `/functions/src`, and is built by running `npm run build` within the `/functions` directory. It compiles into `/functions/lib`.
 
 I tend to work alone when developing KeycapLendar, but on rare occasions I have worked with people when developing certain features.
 
