@@ -4,6 +4,10 @@ import * as jwt from "jsonwebtoken";
 
 const db = admin.firestore();
 
+/**
+ * Takes a key and secret within a POST request, and returns a JWT token to be used in other API operations.
+ */
+
 export const apiAuth = functions.https.onRequest(async (request, response) => {
   const key = request.body.key;
   const secret = request.body.secret;
@@ -45,6 +49,12 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
   response.status(200).send({ token: accessToken });
 });
 
+/**
+ * Verifies a request by checking the JWT bearer token in the authorisation header.
+ * @param req HTTPS request.
+ * @returns Whether the request has the correct JWT token.
+ */
+
 const verify = (req: functions.Request) => {
   if (req.headers.authorization) {
     const accessToken = req.headers.authorization.split(" ");
@@ -60,6 +70,10 @@ const verify = (req: functions.Request) => {
   }
   return false;
 };
+
+/**
+ * Returns all keysets according to the included URL params. Requires the JWT token from `apiAuth` in the authorisation header.
+ */
 
 export const getAllKeysets = functions.https.onRequest(async (request, response) => {
   const auth = verify(request);
@@ -103,6 +117,10 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
     returnKeysets(keysetsRef);
   }
 });
+
+/**
+ * Returns the keyset with the included ID. Requires the JWT token from `apiAuth` in the authorisation header.
+ */
 
 export const getKeysetById = functions.https.onRequest(async (request, response) => {
   const auth = verify(request);

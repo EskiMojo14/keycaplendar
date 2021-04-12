@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
 import { UserContext } from "../../util/contexts";
-import { hasKey, iconObject } from "../../util/functions";
+import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
 import { SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
@@ -68,19 +68,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
     let shippedLine;
     const chips: string[] = [];
     const chipsContent = ["profile", "colorway", "designer", "vendors"];
-    const sortedVendors = set.vendors
-      ? set.vendors.sort((a, b) => {
-          const regionA = a.region.toLowerCase();
-          const regionB = b.region.toLowerCase();
-          if (regionA < regionB) {
-            return -1;
-          }
-          if (regionA > regionB) {
-            return 1;
-          }
-          return 0;
-        })
-      : [];
+    const sortedVendors = set.vendors ? alphabeticalSortProp(set.vendors, "region") : [];
 
     if (set.icDate) {
       gbLaunch = set.gbLaunch ? (set.gbLaunch.includes("Q") ? set.gbLaunch : moment.utc(set.gbLaunch)) : null;

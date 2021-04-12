@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
 import {
@@ -29,18 +29,22 @@ import { Typography } from "@rmwc/typography";
 import "./DrawerEntry.scss";
 import { QueueType, SetType, VendorType } from "../../../util/types";
 
-const getVendorStyle = (provided: any) => {
+const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
-  let transform = style.transform;
-  if (style.transform) {
-    const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
-    const axisLockY = "translate(0px, " + YVal + "px)";
-    transform = axisLockY;
+  if (style) {
+    let transform = style.transform;
+    if (style.transform) {
+      const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
+      const axisLockY = "translate(0px, " + YVal + "px)";
+      transform = axisLockY;
+    }
+    return {
+      ...style,
+      transform: transform,
+    };
+  } else {
+    return style;
   }
-  return {
-    ...style,
-    transform: transform,
-  };
 };
 
 type DrawerCreateProps = {
@@ -136,7 +140,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     });
   };
 
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -184,7 +188,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     }
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
@@ -209,10 +213,10 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     }
   };
 
-  handleChangeVendor = (e: any) => {
+  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
     const property = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
@@ -222,9 +226,9 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     }
   };
 
-  handleChangeVendorEndDate = (e: any) => {
+  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (e.target.checked) {
       vendor.endDate = "";
@@ -256,7 +260,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     });
   };
 
-  handleDragVendor = (result: any) => {
+  handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     const vendors = [...this.state.vendors];
     arrayMove(vendors, result.source.index, result.destination.index);
@@ -997,7 +1001,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     });
   };
 
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -1043,7 +1047,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     }
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
@@ -1068,10 +1072,10 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     }
   };
 
-  handleChangeVendor = (e: any) => {
+  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
     const property = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
@@ -1081,8 +1085,8 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     }
   };
 
-  handleChangeVendorEndDate = (e: any) => {
-    const index = e.target.name.replace(/\D/g, "");
+  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendors = [...this.state.vendors];
     const vendor = vendors[index];
     if (e.target.checked) {
@@ -1115,7 +1119,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     });
   };
 
-  handleDragVendor = (result: any) => {
+  handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     const vendors = [...this.state.vendors];
     arrayMove(vendors, result.source.index, result.destination.index);

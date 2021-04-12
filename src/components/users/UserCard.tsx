@@ -60,7 +60,7 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
       this.setState({ user: this.props.user, edited: false });
     }
   }
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -70,14 +70,14 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
       focused: "",
     });
   };
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const user = { ...this.state.user, [e.target.name]: e.target.value };
     this.setState({
       user: user,
       edited: true,
     });
   };
-  selectValue = (prop: string, value: any) => {
+  selectValue = (prop: string, value: string | boolean) => {
     const user = { ...this.state.user, [prop]: value };
     this.setState({
       user: user,

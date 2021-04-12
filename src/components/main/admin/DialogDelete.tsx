@@ -15,7 +15,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const { user } = useContext(UserContext);
-  const deleteEntry = (e: any) => {
+  const deleteEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const db = firebase.firestore();
     db.collection("keysets")

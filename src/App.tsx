@@ -26,7 +26,15 @@ import {
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
-import { addOrRemove, alphabeticalSort, hasKey, normalise, replaceFunction, uniqueArray } from "./util/functions";
+import {
+  addOrRemove,
+  alphabeticalSort,
+  alphabeticalSortProp,
+  hasKey,
+  normalise,
+  replaceFunction,
+  uniqueArray,
+} from "./util/functions";
 import {
   ArraySortKeys,
   CurrentUserType,
@@ -35,6 +43,7 @@ import {
   PresetType,
   SetType,
   SortOrderType,
+  VendorType,
 } from "./util/types";
 import "./App.scss";
 
@@ -447,17 +456,7 @@ class App extends React.Component<AppProps, AppState> {
           }
         });
 
-        sets.sort(function (a, b) {
-          const x = a.colorway.toLowerCase();
-          const y = b.colorway.toLowerCase();
-          if (x < y) {
-            return -1;
-          }
-          if (x > y) {
-            return 1;
-          }
-          return 0;
-        });
+        alphabeticalSortProp(sets, "colorway");
 
         this.setState({
           sets: sets,
@@ -486,14 +485,16 @@ class App extends React.Component<AppProps, AppState> {
 
     // console log sets with space at end of string
     if (this.state.user.isAdmin) {
-      const testValue = (set: SetType, key: string, value: string) => {
-        const regex = /\s+$/m;
-        const regex2 = /^\s+/;
-        const bool = regex.test(value) || regex2.test(value);
-        if (bool) {
-          console.log(
-            `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
-          );
+      const testValue = (set: SetType, key: string, value?: string) => {
+        if (value) {
+          const regex = /\s+$/m;
+          const regex2 = /^\s+/;
+          const bool = regex.test(value) || regex2.test(value);
+          if (bool) {
+            console.log(
+              `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
+            );
+          }
         }
       };
       sets.forEach((set) => {
@@ -503,7 +504,7 @@ class App extends React.Component<AppProps, AppState> {
             if (typeof value === "string") {
               testValue(set, key, value);
             } else if (value instanceof Array) {
-              value.forEach((item: any) => {
+              value.forEach((item: string | VendorType) => {
                 if (typeof item === "string") {
                   testValue(set, key, item);
                 } else if (typeof item === "object") {
@@ -1116,23 +1117,6 @@ class App extends React.Component<AppProps, AppState> {
     const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
-  sortPresets = (presets: PresetType[]) => {
-    presets.sort(function (a, b) {
-      if (a.name === "Default" || b.name === "Default") {
-        return a.name === "Default" ? -1 : 1;
-      }
-      const x = a.name.toLowerCase();
-      const y = b.name.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
-    return presets;
-  };
   selectPreset = (presetName: string) => {
     const preset = this.findPreset("name", presetName);
     this.setState({ preset: preset });
@@ -1141,27 +1125,32 @@ class App extends React.Component<AppProps, AppState> {
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
     const presets = [...this.state.presets, preset];
-    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    alphabeticalSortProp(presets, "name", false, "Default");
+    this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
   };
   editPreset = (preset: PresetType) => {
     const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
     const presets = [...this.state.presets];
     presets[index] = preset;
-    this.setState({ presets: this.sortPresets(presets), preset: preset });
+    alphabeticalSortProp(presets, "name", false, "Default");
+    this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
   };
   deletePreset = (preset: PresetType) => {
     const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
+    alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({
-      presets: this.sortPresets(presets),
+      presets: presets,
       preset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
     });
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.presets) => {
     const filteredPresets = presets.filter((preset) => preset.name !== "Default");
-    const sortedPresets = this.sortPresets(filteredPresets).map((preset) => ({ ...preset }));
+    const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false, "Default").map((preset) => ({
+      ...preset,
+    }));
     db.collection("users")
       .doc(this.state.user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })

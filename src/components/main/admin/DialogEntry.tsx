@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
 import {
@@ -30,18 +30,22 @@ import { Autocomplete } from "../../util/Autocomplete";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import "./DialogEntry.scss";
 
-const getVendorStyle = (provided: any) => {
+const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
-  let transform = style.transform;
-  if (style.transform) {
-    const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
-    const axisLockY = "translate(0px, " + YVal + "px)";
-    transform = axisLockY;
+  if (style) {
+    let transform = style.transform;
+    if (style.transform) {
+      const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
+      const axisLockY = "translate(0px, " + YVal + "px)";
+      transform = axisLockY;
+    }
+    return {
+      ...style,
+      transform: transform,
+    };
+  } else {
+    return style;
   }
-  return {
-    ...style,
-    transform: transform,
-  };
 };
 
 type DialogCreateProps = {
@@ -131,7 +135,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     this.props.close();
   };
 
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -185,7 +189,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     });
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
@@ -210,10 +214,10 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     }
   };
 
-  handleChangeVendor = (e: any) => {
+  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
     const property = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
@@ -223,9 +227,9 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     }
   };
 
-  handleChangeVendorEndDate = (e: any) => {
+  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (e.target.checked) {
       vendor.endDate = "";
@@ -257,7 +261,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     });
   };
 
-  handleDragVendor = (result: any) => {
+  handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     const vendors = [...this.state.vendors];
     arrayMove(vendors, result.source.index, result.destination.index);
@@ -340,7 +344,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
-        this.props.snackbarQueue.notify({ title: "Error adding entry: ", error });
+        this.props.snackbarQueue.notify({ title: "Error adding entry: " + error });
       });
   };
 
@@ -945,7 +949,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     this.props.close();
   };
 
-  handleFocus = (e: any) => {
+  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     this.setState({
       focused: e.target.name,
     });
@@ -1026,7 +1030,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     });
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     if (e.target.name === "designer") {
       this.setState<never>({
@@ -1051,10 +1055,10 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     }
   };
 
-  handleChangeVendor = (e: any) => {
+  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vendors = [...this.state.vendors];
     const property = e.target.name.replace(/\d/g, "");
-    const index = e.target.name.replace(/\D/g, "");
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
@@ -1064,8 +1068,8 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     }
   };
 
-  handleChangeVendorEndDate = (e: any) => {
-    const index = e.target.name.replace(/\D/g, "");
+  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendors = [...this.state.vendors];
     const vendor = vendors[index];
     if (e.target.checked) {
@@ -1104,7 +1108,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     });
   };
 
-  handleDragVendor = (result: any) => {
+  handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     const vendors = [...this.state.vendors];
     arrayMove(vendors, result.source.index, result.destination.index);

@@ -1,5 +1,9 @@
 import React from "react";
 
+/**
+ * Takes a condition, a wrapper function and children, and wraps children in wrapper if condition is true.
+ */
+
 export const ConditionalWrapper = ({
   condition,
   wrapper,
@@ -11,6 +15,10 @@ export const ConditionalWrapper = ({
 }): JSX.Element => {
   return condition ? wrapper(<>{children}</>) : <>{children}</>;
 };
+
+/**
+ * Takes a condition, two wrapper functions and children, and wraps children in corresponding wrapper for condition.
+ */
 
 export const BoolWrapper = ({
   condition,

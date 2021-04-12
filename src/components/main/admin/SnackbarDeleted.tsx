@@ -15,7 +15,7 @@ type SnackbarDeletedProps = {
 
 export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const { user } = useContext(UserContext);
-  const recreateEntry = (e: any) => {
+  const recreateEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { id, ...set } = props.set;
     const db = firebase.firestore();
