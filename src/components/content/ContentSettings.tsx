@@ -62,9 +62,8 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         props.snackbarQueue.notify({ title: "Error signing out: " + error });
       });
   };
-  const setApplyTheme = (e: any) => {
-    const applyThemeOptions = ["manual", "timed", "system"];
-    props.setApplyTheme(applyThemeOptions[e.detail.index]);
+  const setApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    props.setApplyTheme(e.target.value.toLowerCase());
   };
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
@@ -311,9 +310,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
                     outlined
                     value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
                     options={["Manual", "Timed", "System"]}
-                    onChange={(e) => {
-                      setApplyTheme(e);
-                    }}
+                    onChange={setApplyTheme}
                   />
                 </FormField>
                 {themeOptions}

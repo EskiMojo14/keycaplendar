@@ -125,7 +125,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       });
     }, 100);
   };
-  handleFilterChange = (e: any, prop: string) => {
+  handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
     if (hasKey(this.state, prop)) {
       this.setState<never>({
         [prop]: e.target.value,

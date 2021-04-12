@@ -43,6 +43,7 @@ import {
   PresetType,
   SetType,
   SortOrderType,
+  VendorType,
 } from "./util/types";
 import "./App.scss";
 
@@ -484,14 +485,16 @@ class App extends React.Component<AppProps, AppState> {
 
     // console log sets with space at end of string
     if (this.state.user.isAdmin) {
-      const testValue = (set: SetType, key: string, value: string) => {
-        const regex = /\s+$/m;
-        const regex2 = /^\s+/;
-        const bool = regex.test(value) || regex2.test(value);
-        if (bool) {
-          console.log(
-            `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
-          );
+      const testValue = (set: SetType, key: string, value?: string) => {
+        if (value) {
+          const regex = /\s+$/m;
+          const regex2 = /^\s+/;
+          const bool = regex.test(value) || regex2.test(value);
+          if (bool) {
+            console.log(
+              `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
+            );
+          }
         }
       };
       sets.forEach((set) => {
@@ -501,7 +504,7 @@ class App extends React.Component<AppProps, AppState> {
             if (typeof value === "string") {
               testValue(set, key, value);
             } else if (value instanceof Array) {
-              value.forEach((item: any) => {
+              value.forEach((item: string | VendorType) => {
                 if (typeof item === "string") {
                   testValue(set, key, item);
                 } else if (typeof item === "object") {

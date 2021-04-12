@@ -254,7 +254,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
         }
       });
   };
-  setRowsPerPage = (e: any) => {
+  setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
     this.setState({ rowsPerPage: val, page: 1 });
     this.paginateUsers(this.state.sortedUsers, 1, val);

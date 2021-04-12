@@ -43,8 +43,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     setModified(!equal);
   }, [preset.whitelist, props.whitelist]);
 
-  const selectPresetFn = (e: any) => {
-    selectPreset(e.detail.value);
+  const selectPresetFn = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    selectPreset(e.target.value);
   };
 
   const newPreset = () => {

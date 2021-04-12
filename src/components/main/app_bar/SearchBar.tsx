@@ -34,7 +34,7 @@ export class SearchBarPersistent extends React.Component<SearchBarPersistentProp
       this.createSearchTerms();
     }
   }
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       expanded: e.target.value.length !== 0,
     });
@@ -211,7 +211,7 @@ export class SearchBarModal extends React.Component<SearchBarModalProps, SearchB
       this.props.setSearch("");
     }, 200);
   }
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.setSearch(e.target.value);
   };
   handleFocus = () => {
@@ -347,7 +347,7 @@ export class SearchAppBar extends React.Component<SearchAppBarProps, SearchAppBa
       this.createSearchTerms();
     }
   }
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.props.setSearch(e.target.value);
   };
   handleFocus = () => {
