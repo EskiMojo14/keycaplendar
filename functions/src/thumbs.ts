@@ -10,6 +10,10 @@ const runtimeOpts: functions.RuntimeOptions = {
   memory: "2GB",
 };
 
+/**
+ * Creates thumbnails for image when uploaded to `/keysets`, then deletes original.
+ */
+
 export const createThumbsAuto = functions
   .runWith(runtimeOpts)
   .storage.object()
@@ -130,6 +134,10 @@ export const createThumbsAuto = functions
     }
     return null;
   });
+
+/**
+ *  Create thumbs for all images within `/keysets`.
+ */
 
 export const createThumbs = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {

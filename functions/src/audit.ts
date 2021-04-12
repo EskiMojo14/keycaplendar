@@ -3,6 +3,10 @@ import * as functions from "firebase-functions";
 
 const db = admin.firestore();
 
+/**
+ * Creates audit log entry upon keyset change. Additionally, deletes document if it's "empty".
+ */
+
 export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}").onWrite(async (change, context) => {
   if (!change.before.data()) {
     console.log("Document created");

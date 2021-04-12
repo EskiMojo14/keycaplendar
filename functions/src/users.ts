@@ -3,6 +3,10 @@ import * as functions from "firebase-functions";
 
 const db = admin.firestore();
 
+/**
+ * Returns custom claims for current user.
+ */
+
 export const getClaims = functions.https.onCall((data, context) => {
   if (context.auth) {
     return {
@@ -19,6 +23,10 @@ export const getClaims = functions.https.onCall((data, context) => {
     admin: false,
   };
 });
+
+/**
+ * Lists all users if current user is admin.
+ */
 
 export const listUsers = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
@@ -78,6 +86,10 @@ export const listUsers = functions.https.onCall(async (data, context) => {
   return result;
 });
 
+/**
+ * Deletes specified user if current user is admin.
+ */
+
 export const deleteUser = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
     return {
@@ -114,6 +126,10 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
     });
   return "Success";
 });
+
+/**
+ * Sets custom claims to specified values if current user is admin.
+ */
 
 export const setRoles = functions.https.onCall(async (data, context) => {
   if (!context.auth || context.auth.token.admin !== true) {
