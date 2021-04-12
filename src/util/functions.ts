@@ -1,8 +1,8 @@
-import { replaceChars } from "./constants";
-import firebase from "../firebase";
 import React from "react";
-import { SetType } from "./types";
 import moment from "moment";
+import firebase from "../firebase";
+import { replaceChars } from "./constants";
+import { SetType } from "./types";
 
 const storage = firebase.storage();
 
@@ -32,6 +32,12 @@ export function addOrRemove<T>(oldArray: T[], value: T): T[] {
   return array;
 }
 
+/**
+ *
+ * @param array Array of strings to be sorted.
+ * @returns Array sorted alphabetically in ascending order.
+ */
+
 export function alphabeticalSort(array: string[]) {
   array.sort((a, b) => {
     const x = a.toLowerCase();
@@ -40,6 +46,34 @@ export function alphabeticalSort(array: string[]) {
       return -1;
     }
     if (x > y) {
+      return 1;
+    }
+    return 0;
+  });
+  return array;
+}
+
+/**
+ *
+ * @param array Array of identical objects.
+ * @param prop Property to sort objects by.
+ * @param hoist Value to be hoisted to beginning of array.
+ * @returns Array sorted by provided prop, with hoisted value at the beginning if provided.
+ */
+
+export function alphabeticalSortProp<O extends Record<string, unknown>>(array: O[], prop: keyof O, hoist?: O[keyof O]) {
+  array.sort((a, b) => {
+    const x = a[prop];
+    const y = b[prop];
+    if (hoist && (x === hoist || y === hoist)) {
+      return x === hoist ? -1 : 1;
+    }
+    const c = typeof x === "string" ? x.toLowerCase() : x;
+    const d = typeof y === "string" ? y.toLowerCase() : y;
+    if (c < d) {
+      return -1;
+    }
+    if (c > d) {
       return 1;
     }
     return 0;

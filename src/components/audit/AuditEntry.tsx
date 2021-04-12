@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import { hasKey } from "../../util/functions";
+import { alphabeticalSortProp, hasKey } from "../../util/functions";
 import { ActionType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import {
@@ -138,33 +138,9 @@ export const AuditEntry = (props: AuditEntryProps) => {
                     </DataTableRow>
                   );
                 } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
-                  const beforeVendors = props.action.before.vendors;
+                  const beforeVendors = alphabeticalSortProp(props.action.before.vendors, "region");
 
-                  beforeVendors.sort(function (a, b) {
-                    const x = a.region.toLowerCase();
-                    const y = b.region.toLowerCase();
-                    if (x < y) {
-                      return -1;
-                    }
-                    if (x > y) {
-                      return 1;
-                    }
-                    return 0;
-                  });
-
-                  const afterVendors = props.action.after.vendors;
-
-                  afterVendors.sort(function (a, b) {
-                    const x = a.region.toLowerCase();
-                    const y = b.region.toLowerCase();
-                    if (x < y) {
-                      return -1;
-                    }
-                    if (x > y) {
-                      return 1;
-                    }
-                    return 0;
-                  });
+                  const afterVendors = alphabeticalSortProp(props.action.after.vendors, "region");
 
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   return moreVendors.map((_vendor, index) => {

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import { DeviceContext } from "../../util/contexts";
 import { Keyset } from "../../util/constructors";
-import { openModal, closeModal, hasKey } from "../../util/functions";
+import { openModal, closeModal, hasKey, alphabeticalSortProp } from "../../util/functions";
 import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -161,17 +161,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
           }
         });
 
-        actions.sort(function (a, b) {
-          const x = a.timestamp.toLowerCase();
-          const y = b.timestamp.toLowerCase();
-          if (x < y) {
-            return 1;
-          }
-          if (x > y) {
-            return -1;
-          }
-          return 0;
-        });
+        alphabeticalSortProp(actions, "timestamp");
 
         this.setState({
           actions: actions,
