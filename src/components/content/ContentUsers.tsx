@@ -92,7 +92,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
     viewMenuOpen: false,
     sortMenuOpen: false,
   };
-  getUsers = () => {
+  getUsers = (append = false) => {
     if (!this.state.loading) {
       this.toggleLoading();
     }
@@ -109,7 +109,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
             if (this.state.loading) {
               this.toggleLoading();
             }
-            const users = [...this.state.users, ...result.data.users];
+            const users = append ? [...this.state.users, ...result.data.users] : [...result.data.users];
             this.sortUsers(users);
             this.setState({ users: users, nextPageToken: result.data.nextPageToken });
           }
@@ -458,7 +458,9 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                             label={"Next " + length}
                             outlined
                             disabled={!this.state.nextPageToken}
-                            onClick={this.getUsers}
+                            onClick={() => {
+                              this.getUsers(true);
+                            }}
                           />
                         </div>
                         <DataTablePaginationTrailing>
