@@ -37,6 +37,11 @@
             flex-shrink: 0;
           }
         }
+        .delete-container {
+          padding: 16px;
+          display: flex;
+          justify-content: flex-end;
+        }
         &.theme-card {
           padding: 16px;
           .theme-form-field {

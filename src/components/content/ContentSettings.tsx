@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../../util/contexts";
+import { boolFunctions } from "../../util/functions";
 import { QueueType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -24,6 +25,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { Footer } from "../common/Footer";
+import { DialogDelete } from "../settings/DialogDelete";
 import "./ContentSettings.scss";
 
 type ContentSettingsProps = {
@@ -50,6 +52,8 @@ type ContentSettingsProps = {
 export const ContentSettings = (props: ContentSettingsProps) => {
   const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const device = useContext(DeviceContext);
+  const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
+  const [closeDeleteDialog, openDeleteDialog] = boolFunctions(setDialogDeleteOpen);
   const signOut = () => {
     firebase
       .auth()
@@ -115,7 +119,6 @@ export const ContentSettings = (props: ContentSettingsProps) => {
               {userBadge}
             </BadgeAnchor>
           ) : null}
-
           <ListItemText>
             {user.nickname ? <div className="overline">{user.nickname}</div> : null}
             <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
@@ -132,8 +135,19 @@ export const ContentSettings = (props: ContentSettingsProps) => {
             onChange={(evt) => setSyncSettings(evt.currentTarget.checked)}
           />
         </div>
+        <div className="delete-container">
+          <Button className="delete" label="Delete account" outlined onClick={openDeleteDialog} />
+        </div>
       </Card>
     </div>
+  ) : null;
+  const deleteUserDialog = user.email ? (
+    <DialogDelete
+      open={deleteDialogOpen}
+      close={closeDeleteDialog}
+      snackbarQueue={props.snackbarQueue}
+      signOut={signOut}
+    />
   ) : null;
   const bottomNav =
     device === "mobile" ? (
@@ -354,6 +368,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       </div>
       <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {deleteUserDialog}
     </>
   );
 };
