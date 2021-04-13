@@ -196,6 +196,10 @@ export const PrivacyPolicy = () => {
             the steps we will take to deal with your complaint. You also have the right to contact a regulatory body or
             data protection authority in relation to your complaint.
           </Typography>
+          <Typography use="body2" tag="p">
+            You have the right to have your personal information erased at any time, and the site allows you to do this.
+            You can also contact us to make sure all information is removed.
+          </Typography>
           <Typography use="headline5">Use of Cookies</Typography>
           <Typography use="body2" tag="p">
             We use “cookies” to collect information about you and your activity across our site. A cookie is a small
