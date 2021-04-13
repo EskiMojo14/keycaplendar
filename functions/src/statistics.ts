@@ -723,6 +723,10 @@ const runtimeOpts: functions.RuntimeOptions = {
   memory: "2GB",
 };
 
+/**
+ * Creates statistics data, and returns it. Possibly planning to refactor into a pubsub function which writes to firestore.
+ */
+
 export const createStatistics = functions
   .runWith(runtimeOpts)
   /* .pubsub.schedule("every 60 minutes")
