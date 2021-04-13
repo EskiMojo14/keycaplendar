@@ -10,7 +10,8 @@ import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
 import { EntryGuide } from "./components/pages/guides/EntryGuide";
-import { PrivacyPolicy, TermsOfService } from "./components/pages/Legal";
+import { PrivacyPolicy } from "./components/pages/legal/Privacy";
+import { TermsOfService } from "./components/pages/legal/Terms";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import {
   pageTitle,
