@@ -432,7 +432,7 @@ class App extends React.Component<AppProps, AppState> {
         const sets: SetType[] = [];
         querySnapshot.forEach((doc) => {
           if (doc.data().profile) {
-            const lastOfMonth = moment(doc.data().gbLaunch).daysInMonth();
+            const lastOfMonth = moment(doc.data().gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]).daysInMonth();
             const gbLaunch =
               doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
             const sales =
@@ -547,11 +547,11 @@ class App extends React.Component<AppProps, AppState> {
 
     const pageBool = (set: SetType): boolean => {
       if (page === "calendar") {
-        const startDate = moment.utc(set.gbLaunch);
+        const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
         const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
         return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
       } else if (page === "live") {
-        const startDate = moment.utc(set.gbLaunch);
+        const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
         const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
         return startDate <= today && (endDate >= yesterday || !set.gbEnd);
       } else if (page === "ic") {

@@ -823,7 +823,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               if (name === "All") {
                 propSets.forEach((set) => {
                   const startDate = moment(set[prop]);
-                  const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                  const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"], ["YYYY-MM-DD", "YYYY-MM"]);
                   const length = endDate.diff(startDate, prop === "icDate" ? "months" : "days");
                   data.push(length);
                 });
@@ -848,7 +848,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                   })
                   .forEach((set) => {
                     const startDate = moment(set[prop]);
-                    const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                    const endDate = moment(set[prop === "gbLaunch" ? "gbEnd" : "gbLaunch"], ["YYYY-MM-DD", "YYYY-MM"]);
                     const length = endDate.diff(startDate, prop === "icDate" ? "months" : "days");
                     data.push(length);
                   });
