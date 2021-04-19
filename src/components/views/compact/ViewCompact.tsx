@@ -24,7 +24,7 @@ export const ViewCompact = (props: ViewCompactProps) => {
           const gbLaunch = set.gbLaunch
             ? set.gbLaunch.includes("Q") || !set.gbLaunch
               ? set.gbLaunch
-              : moment.utc(set.gbLaunch)
+              : moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"])
             : null;
           const gbEnd = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
           const icDate = set.icDate ? moment.utc(set.icDate) : null;

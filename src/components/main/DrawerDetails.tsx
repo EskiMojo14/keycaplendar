@@ -71,7 +71,11 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
     const sortedVendors = set.vendors ? alphabeticalSortProp(set.vendors, "region") : [];
 
     if (set.icDate) {
-      gbLaunch = set.gbLaunch ? (set.gbLaunch.includes("Q") ? set.gbLaunch : moment.utc(set.gbLaunch)) : null;
+      gbLaunch = set.gbLaunch
+        ? set.gbLaunch.includes("Q")
+          ? set.gbLaunch
+          : moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"])
+        : null;
       gbEnd = set.gbEnd ? moment.utc(set.gbEnd) : null;
       icDate = moment.utc(set.icDate);
       ic = `IC posted ${icDate.format("Do\xa0MMMM")}${
