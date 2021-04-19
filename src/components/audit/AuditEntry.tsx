@@ -259,19 +259,15 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (
-                  boolProps.includes(property) &&
-                  typeof beforeProp === "boolean" &&
-                  typeof afterProp === "boolean"
-                ) {
+                } else if (boolProps.includes(property)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell hasFormControl className="before">
-                        <Checkbox checked={beforeProp} disabled />
+                        <Checkbox checked={!!beforeProp} disabled />
                       </DataTableCell>
                       <DataTableCell hasFormControl className="after">
-                        <Checkbox checked={afterProp} disabled />
+                        <Checkbox checked={!!afterProp} disabled />
                       </DataTableCell>
                     </DataTableRow>
                   );
