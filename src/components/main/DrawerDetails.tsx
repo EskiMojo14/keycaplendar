@@ -254,7 +254,11 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
       ) : null;
     const userButtons = this.context.user.email ? (
       <>
-        <Tooltip enterDelay={500} content="Favorite" align="bottom">
+        <Tooltip
+          enterDelay={500}
+          content={this.context.favorites.includes(this.props.set.id) ? "Unfavorite" : "Favorite"}
+          align="bottom"
+        >
           <IconButton
             icon="favorite_border"
             onIcon={iconObject(
@@ -272,7 +276,11 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
             onClick={() => this.context.toggleFavorite(this.props.set.id)}
           />
         </Tooltip>
-        <Tooltip enterDelay={500} content="Hide" align="bottom">
+        <Tooltip
+          enterDelay={500}
+          content={this.context.hidden.includes(this.props.set.id) ? "Unhide" : "Hide"}
+          align="bottom"
+        >
           <IconButton
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">

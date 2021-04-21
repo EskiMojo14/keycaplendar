@@ -98,7 +98,7 @@ export const ElementCard = (props: ElementCardProps) => {
     </Tooltip>
   ) : null;
   const favoriteIcon = user.email ? (
-    <Tooltip enterDelay={500} content="Favorite" align="bottom">
+    <Tooltip enterDelay={500} content={favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"} align="bottom">
       <CardActionIcon
         icon="favorite_border"
         onIcon={iconObject(
