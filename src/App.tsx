@@ -1191,6 +1191,16 @@ class App extends React.Component<AppProps, AppState> {
         this.getUserPreferences(user.uid);
       } else {
         this.setUser({});
+        const defaultPreset = this.findPreset("name", "Default");
+        const defaultSettings: Partial<AppState> = {
+          favorites: [],
+          hidden: [],
+        };
+        if (defaultPreset) {
+          this.setState<never>({ preset: defaultPreset, ...defaultSettings });
+        } else {
+          this.setState<never>(defaultSettings);
+        }
       }
     });
   }
