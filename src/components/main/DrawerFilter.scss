@@ -70,12 +70,18 @@
       }
     }
   }
-  .copy-button {
+  .top-buttons {
     display: flex;
     padding: 16px;
     @include util.divider-border(bottom);
     .mdc-button {
       flex: 1 1 100%;
+      &:first-child {
+        @include rtl.reflexive-box(margin, right, 8px);
+      }
+      &:last-child {
+        @include rtl.reflexive-box(margin, left, 8px);
+      }
     }
   }
   .mdc-drawer__content {
