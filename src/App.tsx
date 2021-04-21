@@ -926,35 +926,14 @@ class App extends React.Component<AppProps, AppState> {
           if (doc.exists) {
             const data = doc.data();
             const { favorites, hidden, settings, syncSettings, filterPresets } = data as UserPreferencesDoc;
-            if (favorites) {
+
+            if (favorites instanceof Array) {
               this.setState({ favorites: favorites });
-              if (this.state.page === "favorites") {
-                this.filterData(
-                  this.state.page,
-                  this.state.sets,
-                  this.state.sort,
-                  this.state.sortOrder,
-                  this.state.search,
-                  this.state.whitelist,
-                  favorites
-                );
-              }
             }
-            if (hidden) {
+            if (hidden instanceof Array) {
               this.setState({ hidden: hidden });
-              if (this.state.page === "favorites") {
-                this.filterData(
-                  this.state.page,
-                  this.state.sets,
-                  this.state.sort,
-                  this.state.sortOrder,
-                  this.state.search,
-                  this.state.whitelist,
-                  this.state.favorites,
-                  hidden
-                );
-              }
             }
+
             if (filterPresets) {
               const defaultPreset = new Preset(
                 "Default",
@@ -968,6 +947,7 @@ class App extends React.Component<AppProps, AppState> {
               const presets = [defaultPreset, ...filterPresets];
               this.setState({ presets: presets });
             }
+
             if (typeof syncSettings === "boolean") {
               this.setSyncSettings(syncSettings, false);
               if (syncSettings) {
@@ -988,6 +968,17 @@ class App extends React.Component<AppProps, AppState> {
                 });
               }
             }
+
+            this.filterData(
+              this.state.page,
+              this.state.sets,
+              this.state.sort,
+              this.state.sortOrder,
+              this.state.search,
+              this.state.whitelist,
+              favorites,
+              hidden
+            );
           }
         })
         .catch((error) => {
@@ -1038,6 +1029,19 @@ class App extends React.Component<AppProps, AppState> {
       this.state.favorites,
       hidden
     );
+    const setHidden = hidden.includes(id);
+    queue.notify({
+      title: `Set ${setHidden ? "hidden" : "unhidden"}.`,
+      actions: [
+        {
+          label: "Undo",
+          onClick: () => {
+            this.toggleHidden(id);
+          },
+        },
+      ],
+      timeout: 2500,
+    });
     if (this.state.user.id) {
       db.collection("users")
         .doc(this.state.user.id)
