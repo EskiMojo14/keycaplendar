@@ -332,7 +332,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         {closeIcon}
       </DrawerHeader>
       {presetMenu}
-      <div className="copy-button">
+      <div className="top-buttons">
+        <Button
+          outlined
+          label="Reset"
+          onClick={() => {
+            selectPreset(preset.name);
+          }}
+          disabled={!modified}
+        />
         <Button outlined label="Copy link" onClick={copyLink} disabled={preset.name === "Default" && !modified} />
       </div>
       <DrawerContent>
