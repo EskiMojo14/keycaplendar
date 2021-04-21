@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { boolFunctions } from "../../util/functions";
 import { QueueType } from "../../util/types";
@@ -140,7 +141,23 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         </div>
       </Card>
     </div>
-  ) : null;
+  ) : (
+    <div className="settings-group">
+      <div className="subheader">
+        <Typography use="caption">Account</Typography>
+      </div>
+      <Card className="placeholder-account">
+        <ListItem disabled className="account">
+          No user logged in.
+          <div className="button">
+            <Link to="/login">
+              <Button raised label="Log in" />
+            </Link>
+          </div>
+        </ListItem>
+      </Card>
+    </div>
+  );
   const deleteUserDialog = user.email ? (
     <DialogDelete
       open={deleteDialogOpen}
