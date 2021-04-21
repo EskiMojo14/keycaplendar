@@ -14,7 +14,7 @@ export const Login = () => {
 
   const device = useContext(DeviceContext);
 
-  const uiConfig = {
+  const uiConfig: firebaseui.auth.Config = {
     // Popup signin flow rather than redirect flow.
     signInFlow: device === "desktop" ? "popup" : "redirect",
     // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
@@ -46,7 +46,7 @@ export const Login = () => {
           Sign in
         </Typography>
         <Typography className="subtitle" use="body1" tag="p">
-          To allow editor access, please verify your account below.
+          Log in to gain access to features such as favourites, hiding sets, and filter presets.
         </Typography>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
       </div>
