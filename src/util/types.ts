@@ -132,9 +132,7 @@ export type StatisticsSortType = {
 export type QueueType = ReturnType<typeof createSnackbarQueue>;
 
 /** SetType but with all keys set to optional, as an action can include "deleted" sets. */
-export type ActionSetType = {
-  [S in keyof SetType]?: SetType[S];
-};
+export type ActionSetType = Partial<SetType>;
 
 export type ActionType = {
   action: "created" | "deleted" | "updated";
@@ -156,6 +154,26 @@ export type ImageType = {
   fullPath: string;
   /** URL to image, for display. */
   src: string;
+};
+
+export type Settings = {
+  view: string;
+  bottomNav: boolean;
+  applyTheme: string;
+  lightTheme: string;
+  darkTheme: string;
+  manualTheme: boolean;
+  fromTimeTheme: string;
+  toTimeTheme: string;
+  density: string;
+};
+
+export type UserPreferencesDoc = {
+  favorites?: string[];
+  filterPresets?: PresetType[];
+  hidden?: string[];
+  settings?: Partial<Settings>;
+  syncSettings?: boolean;
 };
 
 export type UserContextType = {

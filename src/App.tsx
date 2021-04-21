@@ -45,6 +45,7 @@ import {
   SetType,
   SortOrderType,
   VendorType,
+  UserPreferencesDoc,
 } from "./util/types";
 import "./App.scss";
 
@@ -914,6 +915,85 @@ class App extends React.Component<AppProps, AppState> {
     calculate();
     window.addEventListener("resize", calculate);
   };
+  getUserPreferences = (id: string) => {
+    if (id) {
+      db.collection("users")
+        .doc(id)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            const { favorites, hidden, settings, syncSettings, filterPresets } = data as UserPreferencesDoc;
+            if (favorites) {
+              this.setState({ favorites: favorites });
+              if (this.state.page === "favorites") {
+                this.filterData(
+                  this.state.page,
+                  this.state.sets,
+                  this.state.sort,
+                  this.state.sortOrder,
+                  this.state.search,
+                  this.state.whitelist,
+                  favorites
+                );
+              }
+            }
+            if (hidden) {
+              this.setState({ hidden: hidden });
+              if (this.state.page === "favorites") {
+                this.filterData(
+                  this.state.page,
+                  this.state.sets,
+                  this.state.sort,
+                  this.state.sortOrder,
+                  this.state.search,
+                  this.state.whitelist,
+                  this.state.favorites,
+                  hidden
+                );
+              }
+            }
+            if (filterPresets) {
+              const defaultPreset = new Preset(
+                "Default",
+                false,
+                false,
+                this.state.profiles,
+                ["Shipped", "Not shipped"],
+                "exclude",
+                []
+              );
+              const presets = [defaultPreset, ...filterPresets];
+              this.setState({ presets: presets });
+            }
+            if (typeof syncSettings === "boolean") {
+              this.setSyncSettings(syncSettings, false);
+              if (syncSettings) {
+                console.log(settings);
+                const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
+                  if (settings && hasKey(settings, setting)) {
+                    setFunction(settings[setting], false);
+                  }
+                };
+                Object.keys(settingsFunctions).forEach((setting) => {
+                  if (hasKey(settingsFunctions, setting)) {
+                    const key = settingsFunctions[setting];
+                    if (hasKey<App>(this, key)) {
+                      const func = this[key];
+                      getSetting(setting, func);
+                    }
+                  }
+                });
+              }
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Failed to get user preferences: " + error);
+          queue.notify({ title: "Failed to get user preferences: " + error });
+        });
+    }
+  };
   toggleFavorite = (id: string) => {
     const favorites = addOrRemove([...this.state.favorites], id);
     this.setState({ favorites: favorites });
@@ -943,37 +1023,6 @@ class App extends React.Component<AppProps, AppState> {
         });
     }
   };
-  getFavorites = (id = this.state.user.id) => {
-    if (id) {
-      db.collection("users")
-        .doc(id)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            if (data && data.favorites) {
-              const favorites = data.favorites;
-              this.setState({ favorites: favorites });
-              if (this.state.page === "favorites") {
-                this.filterData(
-                  this.state.page,
-                  this.state.sets,
-                  this.state.sort,
-                  this.state.sortOrder,
-                  this.state.search,
-                  this.state.whitelist,
-                  favorites
-                );
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          console.log("Failed to get favorites: " + error);
-          queue.notify({ title: "Failed to get favorites: " + error });
-        });
-    }
-  };
   toggleHidden = (id: string) => {
     const hidden = addOrRemove([...this.state.hidden], id);
     this.setState({ hidden: hidden });
@@ -999,36 +1048,6 @@ class App extends React.Component<AppProps, AppState> {
         .catch((error) => {
           console.log("Failed to sync hidden sets: " + error);
           queue.notify({ title: "Failed to sync hidden sets: " + error });
-        });
-    }
-  };
-  getHidden = (id = this.state.user.id) => {
-    if (id) {
-      db.collection("users")
-        .doc(id)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            if (data && data.hidden) {
-              const hidden = data.hidden;
-              this.setState({ hidden: hidden });
-              this.filterData(
-                this.state.page,
-                this.state.sets,
-                this.state.sort,
-                this.state.sortOrder,
-                this.state.search,
-                this.state.whitelist,
-                this.state.favorites,
-                hidden
-              );
-            }
-          }
-        })
-        .catch((error) => {
-          console.log("Failed to get hidden sets: " + error);
-          queue.notify({ title: "Failed to get hidden sets: " + error });
         });
     }
   };
@@ -1072,46 +1091,12 @@ class App extends React.Component<AppProps, AppState> {
       });
       const sync = () => {
         const settingObject: { [key: string]: any } = {};
-        settingObject["settings." + setting] = value;
+        settingObject[`settings.${setting}`] = value;
         userDocRef.update(settingObject).catch((error) => {
           console.log("Failed to sync settings: " + error);
           queue.notify({ title: "Failed to sync settings: " + error });
         });
       };
-    }
-  };
-  getSettings = (id = this.state.user.id) => {
-    if (id) {
-      const userDocRef = db.collection("users").doc(id);
-      userDocRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            if (data && data.syncSettings) {
-              this.setState({ syncSettings: data.syncSettings });
-              const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
-                if (data.settings && data.settings[setting]) {
-                  setFunction(data.settings[setting], false);
-                }
-              };
-
-              Object.keys(settingsFunctions).forEach((setting) => {
-                if (hasKey(settingsFunctions, setting)) {
-                  const key = settingsFunctions[setting];
-                  if (hasKey<App>(this, key)) {
-                    const func = this[key];
-                    getSetting(setting, func);
-                  }
-                }
-              });
-            }
-          }
-        })
-        .catch((error) => {
-          console.log("Failed to get settings: " + error);
-          queue.notify({ title: "Failed to get settings: " + error });
-        });
     }
   };
   findPreset = (prop: keyof PresetType, val: string) => {
@@ -1160,35 +1145,6 @@ class App extends React.Component<AppProps, AppState> {
         queue.notify({ title: "Failed to sync presets: " + error });
       });
   };
-  getPresets = (id = this.state.user.id) => {
-    if (id) {
-      const userDocRef = db.collection("users").doc(id);
-      userDocRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            if (data && data.filterPresets) {
-              const defaultPreset = new Preset(
-                "Default",
-                false,
-                false,
-                this.state.profiles,
-                ["Shipped", "Not shipped"],
-                "exclude",
-                []
-              );
-              const presets = [defaultPreset, ...data.filterPresets];
-              this.setState({ presets: presets });
-            }
-          }
-        })
-        .catch((error) => {
-          console.log("Failed to get filter presets: " + error);
-          queue.notify({ title: "Failed to get filter presets: " + error });
-        });
-    }
-  };
   unregisterAuthObserver = () => {
     // placeholder - gets defined when component mounts
   };
@@ -1226,10 +1182,7 @@ class App extends React.Component<AppProps, AppState> {
               id: user.uid,
             });
           });
-        this.getFavorites(user.uid);
-        this.getHidden(user.uid);
-        this.getPresets(user.uid);
-        this.getSettings(user.uid);
+        this.getUserPreferences(user.uid);
       } else {
         this.setUser({});
       }
