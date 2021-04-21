@@ -47,3 +47,5 @@ exports.listUsers = users.listUsers;
 exports.deleteUser = users.deleteUser;
 
 exports.setRoles = users.setRoles;
+
+exports.deleteOwnUser = users.deleteOwnUser;

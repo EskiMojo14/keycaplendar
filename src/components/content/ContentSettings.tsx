@@ -1,7 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 import { UserContext, DeviceContext } from "../../util/contexts";
+import { useBoolStates } from "../../util/functions";
 import { QueueType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -24,6 +26,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import { Footer } from "../common/Footer";
+import { DialogDelete } from "../settings/DialogDelete";
 import "./ContentSettings.scss";
 
 type ContentSettingsProps = {
@@ -50,6 +53,8 @@ type ContentSettingsProps = {
 export const ContentSettings = (props: ContentSettingsProps) => {
   const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const device = useContext(DeviceContext);
+  const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
+  const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {
     firebase
       .auth()
@@ -111,11 +116,15 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         <ListItem disabled className="account">
           {user.avatar ? (
             <BadgeAnchor className="avatar">
-              <Avatar src={user.avatar} size="xlarge" />
+              <Avatar src={user.avatar} size="xlarge" name={user.name} />
               {userBadge}
             </BadgeAnchor>
-          ) : null}
-
+          ) : (
+            <BadgeAnchor className="avatar">
+              <Avatar size="xlarge" name={user.name} />
+              {userBadge}
+            </BadgeAnchor>
+          )}
           <ListItemText>
             {user.nickname ? <div className="overline">{user.nickname}</div> : null}
             <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
@@ -132,8 +141,35 @@ export const ContentSettings = (props: ContentSettingsProps) => {
             onChange={(evt) => setSyncSettings(evt.currentTarget.checked)}
           />
         </div>
+        <div className="delete-container">
+          <Button className="delete" label="Delete account" outlined onClick={openDeleteDialog} />
+        </div>
       </Card>
     </div>
+  ) : (
+    <div className="settings-group">
+      <div className="subheader">
+        <Typography use="caption">Account</Typography>
+      </div>
+      <Card className="placeholder-account">
+        <ListItem disabled className="account">
+          No user logged in.
+          <div className="button">
+            <Link to="/login">
+              <Button raised label="Log in" />
+            </Link>
+          </div>
+        </ListItem>
+      </Card>
+    </div>
+  );
+  const deleteUserDialog = user.email ? (
+    <DialogDelete
+      open={deleteDialogOpen}
+      close={closeDeleteDialog}
+      snackbarQueue={props.snackbarQueue}
+      signOut={signOut}
+    />
   ) : null;
   const bottomNav =
     device === "mobile" ? (
@@ -354,6 +390,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       </div>
       <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {deleteUserDialog}
     </>
   );
 };

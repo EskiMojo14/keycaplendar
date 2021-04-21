@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import { handle } from "./util/functions";
 
 const db = admin.firestore();
 
@@ -159,4 +160,57 @@ export const setRoles = functions.https.onCall(async (data, context) => {
     });
   const newUser = await admin.auth().getUserByEmail(data.email);
   return newUser.customClaims;
+});
+
+/**
+ * Deletes own user and preference file.
+ */
+
+export const deleteOwnUser = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    return {
+      error: "No current user signed in.",
+    };
+  }
+  const [currentUser, userErr] = await handle<admin.auth.UserRecord>(admin.auth().getUser(context.auth.uid));
+  if (userErr) {
+    return {
+      error: userErr.errorInfo.message,
+    };
+  }
+  if (currentUser) {
+    if (currentUser.email === "ben.j.durrant@gmail.com") {
+      return {
+        error: "This user cannot be deleted.",
+      };
+    }
+    const deleteUser = admin
+      .auth()
+      .deleteUser(currentUser.uid)
+      .then(() => {
+        console.log(currentUser.displayName + " successfully deleted own account.");
+        return null;
+      })
+      .catch((error) => {
+        console.log("Error deleting user " + currentUser.displayName + ": " + error);
+        return { error: "Error deleting user: " + error };
+      });
+    const deleteFile = db
+      .collection("users")
+      .doc(currentUser.uid)
+      .delete()
+      .then(() => {
+        console.log("Deleted user preference file for " + currentUser.displayName + ".");
+        return null;
+      })
+      .catch((error) => {
+        console.log("Failed to delete user preference file: " + error);
+        return { error: "Failed to delete user preference file: " + error };
+      });
+    return Promise.all([deleteUser, deleteFile]);
+  } else {
+    return {
+      error: "Unknown error.",
+    };
+  }
 });
