@@ -540,7 +540,9 @@ class App extends React.Component<AppProps, AppState> {
     // filter bool functions
 
     const hiddenBool = (set: SetType) => {
-      if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
+      if (page === "favorites") {
+        return true;
+      } else if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
         return hidden.includes(set.id);
       } else {
         return !hidden.includes(set.id);
