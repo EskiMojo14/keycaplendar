@@ -116,10 +116,15 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         <ListItem disabled className="account">
           {user.avatar ? (
             <BadgeAnchor className="avatar">
-              <Avatar src={user.avatar} size="xlarge" />
+              <Avatar src={user.avatar} size="xlarge" name={user.name} />
               {userBadge}
             </BadgeAnchor>
-          ) : null}
+          ) : (
+            <BadgeAnchor className="avatar">
+              <Avatar size="xlarge" name={user.name} />
+              {userBadge}
+            </BadgeAnchor>
+          )}
           <ListItemText>
             {user.nickname ? <div className="overline">{user.nickname}</div> : null}
             <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
