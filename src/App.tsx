@@ -243,11 +243,23 @@ class App extends React.Component<AppProps, AppState> {
     if (accepted && accepted === "true") {
       this.setState({ cookies: true });
 
-      const convertCookie = (key: string) => {
+      const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
         const cookie = this.getCookie(key);
         if (cookie) {
-          this.setStorage(key, cookie);
-          this.setCookie(key, "", -1);
+          if (cookie !== "true" && cookie !== "false") {
+            setTimeout(() => {
+              setFunction(cookie, false);
+              this.setStorage(key, cookie);
+              this.setCookie(key, cookie, -1);
+            }, 0);
+          } else {
+            const cookieBool = cookie === "true";
+            setTimeout(() => {
+              setFunction(cookieBool, false);
+              this.setStorage(key, cookieBool);
+              this.setCookie(key, cookie, -1);
+            }, 0);
+          }
         }
       };
 
@@ -261,12 +273,12 @@ class App extends React.Component<AppProps, AppState> {
       };
 
       Object.keys(settingsFunctions).forEach((setting) => {
-        convertCookie(setting);
         if (hasKey(settingsFunctions, setting)) {
           const funcName = settingsFunctions[setting];
           if (hasKey<App>(this, funcName)) {
             const func = this[funcName];
             fetchAndSet(setting, func);
+            convertCookie(setting, func);
           }
         }
       });
