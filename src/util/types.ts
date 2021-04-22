@@ -80,6 +80,9 @@ export type UserType = {
   email: string;
   nickname: string;
   photoURL: string;
+  dateCreated: string;
+  lastSignIn: string;
+  lastActive: string;
 };
 
 export type VendorType = {

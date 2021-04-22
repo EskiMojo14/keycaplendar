@@ -11,6 +11,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
+import moment from "moment";
 
 type UserRowProps = {
   allDesigners: string[];
@@ -21,15 +22,7 @@ type UserRowProps = {
 };
 
 type UserCardState = {
-  user: {
-    displayName: string;
-    email: string;
-    photoURL: string;
-    nickname: string;
-    designer: boolean;
-    editor: boolean;
-    admin: boolean;
-  };
+  user: UserType;
   edited: boolean;
   loading: boolean;
   focused: string;
@@ -45,6 +38,9 @@ export class UserRow extends React.Component<UserRowProps, UserCardState> {
       designer: false,
       editor: false,
       admin: false,
+      dateCreated: "string",
+      lastSignIn: "string",
+      lastActive: "string",
     },
     edited: false,
     loading: false,
@@ -160,6 +156,9 @@ export class UserRow extends React.Component<UserRowProps, UserCardState> {
         </DataTableCell>
         <DataTableCell>{user.displayName}</DataTableCell>
         <DataTableCell>{user.email}</DataTableCell>
+        <DataTableCell>{moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
+        <DataTableCell>{moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
+        <DataTableCell>{moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
         <DataTableCell>
           <MenuSurfaceAnchor>
             <TextField

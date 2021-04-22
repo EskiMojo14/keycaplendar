@@ -283,7 +283,17 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
     this.sortUsers(this.state.users, sort, reverseSort, 1);
   };
   setSortIndex = (index: number) => {
-    const props = ["displayName", "email", "nickname", "designer", "editor", "admin"];
+    const props = [
+      "displayName",
+      "email",
+      "dateCreated",
+      "lastSignIn",
+      "lastActive",
+      "nickname",
+      "designer",
+      "editor",
+      "admin",
+    ];
     this.setState({
       sort: props[index],
       reverseSort: false,
@@ -298,7 +308,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
   }
   render() {
     const sortMenu =
-      this.state.sort === "card" || this.context !== "desktop" ? (
+      this.state.view === "card" || this.context !== "desktop" ? (
         <MenuSurfaceAnchor>
           <Menu
             open={this.state.sortMenuOpen}
@@ -308,6 +318,9 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
           >
             <MenuItem selected={this.state.sort === "displayName"}>Name</MenuItem>
             <MenuItem selected={this.state.sort === "email"}>Email</MenuItem>
+            <MenuItem selected={this.state.sort === "dateCreated"}>Date created</MenuItem>
+            <MenuItem selected={this.state.sort === "lastSignIn"}>Last sign in</MenuItem>
+            <MenuItem selected={this.state.sort === "lastActive"}>Last active</MenuItem>
             <MenuItem selected={this.state.sort === "nickname"}>Nickname</MenuItem>
             <MenuItem selected={this.state.sort === "designer"}>Designer</MenuItem>
             <MenuItem selected={this.state.sort === "editor"}>Editor</MenuItem>
@@ -395,6 +408,30 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                               }}
                             >
                               Email
+                            </DataTableHeadCell>
+                            <DataTableHeadCell
+                              sort={this.state.sort === "dateCreated" ? (this.state.reverseSort ? -1 : 1) : null}
+                              onClick={() => {
+                                this.setSort("dateCreated");
+                              }}
+                            >
+                              Date created
+                            </DataTableHeadCell>
+                            <DataTableHeadCell
+                              sort={this.state.sort === "lastSignIn" ? (this.state.reverseSort ? -1 : 1) : null}
+                              onClick={() => {
+                                this.setSort("lastSignIn");
+                              }}
+                            >
+                              Last sign in
+                            </DataTableHeadCell>
+                            <DataTableHeadCell
+                              sort={this.state.sort === "lastActive" ? (this.state.reverseSort ? -1 : 1) : null}
+                              onClick={() => {
+                                this.setSort("lastActive");
+                              }}
+                            >
+                              Last active
                             </DataTableHeadCell>
                             <DataTableHeadCell
                               sort={this.state.sort === "nickname" ? (this.state.reverseSort ? -1 : 1) : null}

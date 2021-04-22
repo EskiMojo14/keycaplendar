@@ -1,5 +1,6 @@
 import React from "react";
 import firebase from "../../firebase";
+import moment from "moment";
 import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject } from "../../util/functions";
 import { QueueType, UserType } from "../../util/types";
@@ -7,7 +8,16 @@ import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemMeta,
+  CollapsibleList,
+  SimpleListItem,
+} from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
@@ -23,15 +33,7 @@ type UserCardProps = {
 };
 
 type UserCardState = {
-  user: {
-    displayName: string;
-    email: string;
-    photoURL: string;
-    nickname: string;
-    designer: boolean;
-    editor: boolean;
-    admin: boolean;
-  };
+  user: UserType;
   edited: boolean;
   loading: boolean;
   focused: string;
@@ -47,6 +49,9 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
       designer: false,
       editor: false,
       admin: false,
+      dateCreated: "string",
+      lastSignIn: "string",
+      lastActive: "string",
     },
     edited: false,
     loading: false,
@@ -201,6 +206,34 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
             <ListItemMeta>{deleteButton}</ListItemMeta>
           </ListItem>
         </List>
+        <CollapsibleList handle={<SimpleListItem text="Account dates" metaIcon="expand_more" />}>
+          <List nonInteractive twoLine>
+            <ListItem ripple={false}>
+              <ListItemText>
+                <ListItemPrimaryText>Date created</ListItemPrimaryText>
+                <ListItemSecondaryText>
+                  {moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                </ListItemSecondaryText>
+              </ListItemText>
+            </ListItem>
+            <ListItem ripple={false}>
+              <ListItemText>
+                <ListItemPrimaryText>Last signed in</ListItemPrimaryText>
+                <ListItemSecondaryText>
+                  {moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                </ListItemSecondaryText>
+              </ListItemText>
+            </ListItem>
+            <ListItem ripple={false}>
+              <ListItemText>
+                <ListItemPrimaryText>Last active</ListItemPrimaryText>
+                <ListItemSecondaryText>
+                  {moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                </ListItemSecondaryText>
+              </ListItemText>
+            </ListItem>
+          </List>
+        </CollapsibleList>
         <div className="text-field-container">
           <MenuSurfaceAnchor>
             <TextField

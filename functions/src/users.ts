@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import { utc } from "moment";
 import { handle } from "./util/functions";
 
 const db = admin.firestore();
@@ -38,6 +39,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
   const listUsers = async (nextPageToken: string) => {
     const processResult = (result: admin.auth.ListUsersResult) => {
       const users = result.users.map((user) => {
+        const dateCreated = utc(user.metadata.creationTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
+        const lastSignIn = utc(user.metadata.lastSignInTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
+        const lastActive = utc(user.metadata.lastRefreshTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
         if (user.customClaims) {
           return {
             displayName: user.displayName,
@@ -47,6 +51,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
             designer: user.customClaims.designer ? true : false,
             editor: user.customClaims.editor ? true : false,
             admin: user.customClaims.admin ? true : false,
+            dateCreated: dateCreated,
+            lastSignIn: lastSignIn,
+            lastActive: lastActive,
           };
         } else {
           return {
@@ -57,6 +64,9 @@ export const listUsers = functions.https.onCall(async (data, context) => {
             designer: false,
             editor: false,
             admin: false,
+            dateCreated: dateCreated,
+            lastSignIn: lastSignIn,
+            lastActive: lastActive,
           };
         }
       });
