@@ -1065,6 +1065,7 @@ class App extends React.Component<AppProps, AppState> {
         },
       ],
       timeout: 2500,
+      dismissesOnAction: true,
     });
     if (this.state.user.id) {
       db.collection("users")
