@@ -954,6 +954,10 @@ class App extends React.Component<AppProps, AppState> {
               );
               const presets = [defaultPreset, ...filterPresets];
               this.setState({ presets: presets });
+              const storedPreset = this.getStorage("presetId");
+              if (storedPreset && storedPreset !== "default") {
+                this.selectPreset(storedPreset, false);
+              }
             }
 
             if (typeof syncSettings === "boolean") {
@@ -1113,14 +1117,19 @@ class App extends React.Component<AppProps, AppState> {
       };
     }
   };
-  findPreset = (prop: keyof PresetType, val: string) => {
+  findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
     const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
-  selectPreset = (id: string) => {
+  selectPreset = (id: string, write = true) => {
     const preset = this.findPreset("id", id);
-    this.setState({ preset: preset });
-    this.setWhitelist("all", preset.whitelist);
+    if (preset) {
+      this.setState({ preset: preset });
+      this.setWhitelist("all", preset.whitelist);
+    }
+    if (write) {
+      this.setStorage("presetId", id);
+    }
   };
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
@@ -1130,9 +1139,15 @@ class App extends React.Component<AppProps, AppState> {
     this.syncPresets(presets);
   };
   editPreset = (preset: PresetType) => {
-    const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
-    const presets = [...this.state.presets];
-    presets[index] = preset;
+    const savedPreset = this.findPreset("id", preset.id);
+    let presets: PresetType[];
+    if (savedPreset) {
+      const index = this.state.presets.indexOf(savedPreset);
+      presets = [...this.state.presets];
+      presets[index] = preset;
+    } else {
+      presets = [...this.state.presets, preset];
+    }
     alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
