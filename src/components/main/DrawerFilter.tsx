@@ -184,11 +184,11 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         <Select
           outlined
           enhanced={{ fixed: true }}
-          value={preset.name}
+          value={preset.id}
           options={presets.map((preset) => ({
             label: preset.name,
             key: preset.id,
-            value: preset.name,
+            value: preset.id,
           }))}
           onChange={selectPresetFn}
           className={classNames({ modified: modified })}
@@ -337,7 +337,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           outlined
           label="Reset"
           onClick={() => {
-            selectPreset(preset.name);
+            selectPreset(preset.id);
           }}
           disabled={!modified}
         />

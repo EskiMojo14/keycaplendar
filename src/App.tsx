@@ -636,9 +636,18 @@ class App extends React.Component<AppProps, AppState> {
 
     // create default preset
 
-    const filteredPresets = this.state.presets.filter((preset) => preset.name !== "Default");
+    const filteredPresets = this.state.presets.filter((preset) => preset.id !== "default");
 
-    const defaultPreset = new Preset("Default", false, false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
+    const defaultPreset = new Preset(
+      "Default",
+      false,
+      false,
+      allProfiles,
+      ["Shipped", "Not shipped"],
+      "exclude",
+      [],
+      "default"
+    );
 
     const presets = [defaultPreset, ...filteredPresets];
 
@@ -942,7 +951,8 @@ class App extends React.Component<AppProps, AppState> {
                 this.state.profiles,
                 ["Shipped", "Not shipped"],
                 "exclude",
-                []
+                [],
+                "default"
               );
               const presets = [defaultPreset, ...filterPresets];
               this.setState({ presets: presets });
@@ -1109,8 +1119,8 @@ class App extends React.Component<AppProps, AppState> {
     const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
-  selectPreset = (presetName: string) => {
-    const preset = this.findPreset("name", presetName);
+  selectPreset = (id: string) => {
+    const preset = this.findPreset("id", id);
     this.setState({ preset: preset });
     this.setWhitelist("all", preset.whitelist);
   };
