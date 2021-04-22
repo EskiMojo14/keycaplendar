@@ -133,7 +133,7 @@ class App extends React.Component<AppProps, AppState> {
       vendorMode: "exclude",
       vendors: [],
     },
-    cookies: true,
+    cookies: false,
     applyTheme: "manual",
     lightTheme: "light",
     darkTheme: "deep",
@@ -229,49 +229,47 @@ class App extends React.Component<AppProps, AppState> {
     }
     return "";
   }
-  checkCookies = () => {
+  setStorage = (name: string, value: any) => {
+    if (this.state.cookies) {
+      localStorage.setItem(name, JSON.stringify(value));
+    }
+  };
+  getStorage = (name: string) => {
+    const value = localStorage.getItem(name);
+    return value ? JSON.parse(value) : value;
+  };
+  checkStorage = () => {
     const accepted = this.getCookie("accepted");
     if (accepted && accepted === "true") {
       this.setState({ cookies: true });
-      const checkCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
+
+      const convertCookie = (key: string) => {
         const cookie = this.getCookie(key);
         if (cookie) {
-          if (cookie !== "true" && cookie !== "false") {
-            setTimeout(() => {
-              setFunction(cookie, false);
-            }, 0);
-          } else {
-            const cookieBool = cookie === "true";
-            setTimeout(() => {
-              setFunction(cookieBool, false);
-            }, 0);
-          }
+          this.setStorage(key, cookie);
+          this.setCookie(key, "", -1);
         }
       };
 
-      // legacy theme cookie conversion
-
-      const legacyTheme = this.getCookie("theme");
-      if (legacyTheme) {
-        if (legacyTheme === "light") {
-          this.setManualTheme(false);
-        } else {
-          this.setManualTheme(true);
-          this.setDarkTheme(legacyTheme);
+      const fetchAndSet = (key: string, setFunction: (val: any, write: boolean) => void) => {
+        const val = this.getStorage(key);
+        if (val) {
+          setTimeout(() => {
+            setFunction(val, false);
+          }, 0);
         }
-        this.setCookie("theme", legacyTheme, -1);
-      }
+      };
+
       Object.keys(settingsFunctions).forEach((setting) => {
+        convertCookie(setting);
         if (hasKey(settingsFunctions, setting)) {
-          const key = settingsFunctions[setting];
-          if (hasKey<App>(this, key)) {
-            const func = this[key];
-            checkCookie(setting, func);
+          const funcName = settingsFunctions[setting];
+          if (hasKey<App>(this, funcName)) {
+            const func = this[funcName];
+            fetchAndSet(setting, func);
           }
         }
       });
-    } else {
-      this.clearCookies();
     }
   };
   setView = (view: string, write = true) => {
@@ -288,7 +286,7 @@ class App extends React.Component<AppProps, AppState> {
       this.setState({ view: view });
     }
     if (write) {
-      this.setCookie("view", view, 365);
+      this.setStorage("view", view);
       this.syncSetting("view", view);
     }
   };
@@ -363,7 +361,7 @@ class App extends React.Component<AppProps, AppState> {
       setTimeout(timed.clear, 1000 * 10);
     }
     if (write) {
-      this.setCookie("applyTheme", applyTheme, 365);
+      this.setStorage("applyTheme", applyTheme);
       this.syncSetting("applyTheme", applyTheme);
     }
   };
@@ -371,7 +369,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ lightTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("lightTheme", theme, 365);
+      this.setStorage("lightTheme", theme);
       this.syncSetting("lightTheme", theme);
     }
   };
@@ -379,7 +377,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ darkTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("darkTheme", theme, 365);
+      this.setStorage("darkTheme", theme);
       this.syncSetting("darkTheme", theme);
     }
   };
@@ -387,7 +385,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ manualTheme: bool });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("manualTheme", bool.toString(), 365);
+      this.setStorage("manualTheme", bool);
       this.syncSetting("manualTheme", bool);
     }
   };
@@ -395,7 +393,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ fromTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("fromTimeTheme", time, 365);
+      this.setStorage("fromTimeTheme", time);
       this.syncSetting("fromTimeTheme", time);
     }
   };
@@ -403,7 +401,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ toTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("toTimeTheme", time, 365);
+      this.setStorage("toTimeTheme", time);
       this.syncSetting("toTimeTheme", time);
     }
   };
@@ -417,7 +415,7 @@ class App extends React.Component<AppProps, AppState> {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
     if (write) {
-      this.setCookie("bottomNav", value.toString(), 365);
+      this.setStorage("bottomNav", value);
       this.syncSetting("bottomNav", value);
     }
   };
@@ -762,7 +760,7 @@ class App extends React.Component<AppProps, AppState> {
   setDensity = (density: string, write = true) => {
     this.setState({ density: density });
     if (write) {
-      this.setCookie("density", density, 365);
+      this.setStorage("density", density);
       this.syncSetting("density", density);
     }
   };
@@ -1167,7 +1165,7 @@ class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
-    this.checkCookies();
+    this.checkStorage();
     this.checkTheme();
     const meta = document.querySelector("meta[name=theme-color]");
     if (meta) {
