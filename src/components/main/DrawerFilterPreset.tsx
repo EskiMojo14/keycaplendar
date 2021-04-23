@@ -77,6 +77,14 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
           </div>
           <div className="group">
             <div className="subheader">
+              <Typography use="caption">Hidden</Typography>
+            </div>
+            <div className="checkbox-container">
+              <Checkbox checked={this.props.preset.whitelist.hidden} disabled />
+            </div>
+          </div>
+          <div className="group">
+            <div className="subheader">
               <Typography use="caption">Profiles</Typography>
             </div>
             <div className="chip-set-container">

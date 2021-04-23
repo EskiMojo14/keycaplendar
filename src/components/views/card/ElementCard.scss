@@ -49,6 +49,7 @@
 
   .text-row {
     display: flex;
+    flex-grow: 1;
     .text-container {
       flex: auto 1 1;
       padding: 8px 16px 16px 16px;

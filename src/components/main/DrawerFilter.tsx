@@ -184,11 +184,11 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         <Select
           outlined
           enhanced={{ fixed: true }}
-          value={preset.name}
+          value={preset.id}
           options={presets.map((preset) => ({
             label: preset.name,
             key: preset.id,
-            value: preset.name,
+            value: preset.id,
           }))}
           onChange={selectPresetFn}
           className={classNames({ modified: modified })}
@@ -332,7 +332,15 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         {closeIcon}
       </DrawerHeader>
       {presetMenu}
-      <div className="copy-button">
+      <div className="top-buttons">
+        <Button
+          outlined
+          label="Reset"
+          onClick={() => {
+            selectPreset(preset.id);
+          }}
+          disabled={!modified}
+        />
         <Button outlined label="Copy link" onClick={copyLink} disabled={preset.name === "Default" && !modified} />
       </div>
       <DrawerContent>

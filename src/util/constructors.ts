@@ -166,6 +166,9 @@ export class User {
   email: string;
   nickname: string;
   photoURL: string;
+  dateCreated: string;
+  lastSignIn: string;
+  lastActive: string;
   constructor(
     email = "",
     displayName = "",
@@ -173,7 +176,10 @@ export class User {
     nickname = "",
     designer = false,
     editor = false,
-    admin = false
+    admin = false,
+    dateCreated = "",
+    lastSignIn = "",
+    lastActive = ""
   ) {
     this.admin = admin;
     this.designer = designer;
@@ -182,5 +188,8 @@ export class User {
     this.email = email;
     this.nickname = nickname;
     this.photoURL = photoURL;
+    this.dateCreated = dateCreated;
+    this.lastSignIn = lastSignIn;
+    this.lastActive = lastActive;
   }
 }

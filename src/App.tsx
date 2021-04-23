@@ -133,7 +133,7 @@ class App extends React.Component<AppProps, AppState> {
       vendorMode: "exclude",
       vendors: [],
     },
-    cookies: true,
+    cookies: false,
     applyTheme: "manual",
     lightTheme: "light",
     darkTheme: "deep",
@@ -229,49 +229,59 @@ class App extends React.Component<AppProps, AppState> {
     }
     return "";
   }
-  checkCookies = () => {
+  setStorage = (name: string, value: any) => {
+    if (this.state.cookies) {
+      localStorage.setItem(name, JSON.stringify(value));
+    }
+  };
+  getStorage = (name: string) => {
+    const value = localStorage.getItem(name);
+    return value ? JSON.parse(value) : value;
+  };
+  checkStorage = () => {
     const accepted = this.getCookie("accepted");
     if (accepted && accepted === "true") {
       this.setState({ cookies: true });
-      const checkCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
+
+      const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
         const cookie = this.getCookie(key);
         if (cookie) {
           if (cookie !== "true" && cookie !== "false") {
             setTimeout(() => {
               setFunction(cookie, false);
+              this.setStorage(key, cookie);
+              this.setCookie(key, cookie, -1);
             }, 0);
           } else {
             const cookieBool = cookie === "true";
             setTimeout(() => {
               setFunction(cookieBool, false);
+              this.setStorage(key, cookieBool);
+              this.setCookie(key, cookie, -1);
             }, 0);
           }
         }
       };
 
-      // legacy theme cookie conversion
-
-      const legacyTheme = this.getCookie("theme");
-      if (legacyTheme) {
-        if (legacyTheme === "light") {
-          this.setManualTheme(false);
-        } else {
-          this.setManualTheme(true);
-          this.setDarkTheme(legacyTheme);
+      const fetchAndSet = (key: string, setFunction: (val: any, write: boolean) => void) => {
+        const val = this.getStorage(key);
+        if (val) {
+          setTimeout(() => {
+            setFunction(val, false);
+          }, 0);
         }
-        this.setCookie("theme", legacyTheme, -1);
-      }
+      };
+
       Object.keys(settingsFunctions).forEach((setting) => {
         if (hasKey(settingsFunctions, setting)) {
-          const key = settingsFunctions[setting];
-          if (hasKey<App>(this, key)) {
-            const func = this[key];
-            checkCookie(setting, func);
+          const funcName = settingsFunctions[setting];
+          if (hasKey<App>(this, funcName)) {
+            const func = this[funcName];
+            fetchAndSet(setting, func);
+            convertCookie(setting, func);
           }
         }
       });
-    } else {
-      this.clearCookies();
     }
   };
   setView = (view: string, write = true) => {
@@ -288,7 +298,7 @@ class App extends React.Component<AppProps, AppState> {
       this.setState({ view: view });
     }
     if (write) {
-      this.setCookie("view", view, 365);
+      this.setStorage("view", view);
       this.syncSetting("view", view);
     }
   };
@@ -363,7 +373,7 @@ class App extends React.Component<AppProps, AppState> {
       setTimeout(timed.clear, 1000 * 10);
     }
     if (write) {
-      this.setCookie("applyTheme", applyTheme, 365);
+      this.setStorage("applyTheme", applyTheme);
       this.syncSetting("applyTheme", applyTheme);
     }
   };
@@ -371,7 +381,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ lightTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("lightTheme", theme, 365);
+      this.setStorage("lightTheme", theme);
       this.syncSetting("lightTheme", theme);
     }
   };
@@ -379,7 +389,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ darkTheme: theme });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("darkTheme", theme, 365);
+      this.setStorage("darkTheme", theme);
       this.syncSetting("darkTheme", theme);
     }
   };
@@ -387,7 +397,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ manualTheme: bool });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("manualTheme", bool.toString(), 365);
+      this.setStorage("manualTheme", bool);
       this.syncSetting("manualTheme", bool);
     }
   };
@@ -395,7 +405,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ fromTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("fromTimeTheme", time, 365);
+      this.setStorage("fromTimeTheme", time);
       this.syncSetting("fromTimeTheme", time);
     }
   };
@@ -403,7 +413,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ toTimeTheme: time });
     setTimeout(this.checkTheme, 1);
     if (write) {
-      this.setCookie("toTimeTheme", time, 365);
+      this.setStorage("toTimeTheme", time);
       this.syncSetting("toTimeTheme", time);
     }
   };
@@ -417,7 +427,7 @@ class App extends React.Component<AppProps, AppState> {
     document.documentElement.scrollTop = 0;
     this.setState({ bottomNav: value });
     if (write) {
-      this.setCookie("bottomNav", value.toString(), 365);
+      this.setStorage("bottomNav", value);
       this.syncSetting("bottomNav", value);
     }
   };
@@ -540,7 +550,9 @@ class App extends React.Component<AppProps, AppState> {
     // filter bool functions
 
     const hiddenBool = (set: SetType) => {
-      if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
+      if (page === "favorites") {
+        return true;
+      } else if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
         return hidden.includes(set.id);
       } else {
         return !hidden.includes(set.id);
@@ -634,9 +646,18 @@ class App extends React.Component<AppProps, AppState> {
 
     // create default preset
 
-    const filteredPresets = this.state.presets.filter((preset) => preset.name !== "Default");
+    const filteredPresets = this.state.presets.filter((preset) => preset.id !== "default");
 
-    const defaultPreset = new Preset("Default", false, false, allProfiles, ["Shipped", "Not shipped"], "exclude", []);
+    const defaultPreset = new Preset(
+      "Default",
+      false,
+      false,
+      allProfiles,
+      ["Shipped", "Not shipped"],
+      "exclude",
+      [],
+      "default"
+    );
 
     const presets = [defaultPreset, ...filteredPresets];
 
@@ -751,7 +772,7 @@ class App extends React.Component<AppProps, AppState> {
   setDensity = (density: string, write = true) => {
     this.setState({ density: density });
     if (write) {
-      this.setCookie("density", density, 365);
+      this.setStorage("density", density);
       this.syncSetting("density", density);
     }
   };
@@ -920,35 +941,14 @@ class App extends React.Component<AppProps, AppState> {
           if (doc.exists) {
             const data = doc.data();
             const { favorites, hidden, settings, syncSettings, filterPresets } = data as UserPreferencesDoc;
-            if (favorites) {
+
+            if (favorites instanceof Array) {
               this.setState({ favorites: favorites });
-              if (this.state.page === "favorites") {
-                this.filterData(
-                  this.state.page,
-                  this.state.sets,
-                  this.state.sort,
-                  this.state.sortOrder,
-                  this.state.search,
-                  this.state.whitelist,
-                  favorites
-                );
-              }
             }
-            if (hidden) {
+            if (hidden instanceof Array) {
               this.setState({ hidden: hidden });
-              if (this.state.page === "favorites") {
-                this.filterData(
-                  this.state.page,
-                  this.state.sets,
-                  this.state.sort,
-                  this.state.sortOrder,
-                  this.state.search,
-                  this.state.whitelist,
-                  this.state.favorites,
-                  hidden
-                );
-              }
             }
+
             if (filterPresets) {
               const defaultPreset = new Preset(
                 "Default",
@@ -957,11 +957,17 @@ class App extends React.Component<AppProps, AppState> {
                 this.state.profiles,
                 ["Shipped", "Not shipped"],
                 "exclude",
-                []
+                [],
+                "default"
               );
               const presets = [defaultPreset, ...filterPresets];
               this.setState({ presets: presets });
+              const storedPreset = this.getStorage("presetId");
+              if (storedPreset && storedPreset !== "default") {
+                this.selectPreset(storedPreset, false);
+              }
             }
+
             if (typeof syncSettings === "boolean") {
               this.setSyncSettings(syncSettings, false);
               if (syncSettings) {
@@ -982,6 +988,17 @@ class App extends React.Component<AppProps, AppState> {
                 });
               }
             }
+
+            this.filterData(
+              this.state.page,
+              this.state.sets,
+              this.state.sort,
+              this.state.sortOrder,
+              this.state.search,
+              this.state.whitelist,
+              favorites,
+              hidden
+            );
           }
         })
         .catch((error) => {
@@ -1032,6 +1049,20 @@ class App extends React.Component<AppProps, AppState> {
       this.state.favorites,
       hidden
     );
+    const setHidden = hidden.includes(id);
+    queue.notify({
+      title: `Set ${setHidden ? "hidden" : "unhidden"}.`,
+      actions: [
+        {
+          label: "Undo",
+          onClick: () => {
+            this.toggleHidden(id);
+          },
+        },
+      ],
+      timeout: 2500,
+      dismissesOnAction: true,
+    });
     if (this.state.user.id) {
       db.collection("users")
         .doc(this.state.user.id)
@@ -1095,14 +1126,19 @@ class App extends React.Component<AppProps, AppState> {
       };
     }
   };
-  findPreset = (prop: keyof PresetType, val: string) => {
+  findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
     const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
-  selectPreset = (presetName: string) => {
-    const preset = this.findPreset("name", presetName);
-    this.setState({ preset: preset });
-    this.setWhitelist("all", preset.whitelist);
+  selectPreset = (id: string, write = true) => {
+    const preset = this.findPreset("id", id);
+    if (preset) {
+      this.setState({ preset: preset });
+      this.setWhitelist("all", preset.whitelist);
+    }
+    if (write) {
+      this.setStorage("presetId", id);
+    }
   };
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
@@ -1112,9 +1148,15 @@ class App extends React.Component<AppProps, AppState> {
     this.syncPresets(presets);
   };
   editPreset = (preset: PresetType) => {
-    const index = this.state.presets.indexOf(this.findPreset("id", preset.id));
-    const presets = [...this.state.presets];
-    presets[index] = preset;
+    const savedPreset = this.findPreset("id", preset.id);
+    let presets: PresetType[];
+    if (savedPreset) {
+      const index = this.state.presets.indexOf(savedPreset);
+      presets = [...this.state.presets];
+      presets[index] = preset;
+    } else {
+      presets = [...this.state.presets, preset];
+    }
     alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({ presets: presets, preset: preset });
     this.syncPresets(presets);
@@ -1147,7 +1189,7 @@ class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     this.setDevice();
     this.getURLQuery();
-    this.checkCookies();
+    this.checkStorage();
     this.checkTheme();
     const meta = document.querySelector("meta[name=theme-color]");
     if (meta) {
@@ -1181,6 +1223,16 @@ class App extends React.Component<AppProps, AppState> {
         this.getUserPreferences(user.uid);
       } else {
         this.setUser({});
+        const defaultPreset = this.findPreset("name", "Default");
+        const defaultSettings: Partial<AppState> = {
+          favorites: [],
+          hidden: [],
+        };
+        if (defaultPreset) {
+          this.setState<never>({ preset: defaultPreset, ...defaultSettings });
+        } else {
+          this.setState<never>(defaultSettings);
+        }
       }
     });
   }

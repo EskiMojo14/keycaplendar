@@ -38,7 +38,7 @@
         .mdc-data-table__cell {
           .mdc-text-field.nickname {
             height: 32px;
-            width: 200px;
+            width: 112px;
             .mdc-text-field__input {
               padding: 0 12px;
               @include typography.typography(body2);
@@ -81,6 +81,9 @@
           @include rtl.reflexive-box(margin, right, 16px);
         }
       }
+    }
+    .rmwc-collapsible-list {
+      @include util.divider-border(bottom);
     }
     .text-field-container {
       padding: 16px;

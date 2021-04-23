@@ -77,6 +77,9 @@ export type UserType = {
   email: string;
   nickname: string;
   photoURL: string;
+  dateCreated: string;
+  lastSignIn: string;
+  lastActive: string;
 };
 
 export type VendorType = {
@@ -201,7 +204,7 @@ export type UserContextType = {
   setSyncSettings: (bool: boolean, write?: boolean) => void;
   preset: PresetType;
   presets: PresetType[];
-  selectPreset: (presetName: string) => void;
+  selectPreset: (id: string) => void;
   newPreset: (preset: PresetType) => void;
   editPreset: (preset: PresetType) => void;
   deletePreset: (preset: PresetType) => void;

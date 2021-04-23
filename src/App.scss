@@ -202,6 +202,10 @@
   }
 }
 
+.mdc-menu .mdc-list-item {
+  white-space: nowrap;
+}
+
 .mdc-top-app-bar {
   &.is-contextual {
     transition: elevation.transition-value(), background-color 100ms linear, color 100ms linear;
