@@ -133,6 +133,9 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
         const aVal = a[sort];
         const bVal = b[sort];
         if (typeof aVal === "string" && typeof bVal === "string") {
+          if (aVal === "" || bVal === "") {
+            return aVal === "" ? 1 : -1;
+          }
           const x = aVal.toLowerCase();
           const y = bVal.toLowerCase();
           if (x < y) {
@@ -155,12 +158,13 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
           }
           return 0;
         } else {
-          const x = a[sort];
-          const y = b[sort];
-          if (x < y) {
+          if (aVal === null || bVal === null) {
+            return aVal === null ? 1 : -1;
+          }
+          if (aVal < bVal) {
             return reverseSort ? -1 : 1;
           }
-          if (x > y) {
+          if (aVal > bVal) {
             return reverseSort ? 1 : -1;
           }
           if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
