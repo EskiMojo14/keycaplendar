@@ -473,7 +473,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                             <DataTableHeadCell>Delete</DataTableHeadCell>
                           </DataTableRow>
                           <DataTableRow className={classNames("progress-row", { loading: this.state.loading })}>
-                            <DataTableHeadCell colSpan={9}>
+                            <DataTableHeadCell colSpan={12}>
                               <LinearProgress />
                             </DataTableHeadCell>
                           </DataTableRow>
