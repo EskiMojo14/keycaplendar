@@ -75,6 +75,10 @@
 
 @include typography.core-styles();
 
+.mdl-button.firebaseui-idp-button {
+  font-family: typography-variables.$body-font;
+}
+
 .mdc-drawer {
   &.drawer-bottom {
     width: 100%;
