@@ -107,29 +107,47 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         className="user-icon material-icons"
       />
     ) : null;
-  const userDisplay = user.name ? (
+  const userDisplay = user.email ? (
     <div className="settings-group">
       <div className="subheader">
         <Typography use="caption">Account</Typography>
       </div>
-      <Card className={classNames("mdc-list--two-line", { "three-line": user.nickname })}>
+      <Card
+        className={classNames({
+          "mdc-list--two-line": user.name || user.nickname,
+          "three-line": user.nickname && user.name,
+        })}
+      >
         <ListItem disabled className="account">
           {user.avatar ? (
             <BadgeAnchor className="avatar">
-              <Avatar src={user.avatar} size="xlarge" name={user.name} />
+              <Avatar
+                src={user.avatar}
+                size={user.name || user.nickname ? "xlarge" : "large"}
+                name={user.name ? user.name : ""}
+              />
               {userBadge}
             </BadgeAnchor>
           ) : (
             <BadgeAnchor className="avatar">
-              <Avatar size="xlarge" name={user.name} />
+              <Avatar size={user.name || user.nickname ? "xlarge" : "large"} name={user.name ? user.name : ""} />
               {userBadge}
             </BadgeAnchor>
           )}
-          <ListItemText>
-            {user.nickname ? <div className="overline">{user.nickname}</div> : null}
-            <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
-            <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
-          </ListItemText>
+          {user.name ? (
+            <ListItemText>
+              {user.nickname ? <div className="overline">{user.nickname}</div> : null}
+              <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
+              <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
+            </ListItemText>
+          ) : user.nickname ? (
+            <ListItemText>
+              <ListItemPrimaryText>{user.nickname}</ListItemPrimaryText>
+              <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
+            </ListItemText>
+          ) : (
+            user.email
+          )}
           <div className="button">
             <Button raised label="Log out" onClick={signOut} />
           </div>
