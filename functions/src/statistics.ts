@@ -719,8 +719,8 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
 };
 
 const runtimeOpts: functions.RuntimeOptions = {
-  timeoutSeconds: 120,
-  memory: "2GB",
+  timeoutSeconds: 540,
+  memory: "4GB",
 };
 
 /**
@@ -779,21 +779,44 @@ export const createStatistics = functions
     const vendorsData = createVendorsData(limitedSets);
     const statisticsData = {
       summaryData: await summaryData,
-      timelinesData: await timelinesData,
       statusData: await statusData,
       shippedData: await shippedData,
       durationData: await durationData,
       vendorsData: await vendorsData,
-      // timestamp: context.timestamp,
     };
-    /* const allPromises = Promise.all([summaryData, timelinesData, statusData, shippedData, durationData, vendorsData]);
-    allPromises
-      .then(() => {
-        const docRef = db.collection("app").doc("statisticsData");
-        const setPromise = docRef.set(statisticsData);
-        return setPromise.then(() => console.log("hi"));
-      })
-      .then(() => console.log("Statistics data generated and written successfully."))
-      .catch((error) => console.log(`Failed to write statistics data: ${error}`));*/
-    return Promise.resolve(statisticsData);
+
+    const statsCollection = db.collection("app").doc("statisticsData").collection("data");
+
+    const writeStats = (doc: string, data: SummaryData | StatusData | ShippedData | DurationData | VendorData) => {
+      return statsCollection.doc(doc).set(data);
+    };
+
+    const writeStatsPromises = Object.keys(statisticsData).map((key) => {
+      if (hasKey(statisticsData, key)) {
+        return writeStats(key, statisticsData[key]);
+      } else {
+        return Promise.reject(new Error("No such statistics data: " + key));
+      }
+    });
+
+    const timelinesDataResult = await timelinesData;
+
+    const timelinesDataPromises = Object.keys(timelinesDataResult).map((category) => {
+      if (hasKey(timelinesDataResult, category)) {
+        return statsCollection
+          .doc("timelinesData")
+          .collection("categories")
+          .doc(category)
+          .set(timelinesDataResult[category]);
+      } else {
+        return Promise.reject(new Error("No such category: " + category));
+      }
+    });
+
+    const timestampPromise = db
+      .collection("app")
+      .doc("statisticsData")
+      .set({ timestamp: utc().toISOString() }, { merge: true });
+
+    return Promise.all([...timelinesDataPromises, ...writeStatsPromises, timestampPromise]);
   });

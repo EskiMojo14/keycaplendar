@@ -1,5 +1,4 @@
 import React from "react";
-import moment from "moment";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
@@ -254,46 +253,13 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     categoryDialogOpen: false,
   };
 
-  componentDidUpdate(prevProps: ContentStatisticsProps) {
-    if (
-      this.state.dataCreated.length !== statsTabs.length &&
-      this.props.sets.length > 0 &&
-      this.props.sets.length !== prevProps.sets.length
-    ) {
-      this.createData();
-    }
-  }
-
   createData = () => {
-    const limitedSets = this.props.sets.filter((set) => {
-      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-        const year = parseInt(set.gbLaunch.slice(0, 4));
-        const thisYear = moment().year();
-        return year >= thisYear - 2 && year <= thisYear + 1;
-      } else {
-        return true;
-      }
-    });
-    this.setState({ sets: limitedSets });
     const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
-    cloudFn({ sets: limitedSets, sort: this.state.sort })
-      .then((result) => {
-        const resultData: {
-          summaryData: SummaryData;
-          timelinesData: TimelinesData;
-          statusData: StatusData;
-          shippedData: ShippedData;
-          durationData: DurationData;
-          vendorsData: VendorData;
-        } = result.data;
-        this.setState({
-          dataCreated: Object.keys(resultData),
-          ...resultData,
-        });
-      })
+    cloudFn()
+      .then(() => this.props.snackbarQueue.notify({ title: "Created statistics data." }))
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error creating statistics: " + error });
         console.log(error);
+        this.props.snackbarQueue.notify({ title: "Failed to create statistics data: " + error });
       });
   };
 
@@ -780,7 +746,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle>{this.context !== "mobile" ? "Statistics" : null}</TopAppBarTitle>
+              <TopAppBarTitle onClick={this.createData}>
+                {this.context !== "mobile" ? "Statistics" : null}
+              </TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
               {hasKey(buttons, this.props.statisticsTab) ? buttons[this.props.statisticsTab] : null}
