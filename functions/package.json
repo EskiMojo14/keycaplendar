@@ -19,11 +19,13 @@
     "firebase-admin": "^9.5.0",
     "firebase-functions": "^3.13.2",
     "jsonwebtoken": "^8.5.1",
+    "mathjs": "^9.3.0",
     "moment": "^2.29.1",
     "sharp": "^0.27.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.1",
+    "@types/mathjs": "^6.0.11",
     "@types/moment": "^2.13.0",
     "@types/node": "^14.14.35",
     "@types/sharp": "^0.27.1",

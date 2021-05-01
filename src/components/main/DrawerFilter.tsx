@@ -5,7 +5,7 @@ import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { MainWhitelistType, PresetType, QueueType } from "../../util/types";
+import { WhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -23,12 +23,12 @@ type DrawerFilterProps = {
   open: boolean;
   openPreset: (preset: PresetType) => void;
   profiles: string[];
-  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
+  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   snackbarQueue: QueueType;
   sort: string;
   vendors: string[];
   view: string;
-  whitelist: MainWhitelistType;
+  whitelist: WhitelistType;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {

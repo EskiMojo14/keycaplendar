@@ -65,7 +65,7 @@ export const ElementImage = (props: ElementImageProps) => {
   const timeIndicator = props.thisWeek ? (
     <div className="time-indicator">
       <Typography use="overline" className="live-indicator-text">
-        {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
+        {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
       </Typography>
     </div>
   ) : null;

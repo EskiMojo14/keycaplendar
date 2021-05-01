@@ -2,12 +2,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
-    "allowJs": true
+    "target": "esnext",
+    "allowJs": true,
   },
   "compileOnSave": true,
   "include": [

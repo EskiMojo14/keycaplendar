@@ -241,7 +241,7 @@ export const closeModal = () => {
  * @returns An array of callbacks, the first being `func(false)` and the second being `func(true)`.
  */
 
-export const boolFunctions = (func: (bool: boolean) => void) => {
+export const useBoolStates = (func: (bool: boolean) => void) => {
   const setFalse = () => {
     func(false);
   };

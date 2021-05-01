@@ -3,7 +3,7 @@ import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { UserContext, DeviceContext } from "../../util/contexts";
-import { boolFunctions } from "../../util/functions";
+import { useBoolStates } from "../../util/functions";
 import { QueueType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -54,7 +54,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
-  const [closeDeleteDialog, openDeleteDialog] = boolFunctions(setDialogDeleteOpen);
+  const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {
     firebase
       .auth()

@@ -70,7 +70,7 @@ export const ElementCard = (props: ElementCardProps) => {
     ) : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" tag="h4" className="time-indicator">
-      {props.daysLeft} day{props.daysLeft > 1 ? "s" : ""}
+      {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
     </Typography>
   ) : null;
   const linkButton = user.email ? (

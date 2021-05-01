@@ -292,12 +292,11 @@ export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
  */
 
 export const whitelistParams: string[] = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
-
 /**
  * Tabs on the statistics page.
  */
 
-export const statsTabs: string[] = ["summary", /*"timelines",*/ "status", "shipped", "duration", "vendors"];
+export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
 
 /**
  * Formatted names for each main view.

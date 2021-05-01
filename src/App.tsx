@@ -40,7 +40,7 @@ import {
   ArraySortKeys,
   CurrentUserType,
   DateSortKeys,
-  MainWhitelistType,
+  WhitelistType,
   PresetType,
   SetType,
   SortOrderType,
@@ -77,7 +77,7 @@ type AppState = {
   user: CurrentUserType;
   favorites: string[];
   hidden: string[];
-  whitelist: MainWhitelistType;
+  whitelist: WhitelistType;
   cookies: boolean;
   applyTheme: string;
   lightTheme: string;
@@ -171,7 +171,7 @@ class App extends React.Component<AppProps, AppState> {
         }
       }
     }
-    const whitelistObj: MainWhitelistType = { ...this.state.whitelist };
+    const whitelistObj: WhitelistType = { ...this.state.whitelist };
     whitelistParams.forEach((param, index, array) => {
       if (params.has(param)) {
         const val = params.get(param);
@@ -833,11 +833,7 @@ class App extends React.Component<AppProps, AppState> {
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
-  setWhitelist = (
-    prop: string,
-    val: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType],
-    clearUrl = true
-  ) => {
+  setWhitelist = (prop: string, val: WhitelistType | WhitelistType[keyof WhitelistType], clearUrl = true) => {
     if (prop === "all" && typeof val === "object" && !(val instanceof Array)) {
       const edited = Object.keys(val).filter((key) => {
         if (hasKey(val, key)) {

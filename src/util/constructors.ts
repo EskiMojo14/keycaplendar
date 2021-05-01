@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import { whitelistShipped } from "./constants";
-import { MainWhitelistType } from "./types";
+import { WhitelistType } from "./types";
+
 export class Interval {
   intervalId;
   constructor(callback: () => void, time: number) {
@@ -22,8 +23,12 @@ export class Whitelist {
   vendorMode: "exclude" | "include";
   vendors: string[];
   edited: string[];
+  favorites: boolean;
+  hidden: boolean;
 
   /**
+   * @param favorites Whether to only display favourites.
+   * @param hidden Whether to only display hidden sets.
    * @param profiles Array of allowed profiles.
    * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
    * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
@@ -32,6 +37,8 @@ export class Whitelist {
    */
 
   constructor(
+    favorites = false,
+    hidden = false,
     profiles: string[] = [],
     shipped: string[] = whitelistShipped,
     vendorMode: "exclude" | "include" = "exclude",
@@ -43,6 +50,8 @@ export class Whitelist {
     this.vendorMode = vendorMode as "exclude" | "include";
     this.vendors = vendors;
     this.edited = edited;
+    this.favorites = favorites;
+    this.hidden = hidden;
   }
 }
 
@@ -54,7 +63,7 @@ export class Whitelist {
 export class Preset {
   name: string;
   id: string;
-  whitelist: MainWhitelistType;
+  whitelist: WhitelistType;
 
   /**
    * @param name Display name for preset.

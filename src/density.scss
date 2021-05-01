@@ -250,14 +250,9 @@
     }
   }
   .stats-tab .mdc-card {
-    &.count-graph,
-    &.profile-graph {
-      .mdc-typography--headline5 {
-        margin-bottom: 16px + $diff;
-      }
-    }
     &.pie-card,
-    &.table-card {
+    &.table-card,
+    &.timeline-card {
       .mdc-typography--headline5 {
         margin-bottom: 8px + $diff;
       }

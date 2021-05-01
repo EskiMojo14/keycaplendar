@@ -57,7 +57,7 @@ export const TableCard = (props: TableCardProps) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${props.data.total > 1 ? "s" : ""}`}
+        {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
       </Typography>
       <div className="content-container">
         <div className="chart-container">

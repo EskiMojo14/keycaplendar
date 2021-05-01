@@ -64,6 +64,16 @@
       "warn",
       "always"
     ],
+    "operator-linebreak": [
+      "warn",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
+    ],
     "linebreak-style": "off",
     // Removed rule "disallow the use of console" from recommended eslint rules
     "no-console": "off",
