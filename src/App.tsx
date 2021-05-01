@@ -46,6 +46,7 @@ import {
   SortOrderType,
   VendorType,
   UserPreferencesDoc,
+  GlobalDoc,
 } from "./util/types";
 import "./App.scss";
 
@@ -934,6 +935,27 @@ class App extends React.Component<AppProps, AppState> {
     calculate();
     window.addEventListener("resize", calculate);
   };
+  getGlobals = () => {
+    db.collection("app")
+      .doc("globals")
+      .get()
+      .then((doc) => {
+        const data = doc.data();
+        const { filterPresets } = data as GlobalDoc;
+        if (filterPresets) {
+          const defaultPreset = this.findPreset("name", "Default");
+          if (defaultPreset) {
+            this.setState({ appPresets: [defaultPreset, ...filterPresets] });
+          } else {
+            this.setState({ appPresets: filterPresets });
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("Failed to get global settings: " + error);
+        queue.notify({ title: "Failed to get global settings: " + error });
+      });
+  };
   getUserPreferences = (id: string) => {
     if (id) {
       db.collection("users")
@@ -1183,6 +1205,7 @@ class App extends React.Component<AppProps, AppState> {
     this.getURLQuery();
     this.checkStorage();
     this.checkTheme();
+    this.getGlobals();
     const meta = document.querySelector("meta[name=theme-color]");
     if (meta) {
       meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
@@ -1215,7 +1238,7 @@ class App extends React.Component<AppProps, AppState> {
         this.getUserPreferences(user.uid);
       } else {
         this.setUser({});
-        const defaultPreset = this.findPreset("name", "Default");
+        const defaultPreset = this.findPreset("id", "default");
         const defaultSettings: Partial<AppState> = {
           favorites: [],
           hidden: [],

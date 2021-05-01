@@ -184,6 +184,10 @@ export type UserPreferencesDoc = {
   syncSettings?: boolean;
 };
 
+export type GlobalDoc = {
+  filterPresets: PresetType[];
+};
+
 export type UserContextType = {
   user: {
     email: string | null;
