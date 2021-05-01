@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
@@ -274,19 +275,25 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     fileRef
       .getDownloadURL()
       .then((url) => {
-        console.log(url);
         fetch(url)
           .then((response) => {
             response.json().then((data) => {
-              console.log(data);
+              const { timestamp, ...statisticsData } = data;
+
+              const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY");
+              this.props.snackbarQueue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
+
+              this.setState({ ...statisticsData, dataCreated: Object.keys(statisticsData) });
             });
           })
           .catch((error) => {
             console.log(error);
+            this.props.snackbarQueue.notify({ title: "Failed to fetch statistics data: " + error });
           });
       })
       .catch((error) => {
         console.log(error);
+        this.props.snackbarQueue.notify({ title: "Failed to create statistics data: " + error });
       });
   };
 
@@ -773,7 +780,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle onClick={this.createData}>
+              <TopAppBarTitle onClick={this.getData} onContextMenu={this.createData}>
                 {this.context !== "mobile" ? "Statistics" : null}
               </TopAppBarTitle>
             </TopAppBarSection>
