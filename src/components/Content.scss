@@ -1,7 +1,9 @@
 @use "@material/animation/_index" as animation;
 @use "@material/drawer/_index" as drawer;
 @use "@material/elevation/_index" as elevation;
+@use "@material/fab/_index" as fab;
 @use "@material/rtl/_index" as rtl;
+@use "@material/tab/_index" as tab;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-drawer-app-content {
@@ -182,13 +184,26 @@
   will-change: transform, opacity;
 }
 
-.offset-snackbar {
-  & + .mdc-snackbar,
+.bottom-nav {
+  & ~ .mdc-snackbar,
   .mdc-snackbar {
-    bottom: 56px + 16px;
+    bottom: top-app-bar.$mobile-row-height;
   }
-  &.bottom-nav + .mdc-snackbar,
+  &.statistics {
+    & ~ .mdc-snackbar,
+    .mdc-snackbar {
+      bottom: top-app-bar.$mobile-row-height + tab.$height;
+    }
+  }
+}
+
+.has-fab {
+  & ~ .mdc-snackbar,
+  .mdc-snackbar {
+    bottom: fab.$height + 16px;
+  }
+  &.bottom-nav ~ .mdc-snackbar,
   &.bottom-nav .mdc-snackbar {
-    bottom: 84px;
+    bottom: top-app-bar.$mobile-row-height + (fab.$height / 2);
   }
 }

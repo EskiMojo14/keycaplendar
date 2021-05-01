@@ -181,7 +181,7 @@ export const Content = (props: ContentProps) => {
   return (
     <div
       className={classNames(props.className, props.page, "app-container", {
-        "offset-snackbar": (user.isEditor || user.isDesigner) && device !== "desktop" && mainPages.includes(props.page),
+        "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && mainPages.includes(props.page),
         "bottom-nav": props.bottomNav,
       })}
     >
