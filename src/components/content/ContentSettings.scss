@@ -185,6 +185,9 @@
           .switch-container.account {
             padding: 0;
           }
+          .delete-container {
+            padding: 0;
+          }
         }
         &:not(:last-child) {
           @include util.divider-border(bottom);
