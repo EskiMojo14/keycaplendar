@@ -107,7 +107,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
       error: "Current user is not an admin. Access is not permitted.",
     };
   }
-  if (data.email === "ben.j.durrant@gmail.com") {
+  if (data.email === functions.config().admin.email) {
     return {
       error: "This user cannot be deleted",
     };
@@ -189,7 +189,7 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
     };
   }
   if (currentUser) {
-    if (currentUser.email === "ben.j.durrant@gmail.com") {
+    if (currentUser.email === functions.config().admin.email) {
       return {
         error: "This user cannot be deleted.",
       };
