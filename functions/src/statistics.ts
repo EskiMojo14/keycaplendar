@@ -726,14 +726,13 @@ const runtimeOpts: functions.RuntimeOptions = {
 };
 
 /**
- * Creates statistics data, and returns it. Possibly planning to refactor into a pubsub function which writes to firestore.
+ * Creates statistics data, and writes to a json file in storage.
  */
 
 export const createStatistics = functions
   .runWith(runtimeOpts)
-  /* .pubsub.schedule("every 60 minutes")
-  .onRun(async (context) => { */
-  .https.onCall(async (data, context) => {
+  .pubsub.schedule("every 12 hours")
+  .onRun(async (context) => {
     const snapshot = await db.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
