@@ -18,6 +18,7 @@ import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
+  appPresets: PresetType[];
   close: () => void;
   deletePreset: (preset: PresetType) => void;
   open: boolean;
@@ -54,7 +55,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const savePreset = () => {
-    if (preset.name !== "Default") {
+    if (props.appPresets.map((preset) => preset.id).includes(preset.id)) {
       const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
       const modifiedPreset = {
         ...preset,
@@ -103,11 +104,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const checkAll = (prop: string) => {
-    if (hasKey(props, prop)) {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
       const all = props[prop];
-      if (all instanceof Array) {
-        props.setWhitelist(prop, all);
-      }
+      props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
       props.setWhitelist(prop, whitelistShipped);
     }
@@ -185,11 +184,24 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           outlined
           enhanced={{ fixed: true }}
           value={preset.id}
-          options={presets.map((preset) => ({
-            label: preset.name,
-            key: preset.id,
-            value: preset.id,
-          }))}
+          options={[
+            {
+              label: null,
+              options: props.appPresets.map((preset) => ({
+                label: preset.name,
+                key: preset.id,
+                value: preset.id,
+              })),
+            },
+            {
+              label: null,
+              options: presets.map((preset) => ({
+                label: preset.name,
+                key: preset.id,
+                value: preset.id,
+              })),
+            },
+          ]}
           onChange={selectPresetFn}
           className={classNames({ modified: modified })}
         />
@@ -214,7 +226,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
               </svg>
             )}
             outlined
-            disabled={preset.name === "Default"}
+            disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
             onClick={savePreset}
           />
           <Button
@@ -233,7 +245,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
               </svg>
             )}
             outlined
-            disabled={preset.name === "Default"}
+            disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
             className="delete"
             onClick={deletePreset}
           />

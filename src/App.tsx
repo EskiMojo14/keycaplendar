@@ -88,8 +88,9 @@ type AppState = {
   lichTheme: boolean;
   density: string;
   syncSettings: boolean;
-  preset: PresetType;
-  presets: PresetType[];
+  currentPreset: PresetType;
+  appPresets: PresetType[];
+  userPresets: PresetType[];
 };
 
 class App extends React.Component<AppProps, AppState> {
@@ -143,8 +144,9 @@ class App extends React.Component<AppProps, AppState> {
     lichTheme: false,
     density: "default",
     syncSettings: false,
-    preset: new Preset(),
-    presets: [],
+    currentPreset: new Preset(),
+    appPresets: [],
+    userPresets: [],
   };
   constructor(props: AppProps) {
     super(props);
@@ -646,7 +648,7 @@ class App extends React.Component<AppProps, AppState> {
 
     // create default preset
 
-    const filteredPresets = this.state.presets.filter((preset) => preset.id !== "default");
+    const filteredPresets = this.state.appPresets.filter((preset) => preset.id !== "default");
 
     const defaultPreset = new Preset(
       "Default",
@@ -670,11 +672,11 @@ class App extends React.Component<AppProps, AppState> {
       profiles: allProfiles,
       content: filteredSets.length > 0,
       loading: false,
-      presets: presets,
+      appPresets: presets,
     });
 
-    if (!this.state.preset.name) {
-      this.setState({ preset: defaultPreset });
+    if (!this.state.currentPreset.name) {
+      this.setState({ currentPreset: defaultPreset });
     }
 
     if (whitelist.edited && !whitelist.edited.includes("profiles")) {
@@ -950,18 +952,7 @@ class App extends React.Component<AppProps, AppState> {
             }
 
             if (filterPresets) {
-              const defaultPreset = new Preset(
-                "Default",
-                false,
-                false,
-                this.state.profiles,
-                ["Shipped", "Not shipped"],
-                "exclude",
-                [],
-                "default"
-              );
-              const presets = [defaultPreset, ...filterPresets];
-              this.setState({ presets: presets });
+              this.setState({ userPresets: filterPresets });
               const storedPreset = this.getStorage("presetId");
               if (storedPreset && storedPreset !== "default") {
                 this.selectPreset(storedPreset, false);
@@ -1127,13 +1118,14 @@ class App extends React.Component<AppProps, AppState> {
     }
   };
   findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
-    const preset = this.state.presets.filter((preset) => preset[prop] === val)[0];
+    const allPresets = [...this.state.appPresets, ...this.state.userPresets];
+    const preset = allPresets.filter((preset) => preset[prop] === val)[0];
     return preset;
   };
   selectPreset = (id: string, write = true) => {
     const preset = this.findPreset("id", id);
     if (preset) {
-      this.setState({ preset: preset });
+      this.setState({ currentPreset: preset });
       this.setWhitelist("all", preset.whitelist);
     }
     if (write) {
@@ -1142,35 +1134,35 @@ class App extends React.Component<AppProps, AppState> {
   };
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
-    const presets = [...this.state.presets, preset];
+    const presets = [...this.state.userPresets, preset];
     alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({ presets: presets, preset: preset });
+    this.setState({ userPresets: presets, currentPreset: preset });
     this.syncPresets(presets);
   };
   editPreset = (preset: PresetType) => {
     const savedPreset = this.findPreset("id", preset.id);
     let presets: PresetType[];
     if (savedPreset) {
-      const index = this.state.presets.indexOf(savedPreset);
-      presets = [...this.state.presets];
+      const index = this.state.userPresets.indexOf(savedPreset);
+      presets = [...this.state.userPresets];
       presets[index] = preset;
     } else {
-      presets = [...this.state.presets, preset];
+      presets = [...this.state.userPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({ presets: presets, preset: preset });
+    this.setState({ userPresets: presets, currentPreset: preset });
     this.syncPresets(presets);
   };
   deletePreset = (preset: PresetType) => {
-    const presets = this.state.presets.filter((filterPreset) => filterPreset.id !== preset.id);
+    const presets = this.state.userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false, "Default");
     this.setState({
-      presets: presets,
-      preset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
+      userPresets: presets,
+      currentPreset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
     });
     this.syncPresets(presets);
   };
-  syncPresets = (presets = this.state.presets) => {
+  syncPresets = (presets = this.state.userPresets) => {
     const filteredPresets = presets.filter((preset) => preset.name !== "Default");
     const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false, "Default").map((preset) => ({
       ...preset,
@@ -1257,8 +1249,8 @@ class App extends React.Component<AppProps, AppState> {
                 toggleHidden: this.toggleHidden,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
-                preset: this.state.preset,
-                presets: this.state.presets,
+                preset: this.state.currentPreset,
+                presets: this.state.userPresets,
                 selectPreset: this.selectPreset,
                 newPreset: this.newPreset,
                 editPreset: this.editPreset,
@@ -1288,8 +1280,8 @@ class App extends React.Component<AppProps, AppState> {
                 toggleHidden: this.toggleHidden,
                 syncSettings: this.state.syncSettings,
                 setSyncSettings: this.setSyncSettings,
-                preset: this.state.preset,
-                presets: this.state.presets,
+                preset: this.state.currentPreset,
+                presets: this.state.userPresets,
                 selectPreset: this.selectPreset,
                 newPreset: this.newPreset,
                 editPreset: this.editPreset,
@@ -1312,6 +1304,7 @@ class App extends React.Component<AppProps, AppState> {
                     allDesigners={this.state.allDesigners}
                     allVendors={this.state.allVendors}
                     allRegions={this.state.allRegions}
+                    appPresets={this.state.appPresets}
                     sets={this.state.filteredSets}
                     groups={this.state.groups}
                     loading={this.state.loading}
