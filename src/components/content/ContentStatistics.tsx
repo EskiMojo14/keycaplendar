@@ -256,16 +256,6 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     categoryDialogOpen: false,
   };
 
-  createData = () => {
-    const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
-    cloudFn()
-      .then(() => this.props.snackbarQueue.notify({ title: "Created statistics data." }))
-      .catch((error) => {
-        console.log(error);
-        this.props.snackbarQueue.notify({ title: "Failed to create statistics data: " + error });
-      });
-  };
-
   componentDidMount() {
     this.getData();
   }
@@ -280,7 +270,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             response.json().then((data) => {
               const { timestamp, ...statisticsData } = data;
 
-              const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY");
+              const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY UTC");
               this.props.snackbarQueue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
 
               this.setState({ ...statisticsData, dataCreated: Object.keys(statisticsData) });
@@ -780,9 +770,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle onClick={this.getData} onContextMenu={this.createData}>
-                {this.context !== "mobile" ? "Statistics" : null}
-              </TopAppBarTitle>
+              <TopAppBarTitle>{this.context !== "mobile" ? "Statistics" : null}</TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
               {hasKey(buttons, this.props.statisticsTab) ? buttons[this.props.statisticsTab] : null}
