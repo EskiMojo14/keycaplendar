@@ -8,6 +8,8 @@ import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray }
 
 const db = admin.firestore();
 
+const bucket = admin.storage().bucket();
+
 const math = create(all) as MathJsStatic;
 
 type TimelineDataObject = {
@@ -779,44 +781,14 @@ export const createStatistics = functions
     const vendorsData = createVendorsData(limitedSets);
     const statisticsData = {
       summaryData: await summaryData,
+      timelinesData: await timelinesData,
       statusData: await statusData,
       shippedData: await shippedData,
       durationData: await durationData,
       vendorsData: await vendorsData,
+      timestamp: utc().toISOString(),
     };
-
-    const statsCollection = db.collection("app").doc("statisticsData").collection("data");
-
-    const writeStats = (doc: string, data: SummaryData | StatusData | ShippedData | DurationData | VendorData) => {
-      return statsCollection.doc(doc).set(data);
-    };
-
-    const writeStatsPromises = Object.keys(statisticsData).map((key) => {
-      if (hasKey(statisticsData, key)) {
-        return writeStats(key, statisticsData[key]);
-      } else {
-        return Promise.reject(new Error("No such statistics data: " + key));
-      }
-    });
-
-    const timelinesDataResult = await timelinesData;
-
-    const timelinesDataPromises = Object.keys(timelinesDataResult).map((category) => {
-      if (hasKey(timelinesDataResult, category)) {
-        return statsCollection
-          .doc("timelinesData")
-          .collection("categories")
-          .doc(category)
-          .set(timelinesDataResult[category]);
-      } else {
-        return Promise.reject(new Error("No such category: " + category));
-      }
-    });
-
-    const timestampPromise = db
-      .collection("app")
-      .doc("statisticsData")
-      .set({ timestamp: utc().toISOString() }, { merge: true });
-
-    return Promise.all([...timelinesDataPromises, ...writeStatsPromises, timestampPromise]);
+    const jsonString = JSON.stringify(statisticsData);
+    const file = bucket.file("statisticsData.json");
+    return file.save(jsonString, { contentType: "application/json" });
   });

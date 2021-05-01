@@ -27,6 +27,8 @@ import { DialogStatistics } from "../statistics/DialogStatistics";
 import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
 import "./ContentStatistics.scss";
 
+const storage = firebase.storage();
+
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
@@ -260,6 +262,31 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       .catch((error) => {
         console.log(error);
         this.props.snackbarQueue.notify({ title: "Failed to create statistics data: " + error });
+      });
+  };
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = async () => {
+    const fileRef = storage.ref("statisticsData.json");
+    fileRef
+      .getDownloadURL()
+      .then((url) => {
+        console.log(url);
+        fetch(url)
+          .then((response) => {
+            response.json().then((data) => {
+              console.log(data);
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
