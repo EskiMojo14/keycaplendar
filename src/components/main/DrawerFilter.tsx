@@ -9,6 +9,7 @@ import { WhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import { Icon } from "@rmwc/icon";
 import { IconButton } from "@rmwc/icon-button";
 import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
@@ -177,81 +178,146 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     </Tooltip>
   ) : null;
 
-  const presetSelect =
-    presets.length > 1 ? (
-      <>
-        <Select
-          outlined
-          enhanced={{ fixed: true }}
-          value={preset.id}
-          options={[
-            {
-              label: null,
-              options: props.appPresets.map((preset) => ({
+  const presetSelect = (
+    <>
+      <Select
+        outlined
+        icon={
+          presets.map((preset) => preset.id).includes(preset.id)
+            ? iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
+                  <circle cx="12" cy="8" opacity=".3" r="2" />
+                  <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
+                </svg>
+              )
+            : iconObject(
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path
+                    d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                    opacity=".3"
+                  />
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                </svg>
+              )
+        }
+        enhanced={{ fixed: true }}
+        value={preset.id}
+        options={
+          presets.length > 0
+            ? [
+                {
+                  label: (
+                    <>
+                      <Icon
+                        icon={iconObject(
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                              d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                              opacity=".3"
+                            />
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                          </svg>,
+                          {
+                            size: "xsmall",
+                          }
+                        )}
+                      />
+                      Global
+                    </>
+                  ),
+                  options: props.appPresets.map((preset) => ({
+                    label: preset.name,
+                    key: preset.id,
+                    value: preset.id,
+                  })),
+                },
+                {
+                  label: (
+                    <>
+                      <Icon
+                        icon={iconObject(
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
+                            <circle cx="12" cy="8" opacity=".3" r="2" />
+                            <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
+                          </svg>,
+                          {
+                            size: "xsmall",
+                          }
+                        )}
+                      />
+                      User
+                    </>
+                  ),
+                  options: presets.map((preset) => ({
+                    label: preset.name,
+                    key: preset.id,
+                    value: preset.id,
+                  })),
+                },
+              ]
+            : props.appPresets.map((preset) => ({
                 label: preset.name,
                 key: preset.id,
                 value: preset.id,
-              })),
-            },
-            {
-              label: null,
-              options: presets.map((preset) => ({
-                label: preset.name,
-                key: preset.id,
-                value: preset.id,
-              })),
-            },
-          ]}
-          onChange={selectPresetFn}
-          className={classNames({ modified: modified })}
-        />
-        <div className="preset-buttons">
-          <Button
-            label="Save"
-            icon={iconObject(
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path
-                  d="M21,8H3V6h18V8z M18,11H6v2h12V11z M14,17.116V16h-4v2h3.115L14,17.116z M21.04,13.13c0.14,0,0.27,0.06,0.38,0.17l1.28,1.28
+              }))
+        }
+        onChange={selectPresetFn}
+        className={classNames({ modified: modified })}
+        disabled={[...props.appPresets, ...presets].length === 1}
+      />
+      <div className="preset-buttons">
+        <Button
+          label="Save"
+          icon={iconObject(
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path
+                d="M21,8H3V6h18V8z M18,11H6v2h12V11z M14,17.116V16h-4v2h3.115L14,17.116z M21.04,13.13c0.14,0,0.27,0.06,0.38,0.17l1.28,1.28
 	c0.22,0.21,0.22,0.56,0,0.77l-1,1l-2.05-2.05l1-1C20.76,13.19,20.9,13.13,21.04,13.13 M19.07,14.88l2.05,2.05L15.06,23H13v-2.06
 	L19.07,14.88"
-                />
-              </svg>
-            )}
-            outlined
-            disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
-            onClick={savePreset}
-          />
-          <Button
-            label="Delete"
-            icon={iconObject(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
-              </svg>
-            )}
-            outlined
-            disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
-            className="delete"
-            onClick={deletePreset}
-          />
-        </div>
-      </>
-    ) : null;
+              />
+            </svg>
+          )}
+          outlined
+          disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
+          onClick={savePreset}
+        />
+        <Button
+          label="Delete"
+          icon={iconObject(
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
+            </svg>
+          )}
+          outlined
+          disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
+          className="delete"
+          onClick={deletePreset}
+        />
+      </div>
+    </>
+  );
   const presetMenu = user.email ? (
     <CollapsibleList
       defaultOpen

@@ -26,6 +26,8 @@
 @use '@material/feature-targeting/_index' as feature-targeting;
 @use "@material/elevation/_index" as elevation;
 
+@use "@material/notched-outline/mixins" as notched-outline-mixins;
+
 // 1 - card, switch
 // 2 - contained button
 // 3 - refresh indicator
@@ -518,6 +520,28 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     @include select.outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include select.hover-outline-color(map-get($variables, text-high));
     @include select.focused-outline-color(map-get($variables, primary));
+    &--with-leading-icon {
+      &:not(.mdc-select--disabled) {
+        .mdc-select__icon {
+          color: map-get($variables, text-high);
+        }
+      }
+    }
+    &.mdc-select--disabled {
+      .mdc-select__selected-text {
+        color: map-get($variables, text-disabled);
+      }
+      .mdc-select__icon {
+        color: map-get($variables, text-disabled);
+      }
+      .mdc-select__dropdown-icon {
+        // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
+        @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.38);
+      }
+      &.mdc-select--outlined {
+        @include notched-outline-mixins.color(rgba(map-get($variables, on-surface), 0.16));
+      }
+    }
     .mdc-select__dropdown-icon {
       // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
       @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.6);

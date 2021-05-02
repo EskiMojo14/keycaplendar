@@ -64,6 +64,7 @@
 @use "@rmwc/circular-progress/circular-progress";
 @use "@rmwc/data-table/data-table";
 @use "@rmwc/list/collapsible-list";
+@use "@rmwc/icon/icon";
 @use "@rmwc/tooltip/tooltip";
 
 @use "@material/animation/_index" as animation;
@@ -145,9 +146,21 @@
     @include shape.radius(0);
     box-sizing: border-box;
   }
-  .mdc-menu .mdc-list-item {
-    height: 56px;
-    @include typography.typography(subtitle1);
+  .mdc-menu {
+    .mdc-list-item {
+      height: 56px;
+      @include typography.typography(subtitle1);
+    }
+    .mdc-list-group__subheader {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      padding: 4px 16px;
+      @include typography.typography(caption);
+      .rmwc-icon {
+        @include rtl.reflexive-box(margin, right, 16px);
+      }
+    }
   }
   .content-container &.mdc-drawer--dismissible {
     height: calc(100% - #{top-app-bar.$row-height});
@@ -322,6 +335,13 @@
     right: -13px;
     left: auto;
   }
+}
+
+.rmwc-icon--url[disabled],
+.rmwc-icon--component[disabled],
+[disabled] > .rmwc-icon--url,
+[disabled] > .rmwc-icon--component {
+  opacity: 1;
 }
 
 .banner {
