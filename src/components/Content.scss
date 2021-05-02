@@ -121,17 +121,17 @@
     }
     transition-timing-function: linear, animation.$standard-curve-timing-function;
     transition-duration: 280ms, drawer.$animation-enter;
-    .mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
       transition-duration: 280ms, drawer.$animation-enter;
     }
-    .mdc-drawer--closing ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--closing ~ .editor-elements & {
       transition-duration: 280ms, drawer.$animation-exit;
     }
-    .mdc-drawer--open.mdc-drawer--dismissible ~ .editor-elements &,
-    .mdc-drawer--opening.mdc-drawer--dismissible ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--open ~ .editor-elements &,
+    .mdc-drawer--dismissible.mdc-drawer--opening ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px + 320px);
     }
-    .mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px);
     }
   }
