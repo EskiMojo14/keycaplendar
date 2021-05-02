@@ -401,7 +401,7 @@ export class SearchAppBar extends React.Component<SearchAppBarProps, SearchAppBa
       <>
         <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": this.props.open })}>
           <TopAppBarRow>
-            <div className={bemClasses({ modifiers: "modal expanded" })}>
+            <div className={bemClasses({ modifiers: "modal open" })}>
               <div className={bemClasses("field-container")}>
                 <TextField
                   id="search"
