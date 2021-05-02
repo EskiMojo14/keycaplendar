@@ -52,6 +52,7 @@ export type WhitelistType = {
 export type PresetType = {
   name: string;
   id: string;
+  global?: boolean;
   whitelist: WhitelistType;
 };
 

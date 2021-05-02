@@ -43,7 +43,6 @@
         &__menu {
           width: 320px - 32px;
         }
-        margin: 16px 0;
         &.modified {
           .mdc-select__selected-text::after {
             content: "*";
@@ -53,12 +52,17 @@
     }
     &-button {
       display: flex;
+      margin: 16px 0;
       .mdc-button {
         flex: 0 1 100%;
       }
     }
     &-buttons {
       display: flex;
+      margin: 16px 0;
+      &:last-child {
+        margin: 0;
+      }
       .mdc-button {
         flex: 0 1 50%;
         &:first-child {

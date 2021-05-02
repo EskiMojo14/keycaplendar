@@ -55,8 +55,8 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
-  const blankSet = new Keyset();
-  const blankPreset = new Preset();
+  const blankSet: SetType = new Keyset();
+  const blankPreset: PresetType = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = () => {
