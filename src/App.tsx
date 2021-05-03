@@ -949,7 +949,7 @@ class App extends React.Component<AppProps, AppState> {
         const data = doc.data();
         const { filterPresets } = data as GlobalDoc;
         if (filterPresets) {
-          const defaultPreset = this.findPreset("name", "Default");
+          const defaultPreset = this.findPreset("id", "default");
           if (defaultPreset) {
             this.setState({ appPresets: [defaultPreset, ...filterPresets] });
           } else {
@@ -1239,7 +1239,7 @@ class App extends React.Component<AppProps, AppState> {
     this.syncGlobalPresets(presets);
   };
   syncGlobalPresets = (presets = this.state.appPresets) => {
-    const filteredPresets = presets.filter((preset) => preset.name !== "Default");
+    const filteredPresets = presets.filter((preset) => preset.id !== "default");
     const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
       ...preset,
     }));

@@ -72,7 +72,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const deletePreset = () => {
-    if (preset.name !== "Default") {
+    if (preset.id !== "default") {
       props.deletePreset(preset);
     }
   };
@@ -496,13 +496,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           }}
           disabled={!modified}
         />
-        <Button
-          outlined
-          icon="link"
-          label="Copy"
-          onClick={copyLink}
-          disabled={preset.name === "Default" && !modified}
-        />
+        <Button outlined icon="link" label="Copy" onClick={copyLink} disabled={preset.id === "default" && !modified} />
       </div>
       <DrawerContent>
         {userFilterOptions}
