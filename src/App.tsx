@@ -47,6 +47,7 @@ import {
   VendorType,
   UserPreferencesDoc,
   GlobalDoc,
+  OldPresetType,
 } from "./util/types";
 import "./App.scss";
 
@@ -134,6 +135,7 @@ class App extends React.Component<AppProps, AppState> {
       hidden: false,
       profiles: [],
       shipped: ["Shipped", "Not shipped"],
+      regions: [],
       vendorMode: "exclude",
       vendors: [],
     },
@@ -676,6 +678,7 @@ class App extends React.Component<AppProps, AppState> {
       false,
       allProfiles,
       ["Shipped", "Not shipped"],
+      allRegions,
       "exclude",
       [],
       "default"
@@ -702,6 +705,10 @@ class App extends React.Component<AppProps, AppState> {
 
     if (whitelist.edited && !whitelist.edited.includes("profiles")) {
       this.setWhitelist("profiles", allProfiles, false);
+    }
+
+    if (whitelist.edited && !whitelist.edited.includes("regions")) {
+      this.setWhitelist("regions", allRegions, false);
     }
   };
 
@@ -964,10 +971,11 @@ class App extends React.Component<AppProps, AppState> {
         const { filterPresets } = data as GlobalDoc;
         if (filterPresets) {
           const defaultPreset = this.findPreset("id", "default");
+          const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
           if (defaultPreset) {
-            this.setState({ appPresets: [defaultPreset, ...filterPresets] });
+            this.setState({ appPresets: [defaultPreset, ...updatedPresets] });
           } else {
-            this.setState({ appPresets: filterPresets });
+            this.setState({ appPresets: updatedPresets });
           }
         }
       })
@@ -994,7 +1002,8 @@ class App extends React.Component<AppProps, AppState> {
             }
 
             if (filterPresets) {
-              this.setState({ userPresets: filterPresets });
+              const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
+              this.setState({ userPresets: updatedPresets });
               const storedPreset = this.getStorage("presetId");
               if (storedPreset && storedPreset !== "default") {
                 this.selectPreset(storedPreset, false);
@@ -1158,6 +1167,14 @@ class App extends React.Component<AppProps, AppState> {
         });
       };
     }
+  };
+  updatePreset = (preset: OldPresetType): PresetType => {
+    const regions =
+      hasKey(preset.whitelist, "regions") && preset.whitelist.regions
+        ? preset.whitelist.regions
+        : this.state.allRegions;
+    const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
+    return updatedPreset;
   };
   findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
     const allPresets = [...this.state.appPresets, ...this.state.userPresets];

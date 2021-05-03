@@ -51,13 +51,13 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const newPreset = (global = false) => {
-    const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
-    const newPreset = new Preset("", global, favorites, hidden, profiles, shipped, vendorMode, vendors);
+    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = props.whitelist;
+    const newPreset = new Preset("", global, favorites, hidden, profiles, shipped, regions, vendorMode, vendors);
     props.openPreset(newPreset);
   };
 
   const savePreset = () => {
-    const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
+    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = props.whitelist;
     const modifiedPreset = {
       ...preset,
       whitelist: {
@@ -65,6 +65,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         hidden: hidden,
         profiles: profiles,
         shipped: shipped,
+        regions: regions,
         vendorMode: vendorMode,
         vendors: vendors,
       },
