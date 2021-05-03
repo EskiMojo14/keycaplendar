@@ -19,37 +19,28 @@ type DrawerFilterPresetProps = {
 type DrawerFilterPresetState = {
   name: string;
   new: boolean;
-  global: boolean;
 };
 
 export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps, DrawerFilterPresetState> {
   state: DrawerFilterPresetState = {
     name: "",
     new: true,
-    global: false,
   };
   componentDidUpdate = (prevProps: DrawerFilterPresetProps) => {
     if (this.props.preset.name !== prevProps.preset.name) {
       this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
-    if (this.props.preset.global !== prevProps.preset.global) {
-      this.setState({ global: !!this.props.preset.global });
-    }
   };
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState<never>({ [e.target.name]: e.target.value });
-  };
-  handleChangeCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState<never>({ [e.target.name]: e.target.checked });
   };
   savePreset = () => {
     if (this.state.name) {
       const preset = {
         ...this.props.preset,
         name: this.state.name,
-        global: this.state.global,
       };
-      if (this.state.global && this.context.user.isAdmin) {
+      if (this.props.preset.global && this.context.user.isAdmin) {
         if (!this.props.preset.name) {
           this.context.newGlobalPreset(preset);
         } else {
@@ -66,13 +57,13 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
     }
   };
   render() {
-    const globalCheckbox = this.context.user.isAdmin ? (
-      <Checkbox label="Global" name="global" checked={this.state.global} onChange={this.handleChangeCheckbox} />
-    ) : null;
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
-          <DrawerTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</DrawerTitle>
+          <DrawerTitle>
+            {this.state.new ? "Create" : "Modify"}
+            {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
+          </DrawerTitle>
           <Button label="Save" disabled={!this.state.name} outlined onClick={this.savePreset} />
         </DrawerHeader>
         <div className="form-container">
@@ -85,7 +76,6 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
             autoComplete="off"
             required
           />
-          {globalCheckbox}
         </div>
         <DrawerContent>
           <div className="group">

@@ -41,10 +41,18 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
         ...this.props.preset,
         name: this.state.name,
       };
-      if (!this.props.preset.name) {
-        this.context.newPreset(preset);
+      if (this.props.preset.global && this.context.user.isAdmin) {
+        if (!this.props.preset.name) {
+          this.context.newGlobalPreset(preset);
+        } else {
+          this.context.editGlobalPreset(preset);
+        }
       } else {
-        this.context.editPreset(preset);
+        if (!this.props.preset.name) {
+          this.context.newPreset(preset);
+        } else {
+          this.context.editPreset(preset);
+        }
       }
       this.props.close();
     }
@@ -56,14 +64,17 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={this.props.close} />
-              <TopAppBarTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</TopAppBarTitle>
+              <TopAppBarTitle>
+                {this.state.new ? "Create" : "Modify"}
+                {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
+              </TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
               <Button label="Save" onClick={this.savePreset} disabled={!this.state.name} />
             </TopAppBarSection>
           </TopAppBarRow>
         </FullScreenDialogAppBar>
-        <div className="field-container">
+        <div className="form-container">
           <TextField
             outlined
             label="Name"
