@@ -7,7 +7,7 @@ import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./DrawerFilterPreset.scss";
 
 type DrawerFilterPresetProps = {
@@ -123,18 +123,18 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
               <Typography use="caption">Vendors</Typography>
             </div>
             <div className="toggle-container">
-              <ToggleGroup>
-                <ToggleGroupButton
+              <SegmentedButton toggle>
+                <SegmentedButtonSegment
                   disabled
                   label="Include"
                   selected={this.props.preset.whitelist.vendorMode === "include"}
                 />
-                <ToggleGroupButton
+                <SegmentedButtonSegment
                   disabled
                   label="Exclude"
                   selected={this.props.preset.whitelist.vendorMode === "exclude"}
                 />
-              </ToggleGroup>
+              </SegmentedButton>
             </div>
             <div className="chip-set-container">
               <ChipSet choice>

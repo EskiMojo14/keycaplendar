@@ -59,7 +59,7 @@ $tabs: summary, timelines, status, shipped, duration, vendors;
           flex-shrink: 0;
           @include rtl.reflexive-box(margin, right, 16px);
         }
-        .toggle-group {
+        .segmented-button {
           flex-grow: 0;
           flex-shrink: 0;
           margin-bottom: 12px;

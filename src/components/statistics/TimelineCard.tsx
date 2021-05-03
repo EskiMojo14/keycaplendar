@@ -19,7 +19,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./TimelineCard.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -260,8 +260,8 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           </Typography>
         </div>
         <div className="button-container">
-          <ToggleGroup>
-            <ToggleGroupButton
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
               icon={iconObject(
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                   <path d="M0 0h24v24H0V0z" fill="none" />
@@ -273,7 +273,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                 setGraphType("bar");
               }}
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               icon={iconObject(
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                   <path d="M0 0h24v24H0V0z" fill="none" />
@@ -285,7 +285,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                 setGraphType("line");
               }}
             />
-          </ToggleGroup>
+          </SegmentedButton>
         </div>
       </div>
       <div className="timeline-container">
@@ -383,8 +383,8 @@ export const CountCard = (props: CountCardProps) => {
           </Typography>
         </div>
         <div className="button-container">
-          <ToggleGroup>
-            <ToggleGroupButton
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
               icon={iconObject(
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                   <path d="M0 0h24v24H0V0z" fill="none" />
@@ -396,7 +396,7 @@ export const CountCard = (props: CountCardProps) => {
                 setGraphType("bar");
               }}
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               icon={iconObject(
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
                   <path d="M0 0h24v24H0V0z" fill="none" />
@@ -408,7 +408,7 @@ export const CountCard = (props: CountCardProps) => {
                 setGraphType("line");
               }}
             />
-          </ToggleGroup>
+          </SegmentedButton>
         </div>
       </div>
       <div className="timeline-container">

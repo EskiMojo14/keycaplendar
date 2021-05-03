@@ -95,15 +95,15 @@
         @include util.divider-border(bottom);
         margin-bottom: 16px;
       }
-      .filter-toggle-button-container {
-        .toggle-group {
+      .filter-segmented-button-container {
+        .segmented-button {
           justify-content: stretch;
           .mdc-button {
             flex-grow: 1;
           }
         }
       }
-      .filter-toggle-button-container,
+      .filter-segmented-button-container,
       .filter-button-container {
         margin-bottom: 16px;
       }

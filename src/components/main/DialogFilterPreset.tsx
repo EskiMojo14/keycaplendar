@@ -7,7 +7,7 @@ import { ChipSet, Chip } from "@rmwc/chip";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import "./DialogFilterPreset.scss";
 
@@ -123,18 +123,18 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
               <Typography use="caption">Vendors</Typography>
             </div>
             <div className="toggle-container">
-              <ToggleGroup>
-                <ToggleGroupButton
+              <SegmentedButton toggle>
+                <SegmentedButtonSegment
                   disabled
                   label="Include"
                   selected={this.props.preset.whitelist.vendorMode === "include"}
                 />
-                <ToggleGroupButton
+                <SegmentedButtonSegment
                   disabled
                   label="Exclude"
                   selected={this.props.preset.whitelist.vendorMode === "exclude"}
                 />
-              </ToggleGroup>
+              </SegmentedButton>
             </div>
             <div className="chip-set-container">
               <ChipSet choice>

@@ -1,19 +1,19 @@
 @use "@material/rtl/_index" as rtl;
 
-.toggle-group {
+.segmented-button {
   display: flex;
-  .toggle-group__button {
+  .segmented-button__segment {
     flex-grow: 1;
     @include rtl.reflexive-box(margin, right, -1px);
     min-width: 0;
     .mdc-button__ripple {
       border-radius: inherit;
     }
-    &:not(.toggle-group__button--selected) {
+    &:not(.segmented-button__segment--selected) {
       border-left-color: var(--lighter-color);
       border-right-color: var(--lighter-color);
     }
-    &.toggle-group__button--only-icon .mdc-button__icon {
+    &.segmented-button__segment--only-icon .mdc-button__icon {
       margin: 0;
     }
     html:not([dir="rtl"]) & {
@@ -26,12 +26,12 @@
         border-bottom-right-radius: 0;
       }
       &:first-child {
-        &:not(.toggle-group__button--selected) {
+        &:not(.segmented-button__segment--selected) {
           border-left-color: var(--divider-color);
         }
       }
       &:last-child {
-        &:not(.toggle-group__button--selected) {
+        &:not(.segmented-button__segment--selected) {
           border-right-color: var(--divider-color);
         }
       }
@@ -46,12 +46,12 @@
         border-bottom-left-radius: 0;
       }
       &:first-child {
-        &:not(.toggle-group__button--selected) {
+        &:not(.segmented-button__segment--selected) {
           border-right-color: var(--divider-color);
         }
       }
       &:last-child {
-        &:not(.toggle-group__button--selected) {
+        &:not(.segmented-button__segment--selected) {
           border-left-color: var(--divider-color);
         }
       }

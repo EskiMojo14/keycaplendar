@@ -15,7 +15,7 @@ import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
@@ -503,30 +503,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Profile</Typography>
           </div>
-          <div className="filter-toggle-button-container">
-            <ToggleGroup>
-              <ToggleGroupButton
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
                 label="All"
                 icon="done_all"
                 onClick={() => {
                   checkAll("profiles");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="None"
                 icon="remove_done"
                 onClick={() => {
                   uncheckAll("profiles");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="Invert"
                 icon="published_with_changes"
                 onClick={() => {
                   invertAll("profiles");
                 }}
               />
-            </ToggleGroup>
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -548,30 +548,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Shipped</Typography>
           </div>
-          <div className="filter-toggle-button-container">
-            <ToggleGroup>
-              <ToggleGroupButton
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
                 label="All"
                 icon="done_all"
                 onClick={() => {
                   checkAll("shipped");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="None"
                 icon="remove_done"
                 onClick={() => {
                   uncheckAll("shipped");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="Invert"
                 icon="published_with_changes"
                 onClick={() => {
                   invertAll("shipped");
                 }}
               />
-            </ToggleGroup>
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -593,48 +593,48 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Vendor</Typography>
           </div>
-          <div className="filter-toggle-button-container">
-            <ToggleGroup>
-              <ToggleGroupButton
+          <div className="filter-segmented-button-container">
+            <SegmentedButton toggle>
+              <SegmentedButtonSegment
                 label="Include"
                 onClick={() => {
                   props.setWhitelist("vendorMode", "include");
                 }}
                 selected={props.whitelist.vendorMode === "include"}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="Exclude"
                 onClick={() => {
                   props.setWhitelist("vendorMode", "exclude");
                 }}
                 selected={props.whitelist.vendorMode === "exclude"}
               />
-            </ToggleGroup>
+            </SegmentedButton>
           </div>
-          <div className="filter-toggle-button-container">
-            <ToggleGroup>
-              <ToggleGroupButton
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
                 label="All"
                 icon="done_all"
                 onClick={() => {
                   checkAll("vendors");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="None"
                 icon="remove_done"
                 onClick={() => {
                   uncheckAll("vendors");
                 }}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="Invert"
                 icon="published_with_changes"
                 onClick={() => {
                   invertAll("vendors");
                 }}
               />
-            </ToggleGroup>
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>

@@ -24,7 +24,7 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import { Footer } from "../common/Footer";
 import { DialogDelete } from "../settings/DialogDelete";
 import "./ContentSettings.scss";
@@ -289,29 +289,29 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           <Typography use="caption">Density</Typography>
         </div>
         <Card className="density-card">
-          <ToggleGroup className="density-toggle">
-            <ToggleGroupButton
+          <SegmentedButton className="density-toggle">
+            <SegmentedButtonSegment
               label="Default"
               selected={props.density === "default"}
               onClick={() => {
                 props.setDensity("default");
               }}
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               label="Comfortable"
               selected={props.density === "comfortable"}
               onClick={() => {
                 props.setDensity("comfortable");
               }}
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               label="Compact"
               selected={props.density === "compact"}
               onClick={() => {
                 props.setDensity("compact");
               }}
             />
-          </ToggleGroup>
+          </SegmentedButton>
         </Card>
       </div>
     ) : null;

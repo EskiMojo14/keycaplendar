@@ -36,7 +36,7 @@ import { DrawerDetails } from "../images/DrawerDetails";
 import { DrawerSearch } from "../images/DrawerSearch";
 import { DialogDelete } from "../images/DialogDelete";
 import { Footer } from "../common/Footer";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./ContentImages.scss";
 
@@ -346,9 +346,9 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                       </Menu>
                     </MenuSurfaceAnchor>
                   ) : (
-                    <ToggleGroup>
+                    <SegmentedButton toggle>
                       {this.state.folders.map((folder) => (
-                        <ToggleGroupButton
+                        <SegmentedButtonSegment
                           key={folder}
                           label={folder}
                           selected={this.state.currentFolder === folder}
@@ -357,7 +357,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
                           }}
                         />
                       ))}
-                    </ToggleGroup>
+                    </SegmentedButton>
                   )}
                 </>
               )}
