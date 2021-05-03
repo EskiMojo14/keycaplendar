@@ -11,8 +11,9 @@ type SegmentedButtonProps = HTMLProps & {
 };
 
 export const SegmentedButton = (props: SegmentedButtonProps) => {
+  const { toggle, ...filteredProps } = props;
   return (
-    <div {...props} className={bemClasses({ modifiers: { toggle: !!props.toggle }, extra: props.className })}>
+    <div {...filteredProps} className={bemClasses({ modifiers: { toggle: !!toggle }, extra: props.className })}>
       {props.children}
     </div>
   );
