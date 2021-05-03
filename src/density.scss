@@ -178,8 +178,14 @@
       }
     }
     &.filter-drawer {
-      .mdc-drawer__content .group:not(:last-child) {
-        margin-bottom: 16px + $diff;
+      .mdc-drawer__content .group {
+        &:not(:last-child) {
+          margin-bottom: 16px + $diff;
+        }
+        .filter-segmented-button-container,
+        .filter-button-container {
+          margin-bottom: 16px + $diff;
+        }
       }
       div.subheader {
         padding-bottom: 16px + $diff;
@@ -202,7 +208,8 @@
     &__anchor {
       height: 56px + $diff;
     }
-    &__dropdown-icon {
+    &__dropdown-icon,
+    &--with-leading-icon .mdc-select__icon {
       bottom: 16px + $diff / 2;
     }
     &__selected-text {

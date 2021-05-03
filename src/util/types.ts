@@ -52,6 +52,7 @@ export type WhitelistType = {
 export type PresetType = {
   name: string;
   id: string;
+  global?: boolean;
   whitelist: WhitelistType;
 };
 
@@ -184,6 +185,10 @@ export type UserPreferencesDoc = {
   syncSettings?: boolean;
 };
 
+export type GlobalDoc = {
+  filterPresets: PresetType[];
+};
+
 export type UserContextType = {
   user: {
     email: string | null;
@@ -208,4 +213,7 @@ export type UserContextType = {
   newPreset: (preset: PresetType) => void;
   editPreset: (preset: PresetType) => void;
   deletePreset: (preset: PresetType) => void;
+  newGlobalPreset: (preset: PresetType) => void;
+  editGlobalPreset: (preset: PresetType) => void;
+  deleteGlobalPreset: (preset: PresetType) => void;
 };

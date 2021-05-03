@@ -44,6 +44,7 @@ type ContentMainProps = {
   allDesigners: string[];
   allVendors: string[];
   allRegions: string[];
+  appPresets: PresetType[];
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   whitelist: WhitelistType;
   snackbarQueue: QueueType;
@@ -54,8 +55,8 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
-  const blankSet = new Keyset();
-  const blankPreset = new Preset();
+  const blankSet: SetType = new Keyset();
+  const blankPreset: PresetType = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = () => {
@@ -347,6 +348,7 @@ export const ContentMain = (props: ContentMainProps) => {
           view={props.view}
           profiles={props.profiles}
           vendors={props.allVendors}
+          appPresets={props.appPresets}
           open={filterOpen}
           close={closeFilter}
           setWhitelist={props.setWhitelist}

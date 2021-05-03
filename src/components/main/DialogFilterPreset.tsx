@@ -7,7 +7,7 @@ import { ChipSet, Chip } from "@rmwc/chip";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarRow, TopAppBarSection, TopAppBarTitle, TopAppBarNavigationIcon } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import "./DialogFilterPreset.scss";
 
@@ -41,10 +41,18 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
         ...this.props.preset,
         name: this.state.name,
       };
-      if (!this.props.preset.name) {
-        this.context.newPreset(preset);
+      if (this.props.preset.global && this.context.user.isAdmin) {
+        if (!this.props.preset.name) {
+          this.context.newGlobalPreset(preset);
+        } else {
+          this.context.editGlobalPreset(preset);
+        }
       } else {
-        this.context.editPreset(preset);
+        if (!this.props.preset.name) {
+          this.context.newPreset(preset);
+        } else {
+          this.context.editPreset(preset);
+        }
       }
       this.props.close();
     }
@@ -56,14 +64,17 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
           <TopAppBarRow>
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={this.props.close} />
-              <TopAppBarTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</TopAppBarTitle>
+              <TopAppBarTitle>
+                {this.state.new ? "Create" : "Modify"}
+                {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
+              </TopAppBarTitle>
             </TopAppBarSection>
             <TopAppBarSection alignEnd>
               <Button label="Save" onClick={this.savePreset} disabled={!this.state.name} />
             </TopAppBarSection>
           </TopAppBarRow>
         </FullScreenDialogAppBar>
-        <div className="field-container">
+        <div className="form-container">
           <TextField
             outlined
             label="Name"
@@ -112,18 +123,18 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
               <Typography use="caption">Vendors</Typography>
             </div>
             <div className="toggle-container">
-              <ToggleGroup>
-                <ToggleGroupButton
+              <SegmentedButton toggle>
+                <SegmentedButtonSegment
                   disabled
                   label="Include"
                   selected={this.props.preset.whitelist.vendorMode === "include"}
                 />
-                <ToggleGroupButton
+                <SegmentedButtonSegment
                   disabled
                   label="Exclude"
                   selected={this.props.preset.whitelist.vendorMode === "exclude"}
                 />
-              </ToggleGroup>
+              </SegmentedButton>
             </div>
             <div className="chip-set-container">
               <ChipSet choice>

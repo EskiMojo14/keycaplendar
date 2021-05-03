@@ -28,6 +28,9 @@ export const UserContext = React.createContext<UserContextType>({
   newPreset: () => {},
   editPreset: () => {},
   deletePreset: () => {},
+  newGlobalPreset: () => {},
+  editGlobalPreset: () => {},
+  deleteGlobalPreset: () => {},
 });
 
 UserContext.displayName = "User";

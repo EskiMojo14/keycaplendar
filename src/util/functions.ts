@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
 import firebase from "../firebase";
+import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "./constants";
 import { SetType } from "./types";
 
@@ -206,10 +207,11 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: React.ReactNode) => {
+export const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
   return {
     strategy: "component",
     icon: jsx,
+    ...config,
   };
 };
 

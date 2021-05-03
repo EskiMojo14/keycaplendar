@@ -63,10 +63,12 @@ export class Whitelist {
 export class Preset {
   name: string;
   id: string;
+  global: boolean;
   whitelist: WhitelistType;
 
   /**
    * @param name Display name for preset.
+   * @param global If the preset is global.
    * @param favorites Whether to only display favourites.
    * @param hidden Whether to only display hidden sets.
    * @param profiles Array of allowed profiles.
@@ -78,6 +80,7 @@ export class Preset {
 
   constructor(
     name = "",
+    global = false,
     favorites = false,
     hidden = false,
     profiles: string[] = [],
@@ -88,6 +91,7 @@ export class Preset {
   ) {
     this.name = name;
     this.id = id;
+    this.global = global;
     this.whitelist = {
       favorites: favorites,
       hidden: hidden,

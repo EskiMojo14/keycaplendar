@@ -455,7 +455,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
       </Card>
     );
     return (
-      <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="create-dialog">
+      <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="entry-dialog create-dialog">
         <FullScreenDialogAppBar>
           <TopAppBarRow>
             <TopAppBarSection alignStart>
@@ -1316,7 +1316,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
       </Card>
     );
     return (
-      <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="edit-dialog">
+      <FullScreenDialog open={this.props.open} onClose={this.closeDialog} className="entry-dialog edit-dialog">
         <FullScreenDialogAppBar>
           <TopAppBarRow>
             <TopAppBarSection alignStart>

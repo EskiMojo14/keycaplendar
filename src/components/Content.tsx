@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal } from "../util/functions";
-import { WhitelistType, QueueType, SetType, SortOrderType } from "../util/types";
+import { WhitelistType, QueueType, SetType, SortOrderType, PresetType } from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -19,6 +19,7 @@ type ContentProps = {
   allRegions: string[];
   allSets: SetType[];
   allVendors: string[];
+  appPresets: PresetType[];
   applyTheme: string;
   bottomNav: boolean;
   className: string;
@@ -110,6 +111,7 @@ export const Content = (props: ContentProps) => {
       allDesigners={props.allDesigners}
       allVendors={props.allVendors}
       allRegions={props.allRegions}
+      appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
       whitelist={props.whitelist}
       snackbarQueue={props.snackbarQueue}

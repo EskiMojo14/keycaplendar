@@ -25,7 +25,7 @@ import { StatusCard } from "../statistics/PieCard";
 import { TableCard } from "../statistics/TableCard";
 import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCard";
 import { DialogStatistics } from "../statistics/DialogStatistics";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentStatistics.scss";
 
 const storage = firebase.storage();
@@ -436,29 +436,29 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
   render() {
     const categoryButtons = (cat: string) => {
       return this.context === "desktop" ? (
-        <ToggleGroup>
-          <ToggleGroupButton
+        <SegmentedButton toggle>
+          <SegmentedButtonSegment
             selected={hasKey(this.state.settings, cat) && this.state.settings[cat] === "profile"}
             onClick={() => {
               this.setSetting(cat, "profile");
             }}
             label="Profile"
           />
-          <ToggleGroupButton
+          <SegmentedButtonSegment
             selected={hasKey(this.state.settings, cat) && this.state.settings[cat] === "designer"}
             onClick={() => {
               this.setSetting(cat, "designer");
             }}
             label="Designer"
           />
-          <ToggleGroupButton
+          <SegmentedButtonSegment
             selected={hasKey(this.state.settings, cat) && this.state.settings[cat] === "vendor"}
             onClick={() => {
               this.setSetting(cat, "vendor");
             }}
             label="Vendor"
           />
-        </ToggleGroup>
+        </SegmentedButton>
       ) : (
         <Tooltip enterDelay={500} content="Category" align="top">
           <TopAppBarActionItem
@@ -481,9 +481,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
     };
     const genericButtons = (
       <>
-        <ToggleGroup>
+        <SegmentedButton toggle>
           <Tooltip enterDelay={500} align="bottom" content="Total">
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               selected={
                 hasKey(this.state.sort, this.props.statisticsTab) &&
                 this.state.sort[this.props.statisticsTab] === "total"
@@ -500,7 +500,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
             />
           </Tooltip>
           <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               selected={
                 hasKey(this.state.sort, this.props.statisticsTab) &&
                 this.state.sort[this.props.statisticsTab] === "alphabetical"
@@ -516,36 +516,36 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               )}
             />
           </Tooltip>
-        </ToggleGroup>
+        </SegmentedButton>
         {categoryButtons(this.props.statisticsTab)}
       </>
     );
     const buttons = {
       summary: (
         <>
-          <ToggleGroup>
-            <ToggleGroupButton
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
               selected={this.state.settings.summary === "icDate"}
               onClick={() => {
                 this.setSetting("summary", "icDate");
               }}
               label="IC"
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               selected={this.state.settings.summary === "gbLaunch"}
               onClick={() => {
                 this.setSetting("summary", "gbLaunch");
               }}
               label="GB"
             />
-          </ToggleGroup>
+          </SegmentedButton>
         </>
       ),
       timelines: (
         <>
-          <ToggleGroup>
+          <SegmentedButton toggle>
             <Tooltip enterDelay={500} align="bottom" content="Total">
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 selected={this.state.sort.timelines === "total"}
                 onClick={() => {
                   this.setSort("timelines", "total");
@@ -559,7 +559,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               />
             </Tooltip>
             <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 selected={this.state.sort.timelines === "alphabetical"}
                 onClick={() => {
                   this.setSort("timelines", "alphabetical");
@@ -572,23 +572,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 )}
               />
             </Tooltip>
-          </ToggleGroup>
-          <ToggleGroup>
-            <ToggleGroupButton
+          </SegmentedButton>
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
               selected={this.state.settings.timelinesCat === "icDate"}
               onClick={() => {
                 this.setSetting("timelinesCat", "icDate");
               }}
               label="IC"
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               selected={this.state.settings.timelinesCat === "gbLaunch"}
               onClick={() => {
                 this.setSetting("timelinesCat", "gbLaunch");
               }}
               label="GB"
             />
-          </ToggleGroup>
+          </SegmentedButton>
           {categoryButtons("timelinesGroup")}
         </>
       ),
@@ -596,9 +596,9 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
       shipped: genericButtons,
       duration: (
         <>
-          <ToggleGroup>
+          <SegmentedButton toggle>
             <Tooltip enterDelay={500} align="bottom" content="Total">
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 selected={this.state.sort.duration === "total"}
                 onClick={() => {
                   this.setSort("duration", "total");
@@ -612,7 +612,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               />
             </Tooltip>
             <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 selected={this.state.sort.duration === "alphabetical"}
                 onClick={() => {
                   this.setSort("duration", "alphabetical");
@@ -626,7 +626,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               />
             </Tooltip>
             <Tooltip enterDelay={500} align="bottom" content="Duration">
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 selected={this.state.sort.duration === "duration"}
                 onClick={() => {
                   this.setSort("duration", "duration");
@@ -640,23 +640,23 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
                 )}
               />
             </Tooltip>
-          </ToggleGroup>
-          <ToggleGroup>
-            <ToggleGroupButton
+          </SegmentedButton>
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
               selected={this.state.settings.durationCat === "icDate"}
               onClick={() => {
                 this.setSetting("durationCat", "icDate");
               }}
               label="IC"
             />
-            <ToggleGroupButton
+            <SegmentedButtonSegment
               selected={this.state.settings.durationCat === "gbLaunch"}
               onClick={() => {
                 this.setSetting("durationCat", "gbLaunch");
               }}
               label="GB"
             />
-          </ToggleGroup>
+          </SegmentedButton>
           {categoryButtons("durationGroup")}
         </>
       ),

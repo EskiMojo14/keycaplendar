@@ -21,7 +21,7 @@ import {
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 
 type UserCardProps = {
   allDesigners: string[];
@@ -258,10 +258,10 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
         </div>
         <CardActions>
           <CardActionButtons>
-            <ToggleGroup>
+            <SegmentedButton toggle>
               {roles.map((role) => {
                 return (
-                  <ToggleGroupButton
+                  <SegmentedButtonSegment
                     key={role}
                     label={role}
                     icon={
@@ -278,7 +278,7 @@ export class UserCard extends React.Component<UserCardProps, UserCardState> {
                   />
                 );
               })}
-            </ToggleGroup>
+            </SegmentedButton>
           </CardActionButtons>
           <CardActionIcons>{saveButton}</CardActionIcons>
         </CardActions>

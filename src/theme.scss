@@ -26,6 +26,8 @@
 @use '@material/feature-targeting/_index' as feature-targeting;
 @use "@material/elevation/_index" as elevation;
 
+@use "@material/notched-outline/mixins" as notched-outline-mixins;
+
 // 1 - card, switch
 // 2 - contained button
 // 3 - refresh indicator
@@ -518,6 +520,28 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     @include select.outline-color(rgba(map-get($variables, on-surface), 0.38));
     @include select.hover-outline-color(map-get($variables, text-high));
     @include select.focused-outline-color(map-get($variables, primary));
+    &--with-leading-icon {
+      &:not(.mdc-select--disabled) {
+        .mdc-select__icon {
+          color: map-get($variables, text-high);
+        }
+      }
+    }
+    &.mdc-select--disabled {
+      .mdc-select__selected-text {
+        color: map-get($variables, text-disabled);
+      }
+      .mdc-select__icon {
+        color: map-get($variables, text-disabled);
+      }
+      .mdc-select__dropdown-icon {
+        // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
+        @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.38);
+      }
+      &.mdc-select--outlined {
+        @include notched-outline-mixins.color(rgba(map-get($variables, on-surface), 0.16));
+      }
+    }
     .mdc-select__dropdown-icon {
       // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
       @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.6);
@@ -658,8 +682,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include top-app-bar.icon-ink-color(rgba(white, 0.87));
     }
     @if ($dark != true) {
-      .toggle-group {
-        .toggle-group__button {
+      .segmented-button {
+        .segmented-button__segment {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
           @include button.outline-color(rgba(map-get($variables, on-primary), 0.38));
           @include ripple.states(
@@ -1188,8 +1212,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
-  .toggle-group {
-    &__button {
+  .segmented-button {
+    &.segmented-button--toggle .segmented-button__segment {
       @include button.ink-color(map-get($variables, text-medium));
       @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
       @include ripple.states-selected(
@@ -1217,10 +1241,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
   }
 
   @if ($dark != true) {
-    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:first-child:not(.toggle-group__button--selected) {
+    &:not([dir="rtl"])
+      .mdc-top-app-bar
+      .segmented-button
+      .mdc-button:first-child:not(.segmented-button__segment--selected) {
       border-left-color: rgba(map-get($variables, on-primary), 0.38);
     }
-    &:not([dir="rtl"]) .mdc-top-app-bar .toggle-group .mdc-button:last-child:not(.toggle-group__button--selected) {
+    &:not([dir="rtl"])
+      .mdc-top-app-bar
+      .segmented-button
+      .mdc-button:last-child:not(.segmented-button__segment--selected) {
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
     }
   }

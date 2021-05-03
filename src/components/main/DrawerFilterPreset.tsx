@@ -7,7 +7,7 @@ import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./DrawerFilterPreset.scss";
 
 type DrawerFilterPresetProps = {
@@ -40,10 +40,18 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
         ...this.props.preset,
         name: this.state.name,
       };
-      if (!this.props.preset.name) {
-        this.context.newPreset(preset);
+      if (this.props.preset.global && this.context.user.isAdmin) {
+        if (!this.props.preset.name) {
+          this.context.newGlobalPreset(preset);
+        } else {
+          this.context.editGlobalPreset(preset);
+        }
       } else {
-        this.context.editPreset(preset);
+        if (!this.props.preset.name) {
+          this.context.newPreset(preset);
+        } else {
+          this.context.editPreset(preset);
+        }
       }
       this.props.close();
     }
@@ -52,10 +60,13 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
-          <DrawerTitle>{this.state.new ? "Create" : "Overwrite"} filter preset</DrawerTitle>
+          <DrawerTitle>
+            {this.state.new ? "Create" : "Modify"}
+            {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
+          </DrawerTitle>
           <Button label="Save" disabled={!this.state.name} outlined onClick={this.savePreset} />
         </DrawerHeader>
-        <div className="field-container">
+        <div className="form-container">
           <TextField
             outlined
             label="Name"
@@ -112,18 +123,18 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
               <Typography use="caption">Vendors</Typography>
             </div>
             <div className="toggle-container">
-              <ToggleGroup>
-                <ToggleGroupButton
+              <SegmentedButton toggle>
+                <SegmentedButtonSegment
                   disabled
                   label="Include"
                   selected={this.props.preset.whitelist.vendorMode === "include"}
                 />
-                <ToggleGroupButton
+                <SegmentedButtonSegment
                   disabled
                   label="Exclude"
                   selected={this.props.preset.whitelist.vendorMode === "exclude"}
                 />
-              </ToggleGroup>
+              </SegmentedButton>
             </div>
             <div className="chip-set-container">
               <ChipSet choice>

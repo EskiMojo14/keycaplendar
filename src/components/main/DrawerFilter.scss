@@ -43,7 +43,6 @@
         &__menu {
           width: 320px - 32px;
         }
-        margin: 16px 0;
         &.modified {
           .mdc-select__selected-text::after {
             content: "*";
@@ -53,12 +52,17 @@
     }
     &-button {
       display: flex;
+      margin: 16px 0;
       .mdc-button {
         flex: 0 1 100%;
       }
     }
     &-buttons {
       display: flex;
+      margin: 16px 0;
+      &:last-child {
+        margin: 0;
+      }
       .mdc-button {
         flex: 0 1 50%;
         &:first-child {
@@ -91,17 +95,17 @@
         @include util.divider-border(bottom);
         margin-bottom: 16px;
       }
-      .filter-toggle-button-container {
-        .toggle-group {
+      .filter-segmented-button-container {
+        .segmented-button {
           justify-content: stretch;
           .mdc-button {
             flex-grow: 1;
           }
         }
       }
-      .filter-toggle-button-container,
+      .filter-segmented-button-container,
       .filter-button-container {
-        margin-bottom: 8px;
+        margin-bottom: 16px;
       }
       .filter-button-container .mdc-button {
         @include rtl.reflexive-box(margin, right, 8px);

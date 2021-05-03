@@ -18,7 +18,7 @@ service cloud.firestore {
     }
     match /app/{appInfo} {
       allow read;
-      allow write: if false;
+      allow write: if request.auth.token.admin == true;
     }
   }
 }

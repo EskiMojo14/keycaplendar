@@ -9,15 +9,17 @@ import { WhitelistType, PresetType, QueueType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import { Icon } from "@rmwc/icon";
 import { IconButton } from "@rmwc/icon-button";
 import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import { ToggleGroup, ToggleGroupButton } from "../util/ToggleGroup";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
+  appPresets: PresetType[];
   close: () => void;
   deletePreset: (preset: PresetType) => void;
   open: boolean;
@@ -47,32 +49,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     selectPreset(e.target.value);
   };
 
-  const newPreset = () => {
+  const newPreset = (global = false) => {
     const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
-    const newPreset = new Preset("", favorites, hidden, profiles, shipped, vendorMode, vendors);
+    const newPreset = new Preset("", global, favorites, hidden, profiles, shipped, vendorMode, vendors);
     props.openPreset(newPreset);
   };
 
   const savePreset = () => {
-    if (preset.name !== "Default") {
-      const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
-      const modifiedPreset = {
-        ...preset,
-        whitelist: {
-          favorites: favorites,
-          hidden: hidden,
-          profiles: profiles,
-          shipped: shipped,
-          vendorMode: vendorMode,
-          vendors: vendors,
-        },
-      };
-      props.openPreset(modifiedPreset);
-    }
+    const { favorites, hidden, profiles, shipped, vendorMode, vendors } = props.whitelist;
+    const modifiedPreset = {
+      ...preset,
+      whitelist: {
+        favorites: favorites,
+        hidden: hidden,
+        profiles: profiles,
+        shipped: shipped,
+        vendorMode: vendorMode,
+        vendors: vendors,
+      },
+    };
+    props.openPreset(modifiedPreset);
   };
 
   const deletePreset = () => {
-    if (preset.name !== "Default") {
+    if (preset.id !== "default") {
       props.deletePreset(preset);
     }
   };
@@ -103,11 +103,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const checkAll = (prop: string) => {
-    if (hasKey(props, prop)) {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
       const all = props[prop];
-      if (all instanceof Array) {
-        props.setWhitelist(prop, all);
-      }
+      props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
       props.setWhitelist(prop, whitelistShipped);
     }
@@ -121,6 +119,17 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       }
     } else if (prop === "shipped") {
       props.setWhitelist(prop, emptyArray);
+    }
+  };
+
+  const invertAll = (prop: string) => {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
+      const all = props[prop];
+      const inverted = all.filter((value) => !props.whitelist[prop].includes(value));
+      props.setWhitelist(prop, inverted);
+    } else if (prop === "shipped") {
+      const inverted = whitelistShipped.filter((value) => !props.whitelist[prop].includes(value));
+      props.setWhitelist(prop, inverted);
     }
   };
 
@@ -178,107 +187,143 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     </Tooltip>
   ) : null;
 
-  const presetSelect =
-    presets.length > 1 ? (
-      <>
-        <Select
-          outlined
-          enhanced={{ fixed: true }}
-          value={preset.id}
-          options={presets.map((preset) => ({
-            label: preset.name,
-            key: preset.id,
-            value: preset.id,
-          }))}
-          onChange={selectPresetFn}
-          className={classNames({ modified: modified })}
-        />
-        <div className="preset-buttons">
-          <Button
-            label="Save"
-            icon={iconObject(
-              <svg
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path
-                  d="M21,8H3V6h18V8z M18,11H6v2h12V11z M14,17.116V16h-4v2h3.115L14,17.116z M21.04,13.13c0.14,0,0.27,0.06,0.38,0.17l1.28,1.28
+  const newPresetButton = user.isAdmin ? (
+    <div className="preset-buttons">
+      <Button
+        label="New"
+        icon={iconObject(
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path fill="none" d="M0,0h24v24H0V0z" />
+            <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
+          </svg>
+        )}
+        outlined
+        onClick={() => {
+          newPreset();
+        }}
+      />
+      <Button
+        label="New"
+        icon={iconObject(
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path fill="none" d="M0,0h24v24H0V0z" />
+            <path
+              opacity=".3"
+              d="M11,18v1.9c-3.9-0.5-7-3.9-7-7.9c0-0.6,0.1-1.2,0.2-1.8L9,15v1C9,17.1,9.9,18,11,18z M15,13v3h0
+	c0.9-1.2,2.3-2,4-2c0.2,0,0.5,0,0.7,0.1c0.2-0.7,0.3-1.4,0.3-2.1c0-3.3-2.1-6.2-5-7.4V5c0,1.1-0.9,2-2,2h-2v2c0,0.5-0.5,1-1,1H8v2h6
+	C14.5,12,15,12.5,15,13z"
+            />
+            <path
+              d="M14,19c0-1.1,0.4-2.2,1-3h0v-3c0-0.5-0.5-1-1-1H8v-2h2c0.5,0,1-0.5,1-1V7h2c1.1,0,2-0.9,2-2V4.6c2.9,1.2,5,4.1,5,7.4
+	c0,0.7-0.1,1.4-0.3,2.1c0.7,0.1,1.3,0.3,1.9,0.7C21.9,13.9,22,13,22,12c0-5.5-4.5-10-10-10S2,6.5,2,12s4.5,10,10,10
+	c1,0,1.9-0.1,2.8-0.4C14.3,20.8,14,20,14,19z M11,19.9c-3.9-0.5-7-3.9-7-7.9c0-0.6,0.1-1.2,0.2-1.8L9,15v1c0,1.1,0.9,2,2,2V19.9z
+	 M22,20h-2v2h-2v-2h-2v-2h2v-2h2v2h2V20z"
+            />
+          </svg>
+        )}
+        outlined
+        onClick={() => {
+          newPreset(true);
+        }}
+      />
+    </div>
+  ) : (
+    <div className="preset-button">
+      <Button
+        label="New"
+        icon={iconObject(
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path fill="none" d="M0,0h24v24H0V0z" />
+            <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
+          </svg>
+        )}
+        outlined
+        onClick={() => {
+          newPreset();
+        }}
+      />
+    </div>
+  );
+
+  const userPresetOptions = user.email ? (
+    <>
+      {newPresetButton}
+      <div className="preset-buttons">
+        <Button
+          label="Save"
+          icon={iconObject(
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path
+                d="M21,8H3V6h18V8z M18,11H6v2h12V11z M14,17.116V16h-4v2h3.115L14,17.116z M21.04,13.13c0.14,0,0.27,0.06,0.38,0.17l1.28,1.28
 	c0.22,0.21,0.22,0.56,0,0.77l-1,1l-2.05-2.05l1-1C20.76,13.19,20.9,13.13,21.04,13.13 M19.07,14.88l2.05,2.05L15.06,23H13v-2.06
 	L19.07,14.88"
-                />
-              </svg>
-            )}
-            outlined
-            disabled={preset.name === "Default"}
-            onClick={savePreset}
-          />
-          <Button
-            label="Delete"
-            icon={iconObject(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
-              </svg>
-            )}
-            outlined
-            disabled={preset.name === "Default"}
-            className="delete"
-            onClick={deletePreset}
-          />
-        </div>
-      </>
-    ) : null;
-  const presetMenu = user.email ? (
-    <CollapsibleList
-      defaultOpen
-      handle={
-        <ListItem>
-          <Typography use="caption" className="subheader">
-            Preset
-          </Typography>
-          <ListItemMeta icon="expand_more" />
-        </ListItem>
-      }
-      className="preset-collapsible"
-    >
-      <div className="preset-group">
-        <div className="preset-button">
-          <Button
-            label="New"
-            icon={iconObject(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path fill="none" d="M0,0h24v24H0V0z" />
-                <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
-              </svg>
-            )}
-            outlined
-            onClick={newPreset}
-          />
-        </div>
-        {presetSelect}
+              />
+            </svg>
+          )}
+          outlined
+          disabled={
+            (user.isAdmin && preset.id === "default") ||
+            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+          }
+          onClick={savePreset}
+        />
+        <Button
+          label="Delete"
+          icon={iconObject(
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
+            </svg>
+          )}
+          outlined
+          disabled={
+            (user.isAdmin && preset.id === "default") ||
+            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+          }
+          className="delete"
+          onClick={deletePreset}
+        />
       </div>
-    </CollapsibleList>
+    </>
   ) : null;
-  const userOptions = user.email ? (
+
+  const userFilterOptions = user.email ? (
     <div className="group">
       <div className="subheader">
         <Typography use="caption">User</Typography>
@@ -319,6 +364,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       </div>
     </div>
   ) : null;
+
   return (
     <Drawer
       dismissible={dismissible}
@@ -331,37 +377,157 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         <DrawerTitle>Filters</DrawerTitle>
         {closeIcon}
       </DrawerHeader>
-      {presetMenu}
+      <CollapsibleList
+        defaultOpen
+        handle={
+          <ListItem>
+            <Typography use="caption" className="subheader">
+              Preset
+            </Typography>
+            <ListItemMeta icon="expand_more" />
+          </ListItem>
+        }
+        className="preset-collapsible"
+      >
+        <div className="preset-group">
+          <Select
+            outlined
+            icon={
+              presets.length > 0
+                ? presets.map((preset) => preset.id).includes(preset.id)
+                  ? iconObject(
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
+                        <circle cx="12" cy="8" opacity=".3" r="2" />
+                        <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
+                      </svg>
+                    )
+                  : iconObject(
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                          opacity=".3"
+                        />
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                      </svg>
+                    )
+                : null
+            }
+            enhanced={{ fixed: true }}
+            value={preset.id}
+            options={
+              presets.length > 0
+                ? [
+                    {
+                      label: (
+                        <>
+                          <Icon
+                            icon={iconObject(
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                  d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                                  opacity=".3"
+                                />
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                              </svg>,
+                              {
+                                size: "xsmall",
+                              }
+                            )}
+                          />
+                          Global
+                        </>
+                      ),
+                      options: props.appPresets.map((preset) => ({
+                        label: preset.name,
+                        key: preset.id,
+                        value: preset.id,
+                      })),
+                    },
+                    {
+                      label: (
+                        <>
+                          <Icon
+                            icon={iconObject(
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
+                                <circle cx="12" cy="8" opacity=".3" r="2" />
+                                <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
+                              </svg>,
+                              {
+                                size: "xsmall",
+                              }
+                            )}
+                          />
+                          User
+                        </>
+                      ),
+                      options: presets.map((preset) => ({
+                        label: preset.name,
+                        key: preset.id,
+                        value: preset.id,
+                      })),
+                    },
+                  ]
+                : props.appPresets.map((preset) => ({
+                    label: preset.name,
+                    key: preset.id,
+                    value: preset.id,
+                  }))
+            }
+            onChange={selectPresetFn}
+            className={classNames({ modified: modified })}
+            disabled={[...props.appPresets, ...presets].length === 1}
+          />
+          {userPresetOptions}
+        </div>
+      </CollapsibleList>
       <div className="top-buttons">
         <Button
           outlined
           label="Reset"
+          icon="restore"
           onClick={() => {
             selectPreset(preset.id);
           }}
           disabled={!modified}
         />
-        <Button outlined label="Copy link" onClick={copyLink} disabled={preset.name === "Default" && !modified} />
+        <Button outlined icon="link" label="Copy" onClick={copyLink} disabled={preset.id === "default" && !modified} />
       </div>
       <DrawerContent>
-        {userOptions}
+        {userFilterOptions}
         <div className="group">
           <div className="subheader">
             <Typography use="caption">Profile</Typography>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("profiles");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("profiles");
-              }}
-            />
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("profiles");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("profiles");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("profiles");
+                }}
+              />
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -383,19 +549,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Shipped</Typography>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("shipped");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("shipped");
-              }}
-            />
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("shipped");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("shipped");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("shipped");
+                }}
+              />
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -417,37 +594,48 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Vendor</Typography>
           </div>
-          <div className="filter-toggle-button-container">
-            <ToggleGroup>
-              <ToggleGroupButton
+          <div className="filter-segmented-button-container">
+            <SegmentedButton toggle>
+              <SegmentedButtonSegment
                 label="Include"
                 onClick={() => {
                   props.setWhitelist("vendorMode", "include");
                 }}
                 selected={props.whitelist.vendorMode === "include"}
               />
-              <ToggleGroupButton
+              <SegmentedButtonSegment
                 label="Exclude"
                 onClick={() => {
                   props.setWhitelist("vendorMode", "exclude");
                 }}
                 selected={props.whitelist.vendorMode === "exclude"}
               />
-            </ToggleGroup>
+            </SegmentedButton>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("vendors");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("vendors");
-              }}
-            />
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("vendors");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("vendors");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("vendors");
+                }}
+              />
+            </SegmentedButton>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
