@@ -178,7 +178,24 @@
       }
     }
     &.filter-drawer {
+      .preset {
+        &-group {
+          padding: 16px + $diff 16px;
+        }
+        &-buttons {
+          margin: 16px + $diff 0;
+          &:last-child {
+            margin: 0;
+          }
+        }
+      }
+      .top-buttons {
+        padding: 16px + $diff 16px;
+      }
       .mdc-drawer__content .group {
+        &-collapsible .rmwc-collapsible-list__children-inner {
+          padding: 16px + $diff 16px;
+        }
         .filter-segmented-button-container,
         .filter-button-container {
           margin-bottom: 16px + $diff;
