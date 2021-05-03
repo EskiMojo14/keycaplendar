@@ -105,7 +105,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const checkAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
       const all = props[prop];
       props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
@@ -125,7 +125,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const invertAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
       const all = props[prop];
       const inverted = all.filter((value) => !props.whitelist[prop].includes(value));
       props.setWhitelist(prop, inverted);
@@ -586,6 +586,52 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                     selected={props.whitelist.shipped.includes(prop)}
                     checkmark
                     onInteraction={() => handleChange(prop, "shipped")}
+                  />
+                );
+              })}
+            </ChipSet>
+          </div>
+        </div>
+
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Regions</Typography>
+          </div>
+          <div className="filter-segmented-button-container">
+            <SegmentedButton>
+              <SegmentedButtonSegment
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("regions");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("regions");
+                }}
+              />
+              <SegmentedButtonSegment
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("regions");
+                }}
+              />
+            </SegmentedButton>
+          </div>
+          <div className="filter-chip-container">
+            <ChipSet filter>
+              {props.regions.map((region) => {
+                return (
+                  <Chip
+                    key={"regions-" + region}
+                    label={region}
+                    selected={props.whitelist.regions.includes(region)}
+                    checkmark
+                    onInteraction={() => handleChange(region, "regions")}
                   />
                 );
               })}
