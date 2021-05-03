@@ -43,6 +43,7 @@ type ContentMainProps = {
   profiles: string[];
   allDesigners: string[];
   allVendors: string[];
+  allVendorRegions: string[];
   allRegions: string[];
   appPresets: PresetType[];
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
@@ -257,7 +258,7 @@ export const ContentMain = (props: ContentMainProps) => {
               profiles={props.profiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
-              allRegions={props.allRegions}
+              allVendorRegions={props.allVendorRegions}
               getData={props.getData}
               snackbarQueue={props.snackbarQueue}
             />
@@ -267,7 +268,7 @@ export const ContentMain = (props: ContentMainProps) => {
               profiles={props.profiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
-              allRegions={props.allRegions}
+              allVendorRegions={props.allVendorRegions}
               set={editSet}
               getData={props.getData}
               snackbarQueue={props.snackbarQueue}
@@ -281,7 +282,7 @@ export const ContentMain = (props: ContentMainProps) => {
               profiles={props.profiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
-              allRegions={props.allRegions}
+              allVendorRegions={props.allVendorRegions}
               getData={props.getData}
               snackbarQueue={props.snackbarQueue}
             />
@@ -291,7 +292,7 @@ export const ContentMain = (props: ContentMainProps) => {
               profiles={props.profiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
-              allRegions={props.allRegions}
+              allVendorRegions={props.allVendorRegions}
               set={editSet}
               getData={props.getData}
               snackbarQueue={props.snackbarQueue}
@@ -348,6 +349,7 @@ export const ContentMain = (props: ContentMainProps) => {
           view={props.view}
           profiles={props.profiles}
           vendors={props.allVendors}
+          regions={props.allRegions}
           appPresets={props.appPresets}
           open={filterOpen}
           close={closeFilter}

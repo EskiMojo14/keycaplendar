@@ -29,6 +29,7 @@ type DrawerFilterProps = {
   snackbarQueue: QueueType;
   sort: string;
   vendors: string[];
+  regions: string[];
   view: string;
   whitelist: WhitelistType;
 };

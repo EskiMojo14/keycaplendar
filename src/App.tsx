@@ -66,6 +66,7 @@ type AppState = {
   sort: string;
   sortOrder: SortOrderType;
   allDesigners: string[];
+  allVendorRegions: string[];
   allVendors: string[];
   allRegions: string[];
   sets: SetType[];
@@ -106,6 +107,7 @@ class App extends React.Component<AppProps, AppState> {
     sortOrder: "ascending",
     allDesigners: [],
     allVendors: [],
+    allVendorRegions: [],
     allRegions: [],
     sets: [],
     profiles: [],
@@ -548,9 +550,20 @@ class App extends React.Component<AppProps, AppState> {
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
 
-    const allRegions = alphabeticalSort(
+    const allVendorRegions = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat())
     );
+
+    const allRegions = alphabeticalSort(
+      uniqueArray(
+        sets
+          .map((set) =>
+            set.vendors ? set.vendors.map((vendor) => vendor.region.split(",").map((region) => region.trim())) : []
+          )
+          .flat(2)
+      )
+    );
+
     const allDesigners = alphabeticalSort(uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat()));
 
     const allProfiles = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
@@ -673,6 +686,7 @@ class App extends React.Component<AppProps, AppState> {
     // set states
     this.setState({
       filteredSets: filteredSets,
+      allVendorRegions: allVendorRegions,
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
@@ -1387,6 +1401,7 @@ class App extends React.Component<AppProps, AppState> {
                     profiles={this.state.profiles}
                     allDesigners={this.state.allDesigners}
                     allVendors={this.state.allVendors}
+                    allVendorRegions={this.state.allVendorRegions}
                     allRegions={this.state.allRegions}
                     appPresets={this.state.appPresets}
                     sets={this.state.filteredSets}

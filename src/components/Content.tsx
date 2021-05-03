@@ -16,9 +16,10 @@ import "./Content.scss";
 
 type ContentProps = {
   allDesigners: string[];
-  allRegions: string[];
   allSets: SetType[];
   allVendors: string[];
+  allVendorRegions: string[];
+  allRegions: string[];
   appPresets: PresetType[];
   applyTheme: string;
   bottomNav: boolean;
@@ -110,6 +111,7 @@ export const Content = (props: ContentProps) => {
       profiles={props.profiles}
       allDesigners={props.allDesigners}
       allVendors={props.allVendors}
+      allVendorRegions={props.allVendorRegions}
       allRegions={props.allRegions}
       appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
