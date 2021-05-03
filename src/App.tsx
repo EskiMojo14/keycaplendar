@@ -511,12 +511,15 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.user.isAdmin) {
       const testValue = (set: SetType, key: string, value?: string) => {
         if (value) {
-          const regex = /\s+$/m;
-          const regex2 = /^\s+/;
-          const bool = regex.test(value) || regex2.test(value);
-          if (bool) {
+          const endSpace = /\s+$/m;
+          const startSpace = /^\s+/;
+          const commaNoSpace = /,[^ ]/;
+          const stringInvalid = endSpace.test(value) || startSpace.test(value) || commaNoSpace.test(value);
+          if (stringInvalid) {
             console.log(
-              `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
+              `${set.profile} ${set.colorway} - ${key}: ${value
+                .replace(endSpace, "<space>")
+                .replace(startSpace, "<space>")}`
             );
           }
         }
@@ -534,7 +537,9 @@ class App extends React.Component<AppProps, AppState> {
                 } else if (typeof item === "object") {
                   Object.keys(item).forEach((itemKey) => {
                     if (hasKey(item, itemKey)) {
-                      if (typeof item[itemKey] === "string") {
+                      if (itemKey === "region") {
+                        item[itemKey].split(", ").forEach((region) => testValue(set, `${key} ${itemKey}`, region));
+                      } else if (typeof item[itemKey] === "string") {
                         testValue(set, `${key} ${itemKey}`, item[itemKey]);
                       }
                     }
@@ -558,11 +563,7 @@ class App extends React.Component<AppProps, AppState> {
 
     const allRegions = alphabeticalSort(
       uniqueArray(
-        sets
-          .map((set) =>
-            set.vendors ? set.vendors.map((vendor) => vendor.region.split(",").map((region) => region.trim())) : []
-          )
-          .flat(2)
+        sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2)
       )
     );
 
@@ -631,14 +632,11 @@ class App extends React.Component<AppProps, AppState> {
       let bool = false;
       if (set.vendors) {
         set.vendors.forEach((vendor) => {
-          vendor.region
-            .split(",")
-            .map((region) => region.trim())
-            .forEach((region) => {
-              if (whitelist.regions.includes(region)) {
-                bool = true;
-              }
-            });
+          vendor.region.split(", ").forEach((region) => {
+            if (whitelist.regions.includes(region)) {
+              bool = true;
+            }
+          });
         });
       }
       return bool;
