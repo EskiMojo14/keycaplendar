@@ -179,9 +179,6 @@
     }
     &.filter-drawer {
       .mdc-drawer__content .group {
-        &:not(:last-child) {
-          margin-bottom: 16px + $diff;
-        }
         .filter-segmented-button-container,
         .filter-button-container {
           margin-bottom: 16px + $diff;
