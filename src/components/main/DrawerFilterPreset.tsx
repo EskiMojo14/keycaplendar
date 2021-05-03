@@ -49,15 +49,26 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
         name: this.state.name,
         global: this.state.global,
       };
-      if (!this.props.preset.name) {
-        this.context.newPreset(preset);
+      if (this.state.global && this.context.user.isAdmin) {
+        if (!this.props.preset.name) {
+          this.context.newGlobalPreset(preset);
+        } else {
+          this.context.editGlobalPreset(preset);
+        }
       } else {
-        this.context.editPreset(preset);
+        if (!this.props.preset.name) {
+          this.context.newPreset(preset);
+        } else {
+          this.context.editPreset(preset);
+        }
       }
       this.props.close();
     }
   };
   render() {
+    const globalCheckbox = this.context.user.isAdmin ? (
+      <Checkbox label="Global" name="global" checked={this.state.global} onChange={this.handleChangeCheckbox} />
+    ) : null;
     return (
       <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
         <DrawerHeader>
@@ -74,7 +85,7 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
             autoComplete="off"
             required
           />
-          <Checkbox label="Global" name="global" checked={this.state.global} onChange={this.handleChangeCheckbox} />
+          {globalCheckbox}
         </div>
         <DrawerContent>
           <div className="group">

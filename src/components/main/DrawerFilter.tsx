@@ -279,7 +279,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </svg>
           )}
           outlined
-          disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
+          disabled={
+            (user.isAdmin && preset.id === "default") ||
+            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+          }
           onClick={savePreset}
         />
         <Button
@@ -298,7 +301,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </svg>
           )}
           outlined
-          disabled={props.appPresets.map((preset) => preset.id).includes(preset.id)}
+          disabled={
+            (user.isAdmin && preset.id === "default") ||
+            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+          }
           className="delete"
           onClick={deletePreset}
         />
@@ -306,7 +312,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     </>
   ) : null;
 
-  const userOptions = user.email ? (
+  const userFilterOptions = user.email ? (
     <div className="group">
       <div className="subheader">
         <Typography use="caption">User</Typography>
@@ -347,6 +353,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       </div>
     </div>
   ) : null;
+
   return (
     <Drawer
       dismissible={dismissible}
@@ -478,7 +485,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         <Button outlined label="Copy link" onClick={copyLink} disabled={preset.name === "Default" && !modified} />
       </div>
       <DrawerContent>
-        {userOptions}
+        {userFilterOptions}
         <div className="group">
           <div className="subheader">
             <Typography use="caption">Profile</Typography>

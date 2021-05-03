@@ -1198,6 +1198,49 @@ class App extends React.Component<AppProps, AppState> {
         queue.notify({ title: "Failed to sync presets: " + error });
       });
   };
+  newGlobalPreset = (preset: PresetType) => {
+    preset.id = nanoid();
+    const presets = [...this.state.appPresets, preset];
+    alphabeticalSortProp(presets, "name", false, "Default");
+    this.setState({ appPresets: presets, currentPreset: preset });
+    this.syncGlobalPresets(presets);
+  };
+  editGlobalPreset = (preset: PresetType) => {
+    const savedPreset = this.findPreset("id", preset.id);
+    let presets: PresetType[];
+    if (savedPreset) {
+      const index = this.state.appPresets.indexOf(savedPreset);
+      presets = [...this.state.appPresets];
+      presets[index] = preset;
+    } else {
+      presets = [...this.state.appPresets, preset];
+    }
+    alphabeticalSortProp(presets, "name", false, "Default");
+    this.setState({ appPresets: presets, currentPreset: preset });
+    this.syncGlobalPresets(presets);
+  };
+  deleteGlobalPreset = (preset: PresetType) => {
+    const presets = this.state.appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+    alphabeticalSortProp(presets, "name", false, "Default");
+    this.setState({
+      appPresets: presets,
+      currentPreset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
+    });
+    this.syncGlobalPresets(presets);
+  };
+  syncGlobalPresets = (presets = this.state.appPresets) => {
+    const filteredPresets = presets.filter((preset) => preset.name !== "Default");
+    const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
+      ...preset,
+    }));
+    db.collection("app")
+      .doc("globals")
+      .set({ filterPresets: sortedPresets }, { merge: true })
+      .catch((error) => {
+        console.log("Failed to sync presets: " + error);
+        queue.notify({ title: "Failed to sync presets: " + error });
+      });
+  };
   unregisterAuthObserver = () => {
     // placeholder - gets defined when component mounts
   };
@@ -1279,6 +1322,9 @@ class App extends React.Component<AppProps, AppState> {
                 newPreset: this.newPreset,
                 editPreset: this.editPreset,
                 deletePreset: this.deletePreset,
+                newGlobalPreset: this.newGlobalPreset,
+                editGlobalPreset: this.editGlobalPreset,
+                deleteGlobalPreset: this.deleteGlobalPreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
@@ -1310,6 +1356,9 @@ class App extends React.Component<AppProps, AppState> {
                 newPreset: this.newPreset,
                 editPreset: this.editPreset,
                 deletePreset: this.deletePreset,
+                newGlobalPreset: this.newGlobalPreset,
+                editGlobalPreset: this.editGlobalPreset,
+                deleteGlobalPreset: this.deleteGlobalPreset,
               }}
             >
               <DeviceContext.Provider value={this.state.device}>
