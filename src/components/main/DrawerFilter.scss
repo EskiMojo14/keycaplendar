@@ -105,7 +105,7 @@
       }
       .filter-toggle-button-container,
       .filter-button-container {
-        margin-bottom: 8px;
+        margin-bottom: 16px;
       }
       .filter-button-container .mdc-button {
         @include rtl.reflexive-box(margin, right, 8px);

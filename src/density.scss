@@ -178,8 +178,14 @@
       }
     }
     &.filter-drawer {
-      .mdc-drawer__content .group:not(:last-child) {
-        margin-bottom: 16px + $diff;
+      .mdc-drawer__content .group {
+        &:not(:last-child) {
+          margin-bottom: 16px + $diff;
+        }
+        .filter-toggle-button-container,
+        .filter-button-container {
+          margin-bottom: 16px + $diff;
+        }
       }
       div.subheader {
         padding-bottom: 16px + $diff;
