@@ -627,6 +627,23 @@ class App extends React.Component<AppProps, AppState> {
       return bool;
     };
 
+    const regionBool = (set: SetType) => {
+      let bool = false;
+      if (set.vendors) {
+        set.vendors.forEach((vendor) => {
+          vendor.region
+            .split(",")
+            .map((region) => region.trim())
+            .forEach((region) => {
+              if (whitelist.regions.includes(region)) {
+                bool = true;
+              }
+            });
+        });
+      }
+      return bool;
+    };
+
     const filterBool = (set: SetType) => {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
@@ -635,9 +652,11 @@ class App extends React.Component<AppProps, AppState> {
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
       if (set.vendors && set.vendors.length > 0) {
-        return vendorBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
+        return (
+          vendorBool(set) && regionBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool
+        );
       } else {
-        if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
+        if ((whitelist.vendors.length === 1 && whitelist.vendorMode === "include") || whitelist.regions.length === 1) {
           return false;
         } else {
           return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;

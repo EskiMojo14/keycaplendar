@@ -595,7 +595,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
         <div className="group">
           <div className="subheader">
-            <Typography use="caption">Regions</Typography>
+            <Typography use="caption">Regional vendors</Typography>
           </div>
           <div className="filter-segmented-button-container">
             <SegmentedButton>
