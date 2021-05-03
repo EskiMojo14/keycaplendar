@@ -122,6 +122,17 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     }
   };
 
+  const invertAll = (prop: string) => {
+    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors")) {
+      const all = props[prop];
+      const inverted = all.filter((value) => !props.whitelist[prop].includes(value));
+      props.setWhitelist(prop, inverted);
+    } else if (prop === "shipped") {
+      const inverted = whitelistShipped.filter((value) => !props.whitelist[prop].includes(value));
+      props.setWhitelist(prop, inverted);
+    }
+  };
+
   const copyLink = () => {
     const params = new URLSearchParams(window.location.search);
     whitelistParams.forEach((param) => {
@@ -492,19 +503,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Profile</Typography>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("profiles");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("profiles");
-              }}
-            />
+          <div className="filter-toggle-button-container">
+            <ToggleGroup>
+              <ToggleGroupButton
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("profiles");
+                }}
+              />
+              <ToggleGroupButton
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("profiles");
+                }}
+              />
+              <ToggleGroupButton
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("profiles");
+                }}
+              />
+            </ToggleGroup>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -526,19 +548,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <div className="subheader">
             <Typography use="caption">Shipped</Typography>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("shipped");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("shipped");
-              }}
-            />
+          <div className="filter-toggle-button-container">
+            <ToggleGroup>
+              <ToggleGroupButton
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("shipped");
+                }}
+              />
+              <ToggleGroupButton
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("shipped");
+                }}
+              />
+              <ToggleGroupButton
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("shipped");
+                }}
+              />
+            </ToggleGroup>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>
@@ -578,19 +611,30 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
               />
             </ToggleGroup>
           </div>
-          <div className="filter-button-container">
-            <Button
-              label="All"
-              onClick={() => {
-                checkAll("vendors");
-              }}
-            />
-            <Button
-              label="None"
-              onClick={() => {
-                uncheckAll("vendors");
-              }}
-            />
+          <div className="filter-toggle-button-container">
+            <ToggleGroup>
+              <ToggleGroupButton
+                label="All"
+                icon="done_all"
+                onClick={() => {
+                  checkAll("vendors");
+                }}
+              />
+              <ToggleGroupButton
+                label="None"
+                icon="remove_done"
+                onClick={() => {
+                  uncheckAll("vendors");
+                }}
+              />
+              <ToggleGroupButton
+                label="Invert"
+                icon="published_with_changes"
+                onClick={() => {
+                  invertAll("vendors");
+                }}
+              />
+            </ToggleGroup>
           </div>
           <div className="filter-chip-container">
             <ChipSet filter>

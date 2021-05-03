@@ -16,7 +16,7 @@ export const ToggleGroup = (props: HTMLProps) => {
 
 type ToggleGroupButtonProps = HTMLProps &
   ButtonProps & {
-    selected: boolean;
+    selected?: boolean;
   };
 
 export const ToggleGroupButton = (props: ToggleGroupButtonProps) => {
@@ -26,7 +26,7 @@ export const ToggleGroupButton = (props: ToggleGroupButtonProps) => {
       outlined
       className={bemClasses(
         "button",
-        { "only-icon": !!props.icon && !props.label, selected: props.selected },
+        { "only-icon": !!props.icon && !props.label, selected: !!props.selected },
         props.className
       )}
     />
