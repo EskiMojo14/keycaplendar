@@ -173,18 +173,16 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
   };
 
   selectVendor = (prop: string, value: string) => {
-    if (this.state.vendors instanceof Array) {
-      const property = prop.slice(0, -1);
-      const index = parseInt(prop.slice(prop.length - 1));
-      const vendors = [...this.state.vendors];
-      const vendor = vendors[index];
-      if (hasKey(vendor, property)) {
-        vendor[property] = value;
-        this.setState({
-          vendors: vendors,
-          focused: "",
-        });
-      }
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      vendor[property] = value;
+      this.setState({
+        vendors: vendors,
+        focused: "",
+      });
     }
   };
 
@@ -1034,8 +1032,8 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
   };
 
   selectVendor = (prop: string, value: string) => {
-    const property = prop.slice(0, -1);
-    const index = parseInt(prop.slice(prop.length - 1));
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
     const vendors = [...this.state.vendors];
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
