@@ -285,6 +285,11 @@ class App extends React.Component<AppProps, AppState> {
           }
         }
       });
+
+      const storedPreset = this.getStorage("presetId");
+      if (storedPreset && storedPreset !== "default") {
+        this.selectPreset(storedPreset, false);
+      }
     }
   };
   setView = (view: string, write = true) => {
@@ -1158,7 +1163,7 @@ class App extends React.Component<AppProps, AppState> {
   newPreset = (preset: PresetType) => {
     preset.id = nanoid();
     const presets = [...this.state.userPresets, preset];
-    alphabeticalSortProp(presets, "name", false, "Default");
+    alphabeticalSortProp(presets, "name", false);
     this.setState({ userPresets: presets, currentPreset: preset });
     this.syncPresets(presets);
   };
@@ -1172,22 +1177,24 @@ class App extends React.Component<AppProps, AppState> {
     } else {
       presets = [...this.state.userPresets, preset];
     }
-    alphabeticalSortProp(presets, "name", false, "Default");
+    alphabeticalSortProp(presets, "name", false);
     this.setState({ userPresets: presets, currentPreset: preset });
     this.syncPresets(presets);
   };
   deletePreset = (preset: PresetType) => {
     const presets = this.state.userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
-    alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({
-      userPresets: presets,
-      currentPreset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
-    });
+    alphabeticalSortProp(presets, "name", false);
+    const defaultPreset = this.findPreset("id", "default");
+    if (defaultPreset) {
+      this.setState({
+        userPresets: presets,
+        currentPreset: defaultPreset,
+      });
+    }
     this.syncPresets(presets);
   };
   syncPresets = (presets = this.state.userPresets) => {
-    const filteredPresets = presets.filter((preset) => preset.name !== "Default");
-    const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false, "Default").map((preset) => ({
+    const sortedPresets = alphabeticalSortProp(presets, "name", false, "Default").map((preset) => ({
       ...preset,
     }));
     db.collection("users")
@@ -1222,10 +1229,13 @@ class App extends React.Component<AppProps, AppState> {
   deleteGlobalPreset = (preset: PresetType) => {
     const presets = this.state.appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({
-      appPresets: presets,
-      currentPreset: presets.filter((filterPreset) => filterPreset.name === "Default")[0],
-    });
+    const defaultPreset = this.findPreset("id", "default");
+    if (defaultPreset) {
+      this.setState({
+        appPresets: presets,
+        currentPreset: defaultPreset,
+      });
+    }
     this.syncGlobalPresets(presets);
   };
   syncGlobalPresets = (presets = this.state.appPresets) => {
@@ -1286,6 +1296,7 @@ class App extends React.Component<AppProps, AppState> {
         const defaultSettings: Partial<AppState> = {
           favorites: [],
           hidden: [],
+          userPresets: [],
         };
         if (defaultPreset) {
           this.setState<never>({ preset: defaultPreset, ...defaultSettings });
