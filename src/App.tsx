@@ -1189,7 +1189,7 @@ class App extends React.Component<AppProps, AppState> {
   };
   updatePreset = (preset: OldPresetType): PresetType => {
     const regions =
-      hasKey(preset.whitelist, "regions") && preset.whitelist.regions
+      hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
         ? preset.whitelist.regions
         : this.state.allRegions;
     const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
