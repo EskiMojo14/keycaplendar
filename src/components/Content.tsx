@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal } from "../util/functions";
-import { WhitelistType, QueueType, SetType, SortOrderType, PresetType } from "../util/types";
+import { WhitelistType, QueueType, SetType, SortOrderType, PresetType, SetGroup } from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -30,7 +30,6 @@ type ContentProps = {
   density: string;
   fromTimeTheme: string;
   getData: () => void;
-  groups: string[];
   lightTheme: string;
   loading: boolean;
   manualTheme: boolean;
@@ -52,6 +51,7 @@ type ContentProps = {
   setView: (view: string) => void;
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   sets: SetType[];
+  setGroups: SetGroup[];
   snackbarQueue: QueueType;
   sort: string;
   sortOrder: SortOrderType;
@@ -97,8 +97,8 @@ export const Content = (props: ContentProps) => {
       openNav={openNav}
       page={props.page}
       content={props.content}
-      groups={props.groups}
       sets={props.sets}
+      setGroups={props.setGroups}
       sort={props.sort}
       setSort={props.setSort}
       sortOrder={props.sortOrder}

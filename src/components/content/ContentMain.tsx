@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
-import { WhitelistType, PresetType, QueueType, SetType, SortOrderType } from "../../util/types";
+import { WhitelistType, PresetType, QueueType, SetType, SortOrderType, SetGroup } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -29,7 +29,6 @@ type ContentMainProps = {
   openNav: () => void;
   page: string;
   content: boolean;
-  groups: string[];
   sort: string;
   setSort: (sort: string) => void;
   sortOrder: SortOrderType;
@@ -40,6 +39,7 @@ type ContentMainProps = {
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;
   sets: SetType[];
+  setGroups: SetGroup[];
   allDesigners: string[];
   allProfiles: string[];
   allVendors: string[];
@@ -305,10 +305,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const content = props.content ? (
     <ContentGrid
-      groups={props.groups}
-      sets={props.sets}
-      sort={props.sort}
-      sortOrder={props.sortOrder}
+      setGroups={props.setGroups}
       page={props.page}
       view={props.view}
       details={openDetails}

@@ -48,6 +48,7 @@ import {
   UserPreferencesDoc,
   GlobalDoc,
   OldPresetType,
+  SetGroup,
 } from "./util/types";
 import "./App.scss";
 
@@ -73,7 +74,7 @@ type AppState = {
   allRegions: string[];
   allSets: SetType[];
   filteredSets: SetType[];
-  groups: string[];
+  setGroups: SetGroup[];
   loading: boolean;
   content: boolean;
   search: string;
@@ -113,7 +114,7 @@ class App extends React.Component<AppProps, AppState> {
     allVendorRegions: [],
     allSets: [],
     filteredSets: [],
-    groups: [],
+    setGroups: [],
     loading: false,
     content: true,
     search: "",
@@ -718,7 +719,7 @@ class App extends React.Component<AppProps, AppState> {
 
     const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-    this.createGroups(sort, sortOrder, filteredSets);
+    this.createGroups(page, sort, sortOrder, filteredSets);
 
     // set states
     this.setState({
@@ -743,9 +744,11 @@ class App extends React.Component<AppProps, AppState> {
   };
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 
-  sortData = (sort = this.state.sort, sortOrder = this.state.sortOrder, groups = this.state.groups) => {
-    const array = [...groups];
-    array.sort(function (a, b) {
+  sortData = (sort = this.state.sort, sortOrder = this.state.sortOrder, setGroups = this.state.setGroups) => {
+    const array = [...setGroups];
+    array.sort(function (x, y) {
+      const a = x.title;
+      const b = y.title;
       if (dateSorts.includes(sort)) {
         const aDate = moment.utc(a, "MMMM YYYY");
         const bDate = moment.utc(b, "MMMM YYYY");
@@ -767,10 +770,15 @@ class App extends React.Component<AppProps, AppState> {
       }
       return 0;
     });
-    this.setState({ groups: array });
+    this.setState({ setGroups: array });
   };
 
-  createGroups = (sort = this.state.sort, sortOrder = this.state.sortOrder, sets = this.state.filteredSets) => {
+  createGroups = (
+    page = this.state.page,
+    sort = this.state.sort,
+    sortOrder = this.state.sortOrder,
+    sets = this.state.filteredSets
+  ) => {
     const createGroups = (sets: SetType[]): string[] => {
       if (dateSorts.includes(sort)) {
         return sets
@@ -812,7 +820,89 @@ class App extends React.Component<AppProps, AppState> {
       }
       return 0;
     });
-    this.setState({ groups: groups });
+
+    const filterSets = (sets: SetType[], group: string, sort: string) => {
+      const filteredSets = sets.filter((set) => {
+        if (hasKey(set, sort) || sort === "vendor") {
+          if (dateSorts.includes(sort) && sort !== "vendor") {
+            const val = set[sort];
+            const setDate = typeof val === "string" ? moment.utc(val) : null;
+            const setMonth = setDate ? setDate.format("MMMM YYYY") : null;
+            return setMonth && setMonth === group;
+          } else if (sort === "vendor") {
+            if (set.vendors) {
+              return set.vendors.map((vendor) => vendor.name).includes(group);
+            } else {
+              return false;
+            }
+          } else if (sort === "designer") {
+            return set.designer.includes(group);
+          } else {
+            return set[sort] === group;
+          }
+        } else {
+          return false;
+        }
+      });
+      const defaultSort = pageSort[page];
+      const defaultSortOrder = pageSortOrder[page];
+      const alphabeticalSort = (a: string, b: string) => {
+        if (a > b) {
+          return 1;
+        } else if (a < b) {
+          return -1;
+        }
+        return 0;
+      };
+      const dateSort = (a: SetType, b: SetType, prop = sort, order = sortOrder) => {
+        const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+        const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+        if (hasKey(a, prop) && hasKey(b, prop)) {
+          const aProp = a[prop];
+          const aDate = aProp && typeof aProp === "string" && !aProp.includes("Q") ? moment.utc(aProp) : null;
+          const bProp = b[prop];
+          const bDate = bProp && typeof bProp === "string" && !bProp.includes("Q") ? moment.utc(bProp) : null;
+          const returnVal = order === "ascending" ? 1 : -1;
+          if (aDate && bDate) {
+            if (aDate > bDate) {
+              return returnVal;
+            } else if (aDate < bDate) {
+              return -returnVal;
+            }
+            return alphabeticalSort(aName, bName);
+          }
+          return alphabeticalSort(aName, bName);
+        }
+        return alphabeticalSort(aName, bName);
+      };
+      filteredSets.sort((a, b) => {
+        const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
+        const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+        if (dateSorts.includes(sort)) {
+          if (sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
+            if (a.gbMonth && b.gbMonth) {
+              return alphabeticalSort(aName, bName);
+            } else {
+              return a.gbMonth ? 1 : -1;
+            }
+          }
+          return dateSort(a, b, sort, sortOrder);
+        } else if (dateSorts.includes(defaultSort)) {
+          return dateSort(a, b, defaultSort, defaultSortOrder);
+        }
+        return alphabeticalSort(aName, bName);
+      });
+      return filteredSets;
+    };
+
+    const setGroups: SetGroup[] = groups.map((group) => {
+      return {
+        title: group,
+        sets: filterSets(sets, group, sort),
+      };
+    });
+
+    this.setState({ setGroups: setGroups });
   };
 
   setDensity = (density: string, write = true) => {
@@ -829,7 +919,7 @@ class App extends React.Component<AppProps, AppState> {
       sortOrder = "descending";
     }
     this.setState({ sort: sort, sortOrder: sortOrder });
-    this.createGroups(sort, sortOrder);
+    this.createGroups(this.state.page, sort, sortOrder);
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sort");
@@ -1443,7 +1533,7 @@ class App extends React.Component<AppProps, AppState> {
                     allVendorRegions={this.state.allVendorRegions}
                     allRegions={this.state.allRegions}
                     appPresets={this.state.appPresets}
-                    groups={this.state.groups}
+                    setGroups={this.state.setGroups}
                     loading={this.state.loading}
                     toggleLoading={this.toggleLoading}
                     sort={this.state.sort}

@@ -132,6 +132,8 @@ export type SetType = {
   vendors?: VendorType[];
 };
 
+export type SetGroup = { title: string; sets: SetType[] };
+
 export type Categories = "icDate" | "gbLaunch";
 
 export type Properties = "profile" | "designer" | "vendor";
