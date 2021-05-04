@@ -289,7 +289,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           <Typography use="caption">Density</Typography>
         </div>
         <Card className="density-card">
-          <SegmentedButton className="density-toggle">
+          <SegmentedButton toggle className="density-toggle">
             <SegmentedButtonSegment
               label="Default"
               selected={props.density === "default"}
