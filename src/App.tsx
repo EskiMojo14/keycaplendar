@@ -704,14 +704,14 @@ class App extends React.Component<AppProps, AppState> {
 
     if (!this.state.currentPreset.name) {
       this.setState({ currentPreset: defaultPreset });
-    }
 
-    if (whitelist.edited && !whitelist.edited.includes("profiles")) {
-      this.setWhitelist("profiles", allProfiles, false);
-    }
+      if (whitelist.edited && !whitelist.edited.includes("profiles")) {
+        this.setWhitelist("profiles", allProfiles, false);
+      }
 
-    if (whitelist.edited && !whitelist.edited.includes("regions")) {
-      this.setWhitelist("regions", allRegions, false);
+      if (whitelist.edited && !whitelist.edited.includes("regions")) {
+        this.setWhitelist("regions", allRegions, false);
+      }
     }
   };
 
