@@ -491,6 +491,7 @@ class App extends React.Component<AppProps, AppState> {
           sets: sets,
         });
         this.filterData(this.state.page, sets);
+        this.generateLists(sets);
       })
       .catch((error) => {
         console.log("Error getting data: " + error);
@@ -499,70 +500,56 @@ class App extends React.Component<AppProps, AppState> {
       });
   };
 
-  filterData = (
-    page = this.state.page,
-    sets = this.state.sets,
-    sort = this.state.sort,
-    sortOrder = this.state.sortOrder,
-    search = this.state.search,
-    whitelist = this.state.whitelist,
-    favorites = this.state.favorites,
-    hidden = this.state.hidden
-  ) => {
-    const today = moment.utc();
-    const yesterday = moment.utc().date(today.date() - 1);
-
-    // console log sets with space at end of string
-    if (this.state.user.isAdmin) {
-      const testValue = (set: SetType, key: string, value?: string) => {
-        if (value) {
-          const endSpace = /\s+$/m;
-          const startSpace = /^\s+/;
-          const commaNoSpace = /,[^ ]/;
-          const stringInvalid = endSpace.test(value) || startSpace.test(value) || commaNoSpace.test(value);
-          if (stringInvalid) {
-            console.log(
-              `${set.profile} ${set.colorway} - ${key}: ${value
-                .replace(endSpace, "<space>")
-                .replace(startSpace, "<space>")}`
-            );
+  testSets = (sets = this.state.sets) => {
+    const testValue = (set: SetType, key: string, value?: string) => {
+      if (value) {
+        const endSpace = /\s+$/m;
+        const startSpace = /^\s+/;
+        const commaNoSpace = /,[^ ]/;
+        const stringInvalid = endSpace.test(value) || startSpace.test(value) || commaNoSpace.test(value);
+        if (stringInvalid) {
+          console.log(
+            `${set.profile} ${set.colorway} - ${key}: ${value
+              .replace(endSpace, "<space>")
+              .replace(startSpace, "<space>")}`
+          );
+        }
+      }
+    };
+    sets.forEach((set) => {
+      Object.keys(set).forEach((key) => {
+        if (hasKey(set, key)) {
+          const value = set[key];
+          if (typeof value === "string") {
+            testValue(set, key, value);
+          } else if (value instanceof Array) {
+            value.forEach((item: string | VendorType) => {
+              if (typeof item === "string") {
+                testValue(set, key, item);
+              } else if (typeof item === "object") {
+                Object.keys(item).forEach((itemKey) => {
+                  if (hasKey(item, itemKey)) {
+                    if (itemKey === "region") {
+                      item[itemKey].split(", ").forEach((region) => {
+                        if (!region) {
+                          console.log(`${set.profile} ${set.colorway}: ${item.name} <empty region>`);
+                        }
+                        testValue(set, `${key} ${itemKey}`, region);
+                      });
+                    } else if (typeof item[itemKey] === "string") {
+                      testValue(set, `${key} ${itemKey}`, item[itemKey]);
+                    }
+                  }
+                });
+              }
+            });
           }
         }
-      };
-      sets.forEach((set) => {
-        Object.keys(set).forEach((key) => {
-          if (hasKey(set, key)) {
-            const value = set[key];
-            if (typeof value === "string") {
-              testValue(set, key, value);
-            } else if (value instanceof Array) {
-              value.forEach((item: string | VendorType) => {
-                if (typeof item === "string") {
-                  testValue(set, key, item);
-                } else if (typeof item === "object") {
-                  Object.keys(item).forEach((itemKey) => {
-                    if (hasKey(item, itemKey)) {
-                      if (itemKey === "region") {
-                        item[itemKey].split(", ").forEach((region) => {
-                          if (!region) {
-                            console.log(`${set.profile} ${set.colorway}: ${item.name} <empty region>`);
-                          }
-                          testValue(set, `${key} ${itemKey}`, region);
-                        });
-                      } else if (typeof item[itemKey] === "string") {
-                        testValue(set, `${key} ${itemKey}`, item[itemKey]);
-                      }
-                    }
-                  });
-                }
-              });
-            }
-          }
-        });
       });
-    }
+    });
+  };
 
-    // lists
+  generateLists = (sets = this.state.sets) => {
     const allVendors = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
@@ -583,6 +570,60 @@ class App extends React.Component<AppProps, AppState> {
     const allDesigners = alphabeticalSort(uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat()));
 
     const allProfiles = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
+
+    // create default preset
+
+    const filteredPresets = this.state.appPresets.filter((preset) => preset.id !== "default");
+
+    const defaultPreset = new Preset(
+      "Default",
+      false,
+      false,
+      false,
+      allProfiles,
+      ["Shipped", "Not shipped"],
+      allRegions,
+      "exclude",
+      [],
+      "default"
+    );
+
+    const presets = [defaultPreset, ...filteredPresets];
+
+    this.setState({
+      allVendorRegions: allVendorRegions,
+      allRegions: allRegions,
+      allVendors: allVendors,
+      allDesigners: allDesigners,
+      profiles: allProfiles,
+      appPresets: presets,
+    });
+
+    if (!this.state.currentPreset.name) {
+      this.setState({ currentPreset: defaultPreset });
+
+      if (this.state.whitelist.edited && !this.state.whitelist.edited.includes("profiles")) {
+        this.setWhitelist("profiles", allProfiles, false);
+      }
+
+      if (this.state.whitelist.edited && !this.state.whitelist.edited.includes("regions")) {
+        this.setWhitelist("regions", allRegions, false);
+      }
+    }
+  };
+
+  filterData = (
+    page = this.state.page,
+    sets = this.state.sets,
+    sort = this.state.sort,
+    sortOrder = this.state.sortOrder,
+    search = this.state.search,
+    whitelist = this.state.whitelist,
+    favorites = this.state.favorites,
+    hidden = this.state.hidden
+  ) => {
+    const today = moment.utc();
+    const yesterday = moment.utc().date(today.date() - 1);
 
     // filter bool functions
 
@@ -678,49 +719,12 @@ class App extends React.Component<AppProps, AppState> {
 
     this.createGroups(sort, sortOrder, filteredSets);
 
-    // create default preset
-
-    const filteredPresets = this.state.appPresets.filter((preset) => preset.id !== "default");
-
-    const defaultPreset = new Preset(
-      "Default",
-      false,
-      false,
-      false,
-      allProfiles,
-      ["Shipped", "Not shipped"],
-      allRegions,
-      "exclude",
-      [],
-      "default"
-    );
-
-    const presets = [defaultPreset, ...filteredPresets];
-
     // set states
     this.setState({
       filteredSets: filteredSets,
-      allVendorRegions: allVendorRegions,
-      allRegions: allRegions,
-      allVendors: allVendors,
-      allDesigners: allDesigners,
-      profiles: allProfiles,
       content: filteredSets.length > 0,
       loading: false,
-      appPresets: presets,
     });
-
-    if (!this.state.currentPreset.name) {
-      this.setState({ currentPreset: defaultPreset });
-
-      if (whitelist.edited && !whitelist.edited.includes("profiles")) {
-        this.setWhitelist("profiles", allProfiles, false);
-      }
-
-      if (whitelist.edited && !whitelist.edited.includes("regions")) {
-        this.setWhitelist("regions", allRegions, false);
-      }
-    }
   };
 
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
@@ -1323,6 +1327,9 @@ class App extends React.Component<AppProps, AppState> {
               isEditor: result.data.editor,
               isAdmin: result.data.admin,
             });
+            if (result.data.admin) {
+              this.testSets();
+            }
           })
           .catch((error) => {
             queue.notify({ title: "Error verifying custom claims: " + error });
