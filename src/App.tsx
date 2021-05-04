@@ -538,7 +538,12 @@ class App extends React.Component<AppProps, AppState> {
                   Object.keys(item).forEach((itemKey) => {
                     if (hasKey(item, itemKey)) {
                       if (itemKey === "region") {
-                        item[itemKey].split(", ").forEach((region) => testValue(set, `${key} ${itemKey}`, region));
+                        item[itemKey].split(", ").forEach((region) => {
+                          if (!region) {
+                            console.log(`${set.profile} ${set.colorway}: ${item.name} <empty region>`);
+                          }
+                          testValue(set, `${key} ${itemKey}`, region);
+                        });
                       } else if (typeof item[itemKey] === "string") {
                         testValue(set, `${key} ${itemKey}`, item[itemKey]);
                       }
