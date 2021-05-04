@@ -682,7 +682,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include top-app-bar.icon-ink-color(rgba(white, 0.87));
     }
     @if ($dark != true) {
-      .segmented-button {
+      .segmented-button.segmented-button--toggle {
         .segmented-button__segment {
           @include button.ink-color(rgba(map-get($variables, on-primary), 0.6));
           @include button.outline-color(rgba(map-get($variables, on-primary), 0.38));
