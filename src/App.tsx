@@ -617,29 +617,21 @@ class App extends React.Component<AppProps, AppState> {
     const vendorBool = (set: SetType) => {
       if (set.vendors) {
         if (whitelist.vendorMode === "exclude") {
-          return set.vendors.every((vendor) => {
-            return !whitelist.vendors.includes(vendor.name);
-          });
+          return !set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
         } else {
-          return set.vendors.some((vendor) => {
-            return whitelist.vendors.includes(vendor.name);
-          });
+          return set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
         }
-      } else {
-        return false;
       }
+      return false;
     };
 
     const regionBool = (set: SetType) => {
       if (set.vendors) {
-        return set.vendors.some((vendor) => {
-          return vendor.region.split(", ").some((region) => {
-            return whitelist.regions.includes(region);
-          });
-        });
-      } else {
-        return false;
+        return set.vendors.some((vendor) =>
+          vendor.region.split(", ").some((region) => whitelist.regions.includes(region))
+        );
       }
+      return false;
     };
 
     const filterBool = (set: SetType) => {
@@ -670,13 +662,10 @@ class App extends React.Component<AppProps, AppState> {
         set.designer.join(" "),
         set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
       ];
-      const array = search
+      const bool = search
         .toLowerCase()
         .split(" ")
-        .map((term) => {
-          return setInfo.join(" ").toLowerCase().includes(term.toLowerCase());
-        });
-      const bool = !array.includes(false);
+        .every((term) => setInfo.join(" ").toLowerCase().includes(term.toLowerCase()));
       return search.length > 0 ? bool : true;
     };
 
