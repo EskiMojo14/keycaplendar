@@ -183,9 +183,12 @@ class App extends React.Component<AppProps, AppState> {
       if (params.has(param)) {
         const val = params.get(param);
         if (val) {
-          if (param === "profile") {
-            whitelistObj.profiles = [val];
-          } else if (param === "profiles" || param === "shipped" || param === "vendors") {
+          if (param === "profile" || param === "region" || param === "vendor") {
+            const plural = `${param}s`;
+            if (hasKey(whitelistObj, plural)) {
+              whitelistObj[plural] = [val.replace("-", " ")] as never;
+            }
+          } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
             const array = val.split(" ").map((item) => item.replace("-", " "));
             whitelistObj[param] = array;
           } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {

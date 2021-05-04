@@ -138,11 +138,16 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const copyLink = () => {
     const params = new URLSearchParams(window.location.search);
     whitelistParams.forEach((param) => {
-      if (param === "profile") {
-        if (props.whitelist.profiles.length === 1) {
-          params.set(param, props.whitelist.profiles.map((profile) => profile.replace(" ", "-")).join(" "));
-        } else {
-          params.delete(param);
+      if (param === "profile" || param === "region" || param === "vendor") {
+        const plural = param + "s";
+        const whitelist = props.whitelist;
+        if (hasKey(whitelist, plural)) {
+          const array = whitelist[plural];
+          if (array instanceof Array && array.length === 1) {
+            params.set(param, array.map((item) => item.replace(" ", "-")).join(" "));
+          } else {
+            params.delete(param);
+          }
         }
       } else if (param === "vendorMode") {
         if (props.whitelist.vendorMode !== "exclude") {
@@ -150,18 +155,20 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         } else {
           params.delete(param);
         }
-      } else if (param === "profiles" || param === "shipped" || param === "vendors") {
-        if (param === "profiles") {
-          if (props.whitelist.profiles.length > 1 && props.whitelist.profiles.length !== props.profiles.length) {
-            params.set(param, props.whitelist.profiles.map((profile) => profile.replace(" ", "-")).join(" "));
+      } else if (param === "profiles" || param === "shipped" || param === "regions" || param === "vendors") {
+        const lengths = {
+          profiles: props.profiles.length,
+          shipped: 2,
+          vendors: 0,
+          regions: props.regions.length,
+        };
+        if (param === "profiles" || param === "regions" || param === "vendors") {
+          if (props.whitelist[param].length > 1 && props.whitelist[param].length !== lengths[param]) {
+            params.set(param, props.whitelist[param].map((profile) => profile.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);
           }
         } else {
-          const lengths = {
-            shipped: 2,
-            vendors: 0,
-          };
           if (props.whitelist[param].length !== lengths[param]) {
             params.set(param, props.whitelist[param].map((item) => item.replace(" ", "-")).join(" "));
           } else {
