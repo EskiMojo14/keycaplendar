@@ -66,12 +66,12 @@ type AppState = {
   transition: boolean;
   sort: string;
   sortOrder: SortOrderType;
+  allProfiles: string[];
   allDesigners: string[];
   allVendorRegions: string[];
   allVendors: string[];
   allRegions: string[];
-  sets: SetType[];
-  profiles: string[];
+  allSets: SetType[];
   filteredSets: SetType[];
   groups: string[];
   loading: boolean;
@@ -107,11 +107,11 @@ class App extends React.Component<AppProps, AppState> {
     sort: "gbLaunch",
     sortOrder: "ascending",
     allDesigners: [],
+    allProfiles: [],
+    allRegions: [],
     allVendors: [],
     allVendorRegions: [],
-    allRegions: [],
-    sets: [],
-    profiles: [],
+    allSets: [],
     filteredSets: [],
     groups: [],
     loading: false,
@@ -325,7 +325,7 @@ class App extends React.Component<AppProps, AppState> {
       setTimeout(() => {
         this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
         this.setSearch("");
-        this.filterData(page, this.state.sets, pageSort[page], pageSortOrder[page]);
+        this.filterData(page, this.state.allSets, pageSort[page], pageSortOrder[page]);
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -488,8 +488,9 @@ class App extends React.Component<AppProps, AppState> {
         alphabeticalSortProp(sets, "colorway");
 
         this.setState({
-          sets: sets,
+          allSets: sets,
         });
+
         this.filterData(this.state.page, sets);
         this.generateLists(sets);
       })
@@ -500,7 +501,7 @@ class App extends React.Component<AppProps, AppState> {
       });
   };
 
-  testSets = (sets = this.state.sets) => {
+  testSets = (sets = this.state.allSets) => {
     const testValue = (set: SetType, key: string, value?: string) => {
       if (value) {
         const endSpace = /\s+$/m;
@@ -549,7 +550,7 @@ class App extends React.Component<AppProps, AppState> {
     });
   };
 
-  generateLists = (sets = this.state.sets) => {
+  generateLists = (sets = this.state.allSets) => {
     const allVendors = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
@@ -595,7 +596,7 @@ class App extends React.Component<AppProps, AppState> {
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
-      profiles: allProfiles,
+      allProfiles: allProfiles,
       appPresets: presets,
     });
 
@@ -614,7 +615,7 @@ class App extends React.Component<AppProps, AppState> {
 
   filterData = (
     page = this.state.page,
-    sets = this.state.sets,
+    sets = this.state.allSets,
     sort = this.state.sort,
     sortOrder = this.state.sortOrder,
     search = this.state.search,
@@ -730,7 +731,7 @@ class App extends React.Component<AppProps, AppState> {
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
   debouncedFilterData = (
     _page = this.state.page,
-    _sets = this.state.sets,
+    _sets = this.state.allSets,
     _sort = this.state.sort,
     _sortOrder = this.state.sortOrder,
     _search = this.state.search,
@@ -852,7 +853,7 @@ class App extends React.Component<AppProps, AppState> {
       search: query,
     });
     document.documentElement.scrollTop = 0;
-    this.debouncedFilterData(this.state.page, this.state.sets, this.state.sort, this.state.sortOrder, query);
+    this.debouncedFilterData(this.state.page, this.state.allSets, this.state.sort, this.state.sortOrder, query);
   };
   setUser = (user: Partial<CurrentUserType>) => {
     const blankUser = {
@@ -891,10 +892,10 @@ class App extends React.Component<AppProps, AppState> {
       const whitelist = { ...this.state.whitelist, ...val, edited: edited };
       this.setState({ whitelist: whitelist });
       document.documentElement.scrollTop = 0;
-      if (this.state.sets.length > 0) {
+      if (this.state.allSets.length > 0) {
         this.filterData(
           this.state.page,
-          this.state.sets,
+          this.state.allSets,
           this.state.sort,
           this.state.sortOrder,
           this.state.search,
@@ -910,10 +911,10 @@ class App extends React.Component<AppProps, AppState> {
         whitelist: whitelist,
       });
       document.documentElement.scrollTop = 0;
-      if (this.state.sets.length > 0) {
+      if (this.state.allSets.length > 0) {
         this.filterData(
           this.state.page,
-          this.state.sets,
+          this.state.allSets,
           this.state.sort,
           this.state.sortOrder,
           this.state.search,
@@ -1050,7 +1051,7 @@ class App extends React.Component<AppProps, AppState> {
 
             this.filterData(
               this.state.page,
-              this.state.sets,
+              this.state.allSets,
               this.state.sort,
               this.state.sortOrder,
               this.state.search,
@@ -1072,7 +1073,7 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.page === "favorites") {
       this.filterData(
         this.state.page,
-        this.state.sets,
+        this.state.allSets,
         this.state.sort,
         this.state.sortOrder,
         this.state.search,
@@ -1100,7 +1101,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({ hidden: hidden });
     this.filterData(
       this.state.page,
-      this.state.sets,
+      this.state.allSets,
       this.state.sort,
       this.state.sortOrder,
       this.state.search,
@@ -1428,20 +1429,20 @@ class App extends React.Component<AppProps, AppState> {
                   className={classNames("app", { [`density-${this.state.density}`]: this.state.device === "desktop" })}
                 >
                   <Content
-                    allSets={this.state.sets}
+                    sets={this.state.filteredSets}
                     getData={this.getData}
                     className={transitionClass}
                     page={this.state.page}
                     setPage={this.setPage}
                     view={this.state.view}
                     setView={this.setView}
-                    profiles={this.state.profiles}
+                    allSets={this.state.allSets}
+                    allProfiles={this.state.allProfiles}
                     allDesigners={this.state.allDesigners}
                     allVendors={this.state.allVendors}
                     allVendorRegions={this.state.allVendorRegions}
                     allRegions={this.state.allRegions}
                     appPresets={this.state.appPresets}
-                    sets={this.state.filteredSets}
                     groups={this.state.groups}
                     loading={this.state.loading}
                     toggleLoading={this.toggleLoading}

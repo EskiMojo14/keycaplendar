@@ -50,12 +50,12 @@ const getVendorStyle = (provided: DraggableProvided) => {
 
 type DialogCreateProps = {
   allDesigners: string[];
+  allProfiles: string[];
   allVendorRegions: string[];
   allVendors: string[];
   close: () => void;
   getData: () => void;
   open: boolean;
-  profiles: string[];
   snackbarQueue: QueueType;
 };
 
@@ -545,7 +545,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                   />
                   <Autocomplete
                     open={this.state.focused === "profile"}
-                    array={this.props.profiles}
+                    array={this.props.allProfiles}
                     query={this.state.profile}
                     prop="profile"
                     select={this.selectValue}
@@ -1455,7 +1455,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                     />
                     <Autocomplete
                       open={this.state.focused === "profile"}
-                      array={this.props.profiles}
+                      array={this.props.allProfiles}
                       query={this.state.profile}
                       prop="profile"
                       select={this.selectValue}

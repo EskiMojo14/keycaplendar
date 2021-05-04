@@ -16,6 +16,7 @@ import "./Content.scss";
 
 type ContentProps = {
   allDesigners: string[];
+  allProfiles: string[];
   allSets: SetType[];
   allVendors: string[];
   allVendorRegions: string[];
@@ -34,7 +35,6 @@ type ContentProps = {
   loading: boolean;
   manualTheme: boolean;
   page: string;
-  profiles: string[];
   search: string;
   setApplyTheme: (applyTheme: string) => void;
   setBottomNav: (bottomNav: boolean) => void;
@@ -108,7 +108,7 @@ export const Content = (props: ContentProps) => {
       search={props.search}
       setSearch={props.setSearch}
       toggleLichTheme={props.toggleLichTheme}
-      profiles={props.profiles}
+      allProfiles={props.allProfiles}
       allDesigners={props.allDesigners}
       allVendors={props.allVendors}
       allVendorRegions={props.allVendorRegions}
@@ -124,15 +124,11 @@ export const Content = (props: ContentProps) => {
   const contentStatistics =
     props.page === "statistics" ? (
       <ContentStatistics
-        profiles={props.profiles}
-        sets={props.allSets}
         bottomNav={props.bottomNav}
         navOpen={navOpen}
         openNav={openNav}
         statisticsTab={props.statisticsTab}
         setStatisticsTab={props.setStatisticsTab}
-        allDesigners={props.allDesigners}
-        allVendors={props.allVendors}
         snackbarQueue={props.snackbarQueue}
       />
     ) : null;

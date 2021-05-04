@@ -30,7 +30,6 @@ type ContentMainProps = {
   page: string;
   content: boolean;
   groups: string[];
-  sets: SetType[];
   sort: string;
   setSort: (sort: string) => void;
   sortOrder: SortOrderType;
@@ -40,8 +39,9 @@ type ContentMainProps = {
   search: string;
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;
-  profiles: string[];
+  sets: SetType[];
   allDesigners: string[];
+  allProfiles: string[];
   allVendors: string[];
   allVendorRegions: string[];
   allRegions: string[];
@@ -255,7 +255,7 @@ export const ContentMain = (props: ContentMainProps) => {
             <DrawerCreate
               open={createOpen}
               close={closeCreate}
-              profiles={props.profiles}
+              allProfiles={props.allProfiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
               allVendorRegions={props.allVendorRegions}
@@ -265,7 +265,7 @@ export const ContentMain = (props: ContentMainProps) => {
             <DrawerEdit
               open={editOpen}
               close={closeEdit}
-              profiles={props.profiles}
+              allProfiles={props.allProfiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
               allVendorRegions={props.allVendorRegions}
@@ -279,7 +279,7 @@ export const ContentMain = (props: ContentMainProps) => {
             <DialogCreate
               open={createOpen}
               close={closeCreate}
-              profiles={props.profiles}
+              allProfiles={props.allProfiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
               allVendorRegions={props.allVendorRegions}
@@ -289,7 +289,7 @@ export const ContentMain = (props: ContentMainProps) => {
             <DialogEdit
               open={editOpen}
               close={closeEdit}
-              profiles={props.profiles}
+              allProfiles={props.allProfiles}
               allDesigners={props.allDesigners}
               allVendors={props.allVendors}
               allVendorRegions={props.allVendorRegions}
@@ -347,7 +347,7 @@ export const ContentMain = (props: ContentMainProps) => {
       <div className="content-container">
         <DrawerFilter
           view={props.view}
-          profiles={props.profiles}
+          profiles={props.allProfiles}
           vendors={props.allVendors}
           regions={props.allRegions}
           appPresets={props.appPresets}

@@ -49,12 +49,12 @@ const getVendorStyle = (provided: DraggableProvided) => {
 
 type DrawerCreateProps = {
   allDesigners: string[];
+  allProfiles: string[];
   allVendorRegions: string[];
   allVendors: string[];
   close: () => void;
   getData: () => void;
   open: boolean;
-  profiles: string[];
   snackbarQueue: QueueType;
 };
 
@@ -553,7 +553,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                   />
                   <Autocomplete
                     open={this.state.focused === "profile"}
-                    array={this.props.profiles}
+                    array={this.props.allProfiles}
                     query={this.state.profile}
                     prop="profile"
                     select={this.selectValue}
@@ -1459,7 +1459,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                   />
                   <Autocomplete
                     open={this.state.focused === "profile"}
-                    array={this.props.profiles}
+                    array={this.props.allProfiles}
                     query={this.state.profile}
                     prop="profile"
                     select={this.selectValue}

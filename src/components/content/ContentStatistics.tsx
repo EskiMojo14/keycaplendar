@@ -33,13 +33,9 @@ const storage = firebase.storage();
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
-  allDesigners: string[];
-  allVendors: string[];
   bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
-  profiles: string[];
-  sets: SetType[];
   setStatisticsTab: (tab: string) => void;
   snackbarQueue: QueueType;
   statisticsTab: string;
