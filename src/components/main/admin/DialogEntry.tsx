@@ -50,7 +50,7 @@ const getVendorStyle = (provided: DraggableProvided) => {
 
 type DialogCreateProps = {
   allDesigners: string[];
-  allRegions: string[];
+  allVendorRegions: string[];
   allVendors: string[];
   close: () => void;
   getData: () => void;
@@ -756,7 +756,7 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                                   />
                                   <Autocomplete
                                     open={this.state.focused === "region" + index}
-                                    array={this.props.allRegions}
+                                    array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
                                     select={this.selectVendor}
@@ -1630,7 +1630,7 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                                     />
                                     <Autocomplete
                                       open={this.state.focused === "region" + index}
-                                      array={this.props.allRegions}
+                                      array={this.props.allVendorRegions}
                                       query={this.state.vendors[index].region}
                                       prop={"region" + index}
                                       select={this.selectVendor}

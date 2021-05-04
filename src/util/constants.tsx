@@ -291,7 +291,16 @@ export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
  *
  */
 
-export const whitelistParams: string[] = ["profile", "profiles", "shipped", "vendorMode", "vendors"];
+export const whitelistParams: string[] = [
+  "profile",
+  "profiles",
+  "shipped",
+  "region",
+  "regions",
+  "vendorMode",
+  "vendor",
+  "vendors",
+];
 /**
  * Tabs on the statistics page.
  */

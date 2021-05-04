@@ -120,6 +120,18 @@ export class DialogFilterPreset extends React.Component<DialogFilterPresetProps,
           </div>
           <div className="group">
             <div className="subheader">
+              <Typography use="caption">Region</Typography>
+            </div>
+            <div className="chip-set-container">
+              <ChipSet choice>
+                {this.props.preset.whitelist.regions.map((region) => (
+                  <Chip key={region} label={region} disabled />
+                ))}
+              </ChipSet>
+            </div>
+          </div>
+          <div className="group">
+            <div className="subheader">
               <Typography use="caption">Vendors</Typography>
             </div>
             <div className="toggle-container">

@@ -89,11 +89,20 @@
     }
   }
   .mdc-drawer__content {
-    padding: 16px;
     .group {
-      &:not(:last-child) {
-        @include util.divider-border(bottom);
-        margin-bottom: 16px;
+      @include util.divider-border(bottom);
+      &-collapsible {
+        .rmwc-collapsible-list__handle {
+          .mdc-list-item {
+            padding: 0 16px;
+          }
+        }
+        .rmwc-collapsible-list__children {
+          &-inner {
+            overflow-x: hidden;
+            padding: 16px;
+          }
+        }
       }
       .filter-segmented-button-container {
         .segmented-button {
@@ -111,7 +120,6 @@
         @include rtl.reflexive-box(margin, right, 8px);
       }
       .filter-chip-container {
-        padding-bottom: 16px;
         .mdc-chip-set {
           margin: -8px;
         }

@@ -47,6 +47,7 @@ import {
   VendorType,
   UserPreferencesDoc,
   GlobalDoc,
+  OldPresetType,
 } from "./util/types";
 import "./App.scss";
 
@@ -66,6 +67,7 @@ type AppState = {
   sort: string;
   sortOrder: SortOrderType;
   allDesigners: string[];
+  allVendorRegions: string[];
   allVendors: string[];
   allRegions: string[];
   sets: SetType[];
@@ -106,6 +108,7 @@ class App extends React.Component<AppProps, AppState> {
     sortOrder: "ascending",
     allDesigners: [],
     allVendors: [],
+    allVendorRegions: [],
     allRegions: [],
     sets: [],
     profiles: [],
@@ -132,6 +135,7 @@ class App extends React.Component<AppProps, AppState> {
       hidden: false,
       profiles: [],
       shipped: ["Shipped", "Not shipped"],
+      regions: [],
       vendorMode: "exclude",
       vendors: [],
     },
@@ -179,9 +183,12 @@ class App extends React.Component<AppProps, AppState> {
       if (params.has(param)) {
         const val = params.get(param);
         if (val) {
-          if (param === "profile") {
-            whitelistObj.profiles = [val];
-          } else if (param === "profiles" || param === "shipped" || param === "vendors") {
+          if (param === "profile" || param === "region" || param === "vendor") {
+            const plural = `${param}s`;
+            if (hasKey(whitelistObj, plural)) {
+              whitelistObj[plural] = [val.replace("-", " ")] as never;
+            }
+          } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
             const array = val.split(" ").map((item) => item.replace("-", " "));
             whitelistObj[param] = array;
           } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
@@ -287,7 +294,9 @@ class App extends React.Component<AppProps, AppState> {
       });
 
       const storedPreset = this.getStorage("presetId");
-      if (storedPreset && storedPreset !== "default") {
+      const params = new URLSearchParams(window.location.search);
+      const noUrlParams = !whitelistParams.some((param) => params.has(param));
+      if (storedPreset && storedPreset !== "default" && noUrlParams) {
         this.selectPreset(storedPreset, false);
       }
     }
@@ -507,12 +516,15 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.user.isAdmin) {
       const testValue = (set: SetType, key: string, value?: string) => {
         if (value) {
-          const regex = /\s+$/m;
-          const regex2 = /^\s+/;
-          const bool = regex.test(value) || regex2.test(value);
-          if (bool) {
+          const endSpace = /\s+$/m;
+          const startSpace = /^\s+/;
+          const commaNoSpace = /,[^ ]/;
+          const stringInvalid = endSpace.test(value) || startSpace.test(value) || commaNoSpace.test(value);
+          if (stringInvalid) {
             console.log(
-              `${set.profile} ${set.colorway} - ${key}: ${value.replace(regex, "<space>").replace(regex2, "<space>")}`
+              `${set.profile} ${set.colorway} - ${key}: ${value
+                .replace(endSpace, "<space>")
+                .replace(startSpace, "<space>")}`
             );
           }
         }
@@ -530,7 +542,14 @@ class App extends React.Component<AppProps, AppState> {
                 } else if (typeof item === "object") {
                   Object.keys(item).forEach((itemKey) => {
                     if (hasKey(item, itemKey)) {
-                      if (typeof item[itemKey] === "string") {
+                      if (itemKey === "region") {
+                        item[itemKey].split(", ").forEach((region) => {
+                          if (!region) {
+                            console.log(`${set.profile} ${set.colorway}: ${item.name} <empty region>`);
+                          }
+                          testValue(set, `${key} ${itemKey}`, region);
+                        });
+                      } else if (typeof item[itemKey] === "string") {
                         testValue(set, `${key} ${itemKey}`, item[itemKey]);
                       }
                     }
@@ -548,9 +567,16 @@ class App extends React.Component<AppProps, AppState> {
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
 
-    const allRegions = alphabeticalSort(
+    const allVendorRegions = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat())
     );
+
+    const allRegions = alphabeticalSort(
+      uniqueArray(
+        sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2)
+      )
+    );
+
     const allDesigners = alphabeticalSort(uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat()));
 
     const allProfiles = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
@@ -594,22 +620,20 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     const vendorBool = (set: SetType) => {
-      let bool = whitelist.vendorMode === "exclude";
-      const vendors = set.vendors;
-      if (vendors) {
-        vendors.forEach((vendor) => {
-          if (whitelist.vendorMode === "exclude") {
-            if (whitelist.vendors.includes(vendor.name)) {
-              bool = false;
-            }
-          } else {
-            if (whitelist.vendors.includes(vendor.name)) {
-              bool = true;
-            }
-          }
-        });
+      if (set.vendors) {
+        const included = set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
+        return whitelist.vendorMode === "exclude" ? !included : included;
       }
-      return bool;
+      return false;
+    };
+
+    const regionBool = (set: SetType) => {
+      if (set.vendors) {
+        return set.vendors.some((vendor) =>
+          vendor.region.split(", ").some((region) => whitelist.regions.includes(region))
+        );
+      }
+      return false;
     };
 
     const filterBool = (set: SetType) => {
@@ -620,9 +644,11 @@ class App extends React.Component<AppProps, AppState> {
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
       if (set.vendors && set.vendors.length > 0) {
-        return vendorBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
+        return (
+          vendorBool(set) && regionBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool
+        );
       } else {
-        if (whitelist.vendors.length === 1 && whitelist.vendorMode === "include") {
+        if ((whitelist.vendors.length === 1 && whitelist.vendorMode === "include") || whitelist.regions.length === 1) {
           return false;
         } else {
           return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
@@ -638,13 +664,10 @@ class App extends React.Component<AppProps, AppState> {
         set.designer.join(" "),
         set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
       ];
-      const array = search
+      const bool = search
         .toLowerCase()
         .split(" ")
-        .map((term) => {
-          return setInfo.join(" ").toLowerCase().includes(term.toLowerCase());
-        });
-      const bool = !array.includes(false);
+        .every((term) => setInfo.join(" ").toLowerCase().includes(term.toLowerCase()));
       return search.length > 0 ? bool : true;
     };
 
@@ -663,6 +686,7 @@ class App extends React.Component<AppProps, AppState> {
       false,
       allProfiles,
       ["Shipped", "Not shipped"],
+      allRegions,
       "exclude",
       [],
       "default"
@@ -673,6 +697,7 @@ class App extends React.Component<AppProps, AppState> {
     // set states
     this.setState({
       filteredSets: filteredSets,
+      allVendorRegions: allVendorRegions,
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
@@ -684,10 +709,14 @@ class App extends React.Component<AppProps, AppState> {
 
     if (!this.state.currentPreset.name) {
       this.setState({ currentPreset: defaultPreset });
-    }
 
-    if (whitelist.edited && !whitelist.edited.includes("profiles")) {
-      this.setWhitelist("profiles", allProfiles, false);
+      if (whitelist.edited && !whitelist.edited.includes("profiles")) {
+        this.setWhitelist("profiles", allProfiles, false);
+      }
+
+      if (whitelist.edited && !whitelist.edited.includes("regions")) {
+        this.setWhitelist("regions", allRegions, false);
+      }
     }
   };
 
@@ -950,10 +979,11 @@ class App extends React.Component<AppProps, AppState> {
         const { filterPresets } = data as GlobalDoc;
         if (filterPresets) {
           const defaultPreset = this.findPreset("id", "default");
+          const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
           if (defaultPreset) {
-            this.setState({ appPresets: [defaultPreset, ...filterPresets] });
+            this.setState({ appPresets: [defaultPreset, ...updatedPresets] });
           } else {
-            this.setState({ appPresets: filterPresets });
+            this.setState({ appPresets: updatedPresets });
           }
         }
       })
@@ -980,9 +1010,12 @@ class App extends React.Component<AppProps, AppState> {
             }
 
             if (filterPresets) {
-              this.setState({ userPresets: filterPresets });
+              const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
+              this.setState({ userPresets: updatedPresets });
               const storedPreset = this.getStorage("presetId");
-              if (storedPreset && storedPreset !== "default") {
+              const params = new URLSearchParams(window.location.search);
+              const noUrlParams = !whitelistParams.some((param) => params.has(param));
+              if (storedPreset && storedPreset !== "default" && noUrlParams) {
                 this.selectPreset(storedPreset, false);
               }
             }
@@ -1144,6 +1177,14 @@ class App extends React.Component<AppProps, AppState> {
         });
       };
     }
+  };
+  updatePreset = (preset: OldPresetType): PresetType => {
+    const regions =
+      hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
+        ? preset.whitelist.regions
+        : this.state.allRegions;
+    const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
+    return updatedPreset;
   };
   findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
     const allPresets = [...this.state.appPresets, ...this.state.userPresets];
@@ -1387,6 +1428,7 @@ class App extends React.Component<AppProps, AppState> {
                     profiles={this.state.profiles}
                     allDesigners={this.state.allDesigners}
                     allVendors={this.state.allVendors}
+                    allVendorRegions={this.state.allVendorRegions}
                     allRegions={this.state.allRegions}
                     appPresets={this.state.appPresets}
                     sets={this.state.filteredSets}

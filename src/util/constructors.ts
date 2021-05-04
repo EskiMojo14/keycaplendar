@@ -85,6 +85,7 @@ export class Preset {
     hidden = false,
     profiles: string[] = [],
     shipped: string[] = [],
+    regions: string[] = [],
     vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
     id = nanoid()
@@ -97,6 +98,7 @@ export class Preset {
       hidden: hidden,
       profiles: profiles,
       shipped: shipped,
+      regions: regions,
       vendorMode: vendorMode,
       vendors: vendors,
     };

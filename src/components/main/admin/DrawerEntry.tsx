@@ -49,7 +49,7 @@ const getVendorStyle = (provided: DraggableProvided) => {
 
 type DrawerCreateProps = {
   allDesigners: string[];
-  allRegions: string[];
+  allVendorRegions: string[];
   allVendors: string[];
   close: () => void;
   getData: () => void;
@@ -765,7 +765,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                                   />
                                   <Autocomplete
                                     open={this.state.focused === "region" + index}
-                                    array={this.props.allRegions}
+                                    array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
                                     select={this.selectVendor}
@@ -1630,7 +1630,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                                   />
                                   <Autocomplete
                                     open={this.state.focused === "region" + index}
-                                    array={this.props.allRegions}
+                                    array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
                                     select={this.selectVendor}

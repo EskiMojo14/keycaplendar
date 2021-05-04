@@ -9,6 +9,21 @@ import { whitelistShipped } from "./constants";
 export type Obj<T = unknown> = Record<string, T>;
 
 /**
+ * Makes specified keys optional.
+ */
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+/**
+ * Overwrite keys with a new object.
+ */
+
+export type Overwrite<T1, T2> = {
+  [P in Exclude<keyof T1, keyof T2>]: T1[P];
+} &
+  T2;
+
+/**
  * Alias for standard HTML props.
  */
 
@@ -37,6 +52,8 @@ export type WhitelistType = {
   profiles: string[];
   /** Array of allowed shipped values. */
   shipped: typeof whitelistShipped;
+  /** Regions to include. */
+  regions: string[];
   /** Whether to `include` or `exclude` the specified `vendors`. */
   vendorMode: "include" | "exclude";
   /** Array of vendors to either `include` or `exclude`. */
@@ -55,6 +72,8 @@ export type PresetType = {
   global?: boolean;
   whitelist: WhitelistType;
 };
+
+export type OldPresetType = Overwrite<PresetType, { whitelist: Overwrite<WhitelistType, { regions?: string[] }> }>;
 
 export type CurrentUserType = {
   /** URL to avatar image. */
@@ -179,14 +198,14 @@ export type Settings = {
 
 export type UserPreferencesDoc = {
   favorites?: string[];
-  filterPresets?: PresetType[];
+  filterPresets?: OldPresetType[];
   hidden?: string[];
   settings?: Partial<Settings>;
   syncSettings?: boolean;
 };
 
 export type GlobalDoc = {
-  filterPresets: PresetType[];
+  filterPresets: OldPresetType[];
 };
 
 export type UserContextType = {
