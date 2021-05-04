@@ -616,17 +616,15 @@ class App extends React.Component<AppProps, AppState> {
 
     const vendorBool = (set: SetType) => {
       if (set.vendors) {
-        return set.vendors.reduce((previousValue, vendor) => {
-          if (whitelist.vendorMode === "exclude") {
-            if (previousValue) {
-              return !whitelist.vendors.includes(vendor.name);
-            } else {
-              return previousValue;
-            }
-          } else {
-            return previousValue || whitelist.vendors.includes(vendor.name);
-          }
-        }, whitelist.vendorMode === "exclude");
+        if (whitelist.vendorMode === "exclude") {
+          return set.vendors.every((vendor) => {
+            return !whitelist.vendors.includes(vendor.name);
+          });
+        } else {
+          return set.vendors.some((vendor) => {
+            return whitelist.vendors.includes(vendor.name);
+          });
+        }
       } else {
         return false;
       }
@@ -634,14 +632,11 @@ class App extends React.Component<AppProps, AppState> {
 
     const regionBool = (set: SetType) => {
       if (set.vendors) {
-        return set.vendors.reduce((previousValue, vendor) => {
-          return (
-            previousValue ||
-            vendor.region.split(", ").reduce((previousValue, region) => {
-              return previousValue || whitelist.regions.includes(region);
-            }, false)
-          );
-        }, false);
+        return set.vendors.some((vendor) => {
+          return vendor.region.split(", ").some((region) => {
+            return whitelist.regions.includes(region);
+          });
+        });
       } else {
         return false;
       }
