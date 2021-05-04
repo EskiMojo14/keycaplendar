@@ -610,36 +610,36 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     const vendorBool = (set: SetType) => {
-      let bool = whitelist.vendorMode === "exclude";
-      const vendors = set.vendors;
-      if (vendors) {
-        vendors.forEach((vendor) => {
+      if (set.vendors) {
+        return set.vendors.reduce((previousValue, vendor) => {
           if (whitelist.vendorMode === "exclude") {
-            if (whitelist.vendors.includes(vendor.name)) {
-              bool = false;
+            if (previousValue) {
+              return !whitelist.vendors.includes(vendor.name);
+            } else {
+              return previousValue;
             }
           } else {
-            if (whitelist.vendors.includes(vendor.name)) {
-              bool = true;
-            }
+            return previousValue || whitelist.vendors.includes(vendor.name);
           }
-        });
+        }, whitelist.vendorMode === "exclude");
+      } else {
+        return false;
       }
-      return bool;
     };
 
     const regionBool = (set: SetType) => {
-      let bool = false;
       if (set.vendors) {
-        set.vendors.forEach((vendor) => {
-          vendor.region.split(", ").forEach((region) => {
-            if (whitelist.regions.includes(region)) {
-              bool = true;
-            }
-          });
-        });
+        return set.vendors.reduce((previousValue, vendor) => {
+          return (
+            previousValue ||
+            vendor.region.split(", ").reduce((previousValue, region) => {
+              return previousValue || whitelist.regions.includes(region);
+            }, false)
+          );
+        }, false);
+      } else {
+        return false;
       }
-      return bool;
     };
 
     const filterBool = (set: SetType) => {
