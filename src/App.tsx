@@ -294,7 +294,9 @@ class App extends React.Component<AppProps, AppState> {
       });
 
       const storedPreset = this.getStorage("presetId");
-      if (storedPreset && storedPreset !== "default") {
+      const params = new URLSearchParams(window.location.search);
+      const noUrlParams = !whitelistParams.some((param) => params.has(param));
+      if (storedPreset && storedPreset !== "default" && noUrlParams) {
         this.selectPreset(storedPreset, false);
       }
     }
@@ -1011,7 +1013,9 @@ class App extends React.Component<AppProps, AppState> {
               const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
               this.setState({ userPresets: updatedPresets });
               const storedPreset = this.getStorage("presetId");
-              if (storedPreset && storedPreset !== "default") {
+              const params = new URLSearchParams(window.location.search);
+              const noUrlParams = !whitelistParams.some((param) => params.has(param));
+              if (storedPreset && storedPreset !== "default" && noUrlParams) {
                 this.selectPreset(storedPreset, false);
               }
             }
