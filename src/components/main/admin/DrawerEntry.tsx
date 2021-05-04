@@ -172,6 +172,29 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     }
   };
 
+  selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(this.state, prop)) {
+      const original = this.state[prop];
+      if (original) {
+        if (original instanceof Array) {
+          const array = [...original];
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array,
+            focused: "",
+          });
+        } else if (typeof original === "string") {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array.join(", "),
+            focused: "",
+          });
+        }
+      }
+    }
+  };
+
   selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
@@ -183,6 +206,25 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
         vendors: vendors,
         focused: "",
       });
+    }
+  };
+
+  selectVendorAppend = (prop: string, value: string) => {
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      const original = vendor[property];
+      if (original) {
+        const array = original.split(", ");
+        array[array.length - 1] = value;
+        vendor[property] = array.join(", ");
+        this.setState<never>({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -561,8 +603,9 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                 array={this.props.allDesigners}
                 query={this.state.designer.join(", ")}
                 prop="designer"
-                select={this.selectValue}
+                select={this.selectValueAppend}
                 minChars={2}
+                listSplit
               />
             </MenuSurfaceAnchor>
             <TextField
@@ -768,8 +811,9 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                                     array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
-                                    select={this.selectVendor}
+                                    select={this.selectVendorAppend}
                                     minChars={1}
+                                    listSplit
                                   />
                                 </MenuSurfaceAnchor>
                                 <TextField
@@ -1031,6 +1075,29 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     }
   };
 
+  selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(this.state, prop)) {
+      const original = this.state[prop];
+      if (original) {
+        if (original instanceof Array) {
+          const array = [...original];
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array,
+            focused: "",
+          });
+        } else if (typeof original === "string") {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array.join(", "),
+            focused: "",
+          });
+        }
+      }
+    }
+  };
+
   selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
@@ -1042,6 +1109,25 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
         vendors: vendors,
         focused: "",
       });
+    }
+  };
+
+  selectVendorAppend = (prop: string, value: string) => {
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      const original = vendor[property];
+      if (original) {
+        const array = original.split(", ");
+        array[array.length - 1] = value;
+        vendor[property] = array.join(", ");
+        this.setState<never>({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -1422,8 +1508,9 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                 array={this.props.allDesigners}
                 query={this.state.designer.join(", ")}
                 prop="designer"
-                select={this.selectValue}
+                select={this.selectValueAppend}
                 minChars={2}
+                listSplit
               />
             </MenuSurfaceAnchor>
             <TextField
@@ -1633,7 +1720,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
                                     array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
-                                    select={this.selectVendor}
+                                    select={this.selectVendorAppend}
                                     minChars={1}
                                   />
                                 </MenuSurfaceAnchor>

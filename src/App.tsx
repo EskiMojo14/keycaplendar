@@ -568,7 +568,10 @@ class App extends React.Component<AppProps, AppState> {
     );
 
     const allVendorRegions = alphabeticalSort(
-      uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat())
+      uniqueArray([
+        ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat(),
+        ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2),
+      ])
     );
 
     const allRegions = alphabeticalSort(

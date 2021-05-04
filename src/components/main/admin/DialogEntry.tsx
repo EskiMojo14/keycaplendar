@@ -161,6 +161,29 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
     }
   };
 
+  selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(this.state, prop)) {
+      const original = this.state[prop];
+      if (original) {
+        if (original instanceof Array) {
+          const array = [...original];
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array,
+            focused: "",
+          });
+        } else if (typeof original === "string") {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array.join(", "),
+            focused: "",
+          });
+        }
+      }
+    }
+  };
+
   selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
@@ -172,6 +195,25 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
         vendors: vendors,
         focused: "",
       });
+    }
+  };
+
+  selectVendorAppend = (prop: string, value: string) => {
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      const original = vendor[property];
+      if (original) {
+        const array = original.split(", ");
+        array[array.length - 1] = value;
+        vendor[property] = array.join(", ");
+        this.setState<never>({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -552,8 +594,9 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                 array={this.props.allDesigners}
                 query={this.state.designer.join(", ")}
                 prop="designer"
-                select={this.selectValue}
+                select={this.selectValueAppend}
                 minChars={2}
+                listSplit
               />
             </MenuSurfaceAnchor>
             <TextField
@@ -759,8 +802,9 @@ export class DialogCreate extends React.Component<DialogCreateProps, DialogCreat
                                     array={this.props.allVendorRegions}
                                     query={this.state.vendors[index].region}
                                     prop={"region" + index}
-                                    select={this.selectVendor}
+                                    select={this.selectVendorAppend}
                                     minChars={1}
+                                    listSplit
                                   />
                                 </MenuSurfaceAnchor>
                                 <TextField
@@ -973,6 +1017,29 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
     }
   };
 
+  selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(this.state, prop)) {
+      const original = this.state[prop];
+      if (original) {
+        if (original instanceof Array) {
+          const array = [...original];
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array,
+            focused: "",
+          });
+        } else if (typeof original === "string") {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          this.setState<never>({
+            [prop]: array.join(", "),
+            focused: "",
+          });
+        }
+      }
+    }
+  };
+
   selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
@@ -984,6 +1051,25 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
         vendors: vendors,
         focused: "",
       });
+    }
+  };
+
+  selectVendorAppend = (prop: string, value: string) => {
+    const property = prop.replace(/\d/g, "");
+    const index = parseInt(prop.replace(/\D/g, ""));
+    const vendors = [...this.state.vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, property)) {
+      const original = vendor[property];
+      if (original) {
+        const array = original.split(", ");
+        array[array.length - 1] = value;
+        vendor[property] = array.join(", ");
+        this.setState<never>({
+          vendors: vendors,
+          focused: "",
+        });
+      }
     }
   };
 
@@ -1418,8 +1504,9 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                   array={this.props.allDesigners}
                   query={this.state.designer.join(", ")}
                   prop="designer"
-                  select={this.selectValue}
+                  select={this.selectValueAppend}
                   minChars={2}
+                  listSplit
                 />
               </MenuSurfaceAnchor>
               <TextField
@@ -1595,8 +1682,9 @@ export class DialogEdit extends React.Component<DialogEditProps, DialogEditState
                                       array={this.props.allVendors}
                                       query={this.state.vendors[index].name}
                                       prop={"name" + index}
-                                      select={this.selectVendor}
+                                      select={this.selectVendorAppend}
                                       minChars={1}
+                                      listSplit
                                     />
                                   </MenuSurfaceAnchor>
                                   <MenuSurfaceAnchor>
