@@ -616,11 +616,8 @@ class App extends React.Component<AppProps, AppState> {
 
     const vendorBool = (set: SetType) => {
       if (set.vendors) {
-        if (whitelist.vendorMode === "exclude") {
-          return !set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
-        } else {
-          return set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
-        }
+        const included = set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
+        return whitelist.vendorMode === "exclude" ? !included : included;
       }
       return false;
     };
