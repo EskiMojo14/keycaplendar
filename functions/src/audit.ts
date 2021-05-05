@@ -1,6 +1,9 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
+import { alphabeticalSortProp } from "./util/functions";
+import { PublicActionType, ActionType } from "./util/types";
+
 const db = admin.firestore();
 
 /**
@@ -51,4 +54,32 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
         return null;
       });
   }
+});
+
+/**
+ * Fetches audit log information and removes sensitive information before sending to client.
+ */
+
+export const getPublicAudit = functions.https.onCall((data, context) => {
+  return db
+    .collection("changelog")
+    .orderBy("timestamp", "desc")
+    .limit(data.num)
+    .get()
+    .then((querySnapshot) => {
+      const entries: PublicActionType[] = [];
+      querySnapshot.forEach((doc) => {
+        const { user, documentId, ...data } = doc.data() as ActionType;
+        const action: PublicActionType = {
+          ...data,
+          action:
+            data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created",
+          user: user.nickname ? user.nickname : "",
+        };
+        entries.push(action);
+      });
+
+      alphabeticalSortProp(entries, "timestamp", true);
+      return Promise.resolve(entries);
+    });
 });
