@@ -100,7 +100,7 @@ class App extends React.Component<AppProps, AppState> {
   state: AppState = {
     device: "tablet",
     bottomNav: false,
-    page: "calendar",
+    page: "",
     statisticsTab: "summary",
     view: "card",
     transition: false,
@@ -177,6 +177,8 @@ class App extends React.Component<AppProps, AppState> {
           this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
         }
       }
+    } else {
+      this.setState({ page: "calendar" });
     }
     const whitelistObj: WhitelistType = { ...this.state.whitelist };
     whitelistParams.forEach((param, index, array) => {
