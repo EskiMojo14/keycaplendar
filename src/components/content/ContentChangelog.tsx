@@ -1,18 +1,17 @@
 import React from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
   TopAppBarSection,
   TopAppBarNavigationIcon,
   TopAppBarTitle,
-  TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
-import { QueueType, PublicActionType } from "../../util/types";
+import { QueueType, PublicActionType, ActionSetType } from "../../util/types";
+import isEqual from "lodash.isequal";
 
 type ContentChangelogProps = {
   bottomNav: boolean;
@@ -21,12 +20,12 @@ type ContentChangelogProps = {
 };
 
 type ContentChangelogState = {
-  allActions: PublicActionType[];
+  processedActions: PublicActionType[];
 };
 
 export class ContentChangelog extends React.Component<ContentChangelogProps> {
   state: ContentChangelogState = {
-    allActions: [],
+    processedActions: [],
   };
   componentDidMount() {
     this.getData();
@@ -35,13 +34,50 @@ export class ContentChangelog extends React.Component<ContentChangelogProps> {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     cloudFn({ num: 25 })
       .then((result) => {
-        const data = result.data;
-        this.setState({ allActions: data });
+        const actions: PublicActionType[] = result.data;
+        this.processActions(actions);
       })
       .catch((error) => {
         console.log(error);
         this.props.snackbarQueue.notify({ title: "Failed to get changelog: " + error });
       });
+  };
+  processActions = (actions: PublicActionType[]) => {
+    const properties = [
+      "profile",
+      "colorway",
+      "designer",
+      "icDate",
+      "details",
+      "notes",
+      "gbMonth",
+      "gbLaunch",
+      "gbEnd",
+      "image",
+      "shipped",
+      "vendors",
+      "sales",
+    ] as const;
+    const processedActions: PublicActionType[] = [...actions].map((action) => {
+      const { before, after, ...restAction } = action;
+      if (before && after) {
+        properties.forEach((prop) => {
+          const beforeProp = before[prop];
+          const afterProp = after[prop];
+          if (isEqual(beforeProp, afterProp)) {
+            delete before[prop];
+            delete after[prop];
+          }
+        });
+      }
+      return {
+        ...restAction,
+        before,
+        after,
+      };
+    });
+    console.log(processedActions);
+    this.setState({ processedActions: processedActions });
   };
   render() {
     return (
