@@ -59,6 +59,7 @@ export type PublicActionType = {
   action: "created" | "deleted" | "updated";
   after: ActionSetType;
   before: ActionSetType;
+  documentId: string;
   timestamp: string;
   user: string;
 };

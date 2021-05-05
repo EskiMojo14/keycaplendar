@@ -69,7 +69,7 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
     .then((querySnapshot) => {
       const entries: PublicActionType[] = [];
       querySnapshot.forEach((doc) => {
-        const { user, documentId, ...data } = doc.data() as ActionType;
+        const { user, ...data } = doc.data() as ActionType;
         const action: PublicActionType = {
           ...data,
           action:
