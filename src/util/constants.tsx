@@ -372,3 +372,37 @@ export const viewIcons: { [key: string]: RMWC.IconPropT } = {
     </div>
   ),
 };
+
+/** Set properties to iterate and check. */
+
+export const auditProperties = [
+  "profile",
+  "colorway",
+  "designer",
+  "icDate",
+  "details",
+  "notes",
+  "gbMonth",
+  "gbLaunch",
+  "gbEnd",
+  "image",
+  "shipped",
+  "vendors",
+  "sales",
+] as const;
+
+export const auditPropertiesFormatted = {
+  profile: "Profile",
+  colorway: "Colorway",
+  designer: "Designer(s)",
+  icDate: "IC date",
+  details: "Link",
+  notes: "Notes",
+  gbMonth: "GB month",
+  gbLaunch: "GB launch",
+  gbEnd: "GB end",
+  image: "Image",
+  shipped: "Shipped",
+  vendors: "Vendors",
+  sales: "Sales",
+} as const;

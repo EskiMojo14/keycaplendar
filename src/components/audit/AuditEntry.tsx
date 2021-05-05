@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
+import { auditProperties } from "../../util/constants";
 import { alphabeticalSortProp, hasKey } from "../../util/functions";
 import { ActionType } from "../../util/types";
 import { Button } from "@rmwc/button";
@@ -28,7 +29,6 @@ import "./AuditEntry.scss";
 type AuditEntryProps = {
   action: ActionType;
   openDeleteDialog: (action: ActionType) => void;
-  properties: string[];
   timestamp: {
     format: (format: string) => string;
   };
@@ -91,13 +91,15 @@ export const AuditEntry = (props: AuditEntryProps) => {
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>
-            {props.properties.map((property, index) => {
+            {auditProperties.map((property, index) => {
               const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 props.action.action === "updated" &&
                 hasKey(props.action.before, property) &&
                 hasKey(props.action.after, property) &&
-                !isEqual(props.action.before[property], props.action.after[property])
+                ((property !== "profile" && property !== "colorway") ||
+                  ((property === "profile" || property === "colorway") &&
+                    !isEqual(props.action.before[property], props.action.after[property])))
               ) {
                 const beforeProp = props.action.before[property] ? props.action.before[property] : "";
                 const afterProp = props.action.after[property] ? props.action.after[property] : "";
