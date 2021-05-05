@@ -11,6 +11,7 @@ import { ContentImages } from "./content/ContentImages";
 import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentStatistics } from "./content/ContentStatistics";
+import { ContentChangelog } from "./content/ContentChangelog";
 import { ContentUsers } from "./content/ContentUsers";
 import "./Content.scss";
 
@@ -132,6 +133,10 @@ export const Content = (props: ContentProps) => {
         snackbarQueue={props.snackbarQueue}
       />
     ) : null;
+  const contentChangelog =
+    props.page === "changelog" ? (
+      <ContentChangelog bottomNav={props.bottomNav} openNav={openNav} snackbarQueue={props.snackbarQueue} />
+    ) : null;
   const contentAudit =
     props.page === "audit" && user.isAdmin ? (
       <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
@@ -196,6 +201,7 @@ export const Content = (props: ContentProps) => {
       <DrawerAppContent>
         {contentMain}
         {contentStatistics}
+        {contentChangelog}
         {contentAudit}
         {contentUsers}
         {contentImages}
