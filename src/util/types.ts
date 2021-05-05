@@ -176,6 +176,14 @@ export type ActionType = {
   };
 };
 
+export type PublicActionType = {
+  action: "created" | "deleted" | "updated";
+  after: ActionSetType;
+  before: ActionSetType;
+  timestamp: string;
+  user: string;
+};
+
 export type ImageType = {
   name: string;
   parent: string;
