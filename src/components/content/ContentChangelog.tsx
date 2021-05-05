@@ -10,8 +10,24 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
-import { QueueType, PublicActionType, ActionSetType } from "../../util/types";
+import { QueueType, PublicActionType } from "../../util/types";
 import isEqual from "lodash.isequal";
+
+const properties = [
+  "profile",
+  "colorway",
+  "designer",
+  "icDate",
+  "details",
+  "notes",
+  "gbMonth",
+  "gbLaunch",
+  "gbEnd",
+  "image",
+  "shipped",
+  "vendors",
+  "sales",
+] as const;
 
 type ContentChangelogProps = {
   bottomNav: boolean;
@@ -43,21 +59,6 @@ export class ContentChangelog extends React.Component<ContentChangelogProps> {
       });
   };
   processActions = (actions: PublicActionType[]) => {
-    const properties = [
-      "profile",
-      "colorway",
-      "designer",
-      "icDate",
-      "details",
-      "notes",
-      "gbMonth",
-      "gbLaunch",
-      "gbEnd",
-      "image",
-      "shipped",
-      "vendors",
-      "sales",
-    ] as const;
     const processedActions: PublicActionType[] = [...actions].map((action) => {
       const { before, after, ...restAction } = action;
       if (before && after) {
