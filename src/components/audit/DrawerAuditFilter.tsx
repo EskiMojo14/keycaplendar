@@ -46,7 +46,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
       open={props.open}
       dismissible={device === "desktop"}
       modal={device !== "desktop"}
-      className="drawer-right filter-drawer audit-filter"
+      className="drawer-right audit-filter"
       onClose={props.close}
     >
       <DrawerHeader>
