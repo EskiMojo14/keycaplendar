@@ -76,7 +76,6 @@ export class ContentChangelog extends React.Component<ContentChangelogProps> {
         after,
       };
     });
-    console.log(processedActions);
     this.setState({ processedActions: processedActions });
   };
   render() {
