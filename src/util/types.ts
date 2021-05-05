@@ -2,48 +2,34 @@ import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
 import { whitelistShipped } from "./constants";
 
-/**
- * Alias for `Record<string, T>`.
- */
+/** Alias for `Record<string, T>`. */
 
 export type Obj<T = unknown> = Record<string, T>;
 
-/**
- * Makes specified keys optional.
- */
+/** Makes specified keys optional. */
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
-/**
- * Overwrite keys with a new object.
- */
+/** Overwrite keys with a new object. */
 
 export type Overwrite<T1, T2> = {
   [P in Exclude<keyof T1, keyof T2>]: T1[P];
 } &
   T2;
 
-/**
- * Alias for standard HTML props.
- */
+/** Alias for standard HTML props. */
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
-/**
- * Possible values for sort orders.
- */
+/** Possible values for sort orders. */
 
 export type SortOrderType = "ascending" | "descending";
 
-/**
- * Sort params which are dates.
- */
+/** Sort params which are dates. */
 
 export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
 
-/**
- * Sort params which are arrays.
- */
+/** Sort params which are arrays. */
 
 export type ArraySortKeys = "designer";
 
@@ -160,6 +146,7 @@ export type StatisticsSortType = {
 export type QueueType = ReturnType<typeof createSnackbarQueue>;
 
 /** SetType but with all keys set to optional, as an action can include "deleted" sets. */
+
 export type ActionSetType = Partial<SetType>;
 
 export type ActionType = {
