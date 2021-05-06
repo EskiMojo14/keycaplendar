@@ -7,6 +7,7 @@ export type VendorType = {
 };
 
 export type SetType = {
+  latestEditor: string;
   colorway: string;
   designer: string[];
   details: string;

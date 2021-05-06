@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
 import { alphabeticalSortProp } from "./util/functions";
-import { PublicActionType, ActionType } from "./util/types";
+import { PublicActionType, ActionType, ActionSetType } from "./util/types";
 
 const db = admin.firestore();
 
@@ -61,6 +61,10 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
  */
 
 export const getPublicAudit = functions.https.onCall((data, context) => {
+  const removeLatestEditor = (set: ActionSetType) => {
+    const { latestEditor, ...newSet } = set;
+    return newSet;
+  };
   return db
     .collection("changelog")
     .orderBy("timestamp", "desc")
@@ -72,6 +76,8 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
         const { user, ...data } = doc.data() as ActionType;
         const action: PublicActionType = {
           ...data,
+          before: removeLatestEditor(data.before),
+          after: removeLatestEditor(data.after),
           action:
             data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created",
           user: user.nickname ? user.nickname : "",
