@@ -5,6 +5,8 @@ import isEqual from "lodash.isequal";
 import { auditProperties } from "../../util/constants";
 import { alphabeticalSort, alphabeticalSortProp, iconObject, uniqueArray } from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType } from "../../util/types";
+import { Card } from "@rmwc/card";
+import { List } from "@rmwc/list";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -13,8 +15,10 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import { ChangelogEntry } from "../changelog/ChangelogEntry";
 import { Footer } from "../common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import "./ContentChangelog.scss";
 
 type ContentChangelogProps = {
   bottomNav: boolean;
@@ -31,19 +35,13 @@ type GroupedAction = {
   actions: ProcessedPublicActionType[];
 };
 
-type ContentChangelogState = {
-  processedActions: ProcessedPublicActionType[];
-  groupedActions: GroupedAction[];
-  view: "chronological" | "grouped";
-};
-
 export const ContentChangelog = (props: ContentChangelogProps) => {
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
   const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
-  const [view, setView] = useState<"chronological" | "grouped">("grouped");
+  const [view, setView] = useState<"all" | "grouped">("all");
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    cloudFn({ num: 0 })
+    cloudFn({ num: 25 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
         processActions(actions);
@@ -130,16 +128,30 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
               <SegmentedButtonSegment
                 label="All"
                 icon="history"
-                selected={view === "chronological"}
-                onClick={() => setView("chronological")}
+                selected={view === "all"}
+                onClick={() => setView("all")}
               />
             </SegmentedButton>
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
-      <div className={"content-container"}>
-        <div className="main extended-app-bar"></div>
+      <div className="content-container">
+        <div className="main extended-app-bar">
+          {view === "grouped" ? (
+            <div className="changelog-grid"></div>
+          ) : (
+            <div className="changelog-container">
+              <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
+                <List twoLine className="three-line">
+                  {processedActions.map((action) => (
+                    <ChangelogEntry action={action} key={action.timestamp} />
+                  ))}
+                </List>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
       <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}

@@ -373,7 +373,7 @@ export const viewIcons: { [key: string]: RMWC.IconPropT } = {
   ),
 };
 
-/** Set properties to iterate and check. */
+/** Set properties to iterate and check. Order is also used for sorting. */
 
 export const auditProperties = [
   "profile",

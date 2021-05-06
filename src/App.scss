@@ -458,6 +458,9 @@
     .mdc-data-table__cell {
       @include typography.typography(body2);
       overflow: visible;
+      .vendor-container {
+        @include shape.radius(small);
+      }
     }
   }
 }

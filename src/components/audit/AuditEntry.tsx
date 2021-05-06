@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
+import moment from "moment";
 import { auditProperties } from "../../util/constants";
 import { alphabeticalSortProp, hasKey } from "../../util/functions";
 import { ActionType } from "../../util/types";
@@ -29,9 +30,7 @@ import "./AuditEntry.scss";
 type AuditEntryProps = {
   action: ActionType;
   openDeleteDialog: (action: ActionType) => void;
-  timestamp: {
-    format: (format: string) => string;
-  };
+  timestamp: moment.Moment;
 };
 
 export const AuditEntry = (props: AuditEntryProps) => {

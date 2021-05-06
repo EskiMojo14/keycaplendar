@@ -160,7 +160,7 @@ export type StatisticsSortType = {
 export type QueueType = ReturnType<typeof createSnackbarQueue>;
 
 /** SetType but with all keys set to optional, as an action can include "deleted" sets. */
-export type ActionSetType = Partial<SetType>;
+export type ActionSetType = Omit<Partial<SetType>, "id">;
 
 export type ActionType = {
   action: "created" | "deleted" | "updated";

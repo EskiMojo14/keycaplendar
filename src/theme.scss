@@ -1180,7 +1180,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
-  .log {
+  .log,
+  .changelog {
     .mdc-icon-button {
       color: map-get($variables, text-medium);
       @include ripple.states(map-get($variables, on-surface));

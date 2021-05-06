@@ -21,6 +21,17 @@ export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
 }
 
 /**
+ * Checks if item is included in array, and asserts that the types are the same.
+ * @param arr Array of items
+ * @param item Item to be checked
+ * @returns Whether the item is contained in the array.
+ */
+
+export function arrayIncludes<T>(arr: T[] | Readonly<T[]>, item: any): item is T {
+  return arr.includes(item);
+}
+
+/**
  * Remove all duplicate values within an array.
  * @param array Array of values.
  * @returns `array` with only unique values.
