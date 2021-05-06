@@ -62,7 +62,8 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
 
 export const getPublicAudit = functions.https.onCall((data, context) => {
   const removeLatestEditor = (set: ActionSetType) => {
-    const { latestEditor, ...newSet } = set;
+    const newSet = { ...set };
+    delete newSet.latestEditor;
     return newSet;
   };
   return db
