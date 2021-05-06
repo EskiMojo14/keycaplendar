@@ -185,6 +185,10 @@ export type PublicActionType = {
   user: string;
 };
 
+export type ProcessedPublicActionType = PublicActionType & {
+  title: string;
+};
+
 export type ImageType = {
   name: string;
   parent: string;

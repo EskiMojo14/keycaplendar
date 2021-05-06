@@ -135,7 +135,12 @@ export const Content = (props: ContentProps) => {
     ) : null;
   const contentChangelog =
     props.page === "changelog" ? (
-      <ContentChangelog bottomNav={props.bottomNav} openNav={openNav} snackbarQueue={props.snackbarQueue} />
+      <ContentChangelog
+        allSets={props.allSets}
+        bottomNav={props.bottomNav}
+        openNav={openNav}
+        snackbarQueue={props.snackbarQueue}
+      />
     ) : null;
   const contentAudit =
     props.page === "audit" && user.isAdmin ? (
