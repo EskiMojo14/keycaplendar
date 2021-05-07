@@ -1,0 +1,26 @@
+@use "@material/animation/_index" as animation;
+.set-changelog {
+  overflow: hidden;
+  .lazy-load {
+    display: flex;
+    flex-direction: column;
+    margin-top: 56.25%;
+    .mdc-card__media {
+      margin-top: -56.25%;
+      animation: animation.standard(fade-in, 500ms) forwards;
+      &-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--divider-color);
+      }
+    }
+  }
+  .info-container {
+    padding: 16px;
+    .mdc-typography--headline5,
+    .mdc-typography--subtitle2 {
+      margin: 0;
+    }
+  }
+}

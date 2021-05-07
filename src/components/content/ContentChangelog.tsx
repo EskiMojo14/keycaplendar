@@ -4,7 +4,7 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import { auditProperties } from "../../util/constants";
 import { alphabeticalSort, alphabeticalSortProp, iconObject, uniqueArray } from "../../util/functions";
-import { QueueType, PublicActionType, ProcessedPublicActionType, SetType } from "../../util/types";
+import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import {
@@ -16,6 +16,7 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { ChangelogEntry } from "../changelog/ChangelogEntry";
+import { SetChangelog } from "../changelog/SetChangelog";
 import { Footer } from "../common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentChangelog.scss";
@@ -27,18 +28,10 @@ type ContentChangelogProps = {
   allSets: SetType[];
 };
 
-type GroupedAction = {
-  id: string;
-  title: string;
-  currentSet: SetType | null;
-  latestTimestamp: string;
-  actions: ProcessedPublicActionType[];
-};
-
 export const ContentChangelog = (props: ContentChangelogProps) => {
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
   const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
-  const [view, setView] = useState<"all" | "grouped">("all");
+  const [view, setView] = useState<"all" | "grouped">("grouped");
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     cloudFn({ num: 25 })
@@ -77,13 +70,15 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
       };
     });
     setProcessedActions(processedActions);
-    groupBySet(processedActions);
+    if (props.allSets.length > 0) {
+      groupBySet(processedActions);
+    }
   };
   const getSetById = (id: string) => {
     const index = props.allSets.findIndex((set) => set.id === id);
     return index > -1 ? props.allSets[index] : null;
   };
-  const groupBySet = (actions: ProcessedPublicActionType[]) => {
+  const groupBySet = (actions = processedActions) => {
     const ids = uniqueArray(actions.map((action) => action.documentId));
     const groupedActions: GroupedAction[] = ids.map((id) => {
       const filteredActions = actions.filter((action) => action.documentId === id);
@@ -103,6 +98,7 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
     alphabeticalSortProp(groupedActions, "latestTimestamp", true);
     setGroupedActions(groupedActions);
   };
+  useEffect(groupBySet, [props.allSets]);
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
@@ -139,7 +135,11 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
       <div className="content-container">
         <div className="main extended-app-bar">
           {view === "grouped" ? (
-            <div className="changelog-grid"></div>
+            <div className="changelog-grid">
+              {groupedActions.map((groupedAction) => (
+                <SetChangelog groupedAction={groupedAction} key={groupedAction.title} />
+              ))}
+            </div>
           ) : (
             <div className="changelog-container">
               <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>

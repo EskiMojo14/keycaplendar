@@ -11,4 +11,32 @@
       }
     }
   }
+  &-grid {
+    padding: 16px;
+    max-width: 2000px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-gap: 16px;
+  }
+}
+
+@media (max-width: 1799px) {
+  .changelog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1299px) {
+  .changelog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 660px) {
+  .changelog-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }

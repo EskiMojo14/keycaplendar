@@ -189,6 +189,14 @@ export type ProcessedPublicActionType = PublicActionType & {
   title: string;
 };
 
+export type GroupedAction = {
+  id: string;
+  title: string;
+  currentSet: SetType | null;
+  latestTimestamp: string;
+  actions: ProcessedPublicActionType[];
+};
+
 export type ImageType = {
   name: string;
   parent: string;

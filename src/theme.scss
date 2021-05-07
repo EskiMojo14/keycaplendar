@@ -1201,6 +1201,12 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
+  .set-changelog {
+    .mdc-card__media-content {
+      color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    }
+  }
+
   .sponsors {
     .cannonkeys {
       fill: if($dark, white, #060d44);
