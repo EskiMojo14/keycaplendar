@@ -3,6 +3,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import { auditProperties } from "../../util/constants";
+import { Keyset } from "../../util/constructors";
 import { alphabeticalSort, alphabeticalSortProp, iconObject, uniqueArray } from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
 import { Card } from "@rmwc/card";
@@ -17,8 +18,9 @@ import {
 } from "@rmwc/top-app-bar";
 import { ChangelogEntry } from "../changelog/ChangelogEntry";
 import { SetChangelog } from "../changelog/SetChangelog";
-import { Footer } from "../common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { DrawerDetails } from "../main/DrawerDetails";
+import { Footer } from "../common/Footer";
 import "./ContentChangelog.scss";
 
 type ContentChangelogProps = {
@@ -29,9 +31,11 @@ type ContentChangelogProps = {
 };
 
 export const ContentChangelog = (props: ContentChangelogProps) => {
+  const [view, setView] = useState<"all" | "grouped">("grouped");
+
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
   const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
-  const [view, setView] = useState<"all" | "grouped">("grouped");
+
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     cloudFn({ num: 25 })
@@ -99,6 +103,16 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
     setGroupedActions(groupedActions);
   };
   useEffect(groupBySet, [props.allSets]);
+
+  const blankSet = new Keyset();
+  const [detailSet, setDetailSet] = useState(blankSet);
+  const openDetails = (set: SetType) => {
+    setDetailSet(set);
+  };
+  const closeDetails = () => {
+    setDetailSet(blankSet);
+  };
+
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
@@ -134,10 +148,16 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className="main extended-app-bar">
+          <DrawerDetails open={!!detailSet.id} close={closeDetails} set={detailSet} device="mobile" view="compact" />
           {view === "grouped" ? (
             <div className="changelog-grid">
               {groupedActions.map((groupedAction) => (
-                <SetChangelog groupedAction={groupedAction} key={groupedAction.title} />
+                <SetChangelog
+                  groupedAction={groupedAction}
+                  detailSet={detailSet}
+                  openDetails={openDetails}
+                  key={groupedAction.title}
+                />
               ))}
             </div>
           ) : (
