@@ -11,7 +11,7 @@ import { ContentImages } from "./content/ContentImages";
 import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentStatistics } from "./content/ContentStatistics";
-import { ContentChangelog } from "./content/ContentChangelog";
+import { ContentHistory } from "./content/ContentHistory";
 import { ContentUsers } from "./content/ContentUsers";
 import "./Content.scss";
 
@@ -134,8 +134,8 @@ export const Content = (props: ContentProps) => {
       />
     ) : null;
   const contentChangelog =
-    props.page === "changelog" ? (
-      <ContentChangelog
+    props.page === "history" ? (
+      <ContentHistory
         allSets={props.allSets}
         bottomNav={props.bottomNav}
         openNav={openNav}

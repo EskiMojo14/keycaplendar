@@ -85,7 +85,8 @@
   &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
-  .statistics &::before {
+  .statistics &::before,
+  .history &::before {
     height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
@@ -189,7 +190,8 @@
   .mdc-snackbar {
     bottom: top-app-bar.$mobile-row-height;
   }
-  &.statistics {
+  &.statistics,
+  &.history {
     & ~ .mdc-snackbar,
     .mdc-snackbar {
       bottom: top-app-bar.$mobile-row-height + tab.$height;

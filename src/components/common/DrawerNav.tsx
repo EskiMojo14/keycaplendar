@@ -97,9 +97,9 @@ export const DrawerNav = (props: DrawerNavProps) => {
             <ListItemGraphic icon={pageIcons.statistics} />
             Statistics
           </ListItem>
-          <ListItem onClick={() => setPage("changelog")} activated={props.page === "changelog"}>
-            <ListItemGraphic icon={pageIcons.changelog} />
-            Changelog
+          <ListItem onClick={() => setPage("history")} activated={props.page === "history"}>
+            <ListItemGraphic icon={pageIcons.history} />
+            History
           </ListItem>
           {adminOptions}
           <ListDivider />

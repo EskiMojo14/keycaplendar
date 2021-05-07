@@ -2,19 +2,23 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
-import { auditProperties } from "../../util/constants";
+import SwipeableViews from "react-swipeable-views";
+import { virtualize } from "react-swipeable-views-utils";
+import { auditProperties, historyTabs } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
 import {
   alphabeticalSort,
   alphabeticalSortProp,
+  capitalise,
   closeModal,
-  iconObject,
+  hasKey,
   openModal,
   uniqueArray,
 } from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
+import { Tab, TabBar } from "@rmwc/tabs";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -23,15 +27,16 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import { DialogSales } from "../main/DialogSales";
+import { DrawerDetails } from "../main/DrawerDetails";
 import { ChangelogEntry } from "../changelog/ChangelogEntry";
 import { SetChangelog } from "../changelog/SetChangelog";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
-import { DrawerDetails } from "../main/DrawerDetails";
 import { Footer } from "../common/Footer";
 import "./ContentChangelog.scss";
-import DialogSales from "../main/DialogSales";
 
-type ContentChangelogProps = {
+const VirtualizeSwipeableViews = virtualize(SwipeableViews);
+
+type ContentHistoryProps = {
   bottomNav: boolean;
   openNav: () => void;
   setPage: (page: string) => void;
@@ -39,15 +44,15 @@ type ContentChangelogProps = {
   allSets: SetType[];
 };
 
-export const ContentChangelog = (props: ContentChangelogProps) => {
-  const [view, setView] = useState<"all" | "grouped">("grouped");
+export const ContentHistory = (props: ContentHistoryProps) => {
+  const [tab, setTab] = useState("recent");
 
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
   const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
 
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    cloudFn({ num: 25 })
+    cloudFn({ num: 2 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
         processActions(actions);
@@ -83,9 +88,7 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
       };
     });
     setProcessedActions(processedActions);
-    if (props.allSets.length > 0) {
-      groupBySet(processedActions);
-    }
+    groupBySet(processedActions);
   };
   const getSetById = (id: string) => {
     const index = props.allSets.findIndex((set) => set.id === id);
@@ -139,37 +142,65 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
     setTimeout(() => setSalesSet(blankSet), 300);
   };
 
+  const tabRow = (
+    <TopAppBarRow className="tab-row">
+      <TopAppBarSection alignStart>
+        <TabBar activeTabIndex={historyTabs.indexOf(tab)} onActivate={(e) => setTab(historyTabs[e.detail.index])}>
+          {historyTabs.map((tab) => (
+            <Tab key={tab}>{capitalise(tab)}</Tab>
+          ))}
+        </TabBar>
+      </TopAppBarSection>
+    </TopAppBarRow>
+  );
+
+  const handleChangeIndex = (index: number) => {
+    setTab(historyTabs[index]);
+  };
+
+  const slideRenderer = (params: any) => {
+    const { key, index } = params;
+    const tab = historyTabs[index];
+    const tabs = {
+      recent: (
+        <div className="history-tab changelog-grid">
+          {groupedActions.map((groupedAction) => (
+            <SetChangelog
+              groupedAction={groupedAction}
+              detailSet={detailSet}
+              openDetails={openDetails}
+              setPage={props.setPage}
+              key={groupedAction.title}
+            />
+          ))}
+        </div>
+      ),
+      changelog: (
+        <div className="history-tab changelog-container">
+          <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
+            <List twoLine className="three-line">
+              {processedActions.map((action) => (
+                <ChangelogEntry action={action} key={action.timestamp} />
+              ))}
+            </List>
+          </Card>
+        </div>
+      ),
+    };
+    return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
+  };
+
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+        {props.bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>Changelog</TopAppBarTitle>
-          </TopAppBarSection>
-          <TopAppBarSection alignEnd>
-            <SegmentedButton toggle>
-              <SegmentedButtonSegment
-                label="Grouped"
-                icon={iconObject(
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M5 5h4v6H5zm10 8h4v6h-4zM5 17h4v2H5zM15 5h4v2h-4z" opacity=".3" />
-                    <path d="M3 13h8V3H3v10zm2-8h4v6H5V5zm8 16h8V11h-8v10zm2-8h4v6h-4v-6zM13 3v6h8V3h-8zm6 4h-4V5h4v2zM3 21h8v-6H3v6zm2-4h4v2H5v-2z" />
-                  </svg>
-                )}
-                selected={view === "grouped"}
-                onClick={() => setView("grouped")}
-              />
-              <SegmentedButtonSegment
-                label="All"
-                icon="history"
-                selected={view === "all"}
-                onClick={() => setView("all")}
-              />
-            </SegmentedButton>
+            <TopAppBarTitle>History</TopAppBarTitle>
           </TopAppBarSection>
         </TopAppBarRow>
+        {props.bottomNav ? null : tabRow}
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
@@ -183,29 +214,19 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
             view="compact"
           />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
-          {view === "grouped" ? (
-            <div className="changelog-grid">
-              {groupedActions.map((groupedAction) => (
-                <SetChangelog
-                  groupedAction={groupedAction}
-                  detailSet={detailSet}
-                  openDetails={openDetails}
-                  setPage={props.setPage}
-                  key={groupedAction.title}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="changelog-container">
-              <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
-                <List twoLine className="three-line">
-                  {processedActions.map((action) => (
-                    <ChangelogEntry action={action} key={action.timestamp} />
-                  ))}
-                </List>
-              </Card>
-            </div>
-          )}
+
+          <VirtualizeSwipeableViews
+            className={tab}
+            springConfig={{
+              duration: "0.35s",
+              easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+              delay: "0s",
+            }}
+            slideCount={historyTabs.length}
+            index={historyTabs.indexOf(tab)}
+            onChangeIndex={handleChangeIndex}
+            slideRenderer={slideRenderer}
+          />
         </div>
       </div>
       <Footer />

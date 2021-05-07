@@ -254,7 +254,8 @@
   .drawer-open.main.extended-app-bar::before {
     height: 0;
   }
-  .statistics {
+  .statistics,
+  .history {
     .mdc-top-app-bar--fixed-adjust {
       padding-top: top-app-bar.$row-height + 48px + $diff * 2;
     }
@@ -390,7 +391,8 @@
     .drawer-open.main.extended-app-bar::before {
       height: 0;
     }
-    .statistics {
+    .statistics,
+    .history {
       .mdc-top-app-bar--fixed-adjust {
         padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
       }
