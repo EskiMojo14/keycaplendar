@@ -1,5 +1,18 @@
-.changelog {
-  &-container {
+$tabs: recent, changelog;
+
+@each $tab in $tabs {
+  .#{$tab} {
+    .history-tab {
+      &:not(.#{$tab}) {
+        max-height: 100vh;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.history {
+  .changelog-container {
     display: flex;
     justify-content: center;
     padding: 16px;
@@ -11,7 +24,7 @@
       }
     }
   }
-  &-grid {
+  .recent-grid {
     padding: 16px;
     max-width: 2000px;
     margin: 0 auto;
@@ -24,19 +37,19 @@
 }
 
 @media (max-width: 1799px) {
-  .changelog-grid {
+  .recent-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 1299px) {
-  .changelog-grid {
+  .recent-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 660px) {
-  .changelog-grid {
+  .recent-grid {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }

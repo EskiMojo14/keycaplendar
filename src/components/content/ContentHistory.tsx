@@ -17,6 +17,7 @@ import {
 } from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
 import { Card } from "@rmwc/card";
+import { LinearProgress } from "@rmwc/linear-progress";
 import { List } from "@rmwc/list";
 import { Tab, TabBar } from "@rmwc/tabs";
 import {
@@ -32,7 +33,7 @@ import { DrawerDetails } from "../main/DrawerDetails";
 import { ChangelogEntry } from "../changelog/ChangelogEntry";
 import { SetChangelog } from "../changelog/SetChangelog";
 import { Footer } from "../common/Footer";
-import "./ContentChangelog.scss";
+import "./ContentHistory.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -46,13 +47,15 @@ type ContentHistoryProps = {
 
 export const ContentHistory = (props: ContentHistoryProps) => {
   const [tab, setTab] = useState("recent");
+  const [loading, setLoading] = useState(false);
 
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
   const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
 
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    cloudFn({ num: 2 })
+    setLoading(true);
+    cloudFn({ num: 25 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
         processActions(actions);
@@ -89,6 +92,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     });
     setProcessedActions(processedActions);
     groupBySet(processedActions);
+    setLoading(false);
   };
   const getSetById = (id: string) => {
     const index = props.allSets.findIndex((set) => set.id === id);
@@ -163,7 +167,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     const tab = historyTabs[index];
     const tabs = {
       recent: (
-        <div className="history-tab changelog-grid">
+        <div className="history-tab recent recent-grid" key={key}>
           {groupedActions.map((groupedAction) => (
             <SetChangelog
               groupedAction={groupedAction}
@@ -176,7 +180,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         </div>
       ),
       changelog: (
-        <div className="history-tab changelog-container">
+        <div className="history-tab changelog changelog-container" key={key}>
           <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
             <List twoLine className="three-line">
               {processedActions.map((action) => (
@@ -201,6 +205,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
         {props.bottomNav ? null : tabRow}
+        <LinearProgress closed={props.allSets.length > 0 && !loading} />
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
@@ -214,7 +219,6 @@ export const ContentHistory = (props: ContentHistoryProps) => {
             view="compact"
           />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
-
           <VirtualizeSwipeableViews
             className={tab}
             springConfig={{
