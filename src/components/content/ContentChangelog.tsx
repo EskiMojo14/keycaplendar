@@ -4,7 +4,14 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
-import { alphabeticalSort, alphabeticalSortProp, iconObject, uniqueArray } from "../../util/functions";
+import {
+  alphabeticalSort,
+  alphabeticalSortProp,
+  closeModal,
+  iconObject,
+  openModal,
+  uniqueArray,
+} from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
@@ -22,10 +29,12 @@ import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton
 import { DrawerDetails } from "../main/DrawerDetails";
 import { Footer } from "../common/Footer";
 import "./ContentChangelog.scss";
+import DialogSales from "../main/DialogSales";
 
 type ContentChangelogProps = {
   bottomNav: boolean;
   openNav: () => void;
+  setPage: (page: string) => void;
   snackbarQueue: QueueType;
   allSets: SetType[];
 };
@@ -105,12 +114,29 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
   useEffect(groupBySet, [props.allSets]);
 
   const blankSet = new Keyset();
+
   const [detailSet, setDetailSet] = useState(blankSet);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const openDetails = (set: SetType) => {
+    openModal();
     setDetailSet(set);
+    setDetailsOpen(true);
   };
   const closeDetails = () => {
-    setDetailSet(blankSet);
+    closeModal();
+    setDetailsOpen(false);
+    setTimeout(() => setDetailSet(blankSet), 300);
+  };
+
+  const [salesSet, setSalesSet] = useState(blankSet);
+  const [salesOpen, setSalesOpen] = useState(false);
+  const openSales = (set: SetType) => {
+    setSalesSet(set);
+    setSalesOpen(true);
+  };
+  const closeSales = () => {
+    setSalesOpen(false);
+    setTimeout(() => setSalesSet(blankSet), 300);
   };
 
   return (
@@ -148,7 +174,15 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className="main extended-app-bar">
-          <DrawerDetails open={!!detailSet.id} close={closeDetails} set={detailSet} device="mobile" view="compact" />
+          <DrawerDetails
+            open={detailsOpen}
+            close={closeDetails}
+            set={detailSet}
+            openSales={openSales}
+            device="mobile"
+            view="compact"
+          />
+          <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
           {view === "grouped" ? (
             <div className="changelog-grid">
               {groupedActions.map((groupedAction) => (
@@ -156,6 +190,7 @@ export const ContentChangelog = (props: ContentChangelogProps) => {
                   groupedAction={groupedAction}
                   detailSet={detailSet}
                   openDetails={openDetails}
+                  setPage={props.setPage}
                   key={groupedAction.title}
                 />
               ))}

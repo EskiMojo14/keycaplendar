@@ -191,6 +191,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         color: map-get($variables, primary);
       }
     }
+    &.deleted {
+      .mdc-typography--headline5 {
+        color: map-get($variables, error);
+      }
+      .live-indicator,
+      .ship-indicator {
+        color: map-get($variables, error);
+      }
+      .overline,
+      .mdc-typography--subtitle2 {
+        color: map-get($variables, error);
+      }
+    }
     &__primary-action {
       @include ripple.states(map-get($variables, on-surface));
       @include ripple.states-selected(map-get($variables, primary));

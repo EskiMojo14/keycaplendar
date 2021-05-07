@@ -33,7 +33,7 @@ export const settingsFunctions: { [key: string]: string } = {
  * Pages which adhere to the normal calendar format.
  */
 
-export const mainPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
 
 /**
  * Main pages which can be accessed without being logged in.

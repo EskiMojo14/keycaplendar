@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import firebase from "../firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
-import { replaceChars } from "./constants";
+import { replaceChars, mainPages } from "./constants";
 import { SetType } from "./types";
 
 const storage = firebase.storage();
@@ -355,4 +355,25 @@ export const batchStorageDelete = (array: string[] = []) => {
         });
     })
   );
+};
+
+export const pageConditions = (
+  set: SetType,
+  favorites: string[],
+  hidden: string[]
+): Record<typeof mainPages[number], boolean> => {
+  const today = moment.utc();
+  const yesterday = moment.utc().date(today.date() - 1);
+  const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
+  const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+  return {
+    calendar: startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
+    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
+    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
+    previous: !!(endDate && endDate <= yesterday),
+    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
+    archive: true,
+    favorites: favorites.includes(set.id),
+    hidden: hidden.includes(set.id),
+  };
 };

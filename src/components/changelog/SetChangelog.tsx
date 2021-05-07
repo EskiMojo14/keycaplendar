@@ -1,25 +1,58 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
+import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import { iconObject } from "../../util/functions";
+import { mainPages, pageIcons, pageTitle } from "../../util/constants";
+import { UserContext } from "../../util/contexts";
+import { hasKey, iconObject, pageConditions } from "../../util/functions";
 import { GroupedAction, SetType } from "../../util/types";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
+import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./SetChangelog.scss";
-import ConditionalWrapper from "../util/ConditionalWrapper";
+import { Button } from "@rmwc/button";
 
 type SetChangelogProps = {
   groupedAction: GroupedAction;
   detailSet: SetType;
   openDetails: (set: SetType) => void;
+  setPage: (page: string) => void;
 };
 
 export const SetChangelog = (props: SetChangelogProps) => {
   const { groupedAction } = props;
   const { currentSet: set } = groupedAction;
+  const { favorites, hidden } = useContext(UserContext);
+  const [pages, setPages] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (props.groupedAction.currentSet) {
+      const falsePages: Record<typeof mainPages[number], boolean> = {
+        calendar: false,
+        live: false,
+        ic: false,
+        previous: false,
+        timeline: false,
+        archive: false,
+        favorites: false,
+        hidden: false,
+      };
+      const pageBools: Record<typeof mainPages[number], boolean> = set
+        ? pageConditions(set, favorites, hidden)
+        : falsePages;
+      const keysetPages = Object.keys(pageBools).filter((key) => {
+        if (hasKey(pageBools, key)) {
+          return pageBools[key];
+        }
+        return false;
+      });
+      setPages(keysetPages);
+    }
+  }, [props.groupedAction]);
+
   return (
-    <Card className="set-changelog">
+    <Card className={classNames("set-changelog", { "mdc-card--selected": props.detailSet === set, deleted: !set })}>
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
@@ -31,6 +64,7 @@ export const SetChangelog = (props: SetChangelogProps) => {
                   }
                 : undefined
             }
+            className={classNames({ "mdc-card__primary-action--selected": props.detailSet === set })}
           >
             {children}
           </CardPrimaryAction>
@@ -65,6 +99,11 @@ export const SetChangelog = (props: SetChangelogProps) => {
           </CardMedia>
         </LazyLoad>
         <div className="info-container">
+          <div className="overline">
+            <Typography use="overline" tag="h3">
+              {set ? set.designer.join(", ") : "Deleted"}
+            </Typography>
+          </div>
           <Typography use="headline5" tag="h2">
             {set ? `${set.profile} ${set.colorway}` : groupedAction.title}
           </Typography>
@@ -73,6 +112,18 @@ export const SetChangelog = (props: SetChangelogProps) => {
           </Typography>
         </div>
       </ConditionalWrapper>
+      {pages.length > 0 ? (
+        <div className="page-list">
+          <div className="button-container">
+            {pages.map((page) => {
+              const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
+              return (
+                <Button outlined label={title} icon={pageIcons[page]} onClick={() => props.setPage(page)} key={page} />
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
     </Card>
   );
 };

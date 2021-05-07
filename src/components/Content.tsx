@@ -139,6 +139,7 @@ export const Content = (props: ContentProps) => {
         allSets={props.allSets}
         bottomNav={props.bottomNav}
         openNav={openNav}
+        setPage={props.setPage}
         snackbarQueue={props.snackbarQueue}
       />
     ) : null;

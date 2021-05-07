@@ -21,7 +21,7 @@ type DrawerDetailsProps = {
   device: string;
   edit?: (set: SetType) => void;
   open: boolean;
-  openSales?: (set: SetType) => void;
+  openSales: (set: SetType) => void;
   search?: string;
   set: SetType;
   setSearch?: (search: string) => void;
@@ -318,10 +318,9 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
         <IconButton className="close-icon" icon="close" onClick={this.props.close} />
       </Tooltip>
     ) : null;
-    const openSales = this.props.openSales;
     const salesButton =
-      this.props.set.sales && this.props.set.sales.img && openSales ? (
-        <Button outlined label="Sales" icon="bar_chart" onClick={() => openSales(set)} />
+      this.props.set.sales && this.props.set.sales.img ? (
+        <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
       ) : null;
     const notes = this.props.set.notes ? (
       <Typography use="caption" tag="p">
