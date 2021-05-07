@@ -85,8 +85,8 @@
   &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
-  .statistics &::before,
-  .history &::before {
+  .statistics &.extended-app-bar::before,
+  .history &.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
@@ -104,8 +104,11 @@
   .main.extended-app-bar::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
-  .statistics .main::before {
-    height: 256px - (top-app-bar.$mobile-row-height + 48px);
+  .statistics,
+  .history {
+    .main.extended-app-bar::before {
+      height: 256px - (top-app-bar.$mobile-row-height + 48px);
+    }
   }
 }
 

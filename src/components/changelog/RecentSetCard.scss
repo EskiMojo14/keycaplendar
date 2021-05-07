@@ -25,6 +25,14 @@
       margin: 0;
     }
   }
+  .filter-button-container {
+    @include util.divider-border(top);
+    padding: 16px;
+    display: flex;
+    .mdc-button {
+      flex-grow: 1;
+    }
+  }
   .page-list {
     @include util.divider-border(top);
     padding: 16px;
@@ -32,8 +40,9 @@
       display: flex;
       flex-wrap: wrap;
       margin: -4px;
+      margin-top: 8px;
       .mdc-button {
-        width: calc(50% - 8px);
+        flex: calc(50% - 8px) 1 0;
         margin: 4px;
       }
     }

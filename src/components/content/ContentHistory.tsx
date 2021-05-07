@@ -12,7 +12,9 @@ import {
   capitalise,
   closeModal,
   hasKey,
+  iconObject,
   openModal,
+  truncate,
   uniqueArray,
 } from "../../util/functions";
 import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, RecentSet } from "../../util/types";
@@ -34,6 +36,7 @@ import { ChangelogEntry } from "../changelog/ChangelogEntry";
 import { RecentSetCard } from "../changelog/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
+import { Chip } from "@rmwc/chip";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -49,9 +52,6 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const [tab, setTab] = useState("recent");
   const [loading, setLoading] = useState(false);
 
-  const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
-  const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
-
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     setLoading(true);
@@ -66,6 +66,9 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       });
   };
   useEffect(getData, []);
+
+  const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
+
   const processActions = (actions: PublicActionType[]) => {
     const processedActions: ProcessedPublicActionType[] = [...actions].map((action) => {
       const { before, after, ...restAction } = action;
@@ -94,10 +97,13 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     generateSets(processedActions);
     setLoading(false);
   };
+
   const getSetById = (id: string) => {
     const index = props.allSets.findIndex((set) => set.id === id);
     return index > -1 ? props.allSets[index] : null;
   };
+  const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
+
   const generateSets = (actions = processedActions) => {
     const ids = uniqueArray(actions.map((action) => action.documentId));
     const recentSets: RecentSet[] = ids.map((id) => {
@@ -145,6 +151,27 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     setTimeout(() => setSalesSet(blankSet), 300);
   };
 
+  const [filterSet, setFilterSet] = useState({ id: "", title: "" });
+
+  const clearFilter = () => {
+    setFilterSet({ id: "", title: "" });
+  };
+
+  const filterChangelog = (recentSet: RecentSet) => {
+    const { id, title } = recentSet;
+    if (id === filterSet.id) {
+      clearFilter();
+    } else {
+      setFilterSet({ id, title });
+      setTab("changelog");
+      scrollTo(0, 0);
+    }
+  };
+
+  const filteredActions = filterSet.id
+    ? processedActions.filter((action) => action.documentId === filterSet.id)
+    : processedActions;
+
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
@@ -156,6 +183,31 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       </TopAppBarSection>
     </TopAppBarRow>
   );
+
+  const clearFilterButton = filterSet.id ? (
+    <TopAppBarSection alignEnd>
+      <div className="clear-filter">
+        <Chip
+          label={truncate(filterSet.title, 20)}
+          trailingIcon={iconObject(
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
+            </svg>
+          )}
+          trailingIconRemovesChip={false}
+          onTrailingIconInteraction={clearFilter}
+        />
+      </div>
+    </TopAppBarSection>
+  ) : null;
 
   const handleChangeIndex = (index: number) => {
     setTab(historyTabs[index]);
@@ -170,6 +222,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           {recentSets.map((recentSet) => (
             <RecentSetCard
               recentSet={recentSet}
+              filterChangelog={filterChangelog}
+              filtered={recentSet.id === filterSet.id}
               detailSet={detailSet}
               openDetails={openDetails}
               setPage={props.setPage}
@@ -182,7 +236,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         <div className="history-tab changelog changelog-container" key={key}>
           <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
             <List twoLine className="three-line">
-              {processedActions.map((action) => (
+              {filteredActions.map((action) => (
                 <ChangelogEntry action={action} key={action.timestamp} />
               ))}
             </List>
@@ -202,13 +256,14 @@ export const ContentHistory = (props: ContentHistoryProps) => {
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>History</TopAppBarTitle>
           </TopAppBarSection>
+          {clearFilterButton}
         </TopAppBarRow>
         {props.bottomNav ? null : tabRow}
         <LinearProgress closed={props.allSets.length > 0 && !loading} />
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="main extended-app-bar">
+        <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
           <DrawerDetails
             open={detailsOpen}
             close={closeDetails}

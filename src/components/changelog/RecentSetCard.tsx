@@ -6,22 +6,24 @@ import { mainPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject, pageConditions } from "../../util/functions";
 import { RecentSet, SetType } from "../../util/types";
+import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./RecentSetCard.scss";
-import { Button } from "@rmwc/button";
 
 type RecentSetCardProps = {
   recentSet: RecentSet;
+  filtered: boolean;
+  filterChangelog: (set: RecentSet) => void;
   detailSet: SetType;
   openDetails: (set: SetType) => void;
   setPage: (page: string) => void;
 };
 
 export const RecentSetCard = (props: RecentSetCardProps) => {
-  const { recentSet } = props;
+  const { recentSet, filtered } = props;
   const { currentSet: set } = recentSet;
   const { favorites, hidden } = useContext(UserContext);
   const [pages, setPages] = useState<string[]>([]);
@@ -112,8 +114,35 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
           </Typography>
         </div>
       </ConditionalWrapper>
+      <div className="filter-button-container">
+        <Button
+          outlined
+          label={filtered ? "Clear filter" : "Filter changelog"}
+          icon={
+            filtered
+              ? iconObject(
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    version="1.1"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="none" d="M0,0h24v24H0V0z" />
+                    <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
+                  </svg>
+                )
+              : "filter_list"
+          }
+          onClick={() => props.filterChangelog(recentSet)}
+        />
+      </div>
       {pages.length > 0 ? (
         <div className="page-list">
+          <Typography use="caption" className="caption">
+            Pages
+          </Typography>
           <div className="button-container">
             {pages.map((page) => {
               const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];

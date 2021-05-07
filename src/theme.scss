@@ -259,6 +259,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
     }
   }
+
   .mdc-chip {
     @include chips.fill-color-accessible(mix(map-get($variables, on-surface), map-get($variables, surface), 12%));
   }
@@ -733,6 +734,15 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           }
         }
       }
+    }
+    .mdc-chip {
+      @include chips.fill-color-accessible(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary)),
+          12%
+        )
+      );
     }
     .search-bar {
       &--persistent .search-bar__field.mdc-text-field {

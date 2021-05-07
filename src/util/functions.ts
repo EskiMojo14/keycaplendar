@@ -117,6 +117,17 @@ export function alphabeticalSortProp<O extends Record<string, unknown>>(
 }
 
 /**
+ * Truncates a string to a specified length.
+ * @param str String to be truncated.
+ * @param num Amount of characters to include.
+ * @returns String truncated with ... at the end.
+ */
+
+export const truncate = (str: string, num: number) => {
+  return str.length <= num ? str : str.slice(0, num) + "...";
+};
+
+/**
  * Capitalise a string's first character.
  * @param str String to capitalise.
  * @returns `str` with first character capitalised.
@@ -356,6 +367,14 @@ export const batchStorageDelete = (array: string[] = []) => {
     })
   );
 };
+
+/**
+ * Tests whether a set would be shown on each page.
+ * @param set Set to be tested.
+ * @param favorites Array of set IDs which are favourited.
+ * @param hidden Array of set IDs which are hidden
+ * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
+ */
 
 export const pageConditions = (
   set: SetType,
