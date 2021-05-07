@@ -5,29 +5,29 @@ import LazyLoad from "react-lazy-load";
 import { mainPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject, pageConditions } from "../../util/functions";
-import { GroupedAction, SetType } from "../../util/types";
+import { RecentSet, SetType } from "../../util/types";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
-import "./SetChangelog.scss";
+import "./RecentSetCard.scss";
 import { Button } from "@rmwc/button";
 
-type SetChangelogProps = {
-  groupedAction: GroupedAction;
+type RecentSetCardProps = {
+  recentSet: RecentSet;
   detailSet: SetType;
   openDetails: (set: SetType) => void;
   setPage: (page: string) => void;
 };
 
-export const SetChangelog = (props: SetChangelogProps) => {
-  const { groupedAction } = props;
-  const { currentSet: set } = groupedAction;
+export const RecentSetCard = (props: RecentSetCardProps) => {
+  const { recentSet } = props;
+  const { currentSet: set } = recentSet;
   const { favorites, hidden } = useContext(UserContext);
   const [pages, setPages] = useState<string[]>([]);
 
   useEffect(() => {
-    if (props.groupedAction.currentSet) {
+    if (props.recentSet.currentSet) {
       const falsePages: Record<typeof mainPages[number], boolean> = {
         calendar: false,
         live: false,
@@ -49,7 +49,7 @@ export const SetChangelog = (props: SetChangelogProps) => {
       });
       setPages(keysetPages);
     }
-  }, [props.groupedAction]);
+  }, [props.recentSet]);
 
   return (
     <Card className={classNames("set-changelog", { "mdc-card--selected": props.detailSet === set, deleted: !set })}>
@@ -105,10 +105,10 @@ export const SetChangelog = (props: SetChangelogProps) => {
             </Typography>
           </div>
           <Typography use="headline5" tag="h2">
-            {set ? `${set.profile} ${set.colorway}` : groupedAction.title}
+            {set ? `${set.profile} ${set.colorway}` : recentSet.title}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            Last updated: {moment(groupedAction.latestTimestamp).format("Do MMM YYYY HH:mm")}
+            Last updated: {moment(recentSet.latestTimestamp).format("Do MMM YYYY HH:mm")}
           </Typography>
         </div>
       </ConditionalWrapper>

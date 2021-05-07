@@ -15,7 +15,7 @@ import {
   openModal,
   uniqueArray,
 } from "../../util/functions";
-import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, GroupedAction } from "../../util/types";
+import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, RecentSet } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { List } from "@rmwc/list";
@@ -31,7 +31,7 @@ import {
 import { DialogSales } from "../main/DialogSales";
 import { DrawerDetails } from "../main/DrawerDetails";
 import { ChangelogEntry } from "../changelog/ChangelogEntry";
-import { SetChangelog } from "../changelog/SetChangelog";
+import { RecentSetCard } from "../changelog/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
 
@@ -50,7 +50,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const [loading, setLoading] = useState(false);
 
   const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
-  const [groupedActions, setGroupedActions] = useState<GroupedAction[]>([]);
+  const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
 
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
@@ -91,16 +91,16 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       };
     });
     setProcessedActions(processedActions);
-    groupBySet(processedActions);
+    generateSets(processedActions);
     setLoading(false);
   };
   const getSetById = (id: string) => {
     const index = props.allSets.findIndex((set) => set.id === id);
     return index > -1 ? props.allSets[index] : null;
   };
-  const groupBySet = (actions = processedActions) => {
+  const generateSets = (actions = processedActions) => {
     const ids = uniqueArray(actions.map((action) => action.documentId));
-    const groupedActions: GroupedAction[] = ids.map((id) => {
+    const recentSets: RecentSet[] = ids.map((id) => {
       const filteredActions = actions.filter((action) => action.documentId === id);
       const latestTimestamp = alphabeticalSort(
         filteredActions.map((action) => action.timestamp),
@@ -112,13 +112,12 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         title: title,
         currentSet: getSetById(id),
         latestTimestamp: latestTimestamp,
-        actions: filteredActions,
       };
     });
-    alphabeticalSortProp(groupedActions, "latestTimestamp", true);
-    setGroupedActions(groupedActions);
+    alphabeticalSortProp(recentSets, "latestTimestamp", true);
+    setRecentSets(recentSets);
   };
-  useEffect(groupBySet, [props.allSets]);
+  useEffect(generateSets, [props.allSets]);
 
   const blankSet = new Keyset();
 
@@ -168,13 +167,13 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     const tabs = {
       recent: (
         <div className="history-tab recent recent-grid" key={key}>
-          {groupedActions.map((groupedAction) => (
-            <SetChangelog
-              groupedAction={groupedAction}
+          {recentSets.map((recentSet) => (
+            <RecentSetCard
+              recentSet={recentSet}
               detailSet={detailSet}
               openDetails={openDetails}
               setPage={props.setPage}
-              key={groupedAction.title}
+              key={recentSet.title}
             />
           ))}
         </div>
