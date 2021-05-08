@@ -628,9 +628,6 @@ class App extends React.Component<AppProps, AppState> {
     favorites = this.state.favorites,
     hidden = this.state.hidden
   ) => {
-    const today = moment.utc();
-    const yesterday = moment.utc().date(today.date() - 1);
-
     // filter bool functions
 
     const hiddenBool = (set: SetType) => {

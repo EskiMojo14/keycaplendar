@@ -54,7 +54,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     setLoading(true);
-    cloudFn({ num: 2 })
+    cloudFn({ num: 25 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
         processActions(actions);
