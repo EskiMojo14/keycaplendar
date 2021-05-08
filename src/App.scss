@@ -76,6 +76,10 @@
 
 @include typography.core-styles();
 
+.multiline {
+  white-space: pre-line;
+}
+
 .mdl-button.firebaseui-idp-button {
   font-family: typography-variables.$body-font;
 }

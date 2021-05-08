@@ -323,7 +323,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
         <Button outlined label="Sales" icon="bar_chart" onClick={() => this.props.openSales(set)} />
       ) : null;
     const notes = this.props.set.notes ? (
-      <Typography use="caption" tag="p">
+      <Typography use="caption" tag="p" className="multiline">
         {this.props.set.notes}
       </Typography>
     ) : null;
