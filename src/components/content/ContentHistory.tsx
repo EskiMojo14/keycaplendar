@@ -49,7 +49,13 @@ type ContentHistoryProps = {
 
 export const ContentHistory = (props: ContentHistoryProps) => {
   const [tab, setTab] = useState("recent");
+  const setTabScroll = (tab: string) => {
+    setTab(tab);
+    scrollTo(0, 0);
+  };
+
   const [loading, setLoading] = useState(false);
+  const [swiping, setSwiping] = useState(false);
 
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
@@ -174,8 +180,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       clearFilter();
     } else {
       setFilterSet({ id, title });
-      setTab("changelog");
-      scrollTo(0, 0);
+      setTabScroll("changelog");
     }
   };
 
@@ -186,7 +191,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
-        <TabBar activeTabIndex={historyTabs.indexOf(tab)} onActivate={(e) => setTab(historyTabs[e.detail.index])}>
+        <TabBar activeTabIndex={historyTabs.indexOf(tab)} onActivate={(e) => setTabScroll(historyTabs[e.detail.index])}>
           {historyTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
           ))}
@@ -221,7 +226,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   ) : null;
 
   const handleChangeIndex = (index: number) => {
-    setTab(historyTabs[index]);
+    setTabScroll(historyTabs[index]);
   };
 
   const slideRenderer = (params: any) => {
@@ -285,7 +290,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
           <VirtualizeSwipeableViews
-            className={tab}
+            className={classNames(tab, { swiping })}
             springConfig={{
               duration: "0.35s",
               easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -295,6 +300,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
             index={historyTabs.indexOf(tab)}
             onChangeIndex={handleChangeIndex}
             slideRenderer={slideRenderer}
+            onSwitching={() => setSwiping(true)}
+            onTransitionEnd={() => setSwiping(false)}
           />
         </div>
       </div>

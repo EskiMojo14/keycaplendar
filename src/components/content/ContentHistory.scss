@@ -8,6 +8,10 @@ $tabs: recent, changelog;
         overflow: hidden;
       }
     }
+    &.swiping .react-swipeable-view-container .history-tab {
+      max-height: none;
+      overflow: visible;
+    }
   }
 }
 
