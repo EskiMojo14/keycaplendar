@@ -7,7 +7,6 @@ import { virtualize } from "react-swipeable-views-utils";
 import { auditProperties, historyTabs } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
 import {
-  alphabeticalSort,
   alphabeticalSortProp,
   capitalise,
   closeModal,
@@ -107,15 +106,24 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const generateSets = (actions = processedActions) => {
     const ids = uniqueArray(actions.map((action) => action.documentId));
     const recentSets: RecentSet[] = ids.map((id) => {
-      const filteredActions = actions.filter((action) => action.documentId === id);
-      const latestTimestamp = alphabeticalSort(
-        filteredActions.map((action) => action.timestamp),
+      const filteredActions = alphabeticalSortProp(
+        actions.filter((action) => action.documentId === id),
+        "timestamp",
         true
-      )[0];
-      const title = filteredActions[filteredActions.findIndex((action) => action.timestamp === latestTimestamp)].title;
+      );
+      const latestTimestamp = filteredActions[0].timestamp;
+      const title = filteredActions[0].title;
+      const designer = filteredActions[0].after.designer
+        ? filteredActions[0].after.designer.join(" + ")
+        : filteredActions[0].before.designer
+        ? filteredActions[0].before.designer.join(" + ")
+        : null;
+      const deleted = filteredActions[0].action === "deleted";
       return {
         id: id,
         title: title,
+        designer: designer,
+        deleted: deleted,
         currentSet: getSetById(id),
         latestTimestamp: latestTimestamp,
       };
@@ -123,7 +131,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     alphabeticalSortProp(recentSets, "latestTimestamp", true);
     setRecentSets(recentSets);
   };
-  useEffect(generateSets, [props.allSets]);
+  useEffect(generateSets, [props.allSets.length]);
 
   const blankSet = new Keyset();
 
@@ -224,7 +232,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
               recentSet={recentSet}
               filterChangelog={filterChangelog}
               filtered={recentSet.id === filterSet.id}
-              detailSet={detailSet}
+              selected={recentSet.id === detailSet.id}
               openDetails={openDetails}
               setPage={props.setPage}
               key={recentSet.title}

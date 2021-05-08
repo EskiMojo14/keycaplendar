@@ -195,9 +195,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       .mdc-typography--headline5 {
         color: map-get($variables, error);
       }
-      .live-indicator,
-      .ship-indicator {
-        color: map-get($variables, error);
+      .deleted-indicator {
+        color: map-get($variables, on-error);
+        background-color: map-get($variables, error);
       }
       .overline,
       .mdc-typography--subtitle2 {

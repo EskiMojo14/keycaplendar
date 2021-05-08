@@ -16,15 +16,15 @@ import "./RecentSetCard.scss";
 type RecentSetCardProps = {
   recentSet: RecentSet;
   filtered: boolean;
+  selected: boolean;
   filterChangelog: (set: RecentSet) => void;
-  detailSet: SetType;
   openDetails: (set: SetType) => void;
   setPage: (page: string) => void;
 };
 
 export const RecentSetCard = (props: RecentSetCardProps) => {
-  const { recentSet, filtered } = props;
-  const { currentSet: set } = recentSet;
+  const { recentSet, filtered, selected } = props;
+  const { currentSet: set, deleted } = recentSet;
   const { favorites, hidden } = useContext(UserContext);
   const [pages, setPages] = useState<string[]>([]);
 
@@ -51,10 +51,10 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
       });
       setPages(keysetPages);
     }
-  }, [props.recentSet]);
+  }, [props.recentSet.currentSet]);
 
   return (
-    <Card className={classNames("set-changelog", { "mdc-card--selected": props.detailSet === set, deleted: !set })}>
+    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted: deleted })}>
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
@@ -66,7 +66,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
                   }
                 : undefined
             }
-            className={classNames({ "mdc-card__primary-action--selected": props.detailSet === set })}
+            className={classNames({ "mdc-card__primary-action--selected": selected })}
           >
             {children}
           </CardPrimaryAction>
@@ -75,9 +75,9 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
           <CardMedia
             sixteenByNine
-            style={set ? { backgroundImage: `url(${set.image.replace("keysets", "thumbs")})` } : undefined}
+            style={!deleted && set ? { backgroundImage: `url(${set.image.replace("keysets", "thumbs")})` } : undefined}
           >
-            {!set ? (
+            {deleted ? (
               <CardMediaContent>
                 <Icon
                   icon={iconObject(
@@ -96,6 +96,9 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
                     { size: "xlarge" }
                   )}
                 />
+                <Typography use="overline" tag="div" className="deleted-indicator">
+                  Deleted
+                </Typography>
               </CardMediaContent>
             ) : null}
           </CardMedia>
@@ -103,7 +106,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         <div className="info-container">
           <div className="overline">
             <Typography use="overline" tag="h3">
-              {set ? set.designer.join(", ") : "Deleted"}
+              {set ? set.designer.join(" + ") : recentSet.designer}
             </Typography>
           </div>
           <Typography use="headline5" tag="h2">
