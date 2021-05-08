@@ -40,7 +40,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
     deleted: "remove_circle_outline",
   } as const;
   const arrayProps = ["designer"] as const;
-  const urlProps = ["image", "details"] as const;
+  const urlProps = ["details"] as const;
   const boolProps = ["gbMonth", "shipped"] as const;
   const dateProps = ["icDate", "gbLaunch", "gbEnd"] as const;
 
@@ -69,6 +69,8 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     moment.utc(useData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
+                  ) : prop === "image" ? (
+                    "<link>"
                   ) : (
                     useData
                   )}
@@ -161,6 +163,8 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                     beforeData ? (
                       moment.utc(beforeData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
                     ) : null
+                  ) : prop === "image" ? (
+                    "<link>"
                   ) : (
                     beforeData
                   )}
@@ -174,6 +178,8 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     moment.utc(afterData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
+                  ) : prop === "image" ? (
+                    "<link>"
                   ) : (
                     afterData
                   )}

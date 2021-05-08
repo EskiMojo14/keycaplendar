@@ -79,7 +79,10 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         auditProperties.forEach((prop) => {
           const beforeProp = before[prop];
           const afterProp = after[prop];
-          if (isEqual(beforeProp, afterProp)) {
+          if (
+            isEqual(beforeProp, afterProp) ||
+            (!(typeof beforeProp === "boolean") && !beforeProp && !(typeof afterProp === "boolean") && !afterProp)
+          ) {
             delete before[prop];
             delete after[prop];
           }
