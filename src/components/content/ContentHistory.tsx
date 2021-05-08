@@ -31,8 +31,8 @@ import {
 } from "@rmwc/top-app-bar";
 import { DialogSales } from "../main/DialogSales";
 import { DrawerDetails } from "../main/DrawerDetails";
-import { ChangelogEntry } from "../changelog/ChangelogEntry";
-import { RecentSetCard } from "../changelog/RecentSetCard";
+import { ChangelogEntry } from "../history/ChangelogEntry";
+import { RecentSetCard } from "../history/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
 import { Chip } from "@rmwc/chip";
