@@ -77,7 +77,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
             sixteenByNine
             style={!deleted && set ? { backgroundImage: `url(${set.image.replace("keysets", "thumbs")})` } : undefined}
           >
-            {deleted ? (
+            {!set ? (
               <CardMediaContent>
                 <Icon
                   icon={iconObject(
@@ -96,9 +96,11 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
                     { size: "xlarge" }
                   )}
                 />
-                <Typography use="overline" tag="div" className="deleted-indicator">
-                  Deleted
-                </Typography>
+                {deleted ? (
+                  <Typography use="overline" tag="div" className="deleted-indicator">
+                    Deleted
+                  </Typography>
+                ) : null}
               </CardMediaContent>
             ) : null}
           </CardMedia>
@@ -106,7 +108,11 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         <div className="info-container">
           <div className="overline">
             <Typography use="overline" tag="h3">
-              {set ? set.designer.join(" + ") : recentSet.designer}
+              {set
+                ? set.designer.join(" + ")
+                : recentSet.designer
+                ? recentSet.designer.join(" + ")
+                : recentSet.designer}
             </Typography>
           </div>
           <Typography use="headline5" tag="h2">

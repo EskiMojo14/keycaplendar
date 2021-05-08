@@ -54,7 +54,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
     setLoading(true);
-    cloudFn({ num: 25 })
+    cloudFn({ num: 2 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
         processActions(actions);
@@ -114,9 +114,9 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       const latestTimestamp = filteredActions[0].timestamp;
       const title = filteredActions[0].title;
       const designer = filteredActions[0].after.designer
-        ? filteredActions[0].after.designer.join(" + ")
+        ? filteredActions[0].after.designer
         : filteredActions[0].before.designer
-        ? filteredActions[0].before.designer.join(" + ")
+        ? filteredActions[0].before.designer
         : null;
       const deleted = filteredActions[0].action === "deleted";
       return {
@@ -131,7 +131,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     alphabeticalSortProp(recentSets, "latestTimestamp", true);
     setRecentSets(recentSets);
   };
-  useEffect(generateSets, [props.allSets.length]);
+  useEffect(generateSets, [JSON.stringify(props.allSets)]);
 
   const blankSet = new Keyset();
 

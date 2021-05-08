@@ -192,7 +192,7 @@ export type ProcessedPublicActionType = PublicActionType & {
 export type RecentSet = {
   id: string;
   title: string;
-  designer: string | null;
+  designer: string[] | null;
   deleted: boolean;
   currentSet: SetType | null;
   latestTimestamp: string;
