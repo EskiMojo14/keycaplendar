@@ -186,7 +186,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       .ship-indicator {
         color: map-get($variables, primary);
       }
-      .overline,
+      .mdc-typography--overline,
       .mdc-typography--subtitle2 {
         color: map-get($variables, primary);
       }
@@ -199,7 +199,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         color: map-get($variables, on-error);
         background-color: map-get($variables, error);
       }
-      .overline,
+      .mdc-typography--overline,
       .mdc-typography--subtitle2 {
         color: map-get($variables, error);
       }
@@ -224,7 +224,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     .ship-indicator {
       color: map-get($variables, text-medium);
     }
-    .overline,
+    .mdc-typography--overline,
     .mdc-typography--subtitle2,
     .mdc-typography--caption {
       color: map-get($variables, text-medium);
@@ -1232,6 +1232,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .update-entry {
     color: map-get($variables, text-high);
+    a {
+      color: map-get($variables, primary);
+    }
   }
 
   .sponsors {
