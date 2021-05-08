@@ -1,17 +1,14 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
 import { Card } from "@rmwc/card";
+import { CustomReactMarkdown } from "../util/ReactMarkdown";
 import "./UpdateEntry.scss";
-import { Typography } from "@rmwc/typography";
 
-type UpdateEntryProps = Record<string, never>;
+const testString = "# Hello, *world*!\nMultline **too**?";
 
-const testString = "# Hello, *world*!\nMultline _too_?";
-
-export const UpdateEntry = (props: UpdateEntryProps) => {
+export const UpdateEntry = () => {
   return (
     <Card className="update-entry">
-      <ReactMarkdown>{testString}</ReactMarkdown>
+      <CustomReactMarkdown>{testString}</CustomReactMarkdown>
     </Card>
   );
 };

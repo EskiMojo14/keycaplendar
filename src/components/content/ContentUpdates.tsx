@@ -35,6 +35,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             <UpdateEntry />
+            <UpdateEntry />
           </div>
         </div>
       </div>
