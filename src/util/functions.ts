@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import firebase from "../firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
-import { replaceChars } from "./constants";
+import { replaceChars, mainPages } from "./constants";
 import { SetType } from "./types";
 
 const storage = firebase.storage();
@@ -18,6 +18,17 @@ const storageRef = storage.ref();
 
 export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
   return key in obj;
+}
+
+/**
+ * Checks if item is included in array, and asserts that the types are the same.
+ * @param arr Array of items
+ * @param item Item to be checked
+ * @returns Whether the item is contained in the array.
+ */
+
+export function arrayIncludes<T>(arr: T[] | Readonly<T[]>, item: any): item is T {
+  return arr.includes(item);
 }
 
 /**
@@ -104,6 +115,17 @@ export function alphabeticalSortProp<O extends Record<string, unknown>>(
   });
   return array;
 }
+
+/**
+ * Truncates a string to a specified length.
+ * @param str String to be truncated.
+ * @param num Amount of characters to include.
+ * @returns String truncated with ... at the end.
+ */
+
+export const truncate = (str: string, num: number) => {
+  return str.length <= num ? str : str.slice(0, num) + "...";
+};
 
 /**
  * Capitalise a string's first character.
@@ -344,4 +366,33 @@ export const batchStorageDelete = (array: string[] = []) => {
         });
     })
   );
+};
+
+/**
+ * Tests whether a set would be shown on each page.
+ * @param set Set to be tested.
+ * @param favorites Array of set IDs which are favourited.
+ * @param hidden Array of set IDs which are hidden
+ * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
+ */
+
+export const pageConditions = (
+  set: SetType,
+  favorites: string[],
+  hidden: string[]
+): Record<typeof mainPages[number], boolean> => {
+  const today = moment.utc();
+  const yesterday = moment.utc().date(today.date() - 1);
+  const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
+  const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+  return {
+    calendar: startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
+    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
+    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
+    previous: !!(endDate && endDate <= yesterday),
+    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
+    archive: true,
+    favorites: favorites.includes(set.id),
+    hidden: hidden.includes(set.id),
+  };
 };

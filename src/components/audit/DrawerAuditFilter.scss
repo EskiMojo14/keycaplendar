@@ -1,7 +1,23 @@
 @use "@material/rtl/_index" as rtl;
+@use "../../util";
 
-.mdc-drawer.filter-drawer.audit-filter {
+.mdc-drawer.audit-filter {
+  .mdc-drawer__header {
+    display: flex;
+    align-items: center;
+    @include util.divider-border(bottom);
+    .mdc-drawer__title {
+      flex: auto 1;
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+    .close-icon {
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+  }
   .mdc-drawer__content {
+    padding: 16px;
     .filter-group {
       margin-bottom: 16px;
       .mdc-select {

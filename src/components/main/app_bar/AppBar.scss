@@ -103,8 +103,11 @@
   }
 }
 
-.statistics .mdc-top-app-bar--fixed-adjust {
-  padding-top: top-app-bar.$row-height + 48px;
+.statistics,
+.history {
+  .mdc-top-app-bar--fixed-adjust {
+    padding-top: top-app-bar.$row-height + 48px;
+  }
 }
 
 @media (min-width: 600px) {
@@ -128,8 +131,11 @@
     }
   }
 
-  .statistics .mdc-top-app-bar--fixed-adjust {
-    padding-top: top-app-bar.$mobile-row-height + 48px;
+  .statistics,
+  .history {
+    .mdc-top-app-bar--fixed-adjust {
+      padding-top: top-app-bar.$mobile-row-height + 48px;
+    }
   }
 }
 

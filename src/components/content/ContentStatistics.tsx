@@ -776,7 +776,7 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
           <LinearProgress closed={this.state.dataCreated.length === statsTabs.length} />
         </TopAppBar>
         {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
-        <div className="main">
+        <div className="main extended-app-bar">
           {categoryDialog}
           <VirtualizeSwipeableViews
             className={this.props.statisticsTab}

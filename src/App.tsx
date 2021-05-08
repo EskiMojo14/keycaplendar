@@ -24,6 +24,7 @@ import {
   arraySorts,
   pageSortOrder,
   reverseSortDatePages,
+  mainPages,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
@@ -31,8 +32,10 @@ import {
   addOrRemove,
   alphabeticalSort,
   alphabeticalSortProp,
+  arrayIncludes,
   hasKey,
   normalise,
+  pageConditions,
   replaceFunction,
   uniqueArray,
 } from "./util/functions";
@@ -101,7 +104,7 @@ class App extends React.Component<AppProps, AppState> {
   state: AppState = {
     device: "tablet",
     bottomNav: false,
-    page: "calendar",
+    page: "",
     statisticsTab: "summary",
     view: "card",
     transition: false,
@@ -178,6 +181,8 @@ class App extends React.Component<AppProps, AppState> {
           this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
         }
       }
+    } else {
+      this.setState({ page: "calendar" });
     }
     const whitelistObj: WhitelistType = { ...this.state.whitelist };
     whitelistParams.forEach((param, index, array) => {
@@ -624,9 +629,6 @@ class App extends React.Component<AppProps, AppState> {
     favorites = this.state.favorites,
     hidden = this.state.hidden
   ) => {
-    const today = moment.utc();
-    const yesterday = moment.utc().date(today.date() - 1);
-
     // filter bool functions
 
     const hiddenBool = (set: SetType) => {
@@ -640,27 +642,8 @@ class App extends React.Component<AppProps, AppState> {
     };
 
     const pageBool = (set: SetType): boolean => {
-      if (page === "calendar") {
-        const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
-        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd));
-      } else if (page === "live") {
-        const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
-        const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
-        return startDate <= today && (endDate >= yesterday || !set.gbEnd);
-      } else if (page === "ic") {
-        return !set.gbLaunch || set.gbLaunch.includes("Q");
-      } else if (page === "previous") {
-        const endDate = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
-        return !!(endDate && endDate <= yesterday);
-      } else if (page === "timeline") {
-        return !!(set.gbLaunch && !set.gbLaunch.includes("Q"));
-      } else if (page === "archive") {
-        return true;
-      } else if (page === "favorites") {
-        return favorites.includes(set.id);
-      } else if (page === "hidden") {
-        return hidden.includes(set.id);
+      if (arrayIncludes(mainPages, page)) {
+        return pageConditions(set, favorites, hidden)[page];
       }
       return false;
     };

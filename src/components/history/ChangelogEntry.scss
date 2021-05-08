@@ -1,12 +1,13 @@
 @use "@material/theme/color-palette" as palette;
+@use "@material/shape/_index" as shape;
 @use "../../util";
 
-.log .rmwc-collapsible-list {
+.changelog-entry {
   @include util.divider-border(bottom);
   &:last-child {
     border-bottom: none;
   }
-  &__children-inner {
+  .rmwc-collapsible-list__children-inner {
     padding: 16px;
   }
   .mdc-data-table {
@@ -30,12 +31,12 @@
           display: flex;
           align-items: center;
         }
+        .vendor-container {
+          margin: 16px 0;
+          padding: 8px;
+          @include util.divider-border(all);
+        }
       }
     }
-  }
-  .button-list {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 12px;
   }
 }

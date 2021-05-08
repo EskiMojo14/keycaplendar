@@ -40,6 +40,10 @@
         "function": "deleteOwnUser"
       },
       {
+        "source": "/api/getPublicAudit",
+        "function": "getPublicAudit"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

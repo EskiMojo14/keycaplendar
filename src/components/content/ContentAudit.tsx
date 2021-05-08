@@ -2,8 +2,10 @@ import React from "react";
 import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
-import { DeviceContext } from "../../util/contexts";
+import isEqual from "lodash.isequal";
+import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
+import { DeviceContext } from "../../util/contexts";
 import { openModal, closeModal, hasKey, alphabeticalSortProp } from "../../util/functions";
 import { ActionType, QueueType } from "../../util/types";
 import { Card } from "@rmwc/card";
@@ -164,11 +166,10 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
         alphabeticalSortProp(actions, "timestamp", true);
 
         this.setState({
-          actions: actions,
           users: users,
         });
 
-        this.filterActions(actions);
+        this.processActions(actions);
       })
       .catch((error) => {
         this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
@@ -176,6 +177,29 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
           this.toggleLoading();
         }
       });
+  };
+
+  processActions = (actions: ActionType[]) => {
+    const processedActions: ActionType[] = [...actions].map((action) => {
+      const { before, after, ...restAction } = action;
+      if (before && after) {
+        auditProperties.forEach((prop) => {
+          const beforeProp = before[prop];
+          const afterProp = after[prop];
+          if (isEqual(beforeProp, afterProp) && prop !== "profile" && prop !== "colorway") {
+            delete before[prop];
+            delete after[prop];
+          }
+        });
+      }
+      return {
+        ...restAction,
+        before,
+        after,
+      };
+    });
+
+    this.filterActions(processedActions);
   };
 
   filterActions = (
@@ -220,21 +244,6 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       });
   };
   render() {
-    const properties = [
-      "profile",
-      "colorway",
-      "designer",
-      "icDate",
-      "details",
-      "notes",
-      "gbMonth",
-      "gbLaunch",
-      "gbEnd",
-      "image",
-      "shipped",
-      "vendors",
-      "sales",
-    ];
     const refreshButton = this.state.loading ? (
       <CircularProgress />
     ) : (
@@ -296,7 +305,6 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
                             action={action}
                             timestamp={timestamp}
                             openDeleteDialog={this.openDelete}
-                            properties={properties}
                           />
                         );
                       })}
