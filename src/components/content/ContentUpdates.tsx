@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { QueueType } from "../../util/types";
@@ -14,6 +14,8 @@ import {
 import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
 import "./ContentUpdates.scss";
+import { DrawerCreate } from "../updates/admin/DrawerEntry";
+import { openModal } from "../../util/functions";
 
 type ContentUpdatesProps = {
   bottomNav: boolean;
@@ -36,13 +38,27 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="fill"></div>
       </TopAppBarSection>
     ) : null;
-  const fab = (
-    <Fab
-      className={classNames("create-fab", { middle: props.bottomNav })}
-      icon="add"
-      label={device === "desktop" ? "Create" : null}
-    />
-  );
+  const [createOpen, setCreateOpen] = useState(false);
+  const openCreate = () => {
+    setCreateOpen(true);
+    openModal();
+  };
+  const closeCreate = () => {
+    setCreateOpen(false);
+    openModal();
+  };
+
+  const editorElements = user.isAdmin ? (
+    <>
+      <Fab
+        className={classNames("create-fab", { middle: props.bottomNav })}
+        icon="add"
+        label={device === "desktop" ? "Create" : null}
+        onClick={openCreate}
+      />
+      <DrawerCreate open={createOpen} onClose={closeCreate} />
+    </>
+  ) : null;
   return (
     <>
       <TopAppBar
@@ -68,7 +84,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
             <UpdateEntry />
           </div>
         </div>
-        {fab}
+        {editorElements}
       </div>
       <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
