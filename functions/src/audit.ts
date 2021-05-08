@@ -81,7 +81,6 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
           after: removeLatestEditor(data.after),
           action:
             data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created",
-          user: user.nickname ? user.nickname : "",
         };
         entries.push(action);
       });

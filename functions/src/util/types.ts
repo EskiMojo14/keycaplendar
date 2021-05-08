@@ -62,7 +62,6 @@ export type PublicActionType = {
   before: ActionSetType;
   documentId: string;
   timestamp: string;
-  user: string;
 };
 
 export type Categories = "icDate" | "gbLaunch";
