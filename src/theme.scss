@@ -191,6 +191,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         color: map-get($variables, primary);
       }
     }
+    &.deleted {
+      .mdc-typography--headline5 {
+        color: map-get($variables, error);
+      }
+      .deleted-indicator {
+        color: map-get($variables, on-error);
+        background-color: map-get($variables, error);
+      }
+      .overline,
+      .mdc-typography--subtitle2 {
+        color: map-get($variables, error);
+      }
+    }
     &__primary-action {
       @include ripple.states(map-get($variables, on-surface));
       @include ripple.states-selected(map-get($variables, primary));
@@ -246,6 +259,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-checkbox__ripple");
     }
   }
+
   .mdc-chip {
     @include chips.fill-color-accessible(mix(map-get($variables, on-surface), map-get($variables, surface), 12%));
   }
@@ -721,6 +735,15 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         }
       }
     }
+    .mdc-chip {
+      @include chips.fill-color-accessible(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary)),
+          12%
+        )
+      );
+    }
     .search-bar {
       &--persistent .search-bar__field.mdc-text-field {
         background-color: rgba(map-get($variables, if($dark, on-surface, on-primary)), 0.15);
@@ -1180,7 +1203,8 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
-  .log {
+  .log,
+  .changelog {
     .mdc-icon-button {
       color: map-get($variables, text-medium);
       @include ripple.states(map-get($variables, on-surface));
@@ -1197,6 +1221,12 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           color: map-get($variables, primary);
         }
       }
+    }
+  }
+
+  .set-changelog {
+    .mdc-card__media-content {
+      color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     }
   }
 

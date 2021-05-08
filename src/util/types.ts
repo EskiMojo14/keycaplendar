@@ -146,8 +146,7 @@ export type StatisticsSortType = {
 export type QueueType = ReturnType<typeof createSnackbarQueue>;
 
 /** SetType but with all keys set to optional, as an action can include "deleted" sets. */
-
-export type ActionSetType = Partial<SetType>;
+export type ActionSetType = Omit<Partial<SetType>, "id">;
 
 export type ActionType = {
   action: "created" | "deleted" | "updated";
@@ -161,6 +160,28 @@ export type ActionType = {
     email: string;
     nickname?: string;
   };
+};
+
+export type PublicActionType = {
+  action: "created" | "deleted" | "updated";
+  after: ActionSetType;
+  before: ActionSetType;
+  documentId: string;
+  timestamp: string;
+  user: string;
+};
+
+export type ProcessedPublicActionType = PublicActionType & {
+  title: string;
+};
+
+export type RecentSet = {
+  id: string;
+  title: string;
+  designer: string[] | null;
+  deleted: boolean;
+  currentSet: SetType | null;
+  latestTimestamp: string;
 };
 
 export type ImageType = {

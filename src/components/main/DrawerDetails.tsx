@@ -17,15 +17,15 @@ import "./DrawerDetails.scss";
 
 type DrawerDetailsProps = {
   close: () => void;
-  delete: (set: SetType) => void;
+  delete?: (set: SetType) => void;
   device: string;
-  edit: (set: SetType) => void;
+  edit?: (set: SetType) => void;
   open: boolean;
   openSales: (set: SetType) => void;
-  search: string;
+  search?: string;
   set: SetType;
-  setSearch: (search: string) => void;
-  toggleLichTheme: () => void;
+  setSearch?: (search: string) => void;
+  toggleLichTheme?: () => void;
   view: string;
 };
 
@@ -195,15 +195,19 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
           </List>
         </div>
       ) : null;
+    const edit = this.props.edit;
+    const deleteSet = this.props.delete;
     const editorButtons =
-      this.context.user.isEditor ||
-      (this.context.user.isDesigner && set.designer && set.designer.includes(this.context.user.nickname)) ? (
+      (this.context.user.isEditor ||
+        (this.context.user.isDesigner && set.designer && set.designer.includes(this.context.user.nickname))) &&
+      edit &&
+      deleteSet ? (
         <div className="editor-buttons">
           <Button
             className="edit"
             outlined
             label="Edit"
-            onClick={() => this.props.edit(set)}
+            onClick={() => edit(set)}
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                 <path d="M0 0h24v24H0V0z" fill="none" />
@@ -225,7 +229,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
                   <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
                 </svg>
               )}
-              onClick={() => this.props.delete(this.props.set)}
+              onClick={() => deleteSet(this.props.set)}
             />
           ) : null}
         </div>
@@ -323,6 +327,34 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
         {this.props.set.notes}
       </Typography>
     ) : null;
+    const search = this.props.search;
+    const setSearch = this.props.setSearch;
+    const searchChips =
+      typeof search === "string" && setSearch ? (
+        <div className="search-chips-container">
+          <div className="search-chips">
+            <ChipSet id="search-chip-set" choice>
+              <div className="padding-fix" />
+              {chips.map((value, index) => {
+                return (
+                  <Chip
+                    icon="search"
+                    label={value}
+                    key={value.toLowerCase() + index}
+                    selected={search.toLowerCase() === value.toLowerCase()}
+                    onClick={() => {
+                      setSearch(value);
+                      if (!dismissible) {
+                        this.props.close();
+                      }
+                    }}
+                  />
+                );
+              })}
+            </ChipSet>
+          </div>
+        </div>
+      ) : null;
     return (
       <Drawer
         dismissible={dismissible}
@@ -375,29 +407,7 @@ export class DrawerDetails extends React.Component<DrawerDetailsProps> {
           </div>
         </DrawerContent>
         {editorButtons}
-        <div className="search-chips-container">
-          <div className="search-chips">
-            <ChipSet id="search-chip-set" choice>
-              <div className="padding-fix" />
-              {chips.map((value, index) => {
-                return (
-                  <Chip
-                    icon="search"
-                    label={value}
-                    key={value.toLowerCase() + index}
-                    selected={this.props.search.toLowerCase() === value.toLowerCase()}
-                    onClick={() => {
-                      this.props.setSearch(value);
-                      if (!dismissible) {
-                        this.props.close();
-                      }
-                    }}
-                  />
-                );
-              })}
-            </ChipSet>
-          </div>
-        </div>
+        {searchChips}
       </Drawer>
     );
   }

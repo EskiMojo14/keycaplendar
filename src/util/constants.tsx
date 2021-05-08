@@ -27,7 +27,7 @@ export const settingsFunctions: { [key: string]: string } = {
 
 /** Pages which adhere to the normal calendar format. */
 
-export const mainPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
 
 /** Main pages which can be accessed without being logged in. */
 
@@ -43,6 +43,7 @@ export const urlPages: string[] = [
   "timeline",
   "archive",
   "statistics",
+  "history",
   "settings",
 ];
 
@@ -67,6 +68,7 @@ export const pageTitle: { [key: string]: string } = {
   favorites: "Favorites",
   hidden: "Hidden",
   statistics: "Statistics",
+  history: "History",
   audit: "Audit Log",
   users: "Users",
   images: "Images",
@@ -127,6 +129,7 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
     </svg>
   ),
   statistics: "bar_chart",
+  history: "history",
   audit: iconObject(
     <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24">
       <g>
@@ -269,6 +272,10 @@ export const whitelistParams: string[] = [
 
 export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
 
+/** Tabs on the history page. */
+
+export const historyTabs: string[] = ["recent", "changelog"];
+
 /** Formatted names for each main view. */
 
 export const viewNames: { [key: string]: string } = {
@@ -321,3 +328,37 @@ export const viewIcons: { [key: string]: RMWC.IconPropT } = {
     </div>
   ),
 };
+
+/** Set properties to iterate and check. Order is also used for sorting. */
+
+export const auditProperties = [
+  "profile",
+  "colorway",
+  "designer",
+  "icDate",
+  "details",
+  "notes",
+  "gbMonth",
+  "gbLaunch",
+  "gbEnd",
+  "image",
+  "shipped",
+  "vendors",
+  "sales",
+] as const;
+
+export const auditPropertiesFormatted = {
+  profile: "Profile",
+  colorway: "Colorway",
+  designer: "Designer(s)",
+  icDate: "IC date",
+  details: "Link",
+  notes: "Notes",
+  gbMonth: "GB month",
+  gbLaunch: "GB launch",
+  gbEnd: "GB end",
+  image: "Image",
+  shipped: "Shipped",
+  vendors: "Vendors",
+  sales: "Sales",
+} as const;
