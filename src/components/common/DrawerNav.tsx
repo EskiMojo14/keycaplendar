@@ -103,6 +103,10 @@ export const DrawerNav = (props: DrawerNavProps) => {
           </ListItem>
           {adminOptions}
           <ListDivider />
+          <ListItem onClick={() => setPage("updates")} activated={props.page === "updates"}>
+            <ListItemGraphic icon={pageIcons.updates} />
+            Updates
+          </ListItem>
           <ListItem onClick={() => setPage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
             Settings

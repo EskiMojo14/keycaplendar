@@ -13,6 +13,7 @@ import { ContentSettings } from "./content/ContentSettings";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentHistory } from "./content/ContentHistory";
 import { ContentUsers } from "./content/ContentUsers";
+import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
 type ContentProps = {
@@ -166,6 +167,10 @@ export const Content = (props: ContentProps) => {
         snackbarQueue={props.snackbarQueue}
       />
     ) : null;
+  const contentUpdates =
+    props.page === "updates" ? (
+      <ContentUpdates openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
+    ) : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings
@@ -211,6 +216,7 @@ export const Content = (props: ContentProps) => {
         {contentAudit}
         {contentUsers}
         {contentImages}
+        {contentUpdates}
         {contentSettings}
       </DrawerAppContent>
     </div>
