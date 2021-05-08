@@ -315,7 +315,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
           <ListItemText>
             <div className="overline">{props.action.action}</div>
             <ListItemPrimaryText>{props.action.title}</ListItemPrimaryText>
-            <ListItemSecondaryText>{`${props.action.user}, ${timestamp}`}</ListItemSecondaryText>
+            <ListItemSecondaryText>{timestamp}</ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
         </ListItem>
