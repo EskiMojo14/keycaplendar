@@ -28,6 +28,8 @@ exports.getKeysetById = api.getKeysetById;
 
 exports.onKeysetUpdate = audit.onKeysetUpdate;
 
+exports.getPublicAudit = audit.getPublicAudit;
+
 // statistics
 
 exports.createStatistics = statistics.createStatistics;
