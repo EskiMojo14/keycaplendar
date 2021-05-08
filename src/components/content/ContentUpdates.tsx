@@ -10,6 +10,7 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
+import { UpdateEntry } from "../updates/UpdateEntry";
 import "./ContentUpdates.scss";
 
 type ContentUpdatesProps = {
@@ -31,7 +32,11 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="main extended-app-bar"></div>
+        <div className="main extended-app-bar">
+          <div className="update-container">
+            <UpdateEntry />
+          </div>
+        </div>
       </div>
       <Footer />
       {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
