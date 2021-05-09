@@ -1,13 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
+import firebase from "../../firebase";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
-import { hasKey } from "../../util/functions";
+import { hasKey, iconObject } from "../../util/functions";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
+import moment from "moment";
+
+const db = firebase.firestore();
 
 type DrawerNavProps = {
   bottomNav: boolean;
@@ -19,6 +23,13 @@ type DrawerNavProps = {
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
+  const setPage = (page: string) => {
+    props.setPage(page);
+    if (!dismissible) {
+      props.close();
+    }
+  };
+
   const { user, favorites, hidden } = useContext(UserContext);
   const quantities: {
     [key: string]: number;
@@ -26,14 +37,43 @@ export const DrawerNav = (props: DrawerNavProps) => {
     favorites: favorites.length,
     hidden: hidden.length,
   };
+
   const device = useContext(DeviceContext);
   const dismissible = device === "desktop";
-  const setPage = (page: string) => {
-    props.setPage(page);
-    if (!dismissible) {
-      props.close();
-    }
+
+  const [newUpdate, setNewUpdate] = useState(false);
+
+  const checkForUpdates = () => {
+    const lastWeek = moment.utc().days(-7);
+    db.collection("updates")
+      .orderBy("date", "desc")
+      .limit(1)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const date = moment.utc(doc.data().date);
+          if (date >= lastWeek) {
+            setNewUpdate(true);
+          }
+        });
+      });
   };
+
+  useEffect(checkForUpdates, []);
+
+  const newUpdateIcon = newUpdate ? (
+    <ListItemMeta
+      icon={iconObject(
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M9.12 14.47V9.53H8.09v2.88L6.03 9.53H5v4.94h1.03v-2.88l2.1 2.88zm4.12-3.9V9.53h-3.3v4.94h3.3v-1.03h-2.06v-.91h2.06v-1.04h-2.06v-.92zm.82-1.04v4.12c0 .45.37.82.82.82h3.29c.45 0 .82-.37.82-.82V9.53h-1.03v3.71h-.92v-2.89h-1.03v2.9h-.93V9.53h-1.02z" />
+          <path d="M4 6h16v12H4z" opacity=".3" />
+          <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z" />
+        </svg>
+      )}
+    />
+  ) : null;
+
   const userOptions = user.email ? (
     <>
       {userPages.map((page) => {
@@ -47,6 +87,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       })}
     </>
   ) : null;
+
   const adminOptions = user.isAdmin ? (
     <>
       <ListDivider />
@@ -60,6 +101,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       })}
     </>
   ) : null;
+
   const closeIcon =
     dismissible || props.bottomNav ? (
       <IconButton
@@ -68,6 +110,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
         onClick={props.close}
       />
     ) : null;
+
   return (
     <Drawer
       className={classNames("nav", { rail: dismissible, "drawer-bottom": props.bottomNav })}
@@ -106,6 +149,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
           <ListItem onClick={() => setPage("updates")} activated={props.page === "updates"}>
             <ListItemGraphic icon={pageIcons.updates} />
             Updates
+            {newUpdateIcon}
           </ListItem>
           <ListItem onClick={() => setPage("settings")} activated={props.page === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
