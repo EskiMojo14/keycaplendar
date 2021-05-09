@@ -13,8 +13,11 @@ import {
   arrayMove,
   hasKey,
 } from "../../../util/functions";
+import { QueueType, SetType, VendorType } from "../../../util/types";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
+import { BoolWrapper, ConditionalWrapper } from "../../util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -26,8 +29,8 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import "./DrawerEntry.scss";
-import { QueueType, SetType, VendorType } from "../../../util/types";
+import "./ModalEntry.scss";
+import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
@@ -47,7 +50,7 @@ const getVendorStyle = (provided: DraggableProvided) => {
   }
 };
 
-type DrawerCreateProps = {
+type ModalCreateProps = {
   allDesigners: string[];
   allProfiles: string[];
   allVendorRegions: string[];
@@ -56,9 +59,10 @@ type DrawerCreateProps = {
   getData: () => void;
   open: boolean;
   snackbarQueue: QueueType;
+  device: string;
 };
 
-type DrawerCreateState = {
+type ModalCreateState = {
   profile: string;
   colorway: string;
   designer: string[];
@@ -79,8 +83,8 @@ type DrawerCreateState = {
   focused: string;
 };
 
-export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreateState> {
-  state: DrawerCreateState = {
+export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateState> {
+  state: ModalCreateState = {
     profile: "",
     colorway: "",
     designer: [],
@@ -101,7 +105,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     focused: "",
   };
 
-  componentDidUpdate(prevProps: DrawerCreateProps) {
+  componentDidUpdate(prevProps: ModalCreateProps) {
     if (this.props.open !== prevProps.open) {
       if (this.context.user.isEditor === false && this.context.user.isDesigner) {
         this.setState({
@@ -111,7 +115,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
     }
   }
 
-  closeDrawer = () => {
+  closeModal = () => {
     this.props.close();
     this.setState({
       profile: "",
@@ -387,7 +391,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
           console.log("Document written with ID: ", docRef.id);
           this.props.snackbarQueue.notify({ title: "Entry written successfully." });
           this.props.getData();
-          this.closeDrawer();
+          this.closeModal();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -401,6 +405,7 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
   };
 
   render() {
+    const useDrawer = this.props.device !== "mobile";
     const formFilled =
       this.state.profile &&
       this.state.colorway &&
@@ -511,23 +516,69 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
       </Card>
     );
     return (
-      <Drawer modal open={this.props.open} onClose={this.closeDrawer} className="entry-drawer drawer-right">
-        <DrawerHeader>
-          <DrawerTitle>Create Entry</DrawerTitle>
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-          <Button
-            outlined
-            label="Save"
-            onClick={(e) => {
-              if (formFilled) {
-                e.preventDefault();
-                this.uploadImage();
-              }
-            }}
-            disabled={!formFilled}
-          />
-        </DrawerHeader>
-        <DrawerContent>
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => (
+          <Drawer modal open={this.props.open} onClose={this.closeModal} className="drawer-right entry-modal">
+            {children}
+          </Drawer>
+        )}
+        falseWrapper={(children) => (
+          <FullScreenDialog open={this.props.open} onClose={this.closeModal} className="entry-modal">
+            {children}
+          </FullScreenDialog>
+        )}
+      >
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => (
+            <DrawerHeader>
+              {children}
+              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
+            </DrawerHeader>
+          )}
+          falseWrapper={(children) => (
+            <FullScreenDialogAppBar>
+              <TopAppBarRow>{children}</TopAppBarRow>
+              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
+            </FullScreenDialogAppBar>
+          )}
+        >
+          <BoolWrapper
+            condition={useDrawer}
+            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
+            falseWrapper={(children) => (
+              <TopAppBarSection alignStart>
+                <TopAppBarNavigationIcon icon="close" onClick={this.closeModal} />
+                <TopAppBarTitle>{children}</TopAppBarTitle>
+              </TopAppBarSection>
+            )}
+          >
+            Create Entry
+          </BoolWrapper>
+
+          <ConditionalWrapper
+            condition={!useDrawer}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            <Button
+              outlined={useDrawer}
+              label="Save"
+              onClick={(e) => {
+                if (formFilled) {
+                  e.preventDefault();
+                  this.uploadImage();
+                }
+              }}
+              disabled={!formFilled}
+            />
+          </ConditionalWrapper>
+        </BoolWrapper>
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        >
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>
             <div className="banner-button">
@@ -827,7 +878,11 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
                                   onChange={this.handleChangeVendor}
                                   onFocus={this.handleFocus}
                                   onBlur={this.handleBlur}
-                                  helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                                  helpText={{
+                                    persistent: false,
+                                    validationMsg: true,
+                                    children: "Must be valid link",
+                                  }}
                                 />
                                 <Checkbox
                                   className="end-date-field"
@@ -911,19 +966,19 @@ export class DrawerCreate extends React.Component<DrawerCreateProps, DrawerCreat
               </div>
             </Card>
           </form>
-        </DrawerContent>
-      </Drawer>
+        </BoolWrapper>
+      </BoolWrapper>
     );
   }
 }
 
-DrawerCreate.contextType = UserContext;
+ModalCreate.contextType = UserContext;
 
-type DrawerEditProps = DrawerCreateProps & {
+type ModalEditProps = ModalCreateProps & {
   set: SetType;
 };
 
-type DrawerEditState = {
+type ModalEditState = {
   id: string;
   profile: string;
   colorway: string;
@@ -945,8 +1000,8 @@ type DrawerEditState = {
   focused: string;
 };
 
-export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState> {
-  state: DrawerEditState = {
+export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
+  state: ModalEditState = {
     id: "",
     profile: "",
     colorway: "",
@@ -968,12 +1023,12 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     focused: "",
   };
 
-  componentDidUpdate(prevProps: DrawerEditProps) {
+  componentDidUpdate(prevProps: ModalEditProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
         this.setValues();
       } else {
-        setTimeout(this.closeDrawer, 300);
+        setTimeout(this.closeModal, 300);
       }
     }
   }
@@ -1013,7 +1068,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
     });
   };
 
-  closeDrawer = () => {
+  closeModal = () => {
     this.setState({
       id: "",
       profile: "",
@@ -1296,7 +1351,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
       })
       .then(() => {
         this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
-        this.closeDrawer();
+        this.closeModal();
         this.props.getData();
       })
       .catch((error) => {
@@ -1309,6 +1364,7 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
   };
 
   render() {
+    const useDrawer = this.props.device !== "mobile";
     const formFilled =
       this.state.profile &&
       this.state.colorway &&
@@ -1413,27 +1469,73 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
       </Card>
     );
     return (
-      <Drawer modal open={this.props.open} onClose={this.props.close} className="entry-drawer drawer-right">
-        <DrawerHeader>
-          <DrawerTitle>Edit Entry</DrawerTitle>
-          <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-          <Button
-            outlined
-            label="Save"
-            onClick={(e) => {
-              if (formFilled) {
-                e.preventDefault();
-                if (typeof this.state.image !== "string") {
-                  this.uploadImage();
-                } else {
-                  this.editEntry();
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => (
+          <Drawer modal open={this.props.open} onClose={this.closeModal} className="drawer-right entry-modal">
+            {children}
+          </Drawer>
+        )}
+        falseWrapper={(children) => (
+          <FullScreenDialog open={this.props.open} onClose={this.closeModal} className="entry-modal">
+            {children}
+          </FullScreenDialog>
+        )}
+      >
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => (
+            <DrawerHeader>
+              {children}
+              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
+            </DrawerHeader>
+          )}
+          falseWrapper={(children) => (
+            <FullScreenDialogAppBar>
+              <TopAppBarRow>{children}</TopAppBarRow>
+              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
+            </FullScreenDialogAppBar>
+          )}
+        >
+          <BoolWrapper
+            condition={useDrawer}
+            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
+            falseWrapper={(children) => (
+              <TopAppBarSection alignStart>
+                <TopAppBarNavigationIcon icon="close" onClick={this.closeModal} />
+                <TopAppBarTitle>{children}</TopAppBarTitle>
+              </TopAppBarSection>
+            )}
+          >
+            Edit Entry
+          </BoolWrapper>
+
+          <ConditionalWrapper
+            condition={!useDrawer}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            <Button
+              outlined={useDrawer}
+              label="Save"
+              onClick={(e) => {
+                if (formFilled) {
+                  e.preventDefault();
+                  if (typeof this.state.image !== "string") {
+                    this.uploadImage();
+                  } else {
+                    this.editEntry();
+                  }
                 }
-              }
-            }}
-            disabled={!formFilled}
-          />
-        </DrawerHeader>
-        <DrawerContent>
+              }}
+              disabled={!formFilled}
+            />
+          </ConditionalWrapper>
+        </BoolWrapper>
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        >
           <div className="banner">
             <div className="banner-text">Make sure to read the entry guide.</div>
             <div className="banner-button">
@@ -1819,12 +1921,12 @@ export class DrawerEdit extends React.Component<DrawerEditProps, DrawerEditState
               </div>
             </Card>
           </form>
-        </DrawerContent>
-      </Drawer>
+        </BoolWrapper>
+      </BoolWrapper>
     );
   }
 }
 
-DrawerEdit.contextType = UserContext;
+ModalEdit.contextType = UserContext;
 
-export default DrawerCreate;
+export default ModalCreate;

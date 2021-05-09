@@ -16,8 +16,7 @@ import { DialogSales } from "../main/DialogSales";
 import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
 import { DialogFilterPreset } from "../main/DialogFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
-import { DrawerCreate, DrawerEdit } from "../main/admin/DrawerEntry";
-import { DialogCreate, DialogEdit } from "../main/admin/DialogEntry";
+import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
 import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
@@ -250,55 +249,29 @@ export const ContentMain = (props: ContentMainProps) => {
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        {device !== "mobile" ? (
-          <>
-            <DrawerCreate
-              open={createOpen}
-              close={closeCreate}
-              allProfiles={props.allProfiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allVendorRegions={props.allVendorRegions}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-            <DrawerEdit
-              open={editOpen}
-              close={closeEdit}
-              allProfiles={props.allProfiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allVendorRegions={props.allVendorRegions}
-              set={editSet}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-          </>
-        ) : (
-          <>
-            <DialogCreate
-              open={createOpen}
-              close={closeCreate}
-              allProfiles={props.allProfiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allVendorRegions={props.allVendorRegions}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-            <DialogEdit
-              open={editOpen}
-              close={closeEdit}
-              allProfiles={props.allProfiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allVendorRegions={props.allVendorRegions}
-              set={editSet}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-          </>
-        )}
+        <ModalCreate
+          open={createOpen}
+          close={closeCreate}
+          allProfiles={props.allProfiles}
+          allDesigners={props.allDesigners}
+          allVendors={props.allVendors}
+          allVendorRegions={props.allVendorRegions}
+          getData={props.getData}
+          snackbarQueue={props.snackbarQueue}
+          device={device}
+        />
+        <ModalEdit
+          open={editOpen}
+          close={closeEdit}
+          allProfiles={props.allProfiles}
+          allDesigners={props.allDesigners}
+          allVendors={props.allVendors}
+          allVendorRegions={props.allVendorRegions}
+          set={editSet}
+          getData={props.getData}
+          snackbarQueue={props.snackbarQueue}
+          device={device}
+        />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;
