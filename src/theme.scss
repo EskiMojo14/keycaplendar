@@ -568,7 +568,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         color: map-get($variables, text-disabled);
       }
       .mdc-select__dropdown-icon {
-        // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
+        // requires commenting out line 196 of /node_modules/@material/select/_mixins.scss
         @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.38);
       }
       &.mdc-select--outlined {
@@ -576,7 +576,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       }
     }
     .mdc-select__dropdown-icon {
-      // requires commenting out line 195 of /node_modules/@material/select/_mixins.scss
+      // requires commenting out line 196 of /node_modules/@material/select/_mixins.scss
       @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.6);
     }
     &.mdc-select--focused .mdc-select__dropdown-icon {
