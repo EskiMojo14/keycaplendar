@@ -54,6 +54,7 @@ export const urlPages: string[] = [
   "archive",
   "statistics",
   "history",
+  "updates",
   "settings",
 ];
 
