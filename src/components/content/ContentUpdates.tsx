@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
+import firebase from "../../firebase";
 import { DeviceContext, UserContext } from "../../util/contexts";
-import { QueueType } from "../../util/types";
+import { QueueType, UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import {
   TopAppBar,
@@ -15,7 +16,9 @@ import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
 import "./ContentUpdates.scss";
 import { DrawerCreate } from "../updates/admin/DrawerEntry";
-import { openModal } from "../../util/functions";
+import { closeModal, openModal } from "../../util/functions";
+
+const db = firebase.firestore();
 
 type ContentUpdatesProps = {
   bottomNav: boolean;
@@ -45,8 +48,35 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   };
   const closeCreate = () => {
     setCreateOpen(false);
-    openModal();
+    closeModal();
   };
+
+  const [entries, setEntries] = useState<UpdateEntryType[]>([]);
+
+  const getEntries = () => {
+    db.collection("updates")
+      .orderBy("date", "desc")
+      .get()
+      .then((querySnapshot) => {
+        const entries: UpdateEntryType[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          entries.push({
+            id: doc.id,
+            name: data.name,
+            title: data.title,
+            date: data.date,
+            body: data.body,
+          });
+        });
+        setEntries(entries);
+      })
+      .catch((error) => {
+        console.log("Error getting data: " + error);
+        props.snackbarQueue.notify({ title: "Error getting data: " + error });
+      });
+  };
+  useEffect(getEntries, []);
 
   const editorElements = user.isAdmin ? (
     <>
@@ -56,7 +86,12 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <DrawerCreate open={createOpen} onClose={closeCreate} />
+      <DrawerCreate
+        open={createOpen}
+        onClose={closeCreate}
+        getEntries={getEntries}
+        snackbarQueue={props.snackbarQueue}
+      />
     </>
   ) : null;
   return (
@@ -80,8 +115,9 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       <div className="content-container">
         <div className="main extended-app-bar">
           <div className="update-container">
-            <UpdateEntry />
-            <UpdateEntry />
+            {entries.map((entry) => (
+              <UpdateEntry key={entry.id} entry={entry} />
+            ))}
           </div>
         </div>
         {editorElements}

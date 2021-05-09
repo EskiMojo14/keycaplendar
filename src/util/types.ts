@@ -229,6 +229,14 @@ export type GlobalDoc = {
   filterPresets: OldPresetType[];
 };
 
+export type UpdateEntryType = {
+  id: string;
+  name: string;
+  title: string;
+  date: string;
+  body: string;
+};
+
 export type UserContextType = {
   user: {
     email: string | null;

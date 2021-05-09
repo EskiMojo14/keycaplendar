@@ -1,25 +1,23 @@
 import React from "react";
+import { UpdateEntryType } from "../../util/types";
 import { Card } from "@rmwc/card";
-import { CustomReactMarkdown } from "../util/ReactMarkdown";
 import { Typography } from "@rmwc/typography";
+import { CustomReactMarkdown } from "../util/ReactMarkdown";
 import "./UpdateEntry.scss";
+import moment from "moment";
 
-const testString = `Big news! KeycapLendar now supports logins (using Google, Github and/or Twitter authentication), which have features such as:
+type UpdateEntryProps = {
+  entry: UpdateEntryType;
+};
 
-- Favourites - add a set to your favourites to add it to your favourites page, and you can also filter to only show favorites.
-- Hidden sets - hide a set with the eye icon to hide it from all main pages, and you can of course filter to only show hidden sets.
-- Filter presets - create and save filter presets, and switch between them using a dropdown.
-- Sync settings - choose to sync your app settings (theme, density) to your account, which means that they'll be synced between devices.
-
-[Log in here.](https://keycaplendar.firebaseapp.com/login)`;
-
-export const UpdateEntry = () => {
+export const UpdateEntry = (props: UpdateEntryProps) => {
+  const { entry } = props;
   return (
     <Card className="update-entry">
-      <Typography use="overline">eskimojo</Typography>
-      <Typography use="headline5">Accounts are now launched!</Typography>
-      <Typography use="caption">21st April 2021</Typography>
-      <CustomReactMarkdown>{testString}</CustomReactMarkdown>
+      <Typography use="overline">{entry.name}</Typography>
+      <Typography use="headline5">{entry.title}</Typography>
+      <Typography use="caption">{moment(entry.date).format("Do MMMM YYYY")}</Typography>
+      <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>
     </Card>
   );
 };

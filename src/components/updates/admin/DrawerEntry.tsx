@@ -1,28 +1,40 @@
 import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
+import firebase from "../../../firebase";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
+import { QueueType } from "../../../util/types";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
-import "./DrawerEntry.scss";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "../../util/ReactMarkdown";
+import "./DrawerEntry.scss";
+
+const db = firebase.firestore();
 
 const isoDate = /(\d{4})-(\d{2})-(\d{2})/;
 
 type DrawerCreateProps = {
   open: boolean;
   onClose: () => void;
+  getEntries: () => void;
+  snackbarQueue: QueueType;
 };
 
 export const DrawerCreate = (props: DrawerCreateProps) => {
   const { user } = useContext(UserContext);
   const [name, setName] = useState("");
   useEffect(() => {
-    setName(user.nickname);
+    if (props.open) {
+      setName(user.nickname);
+    } else {
+      setDate("");
+      setTitle("");
+      setBody("");
+    }
   }, [props.open]);
 
   const [date, setDate] = useState("");
@@ -45,15 +57,37 @@ export const DrawerCreate = (props: DrawerCreateProps) => {
     setDate(today);
   };
 
-  const formFilled = !!name && !!date && isoDate.test(date) && !!title;
-
   const formattedDate = isoDate.test(date) ? moment.utc(date).format("Do MMMM YYYY") : date;
+
+  const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
+
+  const saveEntry = () => {
+    if (formFilled) {
+      db.collection("updates")
+        .add({
+          name,
+          date,
+          title,
+          body,
+        })
+        .then((docRef) => {
+          console.log("Document written with ID: ", docRef.id);
+          props.snackbarQueue.notify({ title: "Entry written successfully." });
+          props.onClose();
+          props.getEntries();
+        })
+        .catch((error) => {
+          console.error("Error adding document: ", error);
+          props.snackbarQueue.notify({ title: "Error adding document: " + error });
+        });
+    }
+  };
 
   return (
     <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right update-entry-drawer">
       <DrawerHeader>
         <DrawerTitle>Create update</DrawerTitle>
-        <Button label="Save" outlined disabled={!formFilled} />
+        <Button label="Save" outlined onClick={saveEntry} disabled={!formFilled} />
       </DrawerHeader>
       <DrawerContent>
         <div className="form">
