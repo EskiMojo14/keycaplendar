@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
+import { Update } from "../../util/constructors";
 import { DeviceContext, UserContext } from "../../util/contexts";
+import { closeModal, openModal } from "../../util/functions";
 import { QueueType, UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import {
@@ -14,9 +16,8 @@ import {
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
+import { DrawerCreate, DrawerEdit } from "../updates/admin/DrawerEntry";
 import "./ContentUpdates.scss";
-import { DrawerCreate } from "../updates/admin/DrawerEntry";
-import { closeModal, openModal } from "../../util/functions";
 
 const db = firebase.firestore();
 
@@ -41,15 +42,6 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="fill"></div>
       </TopAppBarSection>
     ) : null;
-  const [createOpen, setCreateOpen] = useState(false);
-  const openCreate = () => {
-    setCreateOpen(true);
-    openModal();
-  };
-  const closeCreate = () => {
-    setCreateOpen(false);
-    closeModal();
-  };
 
   const [entries, setEntries] = useState<UpdateEntryType[]>([]);
 
@@ -78,6 +70,32 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   };
   useEffect(getEntries, []);
 
+  const blankEntry: UpdateEntryType = new Update();
+  const [createOpen, setCreateOpen] = useState(false);
+  const openCreate = () => {
+    setCreateOpen(true);
+    openModal();
+  };
+  const closeCreate = () => {
+    setCreateOpen(false);
+    closeModal();
+  };
+
+  const [editEntry, setEditEntry] = useState(blankEntry);
+  const [editOpen, setEditOpen] = useState(false);
+  const openEdit = (entry: UpdateEntryType) => {
+    setEditOpen(true);
+    setEditEntry(entry);
+    openModal();
+  };
+  const closeEdit = () => {
+    setEditOpen(false);
+    setTimeout(() => {
+      setEditEntry(blankEntry);
+    }, 300);
+    closeModal();
+  };
+
   const editorElements = user.isAdmin ? (
     <>
       <Fab
@@ -90,6 +108,13 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         open={createOpen}
         onClose={closeCreate}
         getEntries={getEntries}
+        snackbarQueue={props.snackbarQueue}
+      />
+      <DrawerEdit
+        open={editOpen}
+        onClose={closeEdit}
+        getEntries={getEntries}
+        entry={editEntry}
         snackbarQueue={props.snackbarQueue}
       />
     </>
@@ -116,7 +141,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             {entries.map((entry) => (
-              <UpdateEntry key={entry.id} entry={entry} />
+              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} />
             ))}
           </div>
         </div>

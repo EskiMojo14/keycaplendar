@@ -199,3 +199,18 @@ export class User {
     this.lastActive = lastActive;
   }
 }
+
+export class Update {
+  id: string;
+  name: string;
+  title: string;
+  date: string;
+  body: string;
+  constructor(user = "", title = "", date = "", body = "", id = "") {
+    this.name = user;
+    this.title = title;
+    this.date = date;
+    this.body = body;
+    this.id = id;
+  }
+}
