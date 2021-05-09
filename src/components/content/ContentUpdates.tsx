@@ -60,9 +60,10 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
             title: data.title,
             date: data.date,
             body: data.body,
+            pinned: data.pinned ? data.pinned : false,
           });
         });
-        setEntries(entries);
+        sortEntries(entries);
       })
       .catch((error) => {
         console.log("Error getting data: " + error);
@@ -70,6 +71,16 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       });
   };
   useEffect(getEntries, []);
+  const sortEntries = (entries: UpdateEntryType[]) => {
+    const sortedEntries = entries.sort((a, b) => {
+      if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
+        return a.pinned ? -1 : 1;
+      } else {
+        return a.date > b.date ? -1 : 1;
+      }
+    });
+    setEntries(sortedEntries);
+  };
 
   const blankEntry: UpdateEntryType = new Update();
   const [createOpen, setCreateOpen] = useState(false);
@@ -110,6 +121,20 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       setDeleteEntry(blankEntry);
     }, 300);
     closeModal();
+  };
+
+  const pinEntry = (entry: UpdateEntryType) => {
+    db.collection("updates")
+      .doc(entry.id)
+      .set({ pinned: !entry.pinned }, { merge: true })
+      .then(() => {
+        props.snackbarQueue.notify({ title: `Entry ${entry.pinned ? "unpinned" : "pinned"}.` });
+        getEntries();
+      })
+      .catch((error) => {
+        console.log(`Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`);
+        props.snackbarQueue.notify({ title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}` });
+      });
   };
 
   const editorElements = user.isAdmin ? (
@@ -164,7 +189,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             {entries.map((entry) => (
-              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} />
+              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} pin={pinEntry} />
             ))}
           </div>
         </div>

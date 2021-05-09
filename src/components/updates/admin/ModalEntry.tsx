@@ -72,6 +72,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           date,
           title,
           body,
+          pinned: false,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -258,6 +259,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           date,
           title,
           body,
+          pinned: entry.pinned,
         })
         .then(() => {
           props.snackbarQueue.notify({ title: "Entry edited successfully." });

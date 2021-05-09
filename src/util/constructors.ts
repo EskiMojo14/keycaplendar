@@ -206,11 +206,13 @@ export class Update {
   title: string;
   date: string;
   body: string;
-  constructor(user = "", title = "", date = "", body = "", id = "") {
+  pinned: boolean;
+  constructor(user = "", title = "", date = "", body = "", pinned = false, id = "") {
     this.name = user;
     this.title = title;
     this.date = date;
     this.body = body;
+    this.pinned = pinned;
     this.id = id;
   }
 }

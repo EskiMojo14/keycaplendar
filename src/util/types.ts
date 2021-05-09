@@ -235,6 +235,7 @@ export type UpdateEntryType = {
   title: string;
   date: string;
   body: string;
+  pinned: boolean;
 };
 
 export type UserContextType = {

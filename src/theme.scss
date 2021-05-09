@@ -170,6 +170,21 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       @include button.ink-color(map-get($variables, on-primary));
       @include ripple.states(map-get($variables, on-primary), false, feature-targeting.all(), ".mdc-button__ripple");
     }
+    &.secondary {
+      @include button.ink-color(map-get($variables, secondary));
+      @include ripple.states(map-get($variables, secondary), false, feature-targeting.all(), ".mdc-button__ripple");
+      &.mdc-button--raised,
+      &.mdc-button--unelevated {
+        @include button.container-fill-color(map-get($variables, secondary));
+        @include button.ink-color(map-get($variables, on-secondary));
+        @include ripple.states(
+          map-get($variables, on-secondary),
+          false,
+          feature-targeting.all(),
+          ".mdc-button__ripple"
+        );
+      }
+    }
     &.delete {
       @include button.ink-color(map-get($variables, error));
       @include ripple.states(map-get($variables, error), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -1238,6 +1253,12 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     color: map-get($variables, text-high);
     a {
       color: map-get($variables, primary);
+    }
+    &.pinned {
+      a,
+      .pin-indicator {
+        color: map-get($variables, secondary);
+      }
     }
   }
 
