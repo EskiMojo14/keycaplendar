@@ -1,11 +1,11 @@
 @use "@material/rtl/_index" as rtl;
 @use "../../../util";
 
-.mdc-drawer.drawer-right.update-entry-drawer {
+.mdc-drawer.drawer-right.update-entry-modal {
   width: 480px;
 }
 
-.update-entry-drawer {
+.update-entry-modal {
   .mdc-drawer__header {
     position: relative;
     display: flex;
