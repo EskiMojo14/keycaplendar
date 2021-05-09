@@ -6,6 +6,7 @@ import { DeviceContext, UserContext } from "../../util/contexts";
 import { closeModal, openModal } from "../../util/functions";
 import { QueueType, UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
+import { LinearProgress } from "@rmwc/linear-progress";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -17,8 +18,8 @@ import {
 import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
 import { ModalCreate, ModalEdit } from "../updates/admin/ModalEntry";
-import "./ContentUpdates.scss";
 import { DialogDelete } from "../updates/admin/DialogDelete";
+import "./ContentUpdates.scss";
 
 const db = firebase.firestore();
 
@@ -44,9 +45,12 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       </TopAppBarSection>
     ) : null;
 
+  const [loading, setLoading] = useState(false);
+
   const [entries, setEntries] = useState<UpdateEntryType[]>([]);
 
   const getEntries = () => {
+    setLoading(true);
     db.collection("updates")
       .orderBy("date", "desc")
       .get()
@@ -80,6 +84,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       }
     });
     setEntries(sortedEntries);
+    setLoading(false);
   };
 
   const blankEntry: UpdateEntryType = new Update();
@@ -183,6 +188,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
           </TopAppBarSection>
           {indent}
         </TopAppBarRow>
+        <LinearProgress closed={!loading} />
       </TopAppBar>
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
