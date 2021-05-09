@@ -14,20 +14,20 @@ import { Typography } from "@rmwc/typography";
 import ConditionalWrapper, { BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { CustomReactMarkdown } from "../../util/ReactMarkdown";
-import "./DrawerEntry.scss";
+import "./ModalEntry.scss";
 
 const db = firebase.firestore();
 
 const isoDate = /(\d{4})-(\d{2})-(\d{2})/;
 
-type DrawerCreateProps = {
+type ModalCreateProps = {
   open: boolean;
   onClose: () => void;
   getEntries: () => void;
   snackbarQueue: QueueType;
 };
 
-export const DrawerCreate = (props: DrawerCreateProps) => {
+export const ModalCreate = (props: ModalCreateProps) => {
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const [name, setName] = useState("");
@@ -200,7 +200,7 @@ export const DrawerCreate = (props: DrawerCreateProps) => {
   );
 };
 
-type DrawerEditProps = {
+type ModalEditProps = {
   open: boolean;
   onClose: () => void;
   entry: UpdateEntryType;
@@ -208,7 +208,7 @@ type DrawerEditProps = {
   snackbarQueue: QueueType;
 };
 
-export const DrawerEdit = (props: DrawerEditProps) => {
+export const ModalEdit = (props: ModalEditProps) => {
   const { entry } = props;
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);

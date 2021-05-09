@@ -16,7 +16,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
-import { DrawerCreate, DrawerEdit } from "../updates/admin/DrawerEntry";
+import { ModalCreate, ModalEdit } from "../updates/admin/ModalEntry";
 import "./ContentUpdates.scss";
 import { DialogDelete } from "../updates/admin/DialogDelete";
 
@@ -120,13 +120,13 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <DrawerCreate
+      <ModalCreate
         open={createOpen}
         onClose={closeCreate}
         getEntries={getEntries}
         snackbarQueue={props.snackbarQueue}
       />
-      <DrawerEdit
+      <ModalEdit
         open={editOpen}
         onClose={closeEdit}
         getEntries={getEntries}
