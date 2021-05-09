@@ -18,6 +18,7 @@ import { Footer } from "../common/Footer";
 import { UpdateEntry } from "../updates/UpdateEntry";
 import { DrawerCreate, DrawerEdit } from "../updates/admin/DrawerEntry";
 import "./ContentUpdates.scss";
+import { DialogDelete } from "../updates/admin/DialogDelete";
 
 const db = firebase.firestore();
 
@@ -96,6 +97,21 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
     closeModal();
   };
 
+  const [deleteEntry, setDeleteEntry] = useState(blankEntry);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const openDelete = (entry: UpdateEntryType) => {
+    setDeleteOpen(true);
+    setDeleteEntry(entry);
+    openModal();
+  };
+  const closeDelete = () => {
+    setDeleteOpen(false);
+    setTimeout(() => {
+      setDeleteEntry(blankEntry);
+    }, 300);
+    closeModal();
+  };
+
   const editorElements = user.isAdmin ? (
     <>
       <Fab
@@ -115,6 +131,13 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         onClose={closeEdit}
         getEntries={getEntries}
         entry={editEntry}
+        snackbarQueue={props.snackbarQueue}
+      />
+      <DialogDelete
+        open={deleteOpen}
+        onClose={closeDelete}
+        entry={deleteEntry}
+        getEntries={getEntries}
         snackbarQueue={props.snackbarQueue}
       />
     </>
@@ -141,7 +164,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             {entries.map((entry) => (
-              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} />
+              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} />
             ))}
           </div>
         </div>
