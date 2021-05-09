@@ -2,6 +2,7 @@
 import React from "react";
 import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import { Typography, TypographyT } from "@rmwc/typography";
+import "./ReactMarkdown.scss";
 
 const typographyBuilder = (tag: string, typography: TypographyT) => {
   const component = (props: Record<string, any>) => {
@@ -27,5 +28,9 @@ const components = {
 type CustomReactMarkdownProps = ReactMarkdownOptions;
 
 export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
-  return <ReactMarkdown components={components}>{props.children}</ReactMarkdown>;
+  return (
+    <ReactMarkdown components={components} className="markdown">
+      {props.children}
+    </ReactMarkdown>
+  );
 };
