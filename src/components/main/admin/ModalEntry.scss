@@ -2,13 +2,39 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "../../../util";
-.entry-dialog {
+
+.mdc-drawer.drawer-right.entry-modal {
+  width: 360px;
+}
+
+.entry-modal {
+  .mdc-drawer__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px;
+    @include util.divider-border(bottom);
+    .mdc-drawer__title {
+      flex-grow: 1;
+      align-self: flex-start;
+      &::before {
+        height: 42px;
+      }
+      &::after {
+        content: none;
+      }
+    }
+    .mdc-linear-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
   .form {
-    width: 100%;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
     &-double {
       display: flex;
       .select-container {
@@ -18,14 +44,22 @@
         @include rtl.reflexive-box(margin, right, 16px);
       }
       .field {
-        width: 100%;
+        flex: auto 1;
         &-container {
           flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
         }
       }
-    }
-    &-container {
-      overflow: auto;
+      .half {
+        &:first-child {
+          @include rtl.reflexive-box(margin, right, 8px);
+        }
+        &:last-child {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
     }
     .mdc-text-field {
       margin-bottom: 16px;
@@ -136,8 +170,8 @@
         flex-direction: column;
       }
     }
-    .mdc-menu-surface--anchor .mdc-text-field {
-      width: 100%;
-    }
+  }
+  .mdc-menu-surface--anchor .mdc-text-field {
+    width: 100%;
   }
 }
