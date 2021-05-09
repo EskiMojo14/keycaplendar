@@ -6,15 +6,19 @@ service cloud.firestore {
       allow create, update: if request.auth.token.editor == true && request.auth.uid == request.resource.data.latestEditor || request.auth.token.designer == true && request.auth.token.nickname in request.resource.data.designer && request.auth.uid == request.resource.data.latestEditor;
       allow delete: if request.auth.token.editor == true;
     }
-    match /changelog/{action} {
-      allow read, delete: if request.auth.token.admin == true;
-      allow create: if true;
-      allow update: if false;
-    }
     match /users/{userId} {
       allow read, update: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
       allow delete: if request.auth != null && request.auth.uid == userId || request.auth.token.admin == true;
+    }
+    match /changelog/{action} {
+      allow read, delete: if request.auth.token.admin == true;
+      allow create: if false;
+      allow update: if false;
+    }
+    match /updates/{action} {
+      allow read;
+      allow write: if request.auth.token.admin == true;
     }
     match /app/{appInfo} {
       allow read;

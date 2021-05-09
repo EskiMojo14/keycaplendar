@@ -1,0 +1,25 @@
+.markdown {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 8px;
+    margin-bottom: 4px;
+    & + p {
+      margin-top: 4px;
+    }
+  }
+  p {
+    margin: 8px 0;
+  }
+  ul {
+    margin: 0;
+  }
+  code {
+    font-family: "Roboto Mono", monospace;
+    white-space: nowrap;
+    background-color: rgba(black, 0.1);
+  }
+}
