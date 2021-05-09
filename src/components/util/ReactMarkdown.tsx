@@ -6,7 +6,7 @@ import "./ReactMarkdown.scss";
 
 const typographyBuilder = (tag: string, typography: TypographyT) => {
   const component = (props: Record<string, any>) => {
-    const { node, ordered, inline, children, ...allProps } = props;
+    const { node, ordered, level, inline, children, ...allProps } = props;
     return (
       <Typography use={typography} tag={tag} {...allProps}>
         {children}
@@ -20,7 +20,10 @@ const typographyBuilder = (tag: string, typography: TypographyT) => {
 const components = {
   h1: typographyBuilder("h1", "headline5"),
   h2: typographyBuilder("h2", "headline6"),
-  h3: typographyBuilder("h3", "subtitle2"),
+  h3: typographyBuilder("h3", "overline"),
+  h4: typographyBuilder("h4", "subtitle1"),
+  h5: typographyBuilder("h4", "subtitle2"),
+  h6: typographyBuilder("h5", "caption"),
   p: typographyBuilder("p", "body2"),
   li: typographyBuilder("li", "body2"),
   code: typographyBuilder("code", "body2"),
