@@ -34,11 +34,11 @@ export function arrayIncludes<T>(arr: T[] | Readonly<T[]>, item: any): item is T
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
  * @param arr Array of items to be checked
- * @param callback Callback which takes each item and returns a boolean.
- * @returns
+ * @param callback Callback which takes each item and checks its type, returning `true` if the type matches.
+ * @returns If all items meet the callback requirement.
  */
 
-export function arrayEvery<T>(arr: any[], callback: (item: any) => boolean): arr is T[] {
+export function arrayEveryType<T>(arr: any[], callback: (item: any) => boolean): arr is T[] {
   return arr.every(callback);
 }
 

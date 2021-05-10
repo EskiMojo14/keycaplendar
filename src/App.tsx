@@ -36,7 +36,7 @@ import {
   addOrRemove,
   alphabeticalSort,
   alphabeticalSortProp,
-  arrayEvery,
+  arrayEveryType,
   arrayIncludes,
   hasKey,
   normalise,
@@ -215,7 +215,9 @@ class App extends React.Component<AppProps, AppState> {
           } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
             const array = val.split(" ").map((item) => item.replace("-", " "));
             if (param === "shipped") {
-              if (arrayEvery<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))) {
+              if (
+                arrayEveryType<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))
+              ) {
                 whitelistObj[param] = array;
               }
             } else {
