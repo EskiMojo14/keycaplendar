@@ -1,6 +1,6 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
-import { whitelistShipped } from "./constants";
+import { allPages, mainPages, whitelistShipped } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -20,6 +20,14 @@ export type Overwrite<T1, T2> = {
 /** Alias for standard HTML props. */
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
+
+/** Possible page names */
+
+export type Page = typeof allPages[number];
+
+/** Possible main page names */
+
+export type MainPage = typeof mainPages[number];
 
 /** Possible values for sort orders. */
 

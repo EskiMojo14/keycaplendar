@@ -1,7 +1,7 @@
 import React from "react";
 import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
-import { SortOrderType } from "./types";
+import { MainPage, Page, SortOrderType } from "./types";
 
 /** Character replacements to be used in `replaceFunction`. */
 
@@ -25,17 +25,35 @@ export const settingsFunctions: { [key: string]: string } = {
   density: "setDensity",
 };
 
+export const allPages = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+  "favorites",
+  "hidden",
+  "statistics",
+  "history",
+  "audit",
+  "users",
+  "images",
+  "updates",
+  "settings",
+] as const;
+
 /** Pages which adhere to the normal calendar format. */
 
-export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"] as const;
 
 /** Main pages which can be accessed without being logged in. */
 
-export const standardPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+export const standardPages: Page[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
 
 /** Pages to allow linking to using URL params. (e.g. {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
 
-export const urlPages: string[] = [
+export const urlPages: Page[] = [
   "calendar",
   "live",
   "ic",
@@ -50,20 +68,19 @@ export const urlPages: string[] = [
 
 /** Pages which require being logged in. */
 
-export const userPages: string[] = ["favorites", "hidden"];
+export const userPages: Page[] = ["favorites", "hidden"];
 
 /** Pages which can only be used by users with the admin permission. */
 
-export const adminPages: string[] = ["audit", "users", "images"];
+export const adminPages: Page[] = ["audit", "users", "images"];
 
 /** Formatted page title to use within nav and app bar. */
 
-export const pageTitle: { [key: string]: string } = {
+export const pageTitle: Record<Page, string> = {
   calendar: "Calendar",
   live: "Live GBs",
   ic: "IC Tracker",
   previous: "Previous Sets",
-  account: "Account",
   timeline: "Timeline",
   archive: "Archive",
   favorites: "Favorites",
@@ -79,7 +96,7 @@ export const pageTitle: { [key: string]: string } = {
 
 /** Corresponding icons for each page, to use in the nav drawer. */
 
-export const pageIcons: { [key: string]: RMWC.IconPropT } = {
+export const pageIcons: Record<Page, RMWC.IconPropT> = {
   calendar: iconObject(
     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
       <path d="M0 0h24v24H0V0z" fill="none" />
@@ -208,7 +225,7 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
 
 /** Default sorts for each page. */
 
-export const pageSort: { [key: string]: string } = {
+export const pageSort: Record<MainPage, string> = {
   calendar: "gbLaunch",
   live: "gbEnd",
   ic: "icDate",
@@ -221,7 +238,7 @@ export const pageSort: { [key: string]: string } = {
 
 /** Default sort orders for each page. */
 
-export const pageSortOrder: { [key: string]: SortOrderType } = {
+export const pageSortOrder: Record<MainPage, SortOrderType> = {
   calendar: "ascending",
   live: "ascending",
   ic: "descending",
@@ -234,7 +251,7 @@ export const pageSortOrder: { [key: string]: SortOrderType } = {
 
 /** Pages to default to descending sort order if specified sort is a date. */
 
-export const reverseSortDatePages = ["ic", "previous"];
+export const reverseSortDatePages: Page[] = ["ic", "previous"];
 
 /** Formatted names for each sort. */
 
@@ -249,7 +266,7 @@ export const sortNames: { [key: string]: string } = {
 
 /** Pages to *not* show specified sort on. */
 
-export const sortBlacklist: { [key: string]: string[] } = {
+export const sortBlacklist: { [key: string]: Page[] } = {
   profile: [],
   designer: [],
   vendor: ["ic", "archive", "favorites", "hidden"],

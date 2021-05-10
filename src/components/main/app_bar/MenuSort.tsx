@@ -1,7 +1,7 @@
 import React from "react";
 import { sortNames, sortBlacklist } from "../../../util/constants";
 import { capitalise } from "../../../util/functions";
-import { SortOrderType } from "../../../util/types";
+import { Page, SortOrderType } from "../../../util/types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { ListDivider } from "@rmwc/list";
 
@@ -10,7 +10,7 @@ type MenuSortProps = {
   setSort: (sort: string) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
   open: boolean;
-  page: string;
+  page: Page;
   sort: string;
   sortOrder: SortOrderType;
 };

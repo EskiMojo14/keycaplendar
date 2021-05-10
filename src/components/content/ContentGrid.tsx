@@ -1,8 +1,8 @@
 import React from "react";
 import moment from "moment";
-import { dateSorts, pageSort, pageSortOrder } from "../../util/constants";
-import { hasKey } from "../../util/functions";
-import { SetType, SortOrderType } from "../../util/types";
+import { dateSorts, mainPages, pageSort, pageSortOrder } from "../../util/constants";
+import { arrayIncludes, hasKey } from "../../util/functions";
+import { Page, SetType, SortOrderType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -16,7 +16,7 @@ type ContentGridProps = {
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
   groups: string[];
-  page: string;
+  page: Page;
   sets: SetType[];
   sort: string;
   sortOrder: SortOrderType;
@@ -47,8 +47,8 @@ export const ContentGrid = (props: ContentGridProps) => {
         return false;
       }
     });
-    const defaultSort = pageSort[props.page];
-    const defaultSortOrder = pageSortOrder[props.page];
+    const defaultSort = arrayIncludes(mainPages, props.page) ? pageSort[props.page] : "icDate";
+    const defaultSortOrder = arrayIncludes(mainPages, props.page) ? pageSortOrder[props.page] : "descending";
     const alphabeticalSort = (a: string, b: string) => {
       if (a > b) {
         return 1;

@@ -2,7 +2,7 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
@@ -23,7 +23,7 @@ type ElementImageProps = {
   image: string;
   link: string;
   live: boolean;
-  page: string;
+  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
