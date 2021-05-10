@@ -1,6 +1,6 @@
 import React from "react";
 import { hasKey } from "../../util/functions";
-import { StatisticsType } from "../../util/types";
+import { StatisticsType, StatsTab } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
@@ -11,7 +11,7 @@ type DialogStatisticsProps = {
   open: boolean;
   setStatistics: (prop: string, query: string) => void;
   statistics: StatisticsType;
-  statisticsTab: string;
+  statisticsTab: StatsTab;
 };
 
 type DialogStatisticsState = {

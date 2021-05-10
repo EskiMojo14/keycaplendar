@@ -1,6 +1,6 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
-import { allPages, allSorts, mainPages, whitelistShipped } from "./constants";
+import { allPages, allSorts, mainPages, statsTabs, whitelistShipped } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -135,6 +135,8 @@ export type Categories = "icDate" | "gbLaunch";
 export type Properties = "profile" | "designer" | "vendor";
 
 export type Sorts = "total" | "alphabetical";
+
+export type StatsTab = typeof statsTabs[number];
 
 export type StatisticsType = {
   summary: Categories;

@@ -47,9 +47,11 @@ type ContentHistoryProps = {
   allSets: SetType[];
 };
 
+type HistoryTab = typeof historyTabs[number];
+
 export const ContentHistory = (props: ContentHistoryProps) => {
-  const [tab, setTab] = useState("recent");
-  const setTabScroll = (tab: string) => {
+  const [tab, setTab] = useState<HistoryTab>("recent");
+  const setTabScroll = (tab: HistoryTab) => {
     setTab(tab);
     scrollTo(0, 0);
   };

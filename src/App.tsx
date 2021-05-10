@@ -58,6 +58,7 @@ import {
   OldPresetType,
   Page,
   SortType,
+  StatsTab,
 } from "./util/types";
 import "./App.scss";
 
@@ -71,7 +72,7 @@ type AppState = {
   device: string;
   bottomNav: boolean;
   page: Page;
-  statisticsTab: string;
+  statisticsTab: StatsTab;
   view: string;
   transition: boolean;
   sort: SortType;
@@ -230,7 +231,7 @@ class App extends React.Component<AppProps, AppState> {
     });
     if (params.has("statisticsTab")) {
       const urlTab = params.get("statisticsTab");
-      if (urlTab && statsTabs.includes(urlTab)) {
+      if (urlTab && arrayIncludes(statsTabs, urlTab)) {
         this.setStatisticsTab(urlTab);
       }
     }
@@ -881,7 +882,7 @@ class App extends React.Component<AppProps, AppState> {
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
     this.setState({ user: newUser });
   };
-  setStatisticsTab = (tab: string, clearUrl = true) => {
+  setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
     if (clearUrl) {

@@ -295,7 +295,7 @@ export const whitelistShipped = ["Shipped", "Not shipped"] as const;
 
 /** Whitelist params which can be specified in the URL (e.g. {@link https://keycaplendar.firebaseapp.com/?profile=GMK}) */
 
-export const whitelistParams: string[] = [
+export const whitelistParams = [
   "profile",
   "profiles",
   "shipped",
@@ -304,15 +304,15 @@ export const whitelistParams: string[] = [
   "vendorMode",
   "vendor",
   "vendors",
-];
+] as const;
 
 /** Tabs on the statistics page. */
 
-export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
+export const statsTabs = ["summary", "timelines", "status", "shipped", "duration", "vendors"] as const;
 
 /** Tabs on the history page. */
 
-export const historyTabs: string[] = ["recent", "changelog"];
+export const historyTabs = ["recent", "changelog"] as const;
 
 /** Formatted names for each main view. */
 
