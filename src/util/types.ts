@@ -1,49 +1,51 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
-import { whitelistShipped } from "./constants";
+import { allPages, allSorts, allViews, mainPages, statsTabs, whitelistShipped } from "./constants";
 
-/**
- * Alias for `Record<string, T>`.
- */
+/** Alias for `Record<string, T>`. */
 
 export type Obj<T = unknown> = Record<string, T>;
 
-/**
- * Makes specified keys optional.
- */
+/** Makes specified keys optional. */
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
-/**
- * Overwrite keys with a new object.
- */
+/** Overwrite keys with a new object. */
 
 export type Overwrite<T1, T2> = {
   [P in Exclude<keyof T1, keyof T2>]: T1[P];
 } &
   T2;
 
-/**
- * Alias for standard HTML props.
- */
+/** Alias for standard HTML props. */
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;
 
-/**
- * Possible values for sort orders.
- */
+/** Possible page names */
+
+export type Page = typeof allPages[number];
+
+/** Possible main page names */
+
+export type MainPage = typeof mainPages[number];
+
+/** Possible values for view. */
+
+export type ViewType = typeof allViews[number];
+
+/** Possible values for sort types. */
+
+export type SortType = typeof allSorts[number];
+
+/** Possible values for sort orders. */
 
 export type SortOrderType = "ascending" | "descending";
 
-/**
- * Sort params which are dates.
- */
+/** Sort params which are dates. */
 
 export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
 
-/**
- * Sort params which are arrays.
- */
+/** Sort params which are arrays. */
 
 export type ArraySortKeys = "designer";
 
@@ -51,7 +53,7 @@ export type WhitelistType = {
   /** Array of allowed profiles. */
   profiles: string[];
   /** Array of allowed shipped values. */
-  shipped: typeof whitelistShipped;
+  shipped: typeof whitelistShipped[number][];
   /** Regions to include. */
   regions: string[];
   /** Whether to `include` or `exclude` the specified `vendors`. */
@@ -138,6 +140,8 @@ export type Properties = "profile" | "designer" | "vendor";
 
 export type Sorts = "total" | "alphabetical";
 
+export type StatsTab = typeof statsTabs[number];
+
 export type StatisticsType = {
   summary: Categories;
   timelinesCat: Categories;
@@ -206,7 +210,7 @@ export type ImageType = {
 };
 
 export type Settings = {
-  view: string;
+  view: ViewType;
   bottomNav: boolean;
   applyTheme: string;
   lightTheme: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
@@ -9,7 +9,7 @@ type ViewListProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
-  page: string;
+  page: Page;
   sets: SetType[];
 };
 

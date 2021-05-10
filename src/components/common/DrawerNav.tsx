@@ -10,6 +10,7 @@ import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
 import moment from "moment";
+import { Page } from "../../util/types";
 
 const db = firebase.firestore();
 
@@ -17,13 +18,12 @@ type DrawerNavProps = {
   bottomNav: boolean;
   close: () => void;
   open: boolean;
-  page: string;
-  setPage: (page: string) => void;
-  view: string;
+  page: Page;
+  setPage: (page: Page) => void;
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
-  const setPage = (page: string) => {
+  const setPage = (page: Page) => {
     props.setPage(page);
     if (!dismissible) {
       props.close();

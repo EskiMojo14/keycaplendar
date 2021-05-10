@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import { ElementCard } from "./ElementCard";
 import "./ViewCard.scss";
 
@@ -9,7 +9,7 @@ type ViewCardProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  page: string;
+  page: Page;
   sets: SetType[];
 };
 

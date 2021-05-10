@@ -7,7 +7,15 @@ import firebase from "../../firebase";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { capitalise, iconObject, hasKey, addOrRemove } from "../../util/functions";
-import { QueueType, SetType, StatisticsSortType, StatisticsType, Categories, Properties } from "../../util/types";
+import {
+  QueueType,
+  SetType,
+  StatisticsSortType,
+  StatisticsType,
+  Categories,
+  Properties,
+  StatsTab,
+} from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -36,9 +44,9 @@ type ContentStatisticsProps = {
   bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
-  setStatisticsTab: (tab: string) => void;
+  setStatisticsTab: (tab: StatsTab) => void;
   snackbarQueue: QueueType;
-  statisticsTab: string;
+  statisticsTab: StatsTab;
 };
 
 type TimelineDataObject = {

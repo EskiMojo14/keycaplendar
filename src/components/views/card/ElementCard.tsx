@@ -4,7 +4,7 @@ import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -28,7 +28,7 @@ type ElementCardProps = {
   image: string;
   link: string;
   live: boolean;
-  page: string;
+  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;

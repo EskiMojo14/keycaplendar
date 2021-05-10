@@ -1,11 +1,9 @@
 import React from "react";
 import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
-import { SortOrderType } from "./types";
+import { MainPage, Page, SortOrderType, SortType, ViewType } from "./types";
 
-/**
- * Character replacements to be used in `replaceFunction`.
- */
+/** Character replacements to be used in `replaceFunction`. */
 
 export const replaceChars: [string, string][] = [
   ["β", "B"],
@@ -13,9 +11,7 @@ export const replaceChars: [string, string][] = [
   ["🅱️", "B"],
 ];
 
-/**
- * Stores name of corresponding set function for each setting.
- */
+/** Stores name of corresponding set function for each setting. */
 
 export const settingsFunctions: { [key: string]: string } = {
   view: "setView",
@@ -29,23 +25,37 @@ export const settingsFunctions: { [key: string]: string } = {
   density: "setDensity",
 };
 
-/**
- * Pages which adhere to the normal calendar format.
- */
+/** All possible pages. */
 
-export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"];
+export const allPages = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+  "favorites",
+  "hidden",
+  "statistics",
+  "history",
+  "audit",
+  "users",
+  "images",
+  "updates",
+  "settings",
+] as const;
 
-/**
- * Main pages which can be accessed without being logged in.
- */
+/** Pages which adhere to the normal calendar format. */
 
-export const standardPages: string[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"] as const;
 
-/**
- * Pages to allow linking to using URL params. (e.g. {@link https://keycaplendar.firebaseapp.com/?page=ic}).
- */
+/** Main pages which can be accessed without being logged in. */
 
-export const urlPages: string[] = [
+export const standardPages: Page[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+
+/** Pages to allow linking to using URL params. (e.g. {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
+
+export const urlPages: Page[] = [
   "calendar",
   "live",
   "ic",
@@ -58,28 +68,21 @@ export const urlPages: string[] = [
   "settings",
 ];
 
-/**
- * Pages which require being logged in.
- */
+/** Pages which require being logged in. */
 
-export const userPages: string[] = ["favorites", "hidden"];
+export const userPages: Page[] = ["favorites", "hidden"];
 
-/**
- * Pages which can only be used by users with the admin permission.
- */
+/** Pages which can only be used by users with the admin permission. */
 
-export const adminPages: string[] = ["audit", "users", "images"];
+export const adminPages: Page[] = ["audit", "users", "images"];
 
-/**
- * Formatted page title to use within nav and app bar.
- */
+/** Formatted page title to use within nav and app bar. */
 
-export const pageTitle: { [key: string]: string } = {
+export const pageTitle: Record<Page, string> = {
   calendar: "Calendar",
   live: "Live GBs",
   ic: "IC Tracker",
   previous: "Previous Sets",
-  account: "Account",
   timeline: "Timeline",
   archive: "Archive",
   favorites: "Favorites",
@@ -93,11 +96,9 @@ export const pageTitle: { [key: string]: string } = {
   settings: "Settings",
 };
 
-/**
- * Corresponding icons for each page, to use in the nav drawer.
- */
+/** Corresponding icons for each page, to use in the nav drawer. */
 
-export const pageIcons: { [key: string]: RMWC.IconPropT } = {
+export const pageIcons: Record<Page, RMWC.IconPropT> = {
   calendar: iconObject(
     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
       <path d="M0 0h24v24H0V0z" fill="none" />
@@ -224,11 +225,9 @@ export const pageIcons: { [key: string]: RMWC.IconPropT } = {
   ),
 };
 
-/**
- * Default sorts for each page.
- */
+/** Default sorts for each page. */
 
-export const pageSort: { [key: string]: string } = {
+export const pageSort: Record<MainPage, SortType> = {
   calendar: "gbLaunch",
   live: "gbEnd",
   ic: "icDate",
@@ -239,11 +238,9 @@ export const pageSort: { [key: string]: string } = {
   hidden: "profile",
 };
 
-/**
- * Default sort orders for each page.
- */
+/** Default sort orders for each page. */
 
-export const pageSortOrder: { [key: string]: SortOrderType } = {
+export const pageSortOrder: Record<MainPage, SortOrderType> = {
   calendar: "ascending",
   live: "ascending",
   ic: "descending",
@@ -254,17 +251,17 @@ export const pageSortOrder: { [key: string]: SortOrderType } = {
   hidden: "ascending",
 };
 
-/**
- * Pages to default to descending sort order if specified sort is a date.
- */
+/** Pages to default to descending sort order if specified sort is a date. */
 
-export const reverseSortDatePages = ["ic", "previous"];
+export const reverseSortDatePages: Page[] = ["ic", "previous"];
 
-/**
- * Formatted names for each sort.
- */
+/** All possible sort types. */
 
-export const sortNames: { [key: string]: string } = {
+export const allSorts = ["profile", "designer", "vendor", "icDate", "gbLaunch", "gbEnd"] as const;
+
+/** Formatted names for each sort. */
+
+export const sortNames: Record<SortType, string> = {
   profile: "Profile",
   designer: "Designer",
   vendor: "Vendor",
@@ -273,11 +270,9 @@ export const sortNames: { [key: string]: string } = {
   gbEnd: "End date",
 };
 
-/**
- * Pages to *not* show specified sort on.
- */
+/** Pages to *not* show specified sort on. */
 
-export const sortBlacklist: { [key: string]: string[] } = {
+export const sortBlacklist: Record<SortType, Page[]> = {
   profile: [],
   designer: [],
   vendor: ["ic", "archive", "favorites", "hidden"],
@@ -286,30 +281,21 @@ export const sortBlacklist: { [key: string]: string[] } = {
   gbEnd: ["ic", "timeline", "archive", "favorites", "hidden"],
 };
 
-/**
- * Sort params which are dates.
- */
+/** Sort params which are dates. */
 
-export const dateSorts = ["icDate", "gbLaunch", "gbEnd"];
+export const dateSorts: SortType[] = ["icDate", "gbLaunch", "gbEnd"];
 
-/**
- * Sort params which are arrays.
- */
+/** Sort params which are arrays. */
 
-export const arraySorts = ["designer"];
+export const arraySorts: SortType[] = ["designer"];
 
-/**
- * Possible values for shipped whitelist items.
- */
+/** Possible values for shipped whitelist items. */
 
-export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
+export const whitelistShipped = ["Shipped", "Not shipped"] as const;
 
-/**
- * Whitelist params which can be specified in the URL (e.g. {@link https://keycaplendar.firebaseapp.com/?profile=GMK})
- *
- */
+/** Whitelist params which can be specified in the URL (e.g. {@link https://keycaplendar.firebaseapp.com/?profile=GMK}) */
 
-export const whitelistParams: string[] = [
+export const whitelistParams = [
   "profile",
   "profiles",
   "shipped",
@@ -318,36 +304,32 @@ export const whitelistParams: string[] = [
   "vendorMode",
   "vendor",
   "vendors",
-];
+] as const;
 
-/**
- * Tabs on the statistics page.
- */
+/** Tabs on the statistics page. */
 
-export const statsTabs: string[] = ["summary", "timelines", "status", "shipped", "duration", "vendors"];
+export const statsTabs = ["summary", "timelines", "status", "shipped", "duration", "vendors"] as const;
 
-/**
- * Tabs on the history page.
- */
+/** Tabs on the history page. */
 
-export const historyTabs: string[] = ["recent", "changelog"];
+export const historyTabs = ["recent", "changelog"] as const;
 
-/**
- * Formatted names for each main view.
- */
+/** All possible views. */
 
-export const viewNames: { [key: string]: string } = {
+export const allViews = ["card", "list", "imageList", "compact"] as const;
+
+/** Formatted names for each main view. */
+
+export const viewNames: Record<ViewType, string> = {
   card: "Card",
   list: "List",
   imageList: "Image List",
   compact: "Compact",
 };
 
-/**
- * Corresponding icon for specified view, to be used in the app bar.
- */
+/** Corresponding icon for specified view, to be used in the app bar. */
 
-export const viewIcons: { [key: string]: RMWC.IconPropT } = {
+export const viewIcons: Record<ViewType, RMWC.IconPropT> = {
   card: iconObject(
     <div>
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -407,7 +389,7 @@ export const auditProperties = [
   "sales",
 ] as const;
 
-export const auditPropertiesFormatted = {
+export const auditPropertiesFormatted: Record<typeof auditProperties[number], string> = {
   profile: "Profile",
   colorway: "Colorway",
   designer: "Designer(s)",
@@ -421,4 +403,4 @@ export const auditPropertiesFormatted = {
   shipped: "Shipped",
   vendors: "Vendors",
   sales: "Sales",
-} as const;
+};

@@ -5,7 +5,7 @@ import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { WhitelistType, PresetType, QueueType } from "../../util/types";
+import { WhitelistType, PresetType, QueueType, SortType, ViewType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -27,10 +27,10 @@ type DrawerFilterProps = {
   profiles: string[];
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   snackbarQueue: QueueType;
-  sort: string;
+  sort: SortType;
   vendors: string[];
   regions: string[];
-  view: string;
+  view: ViewType;
   whitelist: WhitelistType;
 };
 
@@ -109,7 +109,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       const all = props[prop];
       props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, whitelistShipped);
+      props.setWhitelist(prop, [...whitelistShipped]);
     }
   };
 
@@ -144,7 +144,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         if (hasKey(whitelist, plural)) {
           const array = whitelist[plural];
           if (array instanceof Array && array.length === 1) {
-            params.set(param, array.map((item) => item.replace(" ", "-")).join(" "));
+            params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);
           }

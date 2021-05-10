@@ -1,17 +1,17 @@
 import React from "react";
-import { sortNames, sortBlacklist } from "../../../util/constants";
-import { capitalise } from "../../../util/functions";
-import { SortOrderType } from "../../../util/types";
+import { sortNames, sortBlacklist, allSorts } from "../../../util/constants";
+import { arrayIncludes, capitalise } from "../../../util/functions";
+import { Page, SortOrderType, SortType } from "../../../util/types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { ListDivider } from "@rmwc/list";
 
 type MenuSortProps = {
   onClose: () => void;
-  setSort: (sort: string) => void;
+  setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
   open: boolean;
-  page: string;
-  sort: string;
+  page: Page;
+  sort: SortType;
   sortOrder: SortOrderType;
 };
 
@@ -20,8 +20,8 @@ const sortOrders: SortOrderType[] = ["ascending", "descending"];
 export const MenuSort = (props: MenuSortProps) => {
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
-      {Object.keys(sortNames).map((key) => {
-        return sortBlacklist[key].includes(props.page) ? null : (
+      {allSorts.map((key) => {
+        return arrayIncludes(sortBlacklist[key], props.page) ? null : (
           <MenuItem selected={props.sort === key} onClick={() => props.setSort(key)} key={key}>
             {sortNames[key]}
           </MenuItem>

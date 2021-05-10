@@ -14,6 +14,7 @@ import { PrivacyPolicy } from "./components/pages/legal/Privacy";
 import { TermsOfService } from "./components/pages/legal/Terms";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import {
+  allPages,
   pageTitle,
   settingsFunctions,
   pageSort,
@@ -25,6 +26,9 @@ import {
   pageSortOrder,
   reverseSortDatePages,
   mainPages,
+  allSorts,
+  sortBlacklist,
+  whitelistShipped,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
@@ -32,6 +36,7 @@ import {
   addOrRemove,
   alphabeticalSort,
   alphabeticalSortProp,
+  arrayEveryType,
   arrayIncludes,
   hasKey,
   normalise,
@@ -51,6 +56,10 @@ import {
   UserPreferencesDoc,
   GlobalDoc,
   OldPresetType,
+  Page,
+  SortType,
+  StatsTab,
+  ViewType,
 } from "./util/types";
 import "./App.scss";
 
@@ -63,11 +72,11 @@ type AppProps = Record<string, never>;
 type AppState = {
   device: string;
   bottomNav: boolean;
-  page: string;
-  statisticsTab: string;
-  view: string;
+  page: Page;
+  statisticsTab: StatsTab;
+  view: ViewType;
   transition: boolean;
-  sort: string;
+  sort: SortType;
   sortOrder: SortOrderType;
   allProfiles: string[];
   allDesigners: string[];
@@ -103,7 +112,7 @@ class App extends React.Component<AppProps, AppState> {
   state: AppState = {
     device: "tablet",
     bottomNav: false,
-    page: "",
+    page: "images",
     statisticsTab: "summary",
     view: "card",
     transition: false,
@@ -164,20 +173,30 @@ class App extends React.Component<AppProps, AppState> {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
-      if ((pageQuery && urlPages.includes(pageQuery)) || (pageQuery && process.env.NODE_ENV === "development")) {
-        if (pageQuery !== "calendar") {
-          const sortQuery = params.get("sort");
-          const sortOrderQuery = params.get("sortOrder");
-          this.setState({
-            page: pageQuery,
-            sort: sortQuery ? sortQuery : pageSort[pageQuery],
-            sortOrder:
-              sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
-                ? sortOrderQuery
-                : pageSortOrder[pageQuery],
-          });
+      if (
+        arrayIncludes(urlPages, pageQuery) ||
+        (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development")
+      ) {
+        if (arrayIncludes(mainPages, pageQuery)) {
+          if (pageQuery === "calendar") {
+            this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+          } else {
+            const sortQuery = params.get("sort");
+            const sortOrderQuery = params.get("sortOrder");
+            this.setState({
+              page: pageQuery,
+              sort:
+                arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
+                  ? sortQuery
+                  : pageSort[pageQuery],
+              sortOrder:
+                sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
+                  ? sortOrderQuery
+                  : pageSortOrder[pageQuery],
+            });
+          }
         } else {
-          this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+          this.setState({ page: pageQuery });
         }
       }
     } else {
@@ -195,7 +214,15 @@ class App extends React.Component<AppProps, AppState> {
             }
           } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
             const array = val.split(" ").map((item) => item.replace("-", " "));
-            whitelistObj[param] = array;
+            if (param === "shipped") {
+              if (
+                arrayEveryType<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))
+              ) {
+                whitelistObj[param] = array;
+              }
+            } else {
+              whitelistObj[param] = array;
+            }
           } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
             whitelistObj[param] = val;
           }
@@ -207,7 +234,7 @@ class App extends React.Component<AppProps, AppState> {
     });
     if (params.has("statisticsTab")) {
       const urlTab = params.get("statisticsTab");
-      if (urlTab && statsTabs.includes(urlTab)) {
+      if (urlTab && arrayIncludes(statsTabs, urlTab)) {
         this.setStatisticsTab(urlTab);
       }
     }
@@ -306,7 +333,7 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
   };
-  setView = (view: string, write = true) => {
+  setView = (view: ViewType, write = true) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {
@@ -324,13 +351,17 @@ class App extends React.Component<AppProps, AppState> {
       this.syncSetting("view", view);
     }
   };
-  setPage = (page: string) => {
-    if (page !== this.state.page && !this.state.loading) {
+  setPage = (page: Page) => {
+    if (page !== this.state.page && !this.state.loading && arrayIncludes(allPages, page)) {
       this.setState({ transition: true });
       setTimeout(() => {
-        this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
+        if (arrayIncludes(mainPages, page)) {
+          this.filterData(page, this.state.allSets, pageSort[page], pageSortOrder[page]);
+          this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
+        } else {
+          this.setState({ page: page });
+        }
         this.setSearch("");
-        this.filterData(page, this.state.allSets, pageSort[page], pageSortOrder[page]);
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -805,14 +836,16 @@ class App extends React.Component<AppProps, AppState> {
       this.syncSetting("density", density);
     }
   };
-  setSort = (sort: string, clearUrl = true) => {
+  setSort = (sort: SortType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
-    if (dateSorts.includes(sort) && reverseSortDatePages.includes(this.state.page)) {
+    if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(this.state.page)) {
       sortOrder = "descending";
     }
-    this.setState({ sort: sort, sortOrder: sortOrder });
-    this.createGroups(sort, sortOrder);
+    if (arrayIncludes(allSorts, sort)) {
+      this.setState({ sort: sort, sortOrder: sortOrder });
+      this.createGroups(sort, sortOrder);
+    }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sort");
@@ -852,7 +885,7 @@ class App extends React.Component<AppProps, AppState> {
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
     this.setState({ user: newUser });
   };
-  setStatisticsTab = (tab: string, clearUrl = true) => {
+  setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     this.setState({ statisticsTab: tab });
     if (clearUrl) {
@@ -914,7 +947,7 @@ class App extends React.Component<AppProps, AppState> {
         if (index === array.length - 1) {
           if (params.has("page")) {
             const page = params.get("page");
-            if (page) {
+            if (page && arrayIncludes(allPages, page)) {
               window.history.pushState(
                 {
                   page: page,

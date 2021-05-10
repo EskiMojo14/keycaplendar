@@ -1,18 +1,19 @@
 import React from "react";
 import { Menu, MenuItem } from "@rmwc/menu";
-import { viewNames } from "../../../util/constants";
+import { allViews, viewNames } from "../../../util/constants";
+import { ViewType } from "../../../util/types";
 
 type MenuViewProps = {
   onClose: () => void;
   open: boolean;
-  setView: (view: string) => void;
-  view: string;
+  setView: (view: ViewType) => void;
+  view: ViewType;
 };
 
 export const MenuView = (props: MenuViewProps) => {
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
-      {Object.keys(viewNames).map((key) => {
+      {allViews.map((key) => {
         return (
           <MenuItem key={key} selected={props.view === key} onClick={() => props.setView(key)}>
             {viewNames[key]}

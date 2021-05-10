@@ -2,8 +2,18 @@ import React, { useState, useContext, useEffect } from "react";
 import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
-import { openModal, closeModal } from "../util/functions";
-import { WhitelistType, QueueType, SetType, SortOrderType, PresetType } from "../util/types";
+import { openModal, closeModal, arrayIncludes } from "../util/functions";
+import {
+  WhitelistType,
+  QueueType,
+  SetType,
+  SortOrderType,
+  PresetType,
+  Page,
+  SortType,
+  StatsTab,
+  ViewType,
+} from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -36,7 +46,7 @@ type ContentProps = {
   lightTheme: string;
   loading: boolean;
   manualTheme: boolean;
-  page: string;
+  page: Page;
   search: string;
   setApplyTheme: (applyTheme: string) => void;
   setBottomNav: (bottomNav: boolean) => void;
@@ -45,23 +55,23 @@ type ContentProps = {
   setFromTimeTheme: (fromTimeTheme: string) => void;
   setLightTheme: (lightTheme: string) => void;
   setManualTheme: (manualTheme: boolean) => void;
-  setPage: (page: string) => void;
+  setPage: (page: Page) => void;
   setSearch: (search: string) => void;
-  setSort: (sort: string) => void;
+  setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  setStatisticsTab: (tab: string) => void;
+  setStatisticsTab: (tab: StatsTab) => void;
   setToTimeTheme: (toTimeTheme: string) => void;
-  setView: (view: string) => void;
+  setView: (view: ViewType) => void;
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   sets: SetType[];
   snackbarQueue: QueueType;
-  sort: string;
+  sort: SortType;
   sortOrder: SortOrderType;
-  statisticsTab: string;
+  statisticsTab: StatsTab;
   toTimeTheme: string;
   toggleLichTheme: () => void;
   toggleLoading: () => void;
-  view: string;
+  view: ViewType;
   whitelist: WhitelistType;
 };
 
@@ -92,7 +102,7 @@ export const Content = (props: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = mainPages.includes(props.page) ? (
+  const contentMain = arrayIncludes(mainPages, props.page) ? (
     <ContentMain
       bottomNav={props.bottomNav}
       navOpen={navOpen}
@@ -197,13 +207,12 @@ export const Content = (props: ContentProps) => {
   return (
     <div
       className={classNames(props.className, props.page, "app-container", {
-        "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && mainPages.includes(props.page),
+        "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && arrayIncludes(mainPages, props.page),
         "bottom-nav": props.bottomNav,
       })}
     >
       <DrawerNav
         bottomNav={props.bottomNav}
-        view={props.view}
         open={navOpen}
         close={closeNav}
         page={props.page}
