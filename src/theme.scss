@@ -1144,6 +1144,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         @include chips.ink-color(map-get($variables, text-disabled));
       }
     }
+    .mdc-typography--overline,
+    .mdc-typography--caption {
+      color: map-get($variables, text-medium);
+    }
+    .mdc-typography--headline4,
+    .preview,
+    .mdc-typography--body2,
+    .mdc-form-field {
+      color: map-get($variables, text-high);
+    }
+    a {
+      color: map-get($variables, primary);
+    }
   }
   .image-upload {
     &-title {
