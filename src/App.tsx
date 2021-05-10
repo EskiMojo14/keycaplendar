@@ -26,6 +26,8 @@ import {
   pageSortOrder,
   reverseSortDatePages,
   mainPages,
+  allSorts,
+  sortBlacklist,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
@@ -53,6 +55,7 @@ import {
   GlobalDoc,
   OldPresetType,
   Page,
+  SortType,
 } from "./util/types";
 import "./App.scss";
 
@@ -69,7 +72,7 @@ type AppState = {
   statisticsTab: string;
   view: string;
   transition: boolean;
-  sort: string;
+  sort: SortType;
   sortOrder: SortOrderType;
   allProfiles: string[];
   allDesigners: string[];
@@ -178,7 +181,10 @@ class App extends React.Component<AppProps, AppState> {
             const sortOrderQuery = params.get("sortOrder");
             this.setState({
               page: pageQuery,
-              sort: sortQuery ? sortQuery : pageSort[pageQuery],
+              sort:
+                arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
+                  ? sortQuery
+                  : pageSort[pageQuery],
               sortOrder:
                 sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
                   ? sortOrderQuery
@@ -818,14 +824,16 @@ class App extends React.Component<AppProps, AppState> {
       this.syncSetting("density", density);
     }
   };
-  setSort = (sort: string, clearUrl = true) => {
+  setSort = (sort: SortType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
-    if (dateSorts.includes(sort) && reverseSortDatePages.includes(this.state.page)) {
+    if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(this.state.page)) {
       sortOrder = "descending";
     }
-    this.setState({ sort: sort, sortOrder: sortOrder });
-    this.createGroups(sort, sortOrder);
+    if (arrayIncludes(allSorts, sort)) {
+      this.setState({ sort: sort, sortOrder: sortOrder });
+      this.createGroups(sort, sortOrder);
+    }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sort");

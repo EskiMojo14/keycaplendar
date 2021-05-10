@@ -1,7 +1,7 @@
 import React from "react";
 import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
-import { MainPage, Page, SortOrderType } from "./types";
+import { MainPage, Page, SortOrderType, SortType } from "./types";
 
 /** Character replacements to be used in `replaceFunction`. */
 
@@ -24,6 +24,8 @@ export const settingsFunctions: { [key: string]: string } = {
   toTimeTheme: "setToTimeTheme",
   density: "setDensity",
 };
+
+/** All possible pages. */
 
 export const allPages = [
   "calendar",
@@ -225,7 +227,7 @@ export const pageIcons: Record<Page, RMWC.IconPropT> = {
 
 /** Default sorts for each page. */
 
-export const pageSort: Record<MainPage, string> = {
+export const pageSort: Record<MainPage, SortType> = {
   calendar: "gbLaunch",
   live: "gbEnd",
   ic: "icDate",
@@ -253,9 +255,13 @@ export const pageSortOrder: Record<MainPage, SortOrderType> = {
 
 export const reverseSortDatePages: Page[] = ["ic", "previous"];
 
+/** All possible sort types. */
+
+export const allSorts = ["profile", "designer", "vendor", "icDate", "gbLaunch", "gbEnd"] as const;
+
 /** Formatted names for each sort. */
 
-export const sortNames: { [key: string]: string } = {
+export const sortNames: Record<SortType, string> = {
   profile: "Profile",
   designer: "Designer",
   vendor: "Vendor",
@@ -266,7 +272,7 @@ export const sortNames: { [key: string]: string } = {
 
 /** Pages to *not* show specified sort on. */
 
-export const sortBlacklist: { [key: string]: Page[] } = {
+export const sortBlacklist: Record<SortType, Page[]> = {
   profile: [],
   designer: [],
   vendor: ["ic", "archive", "favorites", "hidden"],
@@ -277,11 +283,11 @@ export const sortBlacklist: { [key: string]: Page[] } = {
 
 /** Sort params which are dates. */
 
-export const dateSorts = ["icDate", "gbLaunch", "gbEnd"];
+export const dateSorts: SortType[] = ["icDate", "gbLaunch", "gbEnd"];
 
 /** Sort params which are arrays. */
 
-export const arraySorts = ["designer"];
+export const arraySorts: SortType[] = ["designer"];
 
 /** Possible values for shipped whitelist items. */
 

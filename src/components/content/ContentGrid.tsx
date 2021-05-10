@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import { dateSorts, mainPages, pageSort, pageSortOrder } from "../../util/constants";
 import { arrayIncludes, hasKey } from "../../util/functions";
-import { Page, SetType, SortOrderType } from "../../util/types";
+import { Page, SetType, SortOrderType, SortType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -18,33 +18,29 @@ type ContentGridProps = {
   groups: string[];
   page: Page;
   sets: SetType[];
-  sort: string;
+  sort: SortType;
   sortOrder: SortOrderType;
   view: string;
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
-  const filterSets = (sets: SetType[], group: string, sort: string) => {
+  const filterSets = (sets: SetType[], group: string, sort: SortType) => {
     const filteredSets = sets.filter((set) => {
-      if (hasKey(set, sort) || sort === "vendor") {
-        if (dateSorts.includes(sort) && sort !== "vendor") {
-          const val = set[sort];
-          const setDate = typeof val === "string" ? moment.utc(val) : null;
-          const setMonth = setDate ? setDate.format("MMMM YYYY") : null;
-          return setMonth && setMonth === group;
-        } else if (sort === "vendor") {
-          if (set.vendors) {
-            return set.vendors.map((vendor) => vendor.name).includes(group);
-          } else {
-            return false;
-          }
-        } else if (sort === "designer") {
-          return set.designer.includes(group);
+      if (dateSorts.includes(sort) && sort !== "vendor") {
+        const val = set[sort];
+        const setDate = typeof val === "string" ? moment.utc(val) : null;
+        const setMonth = setDate ? setDate.format("MMMM YYYY") : null;
+        return setMonth && setMonth === group;
+      } else if (sort === "vendor") {
+        if (set.vendors) {
+          return set.vendors.map((vendor) => vendor.name).includes(group);
         } else {
-          return set[sort] === group;
+          return false;
         }
+      } else if (sort === "designer") {
+        return set.designer.includes(group);
       } else {
-        return false;
+        return set[sort] === group;
       }
     });
     const defaultSort = arrayIncludes(mainPages, props.page) ? pageSort[props.page] : "icDate";

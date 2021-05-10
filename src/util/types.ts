@@ -1,6 +1,6 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
-import { allPages, mainPages, whitelistShipped } from "./constants";
+import { allPages, allSorts, mainPages, whitelistShipped } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -28,6 +28,10 @@ export type Page = typeof allPages[number];
 /** Possible main page names */
 
 export type MainPage = typeof mainPages[number];
+
+/** Possible values for types. */
+
+export type SortType = typeof allSorts[number];
 
 /** Possible values for sort orders. */
 
