@@ -1,8 +1,5 @@
 import React from "react";
-import moment from "moment";
-import { dateSorts, mainPages, pageSort, pageSortOrder } from "../../util/constants";
-import { arrayIncludes, hasKey } from "../../util/functions";
-import { Page, SetType, SortOrderType, SortType, ViewType } from "../../util/types";
+import { Page, SetGroup, SetType, ViewType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -15,84 +12,12 @@ type ContentGridProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  groups: string[];
   page: Page;
-  sets: SetType[];
-  sort: SortType;
-  sortOrder: SortOrderType;
+  setGroups: SetGroup[];
   view: ViewType;
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
-  const filterSets = (sets: SetType[], group: string, sort: SortType) => {
-    const filteredSets = sets.filter((set) => {
-      if (dateSorts.includes(sort) && sort !== "vendor") {
-        const val = set[sort];
-        const setDate = typeof val === "string" ? moment.utc(val) : null;
-        const setMonth = setDate ? setDate.format("MMMM YYYY") : null;
-        return setMonth && setMonth === group;
-      } else if (sort === "vendor") {
-        if (set.vendors) {
-          return set.vendors.map((vendor) => vendor.name).includes(group);
-        } else {
-          return false;
-        }
-      } else if (sort === "designer") {
-        return set.designer.includes(group);
-      } else {
-        return set[sort] === group;
-      }
-    });
-    const defaultSort = arrayIncludes(mainPages, props.page) ? pageSort[props.page] : "icDate";
-    const defaultSortOrder = arrayIncludes(mainPages, props.page) ? pageSortOrder[props.page] : "descending";
-    const alphabeticalSort = (a: string, b: string) => {
-      if (a > b) {
-        return 1;
-      } else if (a < b) {
-        return -1;
-      }
-      return 0;
-    };
-    const dateSort = (a: SetType, b: SetType, prop = props.sort, sortOrder = props.sortOrder) => {
-      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
-      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (hasKey(a, prop) && hasKey(b, prop)) {
-        const aProp = a[prop];
-        const aDate = aProp && typeof aProp === "string" && !aProp.includes("Q") ? moment.utc(aProp) : null;
-        const bProp = b[prop];
-        const bDate = bProp && typeof bProp === "string" && !bProp.includes("Q") ? moment.utc(bProp) : null;
-        const returnVal = sortOrder === "ascending" ? 1 : -1;
-        if (aDate && bDate) {
-          if (aDate > bDate) {
-            return returnVal;
-          } else if (aDate < bDate) {
-            return -returnVal;
-          }
-          return alphabeticalSort(aName, bName);
-        }
-        return alphabeticalSort(aName, bName);
-      }
-      return alphabeticalSort(aName, bName);
-    };
-    filteredSets.sort((a, b) => {
-      const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
-      const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (dateSorts.includes(props.sort)) {
-        if (props.sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
-          if (a.gbMonth && b.gbMonth) {
-            return alphabeticalSort(aName, bName);
-          } else {
-            return a.gbMonth ? 1 : -1;
-          }
-        }
-        return dateSort(a, b, props.sort, props.sortOrder);
-      } else if (dateSorts.includes(defaultSort)) {
-        return dateSort(a, b, defaultSort, defaultSortOrder);
-      }
-      return alphabeticalSort(aName, bName);
-    });
-    return filteredSets;
-  };
   const createGroup = (sets: SetType[]) => {
     if (props.view === "card") {
       return (
@@ -139,16 +64,15 @@ export const ContentGrid = (props: ContentGridProps) => {
   };
   return (
     <div className="content-grid">
-      {props.groups.map((value) => {
-        const filteredSets = filterSets(props.sets, value, props.sort);
+      {props.setGroups.map((group) => {
         return (
-          <div className="outer-container" key={value}>
+          <div className="outer-container" key={group.title}>
             <div className="subheader">
               <Typography use="caption">
-                {value} <b>{`(${filteredSets.length})`}</b>
+                {group.title} <b>{`(${group.sets.length})`}</b>
               </Typography>
             </div>
-            {createGroup(filteredSets)}
+            {createGroup(group.sets)}
           </div>
         );
       })}

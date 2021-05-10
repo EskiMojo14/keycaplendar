@@ -12,6 +12,7 @@ import {
   Page,
   SortType,
   ViewType,
+  SetGroup,
 } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -36,7 +37,6 @@ type ContentMainProps = {
   openNav: () => void;
   page: Page;
   content: boolean;
-  groups: string[];
   sort: SortType;
   setSort: (sort: SortType) => void;
   sortOrder: SortOrderType;
@@ -47,6 +47,7 @@ type ContentMainProps = {
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;
   sets: SetType[];
+  setGroups: SetGroup[];
   allDesigners: string[];
   allProfiles: string[];
   allVendors: string[];
@@ -282,10 +283,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const content = props.content ? (
     <ContentGrid
-      groups={props.groups}
-      sets={props.sets}
-      sort={props.sort}
-      sortOrder={props.sortOrder}
+      setGroups={props.setGroups}
       page={props.page}
       view={props.view}
       details={openDetails}
