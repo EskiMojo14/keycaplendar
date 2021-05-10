@@ -49,7 +49,7 @@ export type WhitelistType = {
   /** Array of allowed profiles. */
   profiles: string[];
   /** Array of allowed shipped values. */
-  shipped: typeof whitelistShipped;
+  shipped: typeof whitelistShipped[number][];
   /** Regions to include. */
   regions: string[];
   /** Whether to `include` or `exclude` the specified `vendors`. */

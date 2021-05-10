@@ -291,7 +291,7 @@ export const arraySorts: SortType[] = ["designer"];
 
 /** Possible values for shipped whitelist items. */
 
-export const whitelistShipped: string[] = ["Shipped", "Not shipped"];
+export const whitelistShipped = ["Shipped", "Not shipped"] as const;
 
 /** Whitelist params which can be specified in the URL (e.g. {@link https://keycaplendar.firebaseapp.com/?profile=GMK}) */
 

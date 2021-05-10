@@ -28,6 +28,7 @@ import {
   mainPages,
   allSorts,
   sortBlacklist,
+  whitelistShipped,
 } from "./util/constants";
 import { Interval, Preset } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
@@ -35,6 +36,7 @@ import {
   addOrRemove,
   alphabeticalSort,
   alphabeticalSortProp,
+  arrayEvery,
   arrayIncludes,
   hasKey,
   normalise,
@@ -210,7 +212,13 @@ class App extends React.Component<AppProps, AppState> {
             }
           } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
             const array = val.split(" ").map((item) => item.replace("-", " "));
-            whitelistObj[param] = array;
+            if (param === "shipped") {
+              if (arrayEvery<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))) {
+                whitelistObj[param] = array;
+              }
+            } else {
+              whitelistObj[param] = array;
+            }
           } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
             whitelistObj[param] = val;
           }

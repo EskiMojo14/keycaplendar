@@ -109,7 +109,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       const all = props[prop];
       props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, whitelistShipped);
+      props.setWhitelist(prop, [...whitelistShipped]);
     }
   };
 
@@ -144,7 +144,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         if (hasKey(whitelist, plural)) {
           const array = whitelist[plural];
           if (array instanceof Array && array.length === 1) {
-            params.set(param, array.map((item) => item.replace(" ", "-")).join(" "));
+            params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);
           }

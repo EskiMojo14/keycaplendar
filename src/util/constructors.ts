@@ -40,7 +40,7 @@ export class Whitelist {
     favorites = false,
     hidden = false,
     profiles: string[] = [],
-    shipped: string[] = whitelistShipped,
+    shipped: typeof whitelistShipped[number][] = [...whitelistShipped],
     vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
     edited: string[] = []
@@ -84,7 +84,7 @@ export class Preset {
     favorites = false,
     hidden = false,
     profiles: string[] = [],
-    shipped: string[] = [],
+    shipped: typeof whitelistShipped[number][] = [],
     regions: string[] = [],
     vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
