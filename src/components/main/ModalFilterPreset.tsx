@@ -6,27 +6,31 @@ import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
+import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
-import "./DrawerFilterPreset.scss";
+import "./ModalFilterPreset.scss";
 
-type DrawerFilterPresetProps = {
+type ModalFilterPresetProps = {
   close: () => void;
   open: boolean;
   preset: PresetType;
+  device: string;
 };
 
-type DrawerFilterPresetState = {
+type ModalFilterPresetState = {
   name: string;
   new: boolean;
 };
 
-export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps, DrawerFilterPresetState> {
-  state: DrawerFilterPresetState = {
+export class ModalFilterPreset extends React.Component<ModalFilterPresetProps, ModalFilterPresetState> {
+  state: ModalFilterPresetState = {
     name: "",
     new: true,
   };
-  componentDidUpdate = (prevProps: DrawerFilterPresetProps) => {
+  componentDidUpdate = (prevProps: ModalFilterPresetProps) => {
     if (this.props.preset.name !== prevProps.preset.name) {
       this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
     }
@@ -57,15 +61,51 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
     }
   };
   render() {
+    const useDrawer = this.props.device !== "mobile";
     return (
-      <Drawer modal open={this.props.open} onClose={this.props.close} className="filter-preset-drawer drawer-right">
-        <DrawerHeader>
-          <DrawerTitle>
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => (
+          <Drawer modal open={this.props.open} onClose={this.props.close} className="drawer-right filter-preset-modal">
+            {children}
+          </Drawer>
+        )}
+        falseWrapper={(children) => (
+          <FullScreenDialog open={this.props.open} onClose={this.props.close} className="filter-preset-modal">
+            {children}
+          </FullScreenDialog>
+        )}
+      >
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
+          falseWrapper={(children) => (
+            <FullScreenDialogAppBar>
+              <TopAppBarRow>{children}</TopAppBarRow>
+            </FullScreenDialogAppBar>
+          )}
+        >
+          <BoolWrapper
+            condition={useDrawer}
+            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
+            falseWrapper={(children) => (
+              <TopAppBarSection alignStart>
+                <TopAppBarNavigationIcon icon="close" onClick={this.props.close} />
+                <TopAppBarTitle>{children}</TopAppBarTitle>
+              </TopAppBarSection>
+            )}
+          >
             {this.state.new ? "Create" : "Modify"}
             {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
-          </DrawerTitle>
-          <Button label="Save" disabled={!this.state.name} outlined onClick={this.savePreset} />
-        </DrawerHeader>
+          </BoolWrapper>
+
+          <ConditionalWrapper
+            condition={!useDrawer}
+            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          >
+            <Button label="Save" disabled={!this.state.name} outlined onClick={this.savePreset} />
+          </ConditionalWrapper>
+        </BoolWrapper>
         <div className="form-container">
           <TextField
             outlined
@@ -77,7 +117,11 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
             required
           />
         </div>
-        <DrawerContent>
+        <BoolWrapper
+          condition={useDrawer}
+          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        >
           <div className="group">
             <div className="subheader">
               <Typography use="caption">Favorites</Typography>
@@ -156,12 +200,12 @@ export class DrawerFilterPreset extends React.Component<DrawerFilterPresetProps,
               </ChipSet>
             </div>
           </div>
-        </DrawerContent>
-      </Drawer>
+        </BoolWrapper>
+      </BoolWrapper>
     );
   }
 }
 
-DrawerFilterPreset.contextType = UserContext;
+ModalFilterPreset.contextType = UserContext;
 
-export default DrawerFilterPreset;
+export default ModalFilterPreset;
