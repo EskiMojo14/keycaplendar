@@ -20,7 +20,6 @@ type DrawerNavProps = {
   open: boolean;
   page: Page;
   setPage: (page: Page) => void;
-  view: string;
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {

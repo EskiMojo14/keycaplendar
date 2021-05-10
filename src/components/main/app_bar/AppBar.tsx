@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { DeviceContext } from "../../../util/contexts";
 import { useBoolStates } from "../../../util/functions";
-import { Page, SetType, SortOrderType, SortType } from "../../../util/types";
+import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -31,11 +31,11 @@ type AppBarProps = {
   setSearch: (search: string) => void;
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  setView: (view: string) => void;
+  setView: (view: ViewType) => void;
   sets: SetType[];
   sort: SortType;
   sortOrder: SortOrderType;
-  view: string;
+  view: ViewType;
 };
 
 export const AppBar = (props: AppBarProps) => {

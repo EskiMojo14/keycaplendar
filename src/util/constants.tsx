@@ -1,7 +1,7 @@
 import React from "react";
 import * as RMWC from "@rmwc/types";
 import { iconObject } from "./functions";
-import { MainPage, Page, SortOrderType, SortType } from "./types";
+import { MainPage, Page, SortOrderType, SortType, ViewType } from "./types";
 
 /** Character replacements to be used in `replaceFunction`. */
 
@@ -314,9 +314,13 @@ export const statsTabs = ["summary", "timelines", "status", "shipped", "duration
 
 export const historyTabs = ["recent", "changelog"] as const;
 
+/** All possible views. */
+
+export const allViews = ["card", "list", "imageList", "compact"] as const;
+
 /** Formatted names for each main view. */
 
-export const viewNames: { [key: string]: string } = {
+export const viewNames: Record<ViewType, string> = {
   card: "Card",
   list: "List",
   imageList: "Image List",
@@ -325,7 +329,7 @@ export const viewNames: { [key: string]: string } = {
 
 /** Corresponding icon for specified view, to be used in the app bar. */
 
-export const viewIcons: { [key: string]: RMWC.IconPropT } = {
+export const viewIcons: Record<ViewType, RMWC.IconPropT> = {
   card: iconObject(
     <div>
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -385,7 +389,7 @@ export const auditProperties = [
   "sales",
 ] as const;
 
-export const auditPropertiesFormatted = {
+export const auditPropertiesFormatted: Record<typeof auditProperties[number], string> = {
   profile: "Profile",
   colorway: "Colorway",
   designer: "Designer(s)",
@@ -399,4 +403,4 @@ export const auditPropertiesFormatted = {
   shipped: "Shipped",
   vendors: "Vendors",
   sales: "Sales",
-} as const;
+};

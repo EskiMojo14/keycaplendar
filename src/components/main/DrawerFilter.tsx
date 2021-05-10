@@ -5,7 +5,7 @@ import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { WhitelistType, PresetType, QueueType, SortType } from "../../util/types";
+import { WhitelistType, PresetType, QueueType, SortType, ViewType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -30,7 +30,7 @@ type DrawerFilterProps = {
   sort: SortType;
   vendors: string[];
   regions: string[];
-  view: string;
+  view: ViewType;
   whitelist: WhitelistType;
 };
 

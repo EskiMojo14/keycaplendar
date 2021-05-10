@@ -1,6 +1,6 @@
 import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
-import { allPages, allSorts, mainPages, statsTabs, whitelistShipped } from "./constants";
+import { allPages, allSorts, allViews, mainPages, statsTabs, whitelistShipped } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -29,7 +29,11 @@ export type Page = typeof allPages[number];
 
 export type MainPage = typeof mainPages[number];
 
-/** Possible values for types. */
+/** Possible values for view. */
+
+export type ViewType = typeof allViews[number];
+
+/** Possible values for sort types. */
 
 export type SortType = typeof allSorts[number];
 
@@ -206,7 +210,7 @@ export type ImageType = {
 };
 
 export type Settings = {
-  view: string;
+  view: ViewType;
   bottomNav: boolean;
   applyTheme: string;
   lightTheme: string;

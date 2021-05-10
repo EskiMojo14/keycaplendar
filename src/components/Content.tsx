@@ -3,7 +3,17 @@ import classNames from "classnames";
 import { UserContext, DeviceContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
-import { WhitelistType, QueueType, SetType, SortOrderType, PresetType, Page, SortType, StatsTab } from "../util/types";
+import {
+  WhitelistType,
+  QueueType,
+  SetType,
+  SortOrderType,
+  PresetType,
+  Page,
+  SortType,
+  StatsTab,
+  ViewType,
+} from "../util/types";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -51,7 +61,7 @@ type ContentProps = {
   setSortOrder: (sortOrder: SortOrderType) => void;
   setStatisticsTab: (tab: StatsTab) => void;
   setToTimeTheme: (toTimeTheme: string) => void;
-  setView: (view: string) => void;
+  setView: (view: ViewType) => void;
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   sets: SetType[];
   snackbarQueue: QueueType;
@@ -61,7 +71,7 @@ type ContentProps = {
   toTimeTheme: string;
   toggleLichTheme: () => void;
   toggleLoading: () => void;
-  view: string;
+  view: ViewType;
   whitelist: WhitelistType;
 };
 
@@ -203,7 +213,6 @@ export const Content = (props: ContentProps) => {
     >
       <DrawerNav
         bottomNav={props.bottomNav}
-        view={props.view}
         open={navOpen}
         close={closeNav}
         page={props.page}

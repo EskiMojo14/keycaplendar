@@ -59,6 +59,7 @@ import {
   Page,
   SortType,
   StatsTab,
+  ViewType,
 } from "./util/types";
 import "./App.scss";
 
@@ -73,7 +74,7 @@ type AppState = {
   bottomNav: boolean;
   page: Page;
   statisticsTab: StatsTab;
-  view: string;
+  view: ViewType;
   transition: boolean;
   sort: SortType;
   sortOrder: SortOrderType;
@@ -330,7 +331,7 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
   };
-  setView = (view: string, write = true) => {
+  setView = (view: ViewType, write = true) => {
     if (view !== this.state.view && !this.state.loading) {
       this.setState({ transition: true });
       setTimeout(() => {

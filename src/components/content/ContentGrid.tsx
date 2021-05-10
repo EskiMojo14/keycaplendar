@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 import { dateSorts, mainPages, pageSort, pageSortOrder } from "../../util/constants";
 import { arrayIncludes, hasKey } from "../../util/functions";
-import { Page, SetType, SortOrderType, SortType } from "../../util/types";
+import { Page, SetType, SortOrderType, SortType, ViewType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -20,7 +20,7 @@ type ContentGridProps = {
   sets: SetType[];
   sort: SortType;
   sortOrder: SortOrderType;
-  view: string;
+  view: ViewType;
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
