@@ -3,7 +3,17 @@ import classNames from "classnames";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
-import { WhitelistType, PresetType, QueueType, SetType, SortOrderType, SetGroup } from "../../util/types";
+import {
+  WhitelistType,
+  PresetType,
+  QueueType,
+  SetType,
+  SortOrderType,
+  Page,
+  SortType,
+  ViewType,
+  SetGroup,
+} from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -25,14 +35,14 @@ type ContentMainProps = {
   bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
-  page: string;
+  page: Page;
   content: boolean;
-  sort: string;
-  setSort: (sort: string) => void;
+  sort: SortType;
+  setSort: (sort: SortType) => void;
   sortOrder: SortOrderType;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  view: string;
-  setView: (view: string) => void;
+  view: ViewType;
+  setView: (view: ViewType) => void;
   search: string;
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;

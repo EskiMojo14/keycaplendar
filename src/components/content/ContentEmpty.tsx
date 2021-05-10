@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import emptyImg from "../../media/empty.svg";
 import { UserContext } from "../../util/contexts";
+import { Page } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 
 type ContentEmptyProps = {
-  page: string;
+  page: Page;
 };
 
 export const ContentEmpty = (props: ContentEmptyProps) => {

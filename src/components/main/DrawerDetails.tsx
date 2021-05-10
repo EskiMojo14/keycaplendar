@@ -4,7 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 import { UserContext } from "../../util/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
-import { SetType } from "../../util/types";
+import { SetType, ViewType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -26,7 +26,7 @@ type DrawerDetailsProps = {
   set: SetType;
   setSearch?: (search: string) => void;
   toggleLichTheme?: () => void;
-  view: string;
+  view: ViewType;
 };
 
 export class DrawerDetails extends React.Component<DrawerDetailsProps> {

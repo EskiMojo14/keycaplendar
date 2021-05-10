@@ -1,5 +1,5 @@
 import React from "react";
-import { SetGroup, SetType } from "../../util/types";
+import { Page, SetGroup, SetType, ViewType } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -12,9 +12,9 @@ type ContentGridProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  page: string;
+  page: Page;
   setGroups: SetGroup[];
-  view: string;
+  view: ViewType;
 };
 
 export const ContentGrid = (props: ContentGridProps) => {

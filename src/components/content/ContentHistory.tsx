@@ -16,8 +16,9 @@ import {
   truncate,
   uniqueArray,
 } from "../../util/functions";
-import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, RecentSet } from "../../util/types";
+import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, RecentSet, Page } from "../../util/types";
 import { Card } from "@rmwc/card";
+import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { List } from "@rmwc/list";
 import { Tab, TabBar } from "@rmwc/tabs";
@@ -35,21 +36,22 @@ import { ChangelogEntry } from "../history/ChangelogEntry";
 import { RecentSetCard } from "../history/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
-import { Chip } from "@rmwc/chip";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentHistoryProps = {
   bottomNav: boolean;
   openNav: () => void;
-  setPage: (page: string) => void;
+  setPage: (page: Page) => void;
   snackbarQueue: QueueType;
   allSets: SetType[];
 };
 
+type HistoryTab = typeof historyTabs[number];
+
 export const ContentHistory = (props: ContentHistoryProps) => {
-  const [tab, setTab] = useState("recent");
-  const setTabScroll = (tab: string) => {
+  const [tab, setTab] = useState<HistoryTab>("recent");
+  const setTabScroll = (tab: HistoryTab) => {
     setTab(tab);
     scrollTo(0, 0);
   };

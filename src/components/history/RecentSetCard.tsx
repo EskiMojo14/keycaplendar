@@ -4,8 +4,8 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { mainPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";
-import { hasKey, iconObject, pageConditions } from "../../util/functions";
-import { RecentSet, SetType } from "../../util/types";
+import { arrayIncludes, hasKey, iconObject, pageConditions } from "../../util/functions";
+import { MainPage, Page, RecentSet, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
@@ -19,7 +19,7 @@ type RecentSetCardProps = {
   selected: boolean;
   filterChangelog: (set: RecentSet) => void;
   openDetails: (set: SetType) => void;
-  setPage: (page: string) => void;
+  setPage: (page: Page) => void;
 };
 
 export const RecentSetCard = (props: RecentSetCardProps) => {
@@ -30,7 +30,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
 
   useEffect(() => {
     if (props.recentSet.currentSet) {
-      const falsePages: Record<typeof mainPages[number], boolean> = {
+      const falsePages: Record<MainPage, boolean> = {
         calendar: false,
         live: false,
         ic: false,
@@ -40,9 +40,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         favorites: false,
         hidden: false,
       };
-      const pageBools: Record<typeof mainPages[number], boolean> = set
-        ? pageConditions(set, favorites, hidden)
-        : falsePages;
+      const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, hidden) : falsePages;
       const keysetPages = Object.keys(pageBools).filter((key) => {
         if (hasKey(pageBools, key)) {
           return pageBools[key];
@@ -154,10 +152,19 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
           </Typography>
           <div className="button-container">
             {pages.map((page) => {
-              const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
-              return (
-                <Button outlined label={title} icon={pageIcons[page]} onClick={() => props.setPage(page)} key={page} />
-              );
+              if (arrayIncludes(mainPages, page)) {
+                const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
+                return (
+                  <Button
+                    outlined
+                    label={title}
+                    icon={pageIcons[page]}
+                    onClick={() => props.setPage(page)}
+                    key={page}
+                  />
+                );
+              }
+              return null;
             })}
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 
@@ -8,7 +8,7 @@ type ViewImageListProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
-  page: string;
+  page: Page;
   sets: SetType[];
 };
 

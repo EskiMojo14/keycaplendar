@@ -2,7 +2,7 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { iconObject } from "../../../util/functions";
-import { SetType } from "../../../util/types";
+import { Page, SetType } from "../../../util/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
@@ -16,7 +16,7 @@ type ElementListProps = {
   image: string;
   link: string;
   live: boolean;
-  page: string;
+  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
