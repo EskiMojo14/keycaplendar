@@ -104,7 +104,6 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       };
     });
     setProcessedActions(processedActions);
-    generateSets(processedActions);
     setLoading(false);
   };
 
@@ -112,6 +111,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     const index = props.allSets.findIndex((set) => set.id === id);
     return index > -1 ? props.allSets[index] : null;
   };
+
   const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
 
   const generateSets = (actions = processedActions) => {
@@ -142,7 +142,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     alphabeticalSortProp(recentSets, "latestTimestamp", true);
     setRecentSets(recentSets);
   };
-  useEffect(generateSets, [JSON.stringify(props.allSets)]);
+  useEffect(generateSets, [JSON.stringify(props.allSets), processedActions]);
 
   const blankSet = new Keyset();
 
