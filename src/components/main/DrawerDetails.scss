@@ -30,6 +30,9 @@
     flex-grow: 1;
     flex-shrink: 1;
     height: auto;
+    a {
+      text-decoration: none;
+    }
     .details {
       &-image {
         margin: 16px;

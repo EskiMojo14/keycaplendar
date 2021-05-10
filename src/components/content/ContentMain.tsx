@@ -13,8 +13,7 @@ import { AppBar } from "../main/app_bar/AppBar";
 import { DrawerDetails } from "../main/DrawerDetails";
 import { DrawerFilter } from "../main/DrawerFilter";
 import { DialogSales } from "../main/DialogSales";
-import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
-import { DialogFilterPreset } from "../main/DialogFilterPreset";
+import { ModalFilterPreset } from "../main/ModalFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
 import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
 import { DialogDelete } from "../main/admin/DialogDelete";
@@ -204,11 +203,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const filterPresetElements = user.email ? (
     <>
-      {device !== "mobile" ? (
-        <DrawerFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
-      ) : (
-        <DialogFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
-      )}
+      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} device={device} />
       <DialogDeleteFilterPreset
         open={deleteFilterPresetOpen}
         close={closeDeleteFilterPreset}
