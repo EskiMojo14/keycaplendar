@@ -211,7 +211,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const filterPresetElements = user.email ? (
     <>
-      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} device={device} />
+      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
       <DialogDeleteFilterPreset
         open={deleteFilterPresetOpen}
         close={closeDeleteFilterPreset}
