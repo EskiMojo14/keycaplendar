@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { hasKey } from "../../util/functions";
 import { StatisticsType, StatsTab } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
@@ -14,88 +14,90 @@ type DialogStatisticsProps = {
   statisticsTab: StatsTab;
 };
 
-type DialogStatisticsState = {
-  statistics: string;
-};
+export const DialogStatistics = (props: DialogStatisticsProps) => {
+  const [statistics, setStatistics] = useState("profile");
 
-export class DialogStatistics extends React.Component<DialogStatisticsProps, DialogStatisticsState> {
-  state = {
-    statistics: "profile",
-  };
-  componentDidUpdate(prevProps: DialogStatisticsProps) {
-    if (this.props.open !== prevProps.open && this.props.open === true) {
-      const key = this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab;
-      if (hasKey(this.props.statistics, key)) {
-        this.setState({
-          statistics: this.props.statistics[key],
-        });
+  useEffect(() => {
+    if (props.open) {
+      const key =
+        props.statisticsTab === "duration"
+          ? "durationGroup"
+          : props.statisticsTab === "timelines"
+          ? "timelinesGroup"
+          : props.statisticsTab;
+      if (hasKey(props.statistics, key)) {
+        setStatistics(props.statistics[key]);
       }
     }
-  }
-  handleChange = (stats: string) => {
-    this.setState({
-      statistics: stats,
-    });
+  }, [props.open]);
+
+  const handleChange = (stats: string) => {
+    setStatistics(stats);
   };
-  setStatistics = () => {
-    const key = this.props.statisticsTab === "duration" ? "durationGroup" : this.props.statisticsTab;
-    if (hasKey(this.props.statistics, key) && this.props.statistics[key] !== this.state.statistics) {
-      this.props.setStatistics(key, this.state.statistics);
+
+  const applyStatistics = () => {
+    const key =
+      props.statisticsTab === "duration"
+        ? "durationGroup"
+        : props.statisticsTab === "timelines"
+        ? "timelinesGroup"
+        : props.statisticsTab;
+    if (hasKey(props.statistics, key) && props.statistics[key] !== statistics) {
+      props.setStatistics(key, statistics);
     }
   };
-  render() {
-    return (
-      <Dialog
-        className="statistics-dialog"
-        open={this.props.open}
-        onClose={() => {
-          this.props.onClose();
-        }}
-      >
-        <DialogTitle>Change category</DialogTitle>
-        <DialogContent>
-          <List className="statistics-list">
-            <ListItem
-              onClick={() => {
-                this.handleChange("profile");
-              }}
-            >
-              Profile
-              <ListItemMeta>
-                <Radio tabIndex={-1} checked={this.state.statistics === "profile"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem
-              onClick={() => {
-                this.handleChange("designer");
-              }}
-            >
-              Designer
-              <ListItemMeta>
-                <Radio tabIndex={-1} checked={this.state.statistics === "designer"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-            <ListItem
-              onClick={() => {
-                this.handleChange("vendor");
-              }}
-            >
-              Vendor
-              <ListItemMeta>
-                <Radio tabIndex={-1} checked={this.state.statistics === "vendor"} readOnly />
-              </ListItemMeta>
-            </ListItem>
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <DialogButton action="close">Cancel</DialogButton>
-          <DialogButton action="accept" onClick={this.setStatistics} isDefaultAction>
-            Confirm
-          </DialogButton>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-}
+
+  return (
+    <Dialog
+      className="statistics-dialog"
+      open={props.open}
+      onClose={() => {
+        props.onClose();
+      }}
+    >
+      <DialogTitle>Change category</DialogTitle>
+      <DialogContent>
+        <List className="statistics-list">
+          <ListItem
+            onClick={() => {
+              handleChange("profile");
+            }}
+          >
+            Profile
+            <ListItemMeta>
+              <Radio tabIndex={-1} checked={statistics === "profile"} readOnly />
+            </ListItemMeta>
+          </ListItem>
+          <ListItem
+            onClick={() => {
+              handleChange("designer");
+            }}
+          >
+            Designer
+            <ListItemMeta>
+              <Radio tabIndex={-1} checked={statistics === "designer"} readOnly />
+            </ListItemMeta>
+          </ListItem>
+          <ListItem
+            onClick={() => {
+              handleChange("vendor");
+            }}
+          >
+            Vendor
+            <ListItemMeta>
+              <Radio tabIndex={-1} checked={statistics === "vendor"} readOnly />
+            </ListItemMeta>
+          </ListItem>
+        </List>
+      </DialogContent>
+      <DialogActions>
+        <DialogButton action="close">Cancel</DialogButton>
+        <DialogButton action="accept" onClick={applyStatistics} isDefaultAction>
+          Confirm
+        </DialogButton>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 export default DialogStatistics;

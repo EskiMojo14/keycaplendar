@@ -1,4 +1,3 @@
-import { createSnackbarQueue } from "@rmwc/snackbar";
 import React from "react";
 import { allPages, allSorts, allViews, mainPages, statsTabs, whitelistShipped } from "./constants";
 
