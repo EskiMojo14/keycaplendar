@@ -5,7 +5,8 @@ import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
-import { createSnackbarQueue, SnackbarQueue } from "@rmwc/snackbar";
+import { queue } from "./app/snackbarQueue";
+import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
 import { NotFound } from "./components/pages/NotFound";
@@ -65,8 +66,6 @@ import {
 import "./App.scss";
 
 const db = firebase.firestore();
-
-const queue = createSnackbarQueue();
 
 type AppProps = Record<string, never>;
 
@@ -1580,7 +1579,6 @@ class App extends React.Component<AppProps, AppState> {
                     setStatisticsTab={this.setStatisticsTab}
                     density={this.state.density}
                     setDensity={this.setDensity}
-                    snackbarQueue={queue}
                   />
                   <SnackbarQueue messages={queue.messages} />
                   <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />

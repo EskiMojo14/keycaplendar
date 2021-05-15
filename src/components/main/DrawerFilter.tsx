@@ -1,11 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
+import { queue } from "../../app/snackbarQueue";
 import { Preset } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { WhitelistType, PresetType, QueueType, SortType, ViewType } from "../../util/types";
+import { WhitelistType, PresetType, SortType, ViewType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -26,7 +27,6 @@ type DrawerFilterProps = {
   openPreset: (preset: PresetType) => void;
   profiles: string[];
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
-  snackbarQueue: QueueType;
   sort: SortType;
   vendors: string[];
   regions: string[];
@@ -181,10 +181,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        props.snackbarQueue.notify({ title: "Copied filtered URL to clipboard." });
+        queue.notify({ title: "Copied filtered URL to clipboard." });
       })
       .catch((error) => {
-        props.snackbarQueue.notify({ title: "Error copying to clipboard" + error });
+        queue.notify({ title: "Error copying to clipboard" + error });
       });
   };
 

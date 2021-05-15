@@ -3,10 +3,11 @@ import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
+import { queue } from "../../app/snackbarQueue";
 import { ImageObj } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, getStorageFolders, hasKey, iconObject } from "../../util/functions";
-import { ImageType, QueueType, SetType } from "../../util/types";
+import { ImageType, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -57,7 +58,6 @@ type ContentImagesProps = {
   bottomNav: boolean;
   openNav: () => void;
   sets: SetType[];
-  snackbarQueue: QueueType;
 };
 
 type ContentImagesState = {
@@ -169,7 +169,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
           }
         })
         .catch((error) => {
-          this.props.snackbarQueue.notify({ title: "Failed to list images: " + error });
+          queue.notify({ title: "Failed to list images: " + error });
           this.setState({ loading: false });
         });
     };
@@ -192,7 +192,7 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
             this.setState({ detailMetadata: metadata });
           })
           .catch((error) => {
-            this.props.snackbarQueue.notify({ title: "Failed to get metadata: " + error });
+            queue.notify({ title: "Failed to get metadata: " + error });
             this.setState({ detailMetadata: {} });
           });
       }
@@ -392,7 +392,6 @@ export class ContentImages extends React.Component<ContentImagesProps, ContentIm
               toggleImageChecked={this.toggleImageChecked}
               setLoading={this.setLoading}
               listAll={this.listAll}
-              snackbarQueue={this.props.snackbarQueue}
             />
             <ConditionalWrapper
               condition={this.context === "desktop"}

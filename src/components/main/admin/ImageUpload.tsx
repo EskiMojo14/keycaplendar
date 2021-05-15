@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { QueueType } from "../../../util/types";
+import { queue } from "../../../app/snackbarQueue";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -11,7 +11,6 @@ type ImageUploadProps = {
   desktop: boolean;
   image: Blob | File | string | null;
   setImage: (image: Blob | File | null) => void;
-  snackbarQueue: QueueType;
 };
 
 type ImageUploadState = {
@@ -116,7 +115,7 @@ export class ImageUpload extends React.Component<ImageUploadProps, ImageUploadSt
     const dt = e.dataTransfer;
     const file = dt.files[0];
     if (!file.type.includes("image")) {
-      this.props.snackbarQueue.notify({ title: "Error: file is not an image." });
+      queue.notify({ title: "Error: file is not an image." });
       this.setState({ dragOver: false, loading: false });
     } else {
       this.props.setImage(file);

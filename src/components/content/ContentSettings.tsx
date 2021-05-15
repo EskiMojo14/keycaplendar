@@ -2,9 +2,9 @@ import React, { useContext, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { queue } from "../../app/snackbarQueue";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { useBoolStates } from "../../util/functions";
-import { QueueType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -46,7 +46,6 @@ type ContentSettingsProps = {
   setLightTheme: (lightTheme: string) => void;
   setManualTheme: (manualTheme: boolean) => void;
   setToTimeTheme: (toTimeTheme: string) => void;
-  snackbarQueue: QueueType;
   toTimeTheme: string;
 };
 
@@ -64,7 +63,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       })
       .catch((error) => {
         console.log("Error signing out: " + error);
-        props.snackbarQueue.notify({ title: "Error signing out: " + error });
+        queue.notify({ title: "Error signing out: " + error });
       });
   };
   const setApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -182,12 +181,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     </div>
   );
   const deleteUserDialog = user.email ? (
-    <DialogDelete
-      open={deleteDialogOpen}
-      close={closeDeleteDialog}
-      snackbarQueue={props.snackbarQueue}
-      signOut={signOut}
-    />
+    <DialogDelete open={deleteDialogOpen} close={closeDeleteDialog} signOut={signOut} />
   ) : null;
   const bottomNav =
     device === "mobile" ? (

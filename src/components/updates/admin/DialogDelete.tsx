@@ -1,6 +1,7 @@
 import React from "react";
 import firebase from "../../../firebase";
-import { QueueType, UpdateEntryType } from "../../../util/types";
+import { queue } from "../../../app/snackbarQueue";
+import { UpdateEntryType } from "../../../util/types";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 
 const db = firebase.firestore();
@@ -10,7 +11,6 @@ type DialogDeleteProps = {
   onClose: () => void;
   getEntries: () => void;
   entry: UpdateEntryType;
-  snackbarQueue: QueueType;
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
@@ -19,13 +19,13 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       .doc(props.entry.id)
       .delete()
       .then(() => {
-        props.snackbarQueue.notify({ title: "Successfully deleted entry." });
+        queue.notify({ title: "Successfully deleted entry." });
         props.onClose();
         props.getEntries();
       })
       .catch((error) => {
         console.log("Failed to delete entry: " + error);
-        props.snackbarQueue.notify({ title: "Failed to delete entry: " + error });
+        queue.notify({ title: "Failed to delete entry: " + error });
       });
   };
   return (

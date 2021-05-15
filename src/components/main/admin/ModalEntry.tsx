@@ -4,6 +4,7 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
+import { queue } from "../../../app/snackbarQueue";
 import { UserContext } from "../../../util/contexts";
 import {
   formatFileName,
@@ -13,7 +14,7 @@ import {
   arrayMove,
   hasKey,
 } from "../../../util/functions";
-import { QueueType, SetType, VendorType } from "../../../util/types";
+import { SetType, VendorType } from "../../../util/types";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "../../util/ConditionalWrapper";
@@ -58,7 +59,6 @@ type ModalCreateProps = {
   close: () => void;
   getData: () => void;
   open: boolean;
-  snackbarQueue: QueueType;
   device: string;
 };
 
@@ -333,13 +333,13 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
         },
         (error) => {
           // Handle unsuccessful uploads
-          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          queue.notify({ title: "Failed to upload image: " + error });
           this.setState({ loading: false });
         },
         () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          queue.notify({ title: "Successfully uploaded image." });
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
@@ -350,7 +350,7 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
               this.createEntry();
             })
             .catch((error) => {
-              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              queue.notify({ title: "Failed to get URL: " + error });
               this.setState({
                 loading: false,
               });
@@ -389,13 +389,13 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
-          this.props.snackbarQueue.notify({ title: "Entry written successfully." });
+          queue.notify({ title: "Entry written successfully." });
           this.props.getData();
           this.closeModal();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
-          this.props.snackbarQueue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: "Error adding document: " + error });
         });
     }
   };
@@ -707,12 +707,7 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
               onFocus={this.handleFocus}
               onBlur={this.handleBlur}
             />
-            <ImageUpload
-              image={this.state.image}
-              setImage={this.setImage}
-              snackbarQueue={this.props.snackbarQueue}
-              desktop
-            />
+            <ImageUpload image={this.state.image} setImage={this.setImage} desktop />
             {dateCard}
             <Checkbox
               label="Shipped"
@@ -1287,13 +1282,13 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
         },
         (error) => {
           // Handle unsuccessful uploads
-          this.props.snackbarQueue.notify({ title: "Failed to upload image: " + error });
+          queue.notify({ title: "Failed to upload image: " + error });
           this.setState({ loading: false });
         },
         () => {
           // Handle successful uploads on complete
           // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          this.props.snackbarQueue.notify({ title: "Successfully uploaded image." });
+          queue.notify({ title: "Successfully uploaded image." });
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
@@ -1310,16 +1305,16 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
                 const allImages = folders.map((folder) => `${folder}/${imageName}`);
                 batchStorageDelete(allImages)
                   .then(() => {
-                    this.props.snackbarQueue.notify({ title: "Successfully deleted previous thumbnails." });
+                    queue.notify({ title: "Successfully deleted previous thumbnails." });
                   })
                   .catch((error) => {
-                    this.props.snackbarQueue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                    queue.notify({ title: "Failed to delete previous thumbnails: " + error });
                     console.log(error);
                   });
               }
             })
             .catch((error) => {
-              this.props.snackbarQueue.notify({ title: "Failed to get URL: " + error });
+              queue.notify({ title: "Failed to get URL: " + error });
               this.setState({
                 loading: false,
               });
@@ -1350,12 +1345,12 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
         latestEditor: this.context.user.id,
       })
       .then(() => {
-        this.props.snackbarQueue.notify({ title: "Entry edited successfully." });
+        queue.notify({ title: "Entry edited successfully." });
         this.closeModal();
         this.props.getData();
       })
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error editing document: " + error });
+        queue.notify({ title: "Error editing document: " + error });
       });
   };
 
@@ -1670,7 +1665,6 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
                   : this.state.image
               }
               setImage={this.setImage}
-              snackbarQueue={this.props.snackbarQueue}
               desktop
             />
             {dateCard}

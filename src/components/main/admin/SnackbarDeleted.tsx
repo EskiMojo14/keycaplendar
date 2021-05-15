@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import firebase from "../../../firebase";
+import { queue } from "../../../app/snackbarQueue";
 import { UserContext } from "../../../util/contexts";
 import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { QueueType, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {
@@ -10,7 +11,6 @@ type SnackbarDeletedProps = {
   getData: () => void;
   open: boolean;
   set: SetType;
-  snackbarQueue: QueueType;
 };
 
 export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
@@ -31,12 +31,12 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
       )
       .then(() => {
         console.log("Document recreated with ID: ", id);
-        props.snackbarQueue.notify({ title: "Entry successfully recreated." });
+        queue.notify({ title: "Entry successfully recreated." });
         props.getData();
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);
-        props.snackbarQueue.notify({ title: "Error recreating document: " + error });
+        queue.notify({ title: "Error recreating document: " + error });
       });
     close(true);
   };
@@ -45,10 +45,10 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
     const allImages = folders.map((folder) => `${folder}/${name}`);
     batchStorageDelete(allImages)
       .then(() => {
-        props.snackbarQueue.notify({ title: "Successfully deleted thumbnails." });
+        queue.notify({ title: "Successfully deleted thumbnails." });
       })
       .catch((error) => {
-        props.snackbarQueue.notify({ title: "Failed to delete thumbnails: " + error });
+        queue.notify({ title: "Failed to delete thumbnails: " + error });
         console.log(error);
       });
   };

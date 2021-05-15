@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
+import { queue } from "../../app/snackbarQueue";
 import { Update } from "../../util/constructors";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { closeModal, openModal } from "../../util/functions";
-import { QueueType, UpdateEntryType } from "../../util/types";
+import { UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {
@@ -26,7 +27,6 @@ const db = firebase.firestore();
 type ContentUpdatesProps = {
   bottomNav: boolean;
   openNav: () => void;
-  snackbarQueue: QueueType;
 };
 
 export const ContentUpdates = (props: ContentUpdatesProps) => {
@@ -71,7 +71,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       })
       .catch((error) => {
         console.log("Error getting data: " + error);
-        props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        queue.notify({ title: "Error getting data: " + error });
       });
   };
   useEffect(getEntries, []);
@@ -133,12 +133,12 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       .doc(entry.id)
       .set({ pinned: !entry.pinned }, { merge: true })
       .then(() => {
-        props.snackbarQueue.notify({ title: `Entry ${entry.pinned ? "unpinned" : "pinned"}.` });
+        queue.notify({ title: `Entry ${entry.pinned ? "unpinned" : "pinned"}.` });
         getEntries();
       })
       .catch((error) => {
         console.log(`Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`);
-        props.snackbarQueue.notify({ title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}` });
+        queue.notify({ title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}` });
       });
   };
 
@@ -150,26 +150,9 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate
-        open={createOpen}
-        onClose={closeCreate}
-        getEntries={getEntries}
-        snackbarQueue={props.snackbarQueue}
-      />
-      <ModalEdit
-        open={editOpen}
-        onClose={closeEdit}
-        getEntries={getEntries}
-        entry={editEntry}
-        snackbarQueue={props.snackbarQueue}
-      />
-      <DialogDelete
-        open={deleteOpen}
-        onClose={closeDelete}
-        entry={deleteEntry}
-        getEntries={getEntries}
-        snackbarQueue={props.snackbarQueue}
-      />
+      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
+      <ModalEdit open={editOpen} onClose={closeEdit} getEntries={getEntries} entry={editEntry} />
+      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
     </>
   ) : null;
   return (

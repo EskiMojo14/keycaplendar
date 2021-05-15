@@ -5,7 +5,6 @@ import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
 import {
   WhitelistType,
-  QueueType,
   SetType,
   SortOrderType,
   PresetType,
@@ -65,7 +64,6 @@ type ContentProps = {
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   sets: SetType[];
   setGroups: SetGroup[];
-  snackbarQueue: QueueType;
   sort: SortType;
   sortOrder: SortOrderType;
   statisticsTab: StatsTab;
@@ -129,7 +127,6 @@ export const Content = (props: ContentProps) => {
       appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
       whitelist={props.whitelist}
-      snackbarQueue={props.snackbarQueue}
       loading={props.loading}
       getData={props.getData}
     />
@@ -142,46 +139,24 @@ export const Content = (props: ContentProps) => {
         openNav={openNav}
         statisticsTab={props.statisticsTab}
         setStatisticsTab={props.setStatisticsTab}
-        snackbarQueue={props.snackbarQueue}
       />
     ) : null;
   const contentChangelog =
     props.page === "history" ? (
-      <ContentHistory
-        allSets={props.allSets}
-        bottomNav={props.bottomNav}
-        openNav={openNav}
-        setPage={props.setPage}
-        snackbarQueue={props.snackbarQueue}
-      />
+      <ContentHistory allSets={props.allSets} bottomNav={props.bottomNav} openNav={openNav} setPage={props.setPage} />
     ) : null;
   const contentAudit =
-    props.page === "audit" && user.isAdmin ? (
-      <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
-    ) : null;
+    props.page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} bottomNav={props.bottomNav} /> : null;
   const contentUsers =
     props.page === "users" && user.isAdmin ? (
-      <ContentUsers
-        bottomNav={props.bottomNav}
-        openNav={openNav}
-        allDesigners={props.allDesigners}
-        snackbarQueue={props.snackbarQueue}
-        device={device}
-      />
+      <ContentUsers bottomNav={props.bottomNav} openNav={openNav} allDesigners={props.allDesigners} device={device} />
     ) : null;
   const contentImages =
     props.page === "images" && user.isAdmin ? (
-      <ContentImages
-        openNav={openNav}
-        bottomNav={props.bottomNav}
-        sets={props.allSets}
-        snackbarQueue={props.snackbarQueue}
-      />
+      <ContentImages openNav={openNav} bottomNav={props.bottomNav} sets={props.allSets} />
     ) : null;
   const contentUpdates =
-    props.page === "updates" ? (
-      <ContentUpdates openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
-    ) : null;
+    props.page === "updates" ? <ContentUpdates openNav={openNav} bottomNav={props.bottomNav} /> : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings
@@ -202,7 +177,6 @@ export const Content = (props: ContentProps) => {
         setToTimeTheme={props.setToTimeTheme}
         density={props.density}
         setDensity={props.setDensity}
-        snackbarQueue={props.snackbarQueue}
       />
     ) : null;
   return (

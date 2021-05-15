@@ -4,6 +4,7 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
+import { queue } from "../../app/snackbarQueue";
 import { auditProperties, historyTabs } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
 import {
@@ -16,7 +17,7 @@ import {
   truncate,
   uniqueArray,
 } from "../../util/functions";
-import { QueueType, PublicActionType, ProcessedPublicActionType, SetType, RecentSet, Page } from "../../util/types";
+import { PublicActionType, ProcessedPublicActionType, SetType, RecentSet, Page } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -43,7 +44,6 @@ type ContentHistoryProps = {
   bottomNav: boolean;
   openNav: () => void;
   setPage: (page: Page) => void;
-  snackbarQueue: QueueType;
   allSets: SetType[];
 };
 
@@ -69,7 +69,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       })
       .catch((error) => {
         console.log(error);
-        props.snackbarQueue.notify({ title: "Failed to get changelog: " + error });
+        queue.notify({ title: "Failed to get changelog: " + error });
       });
   };
   useEffect(getData, []);

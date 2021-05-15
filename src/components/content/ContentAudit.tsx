@@ -3,11 +3,12 @@ import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
+import { queue } from "../../app/snackbarQueue";
 import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
 import { openModal, closeModal, hasKey, alphabeticalSortProp } from "../../util/functions";
-import { ActionType, QueueType } from "../../util/types";
+import { ActionType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -32,7 +33,6 @@ import "./ContentAudit.scss";
 type ContentAuditProps = {
   bottomNav: boolean;
   openNav: () => void;
-  snackbarQueue: QueueType;
 };
 
 type ContentAuditState = {
@@ -172,7 +172,7 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
         this.processActions(actions);
       })
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error getting data: " + error });
+        queue.notify({ title: "Error getting data: " + error });
         if (this.state.loading) {
           this.toggleLoading();
         }
@@ -234,12 +234,12 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       .doc(action.changelogId)
       .delete()
       .then(() => {
-        this.props.snackbarQueue.notify({ title: "Successfully deleted changelog entry." });
+        queue.notify({ title: "Successfully deleted changelog entry." });
         this.getActions();
         this.closeDelete();
       })
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error deleting changelog entry: " + error });
+        queue.notify({ title: "Error deleting changelog entry: " + error });
         this.closeDelete();
       });
   };

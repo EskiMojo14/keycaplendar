@@ -4,18 +4,11 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
+import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
 import { capitalise, iconObject, hasKey, addOrRemove } from "../../util/functions";
-import {
-  QueueType,
-  SetType,
-  StatisticsSortType,
-  StatisticsType,
-  Categories,
-  Properties,
-  StatsTab,
-} from "../../util/types";
+import { SetType, StatisticsSortType, StatisticsType, Categories, Properties, StatsTab } from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -45,7 +38,6 @@ type ContentStatisticsProps = {
   navOpen: boolean;
   openNav: () => void;
   setStatisticsTab: (tab: StatsTab) => void;
-  snackbarQueue: QueueType;
   statisticsTab: StatsTab;
 };
 
@@ -275,19 +267,19 @@ export class ContentStatistics extends React.Component<ContentStatisticsProps, C
               const { timestamp, ...statisticsData } = data;
 
               const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY UTC");
-              this.props.snackbarQueue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
+              queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
 
               this.setState({ ...statisticsData, dataCreated: Object.keys(statisticsData) });
             });
           })
           .catch((error) => {
             console.log(error);
-            this.props.snackbarQueue.notify({ title: "Failed to fetch statistics data: " + error });
+            queue.notify({ title: "Failed to fetch statistics data: " + error });
           });
       })
       .catch((error) => {
         console.log(error);
-        this.props.snackbarQueue.notify({ title: "Failed to create statistics data: " + error });
+        queue.notify({ title: "Failed to create statistics data: " + error });
       });
   };
 

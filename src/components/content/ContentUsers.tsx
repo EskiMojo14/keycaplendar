@@ -1,7 +1,8 @@
 import React from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
-import { QueueType, UserType } from "../../util/types";
+import { queue } from "../../app/snackbarQueue";
+import { UserType } from "../../util/types";
 import { DeviceContext } from "../../util/contexts";
 import { User } from "../../util/constructors";
 import { hasKey, iconObject } from "../../util/functions";
@@ -51,7 +52,6 @@ type ContentUsersProps = {
   bottomNav: boolean;
   device: string;
   openNav: () => void;
-  snackbarQueue: QueueType;
 };
 
 type ContentUsersState = {
@@ -101,7 +101,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
       .then((result) => {
         if (result) {
           if (result.data.error) {
-            this.props.snackbarQueue.notify({ title: result.data.error });
+            queue.notify({ title: result.data.error });
             if (this.state.loading) {
               this.toggleLoading();
             }
@@ -116,7 +116,7 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
         }
       })
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error listing users: " + error });
+        queue.notify({ title: "Error listing users: " + error });
         if (this.state.loading) {
           this.toggleLoading();
         }
@@ -242,17 +242,17 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
     deleteUser(user)
       .then((result) => {
         if (result.data.error) {
-          this.props.snackbarQueue.notify({ title: result.data.error });
+          queue.notify({ title: result.data.error });
           if (this.state.loading) {
             this.toggleLoading();
           }
         } else {
-          this.props.snackbarQueue.notify({ title: "User " + user.displayName + " successfully deleted." });
+          queue.notify({ title: "User " + user.displayName + " successfully deleted." });
           this.getUsers();
         }
       })
       .catch((error) => {
-        this.props.snackbarQueue.notify({ title: "Error deleting user: " + error });
+        queue.notify({ title: "Error deleting user: " + error });
         if (this.state.loading) {
           this.toggleLoading();
         }
@@ -485,7 +485,6 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                                 user={user}
                                 delete={this.openDeleteDialog}
                                 getUsers={this.getUsers}
-                                snackbarQueue={this.props.snackbarQueue}
                                 key={user.email}
                                 allDesigners={this.props.allDesigners}
                               />
@@ -568,7 +567,6 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                           key={user.email}
                           delete={this.openDeleteDialog}
                           getUsers={this.getUsers}
-                          snackbarQueue={this.props.snackbarQueue}
                           allDesigners={this.props.allDesigners}
                           device={this.context}
                         />

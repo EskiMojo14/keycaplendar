@@ -6,7 +6,6 @@ import { openModal, closeModal } from "../../util/functions";
 import {
   WhitelistType,
   PresetType,
-  QueueType,
   SetType,
   SortOrderType,
   Page,
@@ -56,7 +55,6 @@ type ContentMainProps = {
   appPresets: PresetType[];
   setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
   whitelist: WhitelistType;
-  snackbarQueue: QueueType;
   loading: boolean;
   getData: () => void;
 };
@@ -230,15 +228,8 @@ export const ContentMain = (props: ContentMainProps) => {
         set={deleteSet}
         openSnackbar={openDeleteSnackbar}
         getData={props.getData}
-        snackbarQueue={props.snackbarQueue}
       />
-      <SnackbarDeleted
-        open={deleteSnackbarOpen}
-        close={closeDeleteSnackbar}
-        set={deleteSet}
-        getData={props.getData}
-        snackbarQueue={props.snackbarQueue}
-      />
+      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} getData={props.getData} />
     </>
   ) : null;
 
@@ -262,7 +253,6 @@ export const ContentMain = (props: ContentMainProps) => {
           allVendors={props.allVendors}
           allVendorRegions={props.allVendorRegions}
           getData={props.getData}
-          snackbarQueue={props.snackbarQueue}
           device={device}
         />
         <ModalEdit
@@ -274,7 +264,6 @@ export const ContentMain = (props: ContentMainProps) => {
           allVendorRegions={props.allVendorRegions}
           set={editSet}
           getData={props.getData}
-          snackbarQueue={props.snackbarQueue}
           device={device}
         />
         {deleteElements}
@@ -330,7 +319,6 @@ export const ContentMain = (props: ContentMainProps) => {
           close={closeFilter}
           setWhitelist={props.setWhitelist}
           whitelist={props.whitelist}
-          snackbarQueue={props.snackbarQueue}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
           sort={props.sort}

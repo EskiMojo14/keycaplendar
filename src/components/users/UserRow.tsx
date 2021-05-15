@@ -1,8 +1,10 @@
 import React from "react";
+import moment from "moment";
 import firebase from "../../firebase";
+import { queue } from "../../app/snackbarQueue";
 import { UserContext } from "../../util/contexts";
 import { iconObject } from "../../util/functions";
-import { QueueType, UserType } from "../../util/types";
+import { UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -11,13 +13,11 @@ import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
-import moment from "moment";
 
 type UserRowProps = {
   allDesigners: string[];
   delete: (user: UserType) => void;
   getUsers: () => void;
-  snackbarQueue: QueueType;
   user: UserType;
 };
 
@@ -97,12 +97,12 @@ export class UserRow extends React.Component<UserRowProps, UserCardState> {
     }).then((result) => {
       this.setState({ loading: false });
       if (result.data.editor === this.state.user.editor && result.data.admin === this.state.user.admin) {
-        this.props.snackbarQueue.notify({ title: "Successfully edited user permissions." });
+        queue.notify({ title: "Successfully edited user permissions." });
         this.props.getUsers();
       } else if (result.data.error) {
-        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions: " + result.data.error });
+        queue.notify({ title: "Failed to edit user permissions: " + result.data.error });
       } else {
-        this.props.snackbarQueue.notify({ title: "Failed to edit user permissions." });
+        queue.notify({ title: "Failed to edit user permissions." });
       }
     });
   };

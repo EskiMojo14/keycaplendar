@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import firebase from "../../../firebase";
+import { queue } from "../../../app/snackbarQueue";
 import { UserContext } from "../../../util/contexts";
-import { QueueType, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteProps = {
@@ -10,7 +11,6 @@ type DialogDeleteProps = {
   open: boolean;
   openSnackbar: () => void;
   set: SetType;
-  snackbarQueue: QueueType;
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
@@ -29,7 +29,7 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);
-        props.snackbarQueue.notify({ title: "Error deleting document: " + error });
+        queue.notify({ title: "Error deleting document: " + error });
       });
     props.close();
   };

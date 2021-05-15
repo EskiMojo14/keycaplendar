@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { queue } from "../../app/snackbarQueue";
 import { batchStorageDelete } from "../../util/functions";
-import { ImageType, QueueType } from "../../util/types";
+import { ImageType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
@@ -13,7 +14,6 @@ type DialogDeleteProps = {
   listAll: () => void;
   open: boolean;
   setLoading: (bool: boolean) => void;
-  snackbarQueue: QueueType;
   toggleImageChecked: (image: ImageType) => void;
 };
 
@@ -36,12 +36,12 @@ export const DialogDelete = (props: DialogDeleteProps) => {
     props.setLoading(true);
     batchStorageDelete(array)
       .then(() => {
-        props.snackbarQueue.notify({ title: "Successfully deleted files." });
+        queue.notify({ title: "Successfully deleted files." });
         props.close();
         props.listAll();
       })
       .catch((error) => {
-        props.snackbarQueue.notify({ title: "Failed to delete files: " + error });
+        queue.notify({ title: "Failed to delete files: " + error });
         console.log(error);
         props.setLoading(false);
       });

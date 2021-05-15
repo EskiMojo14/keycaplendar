@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import firebase from "../../../firebase";
+import { queue } from "../../../app/snackbarQueue";
 import { DeviceContext, UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
-import { QueueType, UpdateEntryType } from "../../../util/types";
+import { UpdateEntryType } from "../../../util/types";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -24,7 +25,6 @@ type ModalCreateProps = {
   open: boolean;
   onClose: () => void;
   getEntries: () => void;
-  snackbarQueue: QueueType;
 };
 
 export const ModalCreate = (props: ModalCreateProps) => {
@@ -76,13 +76,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
-          props.snackbarQueue.notify({ title: "Entry written successfully." });
+          queue.notify({ title: "Entry written successfully." });
           props.onClose();
           props.getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
-          props.snackbarQueue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: "Error adding document: " + error });
         });
     }
   };
@@ -206,7 +206,6 @@ type ModalEditProps = {
   onClose: () => void;
   entry: UpdateEntryType;
   getEntries: () => void;
-  snackbarQueue: QueueType;
 };
 
 export const ModalEdit = (props: ModalEditProps) => {
@@ -262,13 +261,13 @@ export const ModalEdit = (props: ModalEditProps) => {
           pinned: entry.pinned,
         })
         .then(() => {
-          props.snackbarQueue.notify({ title: "Entry edited successfully." });
+          queue.notify({ title: "Entry edited successfully." });
           props.onClose();
           props.getEntries();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
-          props.snackbarQueue.notify({ title: "Error adding document: " + error });
+          queue.notify({ title: "Error adding document: " + error });
         });
     }
   };
