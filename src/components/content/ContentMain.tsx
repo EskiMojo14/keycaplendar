@@ -334,7 +334,6 @@ export const ContentMain = (props: ContentMainProps) => {
           setSearch={props.setSearch}
           toggleLichTheme={props.toggleLichTheme}
           openSales={openSales}
-          device={device}
         />
         <BoolWrapper
           condition={device === "desktop"}
