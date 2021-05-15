@@ -568,7 +568,6 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
                           delete={this.openDeleteDialog}
                           getUsers={this.getUsers}
                           allDesigners={this.props.allDesigners}
-                          device={this.context}
                         />
                       );
                     })}
