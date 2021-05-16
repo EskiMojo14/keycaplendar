@@ -253,7 +253,6 @@ export const ContentMain = (props: ContentMainProps) => {
           allVendors={props.allVendors}
           allVendorRegions={props.allVendorRegions}
           getData={props.getData}
-          device={device}
         />
         <ModalEdit
           open={editOpen}
@@ -264,7 +263,6 @@ export const ContentMain = (props: ContentMainProps) => {
           allVendorRegions={props.allVendorRegions}
           set={editSet}
           getData={props.getData}
-          device={device}
         />
         {deleteElements}
       </ConditionalWrapper>

@@ -55,7 +55,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     if (name === "imageLink") {
       setImageLink(value);
     }
-    const regex = RegExp("https?://.+(?.(?:jpg|jpeg|png)|;image)");
+    const regex = RegExp("https?://.+(?:.(?:jpe?g|png)|;image)");
     if (regex.test(value)) {
       getImageFromURL(value);
     }
