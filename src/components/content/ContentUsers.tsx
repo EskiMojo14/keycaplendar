@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { UserType } from "../../util/types";
 import { DeviceContext } from "../../util/contexts";
 import { User } from "../../util/constructors";
-import { hasKey, iconObject } from "../../util/functions";
+import { hasKey, iconObject, useBoolStates } from "../../util/functions";
 import {
   DataTable,
   DataTableContent,
@@ -54,81 +54,79 @@ type ContentUsersProps = {
   openNav: () => void;
 };
 
-type ContentUsersState = {
-  users: UserType[];
-  sortedUsers: UserType[];
-  paginatedUsers: UserType[];
-  deleteDialogOpen: boolean;
-  deletedUser: UserType;
-  nextPageToken: null;
-  rowsPerPage: number;
-  page: number;
-  firstIndex: number;
-  lastIndex: number;
-  view: string;
-  sort: string;
-  reverseSort: boolean;
-  loading: boolean;
-  viewMenuOpen: boolean;
-  sortMenuOpen: boolean;
-};
+export const ContentUsers = (props: ContentUsersProps) => {
+  const device = useContext(DeviceContext);
 
-export class ContentUsers extends React.Component<ContentUsersProps, ContentUsersState> {
-  state: ContentUsersState = {
-    users: [],
+  const blankUser = new User();
+
+  const [users, setUsers] = useState<{
+    allUsers: UserType[];
+    sortedUsers: UserType[];
+    paginatedUsers: UserType[];
+  }>({
+    allUsers: [],
     sortedUsers: [],
     paginatedUsers: [],
-    deleteDialogOpen: false,
-    deletedUser: new User(),
-    nextPageToken: null,
+  });
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletedUser, setDeletedUser] = useState<UserType>(blankUser);
+
+  const [nextPageToken, setNextPageToken] = useState("");
+
+  const [paginationInfo, setPaginationInfo] = useState({
     rowsPerPage: rows,
     page: 1,
     firstIndex: 0,
     lastIndex: 0,
-    view: "table",
-    sort: "editor",
-    reverseSort: false,
-    loading: false,
-    viewMenuOpen: false,
-    sortMenuOpen: false,
-  };
-  getUsers = (append = false) => {
-    if (!this.state.loading) {
-      this.toggleLoading();
-    }
+  });
+
+  const [view, setView] = useState("table");
+
+  const [userSort, setUserSort] = useState("editor");
+  const [reverseUserSort, setReverseUserSort] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [viewMenuOpen, setViewMenuOpen] = useState(false);
+  const [closeViewMenu, openViewMenu] = useBoolStates(setViewMenuOpen);
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [closeSortMenu, openSortMenu] = useBoolStates(setSortMenuOpen);
+
+  const getUsers = (append = false) => {
+    setLoading(true);
     const listUsersFn = firebase.functions().httpsCallable("listUsers");
-    listUsersFn({ length: length, nextPageToken: this.state.nextPageToken })
+    listUsersFn({ length: length, nextPageToken: nextPageToken })
       .then((result) => {
         if (result) {
           if (result.data.error) {
             queue.notify({ title: result.data.error });
-            if (this.state.loading) {
-              this.toggleLoading();
-            }
+            setLoading(false);
           } else {
-            if (this.state.loading) {
-              this.toggleLoading();
-            }
-            const users = append ? [...this.state.users, ...result.data.users] : [...result.data.users];
-            this.sortUsers(users);
-            this.setState({ users: users, nextPageToken: result.data.nextPageToken });
+            setLoading(false);
+            const newUsers = append ? [...users.allUsers, ...result.data.users] : [...result.data.users];
+            sortUsers(newUsers);
+            setUsers((users) => {
+              return { ...users, allUsers: newUsers };
+            });
+            setNextPageToken(result.data.nextPageToken);
           }
         }
       })
       .catch((error) => {
         queue.notify({ title: "Error listing users: " + error });
-        if (this.state.loading) {
-          this.toggleLoading();
-        }
+        setLoading(false);
       });
   };
-  sortUsers = (
-    users = this.state.users,
-    sort = this.state.sort,
-    reverseSort = this.state.reverseSort,
-    page = this.state.page
+  useEffect(getUsers, []);
+  const sortUsers = (
+    allUsers = users.allUsers,
+    sort = userSort,
+    reverseSort = reverseUserSort,
+    page = paginationInfo.page
   ) => {
-    users.sort((a, b) => {
+    const sortedUsers = [...allUsers];
+    sortedUsers.sort((a, b) => {
       if (hasKey(a, sort) && hasKey(b, sort)) {
         const aVal = a[sort];
         const bVal = b[sort];
@@ -185,108 +183,85 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
         return 0;
       }
     });
-    this.setState({ sortedUsers: users });
-    this.paginateUsers(users, page);
-    if (this.state.loading) {
-      this.toggleLoading();
-    }
+    setUsers((users) => {
+      return { ...users, sortedUsers: sortedUsers };
+    });
+    paginateUsers(sortedUsers, page);
+    setLoading(false);
   };
-  paginateUsers = (users = this.state.sortedUsers, page = this.state.page, rowsPerPage = this.state.rowsPerPage) => {
-    const paginatedUsers = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-    const firstIndex = users.indexOf(paginatedUsers[0]);
-    const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
-    this.setState({ paginatedUsers: paginatedUsers, firstIndex: firstIndex, lastIndex: lastIndex });
-  };
-  openDeleteDialog = (user: UserType) => {
-    this.setState({
-      deleteDialogOpen: true,
-      deletedUser: user,
+  const paginateUsers = (
+    sortedUsers = users.sortedUsers,
+    page = paginationInfo.page,
+    rowsPerPage = paginationInfo.rowsPerPage
+  ) => {
+    const paginatedUsers = sortedUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+    const firstIndex = sortedUsers.indexOf(paginatedUsers[0]);
+    const lastIndex = sortedUsers.indexOf(paginatedUsers[paginatedUsers.length - 1]);
+    setUsers((users) => {
+      return { ...users, paginatedUsers: paginatedUsers };
+    });
+    setPaginationInfo((paginationInfo) => {
+      return { ...paginationInfo, firstIndex: firstIndex, lastIndex: lastIndex };
     });
   };
-  closeDeleteDialog = () => {
-    this.setState({
-      deleteDialogOpen: false,
-    });
+  const openDeleteDialog = (user: UserType) => {
+    setDeleteOpen(true);
+    setDeletedUser(user);
+  };
+  const closeDeleteDialog = () => {
+    setDeleteOpen(false);
     setTimeout(() => {
-      this.setState({
-        deletedUser: new User(),
-      });
+      setDeletedUser(blankUser);
     }, 75);
   };
-  openSortMenu = () => {
-    this.setState({
-      sortMenuOpen: true,
-    });
-  };
-  closeSortMenu = () => {
-    this.setState({
-      sortMenuOpen: false,
-    });
-  };
-  openViewMenu = () => {
-    this.setState({
-      viewMenuOpen: true,
-    });
-  };
-  closeViewMenu = () => {
-    this.setState({
-      viewMenuOpen: false,
-    });
-  };
-  deleteUser = (user: UserType) => {
-    this.closeDeleteDialog();
-    if (!this.state.loading) {
-      this.toggleLoading();
-    }
+  const deleteUser = (user: UserType) => {
+    closeDeleteDialog();
+    setLoading(true);
     const deleteUser = firebase.functions().httpsCallable("deleteUser");
     deleteUser(user)
       .then((result) => {
         if (result.data.error) {
           queue.notify({ title: result.data.error });
-          if (this.state.loading) {
-            this.toggleLoading();
-          }
+          setLoading(false);
         } else {
           queue.notify({ title: "User " + user.displayName + " successfully deleted." });
-          this.getUsers();
+          getUsers();
         }
       })
       .catch((error) => {
         queue.notify({ title: "Error deleting user: " + error });
-        if (this.state.loading) {
-          this.toggleLoading();
-        }
+        setLoading(false);
       });
   };
-  setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
-    this.setState({ rowsPerPage: val, page: 1 });
-    this.paginateUsers(this.state.sortedUsers, 1, val);
-  };
-  setPage = (num: number) => {
-    this.setState({ page: num });
-    this.paginateUsers(this.state.sortedUsers, num);
-  };
-  setView = (index: number) => {
-    const views = ["card", "table"];
-    this.setState({
-      view: views[index],
+    setPaginationInfo((paginationInfo) => {
+      return { ...paginationInfo, rowsPerPage: val, page: 1 };
     });
+    paginateUsers(users.sortedUsers, 1, val);
   };
-  setSort = (sort: string) => {
+  const setPage = (num: number) => {
+    setPaginationInfo((paginationInfo) => {
+      return { ...paginationInfo, page: num };
+    });
+    paginateUsers(users.sortedUsers, num);
+  };
+  const setViewIndex = (index: number) => {
+    const views = ["card", "table"];
+    setView(views[index]);
+  };
+  const setSort = (sort: string) => {
     let reverseSort;
-    if (sort === this.state.sort) {
-      reverseSort = !this.state.reverseSort;
+    if (sort === userSort) {
+      reverseSort = !reverseUserSort;
     } else {
       reverseSort = false;
     }
-    this.setState({
-      sort: sort,
-      reverseSort: reverseSort,
-    });
-    this.sortUsers(this.state.users, sort, reverseSort, 1);
+    setUserSort(sort);
+    setReverseUserSort(reverseSort);
+    sortUsers(users.allUsers, sort, reverseSort, 1);
   };
-  setSortIndex = (index: number) => {
+  const setSortIndex = (index: number) => {
     const props = [
       "displayName",
       "email",
@@ -298,309 +273,291 @@ export class ContentUsers extends React.Component<ContentUsersProps, ContentUser
       "editor",
       "admin",
     ];
-    this.setState({
-      sort: props[index],
-      reverseSort: false,
-    });
-    this.sortUsers(this.state.users, props[index], false, 1);
+    setUserSort(props[index]);
+    setReverseUserSort(false);
+    sortUsers(users.allUsers, props[index], false, 1);
   };
-  toggleLoading = () => {
-    this.setState((prevState) => ({ loading: !prevState.loading }));
-  };
-  componentDidMount() {
-    this.getUsers();
-  }
-  render() {
-    const sortMenu =
-      this.state.view === "card" || this.context !== "desktop" ? (
-        <MenuSurfaceAnchor>
-          <Menu
-            open={this.state.sortMenuOpen}
-            anchorCorner="bottomLeft"
-            onClose={this.closeSortMenu}
-            onSelect={(e) => this.setSortIndex(e.detail.index)}
-          >
-            <MenuItem selected={this.state.sort === "displayName"}>Name</MenuItem>
-            <MenuItem selected={this.state.sort === "email"}>Email</MenuItem>
-            <MenuItem selected={this.state.sort === "dateCreated"}>Date created</MenuItem>
-            <MenuItem selected={this.state.sort === "lastSignIn"}>Last sign in</MenuItem>
-            <MenuItem selected={this.state.sort === "lastActive"}>Last active</MenuItem>
-            <MenuItem selected={this.state.sort === "nickname"}>Nickname</MenuItem>
-            <MenuItem selected={this.state.sort === "designer"}>Designer</MenuItem>
-            <MenuItem selected={this.state.sort === "editor"}>Editor</MenuItem>
-            <MenuItem selected={this.state.sort === "admin"}>Admin</MenuItem>
-          </Menu>
-          <Tooltip enterDelay={500} content="Sort" align="bottom">
-            <TopAppBarActionItem icon="sort" onClick={this.openSortMenu} />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-      ) : null;
-    const viewMenu =
-      this.context === "desktop" ? (
-        <MenuSurfaceAnchor>
-          <Menu
-            open={this.state.viewMenuOpen}
-            anchorCorner="bottomLeft"
-            onClose={this.closeViewMenu}
-            onSelect={(e) => this.setView(e.detail.index)}
-          >
-            <MenuItem selected={this.state.view === "card"}>Card</MenuItem>
-            <MenuItem selected={this.state.view === "table"}>Table</MenuItem>
-          </Menu>
-          <Tooltip enterDelay={500} content="View" align="bottom">
-            <TopAppBarActionItem
-              onClick={this.openViewMenu}
-              icon={iconObject(
-                <div>
-                  {this.state.view === "card" ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" />
-                      <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-                      <path d="M10 7h5v9h-5z" opacity=".3" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                      <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-                      <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-                      <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-                    </svg>
-                  )}
-                </div>
-              )}
-            />
-          </Tooltip>
-        </MenuSurfaceAnchor>
-      ) : null;
-    return (
-      <>
-        <TopAppBar fixed className={classNames({ "bottom-app-bar": this.props.bottomNav })}>
-          <TopAppBarRow>
-            <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle>Users</TopAppBarTitle>
-            </TopAppBarSection>
-            <TopAppBarSection alignEnd>
-              {sortMenu}
-              {viewMenu}
-            </TopAppBarSection>
-          </TopAppBarRow>
-        </TopAppBar>
-        {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
-        <div className="main">
-          <div className="admin-main">
-            <div className="users-container-container">
-              <div className="users-container">
-                {this.state.view === "table" && this.context === "desktop" ? (
-                  <Card className="users">
-                    <DataTable>
-                      <DataTableContent>
-                        <DataTableHead>
-                          <DataTableRow>
-                            <DataTableHeadCell></DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "displayName" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("displayName");
-                              }}
-                            >
-                              User
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "email" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("email");
-                              }}
-                            >
-                              Email
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "dateCreated" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("dateCreated");
-                              }}
-                            >
-                              Date created
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "lastSignIn" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("lastSignIn");
-                              }}
-                            >
-                              Last sign in
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "lastActive" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("lastActive");
-                              }}
-                            >
-                              Last active
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "nickname" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("nickname");
-                              }}
-                            >
-                              Nickname
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "designer" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("designer");
-                              }}
-                            >
-                              Designer
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "editor" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("editor");
-                              }}
-                            >
-                              Editor
-                            </DataTableHeadCell>
-                            <DataTableHeadCell
-                              sort={this.state.sort === "admin" ? (this.state.reverseSort ? -1 : 1) : null}
-                              onClick={() => {
-                                this.setSort("admin");
-                              }}
-                            >
-                              Admin
-                            </DataTableHeadCell>
-                            <DataTableHeadCell>Save</DataTableHeadCell>
-                            <DataTableHeadCell>Delete</DataTableHeadCell>
-                          </DataTableRow>
-                          <DataTableRow className={classNames("progress-row", { loading: this.state.loading })}>
-                            <DataTableHeadCell colSpan={12}>
-                              <LinearProgress />
-                            </DataTableHeadCell>
-                          </DataTableRow>
-                        </DataTableHead>
-                        <DataTableBody>
-                          {this.state.paginatedUsers.map((user) => {
-                            return (
-                              <UserRow
-                                user={user}
-                                delete={this.openDeleteDialog}
-                                getUsers={this.getUsers}
-                                key={user.email}
-                                allDesigners={this.props.allDesigners}
-                              />
-                            );
-                          })}
-                        </DataTableBody>
-                      </DataTableContent>
-                      <DataTablePagination>
-                        <div className="button-container">
-                          <Button
-                            label={"Next " + length}
-                            outlined
-                            disabled={!this.state.nextPageToken}
-                            onClick={() => {
-                              this.getUsers(true);
-                            }}
-                          />
-                        </div>
-                        <DataTablePaginationTrailing>
-                          <DataTablePaginationRowsPerPage>
-                            <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
-                            <DataTablePaginationRowsPerPageSelect
-                              value={this.state.rowsPerPage.toString()}
-                              options={Array(3)
-                                .fill(rows)
-                                .map((number, index) => (number * (index + 1)).toString())}
-                              onChange={this.setRowsPerPage}
-                              enhanced
-                            />
-                          </DataTablePaginationRowsPerPage>
-                          <DataTablePaginationNavigation>
-                            <DataTablePaginationTotal>
-                              {`${this.state.firstIndex + 1}-${this.state.lastIndex + 1} of ${
-                                this.state.sortedUsers.length
-                              }`}
-                            </DataTablePaginationTotal>
-                            <DataTablePaginationButton
-                              className="rtl-flip"
-                              icon="first_page"
-                              disabled={this.state.firstIndex === 0}
-                              onClick={() => {
-                                this.setPage(1);
-                              }}
-                            />
-                            <DataTablePaginationButton
-                              className="rtl-flip"
-                              icon="chevron_left"
-                              disabled={this.state.firstIndex === 0}
-                              onClick={() => {
-                                this.setPage(this.state.page - 1);
-                              }}
-                            />
-                            <DataTablePaginationButton
-                              className="rtl-flip"
-                              icon="chevron_right"
-                              disabled={this.state.lastIndex === this.state.sortedUsers.length - 1}
-                              onClick={() => {
-                                this.setPage(this.state.page + 1);
-                              }}
-                            />
-                            <DataTablePaginationButton
-                              className="rtl-flip"
-                              icon="last_page"
-                              disabled={this.state.lastIndex === this.state.sortedUsers.length - 1}
-                              onClick={() => {
-                                this.setPage(Math.ceil(this.state.sortedUsers.length / this.state.rowsPerPage));
-                              }}
-                            />
-                          </DataTablePaginationNavigation>
-                        </DataTablePaginationTrailing>
-                      </DataTablePagination>
-                    </DataTable>
-                  </Card>
+  const sortMenu =
+    view === "card" || device !== "desktop" ? (
+      <MenuSurfaceAnchor>
+        <Menu
+          open={sortMenuOpen}
+          anchorCorner="bottomLeft"
+          onClose={closeSortMenu}
+          onSelect={(e) => setSortIndex(e.detail.index)}
+        >
+          <MenuItem selected={userSort === "displayName"}>Name</MenuItem>
+          <MenuItem selected={userSort === "email"}>Email</MenuItem>
+          <MenuItem selected={userSort === "dateCreated"}>Date created</MenuItem>
+          <MenuItem selected={userSort === "lastSignIn"}>Last sign in</MenuItem>
+          <MenuItem selected={userSort === "lastActive"}>Last active</MenuItem>
+          <MenuItem selected={userSort === "nickname"}>Nickname</MenuItem>
+          <MenuItem selected={userSort === "designer"}>Designer</MenuItem>
+          <MenuItem selected={userSort === "editor"}>Editor</MenuItem>
+          <MenuItem selected={userSort === "admin"}>Admin</MenuItem>
+        </Menu>
+        <Tooltip enterDelay={500} content="Sort" align="bottom">
+          <TopAppBarActionItem icon="sort" onClick={openSortMenu} />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+    ) : null;
+  const viewMenu =
+    device === "desktop" ? (
+      <MenuSurfaceAnchor>
+        <Menu
+          open={viewMenuOpen}
+          anchorCorner="bottomLeft"
+          onClose={closeViewMenu}
+          onSelect={(e) => setViewIndex(e.detail.index)}
+        >
+          <MenuItem selected={view === "card"}>Card</MenuItem>
+          <MenuItem selected={view === "table"}>Table</MenuItem>
+        </Menu>
+        <Tooltip enterDelay={500} content="View" align="bottom">
+          <TopAppBarActionItem
+            onClick={openViewMenu}
+            icon={iconObject(
+              <div>
+                {view === "card" ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
+                    <path d="M10 7h5v9h-5z" opacity=".3" />
+                  </svg>
                 ) : (
-                  <div className="user-container">
-                    {this.state.sortedUsers.map((user) => {
-                      return (
-                        <UserCard
-                          user={user}
-                          key={user.email}
-                          delete={this.openDeleteDialog}
-                          getUsers={this.getUsers}
-                          allDesigners={this.props.allDesigners}
-                        />
-                      );
-                    })}
-                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
+                    <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
+                    <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
+                  </svg>
                 )}
               </div>
+            )}
+          />
+        </Tooltip>
+      </MenuSurfaceAnchor>
+    ) : null;
+  return (
+    <>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+        <TopAppBarRow>
+          <TopAppBarSection alignStart>
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarTitle>Users</TopAppBarTitle>
+          </TopAppBarSection>
+          <TopAppBarSection alignEnd>
+            {sortMenu}
+            {viewMenu}
+          </TopAppBarSection>
+        </TopAppBarRow>
+      </TopAppBar>
+      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      <div className="main">
+        <div className="admin-main">
+          <div className="users-container-container">
+            <div className="users-container">
+              {view === "table" && device === "desktop" ? (
+                <Card className="users">
+                  <DataTable>
+                    <DataTableContent>
+                      <DataTableHead>
+                        <DataTableRow>
+                          <DataTableHeadCell></DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "displayName" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("displayName");
+                            }}
+                          >
+                            User
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "email" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("email");
+                            }}
+                          >
+                            Email
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "dateCreated" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("dateCreated");
+                            }}
+                          >
+                            Date created
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "lastSignIn" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("lastSignIn");
+                            }}
+                          >
+                            Last sign in
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "lastActive" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("lastActive");
+                            }}
+                          >
+                            Last active
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "nickname" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("nickname");
+                            }}
+                          >
+                            Nickname
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "designer" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("designer");
+                            }}
+                          >
+                            Designer
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "editor" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("editor");
+                            }}
+                          >
+                            Editor
+                          </DataTableHeadCell>
+                          <DataTableHeadCell
+                            sort={userSort === "admin" ? (reverseUserSort ? -1 : 1) : null}
+                            onClick={() => {
+                              setSort("admin");
+                            }}
+                          >
+                            Admin
+                          </DataTableHeadCell>
+                          <DataTableHeadCell>Save</DataTableHeadCell>
+                          <DataTableHeadCell>Delete</DataTableHeadCell>
+                        </DataTableRow>
+                        <DataTableRow className={classNames("progress-row", { loading: loading })}>
+                          <DataTableHeadCell colSpan={12}>
+                            <LinearProgress />
+                          </DataTableHeadCell>
+                        </DataTableRow>
+                      </DataTableHead>
+                      <DataTableBody>
+                        {users.paginatedUsers.map((user) => {
+                          return (
+                            <UserRow
+                              user={user}
+                              delete={openDeleteDialog}
+                              getUsers={getUsers}
+                              key={user.email}
+                              allDesigners={props.allDesigners}
+                            />
+                          );
+                        })}
+                      </DataTableBody>
+                    </DataTableContent>
+                    <DataTablePagination>
+                      <div className="button-container">
+                        <Button
+                          label={"Next " + length}
+                          outlined
+                          disabled={!nextPageToken}
+                          onClick={() => {
+                            getUsers(true);
+                          }}
+                        />
+                      </div>
+                      <DataTablePaginationTrailing>
+                        <DataTablePaginationRowsPerPage>
+                          <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
+                          <DataTablePaginationRowsPerPageSelect
+                            value={paginationInfo.rowsPerPage.toString()}
+                            options={Array(3)
+                              .fill(rows)
+                              .map((number, index) => (number * (index + 1)).toString())}
+                            onChange={setRowsPerPage}
+                            enhanced
+                          />
+                        </DataTablePaginationRowsPerPage>
+                        <DataTablePaginationNavigation>
+                          <DataTablePaginationTotal>
+                            {`${paginationInfo.firstIndex + 1}-${paginationInfo.lastIndex + 1} of ${
+                              users.sortedUsers.length
+                            }`}
+                          </DataTablePaginationTotal>
+                          <DataTablePaginationButton
+                            className="rtl-flip"
+                            icon="first_page"
+                            disabled={paginationInfo.firstIndex === 0}
+                            onClick={() => {
+                              setPage(1);
+                            }}
+                          />
+                          <DataTablePaginationButton
+                            className="rtl-flip"
+                            icon="chevron_left"
+                            disabled={paginationInfo.firstIndex === 0}
+                            onClick={() => {
+                              setPage(paginationInfo.page - 1);
+                            }}
+                          />
+                          <DataTablePaginationButton
+                            className="rtl-flip"
+                            icon="chevron_right"
+                            disabled={paginationInfo.lastIndex === users.sortedUsers.length - 1}
+                            onClick={() => {
+                              setPage(paginationInfo.page + 1);
+                            }}
+                          />
+                          <DataTablePaginationButton
+                            className="rtl-flip"
+                            icon="last_page"
+                            disabled={paginationInfo.lastIndex === users.sortedUsers.length - 1}
+                            onClick={() => {
+                              setPage(Math.ceil(users.sortedUsers.length / paginationInfo.rowsPerPage));
+                            }}
+                          />
+                        </DataTablePaginationNavigation>
+                      </DataTablePaginationTrailing>
+                    </DataTablePagination>
+                  </DataTable>
+                </Card>
+              ) : (
+                <div className="user-container">
+                  {users.sortedUsers.map((user) => {
+                    return (
+                      <UserCard
+                        user={user}
+                        key={user.email}
+                        delete={openDeleteDialog}
+                        getUsers={getUsers}
+                        allDesigners={props.allDesigners}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            <Dialog open={this.state.deleteDialogOpen}>
-              <DialogTitle>Delete User</DialogTitle>
-              <DialogContent>
-                Are you sure you want to delete the user {this.state.deletedUser.displayName}?
-              </DialogContent>
-              <DialogActions>
-                <DialogButton action="close" onClick={this.closeDeleteDialog} isDefaultAction>
-                  Cancel
-                </DialogButton>
-                <DialogButton
-                  action="accept"
-                  className="delete"
-                  onClick={() => this.deleteUser(this.state.deletedUser)}
-                >
-                  Delete
-                </DialogButton>
-              </DialogActions>
-            </Dialog>
           </div>
-          <Footer />
+          <Dialog open={deleteOpen}>
+            <DialogTitle>Delete User</DialogTitle>
+            <DialogContent>Are you sure you want to delete the user {deletedUser.displayName}?</DialogContent>
+            <DialogActions>
+              <DialogButton action="close" onClick={closeDeleteDialog} isDefaultAction>
+                Cancel
+              </DialogButton>
+              <DialogButton action="accept" className="delete" onClick={() => deleteUser(deletedUser)}>
+                Delete
+              </DialogButton>
+            </DialogActions>
+          </Dialog>
         </div>
-        {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
-      </>
-    );
-  }
-}
+        <Footer />
+      </div>
+      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+    </>
+  );
+};
 export default ContentUsers;
-
-ContentUsers.contextType = DeviceContext;

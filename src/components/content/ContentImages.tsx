@@ -98,10 +98,10 @@ export const ContentImages = (props: ContentImagesProps) => {
   });
 
   const [folderMenuOpen, setFolderMenuOpen] = useState(false);
-  const [openFolderMenu, closeFolderMenu] = useBoolStates(setFolderMenuOpen);
+  const [closeFolderMenu, openFolderMenu] = useBoolStates(setFolderMenuOpen);
   const [searchOpen, setSearchOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [openDelete, closeDelete] = useBoolStates(setDeleteOpen);
+  const [closeDelete, openDelete] = useBoolStates(setDeleteOpen);
 
   const [loading, setLoading] = useState(false);
 

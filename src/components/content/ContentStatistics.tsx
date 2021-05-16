@@ -244,7 +244,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     vendors: "total",
   });
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [openCategoryDialog, closeCategoryDialog] = useBoolStates(setCategoryDialogOpen);
+  const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
 
   const getData = async () => {
     const fileRef = storage.ref("statisticsData.json");
