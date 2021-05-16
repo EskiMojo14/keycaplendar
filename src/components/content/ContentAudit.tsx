@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
@@ -35,115 +35,82 @@ type ContentAuditProps = {
   openNav: () => void;
 };
 
-type ContentAuditState = {
-  actions: ActionType[];
-  actionsFiltered: ActionType[];
-  filterAction: string;
-  filterUser: string;
-  length: number;
-  filterOpen: boolean;
-  deleteOpen: boolean;
-  deleteAction: ActionType;
-  users: { label: string; value: string }[];
-  loading: boolean;
-};
+export const ContentAudit = (props: ContentAuditProps) => {
+  const device = useContext(DeviceContext);
 
-export class ContentAudit extends React.Component<ContentAuditProps, ContentAuditState> {
-  state: ContentAuditState = {
-    actions: [],
-    actionsFiltered: [],
+  const blankAction: ActionType = {
+    before: new Keyset(),
+    after: new Keyset(),
+    action: "created",
+    changelogId: "",
+    documentId: "",
+    timestamp: "",
+    user: {
+      displayName: "",
+      email: "",
+      nickname: "",
+    },
+  };
+
+  const [actions, setActions] = useState<{
+    allActions: ActionType[];
+    filteredActions: ActionType[];
+  }>({
+    allActions: [],
+    filteredActions: [],
+  });
+  const [filterInfo, setFilterInfo] = useState({
     filterAction: "none",
     filterUser: "all",
     length: 50,
-    filterOpen: false,
-    deleteOpen: false,
-    deleteAction: {
-      before: new Keyset(),
-      after: new Keyset(),
-      action: "created",
-      changelogId: "",
-      documentId: "",
-      timestamp: "",
-      user: {
-        displayName: "",
-        email: "",
-        nickname: "",
-      },
-    },
     users: [{ label: "All", value: "all" }],
-    loading: false,
-  };
-  componentDidMount() {
-    this.getActions();
-  }
-  toggleLoading = () => {
-    this.setState({
-      loading: !this.state.loading,
-    });
-  };
-  toggleFilter = () => {
-    if (this.state.filterOpen && this.context !== "desktop") {
+  });
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteAction, setDeleteAction] = useState<ActionType>(blankAction);
+  const [loading, setLoading] = useState(false);
+
+  const toggleFilter = () => {
+    if (filterOpen && device !== "desktop") {
       closeModal();
-    } else if (this.context !== "desktop") {
+    } else if (device !== "desktop") {
       openModal();
     }
-    this.setState({
-      filterOpen: !this.state.filterOpen,
-    });
+    setFilterOpen((filterOpen) => !filterOpen);
   };
-  closeFilter = () => {
-    if (this.context !== "desktop") {
+  const closeFilter = () => {
+    if (device !== "desktop") {
       closeModal();
     }
-    this.setState({
-      filterOpen: false,
-    });
+    setFilterOpen(false);
   };
-  openDelete = (action: ActionType) => {
-    this.setState({
-      deleteOpen: true,
-      deleteAction: action,
-    });
+  const openDelete = (action: ActionType) => {
+    setDeleteOpen(true);
+    setDeleteAction(action);
   };
-  closeDelete = () => {
-    this.setState({
-      deleteOpen: false,
-    });
+  const closeDelete = () => {
+    setDeleteOpen(false);
     setTimeout(() => {
-      this.setState({
-        deleteAction: {
-          before: new Keyset(),
-          after: new Keyset(),
-          action: "created",
-          changelogId: "",
-          documentId: "",
-          timestamp: "",
-          user: {
-            displayName: "",
-            email: "",
-            nickname: "",
-          },
-        },
-      });
+      setDeleteAction(blankAction);
     }, 100);
   };
-  handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
-    if (hasKey(this.state, prop)) {
-      this.setState<never>({
-        [prop]: e.target.value,
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
+    if (hasKey(filterInfo, prop)) {
+      setFilterInfo((filterInfo) => {
+        return { ...filterInfo, [prop]: e.target.value };
       });
-      this.filterActions(
-        this.state.actions,
-        prop === "filterAction" ? e.target.value : this.state.filterAction,
-        prop === "filterUser" ? e.target.value : this.state.filterUser
+      filterActions(
+        actions.allActions,
+        prop === "filterAction" ? e.target.value : filterInfo.filterAction,
+        prop === "filterUser" ? e.target.value : filterInfo.filterUser
       );
     }
   };
-  getActions = (num = this.state.length) => {
-    if (!this.state.loading) {
-      this.toggleLoading();
-    }
-    this.setState({ length: num });
+  const getActions = (num = filterInfo.length) => {
+    setLoading(true);
+    setFilterInfo((filterInfo) => {
+      return { ...filterInfo, length: num };
+    });
     const db = firebase.firestore();
     db.collection("changelog")
       .orderBy("timestamp", "desc")
@@ -165,21 +132,24 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
 
         alphabeticalSortProp(actions, "timestamp", true);
 
-        this.setState({
-          users: users,
+        setFilterInfo((filterInfo) => {
+          return { ...filterInfo, users: users };
         });
 
-        this.processActions(actions);
+        setActions((prevActions) => {
+          return { ...prevActions, allActions: actions };
+        });
+
+        processActions(actions);
       })
       .catch((error) => {
         queue.notify({ title: "Error getting data: " + error });
-        if (this.state.loading) {
-          this.toggleLoading();
-        }
+        setLoading(false);
       });
   };
+  useEffect(getActions, []);
 
-  processActions = (actions: ActionType[]) => {
+  const processActions = (actions: ActionType[]) => {
     const processedActions: ActionType[] = [...actions].map((action) => {
       const { before, after, ...restAction } = action;
       if (before && after) {
@@ -199,15 +169,15 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       };
     });
 
-    this.filterActions(processedActions);
+    filterActions(processedActions);
   };
 
-  filterActions = (
-    actions = this.state.actions,
-    filterAction = this.state.filterAction,
-    filterUser = this.state.filterUser
+  const filterActions = (
+    allActions = actions.allActions,
+    filterAction = filterInfo.filterAction,
+    filterUser = filterInfo.filterUser
   ) => {
-    let filteredActions = [...actions];
+    let filteredActions = [...allActions];
 
     if (filterAction !== "none") {
       filteredActions = filteredActions.filter((action) => {
@@ -221,112 +191,106 @@ export class ContentAudit extends React.Component<ContentAuditProps, ContentAudi
       });
     }
 
-    this.setState({
-      actionsFiltered: filteredActions,
+    setActions((actions) => {
+      return { ...actions, filteredActions: filteredActions };
     });
-    if (this.state.loading) {
-      this.toggleLoading();
-    }
+    setLoading(false);
   };
-  deleteAction = (action: ActionType) => {
+  const deleteActionFn = (action: ActionType) => {
     const db = firebase.firestore();
     db.collection("changelog")
       .doc(action.changelogId)
       .delete()
       .then(() => {
         queue.notify({ title: "Successfully deleted changelog entry." });
-        this.getActions();
-        this.closeDelete();
+        getActions();
+        closeDelete();
       })
       .catch((error) => {
         queue.notify({ title: "Error deleting changelog entry: " + error });
-        this.closeDelete();
+        closeDelete();
       });
   };
-  render() {
-    const refreshButton = this.state.loading ? (
-      <CircularProgress />
-    ) : (
-      <Tooltip enterDelay={500} content="Refresh" align="bottom">
-        <TopAppBarActionItem
-          icon="refresh"
-          onClick={() => {
-            this.getActions();
-          }}
-        />
-      </Tooltip>
-    );
-    return (
-      <>
-        <TopAppBar fixed className={classNames({ "bottom-app-bar": this.props.bottomNav })}>
-          <TopAppBarRow>
-            <TopAppBarSection alignStart>
-              <TopAppBarNavigationIcon icon="menu" onClick={this.props.openNav} />
-              <TopAppBarTitle>Audit Log</TopAppBarTitle>
-            </TopAppBarSection>
-            <TopAppBarSection alignEnd>
-              <Tooltip enterDelay={500} content="Filter" align="bottom">
-                <TopAppBarActionItem icon="filter_list" onClick={this.toggleFilter} />
-              </Tooltip>
-              {refreshButton}
-            </TopAppBarSection>
-          </TopAppBarRow>
-        </TopAppBar>
-        {this.props.bottomNav ? null : <TopAppBarFixedAdjust />}
-        <div
-          className={classNames("content-container", {
-            "drawer-open": this.state.filterOpen && this.context === "desktop",
-          })}
-        >
-          <div className="main extended-app-bar">
-            <DrawerAuditFilter
-              open={this.state.filterOpen}
-              close={this.closeFilter}
-              handleFilterChange={this.handleFilterChange}
-              filterAction={this.state.filterAction}
-              filterUser={this.state.filterUser}
-              users={this.state.users}
-              auditLength={this.state.length}
-              getActions={this.getActions}
-            />
-            <ConditionalWrapper
-              condition={this.context === "desktop"}
-              wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
-            >
-              <div className="admin-main">
-                <div className="log-container">
-                  <Card className={classNames("log", { placeholder: this.state.actionsFiltered.length === 0 })}>
-                    <List twoLine className="three-line">
-                      {this.state.actionsFiltered.map((action) => {
-                        const timestamp = moment(action.timestamp);
-                        return (
-                          <AuditEntry
-                            key={action.timestamp}
-                            action={action}
-                            timestamp={timestamp}
-                            openDeleteDialog={this.openDelete}
-                          />
-                        );
-                      })}
-                    </List>
-                  </Card>
-                </div>
+  const refreshButton = loading ? (
+    <CircularProgress />
+  ) : (
+    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+      <TopAppBarActionItem
+        icon="refresh"
+        onClick={() => {
+          getActions();
+        }}
+      />
+    </Tooltip>
+  );
+  return (
+    <>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+        <TopAppBarRow>
+          <TopAppBarSection alignStart>
+            <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
+            <TopAppBarTitle>Audit Log</TopAppBarTitle>
+          </TopAppBarSection>
+          <TopAppBarSection alignEnd>
+            <Tooltip enterDelay={500} content="Filter" align="bottom">
+              <TopAppBarActionItem icon="filter_list" onClick={toggleFilter} />
+            </Tooltip>
+            {refreshButton}
+          </TopAppBarSection>
+        </TopAppBarRow>
+      </TopAppBar>
+      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      <div
+        className={classNames("content-container", {
+          "drawer-open": filterOpen && device === "desktop",
+        })}
+      >
+        <div className="main extended-app-bar">
+          <DrawerAuditFilter
+            open={filterOpen}
+            close={closeFilter}
+            handleFilterChange={handleFilterChange}
+            filterAction={filterInfo.filterAction}
+            filterUser={filterInfo.filterUser}
+            users={filterInfo.users}
+            auditLength={filterInfo.length}
+            getActions={getActions}
+          />
+          <ConditionalWrapper
+            condition={device === "desktop"}
+            wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
+          >
+            <div className="admin-main">
+              <div className="log-container">
+                <Card className={classNames("log", { placeholder: actions.filteredActions.length === 0 })}>
+                  <List twoLine className="three-line">
+                    {actions.filteredActions.map((action) => {
+                      const timestamp = moment(action.timestamp);
+                      return (
+                        <AuditEntry
+                          key={action.timestamp}
+                          action={action}
+                          timestamp={timestamp}
+                          openDeleteDialog={openDelete}
+                        />
+                      );
+                    })}
+                  </List>
+                </Card>
               </div>
-            </ConditionalWrapper>
-            <DialogAuditDelete
-              open={this.state.deleteOpen}
-              close={this.closeDelete}
-              deleteAction={this.state.deleteAction}
-              deleteActionFn={this.deleteAction}
-            />
-          </div>
+            </div>
+          </ConditionalWrapper>
+          <DialogAuditDelete
+            open={deleteOpen}
+            close={closeDelete}
+            deleteAction={deleteAction}
+            deleteActionFn={deleteActionFn}
+          />
         </div>
-        <Footer />
-        {this.props.bottomNav ? <TopAppBarFixedAdjust /> : null}
-      </>
-    );
-  }
-}
+      </div>
+      <Footer />
+      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+    </>
+  );
+};
 export default ContentAudit;
-
-ContentAudit.contextType = DeviceContext;
