@@ -1,5 +1,5 @@
 import React from "react";
-import { allPages, allSorts, allViews, mainPages, statsTabs, whitelistShipped } from "./constants";
+import { allPages, allSorts, allViews, mainPages, statsTabs } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -52,7 +52,7 @@ export type WhitelistType = {
   /** Array of allowed profiles. */
   profiles: string[];
   /** Array of allowed shipped values. */
-  shipped: typeof whitelistShipped[number][];
+  shipped: ("Shipped" | "Not shipped")[];
   /** Regions to include. */
   regions: string[];
   /** Whether to `include` or `exclude` the specified `vendors`. */

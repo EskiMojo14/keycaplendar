@@ -53,7 +53,8 @@ type ContentMainProps = {
   allVendorRegions: string[];
   allRegions: string[];
   appPresets: PresetType[];
-  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
+  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
+  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   whitelist: WhitelistType;
   loading: boolean;
   getData: () => void;
@@ -316,6 +317,7 @@ export const ContentMain = (props: ContentMainProps) => {
           open={filterOpen}
           close={closeFilter}
           setWhitelist={props.setWhitelist}
+          setWhitelistMerge={props.setWhitelistMerge}
           whitelist={props.whitelist}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}

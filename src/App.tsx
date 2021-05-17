@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "./firebase";
 import moment from "moment";
 import { nanoid } from "nanoid";
@@ -17,7 +17,6 @@ import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import {
   allPages,
   pageTitle,
-  settingsFunctions,
   pageSort,
   whitelistParams,
   statsTabs,
@@ -31,7 +30,7 @@ import {
   sortBlacklist,
   whitelistShipped,
 } from "./util/constants";
-import { Interval, Preset } from "./util/constructors";
+import { Interval, Preset, Whitelist } from "./util/constructors";
 import { UserContext, DeviceContext } from "./util/contexts";
 import {
   addOrRemove,
@@ -40,6 +39,7 @@ import {
   arrayEveryType,
   arrayIncludes,
   hasKey,
+  mergeObject,
   normalise,
   pageConditions,
   replaceFunction,
@@ -67,68 +67,103 @@ import "./App.scss";
 
 const db = firebase.firestore();
 
-type AppProps = Record<string, never>;
-
-type AppState = {
-  device: string;
-  bottomNav: boolean;
-  page: Page;
-  statisticsTab: StatsTab;
-  view: ViewType;
-  transition: boolean;
-  sort: SortType;
-  sortOrder: SortOrderType;
-  allProfiles: string[];
-  allDesigners: string[];
-  allVendorRegions: string[];
-  allVendors: string[];
-  allRegions: string[];
-  allSets: SetType[];
-  filteredSets: SetType[];
-  setGroups: SetGroup[];
-  loading: boolean;
-  content: boolean;
-  search: string;
-  user: CurrentUserType;
-  favorites: string[];
-  hidden: string[];
-  whitelist: WhitelistType;
-  cookies: boolean;
-  applyTheme: string;
-  lightTheme: string;
-  darkTheme: string;
-  manualTheme: boolean;
-  fromTimeTheme: string;
-  toTimeTheme: string;
-  lichTheme: boolean;
-  density: string;
-  syncSettings: boolean;
-  currentPreset: PresetType;
-  appPresets: PresetType[];
-  userPresets: PresetType[];
-};
-
-class App extends React.Component<AppProps, AppState> {
-  state: AppState = {
-    device: "tablet",
-    bottomNav: false,
-    page: "images",
-    statisticsTab: "summary",
+export const App = () => {
+  const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">("tablet");
+  const [appPage, setAppPage] = useState<Page>("images");
+  const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
+  const [settings, setSettings] = useState<{
+    view: ViewType;
+    bottomNav: boolean;
+    applyTheme: string;
+    lightTheme: string;
+    darkTheme: string;
+    manualTheme: boolean;
+    fromTimeTheme: string;
+    toTimeTheme: string;
+    density: string;
+    syncSettings: boolean;
+  }>({
     view: "card",
-    transition: false,
-    sort: "gbLaunch",
-    sortOrder: "ascending",
+    bottomNav: false,
+    applyTheme: "manual",
+    lightTheme: "light",
+    darkTheme: "deep",
+    manualTheme: false,
+    fromTimeTheme: "21:00",
+    toTimeTheme: "06:00",
+    density: "default",
+    syncSettings: false,
+  });
+  const [lists, setLists] = useState<{
+    allDesigners: string[];
+    allProfiles: string[];
+    allRegions: string[];
+    allVendors: string[];
+    allVendorRegions: string[];
+  }>({
     allDesigners: [],
     allProfiles: [],
     allRegions: [],
     allVendors: [],
     allVendorRegions: [],
+  });
+  const [setsInfo, setSetsInfo] = useState<{
+    allSets: SetType[];
+    filteredSets: SetType[];
+    setGroups: SetGroup[];
+  }>({
     allSets: [],
     filteredSets: [],
     setGroups: [],
-    loading: false,
-    content: true,
+  });
+  const [sorts, setSorts] = useState<{
+    sort: SortType;
+    sortOrder: SortOrderType;
+  }>({
+    sort: "gbLaunch",
+    sortOrder: "ascending",
+  });
+  const [filterInfo, setFilterI] = useState<{
+    search: string;
+    whitelist: WhitelistType;
+    currentPreset: PresetType;
+    appPresets: PresetType[];
+  }>({
     search: "",
+    whitelist: {
+      edited: [],
+      favorites: false,
+      hidden: false,
+      profiles: [],
+      shipped: ["Shipped", "Not shipped"],
+      regions: [],
+      vendorMode: "exclude",
+      vendors: [],
+    },
+    currentPreset: new Preset(),
+    appPresets: [],
+  });
+  type FilterInfo = {
+    search: string;
+    whitelist: WhitelistType;
+    currentPreset: PresetType;
+    appPresets: PresetType[];
+  };
+  const setFilterInfo = (newState: FilterInfo | ((oldState: FilterInfo) => FilterInfo), caller: string) => {
+    if (typeof newState === "function") {
+      console.log(newState(filterInfo), caller);
+    } else {
+      console.log(newState, caller);
+    }
+    setFilterI(newState);
+  };
+
+  const [userInfo, setUserInfo] = useState<{
+    user: CurrentUserType;
+    favorites: string[];
+    hidden: string[];
+    userPresets: PresetType[];
+  }>({
     user: {
       email: "",
       name: "",
@@ -141,35 +176,18 @@ class App extends React.Component<AppProps, AppState> {
     },
     favorites: [],
     hidden: [],
-    whitelist: {
-      edited: [],
-      favorites: false,
-      hidden: false,
-      profiles: [],
-      shipped: ["Shipped", "Not shipped"],
-      regions: [],
-      vendorMode: "exclude",
-      vendors: [],
-    },
-    cookies: false,
-    applyTheme: "manual",
-    lightTheme: "light",
-    darkTheme: "deep",
-    manualTheme: false,
-    fromTimeTheme: "21:00",
-    toTimeTheme: "06:00",
-    lichTheme: false,
-    density: "default",
-    syncSettings: false,
-    currentPreset: new Preset(),
-    appPresets: [],
     userPresets: [],
-  };
-  constructor(props: AppProps) {
-    super(props);
-    this.debouncedFilterData = debounce(this.filterData, 350, { trailing: true });
-  }
-  getURLQuery = () => {
+  });
+
+  const [cookies, setCookies] = useState(false);
+
+  const [lichTheme, setLichTheme] = useState(false);
+
+  const [transition, setTransition] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState(true);
+
+  const getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("page")) {
       const pageQuery = params.get("page");
@@ -179,12 +197,13 @@ class App extends React.Component<AppProps, AppState> {
       ) {
         if (arrayIncludes(mainPages, pageQuery)) {
           if (pageQuery === "calendar") {
-            this.setState({ page: pageQuery, sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+            setAppPage(pageQuery);
+            setSorts({ sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
           } else {
             const sortQuery = params.get("sort");
             const sortOrderQuery = params.get("sortOrder");
-            this.setState({
-              page: pageQuery,
+            setAppPage(pageQuery);
+            setSorts({
               sort:
                 arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
                   ? sortQuery
@@ -196,13 +215,13 @@ class App extends React.Component<AppProps, AppState> {
             });
           }
         } else {
-          this.setState({ page: pageQuery });
+          setAppPage(pageQuery);
         }
       }
     } else {
-      this.setState({ page: "calendar" });
+      setAppPage("calendar");
     }
-    const whitelistObj: WhitelistType = { ...this.state.whitelist };
+    const whitelistObj: WhitelistType = { ...filterInfo.whitelist };
     whitelistParams.forEach((param, index, array) => {
       if (params.has(param)) {
         const val = params.get(param);
@@ -229,34 +248,34 @@ class App extends React.Component<AppProps, AppState> {
         }
       }
       if (index === array.length - 1) {
-        this.setWhitelist("all", whitelistObj, false);
+        setWhitelistMerge(whitelistObj, false);
       }
     });
     if (params.has("statisticsTab")) {
       const urlTab = params.get("statisticsTab");
       if (urlTab && arrayIncludes(statsTabs, urlTab)) {
-        this.setStatisticsTab(urlTab);
+        setStatisticsTab(urlTab);
       }
     }
-    this.getData();
+    getData();
   };
-  acceptCookies = () => {
-    this.setState({ cookies: true });
-    this.setCookie("accepted", "true", 356);
+  const acceptCookies = () => {
+    setCookies(true);
+    setCookie("accepted", "true", 356);
   };
-  clearCookies = () => {
-    this.setState({ cookies: false });
-    this.setCookie("accepted", "false", -1);
+  const clearCookies = () => {
+    setCookies(false);
+    setCookie("accepted", "false", -1);
   };
-  setCookie(cname: string, cvalue: string, exdays: number) {
-    if (this.state.cookies || cname === "accepted") {
+  const setCookie = (cname: string, cvalue: string, exdays: number) => {
+    if (cookies || cname === "accepted") {
       const d = new Date();
       d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
       const expires = "expires=" + d.toUTCString();
       document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     }
-  }
-  getCookie(cname: string) {
+  };
+  const getCookie = (cname: string) => {
     const name = cname + "=";
     const decodedCookie = decodeURIComponent(document.cookie);
     const ca = decodedCookie.split(";");
@@ -270,43 +289,43 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
     return "";
-  }
-  setStorage = (name: string, value: any) => {
-    if (this.state.cookies) {
+  };
+  const setStorage = (name: string, value: any) => {
+    if (cookies) {
       localStorage.setItem(name, JSON.stringify(value));
     }
   };
-  getStorage = (name: string) => {
+  const getStorage = (name: string) => {
     const value = localStorage.getItem(name);
     return value ? JSON.parse(value) : value;
   };
-  checkStorage = () => {
-    const accepted = this.getCookie("accepted");
+  const checkStorage = () => {
+    const accepted = getCookie("accepted");
     if (accepted && accepted === "true") {
-      this.setState({ cookies: true });
+      setCookies(true);
 
       const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
-        const cookie = this.getCookie(key);
+        const cookie = getCookie(key);
         if (cookie) {
           if (cookie !== "true" && cookie !== "false") {
             setTimeout(() => {
               setFunction(cookie, false);
-              this.setStorage(key, cookie);
-              this.setCookie(key, cookie, -1);
+              setStorage(key, cookie);
+              setCookie(key, cookie, -1);
             }, 0);
           } else {
             const cookieBool = cookie === "true";
             setTimeout(() => {
               setFunction(cookieBool, false);
-              this.setStorage(key, cookieBool);
-              this.setCookie(key, cookie, -1);
+              setStorage(key, cookieBool);
+              setCookie(key, cookie, -1);
             }, 0);
           }
         }
       };
 
       const fetchAndSet = (key: string, setFunction: (val: any, write: boolean) => void) => {
-        const val = this.getStorage(key);
+        const val = getStorage(key);
         if (val) {
           setTimeout(() => {
             setFunction(val, false);
@@ -314,58 +333,56 @@ class App extends React.Component<AppProps, AppState> {
         }
       };
 
-      Object.keys(settingsFunctions).forEach((setting) => {
-        if (hasKey(settingsFunctions, setting)) {
-          const funcName = settingsFunctions[setting];
-          if (hasKey<App>(this, funcName)) {
-            const func = this[funcName];
-            fetchAndSet(setting, func);
-            convertCookie(setting, func);
-          }
+      Object.keys(settingFns).forEach((setting) => {
+        if (hasKey(settingFns, setting)) {
+          const func = settingFns[setting];
+          fetchAndSet(setting, func);
+          convertCookie(setting, func);
         }
       });
 
-      const storedPreset = this.getStorage("presetId");
+      const storedPreset = getStorage("presetId");
       const params = new URLSearchParams(window.location.search);
       const noUrlParams = !whitelistParams.some((param) => params.has(param));
       if (storedPreset && storedPreset !== "default" && noUrlParams) {
-        this.selectPreset(storedPreset, false);
+        selectPreset(storedPreset, false);
       }
     }
   };
-  setView = (view: ViewType, write = true) => {
-    if (view !== this.state.view && !this.state.loading) {
-      this.setState({ transition: true });
+  const setView = (view: ViewType, write = true) => {
+    if (view !== settings.view && !loading) {
+      setTransition(true);
       setTimeout(() => {
         document.documentElement.scrollTop = 0;
-        this.setState({ view: view });
+        setSettings((settings) => mergeObject(settings, { view: view }));
       }, 90);
       setTimeout(() => {
-        this.setState({ transition: false });
+        setTransition(false);
       }, 300);
     } else {
-      this.setState({ view: view });
+      setSettings((settings) => mergeObject(settings, { view: view }));
     }
     if (write) {
-      this.setStorage("view", view);
-      this.syncSetting("view", view);
+      setStorage("view", view);
+      syncSetting("view", view);
     }
   };
-  setPage = (page: Page) => {
-    if (page !== this.state.page && !this.state.loading && arrayIncludes(allPages, page)) {
-      this.setState({ transition: true });
+  const setPage = (page: Page) => {
+    if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
+      setTransition(true);
       setTimeout(() => {
         if (arrayIncludes(mainPages, page)) {
-          this.filterData(page, this.state.allSets, pageSort[page], pageSortOrder[page]);
-          this.setState({ page: page, sort: pageSort[page], sortOrder: pageSortOrder[page] });
+          filterData(page, setsInfo.allSets, pageSort[page], pageSortOrder[page]);
+          setAppPage(page);
+          setSorts({ sort: pageSort[page], sortOrder: pageSortOrder[page] });
         } else {
-          this.setState({ page: page });
+          setAppPage(page);
         }
-        this.setSearch("");
+        setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: "" }), "setPage");
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
-        this.setState({ transition: false });
+        setTransition(false);
       }, 300);
       document.title = "KeycapLendar: " + pageTitle[page];
       const params = new URLSearchParams(window.location.search);
@@ -379,118 +396,128 @@ class App extends React.Component<AppProps, AppState> {
       );
     }
   };
-  isDarkTheme = () => {
-    const manualBool = this.state.applyTheme === "manual" && this.state.manualTheme;
+  const isDarkTheme = () => {
+    const manualBool = settings.applyTheme === "manual" && settings.manualTheme;
     const systemBool =
-      this.state.applyTheme === "system" &&
+      settings.applyTheme === "system" &&
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     const currentDay = moment();
-    const fromArray = this.state.fromTimeTheme.split(":");
+    const fromArray = settings.fromTimeTheme.split(":");
     const fromTime = moment().hours(parseInt(fromArray[0])).minutes(parseInt(fromArray[1]));
-    const toArray = this.state.toTimeTheme.split(":");
+    const toArray = settings.toTimeTheme.split(":");
     const toTime = moment().hours(parseInt(toArray[0])).minutes(parseInt(toArray[1]));
-    const timedBool = this.state.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
+    const timedBool = settings.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
     return manualBool || systemBool || timedBool;
   };
-  checkTheme = async () => {
-    const themeBool = await this.isDarkTheme();
+  const checkTheme = () => {
+    const themeBool = isDarkTheme();
     const html = document.querySelector("html");
     if (html) {
       html.setAttribute("class", "");
-      html.classList.add(
-        this.state.lichTheme ? "lich" : themeBool === true ? this.state.darkTheme : this.state.lightTheme
-      );
+      html.classList.add(lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme);
     }
     const meta = document.querySelector("meta[name=theme-color]");
     if (meta) {
       meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
     }
   };
-  setApplyTheme = (applyTheme: string, write = true) => {
-    this.setState({
-      applyTheme: applyTheme,
-    });
-    const timed = new Interval(this.checkTheme, 1000 * 60);
+  const setApplyTheme = (applyTheme: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { applyTheme: applyTheme }));
+    const timed = new Interval(checkTheme, 1000 * 60);
     if (applyTheme === "system") {
-      setTimeout(this.checkTheme, 1);
+      setTimeout(checkTheme, 1);
       window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
         e.preventDefault();
-        this.checkTheme();
+        checkTheme();
       });
     } else {
-      setTimeout(this.checkTheme, 1);
+      setTimeout(checkTheme, 1);
     }
     if (applyTheme !== "timed") {
       setTimeout(timed.clear, 1000 * 10);
     }
     if (write) {
-      this.setStorage("applyTheme", applyTheme);
-      this.syncSetting("applyTheme", applyTheme);
+      setStorage("applyTheme", applyTheme);
+      syncSetting("applyTheme", applyTheme);
     }
   };
-  setLightTheme = (theme: string, write = true) => {
-    this.setState({ lightTheme: theme });
-    setTimeout(this.checkTheme, 1);
+  const setLightTheme = (theme: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { lightTheme: theme }));
+    setTimeout(checkTheme, 1);
     if (write) {
-      this.setStorage("lightTheme", theme);
-      this.syncSetting("lightTheme", theme);
+      setStorage("lightTheme", theme);
+      syncSetting("lightTheme", theme);
     }
   };
-  setDarkTheme = (theme: string, write = true) => {
-    this.setState({ darkTheme: theme });
-    setTimeout(this.checkTheme, 1);
+  const setDarkTheme = (theme: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { darkTheme: theme }));
+    setTimeout(checkTheme, 1);
     if (write) {
-      this.setStorage("darkTheme", theme);
-      this.syncSetting("darkTheme", theme);
+      setStorage("darkTheme", theme);
+      syncSetting("darkTheme", theme);
     }
   };
-  setManualTheme = (bool: boolean, write = true) => {
-    this.setState({ manualTheme: bool });
-    setTimeout(this.checkTheme, 1);
+  const setManualTheme = (bool: boolean, write = true) => {
+    setSettings((settings) => mergeObject(settings, { manualTheme: bool }));
+    setTimeout(checkTheme, 1);
     if (write) {
-      this.setStorage("manualTheme", bool);
-      this.syncSetting("manualTheme", bool);
+      setStorage("manualTheme", bool);
+      syncSetting("manualTheme", bool);
     }
   };
-  setFromTimeTheme = (time: string, write = true) => {
-    this.setState({ fromTimeTheme: time });
-    setTimeout(this.checkTheme, 1);
+  const setFromTimeTheme = (time: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { fromTimeTheme: time }));
+    setTimeout(checkTheme, 1);
     if (write) {
-      this.setStorage("fromTimeTheme", time);
-      this.syncSetting("fromTimeTheme", time);
+      setStorage("fromTimeTheme", time);
+      syncSetting("fromTimeTheme", time);
     }
   };
-  setToTimeTheme = (time: string, write = true) => {
-    this.setState({ toTimeTheme: time });
-    setTimeout(this.checkTheme, 1);
+  const setToTimeTheme = (time: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { toTimeTheme: time }));
+    setTimeout(checkTheme, 1);
     if (write) {
-      this.setStorage("toTimeTheme", time);
-      this.syncSetting("toTimeTheme", time);
+      setStorage("toTimeTheme", time);
+      syncSetting("toTimeTheme", time);
     }
   };
-  toggleLichTheme = () => {
-    this.setState((prevState) => {
-      return { lichTheme: !prevState.lichTheme };
-    });
-    setTimeout(this.checkTheme, 1);
+  const toggleLichTheme = () => {
+    setLichTheme((lichTheme) => !lichTheme);
+    setTimeout(checkTheme, 1);
   };
-  setBottomNav = (value: boolean, write = true) => {
+  const setBottomNav = (value: boolean, write = true) => {
     document.documentElement.scrollTop = 0;
-    this.setState({ bottomNav: value });
+    setSettings((settings) => mergeObject(settings, { bottomNav: value }));
     if (write) {
-      this.setStorage("bottomNav", value);
-      this.syncSetting("bottomNav", value);
+      setStorage("bottomNav", value);
+      syncSetting("bottomNav", value);
     }
   };
-  toggleLoading = () => {
-    this.setState((prevState) => {
-      return { loading: !prevState.loading };
-    });
+
+  const setDensity = (density: string, write = true) => {
+    setSettings((settings) => mergeObject(settings, { density: density }));
+    if (write) {
+      setStorage("density", density);
+      syncSetting("density", density);
+    }
   };
-  getData = () => {
-    this.setState({ loading: true });
+
+  const settingFns: Record<string, (val: any, write: boolean) => void> = {
+    view: setView,
+    bottomNav: setBottomNav,
+    applyTheme: setApplyTheme,
+    lightTheme: setLightTheme,
+    darkTheme: setDarkTheme,
+    manualTheme: setManualTheme,
+    fromTimeTheme: setFromTimeTheme,
+    toTimeTheme: setToTimeTheme,
+    density: setDensity,
+  };
+
+  const getData = () => {
+    setLoading(true);
     db.collection("keysets")
       .get()
       .then((querySnapshot) => {
@@ -523,21 +550,20 @@ class App extends React.Component<AppProps, AppState> {
 
         alphabeticalSortProp(sets, "colorway");
 
-        this.setState({
-          allSets: sets,
-        });
+        setSetsInfo((setsInfo) => mergeObject(setsInfo, { allSets: sets }));
 
-        this.filterData(this.state.page, sets);
-        this.generateLists(sets);
+        filterData(appPage, sets);
+        generateLists(sets);
       })
       .catch((error) => {
         console.log("Error getting data: " + error);
         queue.notify({ title: "Error getting data: " + error });
-        this.setState({ loading: false, content: false });
+        setLoading(false);
+        setContent(false);
       });
   };
 
-  testSets = (sets = this.state.allSets) => {
+  const testSets = (sets = setsInfo.allSets) => {
     const testValue = (set: SetType, key: string, value?: string) => {
       if (value) {
         const endSpace = /\s+$/m;
@@ -586,7 +612,7 @@ class App extends React.Component<AppProps, AppState> {
     });
   };
 
-  generateLists = (sets = this.state.allSets) => {
+  const generateLists = (sets = setsInfo.allSets) => {
     const allVendors = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
@@ -610,61 +636,57 @@ class App extends React.Component<AppProps, AppState> {
 
     // create default preset
 
-    const filteredPresets = this.state.appPresets.filter((preset) => preset.id !== "default");
+    const filteredPresets = filterInfo.appPresets.filter((preset) => preset.id !== "default");
 
-    const defaultPreset = new Preset(
-      "Default",
-      false,
+    const defaultWhitelist: WhitelistType = new Whitelist(
       false,
       false,
       allProfiles,
       ["Shipped", "Not shipped"],
       allRegions,
       "exclude",
-      [],
-      "default"
+      []
     );
+
+    const defaultPreset: PresetType = new Preset("Default", false, defaultWhitelist, "default");
 
     const presets = [defaultPreset, ...filteredPresets];
 
-    this.setState({
+    setLists({
       allVendorRegions: allVendorRegions,
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
       allProfiles: allProfiles,
-      appPresets: presets,
     });
 
-    if (!this.state.currentPreset.name) {
-      this.setState({ currentPreset: defaultPreset });
-
-      if (this.state.whitelist.edited && !this.state.whitelist.edited.includes("profiles")) {
-        this.setWhitelist("profiles", allProfiles, false);
-      }
-
-      if (this.state.whitelist.edited && !this.state.whitelist.edited.includes("regions")) {
-        this.setWhitelist("regions", allRegions, false);
-      }
+    if (!filterInfo.currentPreset.name) {
+      setFilterInfo(
+        (filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }),
+        "generateLists preset"
+      );
+      setWhitelistMerge({ profiles: allProfiles, regions: allRegions });
+    } else {
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets }), "generateLists");
     }
   };
 
-  filterData = (
-    page = this.state.page,
-    sets = this.state.allSets,
-    sort = this.state.sort,
-    sortOrder = this.state.sortOrder,
-    search = this.state.search,
-    whitelist = this.state.whitelist,
-    favorites = this.state.favorites,
-    hidden = this.state.hidden
+  const filterData = (
+    page = appPage,
+    sets = setsInfo.allSets,
+    sort = sorts.sort,
+    sortOrder = sorts.sortOrder,
+    search = filterInfo.search,
+    whitelist = filterInfo.whitelist,
+    favorites = userInfo.favorites,
+    hidden = userInfo.hidden
   ) => {
     // filter bool functions
 
     const hiddenBool = (set: SetType) => {
       if (page === "favorites") {
         return true;
-      } else if ((whitelist.hidden && this.state.user.email) || page === "hidden") {
+      } else if ((whitelist.hidden && userInfo.user.email) || page === "hidden") {
         return hidden.includes(set.id);
       } else {
         return !hidden.includes(set.id);
@@ -699,7 +721,7 @@ class App extends React.Component<AppProps, AppState> {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
-      const favoritesBool = this.state.user.email
+      const favoritesBool = userInfo.user.email
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
       if (set.vendors && set.vendors.length > 0) {
@@ -732,32 +754,16 @@ class App extends React.Component<AppProps, AppState> {
 
     const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-    this.createGroups(page, sort, sortOrder, filteredSets);
+    createGroups(page, sort, sortOrder, filteredSets);
 
-    // set states
-    this.setState({
-      filteredSets: filteredSets,
-      content: filteredSets.length > 0,
-      loading: false,
-    });
+    setSetsInfo((setsInfo) => mergeObject(setsInfo, { filteredSets: filteredSets }));
+    setContent(true);
+    setLoading(false);
   };
 
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
-  debouncedFilterData = (
-    _page = this.state.page,
-    _sets = this.state.allSets,
-    _sort = this.state.sort,
-    _sortOrder = this.state.sortOrder,
-    _search = this.state.search,
-    _whitelist = this.state.whitelist,
-    _favorites = this.state.favorites,
-    _hidden = this.state.hidden
-  ) => {
-    // placeholder - gets overwritten in constructor
-  };
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+  const debouncedFilterData = debounce(filterData, 350, { trailing: true });
 
-  sortData = (sort = this.state.sort, sortOrder = this.state.sortOrder, setGroups = this.state.setGroups) => {
+  const sortData = (sort = sorts.sort, sortOrder = sorts.sortOrder, setGroups = setsInfo.setGroups) => {
     const array = [...setGroups];
     array.sort(function (x, y) {
       const a = x.title;
@@ -783,14 +789,15 @@ class App extends React.Component<AppProps, AppState> {
       }
       return 0;
     });
-    this.setState({ setGroups: array });
+
+    setSetsInfo((setsInfo) => mergeObject(setsInfo, { setGroups: array }));
   };
 
-  createGroups = (
-    page = this.state.page,
-    sort = this.state.sort,
-    sortOrder = this.state.sortOrder,
-    sets = this.state.filteredSets
+  const createGroups = (
+    page = appPage,
+    sort = sorts.sort,
+    sortOrder = sorts.sortOrder,
+    sets = setsInfo.filteredSets
   ) => {
     const createGroups = (sets: SetType[]): string[] => {
       if (dateSorts.includes(sort)) {
@@ -915,25 +922,18 @@ class App extends React.Component<AppProps, AppState> {
       };
     });
 
-    this.setState({ setGroups: setGroups });
+    setSetsInfo((setsInfo) => mergeObject(setsInfo, { setGroups: setGroups }));
   };
 
-  setDensity = (density: string, write = true) => {
-    this.setState({ density: density });
-    if (write) {
-      this.setStorage("density", density);
-      this.syncSetting("density", density);
-    }
-  };
-  setSort = (sort: SortType, clearUrl = true) => {
+  const setSort = (sort: SortType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     let sortOrder: SortOrderType = "ascending";
-    if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(this.state.page)) {
+    if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(appPage)) {
       sortOrder = "descending";
     }
     if (arrayIncludes(allSorts, sort)) {
-      this.setState({ sort: sort, sortOrder: sortOrder });
-      this.createGroups(this.state.page, sort, sortOrder);
+      setSorts({ sort: sort, sortOrder: sortOrder });
+      createGroups(appPage, sort, sortOrder);
     }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
@@ -942,10 +942,10 @@ class App extends React.Component<AppProps, AppState> {
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
-  setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
+  const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
-    this.setState({ sortOrder: sortOrder });
-    this.sortData(this.state.sort, sortOrder);
+    setSorts((sorts) => mergeObject(sorts, { sortOrder: sortOrder }));
+    sortData(sorts.sort, sortOrder);
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sortOrder");
@@ -953,14 +953,12 @@ class App extends React.Component<AppProps, AppState> {
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
-  setSearch = (query: string) => {
-    this.setState({
-      search: query,
-    });
+  const setSearch = (query: string) => {
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }), "setSearch");
     document.documentElement.scrollTop = 0;
-    this.debouncedFilterData(this.state.page, this.state.allSets, this.state.sort, this.state.sortOrder, query);
+    debouncedFilterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, query);
   };
-  setUser = (user: Partial<CurrentUserType>) => {
+  const setUser = (user: Partial<CurrentUserType>) => {
     const blankUser = {
       email: "",
       name: "",
@@ -972,11 +970,11 @@ class App extends React.Component<AppProps, AppState> {
       id: "",
     };
     const newUser = user.email ? { ...blankUser, ...user } : blankUser;
-    this.setState({ user: newUser });
+    setUserInfo((userInfo) => mergeObject(userInfo, { user: newUser }));
   };
-  setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
+  const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
-    this.setState({ statisticsTab: tab });
+    setStatsTab(tab);
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("statisticsTab");
@@ -984,47 +982,57 @@ class App extends React.Component<AppProps, AppState> {
       window.history.pushState({}, "KeycapLendar", questionParam);
     }
   };
-  setWhitelist = (prop: string, val: WhitelistType | WhitelistType[keyof WhitelistType], clearUrl = true) => {
-    if (prop === "all" && typeof val === "object" && !(val instanceof Array)) {
-      const edited = Object.keys(val).filter((key) => {
-        if (hasKey(val, key)) {
-          const value = val[key];
-          return value && value instanceof Array && value.length > 0;
-        } else {
-          return false;
+  const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clearUrl = true) => {
+    const edited = Object.keys(partialWhitelist).filter((key) => {
+      if (hasKey(partialWhitelist, key)) {
+        const value = partialWhitelist[key];
+        return value && value instanceof Array && value.length > 0;
+      } else {
+        return false;
+      }
+    });
+    const whitelist = { ...filterInfo.whitelist, ...partialWhitelist, edited: edited };
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }), "setWhitelistMerge");
+    document.documentElement.scrollTop = 0;
+    if (setsInfo.allSets.length > 0) {
+      filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
+    }
+    if (clearUrl) {
+      const params = new URLSearchParams(window.location.search);
+      whitelistParams.forEach((param, index, array) => {
+        if (params.has(param)) {
+          params.delete(param);
+        }
+        if (index === array.length - 1) {
+          if (params.has("page")) {
+            const page = params.get("page");
+            if (page && arrayIncludes(allPages, page)) {
+              window.history.pushState(
+                {
+                  page: page,
+                },
+                "KeycapLendar: " + pageTitle[page],
+                "?" + params.toString()
+              );
+            }
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
+          }
         }
       });
-      const whitelist = { ...this.state.whitelist, ...val, edited: edited };
-      this.setState({ whitelist: whitelist });
+    }
+  };
+  const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: WhitelistType[T], clearUrl = true) => {
+    if (filterInfo.whitelist.edited instanceof Array) {
+      const edited = filterInfo.whitelist.edited.includes(prop)
+        ? filterInfo.whitelist.edited
+        : [...filterInfo.whitelist.edited, prop];
+      const whitelist = { ...filterInfo.whitelist, [prop]: val, edited: edited };
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }), "setWhitelist: " + prop);
       document.documentElement.scrollTop = 0;
-      if (this.state.allSets.length > 0) {
-        this.filterData(
-          this.state.page,
-          this.state.allSets,
-          this.state.sort,
-          this.state.sortOrder,
-          this.state.search,
-          whitelist
-        );
-      }
-    } else if (this.state.whitelist.edited) {
-      const edited = this.state.whitelist.edited.includes(prop)
-        ? this.state.whitelist.edited
-        : [...this.state.whitelist.edited, prop];
-      const whitelist = { ...this.state.whitelist, [prop]: val, edited: edited };
-      this.setState({
-        whitelist: whitelist,
-      });
-      document.documentElement.scrollTop = 0;
-      if (this.state.allSets.length > 0) {
-        this.filterData(
-          this.state.page,
-          this.state.allSets,
-          this.state.sort,
-          this.state.sortOrder,
-          this.state.search,
-          whitelist
-        );
+      if (setsInfo.allSets.length > 0) {
+        filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
       }
     }
     if (clearUrl) {
@@ -1053,27 +1061,27 @@ class App extends React.Component<AppProps, AppState> {
       });
     }
   };
-  setDevice = () => {
+  const checkDevice = () => {
     let i = 0;
-    let device;
+    let deviceName: "mobile" | "tablet" | "desktop";
     let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     const calculate = () => {
       const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       if (vw !== lastWidth || i === 0) {
         if (vw >= 840) {
-          device = "desktop";
-          if (this.state.device !== device) {
-            this.setState({ device: device });
+          deviceName = "desktop";
+          if (deviceName !== device) {
+            setDevice(deviceName);
           }
         } else if (vw < 840 && vw >= 480) {
-          device = "tablet";
-          if (this.state.device !== device) {
-            this.setState({ device: device });
+          deviceName = "tablet";
+          if (deviceName !== device) {
+            setDevice(deviceName);
           }
         } else {
-          device = "mobile";
-          if (this.state.device !== device) {
-            this.setState({ device: device });
+          deviceName = "mobile";
+          if (deviceName !== device) {
+            setDevice(deviceName);
           }
         }
         lastWidth = vw;
@@ -1083,7 +1091,7 @@ class App extends React.Component<AppProps, AppState> {
     calculate();
     window.addEventListener("resize", calculate);
   };
-  getGlobals = () => {
+  const getGlobals = () => {
     db.collection("app")
       .doc("globals")
       .get()
@@ -1091,12 +1099,15 @@ class App extends React.Component<AppProps, AppState> {
         const data = doc.data();
         const { filterPresets } = data as GlobalDoc;
         if (filterPresets) {
-          const defaultPreset = this.findPreset("id", "default");
-          const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
+          const defaultPreset = findPreset("id", "default");
+          const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
           if (defaultPreset) {
-            this.setState({ appPresets: [defaultPreset, ...updatedPresets] });
+            setFilterInfo(
+              (filterInfo) => mergeObject(filterInfo, { appPresets: [defaultPreset, ...updatedPresets] }),
+              "getGlobals"
+            );
           } else {
-            this.setState({ appPresets: updatedPresets });
+            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: updatedPresets }), "getGlobals");
           }
         }
       })
@@ -1105,7 +1116,7 @@ class App extends React.Component<AppProps, AppState> {
         queue.notify({ title: "Failed to get global settings: " + error });
       });
   };
-  getUserPreferences = (id: string) => {
+  const getUserPreferences = (id: string) => {
     if (id) {
       db.collection("users")
         .doc(id)
@@ -1116,51 +1127,47 @@ class App extends React.Component<AppProps, AppState> {
             const { favorites, hidden, settings, syncSettings, filterPresets } = data as UserPreferencesDoc;
 
             if (favorites instanceof Array) {
-              this.setState({ favorites: favorites });
+              setUserInfo((userInfo) => mergeObject(userInfo, { favorites: favorites }));
             }
             if (hidden instanceof Array) {
-              this.setState({ hidden: hidden });
+              setUserInfo((userInfo) => mergeObject(userInfo, { hidden: hidden }));
             }
 
             if (filterPresets) {
-              const updatedPresets = filterPresets.map((preset) => this.updatePreset(preset));
-              this.setState({ userPresets: updatedPresets });
-              const storedPreset = this.getStorage("presetId");
+              const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
+              setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: updatedPresets }));
+              const storedPreset = getStorage("presetId");
               const params = new URLSearchParams(window.location.search);
               const noUrlParams = !whitelistParams.some((param) => params.has(param));
               if (storedPreset && storedPreset !== "default" && noUrlParams) {
-                this.selectPreset(storedPreset, false);
+                selectPreset(storedPreset, false);
               }
             }
 
             if (typeof syncSettings === "boolean") {
-              this.setSyncSettings(syncSettings, false);
+              setSyncSettings(syncSettings, false);
               if (syncSettings) {
-                console.log(settings);
                 const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
                   if (settings && hasKey(settings, setting)) {
                     setFunction(settings[setting], false);
                   }
                 };
-                Object.keys(settingsFunctions).forEach((setting) => {
-                  if (hasKey(settingsFunctions, setting)) {
-                    const key = settingsFunctions[setting];
-                    if (hasKey<App>(this, key)) {
-                      const func = this[key];
-                      getSetting(setting, func);
-                    }
+                Object.keys(settingFns).forEach((setting) => {
+                  if (hasKey(settingFns, setting)) {
+                    const func = settingFns[setting];
+                    getSetting(setting, func);
                   }
                 });
               }
             }
 
-            this.filterData(
-              this.state.page,
-              this.state.allSets,
-              this.state.sort,
-              this.state.sortOrder,
-              this.state.search,
-              this.state.whitelist,
+            filterData(
+              appPage,
+              setsInfo.allSets,
+              sorts.sort,
+              sorts.sortOrder,
+              filterInfo.search,
+              filterInfo.whitelist,
               favorites,
               hidden
             );
@@ -1172,23 +1179,23 @@ class App extends React.Component<AppProps, AppState> {
         });
     }
   };
-  toggleFavorite = (id: string) => {
-    const favorites = addOrRemove([...this.state.favorites], id);
-    this.setState({ favorites: favorites });
-    if (this.state.page === "favorites") {
-      this.filterData(
-        this.state.page,
-        this.state.allSets,
-        this.state.sort,
-        this.state.sortOrder,
-        this.state.search,
-        this.state.whitelist,
+  const toggleFavorite = (id: string) => {
+    const favorites = addOrRemove([...userInfo.favorites], id);
+    setUserInfo((userInfo) => mergeObject(userInfo, { favorites: favorites }));
+    if (appPage === "favorites") {
+      filterData(
+        appPage,
+        setsInfo.allSets,
+        sorts.sort,
+        sorts.sortOrder,
+        filterInfo.search,
+        filterInfo.whitelist,
         favorites
       );
     }
-    if (this.state.user.id) {
+    if (userInfo.user.id) {
       db.collection("users")
-        .doc(this.state.user.id)
+        .doc(userInfo.user.id)
         .set(
           {
             favorites: favorites,
@@ -1201,17 +1208,17 @@ class App extends React.Component<AppProps, AppState> {
         });
     }
   };
-  toggleHidden = (id: string) => {
-    const hidden = addOrRemove([...this.state.hidden], id);
-    this.setState({ hidden: hidden });
-    this.filterData(
-      this.state.page,
-      this.state.allSets,
-      this.state.sort,
-      this.state.sortOrder,
-      this.state.search,
-      this.state.whitelist,
-      this.state.favorites,
+  const toggleHidden = (id: string) => {
+    const hidden = addOrRemove([...userInfo.hidden], id);
+    setUserInfo((userInfo) => mergeObject(userInfo, { hidden: hidden }));
+    filterData(
+      appPage,
+      setsInfo.allSets,
+      sorts.sort,
+      sorts.sortOrder,
+      filterInfo.search,
+      filterInfo.whitelist,
+      userInfo.favorites,
       hidden
     );
     const setHidden = hidden.includes(id);
@@ -1221,16 +1228,16 @@ class App extends React.Component<AppProps, AppState> {
         {
           label: "Undo",
           onClick: () => {
-            this.toggleHidden(id);
+            toggleHidden(id);
           },
         },
       ],
       timeout: 2500,
       dismissesOnAction: true,
     });
-    if (this.state.user.id) {
+    if (userInfo.user.id) {
       db.collection("users")
-        .doc(this.state.user.id)
+        .doc(userInfo.user.id)
         .set(
           {
             hidden: hidden,
@@ -1243,19 +1250,19 @@ class App extends React.Component<AppProps, AppState> {
         });
     }
   };
-  setSyncSettings = (bool: boolean, write = true) => {
-    this.setState({ syncSettings: bool });
+  const setSyncSettings = (bool: boolean, write = true) => {
+    setSettings((settings) => mergeObject(settings, { syncSettings: bool }));
     if (write) {
       const settingsObject: { [key: string]: any } = {};
       if (bool) {
-        Object.keys(settingsFunctions).forEach((setting) => {
-          if (hasKey(this.state, setting)) {
-            settingsObject[setting] = this.state[setting];
+        Object.keys(settingFns).forEach((setting) => {
+          if (hasKey(settings, setting)) {
+            settingsObject[setting] = settings[setting];
           }
         });
       }
       db.collection("users")
-        .doc(this.state.user.id)
+        .doc(userInfo.user.id)
         .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
         .catch((error) => {
           console.log("Failed to set sync setting: " + error);
@@ -1263,9 +1270,9 @@ class App extends React.Component<AppProps, AppState> {
         });
     }
   };
-  syncSetting = (setting: string, value: any) => {
-    if (this.state.user.id && this.state.syncSettings) {
-      const userDocRef = db.collection("users").doc(this.state.user.id);
+  const syncSetting = (setting: string, value: any) => {
+    if (userInfo.user.id && settings.syncSettings) {
+      const userDocRef = db.collection("users").doc(userInfo.user.id);
       userDocRef.get().then((doc) => {
         if (doc.exists) {
           sync();
@@ -1291,108 +1298,110 @@ class App extends React.Component<AppProps, AppState> {
       };
     }
   };
-  updatePreset = (preset: OldPresetType): PresetType => {
+  const updatePreset = (preset: OldPresetType): PresetType => {
     const regions =
       hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
         ? preset.whitelist.regions
-        : this.state.allRegions;
+        : lists.allRegions;
     const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
     return updatedPreset;
   };
-  findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
-    const allPresets = [...this.state.appPresets, ...this.state.userPresets];
-    const preset = allPresets.filter((preset) => preset[prop] === val)[0];
-    return preset;
+  const findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
+    const allPresets = [...filterInfo.appPresets, ...userInfo.userPresets];
+    const index = allPresets.findIndex((preset) => preset[prop] === val);
+    return allPresets[index];
   };
-  selectPreset = (id: string, write = true) => {
-    const preset = this.findPreset("id", id);
+  const selectPreset = (id: string, write = true) => {
+    const preset = findPreset("id", id);
     if (preset) {
-      this.setState({ currentPreset: preset });
-      this.setWhitelist("all", preset.whitelist);
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "selectPreset");
+      setWhitelistMerge(preset.whitelist);
     }
     if (write) {
-      this.setStorage("presetId", id);
+      setStorage("presetId", id);
     }
   };
-  newPreset = (preset: PresetType) => {
+  const newPreset = (preset: PresetType) => {
     preset.id = nanoid();
-    const presets = [...this.state.userPresets, preset];
+    const presets = [...userInfo.userPresets, preset];
     alphabeticalSortProp(presets, "name", false);
-    this.setState({ userPresets: presets, currentPreset: preset });
-    this.syncPresets(presets);
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "newPreset");
+    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    syncPresets(presets);
   };
-  editPreset = (preset: PresetType) => {
-    const savedPreset = this.findPreset("id", preset.id);
+  const editPreset = (preset: PresetType) => {
+    const savedPreset = findPreset("id", preset.id);
     let presets: PresetType[];
     if (savedPreset) {
-      const index = this.state.userPresets.indexOf(savedPreset);
-      presets = [...this.state.userPresets];
+      const index = userInfo.userPresets.indexOf(savedPreset);
+      presets = [...userInfo.userPresets];
       presets[index] = preset;
     } else {
-      presets = [...this.state.userPresets, preset];
+      presets = [...userInfo.userPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false);
-    this.setState({ userPresets: presets, currentPreset: preset });
-    this.syncPresets(presets);
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "editPreset");
+    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    syncPresets(presets);
   };
-  deletePreset = (preset: PresetType) => {
-    const presets = this.state.userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+  const deletePreset = (preset: PresetType) => {
+    const presets = userInfo.userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false);
-    const defaultPreset = this.findPreset("id", "default");
+    const defaultPreset = findPreset("id", "default");
     if (defaultPreset) {
-      this.setState({
-        userPresets: presets,
-        currentPreset: defaultPreset,
-      });
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }), "deletePreset");
+      setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     }
-    this.syncPresets(presets);
+    syncPresets(presets);
   };
-  syncPresets = (presets = this.state.userPresets) => {
+  const syncPresets = (presets = userInfo.userPresets) => {
     const sortedPresets = alphabeticalSortProp(presets, "name", false, "Default").map((preset) => ({
       ...preset,
     }));
     db.collection("users")
-      .doc(this.state.user.id)
+      .doc(userInfo.user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })
       .catch((error) => {
         console.log("Failed to sync presets: " + error);
         queue.notify({ title: "Failed to sync presets: " + error });
       });
   };
-  newGlobalPreset = (preset: PresetType) => {
+  const newGlobalPreset = (preset: PresetType) => {
     preset.id = nanoid();
-    const presets = [...this.state.appPresets, preset];
+    const presets = [...filterInfo.appPresets, preset];
     alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({ appPresets: presets, currentPreset: preset });
-    this.syncGlobalPresets(presets);
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "newGlobalPreset");
+    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    syncGlobalPresets(presets);
   };
-  editGlobalPreset = (preset: PresetType) => {
-    const savedPreset = this.findPreset("id", preset.id);
+  const editGlobalPreset = (preset: PresetType) => {
+    const savedPreset = findPreset("id", preset.id);
     let presets: PresetType[];
     if (savedPreset) {
-      const index = this.state.appPresets.indexOf(savedPreset);
-      presets = [...this.state.appPresets];
+      const index = filterInfo.appPresets.indexOf(savedPreset);
+      presets = [...filterInfo.appPresets];
       presets[index] = preset;
     } else {
-      presets = [...this.state.appPresets, preset];
+      presets = [...filterInfo.appPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false, "Default");
-    this.setState({ appPresets: presets, currentPreset: preset });
-    this.syncGlobalPresets(presets);
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "editGlobalPreset");
+    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    syncGlobalPresets(presets);
   };
-  deleteGlobalPreset = (preset: PresetType) => {
-    const presets = this.state.appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+  const deleteGlobalPreset = (preset: PresetType) => {
+    const presets = filterInfo.appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false, "Default");
-    const defaultPreset = this.findPreset("id", "default");
+    const defaultPreset = findPreset("id", "default");
     if (defaultPreset) {
-      this.setState({
-        appPresets: presets,
-        currentPreset: defaultPreset,
-      });
+      setFilterInfo(
+        (filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }),
+        "deleteGlobalPreset"
+      );
     }
-    this.syncGlobalPresets(presets);
+    syncGlobalPresets(presets);
   };
-  syncGlobalPresets = (presets = this.state.appPresets) => {
+  const syncGlobalPresets = (presets = filterInfo.appPresets) => {
     const filteredPresets = presets.filter((preset) => preset.id !== "default");
     const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
       ...preset,
@@ -1405,25 +1414,19 @@ class App extends React.Component<AppProps, AppState> {
         queue.notify({ title: "Failed to sync presets: " + error });
       });
   };
-  unregisterAuthObserver = () => {
-    // placeholder - gets defined when component mounts
-  };
-  componentDidMount() {
-    this.setDevice();
-    this.getURLQuery();
-    this.checkStorage();
-    this.checkTheme();
-    this.getGlobals();
-    const meta = document.querySelector("meta[name=theme-color]");
-    if (meta) {
-      meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
-    }
-    this.unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
+  useEffect(() => {
+    checkDevice();
+    getURLQuery();
+    checkStorage();
+    checkTheme();
+    getGlobals();
+
+    const authObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const getClaimsFn = firebase.functions().httpsCallable("getClaims");
         getClaimsFn()
           .then((result) => {
-            this.setUser({
+            setUser({
               email: user.email ? user.email : "",
               name: user.displayName ? user.displayName : "",
               avatar: user.photoURL ? user.photoURL : "",
@@ -1434,163 +1437,156 @@ class App extends React.Component<AppProps, AppState> {
               isAdmin: result.data.admin,
             });
             if (result.data.admin) {
-              this.testSets();
+              testSets();
             }
           })
           .catch((error) => {
             queue.notify({ title: "Error verifying custom claims: " + error });
-            this.setUser({
+            setUser({
               email: user.email ? user.email : "",
               name: user.displayName ? user.displayName : "",
               avatar: user.photoURL ? user.photoURL : "",
               id: user.uid,
             });
           });
-        this.getUserPreferences(user.uid);
+        getUserPreferences(user.uid);
       } else {
-        this.setUser({});
-        const defaultPreset = this.findPreset("id", "default");
-        const defaultSettings: Partial<AppState> = {
+        setUser({});
+        const defaultPreset = findPreset("id", "default");
+        const defaultSettings: Partial<typeof userInfo> = {
           favorites: [],
           hidden: [],
           userPresets: [],
         };
         if (defaultPreset) {
-          this.setState<never>({ preset: defaultPreset, ...defaultSettings });
+          setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
+          setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }), "authObserver");
         } else {
-          this.setState<never>(defaultSettings);
+          setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
         }
       }
     });
-  }
-  // Make sure we un-register Firebase observers when the component unmounts.
-  componentWillUnmount() {
-    this.unregisterAuthObserver();
-  }
-
-  render() {
-    const transitionClass = classNames({ "view-transition": this.state.transition });
-    return (
-      <Router>
-        <Switch>
-          <Route path="/login">
-            <UserContext.Provider
-              value={{
-                user: this.state.user,
-                setUser: this.setUser,
-                favorites: this.state.favorites,
-                toggleFavorite: this.toggleFavorite,
-                hidden: this.state.hidden,
-                toggleHidden: this.toggleHidden,
-                syncSettings: this.state.syncSettings,
-                setSyncSettings: this.setSyncSettings,
-                preset: this.state.currentPreset,
-                presets: this.state.userPresets,
-                selectPreset: this.selectPreset,
-                newPreset: this.newPreset,
-                editPreset: this.editPreset,
-                deletePreset: this.deletePreset,
-                newGlobalPreset: this.newGlobalPreset,
-                editGlobalPreset: this.editGlobalPreset,
-                deleteGlobalPreset: this.deleteGlobalPreset,
-              }}
-            >
-              <DeviceContext.Provider value={this.state.device}>
-                <Login />
-              </DeviceContext.Provider>
-            </UserContext.Provider>
-          </Route>
-          <Route path="/privacy" component={PrivacyPolicy} />
-          <Route path="/terms" component={TermsOfService} />
-          <Route path="/guide/entries">
-            <DeviceContext.Provider value={this.state.device}>
-              <EntryGuide />
+    return authObserver;
+  }, []);
+  const transitionClass = classNames({ "view-transition": transition });
+  return (
+    <Router>
+      <Switch>
+        <Route path="/login">
+          <UserContext.Provider
+            value={{
+              user: userInfo.user,
+              setUser: setUser,
+              favorites: userInfo.favorites,
+              toggleFavorite: toggleFavorite,
+              hidden: userInfo.hidden,
+              toggleHidden: toggleHidden,
+              syncSettings: settings.syncSettings,
+              setSyncSettings: setSyncSettings,
+              preset: filterInfo.currentPreset,
+              presets: userInfo.userPresets,
+              selectPreset: selectPreset,
+              newPreset: newPreset,
+              editPreset: editPreset,
+              deletePreset: deletePreset,
+              newGlobalPreset: newGlobalPreset,
+              editGlobalPreset: editGlobalPreset,
+              deleteGlobalPreset: deleteGlobalPreset,
+            }}
+          >
+            <DeviceContext.Provider value={device}>
+              <Login />
             </DeviceContext.Provider>
-          </Route>
-          <Route exact path="/">
-            <UserContext.Provider
-              value={{
-                user: this.state.user,
-                setUser: this.setUser,
-                favorites: this.state.favorites,
-                toggleFavorite: this.toggleFavorite,
-                hidden: this.state.hidden,
-                toggleHidden: this.toggleHidden,
-                syncSettings: this.state.syncSettings,
-                setSyncSettings: this.setSyncSettings,
-                preset: this.state.currentPreset,
-                presets: this.state.userPresets,
-                selectPreset: this.selectPreset,
-                newPreset: this.newPreset,
-                editPreset: this.editPreset,
-                deletePreset: this.deletePreset,
-                newGlobalPreset: this.newGlobalPreset,
-                editGlobalPreset: this.editGlobalPreset,
-                deleteGlobalPreset: this.deleteGlobalPreset,
-              }}
-            >
-              <DeviceContext.Provider value={this.state.device}>
-                <div
-                  className={classNames("app", { [`density-${this.state.density}`]: this.state.device === "desktop" })}
-                >
-                  <Content
-                    sets={this.state.filteredSets}
-                    getData={this.getData}
-                    className={transitionClass}
-                    page={this.state.page}
-                    setPage={this.setPage}
-                    view={this.state.view}
-                    setView={this.setView}
-                    allSets={this.state.allSets}
-                    allProfiles={this.state.allProfiles}
-                    allDesigners={this.state.allDesigners}
-                    allVendors={this.state.allVendors}
-                    allVendorRegions={this.state.allVendorRegions}
-                    allRegions={this.state.allRegions}
-                    appPresets={this.state.appPresets}
-                    setGroups={this.state.setGroups}
-                    loading={this.state.loading}
-                    toggleLoading={this.toggleLoading}
-                    sort={this.state.sort}
-                    setSort={this.setSort}
-                    sortOrder={this.state.sortOrder}
-                    setSortOrder={this.setSortOrder}
-                    content={this.state.content}
-                    search={this.state.search}
-                    setSearch={this.setSearch}
-                    applyTheme={this.state.applyTheme}
-                    setApplyTheme={this.setApplyTheme}
-                    lightTheme={this.state.lightTheme}
-                    setLightTheme={this.setLightTheme}
-                    darkTheme={this.state.darkTheme}
-                    setDarkTheme={this.setDarkTheme}
-                    manualTheme={this.state.manualTheme}
-                    setManualTheme={this.setManualTheme}
-                    fromTimeTheme={this.state.fromTimeTheme}
-                    setFromTimeTheme={this.setFromTimeTheme}
-                    toTimeTheme={this.state.toTimeTheme}
-                    setToTimeTheme={this.setToTimeTheme}
-                    toggleLichTheme={this.toggleLichTheme}
-                    bottomNav={this.state.bottomNav && this.state.device === "mobile"}
-                    setBottomNav={this.setBottomNav}
-                    setWhitelist={this.setWhitelist}
-                    whitelist={this.state.whitelist}
-                    statisticsTab={this.state.statisticsTab}
-                    setStatisticsTab={this.setStatisticsTab}
-                    density={this.state.density}
-                    setDensity={this.setDensity}
-                  />
-                  <SnackbarQueue messages={queue.messages} />
-                  <SnackbarCookies open={!this.state.cookies} accept={this.acceptCookies} clear={this.clearCookies} />
-                </div>
-              </DeviceContext.Provider>
-            </UserContext.Provider>
-          </Route>
-          <Route component={NotFound} />
-        </Switch>
-      </Router>
-    );
-  }
-}
+          </UserContext.Provider>
+        </Route>
+        <Route path="/privacy" component={PrivacyPolicy} />
+        <Route path="/terms" component={TermsOfService} />
+        <Route path="/guide/entries">
+          <DeviceContext.Provider value={device}>
+            <EntryGuide />
+          </DeviceContext.Provider>
+        </Route>
+        <Route exact path="/">
+          <UserContext.Provider
+            value={{
+              user: userInfo.user,
+              setUser: setUser,
+              favorites: userInfo.favorites,
+              toggleFavorite: toggleFavorite,
+              hidden: userInfo.hidden,
+              toggleHidden: toggleHidden,
+              syncSettings: settings.syncSettings,
+              setSyncSettings: setSyncSettings,
+              preset: filterInfo.currentPreset,
+              presets: userInfo.userPresets,
+              selectPreset: selectPreset,
+              newPreset: newPreset,
+              editPreset: editPreset,
+              deletePreset: deletePreset,
+              newGlobalPreset: newGlobalPreset,
+              editGlobalPreset: editGlobalPreset,
+              deleteGlobalPreset: deleteGlobalPreset,
+            }}
+          >
+            <DeviceContext.Provider value={device}>
+              <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
+                <Content
+                  sets={setsInfo.filteredSets}
+                  getData={getData}
+                  className={transitionClass}
+                  page={appPage}
+                  setPage={setPage}
+                  view={settings.view}
+                  setView={setView}
+                  allSets={setsInfo.allSets}
+                  allProfiles={lists.allProfiles}
+                  allDesigners={lists.allDesigners}
+                  allVendors={lists.allVendors}
+                  allVendorRegions={lists.allVendorRegions}
+                  allRegions={lists.allRegions}
+                  appPresets={filterInfo.appPresets}
+                  setGroups={setsInfo.setGroups}
+                  loading={loading}
+                  sort={sorts.sort}
+                  setSort={setSort}
+                  sortOrder={sorts.sortOrder}
+                  setSortOrder={setSortOrder}
+                  content={content}
+                  search={filterInfo.search}
+                  setSearch={setSearch}
+                  applyTheme={settings.applyTheme}
+                  setApplyTheme={setApplyTheme}
+                  lightTheme={settings.lightTheme}
+                  setLightTheme={setLightTheme}
+                  darkTheme={settings.darkTheme}
+                  setDarkTheme={setDarkTheme}
+                  manualTheme={settings.manualTheme}
+                  setManualTheme={setManualTheme}
+                  fromTimeTheme={settings.fromTimeTheme}
+                  setFromTimeTheme={setFromTimeTheme}
+                  toTimeTheme={settings.toTimeTheme}
+                  setToTimeTheme={setToTimeTheme}
+                  toggleLichTheme={toggleLichTheme}
+                  bottomNav={settings.bottomNav && device === "mobile"}
+                  setBottomNav={setBottomNav}
+                  setWhitelist={setWhitelist}
+                  setWhitelistMerge={setWhitelistMerge}
+                  whitelist={filterInfo.whitelist}
+                  statisticsTab={statisticsTab}
+                  setStatisticsTab={setStatisticsTab}
+                  density={settings.density}
+                  setDensity={setDensity}
+                />
+                <SnackbarQueue messages={queue.messages} />
+                <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
+              </div>
+            </DeviceContext.Provider>
+          </UserContext.Provider>
+        </Route>
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  );
+};
 
 export default App;

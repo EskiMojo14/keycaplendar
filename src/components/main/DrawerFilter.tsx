@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
-import { Preset } from "../../util/constructors";
+import { Preset, Whitelist } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
@@ -26,7 +26,8 @@ type DrawerFilterProps = {
   open: boolean;
   openPreset: (preset: PresetType) => void;
   profiles: string[];
-  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
+  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
+  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   sort: SortType;
   vendors: string[];
   regions: string[];
@@ -52,7 +53,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const newPreset = (global = false) => {
     const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = props.whitelist;
-    const newPreset = new Preset("", global, favorites, hidden, profiles, shipped, regions, vendorMode, vendors);
+    const newWhitelist = new Whitelist(favorites, hidden, profiles, shipped, regions, vendorMode, vendors);
+    const newPreset = new Preset("", global, newWhitelist);
     props.openPreset(newPreset);
   };
 
@@ -92,9 +94,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           : "include";
       if (typeof edited === "boolean") {
         if (prop === "favorites" && edited && props.whitelist.hidden) {
-          props.setWhitelist("all", { ...props.whitelist, hidden: false, favorites: edited });
+          props.setWhitelistMerge({ hidden: false, favorites: edited });
         } else if (prop === "hidden" && edited && props.whitelist.favorites) {
-          props.setWhitelist("all", { ...props.whitelist, favorites: false, hidden: edited });
+          props.setWhitelistMerge({ favorites: false, hidden: edited });
         } else {
           props.setWhitelist(prop, edited);
         }
@@ -114,13 +116,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const uncheckAll = (prop: string) => {
-    const emptyArray: string[] = [];
-    if (hasKey(props, prop)) {
+    if (hasKey(props, prop) && hasKey(props.whitelist, prop)) {
       if (props[prop] instanceof Array) {
-        props.setWhitelist(prop, emptyArray);
+        props.setWhitelist(prop, []);
       }
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, emptyArray);
+      props.setWhitelist(prop, []);
     }
   };
 

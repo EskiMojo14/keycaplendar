@@ -1,5 +1,4 @@
 import { nanoid } from "nanoid";
-import { whitelistShipped } from "./constants";
 import { WhitelistType } from "./types";
 
 export class Interval {
@@ -19,7 +18,7 @@ export class Interval {
 
 export class Whitelist {
   profiles: string[];
-  shipped: string[];
+  shipped: WhitelistType["shipped"];
   regions: string[];
   vendorMode: "exclude" | "include";
   vendors: string[];
@@ -42,14 +41,14 @@ export class Whitelist {
     favorites = false,
     hidden = false,
     profiles: string[] = [],
-    shipped: typeof whitelistShipped[number][] = ["Shipped", "Not shipped"],
+    shipped: WhitelistType["shipped"] = ["Shipped", "Not shipped"],
     regions: string[] = [],
     vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
     edited: string[] = []
   ) {
     this.profiles = profiles;
-    this.shipped = shipped;
+    this.shipped = shipped as WhitelistType["shipped"];
     this.regions = regions;
     this.vendorMode = vendorMode as "exclude" | "include";
     this.vendors = vendors;
@@ -73,39 +72,15 @@ export class Preset {
   /**
    * @param name Display name for preset.
    * @param global If the preset is global.
-   * @param favorites Whether to only display favourites.
-   * @param hidden Whether to only display hidden sets.
-   * @param profiles Array of allowed profiles.
-   * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
-   * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
-   * @param vendors Vendors to be included or excluded.
+   * @param whitelist Whitelist to use.
    * @param id Internal ID. Will be generated with `nanoid()` if not provided.
    */
 
-  constructor(
-    name = "",
-    global = false,
-    favorites = false,
-    hidden = false,
-    profiles: string[] = [],
-    shipped: typeof whitelistShipped[number][] = [],
-    regions: string[] = [],
-    vendorMode: "exclude" | "include" = "exclude",
-    vendors: string[] = [],
-    id = nanoid()
-  ) {
+  constructor(name = "", global = false, whitelist: WhitelistType = new Whitelist(), id = nanoid()) {
     this.name = name;
     this.id = id;
     this.global = global;
-    this.whitelist = {
-      favorites: favorites,
-      hidden: hidden,
-      profiles: profiles,
-      shipped: shipped,
-      regions: regions,
-      vendorMode: vendorMode,
-      vendors: vendors,
-    };
+    this.whitelist = whitelist;
   }
 }
 

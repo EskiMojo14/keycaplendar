@@ -61,7 +61,8 @@ type ContentProps = {
   setStatisticsTab: (tab: StatsTab) => void;
   setToTimeTheme: (toTimeTheme: string) => void;
   setView: (view: ViewType) => void;
-  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
+  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
+  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   sets: SetType[];
   setGroups: SetGroup[];
   sort: SortType;
@@ -69,7 +70,6 @@ type ContentProps = {
   statisticsTab: StatsTab;
   toTimeTheme: string;
   toggleLichTheme: () => void;
-  toggleLoading: () => void;
   view: ViewType;
   whitelist: WhitelistType;
 };
@@ -126,6 +126,7 @@ export const Content = (props: ContentProps) => {
       allRegions={props.allRegions}
       appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
+      setWhitelistMerge={props.setWhitelistMerge}
       whitelist={props.whitelist}
       loading={props.loading}
       getData={props.getData}
