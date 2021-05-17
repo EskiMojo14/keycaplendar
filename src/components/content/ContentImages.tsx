@@ -11,6 +11,7 @@ import {
   getStorageFolders,
   hasKey,
   iconObject,
+  mergeObject,
   useBoolStates,
 } from "../../util/functions";
 import { ImageType, SetType } from "../../util/types";
@@ -125,9 +126,9 @@ export const ContentImages = (props: ContentImagesProps) => {
         .filter(Boolean)
     );
     const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, setImages: setImages, duplicateSetImages: findDuplicates(setImages) };
-    });
+    setImageInfo((imageInfo) =>
+      mergeObject(imageInfo, { setImages: setImages, duplicateSetImages: findDuplicates(setImages) })
+    );
   };
   useEffect(createSetImageList, [JSON.stringify(props.sets)]);
 
@@ -151,9 +152,7 @@ export const ContentImages = (props: ContentImagesProps) => {
       }
       return 0;
     });
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, images: allImages, checkedImages: [] };
-    });
+    setImageInfo((imageInfo) => mergeObject(imageInfo, { images: allImages, checkedImages: [] }));
     setLoading(false);
   };
   const getFolders = async () => {
@@ -170,9 +169,7 @@ export const ContentImages = (props: ContentImagesProps) => {
       }
       return 0;
     });
-    setFolderInfo((folderInfo) => {
-      return { ...folderInfo, folders: folders };
-    });
+    setFolderInfo((folderInfo) => mergeObject(folderInfo, { folders: folders }));
   };
   const listAll = (path = folderInfo.currentFolder) => {
     const paginatedListAll = (nextPageToken?: string) => {
@@ -194,9 +191,7 @@ export const ContentImages = (props: ContentImagesProps) => {
     paginatedListAll();
   };
   const setFolder = (folder: string) => {
-    setFolderInfo((folderInfo) => {
-      return { ...folderInfo, currentFolder: folder };
-    });
+    setFolderInfo((folderInfo) => mergeObject(folderInfo, { currentFolder: folder }));
     listAll(folder);
   };
   const openDetails = (image: ImageType) => {
@@ -204,22 +199,16 @@ export const ContentImages = (props: ContentImagesProps) => {
       if (detailInfo.detailImage === image) {
         closeDetails();
       } else {
-        setDetailInfo((detailInfo) => {
-          return { ...detailInfo, detailOpen: true, detailImage: image };
-        });
+        setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailOpen: true, detailImage: image }));
         storageRef
           .child(image.fullPath)
           .getMetadata()
           .then((metadata) => {
-            setDetailInfo((detailInfo) => {
-              return { ...detailInfo, detailMetadata: metadata };
-            });
+            setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailMetadata: metadata }));
           })
           .catch((error) => {
             queue.notify({ title: "Failed to get metadata: " + error });
-            setDetailInfo((detailInfo) => {
-              return { ...detailInfo, detailMetadata: {} };
-            });
+            setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailMetadata: {} }));
           });
       }
     };
@@ -231,9 +220,9 @@ export const ContentImages = (props: ContentImagesProps) => {
     }
   };
   const closeDetails = () => {
-    setDetailInfo((detailInfo) => {
-      return { ...detailInfo, detailOpen: false, detailImage: blankImage, detailMetadata: {} };
-    });
+    setDetailInfo((detailInfo) =>
+      mergeObject(detailInfo, { detailOpen: false, detailImage: blankImage, detailMetadata: {} })
+    );
   };
   const openSearch = () => {
     const open = () => {
@@ -251,20 +240,14 @@ export const ContentImages = (props: ContentImagesProps) => {
   };
   const toggleImageChecked = (image: ImageType) => {
     const editedArray = addOrRemove([...imageInfo.checkedImages], image);
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, checkedImages: editedArray };
-    });
+    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: editedArray }));
   };
   const toggleImageCheckedArray = (array: ImageType[], append = false) => {
     const editedArray = append ? [...imageInfo.checkedImages, ...array] : array;
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, checkedImages: editedArray };
-    });
+    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: editedArray }));
   };
   const clearChecked = () => {
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, checkedImages: [] };
-    });
+    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: [] }));
   };
   const unusedImages = imageInfo.images.filter((image) => !imageInfo.setImages.includes(image.name));
   const usedImages = imageInfo.images.filter((image) => imageInfo.setImages.includes(image.name));

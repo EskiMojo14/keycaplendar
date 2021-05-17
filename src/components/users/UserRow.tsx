@@ -4,7 +4,7 @@ import firebase from "../../firebase";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
 import { UserContext } from "../../util/contexts";
-import { iconObject, truncate } from "../../util/functions";
+import { iconObject, mergeObject, truncate } from "../../util/functions";
 import { UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
@@ -45,18 +45,15 @@ export const UserRow = (props: UserRowProps) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUser = { ...user, [e.target.name]: e.target.checked };
-    setUser(newUser);
+    setUser((user) => mergeObject(user, { [e.target.name]: e.target.checked }));
     setEdited(true);
   };
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUser = { ...user, [e.target.name]: e.target.value };
-    setUser(newUser);
+    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
     setEdited(true);
   };
   const selectValue = (prop: string, value: string | boolean) => {
-    const newUser = { ...user, [prop]: value };
-    setUser(newUser);
+    setUser((user) => mergeObject(user, { [prop]: value }));
     setEdited(true);
   };
 

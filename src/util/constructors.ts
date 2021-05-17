@@ -20,6 +20,7 @@ export class Interval {
 export class Whitelist {
   profiles: string[];
   shipped: string[];
+  regions: string[];
   vendorMode: "exclude" | "include";
   vendors: string[];
   edited: string[];
@@ -31,6 +32,7 @@ export class Whitelist {
    * @param hidden Whether to only display hidden sets.
    * @param profiles Array of allowed profiles.
    * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
+   * @param regions Array of allowed vendor regions.
    * @param vendorMode Whether to `include` or `exclude` specified `vendors`.
    * @param vendors Vendors to be included or excluded.
    * @param edited Array of keys which have been edited.
@@ -40,13 +42,15 @@ export class Whitelist {
     favorites = false,
     hidden = false,
     profiles: string[] = [],
-    shipped: typeof whitelistShipped[number][] = [...whitelistShipped],
+    shipped: typeof whitelistShipped[number][] = ["Shipped", "Not shipped"],
+    regions: string[] = [],
     vendorMode: "exclude" | "include" = "exclude",
     vendors: string[] = [],
     edited: string[] = []
   ) {
     this.profiles = profiles;
     this.shipped = shipped;
+    this.regions = regions;
     this.vendorMode = vendorMode as "exclude" | "include";
     this.vendors = vendors;
     this.edited = edited;

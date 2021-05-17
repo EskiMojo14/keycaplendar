@@ -7,7 +7,7 @@ import firebase from "../../firebase";
 import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
 import { DeviceContext } from "../../util/contexts";
-import { capitalise, iconObject, hasKey, useBoolStates } from "../../util/functions";
+import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";
 import { StatisticsSortType, StatisticsType, Categories, Properties, StatsTab } from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -322,9 +322,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               });
             }
           });
-          setStatisticsData((statisticsData) => {
-            return { ...statisticsData, [key]: data };
-          });
+          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
         } else if (tab === "timelines") {
           const data = { ...stateData } as TimelinesData;
           Object.keys(data).forEach((property) => {
@@ -354,9 +352,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               });
             }
           });
-          setStatisticsData((statisticsData) => {
-            return { ...statisticsData, [key]: data };
-          });
+          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
         } else {
           const data = { ...stateData } as StatusData | ShippedData | VendorData;
           Object.keys(data).forEach((prop) => {
@@ -388,17 +384,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               });
             }
           });
-          setStatisticsData((statisticsData) => {
-            return { ...statisticsData, [key]: data };
-          });
+          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
         }
       }
     }
   };
   const setSetting = (prop: string, query: string) => {
-    setSettings((settings) => {
-      return { ...settings, [prop]: query };
-    });
+    setSettings((settings) => mergeObject(settings, { [prop]: query }));
   };
   const setSort = (prop: string, query: string) => {
     const sort = { ...statisticsSort, [prop]: query };

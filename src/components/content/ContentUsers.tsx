@@ -5,7 +5,7 @@ import { queue } from "../../app/snackbarQueue";
 import { UserType } from "../../util/types";
 import { DeviceContext } from "../../util/contexts";
 import { User } from "../../util/constructors";
-import { hasKey, iconObject, useBoolStates } from "../../util/functions";
+import { hasKey, iconObject, mergeObject, useBoolStates } from "../../util/functions";
 import {
   DataTable,
   DataTableContent,
@@ -106,9 +106,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
             setLoading(false);
             const newUsers = append ? [...users.allUsers, ...result.data.users] : [...result.data.users];
             sortUsers(newUsers);
-            setUsers((users) => {
-              return { ...users, allUsers: newUsers };
-            });
+            setUsers((users) => mergeObject(users, { allUsers: newUsers }));
             setNextPageToken(result.data.nextPageToken);
           }
         }
@@ -183,9 +181,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
         return 0;
       }
     });
-    setUsers((users) => {
-      return { ...users, sortedUsers: sortedUsers };
-    });
+    setUsers((users) => mergeObject(users, { sortedUsers: sortedUsers }));
     paginateUsers(sortedUsers, page);
     setLoading(false);
   };
@@ -197,12 +193,10 @@ export const ContentUsers = (props: ContentUsersProps) => {
     const paginatedUsers = sortedUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
     const firstIndex = sortedUsers.indexOf(paginatedUsers[0]);
     const lastIndex = sortedUsers.indexOf(paginatedUsers[paginatedUsers.length - 1]);
-    setUsers((users) => {
-      return { ...users, paginatedUsers: paginatedUsers };
-    });
-    setPaginationInfo((paginationInfo) => {
-      return { ...paginationInfo, firstIndex: firstIndex, lastIndex: lastIndex };
-    });
+    setUsers((users) => mergeObject(users, { paginatedUsers: paginatedUsers }));
+    setPaginationInfo((paginationInfo) =>
+      mergeObject(paginationInfo, { firstIndex: firstIndex, lastIndex: lastIndex })
+    );
   };
   const openDeleteDialog = (user: UserType) => {
     setDeleteOpen(true);
@@ -235,15 +229,11 @@ export const ContentUsers = (props: ContentUsersProps) => {
   };
   const setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
-    setPaginationInfo((paginationInfo) => {
-      return { ...paginationInfo, rowsPerPage: val, page: 1 };
-    });
+    setPaginationInfo((paginationInfo) => mergeObject(paginationInfo, { rowsPerPage: val, page: 1 }));
     paginateUsers(users.sortedUsers, 1, val);
   };
   const setPage = (num: number) => {
-    setPaginationInfo((paginationInfo) => {
-      return { ...paginationInfo, page: num };
-    });
+    setPaginationInfo((paginationInfo) => mergeObject(paginationInfo, { page: num }));
     paginateUsers(users.sortedUsers, num);
   };
   const setViewIndex = (index: number) => {

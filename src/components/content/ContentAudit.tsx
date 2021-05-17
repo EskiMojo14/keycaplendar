@@ -7,7 +7,7 @@ import { queue } from "../../app/snackbarQueue";
 import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
 import { DeviceContext } from "../../util/contexts";
-import { openModal, closeModal, hasKey, alphabeticalSortProp } from "../../util/functions";
+import { openModal, closeModal, hasKey, alphabeticalSortProp, mergeObject } from "../../util/functions";
 import { ActionType } from "../../util/types";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -96,9 +96,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
   };
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
     if (hasKey(filterInfo, prop)) {
-      setFilterInfo((filterInfo) => {
-        return { ...filterInfo, [prop]: e.target.value };
-      });
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { [prop]: e.target.value }));
       filterActions(
         actions.allActions,
         prop === "filterAction" ? e.target.value : filterInfo.filterAction,
@@ -108,9 +106,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
   };
   const getActions = (num = filterInfo.length) => {
     setLoading(true);
-    setFilterInfo((filterInfo) => {
-      return { ...filterInfo, length: num };
-    });
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { length: num }));
     const db = firebase.firestore();
     db.collection("changelog")
       .orderBy("timestamp", "desc")
@@ -132,15 +128,11 @@ export const ContentAudit = (props: ContentAuditProps) => {
 
         alphabeticalSortProp(actions, "timestamp", true);
 
-        setFilterInfo((filterInfo) => {
-          return { ...filterInfo, users: users };
-        });
-
-        setActions((prevActions) => {
-          return { ...prevActions, allActions: actions };
-        });
+        setFilterInfo((filterInfo) => mergeObject(filterInfo, { users: users }));
 
         processActions(actions);
+
+        setActions((prevActions) => mergeObject(prevActions, { allActions: actions }));
       })
       .catch((error) => {
         queue.notify({ title: "Error getting data: " + error });
@@ -191,9 +183,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
       });
     }
 
-    setActions((actions) => {
-      return { ...actions, filteredActions: filteredActions };
-    });
+    setActions((actions) => mergeObject(actions, { filteredActions: filteredActions }));
     setLoading(false);
   };
   const deleteActionFn = (action: ActionType) => {

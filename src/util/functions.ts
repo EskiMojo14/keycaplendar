@@ -42,6 +42,12 @@ export function arrayEveryType<T>(arr: any[], callback: (item: any) => boolean):
   return arr.every(callback);
 }
 
+/** Merge object and modify specified keys. */
+
+export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => {
+  return { ...obj, ...obj2 };
+};
+
 /**
  * Remove all duplicate values within an array.
  * @param array Array of values.

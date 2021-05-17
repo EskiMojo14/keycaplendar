@@ -4,7 +4,7 @@ import moment from "moment";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
 import { DeviceContext, UserContext } from "../../util/contexts";
-import { hasKey, iconObject } from "../../util/functions";
+import { hasKey, iconObject, mergeObject } from "../../util/functions";
 import { UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
@@ -55,19 +55,16 @@ export const UserCard = (props: UserCardProps) => {
     setFocused("");
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUser = { ...user, [e.target.name]: e.target.value };
-    setUser(newUser);
+    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
     setEdited(true);
   };
   const selectValue = (prop: string, value: string | boolean) => {
-    const newUser = { ...user, [prop]: value };
-    setUser(newUser);
+    setUser((user) => mergeObject(user, { [prop]: value }));
     setEdited(true);
   };
   const toggleRole = (role: string) => {
     if (hasKey(user, role)) {
-      const newUser = { ...user, [role]: !user[role] };
-      setUser(newUser);
+      setUser((user) => mergeObject(user, { [role]: !user[role] }));
       setEdited(true);
     }
   };
