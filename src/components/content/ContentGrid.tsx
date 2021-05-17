@@ -1,5 +1,7 @@
 import React from "react";
-import { Page, SetGroup, SetType, ViewType } from "../../util/types";
+import { Page, SetGroup, SetType } from "../../util/types";
+import { useAppSelector } from "../../app/hooks";
+import { selectMainView } from "../settings/settingsSlice";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";
@@ -14,12 +16,12 @@ type ContentGridProps = {
   edit: (set: SetType) => void;
   page: Page;
   setGroups: SetGroup[];
-  view: ViewType;
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
+  const view = useAppSelector(selectMainView);
   const createGroup = (sets: SetType[]) => {
-    if (props.view === "card") {
+    if (view === "card") {
       return (
         <ViewCard
           sets={sets}
@@ -30,7 +32,7 @@ export const ContentGrid = (props: ContentGridProps) => {
           edit={props.edit}
         />
       );
-    } else if (props.view === "list") {
+    } else if (view === "list") {
       return (
         <ViewList
           sets={sets}
@@ -40,7 +42,7 @@ export const ContentGrid = (props: ContentGridProps) => {
           detailSet={props.detailSet}
         />
       );
-    } else if (props.view === "imageList") {
+    } else if (view === "imageList") {
       return (
         <ViewImageList
           sets={sets}
@@ -50,7 +52,7 @@ export const ContentGrid = (props: ContentGridProps) => {
           detailSet={props.detailSet}
         />
       );
-    } else if (props.view === "compact") {
+    } else if (view === "compact") {
       return (
         <ViewCompact
           sets={sets}

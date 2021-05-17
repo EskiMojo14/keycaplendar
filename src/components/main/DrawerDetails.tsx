@@ -2,9 +2,11 @@ import React, { useContext, useEffect } from "react";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
+import { useAppSelector } from "../../app/hooks";
+import { selectMainView } from "../settings/settingsSlice";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
-import { SetType, ViewType } from "../../util/types";
+import { SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -25,10 +27,10 @@ type DrawerDetailsProps = {
   set: SetType;
   setSearch?: (search: string) => void;
   toggleLichTheme?: () => void;
-  view: ViewType;
 };
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
+  const view = useAppSelector(selectMainView);
   const device = useContext(DeviceContext);
   const { user, favorites, hidden, toggleFavorite, toggleHidden } = useContext(UserContext);
   const setScroll = () => {
@@ -50,7 +52,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     }
   }, [JSON.stringify(props.set)]);
 
-  const dismissible = device === "desktop" && props.view !== "compact";
+  const dismissible = device === "desktop" && view !== "compact";
   const set = { ...props.set };
   if (!set.image) {
     set.image = "";

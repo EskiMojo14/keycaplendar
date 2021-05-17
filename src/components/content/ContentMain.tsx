@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import classNames from "classnames";
+import { useAppSelector } from "../../app/hooks";
+import { selectMainView } from "../settings/settingsSlice";
 import { DeviceContext, UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
@@ -40,7 +42,6 @@ type ContentMainProps = {
   setSort: (sort: SortType) => void;
   sortOrder: SortOrderType;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  view: ViewType;
   setView: (view: ViewType) => void;
   search: string;
   setSearch: (search: string) => void;
@@ -61,6 +62,7 @@ type ContentMainProps = {
 };
 
 export const ContentMain = (props: ContentMainProps) => {
+  const view = useAppSelector(selectMainView);
   const { user } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const blankSet: SetType = new Keyset();
@@ -72,7 +74,7 @@ export const ContentMain = (props: ContentMainProps) => {
       if (filterOpen && device === "desktop") {
         closeFilter();
       } else {
-        if (device !== "desktop" || props.view === "compact") {
+        if (device !== "desktop" || view === "compact") {
           openModal();
         }
         setFilterOpen(true);
@@ -94,7 +96,7 @@ export const ContentMain = (props: ContentMainProps) => {
   const [detailSet, setDetailSet] = useState(blankSet);
   const openDetails = (set: SetType) => {
     const open = () => {
-      if (device !== "desktop" || props.view === "compact") {
+      if (device !== "desktop" || view === "compact") {
         openModal();
       }
       setDetailsOpen(true);
@@ -176,7 +178,7 @@ export const ContentMain = (props: ContentMainProps) => {
       setFilterPresetOpen(true);
       setFilterPreset(preset);
     };
-    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+    if (filterOpen && (view === "compact" || device !== "desktop")) {
       closeFilter();
       setTimeout(() => open(), 300);
     } else {
@@ -197,7 +199,7 @@ export const ContentMain = (props: ContentMainProps) => {
       setDeleteFilterPresetOpen(true);
       setDeleteFilterPreset(preset);
     };
-    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+    if (filterOpen && (view === "compact" || device !== "desktop")) {
       closeFilter();
       setTimeout(() => open(), 300);
     } else {
@@ -273,7 +275,6 @@ export const ContentMain = (props: ContentMainProps) => {
     <ContentGrid
       setGroups={props.setGroups}
       page={props.page}
-      view={props.view}
       details={openDetails}
       closeDetails={closeDetails}
       detailSet={detailSet}
@@ -283,8 +284,8 @@ export const ContentMain = (props: ContentMainProps) => {
     <ContentEmpty page={props.page} />
   );
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
-  const wrapperClasses = classNames("main", props.view, {
-    "extended-app-bar": props.view === "card" && !props.bottomNav,
+  const wrapperClasses = classNames("main", view, {
+    "extended-app-bar": view === "card" && !props.bottomNav,
     "drawer-open": drawerOpen,
   });
   return (
@@ -294,7 +295,6 @@ export const ContentMain = (props: ContentMainProps) => {
         bottomNav={props.bottomNav}
         indent={user.isDesigner || user.isEditor}
         page={props.page}
-        view={props.view}
         setView={props.setView}
         sort={props.sort}
         setSort={props.setSort}
@@ -309,7 +309,6 @@ export const ContentMain = (props: ContentMainProps) => {
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
-          view={props.view}
           profiles={props.allProfiles}
           vendors={props.allVendors}
           regions={props.allRegions}
@@ -324,7 +323,6 @@ export const ContentMain = (props: ContentMainProps) => {
           sort={props.sort}
         />
         <DrawerDetails
-          view={props.view}
           set={detailSet}
           open={detailsOpen}
           close={closeDetails}

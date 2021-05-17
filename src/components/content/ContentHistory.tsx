@@ -282,7 +282,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       {props.bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
-          <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} view="compact" />
+          <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}

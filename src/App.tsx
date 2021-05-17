@@ -6,6 +6,8 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { queue } from "./app/snackbarQueue";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
@@ -68,32 +70,12 @@ import "./App.scss";
 const db = firebase.firestore();
 
 export const App = () => {
+  const dispatch = useAppDispatch();
+  const settings = useAppSelector(selectSettings);
+
   const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">("tablet");
   const [appPage, setAppPage] = useState<Page>("images");
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
-  const [settings, setSettings] = useState<{
-    view: ViewType;
-    bottomNav: boolean;
-    applyTheme: string;
-    lightTheme: string;
-    darkTheme: string;
-    manualTheme: boolean;
-    fromTimeTheme: string;
-    toTimeTheme: string;
-    density: string;
-    syncSettings: boolean;
-  }>({
-    view: "card",
-    bottomNav: false,
-    applyTheme: "manual",
-    lightTheme: "light",
-    darkTheme: "deep",
-    manualTheme: false,
-    fromTimeTheme: "21:00",
-    toTimeTheme: "06:00",
-    density: "default",
-    syncSettings: false,
-  });
   const [lists, setLists] = useState<{
     allDesigners: string[];
     allProfiles: string[];
@@ -123,7 +105,7 @@ export const App = () => {
     sort: "gbLaunch",
     sortOrder: "ascending",
   });
-  const [filterInfo, setFilterI] = useState<{
+  const [filterInfo, setFilterInfo] = useState<{
     search: string;
     whitelist: WhitelistType;
     currentPreset: PresetType;
@@ -143,20 +125,6 @@ export const App = () => {
     currentPreset: new Preset(),
     appPresets: [],
   });
-  type FilterInfo = {
-    search: string;
-    whitelist: WhitelistType;
-    currentPreset: PresetType;
-    appPresets: PresetType[];
-  };
-  const setFilterInfo = (newState: FilterInfo | ((oldState: FilterInfo) => FilterInfo), caller: string) => {
-    if (typeof newState === "function") {
-      console.log(newState(filterInfo), caller);
-    } else {
-      console.log(newState, caller);
-    }
-    setFilterI(newState);
-  };
 
   const [userInfo, setUserInfo] = useState<{
     user: CurrentUserType;
@@ -354,13 +322,13 @@ export const App = () => {
       setTransition(true);
       setTimeout(() => {
         document.documentElement.scrollTop = 0;
-        setSettings((settings) => mergeObject(settings, { view: view }));
+        dispatch(setSettings({ view: view }));
       }, 90);
       setTimeout(() => {
         setTransition(false);
       }, 300);
     } else {
-      setSettings((settings) => mergeObject(settings, { view: view }));
+      dispatch(setSettings({ view: view }));
     }
     if (write) {
       setStorage("view", view);
@@ -378,7 +346,7 @@ export const App = () => {
         } else {
           setAppPage(page);
         }
-        setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: "" }), "setPage");
+        setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: "" }));
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -424,7 +392,7 @@ export const App = () => {
     }
   };
   const setApplyTheme = (applyTheme: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { applyTheme: applyTheme }));
+    dispatch(setSettings({ applyTheme: applyTheme }));
     const timed = new Interval(checkTheme, 1000 * 60);
     if (applyTheme === "system") {
       setTimeout(checkTheme, 1);
@@ -444,7 +412,7 @@ export const App = () => {
     }
   };
   const setLightTheme = (theme: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { lightTheme: theme }));
+    dispatch(setSettings({ lightTheme: theme }));
     setTimeout(checkTheme, 1);
     if (write) {
       setStorage("lightTheme", theme);
@@ -452,7 +420,7 @@ export const App = () => {
     }
   };
   const setDarkTheme = (theme: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { darkTheme: theme }));
+    dispatch(setSettings({ darkTheme: theme }));
     setTimeout(checkTheme, 1);
     if (write) {
       setStorage("darkTheme", theme);
@@ -460,7 +428,7 @@ export const App = () => {
     }
   };
   const setManualTheme = (bool: boolean, write = true) => {
-    setSettings((settings) => mergeObject(settings, { manualTheme: bool }));
+    dispatch(setSettings({ manualTheme: bool }));
     setTimeout(checkTheme, 1);
     if (write) {
       setStorage("manualTheme", bool);
@@ -468,7 +436,7 @@ export const App = () => {
     }
   };
   const setFromTimeTheme = (time: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { fromTimeTheme: time }));
+    dispatch(setSettings({ fromTimeTheme: time }));
     setTimeout(checkTheme, 1);
     if (write) {
       setStorage("fromTimeTheme", time);
@@ -476,7 +444,7 @@ export const App = () => {
     }
   };
   const setToTimeTheme = (time: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { toTimeTheme: time }));
+    dispatch(setSettings({ toTimeTheme: time }));
     setTimeout(checkTheme, 1);
     if (write) {
       setStorage("toTimeTheme", time);
@@ -489,7 +457,7 @@ export const App = () => {
   };
   const setBottomNav = (value: boolean, write = true) => {
     document.documentElement.scrollTop = 0;
-    setSettings((settings) => mergeObject(settings, { bottomNav: value }));
+    dispatch(setSettings({ bottomNav: value }));
     if (write) {
       setStorage("bottomNav", value);
       syncSetting("bottomNav", value);
@@ -497,7 +465,7 @@ export const App = () => {
   };
 
   const setDensity = (density: string, write = true) => {
-    setSettings((settings) => mergeObject(settings, { density: density }));
+    dispatch(setSettings({ density: density }));
     if (write) {
       setStorage("density", density);
       syncSetting("density", density);
@@ -661,13 +629,10 @@ export const App = () => {
     });
 
     if (!filterInfo.currentPreset.name) {
-      setFilterInfo(
-        (filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }),
-        "generateLists preset"
-      );
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }));
       setWhitelistMerge({ profiles: allProfiles, regions: allRegions });
     } else {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets }), "generateLists");
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets }));
     }
   };
 
@@ -954,7 +919,7 @@ export const App = () => {
     }
   };
   const setSearch = (query: string) => {
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }), "setSearch");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }));
     document.documentElement.scrollTop = 0;
     debouncedFilterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, query);
   };
@@ -992,7 +957,7 @@ export const App = () => {
       }
     });
     const whitelist = { ...filterInfo.whitelist, ...partialWhitelist, edited: edited };
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }), "setWhitelistMerge");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
     document.documentElement.scrollTop = 0;
     if (setsInfo.allSets.length > 0) {
       filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
@@ -1029,7 +994,7 @@ export const App = () => {
         ? filterInfo.whitelist.edited
         : [...filterInfo.whitelist.edited, prop];
       const whitelist = { ...filterInfo.whitelist, [prop]: val, edited: edited };
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }), "setWhitelist: " + prop);
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
       document.documentElement.scrollTop = 0;
       if (setsInfo.allSets.length > 0) {
         filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
@@ -1102,12 +1067,9 @@ export const App = () => {
           const defaultPreset = findPreset("id", "default");
           const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
           if (defaultPreset) {
-            setFilterInfo(
-              (filterInfo) => mergeObject(filterInfo, { appPresets: [defaultPreset, ...updatedPresets] }),
-              "getGlobals"
-            );
+            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: [defaultPreset, ...updatedPresets] }));
           } else {
-            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: updatedPresets }), "getGlobals");
+            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: updatedPresets }));
           }
         }
       })
@@ -1251,7 +1213,7 @@ export const App = () => {
     }
   };
   const setSyncSettings = (bool: boolean, write = true) => {
-    setSettings((settings) => mergeObject(settings, { syncSettings: bool }));
+    dispatch(setSettings({ syncSettings: bool }));
     if (write) {
       const settingsObject: { [key: string]: any } = {};
       if (bool) {
@@ -1314,7 +1276,7 @@ export const App = () => {
   const selectPreset = (id: string, write = true) => {
     const preset = findPreset("id", id);
     if (preset) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "selectPreset");
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
       setWhitelistMerge(preset.whitelist);
     }
     if (write) {
@@ -1325,7 +1287,7 @@ export const App = () => {
     preset.id = nanoid();
     const presets = [...userInfo.userPresets, preset];
     alphabeticalSortProp(presets, "name", false);
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "newPreset");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
     setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     syncPresets(presets);
   };
@@ -1340,7 +1302,7 @@ export const App = () => {
       presets = [...userInfo.userPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false);
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "editPreset");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
     setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     syncPresets(presets);
   };
@@ -1349,7 +1311,7 @@ export const App = () => {
     alphabeticalSortProp(presets, "name", false);
     const defaultPreset = findPreset("id", "default");
     if (defaultPreset) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }), "deletePreset");
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
       setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     }
     syncPresets(presets);
@@ -1370,7 +1332,7 @@ export const App = () => {
     preset.id = nanoid();
     const presets = [...filterInfo.appPresets, preset];
     alphabeticalSortProp(presets, "name", false, "Default");
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "newGlobalPreset");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
     setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     syncGlobalPresets(presets);
   };
@@ -1385,7 +1347,7 @@ export const App = () => {
       presets = [...filterInfo.appPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false, "Default");
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }), "editGlobalPreset");
+    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
     setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
     syncGlobalPresets(presets);
   };
@@ -1394,10 +1356,7 @@ export const App = () => {
     alphabeticalSortProp(presets, "name", false, "Default");
     const defaultPreset = findPreset("id", "default");
     if (defaultPreset) {
-      setFilterInfo(
-        (filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }),
-        "deleteGlobalPreset"
-      );
+      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }));
     }
     syncGlobalPresets(presets);
   };
@@ -1460,7 +1419,7 @@ export const App = () => {
         };
         if (defaultPreset) {
           setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
-          setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }), "authObserver");
+          setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
         } else {
           setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
         }
@@ -1536,7 +1495,6 @@ export const App = () => {
                   className={transitionClass}
                   page={appPage}
                   setPage={setPage}
-                  view={settings.view}
                   setView={setView}
                   allSets={setsInfo.allSets}
                   allProfiles={lists.allProfiles}
@@ -1554,17 +1512,11 @@ export const App = () => {
                   content={content}
                   search={filterInfo.search}
                   setSearch={setSearch}
-                  applyTheme={settings.applyTheme}
                   setApplyTheme={setApplyTheme}
-                  lightTheme={settings.lightTheme}
                   setLightTheme={setLightTheme}
-                  darkTheme={settings.darkTheme}
                   setDarkTheme={setDarkTheme}
-                  manualTheme={settings.manualTheme}
                   setManualTheme={setManualTheme}
-                  fromTimeTheme={settings.fromTimeTheme}
                   setFromTimeTheme={setFromTimeTheme}
-                  toTimeTheme={settings.toTimeTheme}
                   setToTimeTheme={setToTimeTheme}
                   toggleLichTheme={toggleLichTheme}
                   bottomNav={settings.bottomNav && device === "mobile"}
@@ -1574,7 +1526,6 @@ export const App = () => {
                   whitelist={filterInfo.whitelist}
                   statisticsTab={statisticsTab}
                   setStatisticsTab={setStatisticsTab}
-                  density={settings.density}
                   setDensity={setDensity}
                 />
                 <SnackbarQueue messages={queue.messages} />

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.1",
     "@rmwc/avatar": "^6.1.4",
     "@rmwc/badge": "^6.1.4",
     "@rmwc/button": "^6.1.4",
@@ -69,6 +70,7 @@
     "react-firebaseui": "^4.1.0",
     "react-lazy-load": "^3.1.13",
     "react-markdown": "^6.0.2",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-string-replace": "^0.4.4",

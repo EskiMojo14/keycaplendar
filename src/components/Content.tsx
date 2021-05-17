@@ -34,17 +34,11 @@ type ContentProps = {
   allVendorRegions: string[];
   allRegions: string[];
   appPresets: PresetType[];
-  applyTheme: string;
   bottomNav: boolean;
   className: string;
   content: boolean;
-  darkTheme: string;
-  density: string;
-  fromTimeTheme: string;
   getData: () => void;
-  lightTheme: string;
   loading: boolean;
-  manualTheme: boolean;
   page: Page;
   search: string;
   setApplyTheme: (applyTheme: string) => void;
@@ -68,9 +62,7 @@ type ContentProps = {
   sort: SortType;
   sortOrder: SortOrderType;
   statisticsTab: StatsTab;
-  toTimeTheme: string;
   toggleLichTheme: () => void;
-  view: ViewType;
   whitelist: WhitelistType;
 };
 
@@ -114,7 +106,6 @@ export const Content = (props: ContentProps) => {
       setSort={props.setSort}
       sortOrder={props.sortOrder}
       setSortOrder={props.setSortOrder}
-      view={props.view}
       setView={props.setView}
       search={props.search}
       setSearch={props.setSearch}
@@ -162,21 +153,13 @@ export const Content = (props: ContentProps) => {
     props.page === "settings" ? (
       <ContentSettings
         openNav={openNav}
-        bottomNav={props.bottomNav}
         setBottomNav={props.setBottomNav}
-        lightTheme={props.lightTheme}
         setLightTheme={props.setLightTheme}
-        darkTheme={props.darkTheme}
         setDarkTheme={props.setDarkTheme}
-        applyTheme={props.applyTheme}
         setApplyTheme={props.setApplyTheme}
-        manualTheme={props.manualTheme}
         setManualTheme={props.setManualTheme}
-        fromTimeTheme={props.fromTimeTheme}
         setFromTimeTheme={props.setFromTimeTheme}
-        toTimeTheme={props.toTimeTheme}
         setToTimeTheme={props.setToTimeTheme}
-        density={props.density}
         setDensity={props.setDensity}
       />
     ) : null;

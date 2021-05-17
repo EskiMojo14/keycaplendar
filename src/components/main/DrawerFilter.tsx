@@ -1,12 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
+import { useAppSelector } from "../../app/hooks";
+import { selectMainView } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Preset, Whitelist } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
 import { UserContext, DeviceContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { WhitelistType, PresetType, SortType, ViewType } from "../../util/types";
+import { WhitelistType, PresetType, SortType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -31,11 +33,11 @@ type DrawerFilterProps = {
   sort: SortType;
   vendors: string[];
   regions: string[];
-  view: ViewType;
   whitelist: WhitelistType;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
+  const view = useAppSelector(selectMainView);
   const { user, preset, presets, selectPreset } = useContext(UserContext);
   const device = useContext(DeviceContext);
   const [modified, setModified] = useState(false);
@@ -189,7 +191,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       });
   };
 
-  const dismissible = device === "desktop" && props.view !== "compact";
+  const dismissible = device === "desktop" && view !== "compact";
 
   const closeIcon = dismissible ? (
     <Tooltip enterDelay={500} content="Close" align="bottom">

@@ -4,6 +4,8 @@ import { pageTitle, viewIcons } from "../../../util/constants";
 import { DeviceContext } from "../../../util/contexts";
 import { useBoolStates } from "../../../util/functions";
 import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
+import { useAppSelector } from "../../../app/hooks";
+import { selectMainView } from "../../settings/settingsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -35,10 +37,10 @@ type AppBarProps = {
   sets: SetType[];
   sort: SortType;
   sortOrder: SortOrderType;
-  view: ViewType;
 };
 
 export const AppBar = (props: AppBarProps) => {
+  const view = useAppSelector(selectMainView);
   const device = useContext(DeviceContext);
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
@@ -108,9 +110,9 @@ export const AppBar = (props: AppBarProps) => {
         <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
       </Tooltip>
       <MenuSurfaceAnchor>
-        <MenuView view={props.view} open={viewOpen} setView={props.setView} onClose={closeView} />
+        <MenuView open={viewOpen} setView={props.setView} onClose={closeView} />
         <Tooltip enterDelay={500} content="View" align={tooltipAlign}>
-          <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+          <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[view]} />
         </Tooltip>
       </MenuSurfaceAnchor>
       {device !== "desktop" && !indent ? (
