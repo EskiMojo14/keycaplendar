@@ -5,6 +5,7 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
@@ -32,12 +33,12 @@ import { Footer } from "../common/Footer";
 import "./ContentAudit.scss";
 
 type ContentAuditProps = {
-  bottomNav: boolean;
   openNav: () => void;
 };
 
 export const ContentAudit = (props: ContentAuditProps) => {
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
 
   const blankAction: ActionType = {
     before: new Keyset(),
@@ -216,7 +217,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
   );
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -230,7 +231,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
           "drawer-open": filterOpen && device === "desktop",
@@ -280,7 +281,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
         </div>
       </div>
       <Footer />
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

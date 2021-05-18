@@ -4,6 +4,8 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
+import { useAppSelector } from "../../app/hooks";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { auditProperties, historyTabs } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
@@ -41,7 +43,6 @@ import "./ContentHistory.scss";
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentHistoryProps = {
-  bottomNav: boolean;
   openNav: () => void;
   setPage: (page: Page) => void;
   allSets: SetType[];
@@ -50,6 +51,8 @@ type ContentHistoryProps = {
 type HistoryTab = typeof historyTabs[number];
 
 export const ContentHistory = (props: ContentHistoryProps) => {
+  const bottomNav = useAppSelector(selectBottomNav);
+
   const [tab, setTab] = useState<HistoryTab>("recent");
   const setTabScroll = (tab: HistoryTab) => {
     setTab(tab);
@@ -267,8 +270,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
-        {props.bottomNav ? tabRow : null}
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+        {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -276,10 +279,10 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           </TopAppBarSection>
           {clearFilterButton}
         </TopAppBarRow>
-        {props.bottomNav ? null : tabRow}
+        {bottomNav ? null : tabRow}
         <LinearProgress closed={props.allSets.length > 0 && !loading} />
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
           <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} />
@@ -301,7 +304,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         </div>
       </div>
       <Footer />
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

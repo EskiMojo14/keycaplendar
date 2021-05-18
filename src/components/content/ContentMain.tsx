@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
-import { selectMainView } from "../settings/settingsSlice";
+import { selectBottomNav, selectMainView } from "../settings/settingsSlice";
 import { UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
@@ -34,7 +34,6 @@ import { Footer } from "../common/Footer";
 import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 
 type ContentMainProps = {
-  bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
   page: Page;
@@ -63,6 +62,7 @@ type ContentMainProps = {
 };
 
 export const ContentMain = (props: ContentMainProps) => {
+  const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectMainView);
   const { user } = useContext(UserContext);
   const device = useAppSelector(selectDevice);
@@ -244,7 +244,7 @@ export const ContentMain = (props: ContentMainProps) => {
         wrapper={(children) => <div className="editor-elements">{children}</div>}
       >
         <Fab
-          className={classNames("create-fab", { middle: props.bottomNav })}
+          className={classNames("create-fab", { middle: bottomNav })}
           icon="add"
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
@@ -286,14 +286,13 @@ export const ContentMain = (props: ContentMainProps) => {
   );
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
-    "extended-app-bar": view === "card" && !props.bottomNav,
+    "extended-app-bar": view === "card" && !bottomNav,
     "drawer-open": drawerOpen,
   });
   return (
     <>
       <AppBar
         openNav={props.openNav}
-        bottomNav={props.bottomNav}
         indent={user.isDesigner || user.isEditor}
         page={props.page}
         setView={props.setView}
@@ -307,7 +306,7 @@ export const ContentMain = (props: ContentMainProps) => {
         loading={props.loading}
         openFilter={openFilter}
       />
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
           profiles={props.allProfiles}
@@ -346,7 +345,7 @@ export const ContentMain = (props: ContentMainProps) => {
         {filterPresetElements}
         {editorElements}
       </div>
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

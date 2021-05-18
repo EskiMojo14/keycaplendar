@@ -4,6 +4,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { ImageObj } from "../../util/constructors";
 import {
@@ -63,13 +64,13 @@ const aspectRatios = {
 const blankImage = new ImageObj();
 
 type ContentImagesProps = {
-  bottomNav: boolean;
   openNav: () => void;
   sets: SetType[];
 };
 
 export const ContentImages = (props: ContentImagesProps) => {
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
 
   const [folderInfo, setFolderInfo] = useState<{
     currentFolder: string;
@@ -268,13 +269,10 @@ export const ContentImages = (props: ContentImagesProps) => {
     },
   ];
   const contextual = imageInfo.checkedImages.length > 0;
-  const tooltipAlign = props.bottomNav ? "top" : "bottom";
+  const tooltipAlign = bottomNav ? "top" : "bottom";
   return (
     <>
-      <TopAppBar
-        fixed
-        className={classNames("is-contextual", { "bottom-app-bar": props.bottomNav, contextual: contextual })}
-      >
+      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual: contextual })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             {contextual ? (
@@ -367,7 +365,7 @@ export const ContentImages = (props: ContentImagesProps) => {
         </TopAppBarRow>
         <LinearProgress closed={!loading} />
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
           "drawer-open": device === "desktop" && detailInfo.detailOpen,
@@ -452,7 +450,7 @@ export const ContentImages = (props: ContentImagesProps) => {
           </ConditionalWrapper>
         </div>
       </div>
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { User } from "../../util/constructors";
 import { hasKey, iconObject, mergeObject, useBoolStates } from "../../util/functions";
 import { UserType } from "../../util/types";
@@ -50,12 +51,12 @@ const rows = 25;
 
 type ContentUsersProps = {
   allDesigners: string[];
-  bottomNav: boolean;
   openNav: () => void;
 };
 
 export const ContentUsers = (props: ContentUsersProps) => {
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
 
   const blankUser = new User();
 
@@ -329,7 +330,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -341,7 +342,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="main">
         <div className="admin-main">
           <div className="users-container-container">
@@ -546,7 +547,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
         </div>
         <Footer />
       </div>
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

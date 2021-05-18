@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../app/hooks";
 import { selectDevice } from "./settings/displaySlice";
+import { selectBottomNav } from "./settings/settingsSlice";
 import { UserContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
@@ -36,7 +37,6 @@ type ContentProps = {
   allVendorRegions: string[];
   allRegions: string[];
   appPresets: PresetType[];
-  bottomNav: boolean;
   className: string;
   content: boolean;
   getData: () => void;
@@ -69,8 +69,9 @@ type ContentProps = {
 };
 
 export const Content = (props: ContentProps) => {
-  const { user } = useContext(UserContext);
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
+  const { user } = useContext(UserContext);
   const [navOpen, setNavOpen] = useState(false);
   const [navEdited, setNavEdited] = useState(false);
   const openNav = () => {
@@ -97,7 +98,6 @@ export const Content = (props: ContentProps) => {
 
   const contentMain = arrayIncludes(mainPages, props.page) ? (
     <ContentMain
-      bottomNav={props.bottomNav}
       navOpen={navOpen}
       openNav={openNav}
       page={props.page}
@@ -128,7 +128,6 @@ export const Content = (props: ContentProps) => {
   const contentStatistics =
     props.page === "statistics" ? (
       <ContentStatistics
-        bottomNav={props.bottomNav}
         navOpen={navOpen}
         openNav={openNav}
         statisticsTab={props.statisticsTab}
@@ -137,20 +136,16 @@ export const Content = (props: ContentProps) => {
     ) : null;
   const contentChangelog =
     props.page === "history" ? (
-      <ContentHistory allSets={props.allSets} bottomNav={props.bottomNav} openNav={openNav} setPage={props.setPage} />
+      <ContentHistory allSets={props.allSets} openNav={openNav} setPage={props.setPage} />
     ) : null;
-  const contentAudit =
-    props.page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} bottomNav={props.bottomNav} /> : null;
+  const contentAudit = props.page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
   const contentUsers =
     props.page === "users" && user.isAdmin ? (
-      <ContentUsers bottomNav={props.bottomNav} openNav={openNav} allDesigners={props.allDesigners} />
+      <ContentUsers openNav={openNav} allDesigners={props.allDesigners} />
     ) : null;
   const contentImages =
-    props.page === "images" && user.isAdmin ? (
-      <ContentImages openNav={openNav} bottomNav={props.bottomNav} sets={props.allSets} />
-    ) : null;
-  const contentUpdates =
-    props.page === "updates" ? <ContentUpdates openNav={openNav} bottomNav={props.bottomNav} /> : null;
+    props.page === "images" && user.isAdmin ? <ContentImages openNav={openNav} sets={props.allSets} /> : null;
+  const contentUpdates = props.page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
   const contentSettings =
     props.page === "settings" ? (
       <ContentSettings
@@ -169,16 +164,10 @@ export const Content = (props: ContentProps) => {
     <div
       className={classNames(props.className, props.page, "app-container", {
         "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && arrayIncludes(mainPages, props.page),
-        "bottom-nav": props.bottomNav,
+        "bottom-nav": bottomNav,
       })}
     >
-      <DrawerNav
-        bottomNav={props.bottomNav}
-        open={navOpen}
-        close={closeNav}
-        page={props.page}
-        setPage={props.setPage}
-      />
+      <DrawerNav open={navOpen} close={closeNav} page={props.page} setPage={props.setPage} />
       <DrawerAppContent>
         {contentMain}
         {contentStatistics}

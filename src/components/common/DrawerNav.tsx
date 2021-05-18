@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
+import moment from "moment";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject } from "../../util/functions";
@@ -12,12 +14,10 @@ import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmw
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
-import moment from "moment";
 
 const db = firebase.firestore();
 
 type DrawerNavProps = {
-  bottomNav: boolean;
   close: () => void;
   open: boolean;
   page: Page;
@@ -27,6 +27,8 @@ type DrawerNavProps = {
 export const DrawerNav = (props: DrawerNavProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
+
+  const bottomNav = useAppSelector(selectBottomNav);
 
   const setPage = (page: Page) => {
     props.setPage(page);
@@ -105,17 +107,17 @@ export const DrawerNav = (props: DrawerNavProps) => {
   ) : null;
 
   const closeIcon =
-    dismissible || props.bottomNav ? (
+    dismissible || bottomNav ? (
       <IconButton
-        className={classNames({ "rtl-flip": !props.bottomNav })}
-        icon={props.bottomNav ? "close" : "chevron_left"}
+        className={classNames({ "rtl-flip": !bottomNav })}
+        icon={bottomNav ? "close" : "chevron_left"}
         onClick={props.close}
       />
     ) : null;
 
   return (
     <Drawer
-      className={classNames("nav", { rail: dismissible, "drawer-bottom": props.bottomNav })}
+      className={classNames("nav", { rail: dismissible, "drawer-bottom": bottomNav })}
       dismissible={dismissible}
       modal={!dismissible}
       open={props.open}

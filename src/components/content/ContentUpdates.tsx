@@ -3,6 +3,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../settings/displaySlice";
+import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Update } from "../../util/constructors";
 import { UserContext } from "../../util/contexts";
@@ -27,15 +28,15 @@ import "./ContentUpdates.scss";
 const db = firebase.firestore();
 
 type ContentUpdatesProps = {
-  bottomNav: boolean;
   openNav: () => void;
 };
 
 export const ContentUpdates = (props: ContentUpdatesProps) => {
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
   const { user } = useContext(UserContext);
   const indent =
-    user.isAdmin && props.bottomNav ? (
+    user.isAdmin && bottomNav ? (
       <TopAppBarSection className="indent" alignEnd>
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
           <path
@@ -147,7 +148,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   const editorElements = user.isAdmin ? (
     <>
       <Fab
-        className={classNames("create-fab", { middle: props.bottomNav })}
+        className={classNames("create-fab", { middle: bottomNav })}
         icon="add"
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
@@ -162,8 +163,8 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
       <TopAppBar
         fixed
         className={classNames({
-          "bottom-app-bar": props.bottomNav,
-          "bottom-app-bar--indent": props.bottomNav && user.isAdmin,
+          "bottom-app-bar": bottomNav,
+          "bottom-app-bar--indent": bottomNav && user.isAdmin,
         })}
       >
         <TopAppBarRow>
@@ -175,7 +176,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         </TopAppBarRow>
         <LinearProgress closed={!loading} />
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className="main extended-app-bar">
           <div className="update-container">
@@ -187,7 +188,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         {editorElements}
       </div>
       <Footer />
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

@@ -5,7 +5,7 @@ import { pageTitle, viewIcons } from "../../../util/constants";
 import { useBoolStates } from "../../../util/functions";
 import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
 import { useAppSelector } from "../../../app/hooks";
-import { selectMainView } from "../../settings/settingsSlice";
+import { selectBottomNav, selectMainView } from "../../settings/settingsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -23,7 +23,6 @@ import { SearchBarPersistent, SearchBarModal, SearchAppBar } from "./SearchBar";
 import "./AppBar.scss";
 
 type AppBarProps = {
-  bottomNav: boolean;
   indent: boolean;
   loading: boolean;
   openFilter: () => void;
@@ -40,8 +39,10 @@ type AppBarProps = {
 };
 
 export const AppBar = (props: AppBarProps) => {
-  const view = useAppSelector(selectMainView);
   const device = useAppSelector(selectDevice);
+  const view = useAppSelector(selectMainView);
+  const bottomNav = useAppSelector(selectBottomNav);
+
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
 
@@ -57,10 +58,10 @@ export const AppBar = (props: AppBarProps) => {
     setSearchOpen(false);
   };
 
-  const tooltipAlign = props.bottomNav ? "top" : "bottom";
+  const tooltipAlign = bottomNav ? "top" : "bottom";
 
   const indent =
-    props.indent && props.bottomNav ? (
+    props.indent && bottomNav ? (
       <TopAppBarSection className="indent" alignEnd>
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
           <path
@@ -141,7 +142,7 @@ export const AppBar = (props: AppBarProps) => {
   return (
     <>
       {searchBar}
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav, "bottom-app-bar--indent": indent })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": indent })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />

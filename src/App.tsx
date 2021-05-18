@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice, setDevice } from "./components/settings/displaySlice";
-import { selectBottomNav, selectSettings, setSettings } from "./components/settings/settingsSlice";
+import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
@@ -73,7 +73,6 @@ const db = firebase.firestore();
 export const App = () => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectSettings);
-  const bottomNav = useAppSelector(selectBottomNav);
   const device = useAppSelector(selectDevice);
 
   const [appPage, setAppPage] = useState<Page>("images");
@@ -1516,7 +1515,6 @@ export const App = () => {
                 setFromTimeTheme={setFromTimeTheme}
                 setToTimeTheme={setToTimeTheme}
                 toggleLichTheme={toggleLichTheme}
-                bottomNav={bottomNav}
                 setBottomNav={setBottomNav}
                 setWhitelist={setWhitelist}
                 setWhitelistMerge={setWhitelistMerge}

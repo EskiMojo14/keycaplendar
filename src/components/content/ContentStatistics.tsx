@@ -29,13 +29,13 @@ import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCar
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentStatistics.scss";
+import { selectBottomNav } from "../settings/settingsSlice";
 
 const storage = firebase.storage();
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
-  bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
   setStatisticsTab: (tab: StatsTab) => void;
@@ -127,6 +127,7 @@ type VendorData = Record<Properties, VendorDataObject[]>;
 
 export const ContentStatistics = (props: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
 
   const [statisticsData, setStatisticsData] = useState<{
     summaryData: SummaryData;
@@ -723,8 +724,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
-        {props.bottomNav ? tabRow : null}
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+        {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -734,10 +735,10 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             {hasKey(buttons, props.statisticsTab) ? buttons[props.statisticsTab] : null}
           </TopAppBarSection>
         </TopAppBarRow>
-        {props.bottomNav ? null : tabRow}
+        {bottomNav ? null : tabRow}
         <LinearProgress closed={dataCreated.length === statsTabs.length} />
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="main extended-app-bar">
         {categoryDialog}
         <VirtualizeSwipeableViews
@@ -754,7 +755,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         />
         <Footer />
       </div>
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };
