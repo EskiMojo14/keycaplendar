@@ -286,10 +286,13 @@ export const App = () => {
 
       const fetchAndSet = (key: string, setFunction: (val: any, write: boolean) => void) => {
         const val = getStorage(key);
-        if (val) {
-          setTimeout(() => {
-            setFunction(val, false);
-          }, 0);
+        if (val && hasKey(settings, key)) {
+          const currentSetting = settings[key];
+          if (val !== currentSetting) {
+            setTimeout(() => {
+              setFunction(val, false);
+            }, 0);
+          }
         }
       };
 
@@ -1064,7 +1067,13 @@ export const App = () => {
         .then((doc) => {
           if (doc.exists) {
             const data = doc.data();
-            const { favorites, hidden, settings, syncSettings, filterPresets } = data as UserPreferencesDoc;
+            const {
+              favorites,
+              hidden,
+              settings: settingsPrefs,
+              syncSettings,
+              filterPresets,
+            } = data as UserPreferencesDoc;
 
             if (favorites instanceof Array) {
               setUserInfo((userInfo) => mergeObject(userInfo, { favorites: favorites }));
@@ -1085,11 +1094,15 @@ export const App = () => {
             }
 
             if (typeof syncSettings === "boolean") {
-              setSyncSettings(syncSettings, false);
+              if (syncSettings !== settings.syncSettings) {
+                setSyncSettings(syncSettings, false);
+              }
               if (syncSettings) {
                 const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
-                  if (settings && hasKey(settings, setting)) {
-                    setFunction(settings[setting], false);
+                  if (settingsPrefs && hasKey(settingsPrefs, setting)) {
+                    if (settingsPrefs[setting] !== settings[setting]) {
+                      setFunction(settingsPrefs[setting], false);
+                    }
                   }
                 };
                 Object.keys(settingFns).forEach((setting) => {
