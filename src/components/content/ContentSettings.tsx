@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
 import { selectUser } from "../common/userSlice";
-import { selectSettings } from "../settings/settingsSlice";
+import { selectBottomNav, selectSettings } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { UserContext } from "../../util/contexts";
 import { useBoolStates } from "../../util/functions";
@@ -56,6 +56,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     manualTheme,
     toTimeTheme,
   } = useAppSelector(selectSettings);
+  const bottomNavSetting = useAppSelector(selectBottomNav);
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
   const { setUser, syncSettings, setSyncSettings } = useContext(UserContext);
@@ -318,7 +319,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNavSetting })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -326,7 +327,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNavSetting ? null : <TopAppBarFixedAdjust />}
       <div className="admin-main">
         <div className="settings-container">
           <div className="settings">
@@ -408,7 +409,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         </div>
       </div>
       <Footer />
-      {bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNavSetting ? <TopAppBarFixedAdjust /> : null}
       {deleteUserDialog}
     </>
   );
