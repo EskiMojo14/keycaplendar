@@ -2,11 +2,12 @@ import React, { useContext, useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { selectMainView } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Preset, Whitelist } from "../../util/constructors";
 import { whitelistShipped, whitelistParams } from "../../util/constants";
-import { UserContext, DeviceContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
 import { WhitelistType, PresetType, SortType } from "../../util/types";
 import { Button } from "@rmwc/button";
@@ -38,8 +39,8 @@ type DrawerFilterProps = {
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
   const view = useAppSelector(selectMainView);
+  const device = useAppSelector(selectDevice);
   const { user, preset, presets, selectPreset } = useContext(UserContext);
-  const device = useContext(DeviceContext);
   const [modified, setModified] = useState(false);
 
   useEffect(() => {

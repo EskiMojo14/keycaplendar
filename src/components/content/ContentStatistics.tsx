@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
-import { DeviceContext } from "../../util/contexts";
 import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";
 import { StatisticsSortType, StatisticsType, Categories, Properties, StatsTab } from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -125,7 +126,7 @@ type VendorDataObject = {
 type VendorData = Record<Properties, VendorDataObject[]>;
 
 export const ContentStatistics = (props: ContentStatisticsProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
 
   const [statisticsData, setStatisticsData] = useState<{
     summaryData: SummaryData;

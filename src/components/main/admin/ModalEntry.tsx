@@ -4,8 +4,10 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
+import { useAppSelector } from "../../../app/hooks";
+import { selectDevice } from "../../settings/displaySlice";
 import { queue } from "../../../app/snackbarQueue";
-import { DeviceContext, UserContext } from "../../../util/contexts";
+import { UserContext } from "../../../util/contexts";
 import {
   formatFileName,
   iconObject,
@@ -62,7 +64,7 @@ type ModalCreateProps = {
 };
 
 export const ModalCreate = (props: ModalCreateProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const { user } = useContext(UserContext);
 
   const [fields, setFields] = useState({
@@ -940,7 +942,7 @@ type ModalEditProps = ModalCreateProps & {
 };
 
 export const ModalEdit = (props: ModalEditProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const { user } = useContext(UserContext);
 
   const [id, setId] = useState("");

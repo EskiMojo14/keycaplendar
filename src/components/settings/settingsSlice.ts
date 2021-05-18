@@ -51,7 +51,7 @@ export const { setSetting, setSettings } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
 
-export const selectBottomNav = (state: RootState) => state.settings.bottomNav;
+export const selectBottomNav = (state: RootState) => state.settings.bottomNav && state.display.device === "mobile";
 
 export const selectMainView = (state: RootState) => state.settings.view;
 

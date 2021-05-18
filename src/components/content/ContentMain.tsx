@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { selectMainView } from "../settings/settingsSlice";
-import { DeviceContext, UserContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import {
@@ -64,7 +65,7 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const view = useAppSelector(selectMainView);
   const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
 

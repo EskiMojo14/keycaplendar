@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
-import { DeviceContext } from "../../util/contexts";
+import React, { useState } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -22,7 +23,7 @@ type DrawerAuditFilterProps = {
 
 export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
   const [auditLength, setAuditLength] = useState(props.auditLength);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const closeButton =
     device === "desktop" ? (
       <Tooltip enterDelay={500} content="Close" align="bottom">

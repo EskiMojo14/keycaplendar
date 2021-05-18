@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
+import { selectDevice } from "../../settings/displaySlice";
 import { pageTitle, viewIcons } from "../../../util/constants";
-import { DeviceContext } from "../../../util/contexts";
 import { useBoolStates } from "../../../util/functions";
 import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
 import { useAppSelector } from "../../../app/hooks";
@@ -41,7 +41,7 @@ type AppBarProps = {
 
 export const AppBar = (props: AppBarProps) => {
   const view = useAppSelector(selectMainView);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
 

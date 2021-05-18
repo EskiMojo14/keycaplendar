@@ -5,9 +5,10 @@ import { nanoid } from "nanoid";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
-import { queue } from "./app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectSettings, setSettings } from "./components/settings/settingsSlice";
+import { selectDevice, setDevice } from "./components/settings/displaySlice";
+import { selectBottomNav, selectSettings, setSettings } from "./components/settings/settingsSlice";
+import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
 import { Login } from "./components/pages/Login";
@@ -33,7 +34,7 @@ import {
   whitelistShipped,
 } from "./util/constants";
 import { Interval, Preset, Whitelist } from "./util/constructors";
-import { UserContext, DeviceContext } from "./util/contexts";
+import { UserContext } from "./util/contexts";
 import {
   addOrRemove,
   alphabeticalSort,
@@ -72,8 +73,9 @@ const db = firebase.firestore();
 export const App = () => {
   const dispatch = useAppDispatch();
   const settings = useAppSelector(selectSettings);
+  const bottomNav = useAppSelector(selectBottomNav);
+  const device = useAppSelector(selectDevice);
 
-  const [device, setDevice] = useState<"mobile" | "tablet" | "desktop">("tablet");
   const [appPage, setAppPage] = useState<Page>("images");
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
   const [lists, setLists] = useState<{
@@ -1028,25 +1030,25 @@ export const App = () => {
   };
   const checkDevice = () => {
     let i = 0;
-    let deviceName: "mobile" | "tablet" | "desktop";
     let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    let lastDevice = "tablet";
     const calculate = () => {
       const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       if (vw !== lastWidth || i === 0) {
         if (vw >= 840) {
-          deviceName = "desktop";
-          if (deviceName !== device) {
-            setDevice(deviceName);
+          if (lastDevice !== "desktop") {
+            dispatch(setDevice("desktop"));
+            lastDevice = "desktop";
           }
         } else if (vw < 840 && vw >= 480) {
-          deviceName = "tablet";
-          if (deviceName !== device) {
-            setDevice(deviceName);
+          if (lastDevice !== "tablet") {
+            dispatch(setDevice("tablet"));
+            lastDevice = "tablet";
           }
         } else {
-          deviceName = "mobile";
-          if (deviceName !== device) {
-            setDevice(deviceName);
+          if (lastDevice !== "mobile") {
+            dispatch(setDevice("mobile"));
+            lastDevice = "mobile";
           }
         }
         lastWidth = vw;
@@ -1453,17 +1455,13 @@ export const App = () => {
               deleteGlobalPreset: deleteGlobalPreset,
             }}
           >
-            <DeviceContext.Provider value={device}>
-              <Login />
-            </DeviceContext.Provider>
+            <Login />
           </UserContext.Provider>
         </Route>
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/terms" component={TermsOfService} />
         <Route path="/guide/entries">
-          <DeviceContext.Provider value={device}>
-            <EntryGuide />
-          </DeviceContext.Provider>
+          <EntryGuide />
         </Route>
         <Route exact path="/">
           <UserContext.Provider
@@ -1487,51 +1485,49 @@ export const App = () => {
               deleteGlobalPreset: deleteGlobalPreset,
             }}
           >
-            <DeviceContext.Provider value={device}>
-              <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
-                <Content
-                  sets={setsInfo.filteredSets}
-                  getData={getData}
-                  className={transitionClass}
-                  page={appPage}
-                  setPage={setPage}
-                  setView={setView}
-                  allSets={setsInfo.allSets}
-                  allProfiles={lists.allProfiles}
-                  allDesigners={lists.allDesigners}
-                  allVendors={lists.allVendors}
-                  allVendorRegions={lists.allVendorRegions}
-                  allRegions={lists.allRegions}
-                  appPresets={filterInfo.appPresets}
-                  setGroups={setsInfo.setGroups}
-                  loading={loading}
-                  sort={sorts.sort}
-                  setSort={setSort}
-                  sortOrder={sorts.sortOrder}
-                  setSortOrder={setSortOrder}
-                  content={content}
-                  search={filterInfo.search}
-                  setSearch={setSearch}
-                  setApplyTheme={setApplyTheme}
-                  setLightTheme={setLightTheme}
-                  setDarkTheme={setDarkTheme}
-                  setManualTheme={setManualTheme}
-                  setFromTimeTheme={setFromTimeTheme}
-                  setToTimeTheme={setToTimeTheme}
-                  toggleLichTheme={toggleLichTheme}
-                  bottomNav={settings.bottomNav && device === "mobile"}
-                  setBottomNav={setBottomNav}
-                  setWhitelist={setWhitelist}
-                  setWhitelistMerge={setWhitelistMerge}
-                  whitelist={filterInfo.whitelist}
-                  statisticsTab={statisticsTab}
-                  setStatisticsTab={setStatisticsTab}
-                  setDensity={setDensity}
-                />
-                <SnackbarQueue messages={queue.messages} />
-                <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
-              </div>
-            </DeviceContext.Provider>
+            <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
+              <Content
+                sets={setsInfo.filteredSets}
+                getData={getData}
+                className={transitionClass}
+                page={appPage}
+                setPage={setPage}
+                setView={setView}
+                allSets={setsInfo.allSets}
+                allProfiles={lists.allProfiles}
+                allDesigners={lists.allDesigners}
+                allVendors={lists.allVendors}
+                allVendorRegions={lists.allVendorRegions}
+                allRegions={lists.allRegions}
+                appPresets={filterInfo.appPresets}
+                setGroups={setsInfo.setGroups}
+                loading={loading}
+                sort={sorts.sort}
+                setSort={setSort}
+                sortOrder={sorts.sortOrder}
+                setSortOrder={setSortOrder}
+                content={content}
+                search={filterInfo.search}
+                setSearch={setSearch}
+                setApplyTheme={setApplyTheme}
+                setLightTheme={setLightTheme}
+                setDarkTheme={setDarkTheme}
+                setManualTheme={setManualTheme}
+                setFromTimeTheme={setFromTimeTheme}
+                setToTimeTheme={setToTimeTheme}
+                toggleLichTheme={toggleLichTheme}
+                bottomNav={bottomNav}
+                setBottomNav={setBottomNav}
+                setWhitelist={setWhitelist}
+                setWhitelistMerge={setWhitelistMerge}
+                whitelist={filterInfo.whitelist}
+                statisticsTab={statisticsTab}
+                setStatisticsTab={setStatisticsTab}
+                setDensity={setDensity}
+              />
+              <SnackbarQueue messages={queue.messages} />
+              <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
+            </div>
           </UserContext.Provider>
         </Route>
         <Route component={NotFound} />

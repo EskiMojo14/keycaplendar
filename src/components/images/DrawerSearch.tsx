@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
-import { DeviceContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { iconObject } from "../../util/functions";
 import { ImageType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
@@ -27,7 +28,7 @@ type DrawerSearchProps = {
 };
 
 export const DrawerSearch = (props: DrawerSearchProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible ? (
     <Tooltip enterDelay={500} content="Close" align="bottom">

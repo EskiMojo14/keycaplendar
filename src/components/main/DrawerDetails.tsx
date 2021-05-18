@@ -3,8 +3,9 @@ import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { selectMainView } from "../settings/settingsSlice";
-import { DeviceContext, UserContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
 import { SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
@@ -31,7 +32,7 @@ type DrawerDetailsProps = {
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
   const view = useAppSelector(selectMainView);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const { user, favorites, hidden, toggleFavorite, toggleHidden } = useContext(UserContext);
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");

@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { queue } from "../../app/snackbarQueue";
 import { ImageObj } from "../../util/constructors";
-import { DeviceContext } from "../../util/contexts";
 import {
   addOrRemove,
   alphabeticalSort,
@@ -68,7 +69,7 @@ type ContentImagesProps = {
 };
 
 export const ContentImages = (props: ContentImagesProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
 
   const [folderInfo, setFolderInfo] = useState<{
     currentFolder: string;

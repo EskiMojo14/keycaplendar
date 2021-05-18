@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
-import { UserType } from "../../util/types";
-import { DeviceContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { User } from "../../util/constructors";
 import { hasKey, iconObject, mergeObject, useBoolStates } from "../../util/functions";
+import { UserType } from "../../util/types";
 import {
   DataTable,
   DataTableContent,
@@ -50,12 +51,11 @@ const rows = 25;
 type ContentUsersProps = {
   allDesigners: string[];
   bottomNav: boolean;
-  device: string;
   openNav: () => void;
 };
 
 export const ContentUsers = (props: ContentUsersProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
 
   const blankUser = new User();
 

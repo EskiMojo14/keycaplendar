@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { queue } from "../../app/snackbarQueue";
 import { auditProperties } from "../../util/constants";
 import { Keyset } from "../../util/constructors";
-import { DeviceContext } from "../../util/contexts";
 import { openModal, closeModal, hasKey, alphabeticalSortProp, mergeObject } from "../../util/functions";
 import { ActionType } from "../../util/types";
 import { Card } from "@rmwc/card";
@@ -36,7 +37,7 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = (props: ContentAuditProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
 
   const blankAction: ActionType = {
     before: new Keyset(),

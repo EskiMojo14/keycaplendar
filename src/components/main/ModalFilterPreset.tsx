@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { DeviceContext, UserContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
+import { UserContext } from "../../util/contexts";
 import { PresetType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
@@ -20,7 +22,7 @@ type ModalFilterPresetProps = {
 };
 
 export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const { user, newGlobalPreset, editGlobalPreset, newPreset, editPreset } = useContext(UserContext);
 
   const [name, setName] = useState("");

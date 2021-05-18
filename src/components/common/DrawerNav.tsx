@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
-import { UserContext, DeviceContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject } from "../../util/functions";
+import { Page } from "../../util/types";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
 import moment from "moment";
-import { Page } from "../../util/types";
 
 const db = firebase.firestore();
 
@@ -23,6 +25,9 @@ type DrawerNavProps = {
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
+  const device = useAppSelector(selectDevice);
+  const dismissible = device === "desktop";
+
   const setPage = (page: Page) => {
     props.setPage(page);
     if (!dismissible) {
@@ -37,9 +42,6 @@ export const DrawerNav = (props: DrawerNavProps) => {
     favorites: favorites.length,
     hidden: hidden.length,
   };
-
-  const device = useContext(DeviceContext);
-  const dismissible = device === "desktop";
 
   const [newUpdate, setNewUpdate] = useState(false);
 

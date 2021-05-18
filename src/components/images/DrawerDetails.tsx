@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import moment from "moment";
-import { DeviceContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { formatBytes, hasKey } from "../../util/functions";
 import { ImageType } from "../../util/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
@@ -18,7 +19,7 @@ type DrawerDetailsProps = {
 };
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible ? (
     <Tooltip enterDelay={500} content="Close" align="bottom">

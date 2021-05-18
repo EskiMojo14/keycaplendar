@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
-import { DeviceContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { addOrRemove, iconObject } from "../../util/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -135,7 +136,7 @@ const responsiveOptions = [
 ];
 
 export const ShippedCard = (props: ShippedCardProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   return (
     <Card className="timeline-card half-span">
       <Typography use="headline5" tag="h1">

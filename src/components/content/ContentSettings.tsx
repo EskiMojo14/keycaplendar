@@ -3,9 +3,10 @@ import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { selectSettings } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
-import { UserContext, DeviceContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { useBoolStates } from "../../util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -54,8 +55,8 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     manualTheme,
     toTimeTheme,
   } = useAppSelector(selectSettings);
+  const device = useAppSelector(selectDevice);
   const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
-  const device = useContext(DeviceContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {

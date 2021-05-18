@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import classNames from "classnames";
-import { UserContext, DeviceContext } from "../util/contexts";
+import { useAppSelector } from "../app/hooks";
+import { selectDevice } from "./settings/displaySlice";
+import { UserContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
 import {
@@ -68,7 +70,7 @@ type ContentProps = {
 
 export const Content = (props: ContentProps) => {
   const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const [navOpen, setNavOpen] = useState(false);
   const [navEdited, setNavEdited] = useState(false);
   const openNav = () => {
@@ -141,7 +143,7 @@ export const Content = (props: ContentProps) => {
     props.page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} bottomNav={props.bottomNav} /> : null;
   const contentUsers =
     props.page === "users" && user.isAdmin ? (
-      <ContentUsers bottomNav={props.bottomNav} openNav={openNav} allDesigners={props.allDesigners} device={device} />
+      <ContentUsers bottomNav={props.bottomNav} openNav={openNav} allDesigners={props.allDesigners} />
     ) : null;
   const contentImages =
     props.page === "images" && user.isAdmin ? (

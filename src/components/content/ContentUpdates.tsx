@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../settings/displaySlice";
 import { queue } from "../../app/snackbarQueue";
 import { Update } from "../../util/constructors";
-import { DeviceContext, UserContext } from "../../util/contexts";
+import { UserContext } from "../../util/contexts";
 import { closeModal, openModal } from "../../util/functions";
 import { UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
@@ -30,8 +32,8 @@ type ContentUpdatesProps = {
 };
 
 export const ContentUpdates = (props: ContentUpdatesProps) => {
+  const device = useAppSelector(selectDevice);
   const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
   const indent =
     user.isAdmin && props.bottomNav ? (
       <TopAppBarSection className="indent" alignEnd>
