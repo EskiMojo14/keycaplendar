@@ -3,7 +3,7 @@ import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectSettings } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { UserContext } from "../../util/contexts";

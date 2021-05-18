@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { UserContext } from "../../util/contexts";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";

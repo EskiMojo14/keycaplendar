@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectMainView } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Preset, Whitelist } from "../../util/constructors";

@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectMainView } from "../settings/settingsSlice";
 import { UserContext } from "../../util/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";

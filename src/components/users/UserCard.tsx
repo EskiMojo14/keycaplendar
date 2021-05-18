@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import firebase from "../../firebase";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
 import { UserContext } from "../../util/contexts";

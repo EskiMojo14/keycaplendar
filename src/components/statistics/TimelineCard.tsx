@@ -5,7 +5,7 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { addOrRemove, iconObject } from "../../util/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";

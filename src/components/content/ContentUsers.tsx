@@ -3,7 +3,7 @@ import firebase from "../../firebase";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { User } from "../../util/constructors";
 import { hasKey, iconObject, mergeObject, useBoolStates } from "../../util/functions";

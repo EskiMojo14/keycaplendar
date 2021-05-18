@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
-import { selectDevice } from "../../settings/displaySlice";
+import { selectDevice } from "../../common/commonSlice";
 import { iconObject } from "../../../util/functions";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";

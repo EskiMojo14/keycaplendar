@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import displayReducer from "../components/settings/displaySlice";
+import commonReducer from "../components/common/commonSlice";
 import settingsReducer from "../components/settings/settingsSlice";
 
 export const store = configureStore({
   reducer: {
-    display: displayReducer,
+    common: commonReducer,
     settings: settingsReducer,
   },
 });

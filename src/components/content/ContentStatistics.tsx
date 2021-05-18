@@ -5,7 +5,7 @@ import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
 import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";

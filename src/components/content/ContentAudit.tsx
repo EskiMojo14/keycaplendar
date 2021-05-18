@@ -4,7 +4,7 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { auditProperties } from "../../util/constants";

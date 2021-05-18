@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { formatBytes, hasKey } from "../../util/functions";
 import { ImageType } from "../../util/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";

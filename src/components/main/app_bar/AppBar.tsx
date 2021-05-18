@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-import { selectDevice } from "../../settings/displaySlice";
+import { selectDevice } from "../../common/commonSlice";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { useBoolStates } from "../../../util/functions";
 import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";

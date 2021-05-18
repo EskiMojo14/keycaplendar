@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectDevice, setDevice } from "./components/settings/displaySlice";
+import { selectDevice, setDevice } from "./components/common/commonSlice";
 import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";

@@ -3,7 +3,7 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { ImageObj } from "../../util/constructors";

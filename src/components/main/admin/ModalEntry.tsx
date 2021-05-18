@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
-import { selectDevice } from "../../settings/displaySlice";
+import { selectDevice } from "../../common/commonSlice";
 import { queue } from "../../../app/snackbarQueue";
 import { UserContext } from "../../../util/contexts";
 import {

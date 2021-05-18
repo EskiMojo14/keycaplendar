@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { UserContext } from "../../util/contexts";
 import { PresetType } from "../../util/types";
 import { Checkbox } from "@rmwc/checkbox";

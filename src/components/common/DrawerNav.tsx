@@ -3,7 +3,7 @@ import classNames from "classnames";
 import moment from "moment";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "./commonSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";

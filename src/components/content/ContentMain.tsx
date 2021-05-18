@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectBottomNav, selectMainView } from "../settings/settingsSlice";
 import { UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";

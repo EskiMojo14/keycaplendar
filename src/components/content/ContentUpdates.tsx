@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../settings/displaySlice";
+import { selectDevice } from "../common/commonSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Update } from "../../util/constructors";
