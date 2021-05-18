@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import classNames from "classnames";
 import moment from "moment";
-import { UserContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../common/userSlice";
 import { iconObject } from "../../util/functions";
 import { UpdateEntryType } from "../../util/types";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
@@ -20,7 +21,7 @@ type UpdateEntryProps = {
 
 export const UpdateEntry = (props: UpdateEntryProps) => {
   const { entry } = props;
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
   const pinIndicator = entry.pinned ? (
     <div className="pin-indicator">
       <Tooltip enterDelay={500} content="Pinned" align="bottom">

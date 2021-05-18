@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import firebase from "../../firebase";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../common/userSlice";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
-import { UserContext } from "../../util/contexts";
 import { iconObject, mergeObject, truncate } from "../../util/functions";
 import { UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
@@ -23,7 +24,7 @@ type UserRowProps = {
 };
 
 export const UserRow = (props: UserRowProps) => {
-  const { user: currentUser } = useContext(UserContext);
+  const currentUser = useAppSelector(selectUser);
   const blankUser = new User();
   const [user, setUser] = useState<UserType>(blankUser);
   const [edited, setEdited] = useState(false);

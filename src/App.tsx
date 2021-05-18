@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice, setDevice } from "./components/common/commonSlice";
+import { selectUser, setUser } from "./components/common/userSlice";
 import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
@@ -50,7 +51,6 @@ import {
 } from "./util/functions";
 import {
   ArraySortKeys,
-  CurrentUserType,
   DateSortKeys,
   WhitelistType,
   PresetType,
@@ -72,8 +72,10 @@ const db = firebase.firestore();
 
 export const App = () => {
   const dispatch = useAppDispatch();
+
   const settings = useAppSelector(selectSettings);
   const device = useAppSelector(selectDevice);
+  const user = useAppSelector(selectUser);
 
   const [appPage, setAppPage] = useState<Page>("images");
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
@@ -128,21 +130,10 @@ export const App = () => {
   });
 
   const [userInfo, setUserInfo] = useState<{
-    user: CurrentUserType;
     favorites: string[];
     hidden: string[];
     userPresets: PresetType[];
   }>({
-    user: {
-      email: "",
-      name: "",
-      avatar: "",
-      isEditor: false,
-      isAdmin: false,
-      nickname: "",
-      isDesigner: false,
-      id: "",
-    },
     favorites: [],
     hidden: [],
     userPresets: [],
@@ -652,7 +643,7 @@ export const App = () => {
     const hiddenBool = (set: SetType) => {
       if (page === "favorites") {
         return true;
-      } else if ((whitelist.hidden && userInfo.user.email) || page === "hidden") {
+      } else if ((whitelist.hidden && user.email) || page === "hidden") {
         return hidden.includes(set.id);
       } else {
         return !hidden.includes(set.id);
@@ -687,7 +678,7 @@ export const App = () => {
       const shippedBool =
         (whitelist.shipped.includes("Shipped") && set.shipped) ||
         (whitelist.shipped.includes("Not shipped") && !set.shipped);
-      const favoritesBool = userInfo.user.email
+      const favoritesBool = user.email
         ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
         : true;
       if (set.vendors && set.vendors.length > 0) {
@@ -924,20 +915,6 @@ export const App = () => {
     document.documentElement.scrollTop = 0;
     debouncedFilterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, query);
   };
-  const setUser = (user: Partial<CurrentUserType>) => {
-    const blankUser = {
-      email: "",
-      name: "",
-      avatar: "",
-      nickname: "",
-      isDesigner: false,
-      isEditor: false,
-      isAdmin: false,
-      id: "",
-    };
-    const newUser = user.email ? { ...blankUser, ...user } : blankUser;
-    setUserInfo((userInfo) => mergeObject(userInfo, { user: newUser }));
-  };
   const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
     setStatsTab(tab);
@@ -1156,9 +1133,9 @@ export const App = () => {
         favorites
       );
     }
-    if (userInfo.user.id) {
+    if (user.id) {
       db.collection("users")
-        .doc(userInfo.user.id)
+        .doc(user.id)
         .set(
           {
             favorites: favorites,
@@ -1198,9 +1175,9 @@ export const App = () => {
       timeout: 2500,
       dismissesOnAction: true,
     });
-    if (userInfo.user.id) {
+    if (user.id) {
       db.collection("users")
-        .doc(userInfo.user.id)
+        .doc(user.id)
         .set(
           {
             hidden: hidden,
@@ -1225,7 +1202,7 @@ export const App = () => {
         });
       }
       db.collection("users")
-        .doc(userInfo.user.id)
+        .doc(user.id)
         .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
         .catch((error) => {
           console.log("Failed to set sync setting: " + error);
@@ -1234,8 +1211,8 @@ export const App = () => {
     }
   };
   const syncSetting = (setting: string, value: any) => {
-    if (userInfo.user.id && settings.syncSettings) {
-      const userDocRef = db.collection("users").doc(userInfo.user.id);
+    if (user.id && settings.syncSettings) {
+      const userDocRef = db.collection("users").doc(user.id);
       userDocRef.get().then((doc) => {
         if (doc.exists) {
           sync();
@@ -1322,7 +1299,7 @@ export const App = () => {
       ...preset,
     }));
     db.collection("users")
-      .doc(userInfo.user.id)
+      .doc(user.id)
       .set({ filterPresets: sortedPresets }, { merge: true })
       .catch((error) => {
         console.log("Failed to sync presets: " + error);
@@ -1386,32 +1363,36 @@ export const App = () => {
         const getClaimsFn = firebase.functions().httpsCallable("getClaims");
         getClaimsFn()
           .then((result) => {
-            setUser({
-              email: user.email ? user.email : "",
-              name: user.displayName ? user.displayName : "",
-              avatar: user.photoURL ? user.photoURL : "",
-              id: user.uid,
-              nickname: result.data.nickname,
-              isDesigner: result.data.designer,
-              isEditor: result.data.editor,
-              isAdmin: result.data.admin,
-            });
+            dispatch(
+              setUser({
+                email: user.email ? user.email : "",
+                name: user.displayName ? user.displayName : "",
+                avatar: user.photoURL ? user.photoURL : "",
+                id: user.uid,
+                nickname: result.data.nickname,
+                isDesigner: result.data.designer,
+                isEditor: result.data.editor,
+                isAdmin: result.data.admin,
+              })
+            );
             if (result.data.admin) {
               testSets();
             }
           })
           .catch((error) => {
             queue.notify({ title: "Error verifying custom claims: " + error });
-            setUser({
-              email: user.email ? user.email : "",
-              name: user.displayName ? user.displayName : "",
-              avatar: user.photoURL ? user.photoURL : "",
-              id: user.uid,
-            });
+            dispatch(
+              setUser({
+                email: user.email ? user.email : "",
+                name: user.displayName ? user.displayName : "",
+                avatar: user.photoURL ? user.photoURL : "",
+                id: user.uid,
+              })
+            );
           });
         getUserPreferences(user.uid);
       } else {
-        setUser({});
+        dispatch(setUser({}));
         const defaultPreset = findPreset("id", "default");
         const defaultSettings: Partial<typeof userInfo> = {
           favorites: [],
@@ -1435,7 +1416,6 @@ export const App = () => {
         <Route path="/login">
           <UserContext.Provider
             value={{
-              user: userInfo.user,
               setUser: setUser,
               favorites: userInfo.favorites,
               toggleFavorite: toggleFavorite,
@@ -1465,7 +1445,6 @@ export const App = () => {
         <Route exact path="/">
           <UserContext.Provider
             value={{
-              user: userInfo.user,
               setUser: setUser,
               favorites: userInfo.favorites,
               toggleFavorite: toggleFavorite,

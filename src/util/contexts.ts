@@ -5,16 +5,6 @@ import { UserContextType } from "./types";
 /* eslint-disable @typescript-eslint/no-empty-function */
 
 export const UserContext = React.createContext<UserContextType>({
-  user: {
-    email: null,
-    name: null,
-    avatar: null,
-    nickname: "",
-    isDesigner: false,
-    isEditor: false,
-    isAdmin: false,
-    id: null,
-  },
   setUser: () => {},
   favorites: [],
   toggleFavorite: () => {},

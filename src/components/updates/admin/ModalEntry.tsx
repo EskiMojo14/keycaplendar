@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../common/commonSlice";
+import { selectUser } from "../../common/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { UpdateEntryType } from "../../../util/types";
 import { Button } from "@rmwc/button";
@@ -31,7 +31,8 @@ type ModalCreateProps = {
 
 export const ModalCreate = (props: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
+
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");
@@ -211,9 +212,10 @@ type ModalEditProps = {
 };
 
 export const ModalEdit = (props: ModalEditProps) => {
-  const device = useAppSelector(selectDevice);
   const { entry } = props;
-  const { user } = useContext(UserContext);
+  const device = useAppSelector(selectDevice);
+  const user = useAppSelector(selectUser);
+
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");

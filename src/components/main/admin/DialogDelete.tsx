@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import firebase from "../../../firebase";
+import { useAppSelector } from "../../../app/hooks";
+import { selectUser } from "../../common/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { UserContext } from "../../../util/contexts";
 import { SetType } from "../../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
@@ -14,7 +15,7 @@ type DialogDeleteProps = {
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
   const deleteEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const db = firebase.firestore();

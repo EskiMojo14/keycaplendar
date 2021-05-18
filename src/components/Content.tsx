@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../app/hooks";
 import { selectDevice } from "./common/commonSlice";
+import { selectUser } from "./common/userSlice";
 import { selectBottomNav } from "./settings/settingsSlice";
-import { UserContext } from "../util/contexts";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
 import {
@@ -71,7 +71,7 @@ type ContentProps = {
 export const Content = (props: ContentProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
   const [navOpen, setNavOpen] = useState(false);
   const [navEdited, setNavEdited] = useState(false);
   const openNav = () => {

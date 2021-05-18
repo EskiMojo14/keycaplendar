@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
+import { selectUser } from "../common/userSlice";
 import { selectBottomNav, selectMainView } from "../settings/settingsSlice";
-import { UserContext } from "../../util/contexts";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import {
@@ -64,7 +64,7 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectMainView);
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
   const device = useAppSelector(selectDevice);
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();

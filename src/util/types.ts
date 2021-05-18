@@ -242,16 +242,6 @@ export type UpdateEntryType = {
 };
 
 export type UserContextType = {
-  user: {
-    email: string | null;
-    name: string | null;
-    avatar: string | null;
-    nickname: string;
-    isDesigner: boolean;
-    isEditor: boolean;
-    isAdmin: boolean;
-    id: string | null;
-  };
   setUser: (user: Partial<CurrentUserType>) => void;
   favorites: string[];
   toggleFavorite: (id: string) => void;

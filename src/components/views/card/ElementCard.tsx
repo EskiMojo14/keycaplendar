@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
+import { useAppSelector } from "../../../app/hooks";
+import { selectUser } from "../../common/userSlice";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { Page, SetType } from "../../../util/types";
@@ -37,7 +39,8 @@ type ElementCardProps = {
 };
 
 export const ElementCard = (props: ElementCardProps) => {
-  const { user, favorites, toggleFavorite, hidden, toggleHidden } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
+  const { favorites, toggleFavorite, hidden, toggleHidden } = useContext(UserContext);
   const liveIndicator =
     props.live && props.page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>

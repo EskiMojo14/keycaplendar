@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
+import { selectUser } from "../common/userSlice";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
-import { UserContext } from "../../util/contexts";
 import { hasKey, iconObject, mergeObject } from "../../util/functions";
 import { UserType } from "../../util/types";
 import { Avatar } from "@rmwc/avatar";
@@ -36,7 +36,7 @@ type UserCardProps = {
 
 export const UserCard = (props: UserCardProps) => {
   const device = useAppSelector(selectDevice);
-  const { user: currentUser } = useContext(UserContext);
+  const currentUser = useAppSelector(selectUser);
   const blankUser = new User();
   const [user, setUser] = useState<UserType>(blankUser);
   const [edited, setEdited] = useState(false);

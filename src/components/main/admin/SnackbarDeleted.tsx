@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import firebase from "../../../firebase";
+import { selectUser } from "../../common/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { UserContext } from "../../../util/contexts";
 import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
 import { SetType } from "../../../util/types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
+import { useAppSelector } from "../../../app/hooks";
 
 type SnackbarDeletedProps = {
   close: () => void;
@@ -14,7 +15,7 @@ type SnackbarDeletedProps = {
 };
 
 export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
   const recreateEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { id, ...set } = props.set;

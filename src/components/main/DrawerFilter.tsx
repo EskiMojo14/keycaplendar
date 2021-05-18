@@ -3,6 +3,7 @@ import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
+import { selectUser } from "../common/userSlice";
 import { selectMainView } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Preset, Whitelist } from "../../util/constructors";
@@ -40,7 +41,8 @@ type DrawerFilterProps = {
 export const DrawerFilter = (props: DrawerFilterProps) => {
   const view = useAppSelector(selectMainView);
   const device = useAppSelector(selectDevice);
-  const { user, preset, presets, selectPreset } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
+  const { preset, presets, selectPreset } = useContext(UserContext);
   const [modified, setModified] = useState(false);
 
   useEffect(() => {

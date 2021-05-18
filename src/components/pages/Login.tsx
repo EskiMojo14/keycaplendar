@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../common/userSlice";
 import { selectDevice } from "../common/commonSlice";
-import { UserContext } from "../../util/contexts";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
@@ -14,7 +14,7 @@ import peach from "../../media/peach.svg";
 export const Login = () => {
   const device = useAppSelector(selectDevice);
 
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
 
   const uiConfig: firebaseui.auth.Config = {
     // Popup signin flow rather than redirect flow.

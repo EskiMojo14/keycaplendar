@@ -4,6 +4,7 @@ import classNames from "classnames";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
+import { selectUser } from "../common/userSlice";
 import { selectMainView } from "../settings/settingsSlice";
 import { UserContext } from "../../util/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
@@ -33,7 +34,8 @@ type DrawerDetailsProps = {
 export const DrawerDetails = (props: DrawerDetailsProps) => {
   const view = useAppSelector(selectMainView);
   const device = useAppSelector(selectDevice);
-  const { user, favorites, hidden, toggleFavorite, toggleHidden } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
+  const { favorites, hidden, toggleFavorite, toggleHidden } = useContext(UserContext);
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");
     if (chipSet) {

@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../common/commonSlice";
+import { selectUser } from "../common/userSlice";
 import { selectSettings } from "../settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { UserContext } from "../../util/contexts";
@@ -56,7 +57,8 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     toTimeTheme,
   } = useAppSelector(selectSettings);
   const device = useAppSelector(selectDevice);
-  const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
+  const { setUser, syncSettings, setSyncSettings } = useContext(UserContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {

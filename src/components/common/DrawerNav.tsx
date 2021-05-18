@@ -4,6 +4,7 @@ import moment from "moment";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "./commonSlice";
+import { selectUser } from "./userSlice";
 import { selectBottomNav } from "../settings/settingsSlice";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
 import { UserContext } from "../../util/contexts";
@@ -30,6 +31,8 @@ export const DrawerNav = (props: DrawerNavProps) => {
 
   const bottomNav = useAppSelector(selectBottomNav);
 
+  const user = useAppSelector(selectUser);
+
   const setPage = (page: Page) => {
     props.setPage(page);
     if (!dismissible) {
@@ -37,7 +40,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     }
   };
 
-  const { user, favorites, hidden } = useContext(UserContext);
+  const { favorites, hidden } = useContext(UserContext);
   const quantities: {
     [key: string]: number;
   } = {

@@ -6,8 +6,8 @@ import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } 
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../common/commonSlice";
+import { selectUser } from "../../common/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { UserContext } from "../../../util/contexts";
 import {
   formatFileName,
   iconObject,
@@ -65,7 +65,7 @@ type ModalCreateProps = {
 
 export const ModalCreate = (props: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
 
   const [fields, setFields] = useState({
     profile: "",
@@ -943,7 +943,7 @@ type ModalEditProps = ModalCreateProps & {
 
 export const ModalEdit = (props: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
-  const { user } = useContext(UserContext);
+  const user = useAppSelector(selectUser);
 
   const [id, setId] = useState("");
 
