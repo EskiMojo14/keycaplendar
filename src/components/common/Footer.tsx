@@ -1,8 +1,8 @@
 import React from "react";
+import { iconObject } from "../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { Tooltip } from "@rmwc/tooltip";
-import { iconObject } from "../../util/functions";
 import "./Footer.scss";
 
 export const Footer = () => {
