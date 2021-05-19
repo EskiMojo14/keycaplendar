@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { queue } from "../../app/snackbarQueue";
-import { batchStorageDelete } from "../../util/functions";
-import { ImageType } from "../../util/types";
+import { batchStorageDelete } from "../../app/slices/common/functions";
+import { ImageType } from "../../app/slices/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";

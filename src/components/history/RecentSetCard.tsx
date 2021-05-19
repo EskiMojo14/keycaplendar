@@ -4,15 +4,18 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "../../app/hooks";
 import { selectFavorites, selectHidden } from "../../app/slices/user/userSlice";
-import { mainPages, pageIcons, pageTitle } from "../../util/constants";
-import { arrayIncludes, hasKey, iconObject, pageConditions } from "../../util/functions";
-import { MainPage, Page, RecentSet, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./RecentSetCard.scss";
+import { RecentSet } from "../../app/slices/history/types";
+import { SetType } from "../../app/slices/main/types";
+import { MainPage, Page } from "../../app/slices/common/types";
+import { pageConditions } from "../../app/slices/main/functions";
+import { arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
+import { mainPages, pageIcons, pageTitle } from "../../app/slices/common/constants";
 
 type RecentSetCardProps = {
   recentSet: RecentSet;
