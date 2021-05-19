@@ -13,7 +13,6 @@ export const UserContext = React.createContext<UserContextType>({
   syncSettings: false,
   setSyncSettings: () => {},
   preset: new Preset(),
-  presets: [],
   selectPreset: () => {},
   newPreset: () => {},
   editPreset: () => {},

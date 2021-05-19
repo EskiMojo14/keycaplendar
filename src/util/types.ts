@@ -250,7 +250,6 @@ export type UserContextType = {
   syncSettings: boolean;
   setSyncSettings: (bool: boolean, write?: boolean) => void;
   preset: PresetType;
-  presets: PresetType[];
   selectPreset: (id: string) => void;
   newPreset: (preset: PresetType) => void;
   editPreset: (preset: PresetType) => void;

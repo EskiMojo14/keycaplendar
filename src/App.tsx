@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice, setDevice } from "./components/common/commonSlice";
-import { selectUser, setUser } from "./components/common/userSlice";
+import { selectUser, setUser, selectUserPresets, setUserPresets } from "./components/common/userSlice";
 import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
@@ -76,6 +76,7 @@ export const App = () => {
   const settings = useAppSelector(selectSettings);
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
+  const userPresets = useAppSelector(selectUserPresets);
 
   const [appPage, setAppPage] = useState<Page>("images");
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
@@ -132,11 +133,9 @@ export const App = () => {
   const [userInfo, setUserInfo] = useState<{
     favorites: string[];
     hidden: string[];
-    userPresets: PresetType[];
   }>({
     favorites: [],
     hidden: [],
-    userPresets: [],
   });
 
   const [cookies, setCookies] = useState(false);
@@ -1084,7 +1083,7 @@ export const App = () => {
 
             if (filterPresets) {
               const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
-              setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: updatedPresets }));
+              dispatch(setUserPresets(updatedPresets));
               const storedPreset = getStorage("presetId");
               const params = new URLSearchParams(window.location.search);
               const noUrlParams = !whitelistParams.some((param) => params.has(param));
@@ -1260,7 +1259,7 @@ export const App = () => {
     return updatedPreset;
   };
   const findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
-    const allPresets = [...filterInfo.appPresets, ...userInfo.userPresets];
+    const allPresets = [...filterInfo.appPresets, ...userPresets];
     const index = allPresets.findIndex((preset) => preset[prop] === val);
     return allPresets[index];
   };
@@ -1276,38 +1275,38 @@ export const App = () => {
   };
   const newPreset = (preset: PresetType) => {
     preset.id = nanoid();
-    const presets = [...userInfo.userPresets, preset];
+    const presets = [...userPresets, preset];
     alphabeticalSortProp(presets, "name", false);
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
-    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    dispatch(setUserPresets(presets));
     syncPresets(presets);
   };
   const editPreset = (preset: PresetType) => {
     const savedPreset = findPreset("id", preset.id);
     let presets: PresetType[];
     if (savedPreset) {
-      const index = userInfo.userPresets.indexOf(savedPreset);
-      presets = [...userInfo.userPresets];
+      const index = userPresets.indexOf(savedPreset);
+      presets = [...userPresets];
       presets[index] = preset;
     } else {
-      presets = [...userInfo.userPresets, preset];
+      presets = [...userPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false);
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
-    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    dispatch(setUserPresets(presets));
     syncPresets(presets);
   };
   const deletePreset = (preset: PresetType) => {
-    const presets = userInfo.userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+    const presets = userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false);
     const defaultPreset = findPreset("id", "default");
     if (defaultPreset) {
       setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
-      setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+      dispatch(setUserPresets(presets));
     }
     syncPresets(presets);
   };
-  const syncPresets = (presets = userInfo.userPresets) => {
+  const syncPresets = (presets = userPresets) => {
     const sortedPresets = alphabeticalSortProp(presets, "name", false, "Default").map((preset) => ({
       ...preset,
     }));
@@ -1324,7 +1323,7 @@ export const App = () => {
     const presets = [...filterInfo.appPresets, preset];
     alphabeticalSortProp(presets, "name", false, "Default");
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
-    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    dispatch(setUserPresets(presets));
     syncGlobalPresets(presets);
   };
   const editGlobalPreset = (preset: PresetType) => {
@@ -1339,7 +1338,7 @@ export const App = () => {
     }
     alphabeticalSortProp(presets, "name", false, "Default");
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
-    setUserInfo((userInfo) => mergeObject(userInfo, { userPresets: presets }));
+    dispatch(setUserPresets(presets));
     syncGlobalPresets(presets);
   };
   const deleteGlobalPreset = (preset: PresetType) => {
@@ -1410,9 +1409,9 @@ export const App = () => {
         const defaultSettings: Partial<typeof userInfo> = {
           favorites: [],
           hidden: [],
-          userPresets: [],
         };
         if (defaultPreset) {
+          dispatch(setUserPresets([]));
           setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
           setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
         } else {
@@ -1437,7 +1436,6 @@ export const App = () => {
               syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
               preset: filterInfo.currentPreset,
-              presets: userInfo.userPresets,
               selectPreset: selectPreset,
               newPreset: newPreset,
               editPreset: editPreset,
@@ -1466,7 +1464,6 @@ export const App = () => {
               syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
               preset: filterInfo.currentPreset,
-              presets: userInfo.userPresets,
               selectPreset: selectPreset,
               newPreset: newPreset,
               editPreset: editPreset,

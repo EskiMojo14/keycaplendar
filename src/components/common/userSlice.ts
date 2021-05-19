@@ -42,11 +42,16 @@ export const userSlice = createSlice({
       };
       state.user = action.payload.email ? { ...blankUser, ...action.payload } : blankUser;
     },
+    setUserPresets: (state, action: PayloadAction<PresetType[]>) => {
+      state.userPresets = action.payload;
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setUserPresets } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
+
+export const selectUserPresets = (state: RootState) => state.user.userPresets;
 
 export default userSlice.reducer;
