@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../common/commonSlice";
-import { selectUser } from "../common/userSlice";
-import { selectBottomNav, selectMainView } from "../settings/settingsSlice";
+import { selectDevice } from "../../app/slices/commonSlice";
+import { selectUser } from "../../app/slices/userSlice";
+import { selectBottomNav, selectMainView } from "../../app/slices/settingsSlice";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
 import {

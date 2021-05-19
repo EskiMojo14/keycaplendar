@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
-import { selectFavorites, selectHidden, selectUser } from "../../common/userSlice";
+import { selectFavorites, selectHidden, selectUser } from "../../../app/slices/userSlice";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { Page, SetType } from "../../../util/types";

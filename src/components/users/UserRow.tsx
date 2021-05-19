@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectUser } from "../common/userSlice";
+import { selectUser } from "../../app/slices/userSlice";
 import { queue } from "../../app/snackbarQueue";
 import { User } from "../../util/constructors";
 import { iconObject, mergeObject, truncate } from "../../util/functions";

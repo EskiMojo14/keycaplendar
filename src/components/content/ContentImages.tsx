@@ -3,8 +3,8 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../common/commonSlice";
-import { selectBottomNav } from "../settings/settingsSlice";
+import { selectDevice } from "../../app/slices/commonSlice";
+import { selectBottomNav } from "../../app/slices/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { ImageObj } from "../../util/constructors";
 import {

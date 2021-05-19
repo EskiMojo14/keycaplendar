@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../app/hooks";
-import { selectDevice } from "./common/commonSlice";
-import { selectUser } from "./common/userSlice";
-import { selectBottomNav } from "./settings/settingsSlice";
+import { selectDevice } from "../app/slices/commonSlice";
+import { selectUser } from "../app/slices/userSlice";
+import { selectBottomNav } from "../app/slices/settingsSlice";
 import { mainPages } from "../util/constants";
 import { openModal, closeModal, arrayIncludes } from "../util/functions";
 import {

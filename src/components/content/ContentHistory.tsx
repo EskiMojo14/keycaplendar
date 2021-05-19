@@ -5,7 +5,7 @@ import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "../../app/hooks";
-import { selectBottomNav } from "../settings/settingsSlice";
+import { selectBottomNav } from "../../app/slices/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { auditProperties, historyTabs } from "../../util/constants";
 import { Keyset } from "../../util/constructors";

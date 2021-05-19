@@ -5,7 +5,7 @@ import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../common/commonSlice";
+import { selectDevice } from "../../app/slices/commonSlice";
 import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
 import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";
@@ -29,7 +29,7 @@ import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCar
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentStatistics.scss";
-import { selectBottomNav } from "../settings/settingsSlice";
+import { selectBottomNav } from "../../app/slices/settingsSlice";
 
 const storage = firebase.storage();
 
