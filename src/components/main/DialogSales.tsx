@@ -1,5 +1,5 @@
 import React from "react";
-import { SetType } from "../../util/types";
+import { SetType } from "../../app/slices/main/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./DialogSales.scss";
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import BEMHelper from "../../../util/bemHelper";
-import { alphabeticalSort, iconObject } from "../../../util/functions";
-import { SetType } from "../../../util/types";
+import BEMHelper from "../../../app/slices/common/bemHelper";
+import { alphabeticalSort, iconObject } from "../../../app/slices/common/functions";
+import { SetType } from "../../../app/slices/main/types";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
