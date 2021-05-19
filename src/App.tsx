@@ -18,6 +18,7 @@ import {
   setHidden,
 } from "./app/slices/user/userSlice";
 import { selectSettings, setSettings } from "./app/slices/settings/settingsSlice";
+import { setStatisticsTab } from "./app/slices/statistics/statisticsFns";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
@@ -72,7 +73,6 @@ import {
   SetGroup,
   Page,
   SortType,
-  StatsTab,
   ViewType,
 } from "./util/types";
 import "./App.scss";
@@ -92,7 +92,6 @@ export const App = () => {
 
   const appPage = useAppSelector(selectPage);
 
-  const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
   const [lists, setLists] = useState<{
     allDesigners: string[];
     allProfiles: string[];
@@ -922,16 +921,6 @@ export const App = () => {
     document.documentElement.scrollTop = 0;
     debouncedFilterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, query);
   };
-  const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
-    document.documentElement.scrollTop = 0;
-    setStatsTab(tab);
-    if (clearUrl) {
-      const params = new URLSearchParams(window.location.search);
-      params.delete("statisticsTab");
-      const questionParam = params.has("page") ? "?" + params.toString() : "/";
-      window.history.pushState({}, "KeycapLendar", questionParam);
-    }
-  };
   const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clearUrl = true) => {
     const edited = Object.keys(partialWhitelist).filter((key) => {
       if (hasKey(partialWhitelist, key)) {
@@ -1511,8 +1500,6 @@ export const App = () => {
                 setWhitelist={setWhitelist}
                 setWhitelistMerge={setWhitelistMerge}
                 whitelist={filterInfo.whitelist}
-                statisticsTab={statisticsTab}
-                setStatisticsTab={setStatisticsTab}
                 setDensity={setDensity}
               />
               <SnackbarQueue messages={queue.messages} />

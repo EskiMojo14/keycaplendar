@@ -6,10 +6,13 @@ import { virtualize } from "react-swipeable-views-utils";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { setStatisticsTab } from "../../app/slices/statistics/statisticsFns";
+import { selectStatsTab } from "../../app/slices/statistics/statisticsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { statsTabs } from "../../util/constants";
 import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";
-import { StatisticsSortType, StatisticsType, Categories, Properties, StatsTab } from "../../util/types";
+import { StatisticsSortType, StatisticsType, Categories, Properties } from "../../util/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -29,7 +32,6 @@ import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCar
 import { DialogStatistics } from "../statistics/DialogStatistics";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentStatistics.scss";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 
 const storage = firebase.storage();
 
@@ -38,8 +40,6 @@ const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 type ContentStatisticsProps = {
   navOpen: boolean;
   openNav: () => void;
-  setStatisticsTab: (tab: StatsTab) => void;
-  statisticsTab: StatsTab;
 };
 
 type TimelineDataObject = {
@@ -128,6 +128,8 @@ type VendorData = Record<Properties, VendorDataObject[]>;
 export const ContentStatistics = (props: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const statisticsTab = useAppSelector(selectStatsTab);
 
   const [statisticsData, setStatisticsData] = useState<{
     summaryData: SummaryData;
@@ -281,10 +283,10 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   }, []);
 
   const sortData = (sort = statisticsSort) => {
-    const key = props.statisticsTab + "Data";
+    const key = statisticsTab + "Data";
     if (hasKey(statisticsData, key)) {
       const stateData = statisticsData[key];
-      const tab = props.statisticsTab;
+      const tab = statisticsTab;
       if (typeof stateData === "object") {
         if (tab === "duration") {
           const data = { ...stateData } as DurationData;
@@ -400,7 +402,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     sortData(sort);
   };
   const handleChangeIndex = (index: number) => {
-    props.setStatisticsTab(statsTabs[index]);
+    setStatisticsTab(statsTabs[index]);
   };
   const categoryButtons = (cat: string) => {
     return device === "desktop" ? (
@@ -452,9 +454,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       <SegmentedButton toggle>
         <Tooltip enterDelay={500} align="bottom" content="Total">
           <SegmentedButtonSegment
-            selected={hasKey(statisticsSort, props.statisticsTab) && statisticsSort[props.statisticsTab] === "total"}
+            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "total"}
             onClick={() => {
-              setSort(props.statisticsTab, "total");
+              setSort(statisticsTab, "total");
             }}
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -466,11 +468,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         </Tooltip>
         <Tooltip enterDelay={500} align="bottom" content="Alphabetical">
           <SegmentedButtonSegment
-            selected={
-              hasKey(statisticsSort, props.statisticsTab) && statisticsSort[props.statisticsTab] === "alphabetical"
-            }
+            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "alphabetical"}
             onClick={() => {
-              setSort(props.statisticsTab, "alphabetical");
+              setSort(statisticsTab, "alphabetical");
             }}
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -481,7 +481,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           />
         </Tooltip>
       </SegmentedButton>
-      {categoryButtons(props.statisticsTab)}
+      {categoryButtons(statisticsTab)}
     </>
   );
   const buttons = {
@@ -627,21 +627,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     vendors: genericButtons,
   };
   const categoryDialog =
-    props.statisticsTab !== "summary" && device !== "desktop" ? (
+    statisticsTab !== "summary" && device !== "desktop" ? (
       <DialogStatistics
         open={categoryDialogOpen}
         onClose={closeCategoryDialog}
         statistics={settings}
         setStatistics={setSetting}
-        statisticsTab={props.statisticsTab}
+        statisticsTab={statisticsTab}
       />
     ) : null;
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
         <TabBar
-          activeTabIndex={statsTabs.indexOf(props.statisticsTab)}
-          onActivate={(e) => props.setStatisticsTab(statsTabs[e.detail.index])}
+          activeTabIndex={statsTabs.indexOf(statisticsTab)}
+          onActivate={(e) => setStatisticsTab(statsTabs[e.detail.index])}
         >
           {statsTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
@@ -731,9 +731,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             <TopAppBarTitle>{device !== "mobile" ? "Statistics" : null}</TopAppBarTitle>
           </TopAppBarSection>
-          <TopAppBarSection alignEnd>
-            {hasKey(buttons, props.statisticsTab) ? buttons[props.statisticsTab] : null}
-          </TopAppBarSection>
+          <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>
         {bottomNav ? null : tabRow}
         <LinearProgress closed={dataCreated.length === statsTabs.length} />
@@ -742,14 +740,14 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       <div className="main extended-app-bar">
         {categoryDialog}
         <VirtualizeSwipeableViews
-          className={props.statisticsTab}
+          className={statisticsTab}
           springConfig={{
             duration: "0.35s",
             easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             delay: "0s",
           }}
           slideCount={statsTabs.length}
-          index={statsTabs.indexOf(props.statisticsTab)}
+          index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
           slideRenderer={slideRenderer}
         />
