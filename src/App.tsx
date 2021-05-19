@@ -18,7 +18,8 @@ import {
   setHidden,
 } from "./app/slices/user/userSlice";
 import { selectSettings, setSettings } from "./app/slices/settings/settingsSlice";
-import { setStatisticsTab } from "./app/slices/statistics/statisticsFns";
+import { statsTabs } from "./app/slices/statistics/constants";
+import { setStatisticsTab } from "./app/slices/statistics/functions";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
@@ -33,7 +34,6 @@ import {
   pageTitle,
   pageSort,
   whitelistParams,
-  statsTabs,
   urlPages,
   dateSorts,
   arraySorts,

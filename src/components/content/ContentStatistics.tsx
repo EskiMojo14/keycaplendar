@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { setStatisticsTab } from "../../app/slices/statistics/statisticsFns";
-import { selectStatsTab } from "../../app/slices/statistics/statisticsSlice";
-import { queue } from "../../app/snackbarQueue";
-import { statsTabs } from "../../util/constants";
-import { capitalise, iconObject, hasKey, useBoolStates, mergeObject } from "../../util/functions";
-import { StatisticsSortType, StatisticsType, Categories, Properties } from "../../util/types";
+import { statsTabs } from "../../app/slices/statistics/constants";
+import { getData, setSetting, setSort, setStatisticsTab } from "../../app/slices/statistics/functions";
+import { StatisticsType } from "../../app/slices/statistics/types";
+import {
+  selectStatsTab,
+  selectStatsData,
+  selectStatsDataCreated,
+  selectStatsSettings,
+  selectStatsSort,
+} from "../../app/slices/statistics/statisticsSlice";
+import { capitalise, iconObject, hasKey, useBoolStates } from "../../util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -33,8 +36,6 @@ import { DialogStatistics } from "../statistics/DialogStatistics";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentStatistics.scss";
 
-const storage = firebase.storage();
-
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentStatisticsProps = {
@@ -42,389 +43,48 @@ type ContentStatisticsProps = {
   openNav: () => void;
 };
 
-type TimelineDataObject = {
-  name: string;
-  total: number;
-  timeline: {
-    months: string[];
-    profiles: string[];
-    series:
-      | {
-          meta: string;
-          value: number;
-        }[][]
-      | number[][];
-  };
-};
-
-type CountDataObject = {
-  total: number;
-  months: string[];
-  series: number[][];
-};
-
-type SummaryData = {
-  count: Record<Categories, CountDataObject>;
-  profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
-};
-
-type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
-
-type StatusDataObject = {
-  ic: number;
-  liveGb: number;
-  name: string;
-  postGb: number;
-  preGb: number;
-  total: number;
-};
-
-type StatusData = Record<Properties, StatusDataObject[]>;
-
-type ShippedDataObject = {
-  name: string;
-  shipped: number;
-  total: number;
-  unshipped: number;
-  timeline: {
-    months: string[];
-    series: {
-      [key: string]: {
-        meta: string;
-        value: number;
-      };
-    }[];
-  };
-};
-
-type ShippedData = Record<Properties, ShippedDataObject[]>;
-
-type DurationDataObject = {
-  chartData: number[][];
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
-
-type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
-
-type VendorDataObject = {
-  chartData: number[][];
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
-
-type VendorData = Record<Properties, VendorDataObject[]>;
-
 export const ContentStatistics = (props: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
   const statisticsTab = useAppSelector(selectStatsTab);
+  const statisticsData = useAppSelector(selectStatsData);
+  const dataCreated = useAppSelector(selectStatsDataCreated);
+  const settings = useAppSelector(selectStatsSettings);
+  const statisticsSort = useAppSelector(selectStatsSort);
 
-  const [statisticsData, setStatisticsData] = useState<{
-    summaryData: SummaryData;
-    timelinesData: TimelinesData;
-    statusData: StatusData;
-    shippedData: ShippedData;
-    durationData: DurationData;
-    vendorsData: VendorData;
-  }>({
-    summaryData: {
-      count: {
-        icDate: { total: 0, months: [], series: [] },
-        gbLaunch: { total: 0, months: [], series: [] },
-      },
-      profile: {
-        icDate: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
-            total: 0,
-            timeline: {
-              months: [],
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-        gbLaunch: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
-            total: 0,
-            timeline: {
-              months: [],
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-      },
-    },
-    timelinesData: {
-      icDate: {
-        profile: {
-          profiles: [],
-          data: [],
-        },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
-        },
-      },
-      gbLaunch: {
-        profile: {
-          profiles: [],
-          data: [],
-        },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
-        },
-      },
-    },
-    statusData: {
-      profile: [],
-      designer: [],
-      vendor: [],
-    },
-    shippedData: {
-      profile: [],
-      designer: [],
-      vendor: [],
-    },
-    durationData: {
-      icDate: {
-        profile: [],
-        designer: [],
-        vendor: [],
-      },
-      gbLaunch: {
-        profile: [],
-        designer: [],
-        vendor: [],
-      },
-    },
-    vendorsData: {
-      profile: [],
-      designer: [],
-      vendor: [],
-    },
-  });
-  const [dataCreated, setDataCreated] = useState<string[]>([]);
-  const [settings, setSettings] = useState<StatisticsType>({
-    summary: "gbLaunch",
-    timelinesCat: "gbLaunch",
-    timelinesGroup: "profile",
-    status: "profile",
-    shipped: "profile",
-    durationCat: "gbLaunch",
-    durationGroup: "profile",
-    vendors: "profile",
-  });
-  const [statisticsSort, setStatisticsSort] = useState<StatisticsSortType>({
-    timelines: "total",
-    status: "total",
-    shipped: "total",
-    duration: "total",
-    vendors: "total",
-  });
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
-
-  const getData = async () => {
-    const fileRef = storage.ref("statisticsData.json");
-    fileRef
-      .getDownloadURL()
-      .then((url) => {
-        fetch(url)
-          .then((response) => {
-            response.json().then((data) => {
-              const { timestamp, ...statisticsData } = data;
-
-              const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY UTC");
-              queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
-
-              setStatisticsData(statisticsData);
-              setDataCreated(Object.keys(statisticsData));
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-            queue.notify({ title: "Failed to fetch statistics data: " + error });
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-        queue.notify({ title: "Failed to create statistics data: " + error });
-      });
-  };
 
   useEffect(() => {
     getData();
   }, []);
 
-  const sortData = (sort = statisticsSort) => {
-    const key = statisticsTab + "Data";
-    if (hasKey(statisticsData, key)) {
-      const stateData = statisticsData[key];
-      const tab = statisticsTab;
-      if (typeof stateData === "object") {
-        if (tab === "duration") {
-          const data = { ...stateData } as DurationData;
-          Object.keys(data).forEach((property) => {
-            if (hasKey(data, property)) {
-              Object.keys(data[property]).forEach((prop) => {
-                if (hasKey(data[property], prop)) {
-                  data[property][prop].sort((a, b) => {
-                    if (a.name === "All" || b.name === "All") {
-                      return a.name === "all" ? -1 : 1;
-                    }
-                    const x =
-                      sort[tab] === "alphabetical"
-                        ? a.name.toLowerCase()
-                        : a[sort[tab] === "duration" ? "mean" : "total"];
-                    const y =
-                      sort[tab] === "alphabetical"
-                        ? b.name.toLowerCase()
-                        : b[sort[tab] === "duration" ? "mean" : "total"];
-                    const c = a.name.toLowerCase();
-                    const d = b.name.toLowerCase();
-                    if (x < y) {
-                      return sort[tab] === "alphabetical" ? -1 : 1;
-                    }
-                    if (x > y) {
-                      return sort[tab] === "alphabetical" ? 1 : -1;
-                    }
-                    if (c < d) {
-                      return -1;
-                    }
-                    if (c > d) {
-                      return 1;
-                    }
-                    return 0;
-                  });
-                }
-              });
-            }
-          });
-          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
-        } else if (tab === "timelines") {
-          const data = { ...stateData } as TimelinesData;
-          Object.keys(data).forEach((property) => {
-            if (hasKey(data, property)) {
-              Object.keys(data[property]).forEach((prop) => {
-                if (hasKey(data[property], prop)) {
-                  data[property][prop].data.sort((a, b) => {
-                    const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
-                    const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
-                    const c = a.name.toLowerCase();
-                    const d = b.name.toLowerCase();
-                    if (x < y) {
-                      return sort[tab] === "alphabetical" ? -1 : 1;
-                    }
-                    if (x > y) {
-                      return sort[tab] === "alphabetical" ? 1 : -1;
-                    }
-                    if (c < d) {
-                      return -1;
-                    }
-                    if (c > d) {
-                      return 1;
-                    }
-                    return 0;
-                  });
-                }
-              });
-            }
-          });
-          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
-        } else {
-          const data = { ...stateData } as StatusData | ShippedData | VendorData;
-          Object.keys(data).forEach((prop) => {
-            if (hasKey(data, prop)) {
-              const value = data[prop];
-              type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
-              value.sort((a: DataObj, b: DataObj) => {
-                if (hasKey(sort, tab)) {
-                  const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
-                  const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
-                  const c = a.name.toLowerCase();
-                  const d = b.name.toLowerCase();
-                  if (x < y) {
-                    return sort[tab] === "total" ? 1 : -1;
-                  }
-                  if (x > y) {
-                    return sort[tab] === "total" ? -1 : 1;
-                  }
-                  if (c < d) {
-                    return -1;
-                  }
-                  if (c > d) {
-                    return 1;
-                  }
-                  return 0;
-                } else {
-                  return 0;
-                }
-              });
-            }
-          });
-          setStatisticsData((statisticsData) => mergeObject(statisticsData, { [key]: data }));
-        }
-      }
-    }
-  };
-  const setSetting = (prop: string, query: string) => {
-    setSettings((settings) => mergeObject(settings, { [prop]: query }));
-  };
-  const setSort = (prop: string, query: string) => {
-    const sort = { ...statisticsSort, [prop]: query };
-    setStatisticsSort(sort);
-    sortData(sort);
-  };
   const handleChangeIndex = (index: number) => {
     setStatisticsTab(statsTabs[index]);
   };
-  const categoryButtons = (cat: string) => {
+
+  const categoryButtons = (tab: keyof StatisticsType) => {
     return device === "desktop" ? (
       <SegmentedButton toggle>
         <SegmentedButtonSegment
-          selected={hasKey(settings, cat) && settings[cat] === "profile"}
+          selected={settings[tab] === "profile"}
           onClick={() => {
-            setSetting(cat, "profile");
+            setSetting(tab, "profile");
           }}
           label="Profile"
         />
         <SegmentedButtonSegment
-          selected={hasKey(settings, cat) && settings[cat] === "designer"}
+          selected={settings[tab] === "designer"}
           onClick={() => {
-            setSetting(cat, "designer");
+            setSetting(tab, "designer");
           }}
           label="Designer"
         />
         <SegmentedButtonSegment
-          selected={hasKey(settings, cat) && settings[cat] === "vendor"}
+          selected={settings[tab] === "vendor"}
           onClick={() => {
-            setSetting(cat, "vendor");
+            setSetting(tab, "vendor");
           }}
           label="Vendor"
         />
@@ -449,6 +109,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       </Tooltip>
     );
   };
+
   const genericButtons = (
     <>
       <SegmentedButton toggle>
@@ -456,7 +117,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <SegmentedButtonSegment
             selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "total"}
             onClick={() => {
-              setSort(statisticsTab, "total");
+              if (hasKey(statisticsSort, statisticsTab)) {
+                setSort(statisticsTab, "total");
+              }
             }}
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -470,7 +133,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <SegmentedButtonSegment
             selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "alphabetical"}
             onClick={() => {
-              setSort(statisticsTab, "alphabetical");
+              if (hasKey(statisticsSort, statisticsTab)) {
+                setSort(statisticsTab, "alphabetical");
+              }
             }}
             icon={iconObject(
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
@@ -481,9 +146,10 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           />
         </Tooltip>
       </SegmentedButton>
-      {categoryButtons(statisticsTab)}
+      {hasKey(settings, statisticsTab) ? categoryButtons(statisticsTab) : null}
     </>
   );
+
   const buttons = {
     summary: (
       <>
@@ -626,16 +292,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     ),
     vendors: genericButtons,
   };
+
   const categoryDialog =
     statisticsTab !== "summary" && device !== "desktop" ? (
-      <DialogStatistics
-        open={categoryDialogOpen}
-        onClose={closeCategoryDialog}
-        statistics={settings}
-        setStatistics={setSetting}
-        statisticsTab={statisticsTab}
-      />
+      <DialogStatistics open={categoryDialogOpen} onClose={closeCategoryDialog} />
     ) : null;
+
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
@@ -650,6 +312,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       </TopAppBarSection>
     </TopAppBarRow>
   );
+
   const slideRenderer = (params: any) => {
     const { index, key } = params;
     const tab = statsTabs[index];

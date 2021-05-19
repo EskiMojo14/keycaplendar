@@ -1,5 +1,5 @@
 import React from "react";
-import { allPages, allSorts, allViews, mainPages, statsTabs } from "./constants";
+import { allPages, allSorts, allViews, mainPages } from "./constants";
 
 /** Alias for `Record<string, T>`. */
 
@@ -134,33 +134,6 @@ export type SetType = {
 };
 
 export type SetGroup = { title: string; sets: SetType[] };
-
-export type Categories = "icDate" | "gbLaunch";
-
-export type Properties = "profile" | "designer" | "vendor";
-
-export type Sorts = "total" | "alphabetical";
-
-export type StatsTab = typeof statsTabs[number];
-
-export type StatisticsType = {
-  summary: Categories;
-  timelinesCat: Categories;
-  timelinesGroup: Properties;
-  status: Properties;
-  shipped: Properties;
-  durationCat: Categories;
-  durationGroup: Properties;
-  vendors: Properties;
-};
-
-export type StatisticsSortType = {
-  timelines: Sorts;
-  status: Sorts;
-  shipped: Sorts;
-  duration: Sorts | "duration";
-  vendors: Sorts;
-};
 
 /** SetType but with all keys set to optional, as an action can include "deleted" sets. */
 export type ActionSetType = Omit<Partial<SetType>, "id">;

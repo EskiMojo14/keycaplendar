@@ -1,49 +1,47 @@
 import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectStatsSettings, selectStatsTab, setStatisticsSetting } from "../../app/slices/statistics/statisticsSlice";
 import { hasKey } from "../../util/functions";
-import { StatisticsType, StatsTab } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import "./DialogStatistics.scss";
+import { Categories, Properties } from "../../app/slices/statistics/types";
 
 type DialogStatisticsProps = {
   onClose: () => void;
   open: boolean;
-  setStatistics: (prop: string, query: string) => void;
-  statistics: StatisticsType;
-  statisticsTab: StatsTab;
 };
 
 export const DialogStatistics = (props: DialogStatisticsProps) => {
-  const [statistics, setStatistics] = useState("profile");
+  const statisticsTab = useAppSelector(selectStatsTab);
+  const settings = useAppSelector(selectStatsSettings);
+
+  const [statistics, setStatistics] = useState<Properties | Categories>("profile");
 
   useEffect(() => {
     if (props.open) {
       const key =
-        props.statisticsTab === "duration"
+        statisticsTab === "duration"
           ? "durationGroup"
-          : props.statisticsTab === "timelines"
+          : statisticsTab === "timelines"
           ? "timelinesGroup"
-          : props.statisticsTab;
-      if (hasKey(props.statistics, key)) {
-        setStatistics(props.statistics[key]);
+          : statisticsTab;
+      if (hasKey(settings, key)) {
+        setStatistics(settings[key]);
       }
     }
   }, [props.open]);
 
-  const handleChange = (stats: string) => {
+  const handleChange = (stats: Properties | Categories) => {
     setStatistics(stats);
   };
 
   const applyStatistics = () => {
     const key =
-      props.statisticsTab === "duration"
-        ? "durationGroup"
-        : props.statisticsTab === "timelines"
-        ? "timelinesGroup"
-        : props.statisticsTab;
-    if (hasKey(props.statistics, key) && props.statistics[key] !== statistics) {
-      props.setStatistics(key, statistics);
+      statisticsTab === "duration" ? "durationGroup" : statisticsTab === "timelines" ? "timelinesGroup" : statisticsTab;
+    if (hasKey(settings, key) && settings[key] !== statistics) {
+      setStatisticsSetting({ key: key, value: statistics });
     }
   };
 

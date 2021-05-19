@@ -306,10 +306,6 @@ export const whitelistParams = [
   "vendors",
 ] as const;
 
-/** Tabs on the statistics page. */
-
-export const statsTabs = ["summary", "timelines", "status", "shipped", "duration", "vendors"] as const;
-
 /** Tabs on the history page. */
 
 export const historyTabs = ["recent", "changelog"] as const;
