@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../util/types";
+import { SetType } from "../../../app/slices/main/types";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { ElementCompact } from "./ElementCompact";

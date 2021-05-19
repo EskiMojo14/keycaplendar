@@ -4,10 +4,10 @@ import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
 import { selectPage } from "../../../app/slices/common/commonSlice";
+import { iconObject } from "../../../app/slices/common/functions";
+import { SetType } from "../../../app/slices/main/types";
 import { selectFavorites, selectHidden, selectUser } from "../../../app/slices/user/userSlice";
 import { UserContext } from "../../../app/slices/user/contexts";
-import { iconObject } from "../../../util/functions";
-import { SetType } from "../../../util/types";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
