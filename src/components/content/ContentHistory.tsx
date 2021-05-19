@@ -5,10 +5,7 @@ import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "../../app/hooks";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { queue } from "../../app/snackbarQueue";
-import { auditProperties, historyTabs } from "../../util/constants";
-import { Keyset } from "../../util/constructors";
+import { auditProperties } from "../../app/slices/audit/constants";
 import {
   alphabeticalSortProp,
   capitalise,
@@ -18,8 +15,14 @@ import {
   openModal,
   truncate,
   uniqueArray,
-} from "../../util/functions";
-import { PublicActionType, ProcessedPublicActionType, SetType, RecentSet, Page } from "../../util/types";
+} from "../../app/slices/common/functions";
+import { Page } from "../../app/slices/common/types";
+import { historyTabs } from "../../app/slices/history/constants";
+import { ProcessedPublicActionType, PublicActionType, RecentSet } from "../../app/slices/history/types";
+import { Keyset } from "../../app/slices/main/constructors";
+import { SetType } from "../../app/slices/main/types";
+import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { queue } from "../../app/snackbarQueue";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";

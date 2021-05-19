@@ -3,12 +3,12 @@ import classNames from "classnames";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { closeModal, openModal } from "../../app/slices/common/functions";
+import { Update } from "../../app/slices/updates/constructors";
+import { UpdateEntryType } from "../../app/slices/updates/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { selectUser } from "../../app/slices/user/userSlice";
 import { queue } from "../../app/snackbarQueue";
-import { Update } from "../../util/constructors";
-import { closeModal, openModal } from "../../util/functions";
-import { UpdateEntryType } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {

@@ -4,6 +4,7 @@ import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { capitalise, hasKey, iconObject, useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { statsTabs } from "../../app/slices/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "../../app/slices/statistics/functions";
@@ -15,7 +16,6 @@ import {
   selectStatsSettings,
   selectStatsSort,
 } from "../../app/slices/statistics/statisticsSlice";
-import { capitalise, iconObject, hasKey, useBoolStates } from "../../util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";

@@ -4,10 +4,10 @@ import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { hasKey, iconObject, mergeObject, useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { User } from "../../util/constructors";
-import { hasKey, iconObject, mergeObject, useBoolStates } from "../../util/functions";
-import { UserType } from "../../util/types";
+import { User } from "../../app/slices/users/constructors";
+import { UserType } from "../../app/slices/users/types";
 import {
   DataTable,
   DataTableContent,

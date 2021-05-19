@@ -3,8 +3,8 @@ import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import moment from "moment";
 import { auditProperties } from "../../app/slices/audit/constants";
-import { alphabeticalSortProp, hasKey } from "../../app/slices/common/functions";
 import { ActionType } from "../../app/slices/audit/types";
+import { alphabeticalSortProp, hasKey } from "../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
