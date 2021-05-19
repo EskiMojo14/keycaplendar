@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
+import { useAppSelector } from "../../app/hooks";
+import { selectFavorites, selectHidden } from "../common/userSlice";
 import { mainPages, pageIcons, pageTitle } from "../../util/constants";
-import { UserContext } from "../../util/contexts";
 import { arrayIncludes, hasKey, iconObject, pageConditions } from "../../util/functions";
 import { MainPage, Page, RecentSet, SetType } from "../../util/types";
 import { Button } from "@rmwc/button";
@@ -25,7 +26,8 @@ type RecentSetCardProps = {
 export const RecentSetCard = (props: RecentSetCardProps) => {
   const { recentSet, filtered, selected } = props;
   const { currentSet: set, deleted } = recentSet;
-  const { favorites, hidden } = useContext(UserContext);
+  const favorites = useAppSelector(selectFavorites);
+  const hidden = useAppSelector(selectHidden);
   const [pages, setPages] = useState<string[]>([]);
 
   useEffect(() => {

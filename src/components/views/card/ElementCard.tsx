@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
-import { selectUser } from "../../common/userSlice";
+import { selectFavorites, selectHidden, selectUser } from "../../common/userSlice";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
 import { Page, SetType } from "../../../util/types";
@@ -40,7 +40,9 @@ type ElementCardProps = {
 
 export const ElementCard = (props: ElementCardProps) => {
   const user = useAppSelector(selectUser);
-  const { favorites, toggleFavorite, hidden, toggleHidden } = useContext(UserContext);
+  const favorites = useAppSelector(selectFavorites);
+  const hidden = useAppSelector(selectHidden);
+  const { toggleFavorite, toggleHidden } = useContext(UserContext);
   const liveIndicator =
     props.live && props.page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>

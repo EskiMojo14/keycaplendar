@@ -45,13 +45,23 @@ export const userSlice = createSlice({
     setUserPresets: (state, action: PayloadAction<PresetType[]>) => {
       state.userPresets = action.payload;
     },
+    setFavorites: (state, action: PayloadAction<string[]>) => {
+      state.favorites = action.payload;
+    },
+    setHidden: (state, action: PayloadAction<string[]>) => {
+      state.hidden = action.payload;
+    },
   },
 });
 
-export const { setUser, setUserPresets } = userSlice.actions;
+export const { setUser, setUserPresets, setFavorites, setHidden } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
 
 export const selectUserPresets = (state: RootState) => state.user.userPresets;
+
+export const selectFavorites = (state: RootState) => state.user.favorites;
+
+export const selectHidden = (state: RootState) => state.user.hidden;
 
 export default userSlice.reducer;

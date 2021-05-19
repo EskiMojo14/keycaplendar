@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import emptyImg from "../../media/empty.svg";
-import { UserContext } from "../../util/contexts";
+import { useAppSelector } from "../../app/hooks";
+import { selectFavorites, selectHidden } from "../common/userSlice";
 import { Page } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
@@ -10,7 +11,8 @@ type ContentEmptyProps = {
 };
 
 export const ContentEmpty = (props: ContentEmptyProps) => {
-  const { favorites, hidden } = useContext(UserContext);
+  const favorites = useAppSelector(selectFavorites);
+  const hidden = useAppSelector(selectHidden);
   return (
     <div className="empty-container">
       <img className="image" src={emptyImg} alt="Empty" />

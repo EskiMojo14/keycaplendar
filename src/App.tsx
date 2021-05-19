@@ -7,7 +7,16 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice, setDevice } from "./components/common/commonSlice";
-import { selectUser, setUser, selectUserPresets, setUserPresets } from "./components/common/userSlice";
+import {
+  selectUser,
+  setUser,
+  selectUserPresets,
+  setUserPresets,
+  selectFavorites,
+  setFavorites,
+  selectHidden,
+  setHidden,
+} from "./components/common/userSlice";
 import { selectSettings, setSettings } from "./components/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
@@ -77,6 +86,8 @@ export const App = () => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectUserPresets);
+  const userFavorites = useAppSelector(selectFavorites);
+  const userHidden = useAppSelector(selectHidden);
 
   const [appPage, setAppPage] = useState<Page>("images");
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
@@ -128,14 +139,6 @@ export const App = () => {
     },
     currentPreset: new Preset(),
     appPresets: [],
-  });
-
-  const [userInfo, setUserInfo] = useState<{
-    favorites: string[];
-    hidden: string[];
-  }>({
-    favorites: [],
-    hidden: [],
   });
 
   const [cookies, setCookies] = useState(false);
@@ -637,8 +640,8 @@ export const App = () => {
     sortOrder = sorts.sortOrder,
     search = filterInfo.search,
     whitelist = filterInfo.whitelist,
-    favorites = userInfo.favorites,
-    hidden = userInfo.hidden
+    favorites = userFavorites,
+    hidden = userHidden
   ) => {
     // filter bool functions
 
@@ -1075,10 +1078,10 @@ export const App = () => {
             } = data as UserPreferencesDoc;
 
             if (favorites instanceof Array) {
-              setUserInfo((userInfo) => mergeObject(userInfo, { favorites: favorites }));
+              dispatch(setFavorites(favorites));
             }
             if (hidden instanceof Array) {
-              setUserInfo((userInfo) => mergeObject(userInfo, { hidden: hidden }));
+              dispatch(setHidden(hidden));
             }
 
             if (filterPresets) {
@@ -1132,8 +1135,8 @@ export const App = () => {
     }
   };
   const toggleFavorite = (id: string) => {
-    const favorites = addOrRemove([...userInfo.favorites], id);
-    setUserInfo((userInfo) => mergeObject(userInfo, { favorites: favorites }));
+    const favorites = addOrRemove([...userFavorites], id);
+    dispatch(setFavorites(favorites));
     if (appPage === "favorites") {
       filterData(
         appPage,
@@ -1161,8 +1164,8 @@ export const App = () => {
     }
   };
   const toggleHidden = (id: string) => {
-    const hidden = addOrRemove([...userInfo.hidden], id);
-    setUserInfo((userInfo) => mergeObject(userInfo, { hidden: hidden }));
+    const hidden = addOrRemove([...userHidden], id);
+    dispatch(setHidden(hidden));
     filterData(
       appPage,
       setsInfo.allSets,
@@ -1170,12 +1173,12 @@ export const App = () => {
       sorts.sortOrder,
       filterInfo.search,
       filterInfo.whitelist,
-      userInfo.favorites,
+      userFavorites,
       hidden
     );
-    const setHidden = hidden.includes(id);
+    const isHidden = hidden.includes(id);
     queue.notify({
-      title: `Set ${setHidden ? "hidden" : "unhidden"}.`,
+      title: `Set ${isHidden ? "hidden" : "unhidden"}.`,
       actions: [
         {
           label: "Undo",
@@ -1406,16 +1409,15 @@ export const App = () => {
       } else {
         dispatch(setUser({}));
         const defaultPreset = findPreset("id", "default");
-        const defaultSettings: Partial<typeof userInfo> = {
-          favorites: [],
-          hidden: [],
-        };
         if (defaultPreset) {
           dispatch(setUserPresets([]));
-          setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
+          dispatch(setFavorites([]));
+          dispatch(setHidden([]));
           setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
         } else {
-          setUserInfo((userInfo) => mergeObject(userInfo, defaultSettings));
+          dispatch(setUserPresets([]));
+          dispatch(setFavorites([]));
+          dispatch(setHidden([]));
         }
       }
     });
@@ -1429,9 +1431,9 @@ export const App = () => {
           <UserContext.Provider
             value={{
               setUser: setUser,
-              favorites: userInfo.favorites,
+              favorites: userFavorites,
               toggleFavorite: toggleFavorite,
-              hidden: userInfo.hidden,
+              hidden: userHidden,
               toggleHidden: toggleHidden,
               syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
@@ -1457,9 +1459,9 @@ export const App = () => {
           <UserContext.Provider
             value={{
               setUser: setUser,
-              favorites: userInfo.favorites,
+              favorites: userFavorites,
               toggleFavorite: toggleFavorite,
-              hidden: userInfo.hidden,
+              hidden: userHidden,
               toggleHidden: toggleHidden,
               syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
