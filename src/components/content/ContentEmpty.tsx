@@ -1,16 +1,14 @@
 import React from "react";
 import emptyImg from "../../media/empty.svg";
 import { useAppSelector } from "../../app/hooks";
+import { selectPage } from "../../app/slices/commonSlice";
 import { selectFavorites, selectHidden } from "../../app/slices/userSlice";
-import { Page } from "../../util/types";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 
-type ContentEmptyProps = {
-  page: Page;
-};
+export const ContentEmpty = () => {
+  const page = useAppSelector(selectPage);
 
-export const ContentEmpty = (props: ContentEmptyProps) => {
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
   return (
@@ -20,9 +18,9 @@ export const ContentEmpty = (props: ContentEmptyProps) => {
         Nothing to see here
       </Typography>
       <Typography className="subtitle" use="body1" tag="p">
-        {props.page === "favorites" && favorites.length === 0
+        {page === "favorites" && favorites.length === 0
           ? "No sets currently favorited."
-          : props.page === "hidden" && hidden.length === 0
+          : page === "hidden" && hidden.length === 0
           ? "No sets currently hidden."
           : "No results, please adjust your filters/search."}
       </Typography>

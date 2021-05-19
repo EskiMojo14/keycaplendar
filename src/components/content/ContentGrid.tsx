@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, SetGroup, SetType } from "../../util/types";
+import { SetGroup, SetType } from "../../util/types";
 import { useAppSelector } from "../../app/hooks";
 import { selectMainView } from "../../app/slices/settingsSlice";
 import { Typography } from "@rmwc/typography";
@@ -14,18 +14,17 @@ type ContentGridProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  page: Page;
   setGroups: SetGroup[];
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
   const view = useAppSelector(selectMainView);
+
   const createGroup = (sets: SetType[]) => {
     if (view === "card") {
       return (
         <ViewCard
           sets={sets}
-          page={props.page}
           details={props.details}
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}
@@ -34,19 +33,12 @@ export const ContentGrid = (props: ContentGridProps) => {
       );
     } else if (view === "list") {
       return (
-        <ViewList
-          sets={sets}
-          page={props.page}
-          details={props.details}
-          closeDetails={props.closeDetails}
-          detailSet={props.detailSet}
-        />
+        <ViewList sets={sets} details={props.details} closeDetails={props.closeDetails} detailSet={props.detailSet} />
       );
     } else if (view === "imageList") {
       return (
         <ViewImageList
           sets={sets}
-          page={props.page}
           details={props.details}
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}
@@ -56,7 +48,6 @@ export const ContentGrid = (props: ContentGridProps) => {
       return (
         <ViewCompact
           sets={sets}
-          page={props.page}
           details={props.details}
           closeDetails={props.closeDetails}
           detailSet={props.detailSet}

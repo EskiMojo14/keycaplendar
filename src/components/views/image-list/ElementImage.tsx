@@ -2,7 +2,9 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
-import { Page, SetType } from "../../../util/types";
+import { useAppSelector } from "../../../app/hooks";
+import { selectPage } from "../../../app/slices/commonSlice";
+import { SetType } from "../../../util/types";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
@@ -23,7 +25,6 @@ type ElementImageProps = {
   image: string;
   link: string;
   live: boolean;
-  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
@@ -32,8 +33,10 @@ type ElementImageProps = {
 };
 
 export const ElementImage = (props: ElementImageProps) => {
+  const page = useAppSelector(selectPage);
+
   const liveIndicator =
-    props.live && props.page !== "live" ? (
+    props.live && page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
         <div className="live-indicator">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">

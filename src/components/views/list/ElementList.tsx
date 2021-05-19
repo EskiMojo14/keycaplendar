@@ -1,8 +1,10 @@
 import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
+import { useAppSelector } from "../../../app/hooks";
+import { selectPage } from "../../../app/slices/commonSlice";
 import { iconObject } from "../../../util/functions";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
@@ -16,7 +18,6 @@ type ElementListProps = {
   image: string;
   link: string;
   live: boolean;
-  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
@@ -25,8 +26,10 @@ type ElementListProps = {
 };
 
 export const ElementList = (props: ElementListProps) => {
+  const page = useAppSelector(selectPage);
+
   const liveIndicator =
-    props.live && props.page !== "live" ? (
+    props.live && page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
         <ListItemMeta
           className="live-indicator"

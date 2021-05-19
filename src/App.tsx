@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectDevice, setDevice } from "./app/slices/commonSlice";
+import { selectDevice, selectPage, setAppPage, setDevice } from "./app/slices/commonSlice";
 import {
   selectUser,
   setUser,
@@ -84,12 +84,14 @@ export const App = () => {
 
   const settings = useAppSelector(selectSettings);
   const device = useAppSelector(selectDevice);
+
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectUserPresets);
   const userFavorites = useAppSelector(selectFavorites);
   const userHidden = useAppSelector(selectHidden);
 
-  const [appPage, setAppPage] = useState<Page>("images");
+  const appPage = useAppSelector(selectPage);
+
   const [statisticsTab, setStatsTab] = useState<StatsTab>("summary");
   const [lists, setLists] = useState<{
     allDesigners: string[];
@@ -159,12 +161,12 @@ export const App = () => {
       ) {
         if (arrayIncludes(mainPages, pageQuery)) {
           if (pageQuery === "calendar") {
-            setAppPage(pageQuery);
+            dispatch(setAppPage(pageQuery));
             setSorts({ sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
           } else {
             const sortQuery = params.get("sort");
             const sortOrderQuery = params.get("sortOrder");
-            setAppPage(pageQuery);
+            dispatch(setAppPage(pageQuery));
             setSorts({
               sort:
                 arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
@@ -177,11 +179,11 @@ export const App = () => {
             });
           }
         } else {
-          setAppPage(pageQuery);
+          dispatch(setAppPage(pageQuery));
         }
       }
     } else {
-      setAppPage("calendar");
+      dispatch(setAppPage("calendar"));
     }
     const whitelistObj: WhitelistType = { ...filterInfo.whitelist };
     whitelistParams.forEach((param, index, array) => {
@@ -338,10 +340,10 @@ export const App = () => {
       setTimeout(() => {
         if (arrayIncludes(mainPages, page)) {
           filterData(page, setsInfo.allSets, pageSort[page], pageSortOrder[page]);
-          setAppPage(page);
+          dispatch(setAppPage(page));
           setSorts({ sort: pageSort[page], sortOrder: pageSortOrder[page] });
         } else {
-          setAppPage(page);
+          dispatch(setAppPage(page));
         }
         setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: "" }));
         document.documentElement.scrollTop = 0;
@@ -1480,7 +1482,6 @@ export const App = () => {
                 sets={setsInfo.filteredSets}
                 getData={getData}
                 className={transitionClass}
-                page={appPage}
                 setPage={setPage}
                 setView={setView}
                 allSets={setsInfo.allSets}

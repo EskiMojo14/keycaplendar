@@ -3,10 +3,11 @@ import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
+import { selectPage } from "../../../app/slices/commonSlice";
 import { selectFavorites, selectHidden, selectUser } from "../../../app/slices/userSlice";
 import { UserContext } from "../../../util/contexts";
 import { iconObject } from "../../../util/functions";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -30,7 +31,6 @@ type ElementCardProps = {
   image: string;
   link: string;
   live: boolean;
-  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
@@ -39,12 +39,15 @@ type ElementCardProps = {
 };
 
 export const ElementCard = (props: ElementCardProps) => {
+  const page = useAppSelector(selectPage);
+
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
+
   const { toggleFavorite, toggleHidden } = useContext(UserContext);
   const liveIndicator =
-    props.live && props.page !== "live" ? (
+    props.live && page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
         <div className="live-indicator">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">

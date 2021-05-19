@@ -1,7 +1,9 @@
 import React from "react";
 import Twemoji from "react-twemoji";
+import { useAppSelector } from "../../../app/hooks";
+import { selectPage } from "../../../app/slices/commonSlice";
 import { iconObject } from "../../../util/functions";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemGraphic } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Tooltip } from "@rmwc/tooltip";
@@ -12,7 +14,6 @@ type ElementCompactProps = {
   details: (set: SetType) => void;
   link: string;
   live: boolean;
-  page: Page;
   selected: boolean;
   set: SetType;
   subtitle: string;
@@ -20,8 +21,10 @@ type ElementCompactProps = {
 };
 
 export const ElementCompact = (props: ElementCompactProps) => {
+  const page = useAppSelector(selectPage);
+
   const liveIndicator =
-    props.live && props.page !== "live" ? (
+    props.live && page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>
         <ListItemGraphic
           className="live-indicator"

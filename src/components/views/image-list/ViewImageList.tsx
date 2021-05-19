@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 
@@ -8,7 +8,6 @@ type ViewImageListProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
-  page: Page;
   sets: SetType[];
 };
 
@@ -61,7 +60,6 @@ export const ViewImageList = (props: ViewImageListProps) => {
         }
         return (
           <ElementImage
-            page={props.page}
             selected={props.detailSet === set}
             title={title}
             subtitle={subtitle}

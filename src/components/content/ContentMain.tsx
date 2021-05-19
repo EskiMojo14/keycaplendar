@@ -6,16 +6,7 @@ import { selectUser } from "../../app/slices/userSlice";
 import { selectBottomNav, selectMainView } from "../../app/slices/settingsSlice";
 import { Preset, Keyset } from "../../util/constructors";
 import { openModal, closeModal } from "../../util/functions";
-import {
-  WhitelistType,
-  PresetType,
-  SetType,
-  SortOrderType,
-  Page,
-  SortType,
-  ViewType,
-  SetGroup,
-} from "../../util/types";
+import { WhitelistType, PresetType, SetType, SortOrderType, SortType, ViewType, SetGroup } from "../../util/types";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -36,7 +27,6 @@ import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 type ContentMainProps = {
   navOpen: boolean;
   openNav: () => void;
-  page: Page;
   content: boolean;
   sort: SortType;
   setSort: (sort: SortType) => void;
@@ -62,10 +52,12 @@ type ContentMainProps = {
 };
 
 export const ContentMain = (props: ContentMainProps) => {
+  const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectMainView);
+
   const user = useAppSelector(selectUser);
-  const device = useAppSelector(selectDevice);
+
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
 
@@ -275,14 +267,13 @@ export const ContentMain = (props: ContentMainProps) => {
   const content = props.content ? (
     <ContentGrid
       setGroups={props.setGroups}
-      page={props.page}
       details={openDetails}
       closeDetails={closeDetails}
       detailSet={detailSet}
       edit={openEdit}
     />
   ) : (
-    <ContentEmpty page={props.page} />
+    <ContentEmpty />
   );
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
@@ -294,7 +285,6 @@ export const ContentMain = (props: ContentMainProps) => {
       <AppBar
         openNav={props.openNav}
         indent={user.isDesigner || user.isEditor}
-        page={props.page}
         setView={props.setView}
         sort={props.sort}
         setSort={props.setSort}

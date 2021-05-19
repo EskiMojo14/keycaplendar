@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { ElementCard } from "./ElementCard";
 import "./ViewCard.scss";
 
@@ -9,7 +9,6 @@ type ViewCardProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  page: Page;
   sets: SetType[];
 };
 
@@ -63,7 +62,6 @@ export const ViewCard = (props: ViewCardProps) => {
         }
         return (
           <ElementCard
-            page={props.page}
             selected={props.detailSet === set}
             set={set}
             title={title}

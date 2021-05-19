@@ -3,7 +3,7 @@ import classNames from "classnames";
 import moment from "moment";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/commonSlice";
+import { selectDevice, selectPage } from "../../app/slices/commonSlice";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/userSlice";
 import { selectBottomNav } from "../../app/slices/settingsSlice";
 import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
@@ -20,19 +20,20 @@ const db = firebase.firestore();
 type DrawerNavProps = {
   close: () => void;
   open: boolean;
-  page: Page;
   setPage: (page: Page) => void;
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
   const device = useAppSelector(selectDevice);
-  const dismissible = device === "desktop";
-
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const appPage = useAppSelector(selectPage);
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
+
+  const dismissible = device === "desktop";
 
   const setPage = (page: Page) => {
     props.setPage(page);
@@ -85,7 +86,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     <>
       {userPages.map((page) => {
         return (
-          <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
             {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
@@ -100,7 +101,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       <ListDivider />
       {adminPages.map((page) => {
         return (
-          <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
           </ListItem>
@@ -135,7 +136,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
         <List>
           {standardPages.map((page) => {
             return (
-              <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+              <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
                 <ListItemGraphic icon={pageIcons[page]} />
                 {pageTitle[page]}
               </ListItem>
@@ -143,22 +144,22 @@ export const DrawerNav = (props: DrawerNavProps) => {
           })}
           {userOptions}
           <ListDivider />
-          <ListItem onClick={() => setPage("statistics")} activated={props.page === "statistics"}>
+          <ListItem onClick={() => setPage("statistics")} activated={appPage === "statistics"}>
             <ListItemGraphic icon={pageIcons.statistics} />
             Statistics
           </ListItem>
-          <ListItem onClick={() => setPage("history")} activated={props.page === "history"}>
+          <ListItem onClick={() => setPage("history")} activated={appPage === "history"}>
             <ListItemGraphic icon={pageIcons.history} />
             History
           </ListItem>
           {adminOptions}
           <ListDivider />
-          <ListItem onClick={() => setPage("updates")} activated={props.page === "updates"}>
+          <ListItem onClick={() => setPage("updates")} activated={appPage === "updates"}>
             <ListItemGraphic icon={pageIcons.updates} />
             Updates
             {newUpdateIcon}
           </ListItem>
-          <ListItem onClick={() => setPage("settings")} activated={props.page === "settings"}>
+          <ListItem onClick={() => setPage("settings")} activated={appPage === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
             Settings
           </ListItem>

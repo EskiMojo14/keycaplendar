@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { ElementCompact } from "./ElementCompact";
@@ -10,7 +10,6 @@ type ViewCompactProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
-  page: Page;
   sets: SetType[];
 };
 
@@ -59,7 +58,6 @@ export const ViewCompact = (props: ViewCompactProps) => {
           }
           return (
             <ElementCompact
-              page={props.page}
               selected={props.detailSet === set}
               set={set}
               title={title}

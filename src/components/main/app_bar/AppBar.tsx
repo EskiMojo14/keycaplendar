@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-import { selectDevice } from "../../../app/slices/commonSlice";
+import { selectDevice, selectPage } from "../../../app/slices/commonSlice";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { useBoolStates } from "../../../util/functions";
-import { Page, SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
+import { SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
 import { useAppSelector } from "../../../app/hooks";
 import { selectBottomNav, selectMainView } from "../../../app/slices/settingsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -27,7 +27,6 @@ type AppBarProps = {
   loading: boolean;
   openFilter: () => void;
   openNav: () => void;
-  page: Page;
   search: string;
   setSearch: (search: string) => void;
   setSort: (sort: SortType) => void;
@@ -42,6 +41,8 @@ export const AppBar = (props: AppBarProps) => {
   const device = useAppSelector(selectDevice);
   const view = useAppSelector(selectMainView);
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const page = useAppSelector(selectPage);
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
@@ -88,9 +89,8 @@ export const AppBar = (props: AppBarProps) => {
       {device === "desktop" ? (
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
       ) : null}
-      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
+      <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
         <MenuSort
-          page={props.page}
           sort={props.sort}
           sortOrder={props.sortOrder}
           open={sortOpen}
@@ -102,7 +102,7 @@ export const AppBar = (props: AppBarProps) => {
           enterDelay={500}
           content="Sort"
           align={tooltipAlign}
-          className={classNames({ hidden: props.page === "calendar" })}
+          className={classNames({ hidden: page === "calendar" })}
         >
           <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSort} />
         </Tooltip>
@@ -137,7 +137,7 @@ export const AppBar = (props: AppBarProps) => {
       ) : null}
     </>
   );
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle> : buttons;
+  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[page]}</TopAppBarTitle> : buttons;
   const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
   return (
     <>

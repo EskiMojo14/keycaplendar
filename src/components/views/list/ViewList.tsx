@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Page, SetType } from "../../../util/types";
+import { SetType } from "../../../util/types";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
@@ -9,7 +9,6 @@ type ViewListProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
-  page: Page;
   sets: SetType[];
 };
 
@@ -62,7 +61,6 @@ export const ViewList = (props: ViewListProps) => {
         }
         return (
           <ElementList
-            page={props.page}
             selected={props.detailSet === set}
             set={set}
             title={title}
