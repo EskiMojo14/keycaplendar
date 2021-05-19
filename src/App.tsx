@@ -7,6 +7,34 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice, selectPage, setAppPage, setDevice } from "./app/slices/common/commonSlice";
+import { allPages, mainPages, pageTitle, urlPages } from "./app/slices/common/constants";
+import { Interval } from "./app/slices/common/constructors";
+import {
+  addOrRemove,
+  alphabeticalSort,
+  alphabeticalSortProp,
+  arrayEveryType,
+  arrayIncludes,
+  hasKey,
+  mergeObject,
+  normalise,
+  replaceFunction,
+  uniqueArray,
+} from "./app/slices/common/functions";
+import { GlobalDoc, Page } from "./app/slices/common/types";
+import {
+  allSorts,
+  arraySorts,
+  dateSorts,
+  pageSort,
+  pageSortOrder,
+  reverseSortDatePages,
+  sortBlacklist,
+  whitelistParams,
+  whitelistShipped,
+} from "./app/slices/main/constants";
+import { Preset, Whitelist } from "./app/slices/main/constructors";
+import { pageConditions } from "./app/slices/main/functions";
 import {
   selectUser,
   setUser,
@@ -30,52 +58,21 @@ import { EntryGuide } from "./components/pages/guides/EntryGuide";
 import { PrivacyPolicy } from "./components/pages/legal/Privacy";
 import { TermsOfService } from "./components/pages/legal/Terms";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
-import {
-  allPages,
-  pageTitle,
-  pageSort,
-  whitelistParams,
-  urlPages,
-  dateSorts,
-  arraySorts,
-  pageSortOrder,
-  reverseSortDatePages,
-  mainPages,
-  allSorts,
-  sortBlacklist,
-  whitelistShipped,
-} from "./util/constants";
-import { Interval, Preset, Whitelist } from "./util/constructors";
-import {
-  addOrRemove,
-  alphabeticalSort,
-  alphabeticalSortProp,
-  arrayEveryType,
-  arrayIncludes,
-  hasKey,
-  mergeObject,
-  normalise,
-  pageConditions,
-  replaceFunction,
-  uniqueArray,
-} from "./util/functions";
+import "./App.scss";
 import {
   ArraySortKeys,
   DateSortKeys,
-  WhitelistType,
+  OldPresetType,
   PresetType,
+  SetGroup,
   SetType,
   SortOrderType,
-  VendorType,
-  UserPreferencesDoc,
-  GlobalDoc,
-  OldPresetType,
-  SetGroup,
-  Page,
   SortType,
-  ViewType,
-} from "./util/types";
-import "./App.scss";
+  VendorType,
+  WhitelistType,
+} from "./app/slices/main/types";
+import { ViewType } from "./app/slices/settings/types";
+import { UserPreferencesDoc } from "./app/slices/user/types";
 
 const db = firebase.firestore();
 
