@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/commonSlice";
+import { selectPage } from "../../../app/slices/common/commonSlice";
 import { SetType } from "../../../util/types";
 import {
   ImageListItem,

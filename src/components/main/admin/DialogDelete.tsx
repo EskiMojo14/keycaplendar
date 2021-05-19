@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
-import { selectUser } from "../../../app/slices/userSlice";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
 import { SetType } from "../../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";

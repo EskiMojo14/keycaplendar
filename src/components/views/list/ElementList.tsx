@@ -2,7 +2,7 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/commonSlice";
+import { selectPage } from "../../../app/slices/common/commonSlice";
 import { iconObject } from "../../../util/functions";
 import { SetType } from "../../../util/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";

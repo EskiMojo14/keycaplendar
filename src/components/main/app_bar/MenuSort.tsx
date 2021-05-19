@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/commonSlice";
+import { selectPage } from "../../../app/slices/common/commonSlice";
 import { sortNames, sortBlacklist, allSorts } from "../../../util/constants";
 import { arrayIncludes, capitalise } from "../../../util/functions";
 import { SortOrderType, SortType } from "../../../util/types";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/commonSlice";
+import { selectDevice } from "../../app/slices/common/commonSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";

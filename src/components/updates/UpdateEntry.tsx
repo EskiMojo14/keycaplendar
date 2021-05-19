@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
-import { selectUser } from "../../app/slices/userSlice";
+import { selectUser } from "../../app/slices/user/userSlice";
 import { iconObject } from "../../util/functions";
 import { UpdateEntryType } from "../../util/types";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";

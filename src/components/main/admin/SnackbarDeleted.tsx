@@ -1,6 +1,6 @@
 import React from "react";
 import firebase from "../../../firebase";
-import { selectUser } from "../../../app/slices/userSlice";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
 import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
 import { SetType } from "../../../util/types";

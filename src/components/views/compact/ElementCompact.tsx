@@ -1,7 +1,7 @@
 import React from "react";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/commonSlice";
+import { selectPage } from "../../../app/slices/common/commonSlice";
 import { iconObject } from "../../../util/functions";
 import { SetType } from "../../../util/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemGraphic } from "@rmwc/list";

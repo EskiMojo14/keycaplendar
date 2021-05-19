@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
-import { CurrentUserType, PresetType } from "../../util/types";
+import type { RootState } from "../../store";
+import { CurrentUserType, PresetType } from "../../../util/types";
 
 type UserState = {
   user: CurrentUserType;

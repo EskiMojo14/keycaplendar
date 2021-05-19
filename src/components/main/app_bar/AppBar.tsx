@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-import { selectDevice, selectPage } from "../../../app/slices/commonSlice";
+import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice";
 import { pageTitle, viewIcons } from "../../../util/constants";
 import { useBoolStates } from "../../../util/functions";
 import { SetType, SortOrderType, SortType, ViewType } from "../../../util/types";
 import { useAppSelector } from "../../../app/hooks";
-import { selectBottomNav, selectMainView } from "../../../app/slices/settingsSlice";
+import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";

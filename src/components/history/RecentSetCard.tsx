@@ -3,7 +3,7 @@ import moment from "moment";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "../../app/hooks";
-import { selectFavorites, selectHidden } from "../../app/slices/userSlice";
+import { selectFavorites, selectHidden } from "../../app/slices/user/userSlice";
 import { mainPages, pageIcons, pageTitle } from "../../util/constants";
 import { arrayIncludes, hasKey, iconObject, pageConditions } from "../../util/functions";
 import { MainPage, Page, RecentSet, SetType } from "../../util/types";

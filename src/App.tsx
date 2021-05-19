@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectDevice, selectPage, setAppPage, setDevice } from "./app/slices/commonSlice";
+import { selectDevice, selectPage, setAppPage, setDevice } from "./app/slices/common/commonSlice";
 import {
   selectUser,
   setUser,
@@ -16,8 +16,8 @@ import {
   setFavorites,
   selectHidden,
   setHidden,
-} from "./app/slices/userSlice";
-import { selectSettings, setSettings } from "./app/slices/settingsSlice";
+} from "./app/slices/user/userSlice";
+import { selectSettings, setSettings } from "./app/slices/settings/settingsSlice";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
