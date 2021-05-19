@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { UserContext } from "../../util/contexts";
+import { UserContext } from "../../app/slices/user/contexts";
 import { PresetType } from "../../util/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 

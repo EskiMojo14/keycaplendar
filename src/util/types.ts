@@ -213,21 +213,3 @@ export type UpdateEntryType = {
   body: string;
   pinned: boolean;
 };
-
-export type UserContextType = {
-  setUser: (user: Partial<CurrentUserType>) => void;
-  favorites: string[];
-  toggleFavorite: (id: string) => void;
-  hidden: string[];
-  toggleHidden: (id: string) => void;
-  syncSettings: boolean;
-  setSyncSettings: (bool: boolean, write?: boolean) => void;
-  preset: PresetType;
-  selectPreset: (id: string) => void;
-  newPreset: (preset: PresetType) => void;
-  editPreset: (preset: PresetType) => void;
-  deletePreset: (preset: PresetType) => void;
-  newGlobalPreset: (preset: PresetType) => void;
-  editGlobalPreset: (preset: PresetType) => void;
-  deleteGlobalPreset: (preset: PresetType) => void;
-};

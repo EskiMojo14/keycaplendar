@@ -6,7 +6,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
-import { UserContext } from "../../util/contexts";
+import { UserContext } from "../../app/slices/user/contexts";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../util/functions";
 import { SetType } from "../../util/types";
 import { Button } from "@rmwc/button";

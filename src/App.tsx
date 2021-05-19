@@ -20,6 +20,7 @@ import {
 import { selectSettings, setSettings } from "./app/slices/settings/settingsSlice";
 import { statsTabs } from "./app/slices/statistics/constants";
 import { setStatisticsTab } from "./app/slices/statistics/functions";
+import { UserContext } from "./app/slices/user/contexts";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "./components/Content";
@@ -45,7 +46,6 @@ import {
   whitelistShipped,
 } from "./util/constants";
 import { Interval, Preset, Whitelist } from "./util/constructors";
-import { UserContext } from "./util/contexts";
 import {
   addOrRemove,
   alphabeticalSort,
