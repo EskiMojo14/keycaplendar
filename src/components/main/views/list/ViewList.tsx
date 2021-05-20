@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../app/slices/main/types";
+import { SetType } from "../../../../app/slices/main/types";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";

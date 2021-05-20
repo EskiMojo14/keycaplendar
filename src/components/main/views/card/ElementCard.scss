@@ -4,7 +4,7 @@
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
-@use "../../../util";
+@use "../../../../util";
 
 .card-container .mdc-card {
   height: 100%;

@@ -1,7 +1,7 @@
 import React from "react";
-import { useAppSelector } from "../../app/hooks";
-import { SetGroup, SetType } from "../../app/slices/main/types";
-import { selectMainView } from "../../app/slices/settings/settingsSlice";
+import { useAppSelector } from "../../../app/hooks";
+import { SetGroup, SetType } from "../../../app/slices/main/types";
+import { selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
 import { ViewList } from "../views/list/ViewList";

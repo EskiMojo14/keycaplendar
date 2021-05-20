@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { SetType } from "../../../app/slices/main/types";
+import { SetType } from "../../../../app/slices/main/types";
 import { ImageList } from "@rmwc/image-list";
 import { ElementImage } from "./ElementImage";
 

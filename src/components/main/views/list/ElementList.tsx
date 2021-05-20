@@ -1,10 +1,10 @@
 import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
-import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/common/commonSlice";
-import { iconObject } from "../../../app/slices/common/functions";
-import { SetType } from "../../../app/slices/main/types";
+import { useAppSelector } from "../../../../app/hooks";
+import { selectPage } from "../../../../app/slices/common/commonSlice";
+import { iconObject } from "../../../../app/slices/common/functions";
+import { SetType } from "../../../../app/slices/main/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";

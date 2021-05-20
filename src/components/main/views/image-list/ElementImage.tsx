@@ -2,9 +2,9 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
-import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/common/commonSlice";
-import { SetType } from "../../../app/slices/main/types";
+import { useAppSelector } from "../../../../app/hooks";
+import { selectPage } from "../../../../app/slices/common/commonSlice";
+import { SetType } from "../../../../app/slices/main/types";
 import {
   ImageListItem,
   ImageListImageAspectContainer,
