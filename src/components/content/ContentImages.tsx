@@ -4,9 +4,6 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { queue } from "../../app/snackbarQueue";
-import { ImageObj } from "../../util/constructors";
 import {
   addOrRemove,
   alphabeticalSort,
@@ -15,8 +12,12 @@ import {
   iconObject,
   mergeObject,
   useBoolStates,
-} from "../../util/functions";
-import { ImageType, SetType } from "../../util/types";
+} from "../../app/slices/common/functions";
+import { ImageObj } from "../../app/slices/images/constructors";
+import { ImageType } from "../../app/slices/images/types";
+import { SetType } from "../../app/slices/main/types";
+import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { queue } from "../../app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";

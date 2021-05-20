@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
-import { iconObject } from "../../../util/functions";
+import { iconObject } from "../../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import {

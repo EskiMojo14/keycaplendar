@@ -1,9 +1,9 @@
 import React from "react";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
-import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { SetType } from "../../../util/types";
+import { SetType } from "../../../app/slices/main/types";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteProps = {

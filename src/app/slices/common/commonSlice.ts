@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
-import { Page } from "../../../util/types";
+import { Page } from "./types";
 
 type CommonState = {
   device: "mobile" | "tablet" | "desktop";

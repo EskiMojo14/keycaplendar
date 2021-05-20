@@ -1,11 +1,11 @@
 import React from "react";
 import firebase from "../../../firebase";
+import { useAppSelector } from "../../../app/hooks";
+import { batchStorageDelete, getStorageFolders } from "../../../app/slices/common/functions";
+import { SetType } from "../../../app/slices/main/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { SetType } from "../../../util/types";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
-import { useAppSelector } from "../../../app/hooks";
 
 type SnackbarDeletedProps = {
   close: () => void;

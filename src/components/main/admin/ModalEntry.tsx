@@ -6,17 +6,17 @@ import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } 
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
+import {
+  arrayMove,
+  batchStorageDelete,
+  formatFileName,
+  getStorageFolders,
+  hasKey,
+  iconObject,
+} from "../../../app/slices/common/functions";
+import { SetType, VendorType } from "../../../app/slices/main/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import {
-  formatFileName,
-  iconObject,
-  getStorageFolders,
-  batchStorageDelete,
-  arrayMove,
-  hasKey,
-} from "../../../util/functions";
-import { SetType, VendorType } from "../../../util/types";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "../../util/ConditionalWrapper";

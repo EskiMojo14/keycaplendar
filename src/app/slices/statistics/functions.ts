@@ -22,7 +22,7 @@ import {
   VendorData,
   VendorDataObject,
 } from "./types";
-import { hasKey, mergeObject } from "../../../util/functions";
+import { hasKey, mergeObject } from "../common/functions";
 
 const storage = firebase.storage();
 

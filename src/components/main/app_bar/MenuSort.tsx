@@ -1,9 +1,9 @@
 import React from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectPage } from "../../../app/slices/common/commonSlice";
-import { sortNames, sortBlacklist, allSorts } from "../../../util/constants";
-import { arrayIncludes, capitalise } from "../../../util/functions";
-import { SortOrderType, SortType } from "../../../util/types";
+import { arrayIncludes, capitalise } from "../../../app/slices/common/functions";
+import { allSorts, sortBlacklist, sortNames } from "../../../app/slices/main/constants";
+import { SortOrderType, SortType } from "../../../app/slices/main/types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { ListDivider } from "@rmwc/list";
 
