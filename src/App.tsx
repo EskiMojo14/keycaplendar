@@ -34,17 +34,22 @@ import {
   whitelistShipped,
 } from "./app/slices/main/constants";
 import {
+  selectAllRegions,
+  selectAllSets,
+  selectFilteredSets,
   selectLoading,
+  selectSetGroups,
   selectSort,
   selectSortOrder,
   selectTransition,
   setContent,
+  setList,
   setLoading,
-  setTransition,
-  selectAllRegions,
+  setSetGroups,
+  setSetList,
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
-  setList,
+  setTransition,
 } from "./app/slices/main/mainSlice";
 import { Preset, Whitelist } from "./app/slices/main/constructors";
 import { pageConditions } from "./app/slices/main/functions";
@@ -117,15 +122,10 @@ export const App = () => {
 
   const allRegions = useAppSelector(selectAllRegions);
 
-  const [setsInfo, setSetsInfo] = useState<{
-    allSets: SetType[];
-    filteredSets: SetType[];
-    setGroups: SetGroup[];
-  }>({
-    allSets: [],
-    filteredSets: [],
-    setGroups: [],
-  });
+  const allSets = useAppSelector(selectAllSets);
+  const filteredSets = useAppSelector(selectFilteredSets);
+  const setGroups = useAppSelector(selectSetGroups);
+
   const [filterInfo, setFilterInfo] = useState<{
     search: string;
     whitelist: WhitelistType;
@@ -340,7 +340,7 @@ export const App = () => {
       dispatch(setTransition(true));
       setTimeout(() => {
         if (arrayIncludes(mainPages, page)) {
-          filterData(page, setsInfo.allSets, pageSort[page], pageSortOrder[page]);
+          filterData(page, allSets, pageSort[page], pageSortOrder[page]);
           dispatch(setAppPage(page));
           dispatch(setMainSort(pageSort[page]));
           dispatch(setMainSortOrder(pageSortOrder[page]));
@@ -519,7 +519,7 @@ export const App = () => {
 
         alphabeticalSortProp(sets, "colorway");
 
-        setSetsInfo((setsInfo) => mergeObject(setsInfo, { allSets: sets }));
+        dispatch(setSetList({ name: "allSets", array: sets }));
 
         filterData(appPage, sets);
         generateLists(sets);
@@ -532,7 +532,7 @@ export const App = () => {
       });
   };
 
-  const testSets = (sets = setsInfo.allSets) => {
+  const testSets = (sets = allSets) => {
     const testValue = (set: SetType, key: string, value?: string) => {
       if (value) {
         const endSpace = /\s+$/m;
@@ -581,7 +581,7 @@ export const App = () => {
     });
   };
 
-  const generateLists = (sets = setsInfo.allSets) => {
+  const generateLists = (sets = allSets) => {
     const allVendors = alphabeticalSort(
       uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
     );
@@ -645,7 +645,7 @@ export const App = () => {
 
   const filterData = (
     page = appPage,
-    sets = setsInfo.allSets,
+    sets = allSets,
     sort = mainSort,
     sortOrder = mainSortOrder,
     search = filterInfo.search,
@@ -728,15 +728,15 @@ export const App = () => {
 
     createGroups(page, sort, sortOrder, filteredSets);
 
-    setSetsInfo((setsInfo) => mergeObject(setsInfo, { filteredSets: filteredSets }));
+    dispatch(setSetList({ name: "filteredSets", array: filteredSets }));
     dispatch(setContent(true));
     dispatch(setLoading(false));
   };
 
   const debouncedFilterData = debounce(filterData, 350, { trailing: true });
 
-  const sortData = (sort = mainSort, sortOrder = mainSortOrder, setGroups = setsInfo.setGroups) => {
-    const array = [...setGroups];
+  const sortData = (sort = mainSort, sortOrder = mainSortOrder, groups = setGroups) => {
+    const array = [...groups];
     array.sort(function (x, y) {
       const a = x.title;
       const b = y.title;
@@ -762,10 +762,10 @@ export const App = () => {
       return 0;
     });
 
-    setSetsInfo((setsInfo) => mergeObject(setsInfo, { setGroups: array }));
+    dispatch(setSetGroups(array));
   };
 
-  const createGroups = (page = appPage, sort = mainSort, sortOrder = mainSortOrder, sets = setsInfo.filteredSets) => {
+  const createGroups = (page = appPage, sort = mainSort, sortOrder = mainSortOrder, sets = filteredSets) => {
     const createGroups = (sets: SetType[]): string[] => {
       if (dateSorts.includes(sort)) {
         return sets
@@ -889,7 +889,7 @@ export const App = () => {
       };
     });
 
-    setSetsInfo((setsInfo) => mergeObject(setsInfo, { setGroups: setGroups }));
+    dispatch(setSetGroups(setGroups));
   };
 
   const setSort = (sort: SortType, clearUrl = true) => {
@@ -924,7 +924,7 @@ export const App = () => {
   const setSearch = (query: string) => {
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }));
     document.documentElement.scrollTop = 0;
-    debouncedFilterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, query);
+    debouncedFilterData(appPage, allSets, mainSort, mainSortOrder, query);
   };
   const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clearUrl = true) => {
     const edited = Object.keys(partialWhitelist).filter((key) => {
@@ -938,8 +938,8 @@ export const App = () => {
     const whitelist = { ...filterInfo.whitelist, ...partialWhitelist, edited: edited };
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
     document.documentElement.scrollTop = 0;
-    if (setsInfo.allSets.length > 0) {
-      filterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
+    if (allSets.length > 0) {
+      filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
     }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
@@ -975,8 +975,8 @@ export const App = () => {
       const whitelist = { ...filterInfo.whitelist, [prop]: val, edited: edited };
       setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
       document.documentElement.scrollTop = 0;
-      if (setsInfo.allSets.length > 0) {
-        filterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
+      if (allSets.length > 0) {
+        filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
       }
     }
     if (clearUrl) {
@@ -1114,7 +1114,7 @@ export const App = () => {
 
             filterData(
               appPage,
-              setsInfo.allSets,
+              allSets,
               mainSort,
               mainSortOrder,
               filterInfo.search,
@@ -1134,15 +1134,7 @@ export const App = () => {
     const favorites = addOrRemove([...userFavorites], id);
     dispatch(setFavorites(favorites));
     if (appPage === "favorites") {
-      filterData(
-        appPage,
-        setsInfo.allSets,
-        mainSort,
-        mainSortOrder,
-        filterInfo.search,
-        filterInfo.whitelist,
-        favorites
-      );
+      filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, filterInfo.whitelist, favorites);
     }
     if (user.id) {
       db.collection("users")
@@ -1164,7 +1156,7 @@ export const App = () => {
     dispatch(setHidden(hidden));
     filterData(
       appPage,
-      setsInfo.allSets,
+      allSets,
       mainSort,
       mainSortOrder,
       filterInfo.search,
@@ -1473,14 +1465,11 @@ export const App = () => {
           >
             <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
               <Content
-                sets={setsInfo.filteredSets}
                 getData={getData}
                 className={transitionClass}
                 setPage={setPage}
                 setView={setView}
-                allSets={setsInfo.allSets}
                 appPresets={filterInfo.appPresets}
-                setGroups={setsInfo.setGroups}
                 setSort={setSort}
                 setSortOrder={setSortOrder}
                 search={filterInfo.search}

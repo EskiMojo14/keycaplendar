@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import BEMHelper from "../../../app/slices/common/bemHelper";
+import { useAppSelector } from "../../../app/hooks";
 import { alphabeticalSort, iconObject } from "../../../app/slices/common/functions";
-import { SetType } from "../../../app/slices/main/types";
+import { selectAllSets } from "../../../app/slices/main/mainSlice";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
@@ -15,10 +16,11 @@ const bemClasses = new BEMHelper("search-bar");
 type SearchBarPersistentProps = {
   search: string;
   setSearch: (search: string) => void;
-  sets: SetType[];
 };
 
 export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
+  const allSets = useAppSelector(selectAllSets);
+
   const [expanded, setExpanded] = useState(false);
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
@@ -45,8 +47,8 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
         searchTerms.push(term);
       }
     };
-    if (props.sets && props.sets.length > 0) {
-      props.sets.forEach((set) => {
+    if (allSets && allSets.length > 0) {
+      allSets.forEach((set) => {
         addSearchTerm(set.profile);
         addSearchTerm(set.colorway);
         set.designer.forEach((designer) => {
@@ -131,10 +133,11 @@ type SearchBarModalProps = {
   open: boolean;
   search: string;
   setSearch: (search: string) => void;
-  sets: SetType[];
 };
 
 export const SearchBarModal = (props: SearchBarModalProps) => {
+  const allSets = useAppSelector(selectAllSets);
+
   const [opening, setOpening] = useState(false);
   const [closing, setClosing] = useState(false);
   const [animate, setAnimate] = useState(false);
@@ -201,8 +204,8 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
         searchTerms.push(term);
       }
     };
-    if (props.sets && props.sets.length > 0) {
-      props.sets.forEach((set) => {
+    if (allSets && allSets.length > 0) {
+      allSets.forEach((set) => {
         addSearchTerm(set.profile);
         addSearchTerm(set.colorway);
         set.designer.forEach((designer) => {
@@ -291,10 +294,11 @@ type SearchAppBarProps = {
   openBar: () => void;
   search: string;
   setSearch: (search: string) => void;
-  sets: SetType[];
 };
 
 export const SearchAppBar = (props: SearchAppBarProps) => {
+  const allSets = useAppSelector(selectAllSets);
+
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
@@ -322,8 +326,8 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
         searchTerms.push(term);
       }
     };
-    if (props.sets && props.sets.length > 0) {
-      props.sets.forEach((set) => {
+    if (allSets && allSets.length > 0) {
+      allSets.forEach((set) => {
         addSearchTerm(set.profile);
         addSearchTerm(set.colorway);
         set.designer.forEach((designer) => {

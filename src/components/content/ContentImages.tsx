@@ -15,7 +15,7 @@ import {
 } from "../../app/slices/common/functions";
 import { ImageObj } from "../../app/slices/images/constructors";
 import { ImageType } from "../../app/slices/images/types";
-import { SetType } from "../../app/slices/main/types";
+import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Button } from "@rmwc/button";
@@ -66,12 +66,14 @@ const blankImage = new ImageObj();
 
 type ContentImagesProps = {
   openNav: () => void;
-  sets: SetType[];
 };
 
 export const ContentImages = (props: ContentImagesProps) => {
   const device = useAppSelector(selectDevice);
+
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const allSets = useAppSelector(selectAllSets);
 
   const [folderInfo, setFolderInfo] = useState<{
     currentFolder: string;
@@ -118,7 +120,7 @@ export const ContentImages = (props: ContentImagesProps) => {
   const createSetImageList = () => {
     const fileNameRegex = /keysets%2F(.*)\?/;
     const setImages = alphabeticalSort(
-      props.sets
+      allSets
         .map((set) => {
           const regexMatch = set.image.match(fileNameRegex);
           if (regexMatch) {
@@ -133,7 +135,7 @@ export const ContentImages = (props: ContentImagesProps) => {
       mergeObject(imageInfo, { setImages: setImages, duplicateSetImages: findDuplicates(setImages) })
     );
   };
-  useEffect(createSetImageList, [JSON.stringify(props.sets)]);
+  useEffect(createSetImageList, [JSON.stringify(allSets)]);
 
   const processItems = (items: firebase.storage.Reference[], append = false) => {
     const images = items.map((itemRef) => {

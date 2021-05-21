@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
-import { SortOrderType, SortType } from "./types";
+import { SetGroup, SetType, SortOrderType, SortType } from "./types";
 
 type MainState = {
   transition: boolean;
@@ -15,6 +15,10 @@ type MainState = {
   allRegions: string[];
   allVendors: string[];
   allVendorRegions: string[];
+
+  allSets: SetType[];
+  filteredSets: SetType[];
+  setGroups: SetGroup[];
 };
 
 const initialState: MainState = {
@@ -33,6 +37,11 @@ const initialState: MainState = {
   allRegions: [],
   allVendors: [],
   allVendorRegions: [],
+
+  // sets
+  allSets: [],
+  filteredSets: [],
+  setGroups: [],
 };
 
 export const mainSlice = createSlice({
@@ -64,10 +73,32 @@ export const mainSlice = createSlice({
       const { name, array } = action.payload;
       state = Object.assign(state, { [name]: array });
     },
+    setSetList: (
+      state,
+      action: PayloadAction<{
+        name: "allSets" | "filteredSets";
+        array: SetType[];
+      }>
+    ) => {
+      const { name, array } = action.payload;
+      state = Object.assign(state, { [name]: array });
+    },
+    setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
+      state.setGroups = action.payload;
+    },
   },
 });
 
-export const { setTransition, setLoading, setContent, setSort, setSortOrder, setList } = mainSlice.actions;
+export const {
+  setTransition,
+  setLoading,
+  setContent,
+  setSort,
+  setSortOrder,
+  setList,
+  setSetList,
+  setSetGroups,
+} = mainSlice.actions;
 
 export const selectTransition = (state: RootState) => state.main.transition;
 
@@ -88,5 +119,11 @@ export const selectAllRegions = (state: RootState) => state.main.allRegions;
 export const selectAllVendors = (state: RootState) => state.main.allVendors;
 
 export const selectAllVendorRegions = (state: RootState) => state.main.allVendorRegions;
+
+export const selectAllSets = (state: RootState) => state.main.allSets;
+
+export const selectFilteredSets = (state: RootState) => state.main.filteredSets;
+
+export const selectSetGroups = (state: RootState) => state.main.setGroups;
 
 export default mainSlice.reducer;

@@ -5,7 +5,7 @@ import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice
 import { pageTitle } from "../../../app/slices/common/constants";
 import { useBoolStates } from "../../../app/slices/common/functions";
 import { selectLoading } from "../../../app/slices/main/mainSlice";
-import { SetType, SortOrderType, SortType } from "../../../app/slices/main/types";
+import { SortOrderType, SortType } from "../../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
 import { ViewType } from "../../../app/slices/settings/types";
@@ -34,7 +34,6 @@ type AppBarProps = {
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
   setView: (view: ViewType) => void;
-  sets: SetType[];
 };
 
 export const AppBar = (props: AppBarProps) => {
@@ -83,14 +82,11 @@ export const AppBar = (props: AppBarProps) => {
       close={closeSearch}
       search={props.search}
       setSearch={props.setSearch}
-      sets={props.sets}
     />
   ) : null;
   const buttons = (
     <>
-      {device === "desktop" ? (
-        <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
-      ) : null}
+      {device === "desktop" ? <SearchBarPersistent search={props.search} setSearch={props.setSearch} /> : null}
       <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
         <MenuSort open={sortOpen} setSort={props.setSort} setSortOrder={props.setSortOrder} onClose={closeSort} />
         <Tooltip
@@ -113,13 +109,7 @@ export const AppBar = (props: AppBarProps) => {
       </MenuSurfaceAnchor>
       {device !== "desktop" && !indent ? (
         <div>
-          <SearchBarModal
-            open={searchOpen}
-            close={closeSearch}
-            search={props.search}
-            setSearch={props.setSearch}
-            sets={props.sets}
-          />
+          <SearchBarModal open={searchOpen} close={closeSearch} search={props.search} setSearch={props.setSearch} />
           <Tooltip enterDelay={500} content="Search" align="bottom">
             <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
           </Tooltip>

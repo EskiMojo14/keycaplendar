@@ -5,7 +5,7 @@ import { selectDevice, selectPage } from "../app/slices/common/commonSlice";
 import { mainPages } from "../app/slices/common/constants";
 import { arrayIncludes, closeModal, openModal } from "../app/slices/common/functions";
 import { Page } from "../app/slices/common/types";
-import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
+import { PresetType, SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
 import { selectBottomNav } from "../app/slices/settings/settingsSlice";
 import { ViewType } from "../app/slices/settings/types";
 import { selectUser } from "../app/slices/user/userSlice";
@@ -22,7 +22,6 @@ import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
 type ContentProps = {
-  allSets: SetType[];
   appPresets: PresetType[];
   className: string;
   getData: () => void;
@@ -42,8 +41,6 @@ type ContentProps = {
   setView: (view: ViewType) => void;
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  sets: SetType[];
-  setGroups: SetGroup[];
   toggleLichTheme: () => void;
   whitelist: WhitelistType;
 };
@@ -84,8 +81,6 @@ export const Content = (props: ContentProps) => {
     <ContentMain
       navOpen={navOpen}
       openNav={openNav}
-      sets={props.sets}
-      setGroups={props.setGroups}
       setSort={props.setSort}
       setSortOrder={props.setSortOrder}
       setView={props.setView}
@@ -100,12 +95,10 @@ export const Content = (props: ContentProps) => {
     />
   ) : null;
   const contentStatistics = page === "statistics" ? <ContentStatistics navOpen={navOpen} openNav={openNav} /> : null;
-  const contentChangelog =
-    page === "history" ? <ContentHistory allSets={props.allSets} openNav={openNav} setPage={props.setPage} /> : null;
+  const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} setPage={props.setPage} /> : null;
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
   const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
-  const contentImages =
-    page === "images" && user.isAdmin ? <ContentImages openNav={openNav} sets={props.allSets} /> : null;
+  const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
   const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
   const contentSettings =
     page === "settings" ? (

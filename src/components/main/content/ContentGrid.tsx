@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../../app/hooks";
-import { SetGroup, SetType } from "../../../app/slices/main/types";
+import { selectSetGroups } from "../../../app/slices/main/mainSlice";
+import { SetType } from "../../../app/slices/main/types";
 import { selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "../views/card/ViewCard";
@@ -14,11 +15,12 @@ type ContentGridProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
-  setGroups: SetGroup[];
 };
 
 export const ContentGrid = (props: ContentGridProps) => {
   const view = useAppSelector(selectMainView);
+
+  const setGroups = useAppSelector(selectSetGroups);
 
   const createGroup = (sets: SetType[]) => {
     if (view === "card") {
@@ -57,7 +59,7 @@ export const ContentGrid = (props: ContentGridProps) => {
   };
   return (
     <div className="content-grid">
-      {props.setGroups.map((group) => {
+      {setGroups.map((group) => {
         return (
           <div className="outer-container" key={group.title}>
             <div className="subheader">

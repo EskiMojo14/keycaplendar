@@ -17,6 +17,7 @@ import {
   uniqueArray,
 } from "../../app/slices/common/functions";
 import { Page } from "../../app/slices/common/types";
+import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { historyTabs } from "../../app/slices/history/constants";
 import { ProcessedPublicActionType, PublicActionType, RecentSet } from "../../app/slices/history/types";
 import { Keyset } from "../../app/slices/main/constructors";
@@ -48,13 +49,14 @@ const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 type ContentHistoryProps = {
   openNav: () => void;
   setPage: (page: Page) => void;
-  allSets: SetType[];
 };
 
 type HistoryTab = typeof historyTabs[number];
 
 export const ContentHistory = (props: ContentHistoryProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const allSets = useAppSelector(selectAllSets);
 
   const [tab, setTab] = useState<HistoryTab>("recent");
   const setTabScroll = (tab: HistoryTab) => {
@@ -114,8 +116,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   };
 
   const getSetById = (id: string) => {
-    const index = props.allSets.findIndex((set) => set.id === id);
-    return index > -1 ? props.allSets[index] : null;
+    const index = allSets.findIndex((set) => set.id === id);
+    return index > -1 ? allSets[index] : null;
   };
 
   const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
@@ -148,7 +150,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     alphabeticalSortProp(recentSets, "latestTimestamp", true);
     setRecentSets(recentSets);
   };
-  useEffect(generateSets, [JSON.stringify(props.allSets), processedActions]);
+  useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
   const blankSet = new Keyset();
 
@@ -283,7 +285,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           {clearFilterButton}
         </TopAppBarRow>
         {bottomNav ? null : tabRow}
-        <LinearProgress closed={props.allSets.length > 0 && !loading} />
+        <LinearProgress closed={allSets.length > 0 && !loading} />
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">

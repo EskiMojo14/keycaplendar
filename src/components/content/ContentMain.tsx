@@ -5,7 +5,7 @@ import { selectDevice } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
 import { selectContent } from "../../app/slices/main/mainSlice";
-import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "../../app/slices/main/types";
+import { PresetType, SetType, SortOrderType, SortType, WhitelistType } from "../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../app/slices/settings/settingsSlice";
 import { ViewType } from "../../app/slices/settings/types";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -35,8 +35,6 @@ type ContentMainProps = {
   search: string;
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;
-  sets: SetType[];
-  setGroups: SetGroup[];
   appPresets: PresetType[];
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
@@ -243,13 +241,7 @@ export const ContentMain = (props: ContentMainProps) => {
     ) : null;
 
   const content = contentBool ? (
-    <ContentGrid
-      setGroups={props.setGroups}
-      details={openDetails}
-      closeDetails={closeDetails}
-      detailSet={detailSet}
-      edit={openEdit}
-    />
+    <ContentGrid details={openDetails} closeDetails={closeDetails} detailSet={detailSet} edit={openEdit} />
   ) : (
     <ContentEmpty />
   );
@@ -268,7 +260,6 @@ export const ContentMain = (props: ContentMainProps) => {
         setSortOrder={props.setSortOrder}
         search={props.search}
         setSearch={props.setSearch}
-        sets={props.sets}
         openFilter={openFilter}
       />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
