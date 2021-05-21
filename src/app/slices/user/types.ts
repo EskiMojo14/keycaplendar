@@ -1,4 +1,4 @@
-import { OldPresetType, PresetType } from "../main/types";
+import { OldPresetType } from "../main/types";
 import { Settings } from "../settings/types";
 
 export type CurrentUserType = {
@@ -27,12 +27,4 @@ export type UserContextType = {
   setUser: (user: Partial<CurrentUserType>) => void;
   toggleFavorite: (id: string) => void;
   toggleHidden: (id: string) => void;
-  setSyncSettings: (bool: boolean, write?: boolean) => void;
-  selectPreset: (id: string) => void;
-  newPreset: (preset: PresetType) => void;
-  editPreset: (preset: PresetType) => void;
-  deletePreset: (preset: PresetType) => void;
-  newGlobalPreset: (preset: PresetType) => void;
-  editGlobalPreset: (preset: PresetType) => void;
-  deleteGlobalPreset: (preset: PresetType) => void;
 };

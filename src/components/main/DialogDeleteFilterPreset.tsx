@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
+import { deleteGlobalPreset, deletePreset } from "../../app/slices/main/functions";
 import { PresetType } from "../../app/slices/main/types";
-import { UserContext } from "../../app/slices/user/contexts";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteFilterPresetProps = {
@@ -10,7 +10,6 @@ type DialogDeleteFilterPresetProps = {
 };
 
 export const DialogDeleteFilterPreset = (props: DialogDeleteFilterPresetProps) => {
-  const { deletePreset, deleteGlobalPreset } = useContext(UserContext);
   const deleteFn = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (props.preset.global) {

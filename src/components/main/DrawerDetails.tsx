@@ -3,9 +3,11 @@ import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { alphabeticalSortProp, hasKey, iconObject } from "../../app/slices/common/functions";
+import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
+import { mainPages } from "../../app/slices/common/constants";
+import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
 import { selectSearch } from "../../app/slices/main/mainSlice";
+import { setSearch } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
 import { toggleLichTheme } from "../../app/slices/settings/functions";
@@ -28,11 +30,11 @@ type DrawerDetailsProps = {
   open: boolean;
   openSales: (set: SetType) => void;
   set: SetType;
-  setSearch?: (search: string) => void;
 };
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
+  const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectMainView);
 
@@ -325,33 +327,31 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       {props.set.notes}
     </Typography>
   ) : null;
-  const setSearch = props.setSearch;
-  const searchChips =
-    search && setSearch ? (
-      <div className="search-chips-container">
-        <div className="search-chips">
-          <ChipSet id="search-chip-set" choice>
-            <div className="padding-fix" />
-            {chips.map((value, index) => {
-              return (
-                <Chip
-                  icon="search"
-                  label={value}
-                  key={value.toLowerCase() + index}
-                  selected={search.toLowerCase() === value.toLowerCase()}
-                  onClick={() => {
-                    setSearch(value);
-                    if (!dismissible) {
-                      props.close();
-                    }
-                  }}
-                />
-              );
-            })}
-          </ChipSet>
-        </div>
+  const searchChips = arrayIncludes(mainPages, page) ? (
+    <div className="search-chips-container">
+      <div className="search-chips">
+        <ChipSet id="search-chip-set" choice>
+          <div className="padding-fix" />
+          {chips.map((value, index) => {
+            return (
+              <Chip
+                icon="search"
+                label={value}
+                key={value.toLowerCase() + index}
+                selected={search.toLowerCase() === value.toLowerCase()}
+                onClick={() => {
+                  setSearch(value);
+                  if (!dismissible) {
+                    props.close();
+                  }
+                }}
+              />
+            );
+          })}
+        </ChipSet>
       </div>
-    ) : null;
+    </div>
+  ) : null;
   return (
     <Drawer
       dismissible={dismissible}

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
@@ -14,10 +14,10 @@ import {
 } from "../../app/slices/main/mainSlice";
 import { whitelistParams, whitelistShipped } from "../../app/slices/main/constants";
 import { Preset, Whitelist } from "../../app/slices/main/constructors";
-import { PresetType, WhitelistType } from "../../app/slices/main/types";
+import { selectPreset, setWhitelist, setWhitelistMerge } from "../../app/slices/main/functions";
+import { PresetType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
 import { selectUser, selectUserPresets } from "../../app/slices/user/userSlice";
-import { UserContext } from "../../app/slices/user/contexts";
 import { queue } from "../../app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -36,8 +36,6 @@ type DrawerFilterProps = {
   deletePreset: (preset: PresetType) => void;
   open: boolean;
   openPreset: (preset: PresetType) => void;
-  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
-  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
@@ -57,7 +55,6 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const appPresets = useAppSelector(selectAppPresets);
   const mainWhitelist = useAppSelector(selectWhitelist);
 
-  const { selectPreset } = useContext(UserContext);
   const [modified, setModified] = useState(false);
 
   useEffect(() => {
@@ -114,14 +111,14 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           : "include";
       if (typeof edited === "boolean") {
         if (prop === "favorites" && edited && mainWhitelist.hidden) {
-          props.setWhitelistMerge({ hidden: false, favorites: edited });
+          setWhitelistMerge({ hidden: false, favorites: edited });
         } else if (prop === "hidden" && edited && mainWhitelist.favorites) {
-          props.setWhitelistMerge({ favorites: false, hidden: edited });
+          setWhitelistMerge({ favorites: false, hidden: edited });
         } else {
-          props.setWhitelist(prop, edited);
+          setWhitelist(prop, edited);
         }
       } else {
-        props.setWhitelist(prop, edited);
+        setWhitelist(prop, edited);
       }
     }
   };
@@ -129,17 +126,17 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const checkAll = (prop: string) => {
     if (hasKey(lists, prop)) {
       const all = lists[prop];
-      props.setWhitelist(prop, all);
+      setWhitelist(prop, all);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, [...whitelistShipped]);
+      setWhitelist(prop, [...whitelistShipped]);
     }
   };
 
   const uncheckAll = (prop: string) => {
     if (hasKey(lists, prop) && hasKey(mainWhitelist, prop)) {
-      props.setWhitelist(prop, []);
+      setWhitelist(prop, []);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, []);
+      setWhitelist(prop, []);
     }
   };
 
@@ -147,10 +144,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     if (hasKey(lists, prop)) {
       const all = lists[prop];
       const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
-      props.setWhitelist(prop, inverted);
+      setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
       const inverted = whitelistShipped.filter((value) => !mainWhitelist[prop].includes(value));
-      props.setWhitelist(prop, inverted);
+      setWhitelist(prop, inverted);
     }
   };
 
@@ -729,14 +726,14 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                 <SegmentedButtonSegment
                   label="Include"
                   onClick={() => {
-                    props.setWhitelist("vendorMode", "include");
+                    setWhitelist("vendorMode", "include");
                   }}
                   selected={mainWhitelist.vendorMode === "include"}
                 />
                 <SegmentedButtonSegment
                   label="Exclude"
                   onClick={() => {
-                    props.setWhitelist("vendorMode", "exclude");
+                    setWhitelist("vendorMode", "exclude");
                   }}
                   selected={mainWhitelist.vendorMode === "exclude"}
                 />

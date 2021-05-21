@@ -4,14 +4,13 @@ import { selectPage } from "../../../app/slices/common/commonSlice";
 import { arrayIncludes, capitalise } from "../../../app/slices/common/functions";
 import { selectSort, selectSortOrder } from "../../../app/slices/main/mainSlice";
 import { allSorts, sortBlacklist, sortNames } from "../../../app/slices/main/constants";
-import { SortOrderType, SortType } from "../../../app/slices/main/types";
+import { setSort, setSortOrder } from "../../../app/slices/main/functions";
+import { SortOrderType } from "../../../app/slices/main/types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { ListDivider } from "@rmwc/list";
 
 type MenuSortProps = {
   onClose: () => void;
-  setSort: (sort: SortType) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
   open: boolean;
 };
 
@@ -25,14 +24,14 @@ export const MenuSort = (props: MenuSortProps) => {
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
       {allSorts.map((key) => {
         return arrayIncludes(sortBlacklist[key], page) ? null : (
-          <MenuItem selected={sort === key} onClick={() => props.setSort(key)} key={key}>
+          <MenuItem selected={sort === key} onClick={() => setSort(key)} key={key}>
             {sortNames[key]}
           </MenuItem>
         );
       })}
       <ListDivider />
       {sortOrders.map((item) => (
-        <MenuItem selected={sortOrder === item} onClick={() => props.setSortOrder(item)} key={item}>
+        <MenuItem selected={sortOrder === item} onClick={() => setSortOrder(item)} key={item}>
           {capitalise(item)}
         </MenuItem>
       ))}

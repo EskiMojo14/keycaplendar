@@ -5,7 +5,7 @@ import { selectDevice } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
 import { selectContent } from "../../app/slices/main/mainSlice";
-import { PresetType, SetType, SortOrderType, SortType, WhitelistType } from "../../app/slices/main/types";
+import { PresetType, SetType } from "../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
@@ -23,17 +23,11 @@ import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
 import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
-import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
+import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
 
 type ContentMainProps = {
   navOpen: boolean;
   openNav: () => void;
-  setSort: (sort: SortType) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
-  setSearch: (search: string) => void;
-  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
-  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  getData: () => void;
 };
 
 export const ContentMain = (props: ContentMainProps) => {
@@ -210,9 +204,8 @@ export const ContentMain = (props: ContentMainProps) => {
         close={closeDeleteDialog}
         set={deleteSet}
         openSnackbar={openDeleteSnackbar}
-        getData={props.getData}
       />
-      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} getData={props.getData} />
+      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} />
     </>
   ) : null;
 
@@ -228,8 +221,8 @@ export const ContentMain = (props: ContentMainProps) => {
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        <ModalCreate open={createOpen} close={closeCreate} getData={props.getData} />
-        <ModalEdit open={editOpen} close={closeEdit} set={editSet} getData={props.getData} />
+        <ModalCreate open={createOpen} close={closeCreate} />
+        <ModalEdit open={editOpen} close={closeEdit} set={editSet} />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;
@@ -246,21 +239,12 @@ export const ContentMain = (props: ContentMainProps) => {
   });
   return (
     <>
-      <AppBar
-        openNav={props.openNav}
-        indent={user.isDesigner || user.isEditor}
-        setSort={props.setSort}
-        setSortOrder={props.setSortOrder}
-        setSearch={props.setSearch}
-        openFilter={openFilter}
-      />
+      <AppBar openNav={props.openNav} indent={user.isDesigner || user.isEditor} openFilter={openFilter} />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
           open={filterOpen}
           close={closeFilter}
-          setWhitelist={props.setWhitelist}
-          setWhitelistMerge={props.setWhitelistMerge}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
         />
@@ -270,7 +254,6 @@ export const ContentMain = (props: ContentMainProps) => {
           close={closeDetails}
           edit={openEdit}
           delete={openDeleteDialog}
-          setSearch={props.setSearch}
           openSales={openSales}
         />
         <BoolWrapper

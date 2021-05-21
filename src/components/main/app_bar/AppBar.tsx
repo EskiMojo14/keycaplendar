@@ -5,7 +5,7 @@ import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice
 import { pageTitle } from "../../../app/slices/common/constants";
 import { useBoolStates } from "../../../app/slices/common/functions";
 import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice";
-import { SortOrderType, SortType } from "../../../app/slices/main/types";
+import { setSearch } from "../../../app/slices/main/functions";
 import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -28,9 +28,6 @@ type AppBarProps = {
   indent: boolean;
   openFilter: () => void;
   openNav: () => void;
-  setSearch: (search: string) => void;
-  setSort: (sort: SortType) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
 };
 
 export const AppBar = (props: AppBarProps) => {
@@ -75,19 +72,13 @@ export const AppBar = (props: AppBarProps) => {
     ) : null;
 
   const searchBar = indent ? (
-    <SearchAppBar
-      open={searchOpen}
-      openBar={openSearch}
-      close={closeSearch}
-      search={search}
-      setSearch={props.setSearch}
-    />
+    <SearchAppBar open={searchOpen} openBar={openSearch} close={closeSearch} search={search} setSearch={setSearch} />
   ) : null;
   const buttons = (
     <>
-      {device === "desktop" ? <SearchBarPersistent search={search} setSearch={props.setSearch} /> : null}
+      {device === "desktop" ? <SearchBarPersistent search={search} setSearch={setSearch} /> : null}
       <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
-        <MenuSort open={sortOpen} setSort={props.setSort} setSortOrder={props.setSortOrder} onClose={closeSort} />
+        <MenuSort open={sortOpen} onClose={closeSort} />
         <Tooltip
           enterDelay={500}
           content="Sort"
@@ -108,7 +99,7 @@ export const AppBar = (props: AppBarProps) => {
       </MenuSurfaceAnchor>
       {device !== "desktop" && !indent ? (
         <div>
-          <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={props.setSearch} />
+          <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
           <Tooltip enterDelay={500} content="Search" align="bottom">
             <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
           </Tooltip>

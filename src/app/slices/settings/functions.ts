@@ -8,6 +8,7 @@ import { Interval } from "../common/constructors";
 import { hasKey } from "../common/functions";
 import { whitelistParams } from "../main/constants";
 import { setTransition } from "../main/mainSlice";
+import { selectPreset } from "../main/functions";
 
 const db = firebase.firestore();
 
@@ -115,7 +116,7 @@ export const checkStorage = () => {
     const params = new URLSearchParams(window.location.search);
     const noUrlParams = !whitelistParams.some((param) => params.has(param));
     if (storedPreset && storedPreset !== "default" && noUrlParams) {
-      //selectPreset(storedPreset, false);
+      selectPreset(storedPreset, false);
     }
   }
 };

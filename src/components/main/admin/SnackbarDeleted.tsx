@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
 import { batchStorageDelete, getStorageFolders } from "../../../app/slices/common/functions";
+import { getData } from "../../../app/slices/main/functions";
 import { SetType } from "../../../app/slices/main/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
@@ -9,7 +10,6 @@ import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {
   close: () => void;
-  getData: () => void;
   open: boolean;
   set: SetType;
 };
@@ -33,7 +33,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
       .then(() => {
         console.log("Document recreated with ID: ", id);
         queue.notify({ title: "Entry successfully recreated." });
-        props.getData();
+        getData();
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);

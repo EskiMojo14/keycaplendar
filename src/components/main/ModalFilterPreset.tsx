@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "../../app/slices/main/functions";
 import { PresetType } from "../../app/slices/main/types";
 import { selectUser } from "../../app/slices/user/userSlice";
-import { UserContext } from "../../app/slices/user/contexts";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -25,7 +25,6 @@ type ModalFilterPresetProps = {
 export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
-  const { newGlobalPreset, editGlobalPreset, newPreset, editPreset } = useContext(UserContext);
 
   const [name, setName] = useState("");
   const [isNew, setIsNew] = useState(true);

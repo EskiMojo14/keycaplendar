@@ -14,6 +14,7 @@ import {
   setFromTimeTheme,
   setLightTheme,
   setManualTheme,
+  setSyncSettings,
   setToTimeTheme,
 } from "../../app/slices/settings/functions";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -64,7 +65,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const { setUser, setSyncSettings } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {

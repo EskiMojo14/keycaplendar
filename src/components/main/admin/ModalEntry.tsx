@@ -20,6 +20,7 @@ import {
   selectAllVendorRegions,
   selectAllVendors,
 } from "../../../app/slices/main/mainSlice";
+import { getData } from "../../../app/slices/main/functions";
 import { SetType, VendorType } from "../../../app/slices/main/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
@@ -61,7 +62,6 @@ const getVendorStyle = (provided: DraggableProvided) => {
 
 type ModalCreateProps = {
   close: () => void;
-  getData: () => void;
   open: boolean;
 };
 
@@ -376,7 +376,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          props.getData();
+          getData();
           closeModal();
         })
         .catch((error) => {
@@ -1329,7 +1329,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
           closeModal();
-          props.getData();
+          getData();
         })
         .catch((error) => {
           queue.notify({ title: "Error editing document: " + error });

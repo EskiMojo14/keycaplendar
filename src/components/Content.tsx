@@ -5,7 +5,6 @@ import { selectDevice, selectPage } from "../app/slices/common/commonSlice";
 import { mainPages } from "../app/slices/common/constants";
 import { arrayIncludes, closeModal, openModal } from "../app/slices/common/functions";
 import { Page } from "../app/slices/common/types";
-import { SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
 import { selectBottomNav } from "../app/slices/settings/settingsSlice";
 import { selectUser } from "../app/slices/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -22,13 +21,7 @@ import "./Content.scss";
 
 type ContentProps = {
   className: string;
-  getData: () => void;
   setPage: (page: Page) => void;
-  setSearch: (search: string) => void;
-  setSort: (sort: SortType) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
-  setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
-  setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
 };
 
 export const Content = (props: ContentProps) => {
@@ -63,18 +56,7 @@ export const Content = (props: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = arrayIncludes(mainPages, page) ? (
-    <ContentMain
-      navOpen={navOpen}
-      openNav={openNav}
-      setSort={props.setSort}
-      setSortOrder={props.setSortOrder}
-      setSearch={props.setSearch}
-      setWhitelist={props.setWhitelist}
-      setWhitelistMerge={props.setWhitelistMerge}
-      getData={props.getData}
-    />
-  ) : null;
+  const contentMain = arrayIncludes(mainPages, page) ? <ContentMain navOpen={navOpen} openNav={openNav} /> : null;
   const contentStatistics = page === "statistics" ? <ContentStatistics navOpen={navOpen} openNav={openNav} /> : null;
   const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} setPage={props.setPage} /> : null;
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
