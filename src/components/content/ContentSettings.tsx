@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { useBoolStates } from "../../app/slices/common/functions";
-import { selectBottomNav, selectSettings } from "../../app/slices/settings/settingsSlice";
+import { selectBottomNav, selectSettings, selectSyncSettings } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { UserContext } from "../../app/slices/user/contexts";
 import { queue } from "../../app/snackbarQueue";
@@ -58,8 +58,11 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   } = useAppSelector(selectSettings);
   const bottomNavSetting = useAppSelector(selectBottomNav);
   const device = useAppSelector(selectDevice);
+  const syncSettings = useAppSelector(selectSyncSettings);
+
   const user = useAppSelector(selectUser);
-  const { setUser, syncSettings, setSyncSettings } = useContext(UserContext);
+
+  const { setUser, setSyncSettings } = useContext(UserContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {

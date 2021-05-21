@@ -25,13 +25,9 @@ export type UserPreferencesDoc = {
 
 export type UserContextType = {
   setUser: (user: Partial<CurrentUserType>) => void;
-  favorites: string[];
   toggleFavorite: (id: string) => void;
-  hidden: string[];
   toggleHidden: (id: string) => void;
-  syncSettings: boolean;
   setSyncSettings: (bool: boolean, write?: boolean) => void;
-  preset: PresetType;
   selectPreset: (id: string) => void;
   newPreset: (preset: PresetType) => void;
   editPreset: (preset: PresetType) => void;

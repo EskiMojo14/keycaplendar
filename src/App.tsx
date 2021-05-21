@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import firebase from "./firebase";
 import moment from "moment";
 import { nanoid } from "nanoid";
@@ -16,7 +16,6 @@ import {
   arrayEveryType,
   arrayIncludes,
   hasKey,
-  mergeObject,
   normalise,
   replaceFunction,
   uniqueArray,
@@ -34,17 +33,27 @@ import {
   whitelistShipped,
 } from "./app/slices/main/constants";
 import {
+  mergeWhitelist,
   selectAllRegions,
   selectAllSets,
+  selectAppPresets,
+  selectCurrentPreset,
+  selectDefaultPreset,
   selectFilteredSets,
   selectLoading,
+  selectSearch,
   selectSetGroups,
   selectSort,
   selectSortOrder,
   selectTransition,
+  selectWhitelist,
+  setAppPresets,
   setContent,
+  setCurrentPreset,
+  setDefaultPreset,
   setList,
   setLoading,
+  setSearch as setMainSearch,
   setSetGroups,
   setSetList,
   setSort as setMainSort,
@@ -126,26 +135,11 @@ export const App = () => {
   const filteredSets = useAppSelector(selectFilteredSets);
   const setGroups = useAppSelector(selectSetGroups);
 
-  const [filterInfo, setFilterInfo] = useState<{
-    search: string;
-    whitelist: WhitelistType;
-    currentPreset: PresetType;
-    appPresets: PresetType[];
-  }>({
-    search: "",
-    whitelist: {
-      edited: [],
-      favorites: false,
-      hidden: false,
-      profiles: [],
-      shipped: ["Shipped", "Not shipped"],
-      regions: [],
-      vendorMode: "exclude",
-      vendors: [],
-    },
-    currentPreset: new Preset(),
-    appPresets: [],
-  });
+  const mainSearch = useAppSelector(selectSearch);
+  const mainWhitelist = useAppSelector(selectWhitelist);
+  const currentPreset = useAppSelector(selectCurrentPreset);
+  const defaultPreset = useAppSelector(selectDefaultPreset);
+  const appPresets = useAppSelector(selectAppPresets);
 
   const getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
@@ -186,7 +180,7 @@ export const App = () => {
     } else {
       dispatch(setAppPage("calendar"));
     }
-    const whitelistObj: WhitelistType = { ...filterInfo.whitelist };
+    const whitelistObj: WhitelistType = { ...mainWhitelist };
     whitelistParams.forEach((param, index, array) => {
       if (params.has(param)) {
         const val = params.get(param);
@@ -347,7 +341,7 @@ export const App = () => {
         } else {
           dispatch(setAppPage(page));
         }
-        setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: "" }));
+        dispatch(setMainSearch(""));
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
@@ -605,21 +599,13 @@ export const App = () => {
 
     // create default preset
 
-    const filteredPresets = filterInfo.appPresets.filter((preset) => preset.id !== "default");
+    const defaultWhitelist: WhitelistType = {
+      ...new Whitelist(false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
+    };
 
-    const defaultWhitelist: WhitelistType = new Whitelist(
-      false,
-      false,
-      allProfiles,
-      ["Shipped", "Not shipped"],
-      allRegions,
-      "exclude",
-      []
-    );
+    const defaultPreset: PresetType = { ...new Preset("Default", false, defaultWhitelist, "default") };
 
-    const defaultPreset: PresetType = new Preset("Default", false, defaultWhitelist, "default");
-
-    const presets = [defaultPreset, ...filteredPresets];
+    dispatch(setDefaultPreset(defaultPreset));
 
     const lists = {
       allVendorRegions: allVendorRegions,
@@ -635,11 +621,9 @@ export const App = () => {
       }
     });
 
-    if (!filterInfo.currentPreset.name) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }));
+    if (!currentPreset.name) {
+      dispatch(setCurrentPreset(defaultPreset));
       setWhitelistMerge({ profiles: allProfiles, regions: allRegions });
-    } else {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets }));
     }
   };
 
@@ -648,8 +632,8 @@ export const App = () => {
     sets = allSets,
     sort = mainSort,
     sortOrder = mainSortOrder,
-    search = filterInfo.search,
-    whitelist = filterInfo.whitelist,
+    search = mainSearch,
+    whitelist = mainWhitelist,
     favorites = userFavorites,
     hidden = userHidden
   ) => {
@@ -922,7 +906,7 @@ export const App = () => {
     }
   };
   const setSearch = (query: string) => {
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }));
+    dispatch(setMainSearch(query));
     document.documentElement.scrollTop = 0;
     debouncedFilterData(appPage, allSets, mainSort, mainSortOrder, query);
   };
@@ -935,11 +919,11 @@ export const App = () => {
         return false;
       }
     });
-    const whitelist = { ...filterInfo.whitelist, ...partialWhitelist, edited: edited };
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
+    const whitelist = { ...mainWhitelist, ...partialWhitelist, edited: edited };
+    dispatch(mergeWhitelist(partialWhitelist));
     document.documentElement.scrollTop = 0;
     if (allSets.length > 0) {
-      filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
+      filterData(appPage, allSets, mainSort, mainSortOrder, mainSearch, whitelist);
     }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
@@ -968,15 +952,13 @@ export const App = () => {
     }
   };
   const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: WhitelistType[T], clearUrl = true) => {
-    if (filterInfo.whitelist.edited instanceof Array) {
-      const edited = filterInfo.whitelist.edited.includes(prop)
-        ? filterInfo.whitelist.edited
-        : [...filterInfo.whitelist.edited, prop];
-      const whitelist = { ...filterInfo.whitelist, [prop]: val, edited: edited };
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
+    if (mainWhitelist.edited instanceof Array) {
+      const edited = uniqueArray([...(mainWhitelist.edited || []), prop]);
+      const whitelist = { ...mainWhitelist, [prop]: val, edited: edited };
+      dispatch(mergeWhitelist({ [prop]: val }));
       document.documentElement.scrollTop = 0;
       if (allSets.length > 0) {
-        filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
+        filterData(appPage, allSets, mainSort, mainSortOrder, mainSearch, whitelist);
       }
     }
     if (clearUrl) {
@@ -1043,12 +1025,10 @@ export const App = () => {
         const data = doc.data();
         const { filterPresets } = data as GlobalDoc;
         if (filterPresets) {
-          const defaultPreset = findPreset("id", "default");
           const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
           if (defaultPreset) {
-            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: [defaultPreset, ...updatedPresets] }));
-          } else {
-            setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: updatedPresets }));
+            dispatch(setCurrentPreset(defaultPreset));
+            dispatch(setAppPresets(updatedPresets));
           }
         }
       })
@@ -1112,16 +1092,7 @@ export const App = () => {
               }
             }
 
-            filterData(
-              appPage,
-              allSets,
-              mainSort,
-              mainSortOrder,
-              filterInfo.search,
-              filterInfo.whitelist,
-              favorites,
-              hidden
-            );
+            filterData(appPage, allSets, mainSort, mainSortOrder, mainSearch, mainWhitelist, favorites, hidden);
           }
         })
         .catch((error) => {
@@ -1134,7 +1105,7 @@ export const App = () => {
     const favorites = addOrRemove([...userFavorites], id);
     dispatch(setFavorites(favorites));
     if (appPage === "favorites") {
-      filterData(appPage, allSets, mainSort, mainSortOrder, filterInfo.search, filterInfo.whitelist, favorites);
+      filterData(appPage, allSets, mainSort, mainSortOrder, mainSearch, mainWhitelist, favorites);
     }
     if (user.id) {
       db.collection("users")
@@ -1154,16 +1125,7 @@ export const App = () => {
   const toggleHidden = (id: string) => {
     const hidden = addOrRemove([...userHidden], id);
     dispatch(setHidden(hidden));
-    filterData(
-      appPage,
-      allSets,
-      mainSort,
-      mainSortOrder,
-      filterInfo.search,
-      filterInfo.whitelist,
-      userFavorites,
-      hidden
-    );
+    filterData(appPage, allSets, mainSort, mainSortOrder, mainSearch, mainWhitelist, userFavorites, hidden);
     const isHidden = hidden.includes(id);
     queue.notify({
       title: `Set ${isHidden ? "hidden" : "unhidden"}.`,
@@ -1250,15 +1212,20 @@ export const App = () => {
     return updatedPreset;
   };
   const findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
-    const allPresets = [...filterInfo.appPresets, ...userPresets];
+    const allPresets = [...appPresets, ...userPresets];
     const index = allPresets.findIndex((preset) => preset[prop] === val);
     return allPresets[index];
   };
   const selectPreset = (id: string, write = true) => {
-    const preset = findPreset("id", id);
-    if (preset) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
-      setWhitelistMerge(preset.whitelist);
+    if (id === "default") {
+      dispatch(setCurrentPreset(defaultPreset));
+      setWhitelistMerge(defaultPreset.whitelist);
+    } else {
+      const preset = findPreset("id", id);
+      if (preset) {
+        dispatch(setCurrentPreset(preset));
+        setWhitelistMerge(preset.whitelist);
+      }
     }
     if (write) {
       setStorage("presetId", id);
@@ -1268,7 +1235,7 @@ export const App = () => {
     preset.id = nanoid();
     const presets = [...userPresets, preset];
     alphabeticalSortProp(presets, "name", false);
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
+    dispatch(setCurrentPreset(preset));
     dispatch(setUserPresets(presets));
     syncPresets(presets);
   };
@@ -1283,18 +1250,15 @@ export const App = () => {
       presets = [...userPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false);
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
+    dispatch(setCurrentPreset(preset));
     dispatch(setUserPresets(presets));
     syncPresets(presets);
   };
   const deletePreset = (preset: PresetType) => {
     const presets = userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false);
-    const defaultPreset = findPreset("id", "default");
-    if (defaultPreset) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
-      dispatch(setUserPresets(presets));
-    }
+    dispatch(setCurrentPreset(defaultPreset));
+    dispatch(setUserPresets(presets));
     syncPresets(presets);
   };
   const syncPresets = (presets = userPresets) => {
@@ -1311,9 +1275,9 @@ export const App = () => {
   };
   const newGlobalPreset = (preset: PresetType) => {
     preset.id = nanoid();
-    const presets = [...filterInfo.appPresets, preset];
+    const presets = [...appPresets, preset];
     alphabeticalSortProp(presets, "name", false, "Default");
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
+    dispatch(setCurrentPreset(preset));
     dispatch(setUserPresets(presets));
     syncGlobalPresets(presets);
   };
@@ -1321,27 +1285,25 @@ export const App = () => {
     const savedPreset = findPreset("id", preset.id);
     let presets: PresetType[];
     if (savedPreset) {
-      const index = filterInfo.appPresets.indexOf(savedPreset);
-      presets = [...filterInfo.appPresets];
+      const index = appPresets.indexOf(savedPreset);
+      presets = [...appPresets];
       presets[index] = preset;
     } else {
-      presets = [...filterInfo.appPresets, preset];
+      presets = [...appPresets, preset];
     }
     alphabeticalSortProp(presets, "name", false, "Default");
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: preset }));
+    dispatch(setCurrentPreset(preset));
     dispatch(setUserPresets(presets));
     syncGlobalPresets(presets);
   };
   const deleteGlobalPreset = (preset: PresetType) => {
-    const presets = filterInfo.appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+    const presets = appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
     alphabeticalSortProp(presets, "name", false, "Default");
-    const defaultPreset = findPreset("id", "default");
-    if (defaultPreset) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { appPresets: presets, currentPreset: defaultPreset }));
-    }
+    dispatch(setCurrentPreset(defaultPreset));
+    dispatch(setAppPresets(presets));
     syncGlobalPresets(presets);
   };
-  const syncGlobalPresets = (presets = filterInfo.appPresets) => {
+  const syncGlobalPresets = (presets = appPresets) => {
     const filteredPresets = presets.filter((preset) => preset.id !== "default");
     const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
       ...preset,
@@ -1401,7 +1363,7 @@ export const App = () => {
           dispatch(setUserPresets([]));
           dispatch(setFavorites([]));
           dispatch(setHidden([]));
-          setFilterInfo((filterInfo) => mergeObject(filterInfo, { currentPreset: defaultPreset }));
+          dispatch(setCurrentPreset(defaultPreset));
         } else {
           dispatch(setUserPresets([]));
           dispatch(setFavorites([]));
@@ -1419,13 +1381,9 @@ export const App = () => {
           <UserContext.Provider
             value={{
               setUser: setUser,
-              favorites: userFavorites,
               toggleFavorite: toggleFavorite,
-              hidden: userHidden,
               toggleHidden: toggleHidden,
-              syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
-              preset: filterInfo.currentPreset,
               selectPreset: selectPreset,
               newPreset: newPreset,
               editPreset: editPreset,
@@ -1447,13 +1405,9 @@ export const App = () => {
           <UserContext.Provider
             value={{
               setUser: setUser,
-              favorites: userFavorites,
               toggleFavorite: toggleFavorite,
-              hidden: userHidden,
               toggleHidden: toggleHidden,
-              syncSettings: settings.syncSettings,
               setSyncSettings: setSyncSettings,
-              preset: filterInfo.currentPreset,
               selectPreset: selectPreset,
               newPreset: newPreset,
               editPreset: editPreset,
@@ -1469,10 +1423,8 @@ export const App = () => {
                 className={transitionClass}
                 setPage={setPage}
                 setView={setView}
-                appPresets={filterInfo.appPresets}
                 setSort={setSort}
                 setSortOrder={setSortOrder}
-                search={filterInfo.search}
                 setSearch={setSearch}
                 setApplyTheme={setApplyTheme}
                 setLightTheme={setLightTheme}
@@ -1484,7 +1436,6 @@ export const App = () => {
                 setBottomNav={setBottomNav}
                 setWhitelist={setWhitelist}
                 setWhitelistMerge={setWhitelistMerge}
-                whitelist={filterInfo.whitelist}
                 setDensity={setDensity}
               />
               <SnackbarQueue messages={queue.messages} />

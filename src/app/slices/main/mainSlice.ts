@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
-import { SetGroup, SetType, SortOrderType, SortType } from "./types";
+import { uniqueArray } from "../common/functions";
+import { Preset } from "./constructors";
+import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 
 type MainState = {
   transition: boolean;
@@ -19,6 +21,12 @@ type MainState = {
   allSets: SetType[];
   filteredSets: SetType[];
   setGroups: SetGroup[];
+
+  search: string;
+  whitelist: WhitelistType;
+  currentPreset: PresetType;
+  defaultPreset: PresetType;
+  appPresets: PresetType[];
 };
 
 const initialState: MainState = {
@@ -42,6 +50,23 @@ const initialState: MainState = {
   allSets: [],
   filteredSets: [],
   setGroups: [],
+
+  // filters
+
+  search: "",
+  whitelist: {
+    edited: [],
+    favorites: false,
+    hidden: false,
+    profiles: [],
+    shipped: ["Shipped", "Not shipped"],
+    regions: [],
+    vendorMode: "exclude",
+    vendors: [],
+  },
+  currentPreset: { ...new Preset() },
+  defaultPreset: { ...new Preset() },
+  appPresets: [],
 };
 
 export const mainSlice = createSlice({
@@ -86,6 +111,25 @@ export const mainSlice = createSlice({
     setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
       state.setGroups = action.payload;
     },
+    setSearch: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
+    },
+    setWhitelist: (state, action: PayloadAction<WhitelistType>) => {
+      state.whitelist = Object.assign(action.payload, { edited: Object.keys(action.payload) });
+    },
+    mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
+      const edited = uniqueArray([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
+      state.whitelist = Object.assign(state.whitelist, action.payload, { edited: edited });
+    },
+    setCurrentPreset: (state, action: PayloadAction<PresetType>) => {
+      state.currentPreset = action.payload;
+    },
+    setDefaultPreset: (state, action: PayloadAction<PresetType>) => {
+      state.defaultPreset = action.payload;
+    },
+    setAppPresets: (state, action: PayloadAction<PresetType[]>) => {
+      state.appPresets = action.payload;
+    },
   },
 });
 
@@ -98,6 +142,12 @@ export const {
   setList,
   setSetList,
   setSetGroups,
+  setSearch,
+  setWhitelist,
+  mergeWhitelist,
+  setCurrentPreset,
+  setDefaultPreset,
+  setAppPresets,
 } = mainSlice.actions;
 
 export const selectTransition = (state: RootState) => state.main.transition;
@@ -125,5 +175,15 @@ export const selectAllSets = (state: RootState) => state.main.allSets;
 export const selectFilteredSets = (state: RootState) => state.main.filteredSets;
 
 export const selectSetGroups = (state: RootState) => state.main.setGroups;
+
+export const selectSearch = (state: RootState) => state.main.search;
+
+export const selectWhitelist = (state: RootState) => state.main.whitelist;
+
+export const selectCurrentPreset = (state: RootState) => state.main.currentPreset;
+
+export const selectDefaultPreset = (state: RootState) => state.main.defaultPreset;
+
+export const selectAppPresets = (state: RootState) => state.main.appPresets;
 
 export default mainSlice.reducer;

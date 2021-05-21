@@ -5,6 +5,7 @@ import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { alphabeticalSortProp, hasKey, iconObject } from "../../app/slices/common/functions";
+import { selectSearch } from "../../app/slices/main/mainSlice";
 import { SetType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
@@ -25,18 +26,22 @@ type DrawerDetailsProps = {
   edit?: (set: SetType) => void;
   open: boolean;
   openSales: (set: SetType) => void;
-  search?: string;
   set: SetType;
   setSearch?: (search: string) => void;
   toggleLichTheme?: () => void;
 };
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
-  const view = useAppSelector(selectMainView);
   const device = useAppSelector(selectDevice);
+
+  const view = useAppSelector(selectMainView);
+
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
+
+  const search = useAppSelector(selectSearch);
+
   const { toggleFavorite, toggleHidden } = useContext(UserContext);
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");
@@ -49,7 +54,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       }
     }
   };
-  useEffect(setScroll, [props.search, JSON.stringify(props.set)]);
+  useEffect(setScroll, [search, JSON.stringify(props.set)]);
   useEffect(() => {
     const drawerContent = document.querySelector(".details-drawer .mdc-drawer__content");
     if (drawerContent) {
@@ -320,10 +325,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       {props.set.notes}
     </Typography>
   ) : null;
-  const search = props.search;
   const setSearch = props.setSearch;
   const searchChips =
-    typeof search === "string" && setSearch ? (
+    search && setSearch ? (
       <div className="search-chips-container">
         <div className="search-chips">
           <ChipSet id="search-chip-set" choice>

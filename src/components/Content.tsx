@@ -5,7 +5,7 @@ import { selectDevice, selectPage } from "../app/slices/common/commonSlice";
 import { mainPages } from "../app/slices/common/constants";
 import { arrayIncludes, closeModal, openModal } from "../app/slices/common/functions";
 import { Page } from "../app/slices/common/types";
-import { PresetType, SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
+import { SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
 import { selectBottomNav } from "../app/slices/settings/settingsSlice";
 import { ViewType } from "../app/slices/settings/types";
 import { selectUser } from "../app/slices/user/userSlice";
@@ -22,10 +22,8 @@ import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
 type ContentProps = {
-  appPresets: PresetType[];
   className: string;
   getData: () => void;
-  search: string;
   setApplyTheme: (applyTheme: string) => void;
   setBottomNav: (bottomNav: boolean) => void;
   setDarkTheme: (darkTheme: string) => void;
@@ -42,7 +40,6 @@ type ContentProps = {
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   toggleLichTheme: () => void;
-  whitelist: WhitelistType;
 };
 
 export const Content = (props: ContentProps) => {
@@ -84,13 +81,10 @@ export const Content = (props: ContentProps) => {
       setSort={props.setSort}
       setSortOrder={props.setSortOrder}
       setView={props.setView}
-      search={props.search}
       setSearch={props.setSearch}
       toggleLichTheme={props.toggleLichTheme}
-      appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
       setWhitelistMerge={props.setWhitelistMerge}
-      whitelist={props.whitelist}
       getData={props.getData}
     />
   ) : null;

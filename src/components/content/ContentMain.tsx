@@ -32,13 +32,10 @@ type ContentMainProps = {
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
   setView: (view: ViewType) => void;
-  search: string;
   setSearch: (search: string) => void;
   toggleLichTheme: () => void;
-  appPresets: PresetType[];
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  whitelist: WhitelistType;
   getData: () => void;
 };
 
@@ -258,19 +255,16 @@ export const ContentMain = (props: ContentMainProps) => {
         setView={props.setView}
         setSort={props.setSort}
         setSortOrder={props.setSortOrder}
-        search={props.search}
         setSearch={props.setSearch}
         openFilter={openFilter}
       />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
-          appPresets={props.appPresets}
           open={filterOpen}
           close={closeFilter}
           setWhitelist={props.setWhitelist}
           setWhitelistMerge={props.setWhitelistMerge}
-          whitelist={props.whitelist}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
         />
@@ -280,7 +274,6 @@ export const ContentMain = (props: ContentMainProps) => {
           close={closeDetails}
           edit={openEdit}
           delete={openDeleteDialog}
-          search={props.search}
           setSearch={props.setSearch}
           toggleLichTheme={props.toggleLichTheme}
           openSales={openSales}

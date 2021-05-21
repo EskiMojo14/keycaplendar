@@ -65,4 +65,6 @@ export const selectMainView = (state: RootState) => state.settings.view;
 
 export const selectCookies = (state: RootState) => state.settings.cookies;
 
+export const selectSyncSettings = (state: RootState) => state.settings.syncSettings;
+
 export default settingsSlice.reducer;
