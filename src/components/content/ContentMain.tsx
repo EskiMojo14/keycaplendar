@@ -4,6 +4,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
+import { selectContent } from "../../app/slices/main/mainSlice";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../app/slices/settings/settingsSlice";
 import { ViewType } from "../../app/slices/settings/types";
@@ -28,7 +29,6 @@ import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 type ContentMainProps = {
   navOpen: boolean;
   openNav: () => void;
-  content: boolean;
   sort: SortType;
   setSort: (sort: SortType) => void;
   sortOrder: SortOrderType;
@@ -48,7 +48,6 @@ type ContentMainProps = {
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   whitelist: WhitelistType;
-  loading: boolean;
   getData: () => void;
 };
 
@@ -58,6 +57,8 @@ export const ContentMain = (props: ContentMainProps) => {
   const view = useAppSelector(selectMainView);
 
   const user = useAppSelector(selectUser);
+
+  const contentBool = useAppSelector(selectContent);
 
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
@@ -265,7 +266,7 @@ export const ContentMain = (props: ContentMainProps) => {
       </ConditionalWrapper>
     ) : null;
 
-  const content = props.content ? (
+  const content = contentBool ? (
     <ContentGrid
       setGroups={props.setGroups}
       details={openDetails}
@@ -294,7 +295,6 @@ export const ContentMain = (props: ContentMainProps) => {
         search={props.search}
         setSearch={props.setSearch}
         sets={props.sets}
-        loading={props.loading}
         openFilter={openFilter}
       />
       {bottomNav ? null : <TopAppBarFixedAdjust />}

@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import commonReducer from "./slices/common/commonSlice";
 import userReducer from "./slices/user/userSlice";
 import settingsReducer from "./slices/settings/settingsSlice";
+import mainReducer from "./slices/main/mainSlice";
 import statisticsReducer from "./slices/statistics/statisticsSlice";
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     common: commonReducer,
     settings: settingsReducer,
     user: userReducer,
+    main: mainReducer,
     statistics: statisticsReducer,
   },
 });

@@ -30,9 +30,7 @@ type ContentProps = {
   allRegions: string[];
   appPresets: PresetType[];
   className: string;
-  content: boolean;
   getData: () => void;
-  loading: boolean;
   search: string;
   setApplyTheme: (applyTheme: string) => void;
   setBottomNav: (bottomNav: boolean) => void;
@@ -93,7 +91,6 @@ export const Content = (props: ContentProps) => {
     <ContentMain
       navOpen={navOpen}
       openNav={openNav}
-      content={props.content}
       sets={props.sets}
       setGroups={props.setGroups}
       sort={props.sort}
@@ -113,7 +110,6 @@ export const Content = (props: ContentProps) => {
       setWhitelist={props.setWhitelist}
       setWhitelistMerge={props.setWhitelistMerge}
       whitelist={props.whitelist}
-      loading={props.loading}
       getData={props.getData}
     />
   ) : null;

@@ -13,7 +13,7 @@ const initialState: CommonState = {
 };
 
 export const commonSlice = createSlice({
-  name: "display",
+  name: "common",
   initialState,
   reducers: {
     setDevice: (state, action: PayloadAction<"mobile" | "tablet" | "desktop">) => {

@@ -33,8 +33,21 @@ import {
   whitelistParams,
   whitelistShipped,
 } from "./app/slices/main/constants";
+import { selectLoading, selectTransition, setContent, setLoading, setTransition } from "./app/slices/main/mainSlice";
 import { Preset, Whitelist } from "./app/slices/main/constructors";
 import { pageConditions } from "./app/slices/main/functions";
+import {
+  ArraySortKeys,
+  DateSortKeys,
+  OldPresetType,
+  PresetType,
+  SetGroup,
+  SetType,
+  SortOrderType,
+  SortType,
+  VendorType,
+  WhitelistType,
+} from "./app/slices/main/types";
 import {
   selectUser,
   setUser,
@@ -45,7 +58,9 @@ import {
   selectHidden,
   setHidden,
 } from "./app/slices/user/userSlice";
+import { UserPreferencesDoc } from "./app/slices/user/types";
 import { selectSettings, setSettings, toggleLich } from "./app/slices/settings/settingsSlice";
+import { ViewType } from "./app/slices/settings/types";
 import { statsTabs } from "./app/slices/statistics/constants";
 import { setStatisticsTab } from "./app/slices/statistics/functions";
 import { UserContext } from "./app/slices/user/contexts";
@@ -59,20 +74,6 @@ import { PrivacyPolicy } from "./components/pages/legal/Privacy";
 import { TermsOfService } from "./components/pages/legal/Terms";
 import { SnackbarCookies } from "./components/common/SnackbarCookies";
 import "./App.scss";
-import {
-  ArraySortKeys,
-  DateSortKeys,
-  OldPresetType,
-  PresetType,
-  SetGroup,
-  SetType,
-  SortOrderType,
-  SortType,
-  VendorType,
-  WhitelistType,
-} from "./app/slices/main/types";
-import { ViewType } from "./app/slices/settings/types";
-import { UserPreferencesDoc } from "./app/slices/user/types";
 
 const db = firebase.firestore();
 
@@ -141,9 +142,8 @@ export const App = () => {
 
   const [cookies, setCookies] = useState(false);
 
-  const [transition, setTransition] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState(true);
+  const transition = useAppSelector(selectTransition);
+  const loading = useAppSelector(selectLoading);
 
   const getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
@@ -312,13 +312,13 @@ export const App = () => {
   };
   const setView = (view: ViewType, write = true) => {
     if (view !== settings.view && !loading) {
-      setTransition(true);
+      dispatch(setTransition(true));
       setTimeout(() => {
         document.documentElement.scrollTop = 0;
         dispatch(setSettings({ view: view }));
       }, 90);
       setTimeout(() => {
-        setTransition(false);
+        dispatch(setTransition(true));
       }, 300);
     } else {
       dispatch(setSettings({ view: view }));
@@ -330,7 +330,7 @@ export const App = () => {
   };
   const setPage = (page: Page) => {
     if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
-      setTransition(true);
+      dispatch(setTransition(true));
       setTimeout(() => {
         if (arrayIncludes(mainPages, page)) {
           filterData(page, setsInfo.allSets, pageSort[page], pageSortOrder[page]);
@@ -343,7 +343,7 @@ export const App = () => {
         document.documentElement.scrollTop = 0;
       }, 90);
       setTimeout(() => {
-        setTransition(false);
+        dispatch(setTransition(true));
       }, 300);
       document.title = "KeycapLendar: " + pageTitle[page];
       const params = new URLSearchParams(window.location.search);
@@ -478,7 +478,7 @@ export const App = () => {
   };
 
   const getData = () => {
-    setLoading(true);
+    dispatch(setLoading(true));
     db.collection("keysets")
       .get()
       .then((querySnapshot) => {
@@ -519,8 +519,8 @@ export const App = () => {
       .catch((error) => {
         console.log("Error getting data: " + error);
         queue.notify({ title: "Error getting data: " + error });
-        setLoading(false);
-        setContent(false);
+        dispatch(setLoading(false));
+        dispatch(setContent(false));
       });
   };
 
@@ -715,8 +715,8 @@ export const App = () => {
     createGroups(page, sort, sortOrder, filteredSets);
 
     setSetsInfo((setsInfo) => mergeObject(setsInfo, { filteredSets: filteredSets }));
-    setContent(true);
-    setLoading(false);
+    dispatch(setContent(true));
+    dispatch(setLoading(false));
   };
 
   const debouncedFilterData = debounce(filterData, 350, { trailing: true });
@@ -1476,12 +1476,10 @@ export const App = () => {
                 allRegions={lists.allRegions}
                 appPresets={filterInfo.appPresets}
                 setGroups={setsInfo.setGroups}
-                loading={loading}
                 sort={sorts.sort}
                 setSort={setSort}
                 sortOrder={sorts.sortOrder}
                 setSortOrder={setSortOrder}
-                content={content}
                 search={filterInfo.search}
                 setSearch={setSearch}
                 setApplyTheme={setApplyTheme}

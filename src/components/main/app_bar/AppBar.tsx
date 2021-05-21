@@ -4,6 +4,7 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice";
 import { pageTitle } from "../../../app/slices/common/constants";
 import { useBoolStates } from "../../../app/slices/common/functions";
+import { selectLoading } from "../../../app/slices/main/mainSlice";
 import { SetType, SortOrderType, SortType } from "../../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
@@ -26,7 +27,6 @@ import "./AppBar.scss";
 
 type AppBarProps = {
   indent: boolean;
-  loading: boolean;
   openFilter: () => void;
   openNav: () => void;
   search: string;
@@ -45,6 +45,8 @@ export const AppBar = (props: AppBarProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
 
   const page = useAppSelector(selectPage);
+
+  const loading = useAppSelector(selectLoading);
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
@@ -153,7 +155,7 @@ export const AppBar = (props: AppBarProps) => {
           {indent}
           {rightButtons}
         </TopAppBarRow>
-        <LinearProgress closed={!props.loading} />
+        <LinearProgress closed={!loading} />
       </TopAppBar>
     </>
   );
