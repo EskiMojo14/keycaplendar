@@ -23,6 +23,7 @@ import {
   VendorDataObject,
 } from "./types";
 import { hasKey, mergeObject } from "../common/functions";
+import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
 
@@ -51,7 +52,7 @@ export const setSetting = <T extends keyof StatisticsType>(prop: T, value: Stati
 export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: StatisticsSortType[T]) => {
   const { dispatch } = store;
   dispatch(setStatisticsSort({ key: prop, value: value }));
-  sortData(prop, value);
+  sortData();
 };
 
 export const getData = async () => {
@@ -83,12 +84,11 @@ export const getData = async () => {
     });
 };
 
-export const sortData = <T extends keyof StatisticsSortType>(prop: T, value: StatisticsSortType[T]) => {
+export const sortData = () => {
   const { dispatch } = store;
   const {
     statistics: { tab: statisticsTab, data: statisticsData, sort },
   } = store.getState();
-  sort[prop] = value;
   const key = statisticsTab + "Data";
   if (hasKey(statisticsData, key)) {
     const stateData = statisticsData[key];
@@ -96,103 +96,94 @@ export const sortData = <T extends keyof StatisticsSortType>(prop: T, value: Sta
     if (typeof stateData === "object") {
       if (tab === "duration") {
         const data = { ...stateData } as DurationData;
-        Object.keys(data).forEach((property) => {
-          if (hasKey(data, property)) {
-            Object.keys(data[property]).forEach((prop) => {
-              if (hasKey(data[property], prop)) {
-                data[property][prop].sort((a, b) => {
-                  if (a.name === "All" || b.name === "All") {
-                    return a.name === "all" ? -1 : 1;
-                  }
-                  const x =
-                    sort[tab] === "alphabetical"
-                      ? a.name.toLowerCase()
-                      : a[sort[tab] === "duration" ? "mean" : "total"];
-                  const y =
-                    sort[tab] === "alphabetical"
-                      ? b.name.toLowerCase()
-                      : b[sort[tab] === "duration" ? "mean" : "total"];
-                  const c = a.name.toLowerCase();
-                  const d = b.name.toLowerCase();
-                  if (x < y) {
-                    return sort[tab] === "alphabetical" ? -1 : 1;
-                  }
-                  if (x > y) {
-                    return sort[tab] === "alphabetical" ? 1 : -1;
-                  }
-                  if (c < d) {
-                    return -1;
-                  }
-                  if (c > d) {
-                    return 1;
-                  }
-                  return 0;
-                });
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            const value = data[category][property];
+            const sortedValue = value.slice().sort((a, b) => {
+              if (a.name === "All" || b.name === "All") {
+                return a.name === "all" ? -1 : 1;
               }
+              const x =
+                sort[tab] === "alphabetical" ? a.name.toLowerCase() : a[sort[tab] === "duration" ? "mean" : "total"];
+              const y =
+                sort[tab] === "alphabetical" ? b.name.toLowerCase() : b[sort[tab] === "duration" ? "mean" : "total"];
+              const c = a.name.toLowerCase();
+              const d = b.name.toLowerCase();
+              if (x < y) {
+                return sort[tab] === "alphabetical" ? -1 : 1;
+              }
+              if (x > y) {
+                return sort[tab] === "alphabetical" ? 1 : -1;
+              }
+              if (c < d) {
+                return -1;
+              }
+              if (c > d) {
+                return 1;
+              }
+              return 0;
             });
-          }
+            data[category][property] = sortedValue;
+          });
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
       } else if (tab === "timelines") {
         const data = { ...stateData } as TimelinesData;
-        Object.keys(data).forEach((property) => {
-          if (hasKey(data, property)) {
-            Object.keys(data[property]).forEach((prop) => {
-              if (hasKey(data[property], prop)) {
-                data[property][prop].data.sort((a, b) => {
-                  const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
-                  const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
-                  const c = a.name.toLowerCase();
-                  const d = b.name.toLowerCase();
-                  if (x < y) {
-                    return sort[tab] === "alphabetical" ? -1 : 1;
-                  }
-                  if (x > y) {
-                    return sort[tab] === "alphabetical" ? 1 : -1;
-                  }
-                  if (c < d) {
-                    return -1;
-                  }
-                  if (c > d) {
-                    return 1;
-                  }
-                  return 0;
-                });
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            const value = data[category][property].data;
+            const sortedValue = value.slice().sort((a, b) => {
+              const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
+              const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
+              const c = a.name.toLowerCase();
+              const d = b.name.toLowerCase();
+              if (x < y) {
+                return sort[tab] === "alphabetical" ? -1 : 1;
               }
+              if (x > y) {
+                return sort[tab] === "alphabetical" ? 1 : -1;
+              }
+              if (c < d) {
+                return -1;
+              }
+              if (c > d) {
+                return 1;
+              }
+              return 0;
             });
-          }
+            data[category][property].data = sortedValue;
+          });
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
       } else {
         const data = { ...stateData } as StatusData | ShippedData | VendorData;
-        Object.keys(data).forEach((prop) => {
-          if (hasKey(data, prop)) {
-            const value = data[prop];
-            type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
-            value.sort((a: DataObj, b: DataObj) => {
-              if (hasKey(sort, tab)) {
-                const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
-                const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
-                const c = a.name.toLowerCase();
-                const d = b.name.toLowerCase();
-                if (x < y) {
-                  return sort[tab] === "total" ? 1 : -1;
-                }
-                if (x > y) {
-                  return sort[tab] === "total" ? -1 : 1;
-                }
-                if (c < d) {
-                  return -1;
-                }
-                if (c > d) {
-                  return 1;
-                }
-                return 0;
-              } else {
-                return 0;
+        properties.forEach((properties) => {
+          type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
+          const value = data[properties];
+          const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
+            if (hasKey(sort, tab)) {
+              const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
+              const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
+              const c = a.name.toLowerCase();
+              const d = b.name.toLowerCase();
+              if (x < y) {
+                return sort[tab] === "total" ? 1 : -1;
               }
-            });
-          }
+              if (x > y) {
+                return sort[tab] === "total" ? -1 : 1;
+              }
+              if (c < d) {
+                return -1;
+              }
+              if (c > d) {
+                return 1;
+              }
+              return 0;
+            } else {
+              return 0;
+            }
+          });
+          data[properties] = sortedValue;
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
       }
