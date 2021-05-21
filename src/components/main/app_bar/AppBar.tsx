@@ -8,7 +8,6 @@ import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice"
 import { SortOrderType, SortType } from "../../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
-import { ViewType } from "../../../app/slices/settings/types";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -32,7 +31,6 @@ type AppBarProps = {
   setSearch: (search: string) => void;
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  setView: (view: ViewType) => void;
 };
 
 export const AppBar = (props: AppBarProps) => {
@@ -103,7 +101,7 @@ export const AppBar = (props: AppBarProps) => {
         <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
       </Tooltip>
       <MenuSurfaceAnchor>
-        <MenuView open={viewOpen} setView={props.setView} onClose={closeView} />
+        <MenuView open={viewOpen} onClose={closeView} />
         <Tooltip enterDelay={500} content="View" align={tooltipAlign}>
           <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[view]} />
         </Tooltip>

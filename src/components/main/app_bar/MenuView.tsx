@@ -2,13 +2,12 @@ import React from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectMainView } from "../../../app/slices/settings/settingsSlice";
 import { allViews, viewNames } from "../../../app/slices/settings/constants";
-import { ViewType } from "../../../app/slices/settings/types";
+import { setView } from "../../../app/slices/settings/functions";
 import { Menu, MenuItem } from "@rmwc/menu";
 
 type MenuViewProps = {
   onClose: () => void;
   open: boolean;
-  setView: (view: ViewType) => void;
 };
 
 export const MenuView = (props: MenuViewProps) => {
@@ -17,7 +16,7 @@ export const MenuView = (props: MenuViewProps) => {
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
       {allViews.map((key) => {
         return (
-          <MenuItem key={key} selected={view === key} onClick={() => props.setView(key)}>
+          <MenuItem key={key} selected={view === key} onClick={() => setView(key)}>
             {viewNames[key]}
           </MenuItem>
         );

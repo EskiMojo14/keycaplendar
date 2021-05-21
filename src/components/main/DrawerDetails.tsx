@@ -8,6 +8,7 @@ import { alphabeticalSortProp, hasKey, iconObject } from "../../app/slices/commo
 import { selectSearch } from "../../app/slices/main/mainSlice";
 import { SetType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
+import { toggleLichTheme } from "../../app/slices/settings/functions";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { UserContext } from "../../app/slices/user/contexts";
 import { Button } from "@rmwc/button";
@@ -28,7 +29,6 @@ type DrawerDetailsProps = {
   openSales: (set: SetType) => void;
   set: SetType;
   setSearch?: (search: string) => void;
-  toggleLichTheme?: () => void;
 };
 
 export const DrawerDetails = (props: DrawerDetailsProps) => {
@@ -243,7 +243,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   const lichButton =
     props.set.colorway === "Lich" ? (
       <IconButton
-        onClick={props.toggleLichTheme}
+        onClick={toggleLichTheme}
         icon={iconObject(
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">

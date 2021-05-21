@@ -7,7 +7,6 @@ import { Keyset, Preset } from "../../app/slices/main/constructors";
 import { selectContent } from "../../app/slices/main/mainSlice";
 import { PresetType, SetType, SortOrderType, SortType, WhitelistType } from "../../app/slices/main/types";
 import { selectBottomNav, selectMainView } from "../../app/slices/settings/settingsSlice";
-import { ViewType } from "../../app/slices/settings/types";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -31,9 +30,7 @@ type ContentMainProps = {
   openNav: () => void;
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  setView: (view: ViewType) => void;
   setSearch: (search: string) => void;
-  toggleLichTheme: () => void;
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   getData: () => void;
@@ -252,7 +249,6 @@ export const ContentMain = (props: ContentMainProps) => {
       <AppBar
         openNav={props.openNav}
         indent={user.isDesigner || user.isEditor}
-        setView={props.setView}
         setSort={props.setSort}
         setSortOrder={props.setSortOrder}
         setSearch={props.setSearch}
@@ -275,7 +271,6 @@ export const ContentMain = (props: ContentMainProps) => {
           edit={openEdit}
           delete={openDeleteDialog}
           setSearch={props.setSearch}
-          toggleLichTheme={props.toggleLichTheme}
           openSales={openSales}
         />
         <BoolWrapper

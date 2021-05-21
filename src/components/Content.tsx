@@ -7,7 +7,6 @@ import { arrayIncludes, closeModal, openModal } from "../app/slices/common/funct
 import { Page } from "../app/slices/common/types";
 import { SortOrderType, SortType, WhitelistType } from "../app/slices/main/types";
 import { selectBottomNav } from "../app/slices/settings/settingsSlice";
-import { ViewType } from "../app/slices/settings/types";
 import { selectUser } from "../app/slices/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
@@ -24,22 +23,12 @@ import "./Content.scss";
 type ContentProps = {
   className: string;
   getData: () => void;
-  setApplyTheme: (applyTheme: string) => void;
-  setBottomNav: (bottomNav: boolean) => void;
-  setDarkTheme: (darkTheme: string) => void;
-  setDensity: (density: string) => void;
-  setFromTimeTheme: (fromTimeTheme: string) => void;
-  setLightTheme: (lightTheme: string) => void;
-  setManualTheme: (manualTheme: boolean) => void;
   setPage: (page: Page) => void;
   setSearch: (search: string) => void;
   setSort: (sort: SortType) => void;
   setSortOrder: (sortOrder: SortOrderType) => void;
-  setToTimeTheme: (toTimeTheme: string) => void;
-  setView: (view: ViewType) => void;
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  toggleLichTheme: () => void;
 };
 
 export const Content = (props: ContentProps) => {
@@ -80,9 +69,7 @@ export const Content = (props: ContentProps) => {
       openNav={openNav}
       setSort={props.setSort}
       setSortOrder={props.setSortOrder}
-      setView={props.setView}
       setSearch={props.setSearch}
-      toggleLichTheme={props.toggleLichTheme}
       setWhitelist={props.setWhitelist}
       setWhitelistMerge={props.setWhitelistMerge}
       getData={props.getData}
@@ -94,20 +81,7 @@ export const Content = (props: ContentProps) => {
   const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
   const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
   const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
-  const contentSettings =
-    page === "settings" ? (
-      <ContentSettings
-        openNav={openNav}
-        setBottomNav={props.setBottomNav}
-        setLightTheme={props.setLightTheme}
-        setDarkTheme={props.setDarkTheme}
-        setApplyTheme={props.setApplyTheme}
-        setManualTheme={props.setManualTheme}
-        setFromTimeTheme={props.setFromTimeTheme}
-        setToTimeTheme={props.setToTimeTheme}
-        setDensity={props.setDensity}
-      />
-    ) : null;
+  const contentSettings = page === "settings" ? <ContentSettings openNav={openNav} /> : null;
   return (
     <div
       className={classNames(props.className, page, "app-container", {
