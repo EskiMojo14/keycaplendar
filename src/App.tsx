@@ -45,7 +45,7 @@ import {
   selectHidden,
   setHidden,
 } from "./app/slices/user/userSlice";
-import { selectSettings, setSettings } from "./app/slices/settings/settingsSlice";
+import { selectSettings, setSettings, toggleLich } from "./app/slices/settings/settingsSlice";
 import { statsTabs } from "./app/slices/statistics/constants";
 import { setStatisticsTab } from "./app/slices/statistics/functions";
 import { UserContext } from "./app/slices/user/contexts";
@@ -140,8 +140,6 @@ export const App = () => {
   });
 
   const [cookies, setCookies] = useState(false);
-
-  const [lichTheme, setLichTheme] = useState(false);
 
   const [transition, setTransition] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -379,7 +377,7 @@ export const App = () => {
     const html = document.querySelector("html");
     if (html) {
       html.setAttribute("class", "");
-      html.classList.add(lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme);
+      html.classList.add(settings.lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme);
     }
     const meta = document.querySelector("meta[name=theme-color]");
     if (meta) {
@@ -447,7 +445,7 @@ export const App = () => {
     }
   };
   const toggleLichTheme = () => {
-    setLichTheme((lichTheme) => !lichTheme);
+    dispatch(toggleLich());
     setTimeout(checkTheme, 1);
   };
   const setBottomNav = (value: boolean, write = true) => {

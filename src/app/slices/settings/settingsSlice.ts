@@ -44,10 +44,13 @@ export const settingsSlice = createSlice({
     setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => {
       state = Object.assign(state, action.payload);
     },
+    toggleLich: (state) => {
+      state.lichTheme = !state.lichTheme;
+    },
   },
 });
 
-export const { setSetting, setSettings } = settingsSlice.actions;
+export const { setSetting, setSettings, toggleLich } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
 
