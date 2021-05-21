@@ -35,8 +35,6 @@ type AppBarProps = {
   setSortOrder: (sortOrder: SortOrderType) => void;
   setView: (view: ViewType) => void;
   sets: SetType[];
-  sort: SortType;
-  sortOrder: SortOrderType;
 };
 
 export const AppBar = (props: AppBarProps) => {
@@ -94,14 +92,7 @@ export const AppBar = (props: AppBarProps) => {
         <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
       ) : null}
       <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
-        <MenuSort
-          sort={props.sort}
-          sortOrder={props.sortOrder}
-          open={sortOpen}
-          setSort={props.setSort}
-          setSortOrder={props.setSortOrder}
-          onClose={closeSort}
-        />
+        <MenuSort open={sortOpen} setSort={props.setSort} setSortOrder={props.setSortOrder} onClose={closeSort} />
         <Tooltip
           enterDelay={500}
           content="Sort"

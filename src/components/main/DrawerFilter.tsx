@@ -6,7 +6,7 @@ import { selectDevice } from "../../app/slices/common/commonSlice";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../app/slices/common/functions";
 import { whitelistParams, whitelistShipped } from "../../app/slices/main/constants";
 import { Preset, Whitelist } from "../../app/slices/main/constructors";
-import { PresetType, SortType, WhitelistType } from "../../app/slices/main/types";
+import { PresetType, WhitelistType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
 import { selectUser, selectUserPresets } from "../../app/slices/user/userSlice";
 import { UserContext } from "../../app/slices/user/contexts";
@@ -32,7 +32,6 @@ type DrawerFilterProps = {
   profiles: string[];
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  sort: SortType;
   vendors: string[];
   regions: string[];
   whitelist: WhitelistType;

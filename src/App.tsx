@@ -33,7 +33,17 @@ import {
   whitelistParams,
   whitelistShipped,
 } from "./app/slices/main/constants";
-import { selectLoading, selectTransition, setContent, setLoading, setTransition } from "./app/slices/main/mainSlice";
+import {
+  selectLoading,
+  selectSort,
+  selectSortOrder,
+  selectTransition,
+  setContent,
+  setLoading,
+  setTransition,
+  setSort as setMainSort,
+  setSortOrder as setMainSortOrder,
+} from "./app/slices/main/mainSlice";
 import { Preset, Whitelist } from "./app/slices/main/constructors";
 import { pageConditions } from "./app/slices/main/functions";
 import {
@@ -96,6 +106,9 @@ export const App = () => {
 
   const appPage = useAppSelector(selectPage);
 
+  const mainSort = useAppSelector(selectSort);
+  const mainSortOrder = useAppSelector(selectSortOrder);
+
   const [lists, setLists] = useState<{
     allDesigners: string[];
     allProfiles: string[];
@@ -117,13 +130,6 @@ export const App = () => {
     allSets: [],
     filteredSets: [],
     setGroups: [],
-  });
-  const [sorts, setSorts] = useState<{
-    sort: SortType;
-    sortOrder: SortOrderType;
-  }>({
-    sort: "gbLaunch",
-    sortOrder: "ascending",
   });
   const [filterInfo, setFilterInfo] = useState<{
     search: string;
@@ -162,21 +168,26 @@ export const App = () => {
         if (arrayIncludes(mainPages, pageQuery)) {
           if (pageQuery === "calendar") {
             dispatch(setAppPage(pageQuery));
-            setSorts({ sort: pageSort[pageQuery], sortOrder: pageSortOrder[pageQuery] });
+            dispatch(setMainSort(pageSort[pageQuery]));
+            dispatch(setMainSortOrder(pageSortOrder[pageQuery]));
           } else {
             const sortQuery = params.get("sort");
             const sortOrderQuery = params.get("sortOrder");
             dispatch(setAppPage(pageQuery));
-            setSorts({
-              sort:
+            dispatch(
+              setMainSort(
                 arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
                   ? sortQuery
-                  : pageSort[pageQuery],
-              sortOrder:
+                  : pageSort[pageQuery]
+              )
+            );
+            dispatch(
+              setMainSortOrder(
                 sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
                   ? sortOrderQuery
-                  : pageSortOrder[pageQuery],
-            });
+                  : pageSortOrder[pageQuery]
+              )
+            );
           }
         } else {
           dispatch(setAppPage(pageQuery));
@@ -341,7 +352,8 @@ export const App = () => {
         if (arrayIncludes(mainPages, page)) {
           filterData(page, setsInfo.allSets, pageSort[page], pageSortOrder[page]);
           dispatch(setAppPage(page));
-          setSorts({ sort: pageSort[page], sortOrder: pageSortOrder[page] });
+          dispatch(setMainSort(pageSort[page]));
+          dispatch(setMainSortOrder(pageSortOrder[page]));
         } else {
           dispatch(setAppPage(page));
         }
@@ -638,8 +650,8 @@ export const App = () => {
   const filterData = (
     page = appPage,
     sets = setsInfo.allSets,
-    sort = sorts.sort,
-    sortOrder = sorts.sortOrder,
+    sort = mainSort,
+    sortOrder = mainSortOrder,
     search = filterInfo.search,
     whitelist = filterInfo.whitelist,
     favorites = userFavorites,
@@ -727,7 +739,7 @@ export const App = () => {
 
   const debouncedFilterData = debounce(filterData, 350, { trailing: true });
 
-  const sortData = (sort = sorts.sort, sortOrder = sorts.sortOrder, setGroups = setsInfo.setGroups) => {
+  const sortData = (sort = mainSort, sortOrder = mainSortOrder, setGroups = setsInfo.setGroups) => {
     const array = [...setGroups];
     array.sort(function (x, y) {
       const a = x.title;
@@ -757,12 +769,7 @@ export const App = () => {
     setSetsInfo((setsInfo) => mergeObject(setsInfo, { setGroups: array }));
   };
 
-  const createGroups = (
-    page = appPage,
-    sort = sorts.sort,
-    sortOrder = sorts.sortOrder,
-    sets = setsInfo.filteredSets
-  ) => {
+  const createGroups = (page = appPage, sort = mainSort, sortOrder = mainSortOrder, sets = setsInfo.filteredSets) => {
     const createGroups = (sets: SetType[]): string[] => {
       if (dateSorts.includes(sort)) {
         return sets
@@ -896,7 +903,8 @@ export const App = () => {
       sortOrder = "descending";
     }
     if (arrayIncludes(allSorts, sort)) {
-      setSorts({ sort: sort, sortOrder: sortOrder });
+      dispatch(setMainSort(sort));
+      dispatch(setMainSortOrder(sortOrder));
       createGroups(appPage, sort, sortOrder);
     }
     if (clearUrl) {
@@ -908,8 +916,8 @@ export const App = () => {
   };
   const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
     document.documentElement.scrollTop = 0;
-    setSorts((sorts) => mergeObject(sorts, { sortOrder: sortOrder }));
-    sortData(sorts.sort, sortOrder);
+    dispatch(setMainSortOrder(sortOrder));
+    sortData(mainSort, sortOrder);
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
       params.delete("sortOrder");
@@ -920,7 +928,7 @@ export const App = () => {
   const setSearch = (query: string) => {
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { search: query }));
     document.documentElement.scrollTop = 0;
-    debouncedFilterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, query);
+    debouncedFilterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, query);
   };
   const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clearUrl = true) => {
     const edited = Object.keys(partialWhitelist).filter((key) => {
@@ -935,7 +943,7 @@ export const App = () => {
     setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
     document.documentElement.scrollTop = 0;
     if (setsInfo.allSets.length > 0) {
-      filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
+      filterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
     }
     if (clearUrl) {
       const params = new URLSearchParams(window.location.search);
@@ -972,7 +980,7 @@ export const App = () => {
       setFilterInfo((filterInfo) => mergeObject(filterInfo, { whitelist: whitelist }));
       document.documentElement.scrollTop = 0;
       if (setsInfo.allSets.length > 0) {
-        filterData(appPage, setsInfo.allSets, sorts.sort, sorts.sortOrder, filterInfo.search, whitelist);
+        filterData(appPage, setsInfo.allSets, mainSort, mainSortOrder, filterInfo.search, whitelist);
       }
     }
     if (clearUrl) {
@@ -1111,8 +1119,8 @@ export const App = () => {
             filterData(
               appPage,
               setsInfo.allSets,
-              sorts.sort,
-              sorts.sortOrder,
+              mainSort,
+              mainSortOrder,
               filterInfo.search,
               filterInfo.whitelist,
               favorites,
@@ -1133,8 +1141,8 @@ export const App = () => {
       filterData(
         appPage,
         setsInfo.allSets,
-        sorts.sort,
-        sorts.sortOrder,
+        mainSort,
+        mainSortOrder,
         filterInfo.search,
         filterInfo.whitelist,
         favorites
@@ -1161,8 +1169,8 @@ export const App = () => {
     filterData(
       appPage,
       setsInfo.allSets,
-      sorts.sort,
-      sorts.sortOrder,
+      mainSort,
+      mainSortOrder,
       filterInfo.search,
       filterInfo.whitelist,
       userFavorites,
@@ -1482,9 +1490,7 @@ export const App = () => {
                 allRegions={lists.allRegions}
                 appPresets={filterInfo.appPresets}
                 setGroups={setsInfo.setGroups}
-                sort={sorts.sort}
                 setSort={setSort}
-                sortOrder={sorts.sortOrder}
                 setSortOrder={setSortOrder}
                 search={filterInfo.search}
                 setSearch={setSearch}

@@ -49,8 +49,6 @@ type ContentProps = {
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
   sets: SetType[];
   setGroups: SetGroup[];
-  sort: SortType;
-  sortOrder: SortOrderType;
   toggleLichTheme: () => void;
   whitelist: WhitelistType;
 };
@@ -93,9 +91,7 @@ export const Content = (props: ContentProps) => {
       openNav={openNav}
       sets={props.sets}
       setGroups={props.setGroups}
-      sort={props.sort}
       setSort={props.setSort}
-      sortOrder={props.sortOrder}
       setSortOrder={props.setSortOrder}
       setView={props.setView}
       search={props.search}

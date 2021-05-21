@@ -29,9 +29,7 @@ import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
 type ContentMainProps = {
   navOpen: boolean;
   openNav: () => void;
-  sort: SortType;
   setSort: (sort: SortType) => void;
-  sortOrder: SortOrderType;
   setSortOrder: (sortOrder: SortOrderType) => void;
   setView: (view: ViewType) => void;
   search: string;
@@ -288,9 +286,7 @@ export const ContentMain = (props: ContentMainProps) => {
         openNav={props.openNav}
         indent={user.isDesigner || user.isEditor}
         setView={props.setView}
-        sort={props.sort}
         setSort={props.setSort}
-        sortOrder={props.sortOrder}
         setSortOrder={props.setSortOrder}
         search={props.search}
         setSearch={props.setSearch}
@@ -311,7 +307,6 @@ export const ContentMain = (props: ContentMainProps) => {
           whitelist={props.whitelist}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
-          sort={props.sort}
         />
         <DrawerDetails
           set={detailSet}
