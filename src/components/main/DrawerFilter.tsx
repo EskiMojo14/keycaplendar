@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../app/slices/common/functions";
+import { selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "../../app/slices/main/mainSlice";
 import { whitelistParams, whitelistShipped } from "../../app/slices/main/constants";
 import { Preset, Whitelist } from "../../app/slices/main/constructors";
 import { PresetType, WhitelistType } from "../../app/slices/main/types";
@@ -29,19 +30,24 @@ type DrawerFilterProps = {
   deletePreset: (preset: PresetType) => void;
   open: boolean;
   openPreset: (preset: PresetType) => void;
-  profiles: string[];
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
-  vendors: string[];
-  regions: string[];
   whitelist: WhitelistType;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
-  const view = useAppSelector(selectMainView);
   const device = useAppSelector(selectDevice);
+
+  const view = useAppSelector(selectMainView);
+
   const user = useAppSelector(selectUser);
   const presets = useAppSelector(selectUserPresets);
+
+  const profiles = useAppSelector(selectAllProfiles);
+  const vendors = useAppSelector(selectAllVendors);
+  const regions = useAppSelector(selectAllVendorRegions);
+  const lists = { profiles, vendors, regions };
+
   const { preset, selectPreset } = useContext(UserContext);
   const [modified, setModified] = useState(false);
 
@@ -112,8 +118,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const checkAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
-      const all = props[prop];
+    if (hasKey(lists, prop)) {
+      const all = lists[prop];
       props.setWhitelist(prop, all);
     } else if (prop === "shipped") {
       props.setWhitelist(prop, [...whitelistShipped]);
@@ -121,18 +127,16 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const uncheckAll = (prop: string) => {
-    if (hasKey(props, prop) && hasKey(props.whitelist, prop)) {
-      if (props[prop] instanceof Array) {
-        props.setWhitelist(prop, []);
-      }
+    if (hasKey(lists, prop) && hasKey(props.whitelist, prop)) {
+      props.setWhitelist(prop, []);
     } else if (prop === "shipped") {
       props.setWhitelist(prop, []);
     }
   };
 
   const invertAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
-      const all = props[prop];
+    if (hasKey(lists, prop)) {
+      const all = lists[prop];
       const inverted = all.filter((value) => !props.whitelist[prop].includes(value));
       props.setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
@@ -163,10 +167,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         }
       } else if (param === "profiles" || param === "shipped" || param === "regions" || param === "vendors") {
         const lengths = {
-          profiles: props.profiles.length,
+          profiles: profiles.length,
           shipped: 2,
           vendors: 0,
-          regions: props.regions.length,
+          regions: regions.length,
         };
         if (param === "profiles" || param === "regions" || param === "vendors") {
           if (props.whitelist[param].length > 1 && props.whitelist[param].length !== lengths[param]) {
@@ -565,7 +569,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.profiles.map((profile) => {
+                {profiles.map((profile) => {
                   return (
                     <Chip
                       key={"profile-" + profile}
@@ -677,7 +681,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.regions.map((region) => {
+                {regions.map((region) => {
                   return (
                     <Chip
                       key={"regions-" + region}
@@ -750,7 +754,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.vendors.map((vendor) => {
+                {vendors.map((vendor) => {
                   return (
                     <Chip
                       key={"profile-" + vendor}

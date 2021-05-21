@@ -9,6 +9,12 @@ type MainState = {
 
   sort: SortType;
   sortOrder: SortOrderType;
+
+  allDesigners: string[];
+  allProfiles: string[];
+  allRegions: string[];
+  allVendors: string[];
+  allVendorRegions: string[];
 };
 
 const initialState: MainState = {
@@ -20,6 +26,13 @@ const initialState: MainState = {
   // sorts
   sort: "gbLaunch",
   sortOrder: "ascending",
+
+  // lists
+  allDesigners: [],
+  allProfiles: [],
+  allRegions: [],
+  allVendors: [],
+  allVendorRegions: [],
 };
 
 export const mainSlice = createSlice({
@@ -41,10 +54,20 @@ export const mainSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<SortOrderType>) => {
       state.sortOrder = action.payload;
     },
+    setList: (
+      state,
+      action: PayloadAction<{
+        name: "allDesigners" | "allProfiles" | "allRegions" | "allVendors" | "allVendorRegions";
+        array: string[];
+      }>
+    ) => {
+      const { name, array } = action.payload;
+      state = Object.assign(state, { [name]: array });
+    },
   },
 });
 
-export const { setTransition, setLoading, setContent, setSort, setSortOrder } = mainSlice.actions;
+export const { setTransition, setLoading, setContent, setSort, setSortOrder, setList } = mainSlice.actions;
 
 export const selectTransition = (state: RootState) => state.main.transition;
 
@@ -55,5 +78,15 @@ export const selectContent = (state: RootState) => state.main.content;
 export const selectSort = (state: RootState) => state.main.sort;
 
 export const selectSortOrder = (state: RootState) => state.main.sortOrder;
+
+export const selectAllDesigners = (state: RootState) => state.main.allDesigners;
+
+export const selectAllProfiles = (state: RootState) => state.main.allProfiles;
+
+export const selectAllRegions = (state: RootState) => state.main.allRegions;
+
+export const selectAllVendors = (state: RootState) => state.main.allVendors;
+
+export const selectAllVendorRegions = (state: RootState) => state.main.allVendorRegions;
 
 export default mainSlice.reducer;

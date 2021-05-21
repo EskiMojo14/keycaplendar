@@ -14,6 +14,12 @@ import {
   hasKey,
   iconObject,
 } from "../../../app/slices/common/functions";
+import {
+  selectAllDesigners,
+  selectAllProfiles,
+  selectAllVendorRegions,
+  selectAllVendors,
+} from "../../../app/slices/main/mainSlice";
 import { SetType, VendorType } from "../../../app/slices/main/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
@@ -54,10 +60,6 @@ const getVendorStyle = (provided: DraggableProvided) => {
 };
 
 type ModalCreateProps = {
-  allDesigners: string[];
-  allProfiles: string[];
-  allVendorRegions: string[];
-  allVendors: string[];
   close: () => void;
   getData: () => void;
   open: boolean;
@@ -65,7 +67,13 @@ type ModalCreateProps = {
 
 export const ModalCreate = (props: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
+
   const user = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+  const allProfiles = useAppSelector(selectAllProfiles);
+  const allVendors = useAppSelector(selectAllVendors);
+  const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
   const [fields, setFields] = useState({
     profile: "",
@@ -575,7 +583,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 />
                 <Autocomplete
                   open={focused === "profile"}
-                  array={props.allProfiles}
+                  array={allProfiles}
                   query={fields.profile}
                   prop="profile"
                   select={selectValue}
@@ -622,7 +630,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             />
             <Autocomplete
               open={focused === "designer"}
-              array={props.allDesigners}
+              array={allDesigners}
               query={fields.designer.join(", ")}
               prop="designer"
               select={selectValueAppend}
@@ -787,7 +795,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                                 />
                                 <Autocomplete
                                   open={focused === "name" + index}
-                                  array={props.allVendors}
+                                  array={allVendors}
                                   query={vendor.name}
                                   prop={"name" + index}
                                   select={selectVendor}
@@ -825,7 +833,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                                 />
                                 <Autocomplete
                                   open={focused === "region" + index}
-                                  array={props.allVendorRegions}
+                                  array={allVendorRegions}
                                   query={vendor.region}
                                   prop={"region" + index}
                                   select={selectVendorAppend}
@@ -943,7 +951,13 @@ type ModalEditProps = ModalCreateProps & {
 
 export const ModalEdit = (props: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
+
   const user = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+  const allProfiles = useAppSelector(selectAllProfiles);
+  const allVendors = useAppSelector(selectAllVendors);
+  const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
   const [id, setId] = useState("");
 
@@ -1518,7 +1532,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 />
                 <Autocomplete
                   open={focused === "profile"}
-                  array={props.allProfiles}
+                  array={allProfiles}
                   query={fields.profile}
                   prop="profile"
                   select={selectValue}
@@ -1564,7 +1578,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             />
             <Autocomplete
               open={focused === "designer"}
-              array={props.allDesigners}
+              array={allDesigners}
               query={fields.designer.join(", ")}
               prop="designer"
               select={selectValueAppend}
@@ -1729,7 +1743,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                                 />
                                 <Autocomplete
                                   open={focused === "name" + index}
-                                  array={props.allVendors}
+                                  array={allVendors}
                                   query={vendor.name}
                                   prop={"name" + index}
                                   select={selectVendor}
@@ -1767,7 +1781,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                                 />
                                 <Autocomplete
                                   open={focused === "region" + index}
-                                  array={props.allVendorRegions}
+                                  array={allVendorRegions}
                                   query={vendor.region}
                                   prop={"region" + index}
                                   select={selectVendorAppend}

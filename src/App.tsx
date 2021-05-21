@@ -41,8 +41,10 @@ import {
   setContent,
   setLoading,
   setTransition,
+  selectAllRegions,
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
+  setList,
 } from "./app/slices/main/mainSlice";
 import { Preset, Whitelist } from "./app/slices/main/constructors";
 import { pageConditions } from "./app/slices/main/functions";
@@ -96,32 +98,25 @@ const db = firebase.firestore();
 export const App = () => {
   const dispatch = useAppDispatch();
 
-  const settings = useAppSelector(selectSettings);
   const device = useAppSelector(selectDevice);
+  const appPage = useAppSelector(selectPage);
+
+  const settings = useAppSelector(selectSettings);
+  const cookies = useAppSelector(selectCookies);
 
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectUserPresets);
   const userFavorites = useAppSelector(selectFavorites);
   const userHidden = useAppSelector(selectHidden);
 
-  const appPage = useAppSelector(selectPage);
+  const transition = useAppSelector(selectTransition);
+  const loading = useAppSelector(selectLoading);
 
   const mainSort = useAppSelector(selectSort);
   const mainSortOrder = useAppSelector(selectSortOrder);
 
-  const [lists, setLists] = useState<{
-    allDesigners: string[];
-    allProfiles: string[];
-    allRegions: string[];
-    allVendors: string[];
-    allVendorRegions: string[];
-  }>({
-    allDesigners: [],
-    allProfiles: [],
-    allRegions: [],
-    allVendors: [],
-    allVendorRegions: [],
-  });
+  const allRegions = useAppSelector(selectAllRegions);
+
   const [setsInfo, setSetsInfo] = useState<{
     allSets: SetType[];
     filteredSets: SetType[];
@@ -151,11 +146,6 @@ export const App = () => {
     currentPreset: new Preset(),
     appPresets: [],
   });
-
-  const cookies = useAppSelector(selectCookies);
-
-  const transition = useAppSelector(selectTransition);
-  const loading = useAppSelector(selectLoading);
 
   const getURLQuery = () => {
     const params = new URLSearchParams(window.location.search);
@@ -631,12 +621,18 @@ export const App = () => {
 
     const presets = [defaultPreset, ...filteredPresets];
 
-    setLists({
+    const lists = {
       allVendorRegions: allVendorRegions,
       allRegions: allRegions,
       allVendors: allVendors,
       allDesigners: allDesigners,
       allProfiles: allProfiles,
+    } as const;
+
+    Object.keys(lists).forEach((key) => {
+      if (hasKey(lists, key)) {
+        dispatch(setList({ name: key, array: lists[key] }));
+      }
     });
 
     if (!filterInfo.currentPreset.name) {
@@ -1257,7 +1253,7 @@ export const App = () => {
     const regions =
       hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
         ? preset.whitelist.regions
-        : lists.allRegions;
+        : allRegions;
     const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
     return updatedPreset;
   };
@@ -1483,11 +1479,6 @@ export const App = () => {
                 setPage={setPage}
                 setView={setView}
                 allSets={setsInfo.allSets}
-                allProfiles={lists.allProfiles}
-                allDesigners={lists.allDesigners}
-                allVendors={lists.allVendors}
-                allVendorRegions={lists.allVendorRegions}
-                allRegions={lists.allRegions}
                 appPresets={filterInfo.appPresets}
                 setGroups={setsInfo.setGroups}
                 setSort={setSort}

@@ -4,6 +4,7 @@ import moment from "moment";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { hasKey, iconObject, mergeObject } from "../../app/slices/common/functions";
+import { selectAllDesigners } from "../../app/slices/main/mainSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { User } from "../../app/slices/users/constructors";
 import { UserType } from "../../app/slices/users/types";
@@ -28,7 +29,6 @@ import { Autocomplete } from "../util/Autocomplete";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 
 type UserCardProps = {
-  allDesigners: string[];
   delete: (user: UserType) => void;
   getUsers: () => void;
   user: UserType;
@@ -36,7 +36,11 @@ type UserCardProps = {
 
 export const UserCard = (props: UserCardProps) => {
   const device = useAppSelector(selectDevice);
+
   const currentUser = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+
   const blankUser = new User();
   const [user, setUser] = useState<UserType>(blankUser);
   const [edited, setEdited] = useState(false);
@@ -222,7 +226,7 @@ export const UserCard = (props: UserCardProps) => {
           />
           <Autocomplete
             open={focused === "nickname"}
-            array={props.allDesigners}
+            array={allDesigners}
             query={user.nickname}
             prop="nickname"
             select={selectValue}

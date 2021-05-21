@@ -50,7 +50,6 @@ const length = 1000;
 const rows = 25;
 
 type ContentUsersProps = {
-  allDesigners: string[];
   openNav: () => void;
 };
 
@@ -437,15 +436,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                       </DataTableHead>
                       <DataTableBody>
                         {users.paginatedUsers.map((user) => {
-                          return (
-                            <UserRow
-                              user={user}
-                              delete={openDeleteDialog}
-                              getUsers={getUsers}
-                              key={user.email}
-                              allDesigners={props.allDesigners}
-                            />
-                          );
+                          return <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />;
                         })}
                       </DataTableBody>
                     </DataTableContent>
@@ -518,15 +509,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
               ) : (
                 <div className="user-container">
                   {users.sortedUsers.map((user) => {
-                    return (
-                      <UserCard
-                        user={user}
-                        key={user.email}
-                        delete={openDeleteDialog}
-                        getUsers={getUsers}
-                        allDesigners={props.allDesigners}
-                      />
-                    );
+                    return <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />;
                   })}
                 </div>
               )}

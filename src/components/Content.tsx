@@ -22,12 +22,7 @@ import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
 type ContentProps = {
-  allDesigners: string[];
-  allProfiles: string[];
   allSets: SetType[];
-  allVendors: string[];
-  allVendorRegions: string[];
-  allRegions: string[];
   appPresets: PresetType[];
   className: string;
   getData: () => void;
@@ -97,11 +92,6 @@ export const Content = (props: ContentProps) => {
       search={props.search}
       setSearch={props.setSearch}
       toggleLichTheme={props.toggleLichTheme}
-      allProfiles={props.allProfiles}
-      allDesigners={props.allDesigners}
-      allVendors={props.allVendors}
-      allVendorRegions={props.allVendorRegions}
-      allRegions={props.allRegions}
       appPresets={props.appPresets}
       setWhitelist={props.setWhitelist}
       setWhitelistMerge={props.setWhitelistMerge}
@@ -113,8 +103,7 @@ export const Content = (props: ContentProps) => {
   const contentChangelog =
     page === "history" ? <ContentHistory allSets={props.allSets} openNav={openNav} setPage={props.setPage} /> : null;
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
-  const contentUsers =
-    page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} allDesigners={props.allDesigners} /> : null;
+  const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
   const contentImages =
     page === "images" && user.isAdmin ? <ContentImages openNav={openNav} sets={props.allSets} /> : null;
   const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;

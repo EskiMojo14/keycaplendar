@@ -4,6 +4,7 @@ import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { queue } from "../../app/snackbarQueue";
 import { iconObject, mergeObject, truncate } from "../../app/slices/common/functions";
+import { selectAllDesigners } from "../../app/slices/main/mainSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { User } from "../../app/slices/users/constructors";
 import { UserType } from "../../app/slices/users/types";
@@ -17,7 +18,6 @@ import { TextField } from "@rmwc/textfield";
 import { Autocomplete } from "../util/Autocomplete";
 
 type UserRowProps = {
-  allDesigners: string[];
   delete: (user: UserType) => void;
   getUsers: () => void;
   user: UserType;
@@ -25,6 +25,9 @@ type UserRowProps = {
 
 export const UserRow = (props: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+
   const blankUser = new User();
   const [user, setUser] = useState<UserType>(blankUser);
   const [edited, setEdited] = useState(false);
@@ -143,7 +146,7 @@ export const UserRow = (props: UserRowProps) => {
           />
           <Autocomplete
             open={focused === "nickname"}
-            array={props.allDesigners}
+            array={allDesigners}
             query={user.nickname}
             prop="nickname"
             select={selectValue}

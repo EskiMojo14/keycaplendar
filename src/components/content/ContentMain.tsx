@@ -37,11 +37,6 @@ type ContentMainProps = {
   toggleLichTheme: () => void;
   sets: SetType[];
   setGroups: SetGroup[];
-  allDesigners: string[];
-  allProfiles: string[];
-  allVendors: string[];
-  allVendorRegions: string[];
-  allRegions: string[];
   appPresets: PresetType[];
   setWhitelist: <T extends keyof WhitelistType>(prop: T, whitelist: WhitelistType[T]) => void;
   setWhitelistMerge: (partialWhitelist: Partial<WhitelistType>) => void;
@@ -241,25 +236,8 @@ export const ContentMain = (props: ContentMainProps) => {
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        <ModalCreate
-          open={createOpen}
-          close={closeCreate}
-          allProfiles={props.allProfiles}
-          allDesigners={props.allDesigners}
-          allVendors={props.allVendors}
-          allVendorRegions={props.allVendorRegions}
-          getData={props.getData}
-        />
-        <ModalEdit
-          open={editOpen}
-          close={closeEdit}
-          allProfiles={props.allProfiles}
-          allDesigners={props.allDesigners}
-          allVendors={props.allVendors}
-          allVendorRegions={props.allVendorRegions}
-          set={editSet}
-          getData={props.getData}
-        />
+        <ModalCreate open={createOpen} close={closeCreate} getData={props.getData} />
+        <ModalEdit open={editOpen} close={closeEdit} set={editSet} getData={props.getData} />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;
@@ -296,9 +274,6 @@ export const ContentMain = (props: ContentMainProps) => {
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
-          profiles={props.allProfiles}
-          vendors={props.allVendors}
-          regions={props.allRegions}
           appPresets={props.appPresets}
           open={filterOpen}
           close={closeFilter}
