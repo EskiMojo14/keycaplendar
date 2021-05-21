@@ -59,7 +59,13 @@ import {
   setHidden,
 } from "./app/slices/user/userSlice";
 import { UserPreferencesDoc } from "./app/slices/user/types";
-import { selectSettings, setSettings, toggleLich } from "./app/slices/settings/settingsSlice";
+import {
+  selectCookies,
+  selectSettings,
+  setCookies,
+  setSettings,
+  toggleLich,
+} from "./app/slices/settings/settingsSlice";
 import { ViewType } from "./app/slices/settings/types";
 import { statsTabs } from "./app/slices/statistics/constants";
 import { setStatisticsTab } from "./app/slices/statistics/functions";
@@ -140,7 +146,7 @@ export const App = () => {
     appPresets: [],
   });
 
-  const [cookies, setCookies] = useState(false);
+  const cookies = useAppSelector(selectCookies);
 
   const transition = useAppSelector(selectTransition);
   const loading = useAppSelector(selectLoading);
@@ -218,11 +224,11 @@ export const App = () => {
     getData();
   };
   const acceptCookies = () => {
-    setCookies(true);
+    dispatch(setCookies(true));
     setCookie("accepted", "true", 356);
   };
   const clearCookies = () => {
-    setCookies(false);
+    dispatch(setCookies(false));
     setCookie("accepted", "false", -1);
   };
   const setCookie = (cname: string, cvalue: string, exdays: number) => {
@@ -260,7 +266,7 @@ export const App = () => {
   const checkStorage = () => {
     const accepted = getCookie("accepted");
     if (accepted && accepted === "true") {
-      setCookies(true);
+      dispatch(setCookies(true));
 
       const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
         const cookie = getCookie(key);

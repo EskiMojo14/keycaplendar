@@ -14,6 +14,7 @@ type SettingsState = {
   lichTheme: boolean;
   density: string;
   syncSettings: boolean;
+  cookies: boolean;
 };
 
 const initialState: SettingsState = {
@@ -28,6 +29,7 @@ const initialState: SettingsState = {
   lichTheme: false,
   density: "default",
   syncSettings: false,
+  cookies: false,
 };
 
 export const settingsSlice = createSlice({
@@ -47,15 +49,20 @@ export const settingsSlice = createSlice({
     toggleLich: (state) => {
       state.lichTheme = !state.lichTheme;
     },
+    setCookies: (state, action: PayloadAction<boolean>) => {
+      state.cookies = action.payload;
+    },
   },
 });
 
-export const { setSetting, setSettings, toggleLich } = settingsSlice.actions;
+export const { setSetting, setSettings, toggleLich, setCookies } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
 
 export const selectBottomNav = (state: RootState) => state.settings.bottomNav && state.common.device === "mobile";
 
 export const selectMainView = (state: RootState) => state.settings.view;
+
+export const selectCookies = (state: RootState) => state.settings.cookies;
 
 export default settingsSlice.reducer;
