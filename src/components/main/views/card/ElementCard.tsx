@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
@@ -7,7 +7,7 @@ import { selectPage } from "../../../../app/slices/common/commonSlice";
 import { iconObject } from "../../../../app/slices/common/functions";
 import { SetType } from "../../../../app/slices/main/types";
 import { selectFavorites, selectHidden, selectUser } from "../../../../app/slices/user/userSlice";
-import { UserContext } from "../../../../app/slices/user/contexts";
+import { toggleFavorite, toggleHidden } from "../../../../app/slices/user/functions";
 import { Typography } from "@rmwc/typography";
 import {
   Card,
@@ -45,7 +45,6 @@ export const ElementCard = (props: ElementCardProps) => {
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
 
-  const { toggleFavorite, toggleHidden } = useContext(UserContext);
   const liveIndicator =
     props.live && page !== "live" ? (
       <Tooltip content="Live" align="bottom" enterDelay={500}>

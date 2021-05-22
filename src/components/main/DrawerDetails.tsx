@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import moment from "moment";
@@ -12,7 +12,7 @@ import { SetType } from "../../app/slices/main/types";
 import { selectMainView } from "../../app/slices/settings/settingsSlice";
 import { toggleLichTheme } from "../../app/slices/settings/functions";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
-import { UserContext } from "../../app/slices/user/contexts";
+import { toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -44,7 +44,6 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
 
   const search = useAppSelector(selectSearch);
 
-  const { toggleFavorite, toggleHidden } = useContext(UserContext);
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");
     if (chipSet) {

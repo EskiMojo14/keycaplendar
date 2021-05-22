@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav, selectSettings, selectSyncSettings } from "../../app/slices/settings/settingsSlice";
@@ -17,8 +17,7 @@ import {
   setSyncSettings,
   setToTimeTheme,
 } from "../../app/slices/settings/functions";
-import { selectUser } from "../../app/slices/user/userSlice";
-import { UserContext } from "../../app/slices/user/contexts";
+import { selectUser, setUser } from "../../app/slices/user/userSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
@@ -49,6 +48,7 @@ type ContentSettingsProps = {
 };
 
 export const ContentSettings = (props: ContentSettingsProps) => {
+  const dispatch = useAppDispatch();
   const {
     applyTheme,
     bottomNav,
@@ -65,7 +65,6 @@ export const ContentSettings = (props: ContentSettingsProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const { setUser } = useContext(UserContext);
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {
@@ -73,7 +72,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       .auth()
       .signOut()
       .then(() => {
-        setUser({});
+        dispatch(setUser({}));
       })
       .catch((error) => {
         console.log("Error signing out: " + error);

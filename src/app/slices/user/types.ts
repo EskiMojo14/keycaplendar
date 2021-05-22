@@ -22,9 +22,3 @@ export type UserPreferencesDoc = {
   settings?: Partial<Settings>;
   syncSettings?: boolean;
 };
-
-export type UserContextType = {
-  setUser: (user: Partial<CurrentUserType>) => void;
-  toggleFavorite: (id: string) => void;
-  toggleHidden: (id: string) => void;
-};
