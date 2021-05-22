@@ -3,6 +3,13 @@ import moment from "moment";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "../../app/hooks";
+import { mainPages, pageIcons, pageTitle } from "../../app/slices/common/constants";
+import { setPage } from "../../app/slices/common/coreFunctions";
+import { arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
+import { MainPage } from "../../app/slices/common/types";
+import { pageConditions } from "../../app/slices/main/functions";
+import { SetType } from "../../app/slices/main/types";
+import { RecentSet } from "../../app/slices/history/types";
 import { selectFavorites, selectHidden } from "../../app/slices/user/userSlice";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
@@ -10,12 +17,6 @@ import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "../util/ConditionalWrapper";
 import "./RecentSetCard.scss";
-import { RecentSet } from "../../app/slices/history/types";
-import { SetType } from "../../app/slices/main/types";
-import { MainPage, Page } from "../../app/slices/common/types";
-import { pageConditions } from "../../app/slices/main/functions";
-import { arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
-import { mainPages, pageIcons, pageTitle } from "../../app/slices/common/constants";
 
 type RecentSetCardProps = {
   recentSet: RecentSet;
@@ -23,7 +24,6 @@ type RecentSetCardProps = {
   selected: boolean;
   filterChangelog: (set: RecentSet) => void;
   openDetails: (set: SetType) => void;
-  setPage: (page: Page) => void;
 };
 
 export const RecentSetCard = (props: RecentSetCardProps) => {
@@ -160,13 +160,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
               if (arrayIncludes(mainPages, page)) {
                 const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
                 return (
-                  <Button
-                    outlined
-                    label={title}
-                    icon={pageIcons[page]}
-                    onClick={() => props.setPage(page)}
-                    key={page}
-                  />
+                  <Button outlined label={title} icon={pageIcons[page]} onClick={() => setPage(page)} key={page} />
                 );
               }
               return null;

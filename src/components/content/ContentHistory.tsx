@@ -16,7 +16,6 @@ import {
   truncate,
   uniqueArray,
 } from "../../app/slices/common/functions";
-import { Page } from "../../app/slices/common/types";
 import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { historyTabs } from "../../app/slices/history/constants";
 import { ProcessedPublicActionType, PublicActionType, RecentSet } from "../../app/slices/history/types";
@@ -48,7 +47,6 @@ const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentHistoryProps = {
   openNav: () => void;
-  setPage: (page: Page) => void;
 };
 
 type HistoryTab = typeof historyTabs[number];
@@ -252,7 +250,6 @@ export const ContentHistory = (props: ContentHistoryProps) => {
               filtered={recentSet.id === filterSet.id}
               selected={recentSet.id === detailSet.id}
               openDetails={openDetails}
-              setPage={props.setPage}
               key={recentSet.title}
             />
           ))}

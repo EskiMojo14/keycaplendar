@@ -4,7 +4,6 @@ import { useAppSelector } from "../app/hooks";
 import { selectDevice, selectPage } from "../app/slices/common/commonSlice";
 import { mainPages } from "../app/slices/common/constants";
 import { arrayIncludes, closeModal, openModal } from "../app/slices/common/functions";
-import { Page } from "../app/slices/common/types";
 import { selectBottomNav } from "../app/slices/settings/settingsSlice";
 import { selectUser } from "../app/slices/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -21,7 +20,6 @@ import "./Content.scss";
 
 type ContentProps = {
   className: string;
-  setPage: (page: Page) => void;
 };
 
 export const Content = (props: ContentProps) => {
@@ -58,7 +56,7 @@ export const Content = (props: ContentProps) => {
 
   const contentMain = arrayIncludes(mainPages, page) ? <ContentMain navOpen={navOpen} openNav={openNav} /> : null;
   const contentStatistics = page === "statistics" ? <ContentStatistics navOpen={navOpen} openNav={openNav} /> : null;
-  const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} setPage={props.setPage} /> : null;
+  const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} /> : null;
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
   const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
   const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
@@ -71,7 +69,7 @@ export const Content = (props: ContentProps) => {
         "bottom-nav": bottomNav,
       })}
     >
-      <DrawerNav open={navOpen} close={closeNav} setPage={props.setPage} />
+      <DrawerNav open={navOpen} close={closeNav} />
       <DrawerAppContent>
         {contentMain}
         {contentStatistics}

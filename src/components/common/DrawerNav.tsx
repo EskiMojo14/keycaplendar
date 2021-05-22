@@ -5,6 +5,7 @@ import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
 import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "../../app/slices/common/constants";
+import { setPage as setMainPage } from "../../app/slices/common/coreFunctions";
 import { hasKey, iconObject } from "../../app/slices/common/functions";
 import { Page } from "../../app/slices/common/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
@@ -20,7 +21,6 @@ const db = firebase.firestore();
 type DrawerNavProps = {
   close: () => void;
   open: boolean;
-  setPage: (page: Page) => void;
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
@@ -36,7 +36,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const dismissible = device === "desktop";
 
   const setPage = (page: Page) => {
-    props.setPage(page);
+    setMainPage(page);
     if (!dismissible) {
       props.close();
     }

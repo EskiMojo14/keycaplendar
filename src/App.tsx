@@ -3,44 +3,20 @@ import firebase from "./firebase";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectDevice, selectPage, setAppPage, setDevice } from "./app/slices/common/commonSlice";
-import { allPages, mainPages, pageTitle, urlPages } from "./app/slices/common/constants";
-import { addOrRemove, arrayEveryType, arrayIncludes, hasKey } from "./app/slices/common/functions";
-import { GlobalDoc, Page } from "./app/slices/common/types";
+import { selectDevice, selectPage } from "./app/slices/common/commonSlice";
+import { checkDevice, getGlobals, getURLQuery } from "./app/slices/common/coreFunctions";
+import { addOrRemove, hasKey } from "./app/slices/common/functions";
 import {
   selectAllSets,
-  selectDefaultPreset,
-  selectLoading,
   selectSearch,
   selectSort,
   selectSortOrder,
   selectTransition,
   selectWhitelist,
-  setAppPresets,
   setCurrentPreset,
-  setSearch as setMainSearch,
-  setSort as setMainSort,
-  setSortOrder as setMainSortOrder,
-  setTransition,
 } from "./app/slices/main/mainSlice";
-import {
-  allSorts,
-  pageSort,
-  pageSortOrder,
-  sortBlacklist,
-  whitelistParams,
-  whitelistShipped,
-} from "./app/slices/main/constants";
-import {
-  getData,
-  filterData,
-  setWhitelistMerge,
-  testSets,
-  updatePreset,
-  selectPreset,
-  findPreset,
-} from "./app/slices/main/functions";
-import { WhitelistType } from "./app/slices/main/types";
+import { whitelistParams } from "./app/slices/main/constants";
+import { filterData, testSets, updatePreset, selectPreset, findPreset } from "./app/slices/main/functions";
 import {
   selectUser,
   setUser,
@@ -61,8 +37,6 @@ import {
   settingFns,
   checkTheme,
 } from "./app/slices/settings/functions";
-import { statsTabs } from "./app/slices/statistics/constants";
-import { setStatisticsTab } from "./app/slices/statistics/functions";
 import { UserContext } from "./app/slices/user/contexts";
 import { queue } from "./app/snackbarQueue";
 import { SnackbarQueue } from "@rmwc/snackbar";
@@ -91,7 +65,6 @@ export const App = () => {
   const userHidden = useAppSelector(selectHidden);
 
   const transition = useAppSelector(selectTransition);
-  const loading = useAppSelector(selectLoading);
 
   const mainSort = useAppSelector(selectSort);
   const mainSortOrder = useAppSelector(selectSortOrder);
@@ -100,167 +73,7 @@ export const App = () => {
 
   const mainSearch = useAppSelector(selectSearch);
   const mainWhitelist = useAppSelector(selectWhitelist);
-  const defaultPreset = useAppSelector(selectDefaultPreset);
 
-  const getURLQuery = () => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("page")) {
-      const pageQuery = params.get("page");
-      if (
-        arrayIncludes(urlPages, pageQuery) ||
-        (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development")
-      ) {
-        if (arrayIncludes(mainPages, pageQuery)) {
-          if (pageQuery === "calendar") {
-            dispatch(setAppPage(pageQuery));
-            dispatch(setMainSort(pageSort[pageQuery]));
-            dispatch(setMainSortOrder(pageSortOrder[pageQuery]));
-          } else {
-            const sortQuery = params.get("sort");
-            const sortOrderQuery = params.get("sortOrder");
-            dispatch(setAppPage(pageQuery));
-            dispatch(
-              setMainSort(
-                arrayIncludes(allSorts, sortQuery) && !arrayIncludes(sortBlacklist[sortQuery], pageQuery)
-                  ? sortQuery
-                  : pageSort[pageQuery]
-              )
-            );
-            dispatch(
-              setMainSortOrder(
-                sortOrderQuery && (sortOrderQuery === "ascending" || sortOrderQuery === "descending")
-                  ? sortOrderQuery
-                  : pageSortOrder[pageQuery]
-              )
-            );
-          }
-        } else {
-          dispatch(setAppPage(pageQuery));
-        }
-      }
-    } else {
-      dispatch(setAppPage("calendar"));
-    }
-    const whitelistObj: WhitelistType = { ...mainWhitelist };
-    whitelistParams.forEach((param, index, array) => {
-      if (params.has(param)) {
-        const val = params.get(param);
-        if (val) {
-          if (param === "profile" || param === "region" || param === "vendor") {
-            const plural = `${param}s`;
-            if (hasKey(whitelistObj, plural)) {
-              whitelistObj[plural] = [val.replace("-", " ")] as never;
-            }
-          } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
-            const array = val.split(" ").map((item) => item.replace("-", " "));
-            if (param === "shipped") {
-              if (
-                arrayEveryType<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))
-              ) {
-                whitelistObj[param] = array;
-              }
-            } else {
-              whitelistObj[param] = array;
-            }
-          } else if (param === "vendorMode" && (val === "include" || val === "exclude")) {
-            whitelistObj[param] = val;
-          }
-        }
-      }
-      if (index === array.length - 1) {
-        setWhitelistMerge(whitelistObj, false);
-      }
-    });
-    if (params.has("statisticsTab")) {
-      const urlTab = params.get("statisticsTab");
-      if (urlTab && arrayIncludes(statsTabs, urlTab)) {
-        setStatisticsTab(urlTab);
-      }
-    }
-    getData();
-  };
-
-  const setPage = (page: Page) => {
-    if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
-      dispatch(setTransition(true));
-      setTimeout(() => {
-        if (arrayIncludes(mainPages, page)) {
-          filterData(page, allSets, pageSort[page], pageSortOrder[page]);
-          dispatch(setAppPage(page));
-          dispatch(setMainSort(pageSort[page]));
-          dispatch(setMainSortOrder(pageSortOrder[page]));
-        } else {
-          dispatch(setAppPage(page));
-        }
-        dispatch(setMainSearch(""));
-        document.documentElement.scrollTop = 0;
-      }, 90);
-      setTimeout(() => {
-        dispatch(setTransition(true));
-      }, 300);
-      document.title = "KeycapLendar: " + pageTitle[page];
-      const params = new URLSearchParams(window.location.search);
-      params.set("page", page);
-      window.history.pushState(
-        {
-          page: page,
-        },
-        "KeycapLendar: " + pageTitle[page],
-        "?" + params.toString()
-      );
-    }
-  };
-
-  const checkDevice = () => {
-    let i = 0;
-    let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    let lastDevice = "tablet";
-    const calculate = () => {
-      const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      if (vw !== lastWidth || i === 0) {
-        if (vw >= 840) {
-          if (lastDevice !== "desktop") {
-            dispatch(setDevice("desktop"));
-            lastDevice = "desktop";
-          }
-        } else if (vw < 840 && vw >= 480) {
-          if (lastDevice !== "tablet") {
-            dispatch(setDevice("tablet"));
-            lastDevice = "tablet";
-          }
-        } else {
-          if (lastDevice !== "mobile") {
-            dispatch(setDevice("mobile"));
-            lastDevice = "mobile";
-          }
-        }
-        lastWidth = vw;
-        i++;
-      }
-    };
-    calculate();
-    window.addEventListener("resize", calculate);
-  };
-  const getGlobals = () => {
-    db.collection("app")
-      .doc("globals")
-      .get()
-      .then((doc) => {
-        const data = doc.data();
-        const { filterPresets } = data as GlobalDoc;
-        if (filterPresets) {
-          const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
-          if (defaultPreset) {
-            dispatch(setCurrentPreset(defaultPreset));
-            dispatch(setAppPresets(updatedPresets));
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("Failed to get global settings: " + error);
-        queue.notify({ title: "Failed to get global settings: " + error });
-      });
-  };
   const getUserPreferences = (id: string) => {
     if (id) {
       db.collection("users")
@@ -465,7 +278,7 @@ export const App = () => {
             }}
           >
             <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
-              <Content className={transitionClass} setPage={setPage} />
+              <Content className={transitionClass} />
               <SnackbarQueue messages={queue.messages} />
               <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
             </div>

@@ -1,7 +1,21 @@
 import React from "react";
-import { IconPropT } from "@rmwc/types";
-import { iconObject } from "./functions";
+import { IconOptions, IconPropT } from "@rmwc/types";
 import { Page } from "./types";
+
+/**
+ * Converts JSX to RMWC icon object parameter.
+ * *Copied to constants file to prevent circular import.*
+ * @param jsx JSX of icon component.
+ * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
+ */
+
+const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
+  return {
+    strategy: "component",
+    icon: jsx,
+    ...config,
+  };
+};
 
 /** Character replacements to be used in `replaceFunction`. */
 
