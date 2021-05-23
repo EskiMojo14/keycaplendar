@@ -4,7 +4,7 @@ import firebase from "../../firebase";
 import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { auditProperties } from "../../app/slices/audit/constants";
 import {
   alphabeticalSortProp,
@@ -17,6 +17,7 @@ import {
   uniqueArray,
 } from "../../app/slices/common/functions";
 import { selectAllSets } from "../../app/slices/main/mainSlice";
+import { selectLoading, selectTab, setLoading, setTab } from "../../app/slices/history/historySlice";
 import { historyTabs } from "../../app/slices/history/constants";
 import { ProcessedPublicActionType, PublicActionType, RecentSet } from "../../app/slices/history/types";
 import { Keyset } from "../../app/slices/main/constructors";
@@ -49,25 +50,21 @@ type ContentHistoryProps = {
   openNav: () => void;
 };
 
-type HistoryTab = typeof historyTabs[number];
-
 export const ContentHistory = (props: ContentHistoryProps) => {
+  const dispatch = useAppDispatch();
+
   const bottomNav = useAppSelector(selectBottomNav);
 
   const allSets = useAppSelector(selectAllSets);
 
-  const [tab, setTab] = useState<HistoryTab>("recent");
-  const setTabScroll = (tab: HistoryTab) => {
-    setTab(tab);
-    scrollTo(0, 0);
-  };
+  const tab = useAppSelector(selectTab);
+  const loading = useAppSelector(selectLoading);
 
-  const [loading, setLoading] = useState(false);
   const [swiping, setSwiping] = useState(false);
 
   const getData = () => {
     const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    setLoading(true);
+    dispatch(setLoading(true));
     cloudFn({ num: 25 })
       .then((result) => {
         const actions: PublicActionType[] = result.data;
@@ -110,7 +107,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       };
     });
     setProcessedActions(processedActions);
-    setLoading(false);
+    dispatch(setLoading(false));
   };
 
   const getSetById = (id: string) => {
@@ -188,7 +185,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       clearFilter();
     } else {
       setFilterSet({ id, title });
-      setTabScroll("changelog");
+      dispatch(setTab("changelog"));
     }
   };
 
@@ -199,7 +196,10 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
-        <TabBar activeTabIndex={historyTabs.indexOf(tab)} onActivate={(e) => setTabScroll(historyTabs[e.detail.index])}>
+        <TabBar
+          activeTabIndex={historyTabs.indexOf(tab)}
+          onActivate={(e) => dispatch(setTab(historyTabs[e.detail.index]))}
+        >
           {historyTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
           ))}
@@ -234,7 +234,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   ) : null;
 
   const handleChangeIndex = (index: number) => {
-    setTabScroll(historyTabs[index]);
+    dispatch(setTab(historyTabs[index]));
   };
 
   const slideRenderer = (params: any) => {

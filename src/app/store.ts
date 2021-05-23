@@ -4,6 +4,7 @@ import userReducer from "./slices/user/userSlice";
 import settingsReducer from "./slices/settings/settingsSlice";
 import mainReducer from "./slices/main/mainSlice";
 import statisticsReducer from "./slices/statistics/statisticsSlice";
+import historyReducer from "./slices/history/historySlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     user: userReducer,
     main: mainReducer,
     statistics: statisticsReducer,
+    history: historyReducer,
   },
 });
 

@@ -5,6 +5,8 @@ import { setAppPage, setDevice } from "./commonSlice";
 import { allPages, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayEveryType, arrayIncludes, hasKey } from "./functions";
 import { GlobalDoc, Page } from "./types";
+import { historyTabs } from "../history/constants";
+import { setHistoryTab } from "../history/functions";
 import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
@@ -130,6 +132,12 @@ export const getURLQuery = () => {
     const urlTab = params.get("statisticsTab");
     if (urlTab && arrayIncludes(statsTabs, urlTab)) {
       setStatisticsTab(urlTab);
+    }
+  }
+  if (params.has("historyTab")) {
+    const urlTab = params.get("historyTab");
+    if (urlTab && arrayIncludes(historyTabs, urlTab)) {
+      setHistoryTab(urlTab);
     }
   }
   getData();

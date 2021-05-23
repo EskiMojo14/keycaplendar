@@ -1,5 +1,8 @@
+import { historyTabs } from "./constants";
 import { ActionSetType } from "../audit/types";
 import { SetType } from "../main/types";
+
+export type HistoryTab = typeof historyTabs[number];
 
 export type PublicActionType = {
   action: "created" | "deleted" | "updated";
