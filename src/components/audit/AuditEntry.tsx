@@ -139,9 +139,9 @@ export const AuditEntry = (props: AuditEntryProps) => {
                     </DataTableRow>
                   );
                 } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
-                  const beforeVendors = alphabeticalSortProp(props.action.before.vendors, "region");
+                  const beforeVendors = alphabeticalSortProp([...props.action.before.vendors], "region");
 
-                  const afterVendors = alphabeticalSortProp(props.action.after.vendors, "region");
+                  const afterVendors = alphabeticalSortProp([...props.action.after.vendors], "region");
 
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   return moreVendors.map((_vendor, index) => {

@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import classNames from "classnames";
 import firebase from "../../firebase";
-import isEqual from "lodash.isequal";
-import { useAppSelector } from "../../app/hooks";
-import { auditProperties } from "../../app/slices/audit/constants";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  selectAllActions,
+  selectFilterAction,
+  selectFilteredActions,
+  selectFilterUser,
+  selectLoading,
+  setFilterAction,
+  setFilterUser,
+} from "../../app/slices/audit/auditSlice";
+import { getActions, filterActions } from "../../app/slices/audit/functions";
 import { ActionType } from "../../app/slices/audit/types";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { alphabeticalSortProp, closeModal, hasKey, mergeObject, openModal } from "../../app/slices/common/functions";
+import { arrayIncludes, closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset } from "../../app/slices/main/constructors";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { queue } from "../../app/snackbarQueue";
@@ -37,8 +45,17 @@ type ContentAuditProps = {
 };
 
 export const ContentAudit = (props: ContentAuditProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
+
+  const loading = useAppSelector(selectLoading);
+  const allAuditActions = useAppSelector(selectAllActions);
+  const filteredActions = useAppSelector(selectFilteredActions);
+
+  const auditFilterAction = useAppSelector(selectFilterAction);
+  const auditFilterUser = useAppSelector(selectFilterUser);
 
   const blankAction: ActionType = {
     before: new Keyset(),
@@ -53,24 +70,9 @@ export const ContentAudit = (props: ContentAuditProps) => {
       nickname: "",
     },
   };
-
-  const [actions, setActions] = useState<{
-    allActions: ActionType[];
-    filteredActions: ActionType[];
-  }>({
-    allActions: [],
-    filteredActions: [],
-  });
-  const [filterInfo, setFilterInfo] = useState({
-    filterAction: "none",
-    filterUser: "all",
-    length: 50,
-    users: [{ label: "All", value: "all" }],
-  });
   const [filterOpen, setFilterOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteAction, setDeleteAction] = useState<ActionType>(blankAction);
-  const [loading, setLoading] = useState(false);
 
   const toggleFilter = () => {
     if (filterOpen && device !== "desktop") {
@@ -96,98 +98,22 @@ export const ContentAudit = (props: ContentAuditProps) => {
       setDeleteAction(blankAction);
     }, 100);
   };
+
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
-    if (hasKey(filterInfo, prop)) {
-      setFilterInfo((filterInfo) => mergeObject(filterInfo, { [prop]: e.target.value }));
-      filterActions(
-        actions.allActions,
-        prop === "filterAction" ? e.target.value : filterInfo.filterAction,
-        prop === "filterUser" ? e.target.value : filterInfo.filterUser
-      );
+    if (prop === "filterUser") {
+      dispatch(setFilterUser(e.target.value));
+      filterActions(allAuditActions, auditFilterAction, e.target.value);
+    } else if (
+      prop === "filterAction" &&
+      arrayIncludes(["none", "created", "updated", "deleted"] as const, e.target.value)
+    ) {
+      dispatch(setFilterAction(e.target.value));
+      filterActions(allAuditActions, e.target.value, auditFilterUser);
     }
   };
-  const getActions = (num = filterInfo.length) => {
-    setLoading(true);
-    setFilterInfo((filterInfo) => mergeObject(filterInfo, { length: num }));
-    const db = firebase.firestore();
-    db.collection("changelog")
-      .orderBy("timestamp", "desc")
-      .limit(num)
-      .get()
-      .then((querySnapshot) => {
-        const actions: ActionType[] = [];
-        const users = [{ label: "All", value: "all" }];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          data.action =
-            data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
-          data.changelogId = doc.id;
-          actions.push(data as ActionType);
-          if (!users.map((user) => user.value).includes(data.user.nickname)) {
-            users.push({ label: data.user.nickname, value: data.user.nickname });
-          }
-        });
 
-        alphabeticalSortProp(actions, "timestamp", true);
-
-        setFilterInfo((filterInfo) => mergeObject(filterInfo, { users: users }));
-
-        processActions(actions);
-
-        setActions((prevActions) => mergeObject(prevActions, { allActions: actions }));
-      })
-      .catch((error) => {
-        queue.notify({ title: "Error getting data: " + error });
-        setLoading(false);
-      });
-  };
   useEffect(getActions, []);
 
-  const processActions = (actions: ActionType[]) => {
-    const processedActions: ActionType[] = [...actions].map((action) => {
-      const { before, after, ...restAction } = action;
-      if (before && after) {
-        auditProperties.forEach((prop) => {
-          const beforeProp = before[prop];
-          const afterProp = after[prop];
-          if (isEqual(beforeProp, afterProp) && prop !== "profile" && prop !== "colorway") {
-            delete before[prop];
-            delete after[prop];
-          }
-        });
-      }
-      return {
-        ...restAction,
-        before,
-        after,
-      };
-    });
-
-    filterActions(processedActions);
-  };
-
-  const filterActions = (
-    allActions = actions.allActions,
-    filterAction = filterInfo.filterAction,
-    filterUser = filterInfo.filterUser
-  ) => {
-    let filteredActions = [...allActions];
-
-    if (filterAction !== "none") {
-      filteredActions = filteredActions.filter((action) => {
-        return action.action === filterAction;
-      });
-    }
-
-    if (filterUser !== "all") {
-      filteredActions = filteredActions.filter((action) => {
-        return action.user.nickname === filterUser;
-      });
-    }
-
-    setActions((actions) => mergeObject(actions, { filteredActions: filteredActions }));
-    setLoading(false);
-  };
   const deleteActionFn = (action: ActionType) => {
     const db = firebase.firestore();
     db.collection("changelog")
@@ -203,6 +129,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
         closeDelete();
       });
   };
+
   const refreshButton = loading ? (
     <CircularProgress />
   ) : (
@@ -215,6 +142,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
       />
     </Tooltip>
   );
+
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
@@ -242,10 +170,6 @@ export const ContentAudit = (props: ContentAuditProps) => {
             open={filterOpen}
             close={closeFilter}
             handleFilterChange={handleFilterChange}
-            filterAction={filterInfo.filterAction}
-            filterUser={filterInfo.filterUser}
-            users={filterInfo.users}
-            auditLength={filterInfo.length}
             getActions={getActions}
           />
           <ConditionalWrapper
@@ -254,9 +178,9 @@ export const ContentAudit = (props: ContentAuditProps) => {
           >
             <div className="admin-main">
               <div className="log-container">
-                <Card className={classNames("log", { placeholder: actions.filteredActions.length === 0 })}>
+                <Card className={classNames("log", { placeholder: filteredActions.length === 0 })}>
                   <List twoLine className="three-line">
-                    {actions.filteredActions.map((action) => {
+                    {filteredActions.map((action) => {
                       const timestamp = moment(action.timestamp);
                       return (
                         <AuditEntry
