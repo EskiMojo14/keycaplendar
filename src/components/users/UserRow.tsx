@@ -130,9 +130,9 @@ export const UserRow = (props: UserRowProps) => {
       </DataTableCell>
       <DataTableCell>{user.displayName}</DataTableCell>
       <DataTableCell>{truncate(user.email, 20)}</DataTableCell>
-      <DataTableCell>{moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
-      <DataTableCell>{moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
-      <DataTableCell>{moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YYYY")}</DataTableCell>
+      <DataTableCell>{moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
+      <DataTableCell>{moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
+      <DataTableCell>{moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
       <DataTableCell>
         <MenuSurfaceAnchor>
           <TextField

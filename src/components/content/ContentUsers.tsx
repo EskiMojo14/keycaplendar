@@ -2,10 +2,24 @@ import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { hasKey, iconObject, mergeObject, useBoolStates } from "../../app/slices/common/functions";
+import { iconObject, useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import {
+  selectFirstIndex,
+  selectLastIndex,
+  selectLoading,
+  selectNextPageToken,
+  selectPage,
+  selectPaginatedUsers,
+  selectReverseSort,
+  selectRowsPerPage,
+  selectSort,
+  selectSortedUsers,
+  selectView,
+  setLoading,
+} from "../../app/slices/users/usersSlice";
 import { User } from "../../app/slices/users/constructors";
 import { UserType } from "../../app/slices/users/types";
 import {
@@ -45,6 +59,14 @@ import {
 } from "../util/DataTablePagination";
 import { Footer } from "../common/Footer";
 import "./ContentUsers.scss";
+import {
+  getUsers,
+  setPage,
+  setRowsPerPage,
+  setSort,
+  setSortIndex,
+  setViewIndex,
+} from "../../app/slices/users/functions";
 
 const length = 1000;
 const rows = 25;
@@ -54,150 +76,38 @@ type ContentUsersProps = {
 };
 
 export const ContentUsers = (props: ContentUsersProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
-  const blankUser = new User();
+  const view = useAppSelector(selectView);
+  const loading = useAppSelector(selectLoading);
 
-  const [users, setUsers] = useState<{
-    allUsers: UserType[];
-    sortedUsers: UserType[];
-    paginatedUsers: UserType[];
-  }>({
-    allUsers: [],
-    sortedUsers: [],
-    paginatedUsers: [],
-  });
+  const sortedUsers = useAppSelector(selectSortedUsers);
+  const paginatedUsers = useAppSelector(selectPaginatedUsers);
+
+  const userSort = useAppSelector(selectSort);
+  const reverseUserSort = useAppSelector(selectReverseSort);
+
+  const nextPageToken = useAppSelector(selectNextPageToken);
+  const rowsPerPage = useAppSelector(selectRowsPerPage);
+  const page = useAppSelector(selectPage);
+  const firstIndex = useAppSelector(selectFirstIndex);
+  const lastIndex = useAppSelector(selectLastIndex);
+
+  const blankUser = new User();
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletedUser, setDeletedUser] = useState<UserType>(blankUser);
-
-  const [nextPageToken, setNextPageToken] = useState("");
-
-  const [paginationInfo, setPaginationInfo] = useState({
-    rowsPerPage: rows,
-    page: 1,
-    firstIndex: 0,
-    lastIndex: 0,
-  });
-
-  const [view, setView] = useState("table");
-
-  const [userSort, setUserSort] = useState("editor");
-  const [reverseUserSort, setReverseUserSort] = useState(false);
-
-  const [loading, setLoading] = useState(false);
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [closeViewMenu, openViewMenu] = useBoolStates(setViewMenuOpen);
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [closeSortMenu, openSortMenu] = useBoolStates(setSortMenuOpen);
 
-  const getUsers = (append = false) => {
-    setLoading(true);
-    const listUsersFn = firebase.functions().httpsCallable("listUsers");
-    listUsersFn({ length: length, nextPageToken: nextPageToken })
-      .then((result) => {
-        if (result) {
-          if (result.data.error) {
-            queue.notify({ title: result.data.error });
-            setLoading(false);
-          } else {
-            setLoading(false);
-            const newUsers = append ? [...users.allUsers, ...result.data.users] : [...result.data.users];
-            sortUsers(newUsers);
-            setUsers((users) => mergeObject(users, { allUsers: newUsers }));
-            setNextPageToken(result.data.nextPageToken);
-          }
-        }
-      })
-      .catch((error) => {
-        queue.notify({ title: "Error listing users: " + error });
-        setLoading(false);
-      });
-  };
   useEffect(getUsers, []);
-  const sortUsers = (
-    allUsers = users.allUsers,
-    sort = userSort,
-    reverseSort = reverseUserSort,
-    page = paginationInfo.page
-  ) => {
-    const sortedUsers = [...allUsers];
-    sortedUsers.sort((a, b) => {
-      if (hasKey(a, sort) && hasKey(b, sort)) {
-        const aVal = a[sort];
-        const bVal = b[sort];
-        if (typeof aVal === "string" && typeof bVal === "string") {
-          if (aVal === "" || bVal === "") {
-            return aVal === "" ? 1 : -1;
-          }
-          const x = aVal.toLowerCase();
-          const y = bVal.toLowerCase();
-          if (x < y) {
-            return reverseSort ? 1 : -1;
-          }
-          if (x > y) {
-            return reverseSort ? -1 : 1;
-          }
-          if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-            return 1;
-          }
-          if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-            return -1;
-          }
-          if (a.email.toLowerCase() > b.email.toLowerCase()) {
-            return 1;
-          }
-          if (a.email.toLowerCase() < b.email.toLowerCase()) {
-            return -1;
-          }
-          return 0;
-        } else {
-          if (aVal === null || bVal === null) {
-            return aVal === null ? 1 : -1;
-          }
-          if (aVal < bVal) {
-            return reverseSort ? -1 : 1;
-          }
-          if (aVal > bVal) {
-            return reverseSort ? 1 : -1;
-          }
-          if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-            return 1;
-          }
-          if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-            return -1;
-          }
-          if (a.email.toLowerCase() > b.email.toLowerCase()) {
-            return 1;
-          }
-          if (a.email.toLowerCase() < b.email.toLowerCase()) {
-            return -1;
-          }
-          return 0;
-        }
-      } else {
-        return 0;
-      }
-    });
-    setUsers((users) => mergeObject(users, { sortedUsers: sortedUsers }));
-    paginateUsers(sortedUsers, page);
-    setLoading(false);
-  };
-  const paginateUsers = (
-    sortedUsers = users.sortedUsers,
-    page = paginationInfo.page,
-    rowsPerPage = paginationInfo.rowsPerPage
-  ) => {
-    const paginatedUsers = sortedUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-    const firstIndex = sortedUsers.indexOf(paginatedUsers[0]);
-    const lastIndex = sortedUsers.indexOf(paginatedUsers[paginatedUsers.length - 1]);
-    setUsers((users) => mergeObject(users, { paginatedUsers: paginatedUsers }));
-    setPaginationInfo((paginationInfo) =>
-      mergeObject(paginationInfo, { firstIndex: firstIndex, lastIndex: lastIndex })
-    );
-  };
+
   const openDeleteDialog = (user: UserType) => {
     setDeleteOpen(true);
     setDeletedUser(user);
@@ -210,13 +120,13 @@ export const ContentUsers = (props: ContentUsersProps) => {
   };
   const deleteUser = (user: UserType) => {
     closeDeleteDialog();
-    setLoading(true);
+    dispatch(setLoading(true));
     const deleteUser = firebase.functions().httpsCallable("deleteUser");
     deleteUser(user)
       .then((result) => {
         if (result.data.error) {
           queue.notify({ title: result.data.error });
-          setLoading(false);
+          dispatch(setLoading(false));
         } else {
           queue.notify({ title: "User " + user.displayName + " successfully deleted." });
           getUsers();
@@ -224,49 +134,10 @@ export const ContentUsers = (props: ContentUsersProps) => {
       })
       .catch((error) => {
         queue.notify({ title: "Error deleting user: " + error });
-        setLoading(false);
+        dispatch(setLoading(false));
       });
   };
-  const setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value);
-    setPaginationInfo((paginationInfo) => mergeObject(paginationInfo, { rowsPerPage: val, page: 1 }));
-    paginateUsers(users.sortedUsers, 1, val);
-  };
-  const setPage = (num: number) => {
-    setPaginationInfo((paginationInfo) => mergeObject(paginationInfo, { page: num }));
-    paginateUsers(users.sortedUsers, num);
-  };
-  const setViewIndex = (index: number) => {
-    const views = ["card", "table"];
-    setView(views[index]);
-  };
-  const setSort = (sort: string) => {
-    let reverseSort;
-    if (sort === userSort) {
-      reverseSort = !reverseUserSort;
-    } else {
-      reverseSort = false;
-    }
-    setUserSort(sort);
-    setReverseUserSort(reverseSort);
-    sortUsers(users.allUsers, sort, reverseSort, 1);
-  };
-  const setSortIndex = (index: number) => {
-    const props = [
-      "displayName",
-      "email",
-      "dateCreated",
-      "lastSignIn",
-      "lastActive",
-      "nickname",
-      "designer",
-      "editor",
-      "admin",
-    ];
-    setUserSort(props[index]);
-    setReverseUserSort(false);
-    sortUsers(users.allUsers, props[index], false, 1);
-  };
+
   const sortMenu =
     view === "card" || device !== "desktop" ? (
       <MenuSurfaceAnchor>
@@ -435,7 +306,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                         </DataTableRow>
                       </DataTableHead>
                       <DataTableBody>
-                        {users.paginatedUsers.map((user) => {
+                        {paginatedUsers.map((user) => {
                           return <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />;
                         })}
                       </DataTableBody>
@@ -455,7 +326,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                         <DataTablePaginationRowsPerPage>
                           <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
                           <DataTablePaginationRowsPerPageSelect
-                            value={paginationInfo.rowsPerPage.toString()}
+                            value={rowsPerPage.toString()}
                             options={Array(3)
                               .fill(rows)
                               .map((number, index) => (number * (index + 1)).toString())}
@@ -465,14 +336,12 @@ export const ContentUsers = (props: ContentUsersProps) => {
                         </DataTablePaginationRowsPerPage>
                         <DataTablePaginationNavigation>
                           <DataTablePaginationTotal>
-                            {`${paginationInfo.firstIndex + 1}-${paginationInfo.lastIndex + 1} of ${
-                              users.sortedUsers.length
-                            }`}
+                            {`${firstIndex + 1}-${lastIndex + 1} of ${sortedUsers.length}`}
                           </DataTablePaginationTotal>
                           <DataTablePaginationButton
                             className="rtl-flip"
                             icon="first_page"
-                            disabled={paginationInfo.firstIndex === 0}
+                            disabled={firstIndex === 0}
                             onClick={() => {
                               setPage(1);
                             }}
@@ -480,25 +349,25 @@ export const ContentUsers = (props: ContentUsersProps) => {
                           <DataTablePaginationButton
                             className="rtl-flip"
                             icon="chevron_left"
-                            disabled={paginationInfo.firstIndex === 0}
+                            disabled={firstIndex === 0}
                             onClick={() => {
-                              setPage(paginationInfo.page - 1);
+                              setPage(page - 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             icon="chevron_right"
-                            disabled={paginationInfo.lastIndex === users.sortedUsers.length - 1}
+                            disabled={lastIndex === sortedUsers.length - 1}
                             onClick={() => {
-                              setPage(paginationInfo.page + 1);
+                              setPage(page + 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
                             icon="last_page"
-                            disabled={paginationInfo.lastIndex === users.sortedUsers.length - 1}
+                            disabled={lastIndex === sortedUsers.length - 1}
                             onClick={() => {
-                              setPage(Math.ceil(users.sortedUsers.length / paginationInfo.rowsPerPage));
+                              setPage(Math.ceil(sortedUsers.length / rowsPerPage));
                             }}
                           />
                         </DataTablePaginationNavigation>
@@ -508,7 +377,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                 </Card>
               ) : (
                 <div className="user-container">
-                  {users.sortedUsers.map((user) => {
+                  {sortedUsers.map((user) => {
                     return <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />;
                   })}
                 </div>

@@ -2,10 +2,10 @@ import isEqual from "lodash.isequal";
 import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
-import { alphabeticalSortProp } from "../common/functions";
 import { setAllActions, setFilteredActions, setLength, setLoading, setUsers } from "./auditSlice";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
+import { alphabeticalSortProp } from "../common/functions";
 
 const db = firebase.firestore();
 
