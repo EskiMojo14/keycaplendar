@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import firebase from "../../firebase";
-import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { auditProperties } from "../../app/slices/audit/constants";
+import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "../../app/slices/common/functions";
 import {
-  alphabeticalSortProp,
-  capitalise,
-  closeModal,
-  hasKey,
-  iconObject,
-  openModal,
-  truncate,
-  uniqueArray,
-} from "../../app/slices/common/functions";
-import { selectAllSets } from "../../app/slices/main/mainSlice";
-import { selectLoading, selectTab, setLoading, setTab } from "../../app/slices/history/historySlice";
+  selectLoading,
+  selectProcessedActions,
+  selectRecentSets,
+  selectTab,
+  setTab,
+} from "../../app/slices/history/historySlice";
 import { historyTabs } from "../../app/slices/history/constants";
-import { ProcessedPublicActionType, PublicActionType, RecentSet } from "../../app/slices/history/types";
+import { RecentSet } from "../../app/slices/history/types";
+import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { Keyset } from "../../app/slices/main/constructors";
 import { SetType } from "../../app/slices/main/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { queue } from "../../app/snackbarQueue";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -43,6 +36,7 @@ import { ChangelogEntry } from "../history/ChangelogEntry";
 import { RecentSetCard } from "../history/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
+import { generateSets, getData } from "../../app/slices/history/functions";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -60,91 +54,12 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const tab = useAppSelector(selectTab);
   const loading = useAppSelector(selectLoading);
 
+  const processedActions = useAppSelector(selectProcessedActions);
+  const recentSets = useAppSelector(selectRecentSets);
+
   const [swiping, setSwiping] = useState(false);
 
-  const getData = () => {
-    const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    dispatch(setLoading(true));
-    cloudFn({ num: 25 })
-      .then((result) => {
-        const actions: PublicActionType[] = result.data;
-        processActions(actions);
-      })
-      .catch((error) => {
-        console.log(error);
-        queue.notify({ title: "Failed to get changelog: " + error });
-      });
-  };
   useEffect(getData, []);
-
-  const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
-
-  const processActions = (actions: PublicActionType[]) => {
-    const processedActions: ProcessedPublicActionType[] = [...actions].map((action) => {
-      const { before, after, ...restAction } = action;
-      const title =
-        action.action !== "deleted"
-          ? `${action.after.profile} ${action.after.colorway}`
-          : `${action.before.profile} ${action.before.colorway}`;
-      if (before && after) {
-        auditProperties.forEach((prop) => {
-          const beforeProp = before[prop];
-          const afterProp = after[prop];
-          if (
-            isEqual(beforeProp, afterProp) ||
-            (!(typeof beforeProp === "boolean") && !beforeProp && !(typeof afterProp === "boolean") && !afterProp)
-          ) {
-            delete before[prop];
-            delete after[prop];
-          }
-        });
-      }
-      return {
-        ...restAction,
-        before,
-        after,
-        title,
-      };
-    });
-    setProcessedActions(processedActions);
-    dispatch(setLoading(false));
-  };
-
-  const getSetById = (id: string) => {
-    const index = allSets.findIndex((set) => set.id === id);
-    return index > -1 ? allSets[index] : null;
-  };
-
-  const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
-
-  const generateSets = (actions = processedActions) => {
-    const ids = uniqueArray(actions.map((action) => action.documentId));
-    const recentSets: RecentSet[] = ids.map((id) => {
-      const filteredActions = alphabeticalSortProp(
-        actions.filter((action) => action.documentId === id),
-        "timestamp",
-        true
-      );
-      const latestTimestamp = filteredActions[0].timestamp;
-      const title = filteredActions[0].title;
-      const designer = filteredActions[0].after.designer
-        ? filteredActions[0].after.designer
-        : filteredActions[0].before.designer
-        ? filteredActions[0].before.designer
-        : null;
-      const deleted = filteredActions[0].action === "deleted";
-      return {
-        id: id,
-        title: title,
-        designer: designer,
-        deleted: deleted,
-        currentSet: getSetById(id),
-        latestTimestamp: latestTimestamp,
-      };
-    });
-    alphabeticalSortProp(recentSets, "latestTimestamp", true);
-    setRecentSets(recentSets);
-  };
   useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
   const blankSet = new Keyset();

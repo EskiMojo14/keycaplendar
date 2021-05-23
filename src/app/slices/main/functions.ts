@@ -87,6 +87,14 @@ export const pageConditions = (
   };
 };
 
+export const getSetById = (id: string) => {
+  const {
+    main: { allSets },
+  } = store.getState();
+  const index = allSets.findIndex((set) => set.id === id);
+  return index > -1 ? allSets[index] : null;
+};
+
 export const getData = () => {
   const {
     common: { page },
