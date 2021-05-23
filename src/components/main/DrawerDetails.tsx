@@ -78,7 +78,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   let shippedLine;
   const chips: string[] = [];
   const chipsContent = ["profile", "colorway", "designer", "vendors"];
-  const sortedVendors = set.vendors ? alphabeticalSortProp(set.vendors, "region") : [];
+  const sortedVendors = set.vendors ? alphabeticalSortProp([...set.vendors], "region") : [];
 
   if (set.icDate) {
     gbLaunch = set.gbLaunch
