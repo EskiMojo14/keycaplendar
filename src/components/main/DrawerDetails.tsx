@@ -63,7 +63,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     }
   }, [JSON.stringify(props.set)]);
 
-  const dismissible = device === "desktop" && view !== "compact";
+  const dismissible = device === "desktop" && view !== "compact" && arrayIncludes(mainPages, page);
   const set = { ...props.set };
   if (!set.image) {
     set.image = "";

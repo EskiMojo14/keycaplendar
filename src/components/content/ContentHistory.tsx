@@ -250,7 +250,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
               filtered={recentSet.id === filterSet.id}
               selected={recentSet.id === detailSet.id}
               openDetails={openDetails}
-              key={recentSet.title}
+              key={recentSet.id}
             />
           ))}
         </div>
