@@ -2,13 +2,7 @@ import moment from "moment";
 import firebase from "../../../firebase";
 import store from "../../store";
 import { queue } from "../../snackbarQueue";
-import {
-  setStatisticsData,
-  setStatisticsDataCreated,
-  setStatisticsSetting,
-  setStatisticsSort,
-  setStatsTab,
-} from "./statisticsSlice";
+import { setStatisticsData, setLoading, setStatisticsSetting, setStatisticsSort, setStatsTab } from "./statisticsSlice";
 import {
   DurationData,
   ShippedData,
@@ -58,6 +52,7 @@ export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: Stat
 export const getData = async () => {
   const { dispatch } = store;
   const fileRef = storage.ref("statisticsData.json");
+  dispatch(setLoading(true));
   fileRef
     .getDownloadURL()
     .then((url) => {
@@ -70,16 +65,18 @@ export const getData = async () => {
             queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
 
             dispatch(setStatisticsData(statisticsData));
-            dispatch(setStatisticsDataCreated(Object.keys(statisticsData)));
+            dispatch(setLoading(false));
           });
         })
         .catch((error) => {
           console.log(error);
+          dispatch(setLoading(false));
           queue.notify({ title: "Failed to fetch statistics data: " + error });
         });
     })
     .catch((error) => {
       console.log(error);
+      dispatch(setLoading(false));
       queue.notify({ title: "Failed to create statistics data: " + error });
     });
 };

@@ -4,14 +4,15 @@ import { StatsTab, StatisticsData, StatisticsType, StatisticsSortType } from "./
 
 type StatisticsState = {
   tab: StatsTab;
+  loading: boolean;
   data: StatisticsData;
-  dataCreated: string[];
   settings: StatisticsType;
   sort: StatisticsSortType;
 };
 
 const initialState: StatisticsState = {
   tab: "summary",
+  loading: false,
   data: {
     summaryData: {
       count: {
@@ -103,7 +104,6 @@ const initialState: StatisticsState = {
       vendor: [],
     },
   },
-  dataCreated: [],
   settings: {
     summary: "gbLaunch",
     timelinesCat: "gbLaunch",
@@ -130,11 +130,11 @@ export const statisticsSlice = createSlice({
     setStatsTab: (state, action: PayloadAction<StatsTab>) => {
       state.tab = action.payload;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     setStatisticsData: (state, action: PayloadAction<StatisticsData>) => {
       state.data = action.payload;
-    },
-    setStatisticsDataCreated: (state, action: PayloadAction<string[]>) => {
-      state.dataCreated = action.payload;
     },
     setStatisticsSetting: <T extends keyof StatisticsType>(
       state: StatisticsState,
@@ -155,8 +155,8 @@ export const statisticsSlice = createSlice({
 
 export const {
   setStatsTab,
+  setLoading,
   setStatisticsData,
-  setStatisticsDataCreated,
   setStatisticsSetting,
   setStatisticsSort,
 } = statisticsSlice.actions;
@@ -165,7 +165,7 @@ export const selectStatsTab = (state: RootState) => state.statistics.tab;
 
 export const selectStatsData = (state: RootState) => state.statistics.data;
 
-export const selectStatsDataCreated = (state: RootState) => state.statistics.dataCreated;
+export const selectLoading = (state: RootState) => state.statistics.loading;
 
 export const selectStatsSettings = (state: RootState) => state.statistics.settings;
 

@@ -12,7 +12,7 @@ import { StatisticsType } from "../../app/slices/statistics/types";
 import {
   selectStatsTab,
   selectStatsData,
-  selectStatsDataCreated,
+  selectLoading,
   selectStatsSettings,
   selectStatsSort,
 } from "../../app/slices/statistics/statisticsSlice";
@@ -48,8 +48,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
 
   const statisticsTab = useAppSelector(selectStatsTab);
+  const loading = useAppSelector(selectLoading);
   const statisticsData = useAppSelector(selectStatsData);
-  const dataCreated = useAppSelector(selectStatsDataCreated);
   const settings = useAppSelector(selectStatsSettings);
   const statisticsSort = useAppSelector(selectStatsSort);
 
@@ -397,7 +397,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>
         {bottomNav ? null : tabRow}
-        <LinearProgress closed={dataCreated.length === statsTabs.length} />
+        <LinearProgress closed={!loading} />
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="main extended-app-bar">
