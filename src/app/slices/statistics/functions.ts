@@ -1,5 +1,6 @@
 import moment from "moment";
 import firebase from "../../../firebase";
+import cloneDeep from "lodash.clonedeep";
 import store from "../../store";
 import { queue } from "../../snackbarQueue";
 import { setStatisticsData, setLoading, setStatisticsSetting, setStatisticsSort, setStatsTab } from "./statisticsSlice";
@@ -21,8 +22,9 @@ import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
 
+const { dispatch } = store;
+
 export const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
-  const { dispatch } = store;
   const {
     statistics: { tab: statsTab },
   } = store.getState();
@@ -39,18 +41,15 @@ export const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
 };
 
 export const setSetting = <T extends keyof StatisticsType>(prop: T, value: StatisticsType[T]) => {
-  const { dispatch } = store;
   dispatch(setStatisticsSetting({ key: prop, value: value }));
 };
 
 export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: StatisticsSortType[T]) => {
-  const { dispatch } = store;
   dispatch(setStatisticsSort({ key: prop, value: value }));
   sortData();
 };
 
 export const getData = async () => {
-  const { dispatch } = store;
   const fileRef = storage.ref("statisticsData.json");
   dispatch(setLoading(true));
   fileRef
@@ -82,17 +81,17 @@ export const getData = async () => {
 };
 
 export const sortData = () => {
-  const { dispatch } = store;
   const {
     statistics: { tab: statisticsTab, data: statisticsData, sort },
   } = store.getState();
+  dispatch(setLoading(true));
   const key = statisticsTab + "Data";
   if (hasKey(statisticsData, key)) {
     const stateData = statisticsData[key];
     const tab = statisticsTab;
     if (typeof stateData === "object") {
       if (tab === "duration") {
-        const data = { ...stateData } as DurationData;
+        const data = cloneDeep(stateData) as DurationData;
         categories.forEach((category) => {
           properties.forEach((property) => {
             const value = data[category][property];
@@ -124,8 +123,9 @@ export const sortData = () => {
           });
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+        dispatch(setLoading(false));
       } else if (tab === "timelines") {
-        const data = { ...stateData } as TimelinesData;
+        const data = cloneDeep(stateData) as TimelinesData;
         categories.forEach((category) => {
           properties.forEach((property) => {
             const value = data[category][property].data;
@@ -152,8 +152,9 @@ export const sortData = () => {
           });
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+        dispatch(setLoading(false));
       } else {
-        const data = { ...stateData } as StatusData | ShippedData | VendorData;
+        const data = cloneDeep(stateData) as StatusData | ShippedData | VendorData;
         properties.forEach((properties) => {
           type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
           const value = data[properties];
@@ -183,6 +184,7 @@ export const sortData = () => {
           data[properties] = sortedValue;
         });
         dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+        dispatch(setLoading(false));
       }
     }
   }

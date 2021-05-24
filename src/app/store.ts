@@ -23,6 +23,10 @@ export const store = configureStore({
     images: imagesReducer,
     updates: updatesReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: { ignoredPaths: ["statistics.data"] },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
