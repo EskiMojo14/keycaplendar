@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
 import { queue } from "../../app/snackbarQueue";
 import { batchStorageDelete } from "../../app/slices/common/functions";
+import { setLoading } from "../../app/slices/images/imagesSlice";
+import { listAll } from "../../app/slices/images/functions";
 import { ImageType } from "../../app/slices/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -11,13 +14,12 @@ type DialogDeleteProps = {
   close: () => void;
   folders: string[];
   images: ImageType[];
-  listAll: () => void;
   open: boolean;
-  setLoading: (bool: boolean) => void;
   toggleImageChecked: (image: ImageType) => void;
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
+  const dispatch = useAppDispatch();
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
@@ -33,17 +35,17 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   };
   const deleteImages = () => {
     const array = createArray();
-    props.setLoading(true);
+    dispatch(setLoading(true));
     batchStorageDelete(array)
       .then(() => {
         queue.notify({ title: "Successfully deleted files." });
         props.close();
-        props.listAll();
+        listAll();
       })
       .catch((error) => {
         queue.notify({ title: "Failed to delete files: " + error });
         console.log(error);
-        props.setLoading(false);
+        dispatch(setLoading(false));
       });
   };
   return (

@@ -2,18 +2,32 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import {
   addOrRemove,
-  alphabeticalSort,
-  getStorageFolders,
+  closeModal,
   hasKey,
   iconObject,
-  mergeObject,
+  openModal,
   useBoolStates,
 } from "../../app/slices/common/functions";
+import {
+  selectCheckedImages,
+  selectCurrentFolder,
+  selectDetailImage,
+  selectDetailMetadata,
+  selectDuplicateSetImages,
+  selectFolders,
+  selectImages,
+  selectLoading,
+  selectSetImages,
+  setCheckedImages,
+  setDetailImage,
+  setDetailMetadata,
+} from "../../app/slices/images/imagesSlice";
 import { ImageObj } from "../../app/slices/images/constructors";
+import { createSetImageList, getFolders, listAll, setFolder } from "../../app/slices/images/functions";
 import { ImageType } from "../../app/slices/images/types";
 import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
@@ -62,158 +76,67 @@ const aspectRatios = {
   thumbs: 16 / 9,
 };
 
-const blankImage = new ImageObj();
+const blankImage = { ...new ImageObj() };
 
 type ContentImagesProps = {
   openNav: () => void;
 };
 
 export const ContentImages = (props: ContentImagesProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
 
   const allSets = useAppSelector(selectAllSets);
 
-  const [folderInfo, setFolderInfo] = useState<{
-    currentFolder: string;
-    folders: string[];
-  }>({
-    currentFolder: "thumbs",
-    folders: [],
-  });
-  const [imageInfo, setImageInfo] = useState<{
-    images: ImageType[];
-    checkedImages: ImageType[];
-    setImages: string[];
-    duplicateSetImages: string[];
-  }>({
-    images: [],
-    checkedImages: [],
-    setImages: [],
-    duplicateSetImages: [],
-  });
-  const [detailInfo, setDetailInfo] = useState<{
-    detailOpen: boolean;
-    detailImage: ImageType;
-    detailMetadata: Record<string, unknown>;
-  }>({
-    detailOpen: false,
-    detailImage: blankImage,
-    detailMetadata: {},
-  });
+  const loading = useAppSelector(selectLoading);
 
+  const currentFolder = useAppSelector(selectCurrentFolder);
+  const folders = useAppSelector(selectFolders);
+
+  const images = useAppSelector(selectImages);
+  const checkedImages = useAppSelector(selectCheckedImages);
+  const keysetImages = useAppSelector(selectSetImages);
+  const duplicateSetImages = useAppSelector(selectDuplicateSetImages);
+
+  const detailImage = useAppSelector(selectDetailImage);
+  const detailMetadata = useAppSelector(selectDetailMetadata);
+
+  const [detailOpen, setDetailOpen] = useState(false);
   const [folderMenuOpen, setFolderMenuOpen] = useState(false);
   const [closeFolderMenu, openFolderMenu] = useBoolStates(setFolderMenuOpen);
   const [searchOpen, setSearchOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [closeDelete, openDelete] = useBoolStates(setDeleteOpen);
 
-  const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     getFolders();
     listAll();
     createSetImageList();
   }, []);
-
-  const createSetImageList = () => {
-    const fileNameRegex = /keysets%2F(.*)\?/;
-    const setImages = alphabeticalSort(
-      allSets
-        .map((set) => {
-          const regexMatch = set.image.match(fileNameRegex);
-          if (regexMatch) {
-            return decodeURIComponent(regexMatch[1]);
-          }
-          return "";
-        })
-        .filter(Boolean)
-    );
-    const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
-    setImageInfo((imageInfo) =>
-      mergeObject(imageInfo, { setImages: setImages, duplicateSetImages: findDuplicates(setImages) })
-    );
-  };
   useEffect(createSetImageList, [JSON.stringify(allSets)]);
 
-  const processItems = (items: firebase.storage.Reference[], append = false) => {
-    const images = items.map((itemRef) => {
-      const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
-        itemRef.fullPath
-      )}?alt=media`;
-      const obj = new ImageObj(itemRef.name, itemRef.parent ? itemRef.parent.fullPath : "", itemRef.fullPath, src);
-      return obj;
-    });
-    const allImages = append ? [...imageInfo.images, ...images] : images;
-    allImages.sort((a, b) => {
-      const nameA = a.name.replace(".png", "").toLowerCase();
-      const nameB = b.name.replace(".png", "").toLowerCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    setImageInfo((imageInfo) => mergeObject(imageInfo, { images: allImages, checkedImages: [] }));
-    setLoading(false);
-  };
-  const getFolders = async () => {
-    const folders = await getStorageFolders();
-    const sortOrder = ["thumbs", "card", "list", "image-list"];
-    folders.sort((a, b) => {
-      const nameA = sortOrder.indexOf(a);
-      const nameB = sortOrder.indexOf(b);
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    setFolderInfo((folderInfo) => mergeObject(folderInfo, { folders: folders }));
-  };
-  const listAll = (path = folderInfo.currentFolder) => {
-    const paginatedListAll = (nextPageToken?: string) => {
-      setLoading(true);
-      storageRef
-        .child(path)
-        .list({ maxResults: 100, pageToken: nextPageToken })
-        .then((res) => {
-          processItems(res.items, !!nextPageToken);
-          if (res.nextPageToken) {
-            paginatedListAll(res.nextPageToken);
-          }
-        })
-        .catch((error) => {
-          queue.notify({ title: "Failed to list images: " + error });
-          setLoading(false);
-        });
-    };
-    paginatedListAll();
-  };
-  const setFolder = (folder: string) => {
-    setFolderInfo((folderInfo) => mergeObject(folderInfo, { currentFolder: folder }));
-    listAll(folder);
-  };
   const openDetails = (image: ImageType) => {
     const open = () => {
-      if (detailInfo.detailImage === image) {
+      if (detailImage === image) {
         closeDetails();
       } else {
-        setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailOpen: true, detailImage: image }));
+        setDetailOpen(true);
+        if (device !== "desktop") {
+          openModal();
+        }
+        dispatch(setDetailImage(image));
         storageRef
           .child(image.fullPath)
           .getMetadata()
           .then((metadata) => {
-            setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailMetadata: metadata }));
+            dispatch(setDetailMetadata(metadata));
           })
           .catch((error) => {
             queue.notify({ title: "Failed to get metadata: " + error });
-            setDetailInfo((detailInfo) => mergeObject(detailInfo, { detailMetadata: {} }));
+            dispatch(setDetailMetadata({}));
           });
       }
     };
@@ -225,15 +148,21 @@ export const ContentImages = (props: ContentImagesProps) => {
     }
   };
   const closeDetails = () => {
-    setDetailInfo((detailInfo) =>
-      mergeObject(detailInfo, { detailOpen: false, detailImage: blankImage, detailMetadata: {} })
-    );
+    if (device !== "desktop") {
+      closeModal();
+    }
+    setDetailOpen(false);
+    dispatch(setDetailImage(blankImage));
+    dispatch(setDetailMetadata({}));
   };
   const openSearch = () => {
     const open = () => {
+      if (device !== "desktop") {
+        openModal();
+      }
       setSearchOpen(true);
     };
-    if (detailInfo.detailOpen) {
+    if (detailOpen) {
       closeDetails();
       setTimeout(() => open(), 300);
     } else {
@@ -241,22 +170,25 @@ export const ContentImages = (props: ContentImagesProps) => {
     }
   };
   const closeSearch = () => {
+    if (device !== "desktop") {
+      closeModal();
+    }
     setSearchOpen(false);
   };
   const toggleImageChecked = (image: ImageType) => {
-    const editedArray = addOrRemove([...imageInfo.checkedImages], image);
-    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: editedArray }));
+    const editedArray = addOrRemove([...checkedImages], image);
+    dispatch(setCheckedImages(editedArray));
   };
   const toggleImageCheckedArray = (array: ImageType[], append = false) => {
-    const editedArray = append ? [...imageInfo.checkedImages, ...array] : array;
-    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: editedArray }));
+    const editedArray = append ? [...checkedImages, ...array] : array;
+    dispatch(setCheckedImages(editedArray));
   };
   const clearChecked = () => {
-    setImageInfo((imageInfo) => mergeObject(imageInfo, { checkedImages: [] }));
+    dispatch(setCheckedImages([]));
   };
-  const unusedImages = imageInfo.images.filter((image) => !imageInfo.setImages.includes(image.name));
-  const usedImages = imageInfo.images.filter((image) => imageInfo.setImages.includes(image.name));
-  const duplicateImages = usedImages.filter((image) => imageInfo.duplicateSetImages.includes(image.name));
+  const unusedImages = images.filter((image) => !keysetImages.includes(image.name));
+  const usedImages = images.filter((image) => keysetImages.includes(image.name));
+  const duplicateImages = usedImages.filter((image) => duplicateSetImages.includes(image.name));
   const display = [
     {
       title: "Unused images",
@@ -271,7 +203,7 @@ export const ContentImages = (props: ContentImagesProps) => {
       array: usedImages,
     },
   ];
-  const contextual = imageInfo.checkedImages.length > 0;
+  const contextual = checkedImages.length > 0;
   const tooltipAlign = bottomNav ? "top" : "bottom";
   return (
     <>
@@ -285,7 +217,7 @@ export const ContentImages = (props: ContentImagesProps) => {
             ) : (
               <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             )}
-            <TopAppBarTitle>{contextual ? `${imageInfo.checkedImages.length} selected` : "Images"}</TopAppBarTitle>
+            <TopAppBarTitle>{contextual ? `${checkedImages.length} selected` : "Images"}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             {contextual ? (
@@ -335,10 +267,10 @@ export const ContentImages = (props: ContentImagesProps) => {
                       anchorCorner="bottomLeft"
                       className="folder-menu"
                     >
-                      {folderInfo.folders.map((folder) => (
+                      {folders.map((folder) => (
                         <MenuItem
                           key={folder}
-                          selected={folderInfo.currentFolder === folder}
+                          selected={currentFolder === folder}
                           onClick={() => {
                             setFolder(folder);
                           }}
@@ -350,11 +282,11 @@ export const ContentImages = (props: ContentImagesProps) => {
                   </MenuSurfaceAnchor>
                 ) : (
                   <SegmentedButton toggle>
-                    {folderInfo.folders.map((folder) => (
+                    {folders.map((folder) => (
                       <SegmentedButtonSegment
                         key={folder}
                         label={folder}
-                        selected={folderInfo.currentFolder === folder}
+                        selected={currentFolder === folder}
                         onClick={() => {
                           setFolder(folder);
                         }}
@@ -371,25 +303,18 @@ export const ContentImages = (props: ContentImagesProps) => {
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div
         className={classNames("content-container", {
-          "drawer-open": device === "desktop" && detailInfo.detailOpen,
+          "drawer-open": device === "desktop" && detailOpen,
         })}
       >
         <div className="main">
-          <DrawerSearch open={searchOpen} close={closeSearch} images={imageInfo.images} unusedImages={unusedImages} />
-          <DrawerDetails
-            open={detailInfo.detailOpen}
-            close={closeDetails}
-            image={detailInfo.detailImage}
-            metadata={detailInfo.detailMetadata}
-          />
+          <DrawerSearch open={searchOpen} close={closeSearch} images={images} unusedImages={unusedImages} />
+          <DrawerDetails open={detailOpen} close={closeDetails} image={detailImage} metadata={detailMetadata} />
           <DialogDelete
-            open={deleteOpen && imageInfo.checkedImages.length > 0}
+            open={deleteOpen && checkedImages.length > 0}
             close={closeDelete}
-            images={imageInfo.checkedImages}
-            folders={folderInfo.folders}
+            images={checkedImages}
+            folders={folders}
             toggleImageChecked={toggleImageChecked}
-            setLoading={setLoading}
-            listAll={listAll}
           />
           <ConditionalWrapper
             condition={device === "desktop"}
@@ -411,13 +336,13 @@ export const ContentImages = (props: ContentImagesProps) => {
                       {obj.array.map((image) => {
                         return (
                           <Ripple key={image.fullPath}>
-                            <ImageListItem className={classNames({ selected: image === detailInfo.detailImage })}>
+                            <ImageListItem className={classNames({ selected: image === detailImage })}>
                               <div className="container">
                                 <div className="item-container" onClick={() => openDetails(image)}>
                                   <ImageListImageAspectContainer
                                     style={{
-                                      paddingBottom: hasKey(aspectRatios, folderInfo.currentFolder)
-                                        ? "calc(100% /" + aspectRatios[folderInfo.currentFolder] + ")"
+                                      paddingBottom: hasKey(aspectRatios, currentFolder)
+                                        ? "calc(100% /" + aspectRatios[currentFolder] + ")"
                                         : undefined,
                                     }}
                                   >
@@ -432,7 +357,7 @@ export const ContentImages = (props: ContentImagesProps) => {
                                 <div className="checkbox-container">
                                   <div className="checkbox">
                                     <Checkbox
-                                      checked={imageInfo.checkedImages.includes(image)}
+                                      checked={checkedImages.includes(image)}
                                       onClick={() => {
                                         toggleImageChecked(image);
                                       }}
