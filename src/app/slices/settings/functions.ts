@@ -220,11 +220,10 @@ const isDarkTheme = () => {
 export const checkTheme = () => {
   const { settings } = store.getState();
   const themeBool = isDarkTheme();
-  const html = document.querySelector("html");
-  if (html) {
-    html.setAttribute("class", "");
-    html.classList.add(settings.lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme);
-  }
+  const theme = settings.lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme;
+  const html = document.documentElement;
+  html.setAttribute("class", "");
+  html.classList.add(theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
     meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
