@@ -14,16 +14,16 @@ const { dispatch } = store;
 
 export const getUserPreferences = (id: string) => {
   if (id) {
-    const {
-      common: { page },
-      main: { allSets, sort, sortOrder, search, whitelist },
-      settings,
-    } = store.getState();
     db.collection("users")
       .doc(id)
       .get()
       .then((doc) => {
         if (doc.exists) {
+          const {
+            common: { page },
+            main: { allSets, sort, sortOrder, search, whitelist },
+            settings,
+          } = store.getState();
           const data = doc.data();
           const {
             favorites,

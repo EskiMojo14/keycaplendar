@@ -11,7 +11,6 @@ import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
   setSearch as setMainSearch,
-  setCurrentPreset,
   setAppPresets,
   setTransition,
 } from "../main/mainSlice";
@@ -144,9 +143,6 @@ export const getURLQuery = () => {
 };
 
 export const getGlobals = () => {
-  const {
-    main: { defaultPreset },
-  } = store.getState();
   db.collection("app")
     .doc("globals")
     .get()
@@ -155,10 +151,7 @@ export const getGlobals = () => {
       const { filterPresets } = data as GlobalDoc;
       if (filterPresets) {
         const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
-        if (defaultPreset) {
-          dispatch(setCurrentPreset(defaultPreset));
-          dispatch(setAppPresets(updatedPresets));
-        }
+        dispatch(setAppPresets(updatedPresets));
       }
     })
     .catch((error) => {

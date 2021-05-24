@@ -250,7 +250,7 @@ const generateLists = (setsParam?: SetType[]) => {
 
   if (!currentPreset.name) {
     dispatch(setCurrentPreset(defaultPreset));
-    setWhitelistMerge({ profiles: allProfiles, regions: allRegions });
+    setWhitelistMerge(defaultPreset.whitelist);
   }
 };
 

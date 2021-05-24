@@ -79,7 +79,9 @@ export const App = () => {
         dispatch(setUserPresets([]));
         dispatch(setFavorites([]));
         dispatch(setHidden([]));
-        dispatch(setCurrentPreset(defaultPreset));
+        if (defaultPreset.name) {
+          dispatch(setCurrentPreset(defaultPreset));
+        }
       }
     });
     return authObserver;
