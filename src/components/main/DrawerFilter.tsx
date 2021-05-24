@@ -1,12 +1,24 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../../app/slices/common/commonSlice";
+import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../app/slices/common/functions";
+import {
+  selectAllProfiles,
+  selectAllRegions,
+  selectAllVendors,
+  selectAppPresets,
+  selectCurrentPreset,
+  selectWhitelist,
+} from "../../app/slices/main/mainSlice";
+import { whitelistParams, whitelistShipped } from "../../app/slices/main/constants";
+import { Preset, Whitelist } from "../../app/slices/main/constructors";
+import { selectPreset, setWhitelist, setWhitelistMerge } from "../../app/slices/main/functions";
+import { PresetType } from "../../app/slices/main/types";
+import { selectView } from "../../app/slices/settings/settingsSlice";
+import { selectUser, selectUserPresets } from "../../app/slices/user/userSlice";
 import { queue } from "../../app/snackbarQueue";
-import { Preset } from "../../util/constructors";
-import { whitelistShipped, whitelistParams } from "../../util/constants";
-import { UserContext, DeviceContext } from "../../util/contexts";
-import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../util/functions";
-import { WhitelistType, PresetType, SortType, ViewType } from "../../util/types";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -20,44 +32,53 @@ import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
-  appPresets: PresetType[];
   close: () => void;
   deletePreset: (preset: PresetType) => void;
   open: boolean;
   openPreset: (preset: PresetType) => void;
-  profiles: string[];
-  setWhitelist: (prop: string, whitelist: WhitelistType | WhitelistType[keyof WhitelistType]) => void;
-  sort: SortType;
-  vendors: string[];
-  regions: string[];
-  view: ViewType;
-  whitelist: WhitelistType;
 };
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
-  const { user, preset, presets, selectPreset } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
+
+  const view = useAppSelector(selectView);
+
+  const user = useAppSelector(selectUser);
+  const userPresets = useAppSelector(selectUserPresets);
+
+  const profiles = useAppSelector(selectAllProfiles);
+  const vendors = useAppSelector(selectAllVendors);
+  const regions = useAppSelector(selectAllRegions);
+  const lists = { profiles, vendors, regions };
+
+  const preset = useAppSelector(selectCurrentPreset);
+  const appPresets = useAppSelector(selectAppPresets);
+  const mainWhitelist = useAppSelector(selectWhitelist);
+
   const [modified, setModified] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited, ...whitelist } = props.whitelist;
-    const equal = isEqual(preset.whitelist, whitelist);
+    const { edited, ...whitelist } = mainWhitelist;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { edited: presetEdited, ...presetWhitelist } = preset.whitelist;
+    const equal = isEqual(presetWhitelist, whitelist);
     setModified(!equal);
-  }, [preset.whitelist, props.whitelist]);
+  }, [preset.whitelist, mainWhitelist]);
 
   const selectPresetFn = (e: React.ChangeEvent<HTMLSelectElement>) => {
     selectPreset(e.target.value);
   };
 
   const newPreset = (global = false) => {
-    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = props.whitelist;
-    const newPreset = new Preset("", global, favorites, hidden, profiles, shipped, regions, vendorMode, vendors);
+    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
+    const newWhitelist = { ...new Whitelist(favorites, hidden, profiles, shipped, regions, vendorMode, vendors) };
+    const newPreset = { ...new Preset("", global, newWhitelist) };
     props.openPreset(newPreset);
   };
 
   const savePreset = () => {
-    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = props.whitelist;
+    const { favorites, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
     const modifiedPreset = {
       ...preset,
       whitelist: {
@@ -80,8 +101,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   };
 
   const handleChange = (name: string, prop: string) => {
-    if (hasKey(props.whitelist, prop)) {
-      const original = props.whitelist[prop];
+    if (hasKey(mainWhitelist, prop)) {
+      const original = mainWhitelist[prop];
       const edited =
         typeof original === "boolean"
           ? !original
@@ -91,47 +112,44 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           ? "exclude"
           : "include";
       if (typeof edited === "boolean") {
-        if (prop === "favorites" && edited && props.whitelist.hidden) {
-          props.setWhitelist("all", { ...props.whitelist, hidden: false, favorites: edited });
-        } else if (prop === "hidden" && edited && props.whitelist.favorites) {
-          props.setWhitelist("all", { ...props.whitelist, favorites: false, hidden: edited });
+        if (prop === "favorites" && edited && mainWhitelist.hidden) {
+          setWhitelistMerge({ hidden: false, favorites: edited });
+        } else if (prop === "hidden" && edited && mainWhitelist.favorites) {
+          setWhitelistMerge({ favorites: false, hidden: edited });
         } else {
-          props.setWhitelist(prop, edited);
+          setWhitelist(prop, edited);
         }
       } else {
-        props.setWhitelist(prop, edited);
+        setWhitelist(prop, edited);
       }
     }
   };
 
   const checkAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
-      const all = props[prop];
-      props.setWhitelist(prop, all);
+    if (hasKey(lists, prop)) {
+      const all = lists[prop];
+      setWhitelist(prop, all);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, [...whitelistShipped]);
+      setWhitelist(prop, [...whitelistShipped]);
     }
   };
 
   const uncheckAll = (prop: string) => {
-    const emptyArray: string[] = [];
-    if (hasKey(props, prop)) {
-      if (props[prop] instanceof Array) {
-        props.setWhitelist(prop, emptyArray);
-      }
+    if (hasKey(lists, prop) && hasKey(mainWhitelist, prop)) {
+      setWhitelist(prop, []);
     } else if (prop === "shipped") {
-      props.setWhitelist(prop, emptyArray);
+      setWhitelist(prop, []);
     }
   };
 
   const invertAll = (prop: string) => {
-    if (hasKey(props, prop) && (prop === "profiles" || prop === "vendors" || prop === "regions")) {
-      const all = props[prop];
-      const inverted = all.filter((value) => !props.whitelist[prop].includes(value));
-      props.setWhitelist(prop, inverted);
+    if (hasKey(lists, prop)) {
+      const all = lists[prop];
+      const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
+      setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
-      const inverted = whitelistShipped.filter((value) => !props.whitelist[prop].includes(value));
-      props.setWhitelist(prop, inverted);
+      const inverted = whitelistShipped.filter((value) => !mainWhitelist[prop].includes(value));
+      setWhitelist(prop, inverted);
     }
   };
 
@@ -140,7 +158,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     whitelistParams.forEach((param) => {
       if (param === "profile" || param === "region" || param === "vendor") {
         const plural = param + "s";
-        const whitelist = props.whitelist;
+        const whitelist = mainWhitelist;
         if (hasKey(whitelist, plural)) {
           const array = whitelist[plural];
           if (array instanceof Array && array.length === 1) {
@@ -150,27 +168,27 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           }
         }
       } else if (param === "vendorMode") {
-        if (props.whitelist.vendorMode !== "exclude") {
-          params.set(param, props.whitelist[param]);
+        if (mainWhitelist.vendorMode !== "exclude") {
+          params.set(param, mainWhitelist[param]);
         } else {
           params.delete(param);
         }
       } else if (param === "profiles" || param === "shipped" || param === "regions" || param === "vendors") {
         const lengths = {
-          profiles: props.profiles.length,
+          profiles: profiles.length,
           shipped: 2,
           vendors: 0,
-          regions: props.regions.length,
+          regions: regions.length,
         };
         if (param === "profiles" || param === "regions" || param === "vendors") {
-          if (props.whitelist[param].length > 1 && props.whitelist[param].length !== lengths[param]) {
-            params.set(param, props.whitelist[param].map((profile) => profile.replace(" ", "-")).join(" "));
+          if (mainWhitelist[param].length > 1 && mainWhitelist[param].length !== lengths[param]) {
+            params.set(param, mainWhitelist[param].map((profile) => profile.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);
           }
         } else {
-          if (props.whitelist[param].length !== lengths[param]) {
-            params.set(param, props.whitelist[param].map((item) => item.replace(" ", "-")).join(" "));
+          if (mainWhitelist[param].length !== lengths[param]) {
+            params.set(param, mainWhitelist[param].map((item) => item.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);
           }
@@ -188,7 +206,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       });
   };
 
-  const dismissible = device === "desktop" && props.view !== "compact";
+  const dismissible = device === "desktop" && view !== "compact";
 
   const closeIcon = dismissible ? (
     <Tooltip enterDelay={500} content="Close" align="bottom">
@@ -301,7 +319,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
           }
           onClick={savePreset}
         />
@@ -323,7 +341,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && props.appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
           }
           className="delete"
           onClick={deletePreset}
@@ -360,7 +378,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
                 </svg>
               )}
-              selected={props.whitelist.favorites}
+              selected={mainWhitelist.favorites}
               onInteraction={() => handleChange("favorites", "favorites")}
             />
             <Chip
@@ -375,7 +393,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   <path d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm2.28 4.49l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.06-1.07.14L13 9.21c.58.25 1.03.71 1.28 1.28zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
                 </svg>
               )}
-              selected={props.whitelist.hidden}
+              selected={mainWhitelist.hidden}
               onInteraction={() => handleChange("hidden", "hidden")}
             />
           </ChipSet>
@@ -412,8 +430,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <Select
             outlined
             icon={
-              presets.length > 0
-                ? presets.map((preset) => preset.id).includes(preset.id)
+              userPresets.length > 0
+                ? userPresets.map((preset) => preset.id).includes(preset.id)
                   ? iconObject(
                       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
                         <path d="M0 0h24v24H0V0z" fill="none" />
@@ -437,7 +455,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             enhanced={{ fixed: true }}
             value={preset.id}
             options={
-              presets.length > 0
+              userPresets.length > 0
                 ? [
                     {
                       label: (
@@ -460,11 +478,14 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                           Global
                         </>
                       ),
-                      options: props.appPresets.map((preset) => ({
-                        label: preset.name,
-                        key: preset.id,
-                        value: preset.id,
-                      })),
+                      options: [
+                        { label: "Default", key: "default", value: "default" },
+                        ...appPresets.map((preset) => ({
+                          label: preset.name,
+                          key: preset.id,
+                          value: preset.id,
+                        })),
+                      ],
                     },
                     {
                       label: (
@@ -485,22 +506,25 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                           User
                         </>
                       ),
-                      options: presets.map((preset) => ({
+                      options: userPresets.map((preset) => ({
                         label: preset.name,
                         key: preset.id,
                         value: preset.id,
                       })),
                     },
                   ]
-                : props.appPresets.map((preset) => ({
-                    label: preset.name,
-                    key: preset.id,
-                    value: preset.id,
-                  }))
+                : [
+                    { label: "Default", key: "default", value: "default" },
+                    ...appPresets.map((preset) => ({
+                      label: preset.name,
+                      key: preset.id,
+                      value: preset.id,
+                    })),
+                  ]
             }
             onChange={selectPresetFn}
             className={classNames({ modified: modified })}
-            disabled={[...props.appPresets, ...presets].length === 1}
+            disabled={[...appPresets, ...userPresets].length === 1}
           />
           {userPresetOptions}
         </div>
@@ -559,12 +583,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.profiles.map((profile) => {
+                {profiles.map((profile) => {
                   return (
                     <Chip
                       key={"profile-" + profile}
                       label={profile}
-                      selected={props.whitelist.profiles.includes(profile)}
+                      selected={mainWhitelist.profiles.includes(profile)}
                       checkmark
                       onInteraction={() => handleChange(profile, "profiles")}
                     />
@@ -620,7 +644,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                     <Chip
                       key={"shipped-" + prop}
                       label={prop}
-                      selected={props.whitelist.shipped.includes(prop)}
+                      selected={mainWhitelist.shipped.includes(prop)}
                       checkmark
                       onInteraction={() => handleChange(prop, "shipped")}
                     />
@@ -671,12 +695,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.regions.map((region) => {
+                {regions.map((region) => {
                   return (
                     <Chip
                       key={"regions-" + region}
                       label={region}
-                      selected={props.whitelist.regions.includes(region)}
+                      selected={mainWhitelist.regions.includes(region)}
                       checkmark
                       onInteraction={() => handleChange(region, "regions")}
                     />
@@ -704,16 +728,16 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                 <SegmentedButtonSegment
                   label="Include"
                   onClick={() => {
-                    props.setWhitelist("vendorMode", "include");
+                    setWhitelist("vendorMode", "include");
                   }}
-                  selected={props.whitelist.vendorMode === "include"}
+                  selected={mainWhitelist.vendorMode === "include"}
                 />
                 <SegmentedButtonSegment
                   label="Exclude"
                   onClick={() => {
-                    props.setWhitelist("vendorMode", "exclude");
+                    setWhitelist("vendorMode", "exclude");
                   }}
-                  selected={props.whitelist.vendorMode === "exclude"}
+                  selected={mainWhitelist.vendorMode === "exclude"}
                 />
               </SegmentedButton>
             </div>
@@ -744,12 +768,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             </div>
             <div className="filter-chip-container">
               <ChipSet filter>
-                {props.vendors.map((vendor) => {
+                {vendors.map((vendor) => {
                   return (
                     <Chip
                       key={"profile-" + vendor}
                       label={vendor}
-                      selected={props.whitelist.vendors.includes(vendor)}
+                      selected={mainWhitelist.vendors.includes(vendor)}
                       checkmark
                       onInteraction={() => handleChange(vendor, "vendors")}
                     />

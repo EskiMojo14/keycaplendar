@@ -2,9 +2,9 @@ import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import moment from "moment";
-import { auditProperties } from "../../util/constants";
-import { alphabeticalSortProp, hasKey } from "../../util/functions";
-import { ActionType } from "../../util/types";
+import { auditProperties } from "../../app/slices/audit/constants";
+import { ActionType } from "../../app/slices/audit/types";
+import { alphabeticalSortProp, hasKey } from "../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -139,9 +139,9 @@ export const AuditEntry = (props: AuditEntryProps) => {
                     </DataTableRow>
                   );
                 } else if (property === "vendors" && props.action.before.vendors && props.action.after.vendors) {
-                  const beforeVendors = alphabeticalSortProp(props.action.before.vendors, "region");
+                  const beforeVendors = alphabeticalSortProp([...props.action.before.vendors], "region");
 
-                  const afterVendors = alphabeticalSortProp(props.action.after.vendors, "region");
+                  const afterVendors = alphabeticalSortProp([...props.action.after.vendors], "region");
 
                   const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
                   return moreVendors.map((_vendor, index) => {

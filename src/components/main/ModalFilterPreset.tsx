@@ -1,6 +1,9 @@
-import React from "react";
-import { UserContext } from "../../util/contexts";
-import { PresetType } from "../../util/types";
+import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../../app/slices/common/commonSlice";
+import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "../../app/slices/main/functions";
+import { PresetType } from "../../app/slices/main/types";
+import { selectUser } from "../../app/slices/user/userSlice";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -8,7 +11,7 @@ import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
+import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
 import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ModalFilterPreset.scss";
@@ -17,195 +20,184 @@ type ModalFilterPresetProps = {
   close: () => void;
   open: boolean;
   preset: PresetType;
-  device: string;
 };
 
-type ModalFilterPresetState = {
-  name: string;
-  new: boolean;
-};
+export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
+  const device = useAppSelector(selectDevice);
+  const user = useAppSelector(selectUser);
 
-export class ModalFilterPreset extends React.Component<ModalFilterPresetProps, ModalFilterPresetState> {
-  state: ModalFilterPresetState = {
-    name: "",
-    new: true,
-  };
-  componentDidUpdate = (prevProps: ModalFilterPresetProps) => {
-    if (this.props.preset.name !== prevProps.preset.name) {
-      this.setState({ name: this.props.preset.name, new: !this.props.preset.name });
+  const [name, setName] = useState("");
+  const [isNew, setIsNew] = useState(true);
+
+  useEffect(() => {
+    setName(props.preset.name);
+    setIsNew(!props.preset.name);
+  }, [props.preset.name]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "name") {
+      setName(value);
     }
   };
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState<never>({ [e.target.name]: e.target.value });
-  };
-  savePreset = () => {
-    if (this.state.name) {
+
+  const savePreset = () => {
+    if (name) {
       const preset = {
-        ...this.props.preset,
-        name: this.state.name,
+        ...props.preset,
+        name: name,
       };
-      if (this.props.preset.global && this.context.user.isAdmin) {
-        if (!this.props.preset.name) {
-          this.context.newGlobalPreset(preset);
+      if (props.preset.global && user.isAdmin) {
+        if (!props.preset.name) {
+          newGlobalPreset(preset);
         } else {
-          this.context.editGlobalPreset(preset);
+          editGlobalPreset(preset);
         }
       } else {
-        if (!this.props.preset.name) {
-          this.context.newPreset(preset);
+        if (!props.preset.name) {
+          newPreset(preset);
         } else {
-          this.context.editPreset(preset);
+          editPreset(preset);
         }
       }
-      this.props.close();
+      props.close();
     }
   };
-  render() {
-    const useDrawer = this.props.device !== "mobile";
-    return (
+  const useDrawer = device !== "mobile";
+  return (
+    <BoolWrapper
+      condition={useDrawer}
+      trueWrapper={(children) => (
+        <Drawer modal open={props.open} onClose={props.close} className="drawer-right filter-preset-modal">
+          {children}
+        </Drawer>
+      )}
+      falseWrapper={(children) => (
+        <FullScreenDialog open={props.open} onClose={props.close} className="filter-preset-modal">
+          {children}
+        </FullScreenDialog>
+      )}
+    >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => (
-          <Drawer modal open={this.props.open} onClose={this.props.close} className="drawer-right filter-preset-modal">
-            {children}
-          </Drawer>
-        )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
-          <FullScreenDialog open={this.props.open} onClose={this.props.close} className="filter-preset-modal">
-            {children}
-          </FullScreenDialog>
+          <FullScreenDialogAppBar>
+            <TopAppBarRow>{children}</TopAppBarRow>
+          </FullScreenDialogAppBar>
         )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
-            <FullScreenDialogAppBar>
-              <TopAppBarRow>{children}</TopAppBarRow>
-            </FullScreenDialogAppBar>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="close" onClick={props.close} />
+              <TopAppBarTitle>{children}</TopAppBarTitle>
+            </TopAppBarSection>
           )}
         >
-          <BoolWrapper
-            condition={useDrawer}
-            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
-            falseWrapper={(children) => (
-              <TopAppBarSection alignStart>
-                <TopAppBarNavigationIcon icon="close" onClick={this.props.close} />
-                <TopAppBarTitle>{children}</TopAppBarTitle>
-              </TopAppBarSection>
-            )}
-          >
-            {this.state.new ? "Create" : "Modify"}
-            {this.props.preset.global && this.context.user.isAdmin ? " global" : ""} filter preset
-          </BoolWrapper>
-
-          <ConditionalWrapper
-            condition={!useDrawer}
-            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
-          >
-            <Button label="Save" disabled={!this.state.name} outlined onClick={this.savePreset} />
-          </ConditionalWrapper>
+          {isNew ? "Create" : "Modify"}
+          {props.preset.global && user.isAdmin ? " global" : ""} filter preset
         </BoolWrapper>
-        <div className="form-container">
-          <TextField
-            outlined
-            label="Name"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
-            autoComplete="off"
-            required
-          />
-        </div>
-        <BoolWrapper
-          condition={useDrawer}
-          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+
+        <ConditionalWrapper
+          condition={!useDrawer}
+          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Favorites</Typography>
-            </div>
-            <div className="checkbox-container">
-              <Checkbox checked={this.props.preset.whitelist.favorites} disabled />
-            </div>
-          </div>
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Hidden</Typography>
-            </div>
-            <div className="checkbox-container">
-              <Checkbox checked={this.props.preset.whitelist.hidden} disabled />
-            </div>
-          </div>
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Profiles</Typography>
-            </div>
-            <div className="chip-set-container">
-              <ChipSet choice>
-                {this.props.preset.whitelist.profiles.map((profile) => (
-                  <Chip key={profile} label={profile} disabled />
-                ))}
-              </ChipSet>
-            </div>
-          </div>
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Shipped</Typography>
-            </div>
-            <div className="chip-set-container">
-              <ChipSet choice>
-                {this.props.preset.whitelist.shipped.map((shipped) => (
-                  <Chip key={shipped} label={shipped} disabled />
-                ))}
-              </ChipSet>
-            </div>
-          </div>
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Region</Typography>
-            </div>
-            <div className="chip-set-container">
-              <ChipSet choice>
-                {this.props.preset.whitelist.regions.map((region) => (
-                  <Chip key={region} label={region} disabled />
-                ))}
-              </ChipSet>
-            </div>
-          </div>
-          <div className="group">
-            <div className="subheader">
-              <Typography use="caption">Vendors</Typography>
-            </div>
-            <div className="toggle-container">
-              <SegmentedButton toggle>
-                <SegmentedButtonSegment
-                  disabled
-                  label="Include"
-                  selected={this.props.preset.whitelist.vendorMode === "include"}
-                />
-                <SegmentedButtonSegment
-                  disabled
-                  label="Exclude"
-                  selected={this.props.preset.whitelist.vendorMode === "exclude"}
-                />
-              </SegmentedButton>
-            </div>
-            <div className="chip-set-container">
-              <ChipSet choice>
-                {this.props.preset.whitelist.vendors.map((vendor) => (
-                  <Chip key={vendor} label={vendor} disabled />
-                ))}
-              </ChipSet>
-            </div>
-          </div>
-        </BoolWrapper>
+          <Button label="Save" disabled={!name} outlined onClick={savePreset} />
+        </ConditionalWrapper>
       </BoolWrapper>
-    );
-  }
-}
-
-ModalFilterPreset.contextType = UserContext;
+      <div className="form-container">
+        <TextField outlined label="Name" name="name" value={name} onChange={handleChange} autoComplete="off" required />
+      </div>
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+      >
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Favorites</Typography>
+          </div>
+          <div className="checkbox-container">
+            <Checkbox checked={props.preset.whitelist.favorites} disabled />
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Hidden</Typography>
+          </div>
+          <div className="checkbox-container">
+            <Checkbox checked={props.preset.whitelist.hidden} disabled />
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Profiles</Typography>
+          </div>
+          <div className="chip-set-container">
+            <ChipSet choice>
+              {props.preset.whitelist.profiles.map((profile) => (
+                <Chip key={profile} label={profile} disabled />
+              ))}
+            </ChipSet>
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Shipped</Typography>
+          </div>
+          <div className="chip-set-container">
+            <ChipSet choice>
+              {props.preset.whitelist.shipped.map((shipped) => (
+                <Chip key={shipped} label={shipped} disabled />
+              ))}
+            </ChipSet>
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Region</Typography>
+          </div>
+          <div className="chip-set-container">
+            <ChipSet choice>
+              {props.preset.whitelist.regions.map((region) => (
+                <Chip key={region} label={region} disabled />
+              ))}
+            </ChipSet>
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
+            <Typography use="caption">Vendors</Typography>
+          </div>
+          <div className="toggle-container">
+            <SegmentedButton toggle>
+              <SegmentedButtonSegment
+                disabled
+                label="Include"
+                selected={props.preset.whitelist.vendorMode === "include"}
+              />
+              <SegmentedButtonSegment
+                disabled
+                label="Exclude"
+                selected={props.preset.whitelist.vendorMode === "exclude"}
+              />
+            </SegmentedButton>
+          </div>
+          <div className="chip-set-container">
+            <ChipSet choice>
+              {props.preset.whitelist.vendors.map((vendor) => (
+                <Chip key={vendor} label={vendor} disabled />
+              ))}
+            </ChipSet>
+          </div>
+        </div>
+      </BoolWrapper>
+    </BoolWrapper>
+  );
+};
 
 export default ModalFilterPreset;

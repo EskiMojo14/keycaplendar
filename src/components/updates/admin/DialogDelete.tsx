@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "../../../firebase";
 import { queue } from "../../../app/snackbarQueue";
-import { UpdateEntryType } from "../../../util/types";
+import { UpdateEntryType } from "../../../app/slices/updates/types";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 
 const db = firebase.firestore();

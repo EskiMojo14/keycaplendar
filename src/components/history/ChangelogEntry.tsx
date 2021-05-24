@@ -1,8 +1,10 @@
 import React from "react";
 import moment from "moment";
-import { auditProperties, auditPropertiesFormatted } from "../../util/constants";
-import { arrayIncludes, hasKey } from "../../util/functions";
-import { ActionSetType, ProcessedPublicActionType, VendorType } from "../../util/types";
+import { auditProperties, auditPropertiesFormatted } from "../../app/slices/audit/constants";
+import { ActionSetType } from "../../app/slices/audit/types";
+import { arrayIncludes, hasKey } from "../../app/slices/common/functions";
+import { ProcessedPublicActionType } from "../../app/slices/history/types";
+import { VendorType } from "../../app/slices/main/types";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,

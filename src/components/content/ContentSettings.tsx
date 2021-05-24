@@ -1,10 +1,24 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../../app/slices/common/commonSlice";
+import { useBoolStates } from "../../app/slices/common/functions";
+import { selectBottomNav, selectSettings, selectSyncSettings } from "../../app/slices/settings/settingsSlice";
+import {
+  setApplyTheme,
+  setBottomNav,
+  setDarkTheme,
+  setDensity,
+  setFromTimeTheme,
+  setLightTheme,
+  setManualTheme,
+  setSyncSettings,
+  setToTimeTheme,
+} from "../../app/slices/settings/functions";
+import { selectUser, setUser } from "../../app/slices/user/userSlice";
 import { queue } from "../../app/snackbarQueue";
-import { UserContext, DeviceContext } from "../../util/contexts";
-import { useBoolStates } from "../../util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -30,28 +44,27 @@ import { DialogDelete } from "../settings/DialogDelete";
 import "./ContentSettings.scss";
 
 type ContentSettingsProps = {
-  applyTheme: string;
-  bottomNav: boolean;
-  darkTheme: string;
-  density: string;
-  fromTimeTheme: string;
-  lightTheme: string;
-  manualTheme: boolean;
   openNav: () => void;
-  setApplyTheme: (applyTheme: string) => void;
-  setBottomNav: (bottomNav: boolean) => void;
-  setDarkTheme: (darkTheme: string) => void;
-  setDensity: (density: string) => void;
-  setFromTimeTheme: (fromTimeTheme: string) => void;
-  setLightTheme: (lightTheme: string) => void;
-  setManualTheme: (manualTheme: boolean) => void;
-  setToTimeTheme: (toTimeTheme: string) => void;
-  toTimeTheme: string;
 };
 
 export const ContentSettings = (props: ContentSettingsProps) => {
-  const { user, setUser, syncSettings, setSyncSettings } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const dispatch = useAppDispatch();
+  const {
+    applyTheme,
+    bottomNav,
+    darkTheme,
+    density,
+    fromTimeTheme,
+    lightTheme,
+    manualTheme,
+    toTimeTheme,
+  } = useAppSelector(selectSettings);
+  const bottomNavSetting = useAppSelector(selectBottomNav);
+  const device = useAppSelector(selectDevice);
+  const syncSettings = useAppSelector(selectSyncSettings);
+
+  const user = useAppSelector(selectUser);
+
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
   const signOut = () => {
@@ -59,15 +72,15 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       .auth()
       .signOut()
       .then(() => {
-        setUser({});
+        dispatch(setUser({}));
       })
       .catch((error) => {
         console.log("Error signing out: " + error);
         queue.notify({ title: "Error signing out: " + error });
       });
   };
-  const setApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    props.setApplyTheme(e.target.value.toLowerCase());
+  const selectApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setApplyTheme(e.target.value.toLowerCase());
   };
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
@@ -183,7 +196,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const deleteUserDialog = user.email ? (
     <DialogDelete open={deleteDialogOpen} close={closeDeleteDialog} signOut={signOut} />
   ) : null;
-  const bottomNav =
+  const bottomNavOptions =
     device === "mobile" ? (
       <div className="settings-group">
         <div className="subheader">
@@ -193,15 +206,15 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           <div className="switch-container">
             <Switch
               label="Bottom navigation"
-              checked={props.bottomNav}
-              onChange={(evt) => props.setBottomNav(evt.currentTarget.checked)}
+              checked={bottomNav}
+              onChange={(evt) => setBottomNav(evt.currentTarget.checked)}
             />
           </div>
         </Card>
       </div>
     ) : null;
   const themeOptions =
-    props.applyTheme === "system" ? null : props.applyTheme === "timed" ? (
+    applyTheme === "system" ? null : applyTheme === "timed" ? (
       <div className="theme-form-field--flex">
         <FormField className="theme-form-field">
           <Typography use="body2">From</Typography>
@@ -224,9 +237,9 @@ export const ContentSettings = (props: ContentSettingsProps) => {
               placeholder="--:--"
               helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
               type="time"
-              value={props.fromTimeTheme}
+              value={fromTimeTheme}
               onChange={(e) => {
-                props.setFromTimeTheme((e.target as HTMLInputElement).value);
+                setFromTimeTheme((e.target as HTMLInputElement).value);
               }}
             />
           </div>
@@ -252,9 +265,9 @@ export const ContentSettings = (props: ContentSettingsProps) => {
               placeholder="--:--"
               helpText={{ persistent: false, validationMsg: true, children: "hh:yy (24hr)" }}
               type="time"
-              value={props.toTimeTheme}
+              value={toTimeTheme}
               onChange={(e) => {
-                props.setToTimeTheme((e.target as HTMLInputElement).value);
+                setToTimeTheme((e.target as HTMLInputElement).value);
               }}
             />
           </div>
@@ -268,15 +281,15 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         <div className="switch-container">
           <Switch
             id="manualTheme"
-            checked={props.manualTheme}
+            checked={manualTheme}
             onChange={(e) => {
-              props.setManualTheme((e.target as HTMLInputElement).checked);
+              setManualTheme((e.target as HTMLInputElement).checked);
             }}
           />
         </div>
       </FormField>
     );
-  const density =
+  const densityOptions =
     device === "desktop" ? (
       <div className="settings-group">
         <div className="subheader">
@@ -286,23 +299,23 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           <SegmentedButton toggle className="density-toggle">
             <SegmentedButtonSegment
               label="Default"
-              selected={props.density === "default"}
+              selected={density === "default"}
               onClick={() => {
-                props.setDensity("default");
+                setDensity("default");
               }}
             />
             <SegmentedButtonSegment
               label="Comfortable"
-              selected={props.density === "comfortable"}
+              selected={density === "comfortable"}
               onClick={() => {
-                props.setDensity("comfortable");
+                setDensity("comfortable");
               }}
             />
             <SegmentedButtonSegment
               label="Compact"
-              selected={props.density === "compact"}
+              selected={density === "compact"}
               onClick={() => {
-                props.setDensity("compact");
+                setDensity("compact");
               }}
             />
           </SegmentedButton>
@@ -311,7 +324,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNavSetting })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -319,28 +332,28 @@ export const ContentSettings = (props: ContentSettingsProps) => {
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNavSetting ? null : <TopAppBarFixedAdjust />}
       <div className="admin-main">
         <div className="settings-container">
           <div className="settings">
             {userDisplay}
-            {bottomNav}
+            {bottomNavOptions}
             <div className="settings-group">
               <div className="subheader">
                 <Typography use="caption">Light theme</Typography>
               </div>
               <Card className="theme-card">
                 <List className="theme-list">
-                  <ListItem onClick={() => props.setLightTheme("light")} className="light">
+                  <ListItem onClick={() => setLightTheme("light")} className="light">
                     Light
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.lightTheme === "light"} readOnly />
+                      <Radio tabIndex={-1} checked={lightTheme === "light"} readOnly />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => props.setLightTheme("sepia")} className="sepia">
+                  <ListItem onClick={() => setLightTheme("sepia")} className="sepia">
                     Sepia
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.lightTheme === "sepia"} readOnly />
+                      <Radio tabIndex={-1} checked={lightTheme === "sepia"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                 </List>
@@ -356,52 +369,52 @@ export const ContentSettings = (props: ContentSettingsProps) => {
                   <Select
                     enhanced
                     outlined
-                    value={props.applyTheme === "system" ? "System" : props.applyTheme === "timed" ? "Timed" : "Manual"}
+                    value={applyTheme === "system" ? "System" : applyTheme === "timed" ? "Timed" : "Manual"}
                     options={["Manual", "Timed", "System"]}
-                    onChange={setApplyTheme}
+                    onChange={selectApplyTheme}
                   />
                 </FormField>
                 {themeOptions}
                 <List className="theme-list">
-                  <ListItem onClick={() => props.setDarkTheme("ocean")} className="ocean">
+                  <ListItem onClick={() => setDarkTheme("ocean")} className="ocean">
                     Ocean
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.darkTheme === "ocean"} readOnly />
+                      <Radio tabIndex={-1} checked={darkTheme === "ocean"} readOnly />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => props.setDarkTheme("grey")} className="grey">
+                  <ListItem onClick={() => setDarkTheme("grey")} className="grey">
                     Grey
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.darkTheme === "grey"} readOnly />
+                      <Radio tabIndex={-1} checked={darkTheme === "grey"} readOnly />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => props.setDarkTheme("deep-ocean")} className="deep-ocean">
+                  <ListItem onClick={() => setDarkTheme("deep-ocean")} className="deep-ocean">
                     Deep Ocean
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.darkTheme === "deep-ocean"} readOnly />
+                      <Radio tabIndex={-1} checked={darkTheme === "deep-ocean"} readOnly />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => props.setDarkTheme("deep")} className="deep">
+                  <ListItem onClick={() => setDarkTheme("deep")} className="deep">
                     Deep Purple
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.darkTheme === "deep"} readOnly />
+                      <Radio tabIndex={-1} checked={darkTheme === "deep"} readOnly />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => props.setDarkTheme("dark")} className="dark">
+                  <ListItem onClick={() => setDarkTheme("dark")} className="dark">
                     Dark
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={props.darkTheme === "dark"} readOnly />
+                      <Radio tabIndex={-1} checked={darkTheme === "dark"} readOnly />
                     </ListItemMeta>
                   </ListItem>
                 </List>
               </Card>
             </div>
-            {density}
+            {densityOptions}
           </div>
         </div>
       </div>
       <Footer />
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNavSetting ? <TopAppBarFixedAdjust /> : null}
       {deleteUserDialog}
     </>
   );

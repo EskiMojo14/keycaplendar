@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import firebase from "../../firebase";
-import isEqual from "lodash.isequal";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import { queue } from "../../app/snackbarQueue";
-import { auditProperties, historyTabs } from "../../util/constants";
-import { Keyset } from "../../util/constructors";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "../../app/slices/common/functions";
 import {
-  alphabeticalSortProp,
-  capitalise,
-  closeModal,
-  hasKey,
-  iconObject,
-  openModal,
-  truncate,
-  uniqueArray,
-} from "../../util/functions";
-import { PublicActionType, ProcessedPublicActionType, SetType, RecentSet, Page } from "../../util/types";
+  selectLoading,
+  selectProcessedActions,
+  selectRecentSets,
+  selectTab,
+  setTab,
+} from "../../app/slices/history/historySlice";
+import { historyTabs } from "../../app/slices/history/constants";
+import { RecentSet } from "../../app/slices/history/types";
+import { selectAllSets } from "../../app/slices/main/mainSlice";
+import { Keyset } from "../../app/slices/main/constructors";
+import { SetType } from "../../app/slices/main/types";
+import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -37,112 +36,31 @@ import { ChangelogEntry } from "../history/ChangelogEntry";
 import { RecentSetCard } from "../history/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
+import { generateSets, getData } from "../../app/slices/history/functions";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
 type ContentHistoryProps = {
-  bottomNav: boolean;
   openNav: () => void;
-  setPage: (page: Page) => void;
-  allSets: SetType[];
 };
 
-type HistoryTab = typeof historyTabs[number];
-
 export const ContentHistory = (props: ContentHistoryProps) => {
-  const [tab, setTab] = useState<HistoryTab>("recent");
-  const setTabScroll = (tab: HistoryTab) => {
-    setTab(tab);
-    scrollTo(0, 0);
-  };
+  const dispatch = useAppDispatch();
 
-  const [loading, setLoading] = useState(false);
+  const bottomNav = useAppSelector(selectBottomNav);
+
+  const allSets = useAppSelector(selectAllSets);
+
+  const tab = useAppSelector(selectTab);
+  const loading = useAppSelector(selectLoading);
+
+  const processedActions = useAppSelector(selectProcessedActions);
+  const recentSets = useAppSelector(selectRecentSets);
+
   const [swiping, setSwiping] = useState(false);
 
-  const getData = () => {
-    const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-    setLoading(true);
-    cloudFn({ num: 25 })
-      .then((result) => {
-        const actions: PublicActionType[] = result.data;
-        processActions(actions);
-      })
-      .catch((error) => {
-        console.log(error);
-        queue.notify({ title: "Failed to get changelog: " + error });
-      });
-  };
   useEffect(getData, []);
-
-  const [processedActions, setProcessedActions] = useState<ProcessedPublicActionType[]>([]);
-
-  const processActions = (actions: PublicActionType[]) => {
-    const processedActions: ProcessedPublicActionType[] = [...actions].map((action) => {
-      const { before, after, ...restAction } = action;
-      const title =
-        action.action !== "deleted"
-          ? `${action.after.profile} ${action.after.colorway}`
-          : `${action.before.profile} ${action.before.colorway}`;
-      if (before && after) {
-        auditProperties.forEach((prop) => {
-          const beforeProp = before[prop];
-          const afterProp = after[prop];
-          if (
-            isEqual(beforeProp, afterProp) ||
-            (!(typeof beforeProp === "boolean") && !beforeProp && !(typeof afterProp === "boolean") && !afterProp)
-          ) {
-            delete before[prop];
-            delete after[prop];
-          }
-        });
-      }
-      return {
-        ...restAction,
-        before,
-        after,
-        title,
-      };
-    });
-    setProcessedActions(processedActions);
-    setLoading(false);
-  };
-
-  const getSetById = (id: string) => {
-    const index = props.allSets.findIndex((set) => set.id === id);
-    return index > -1 ? props.allSets[index] : null;
-  };
-
-  const [recentSets, setRecentSets] = useState<RecentSet[]>([]);
-
-  const generateSets = (actions = processedActions) => {
-    const ids = uniqueArray(actions.map((action) => action.documentId));
-    const recentSets: RecentSet[] = ids.map((id) => {
-      const filteredActions = alphabeticalSortProp(
-        actions.filter((action) => action.documentId === id),
-        "timestamp",
-        true
-      );
-      const latestTimestamp = filteredActions[0].timestamp;
-      const title = filteredActions[0].title;
-      const designer = filteredActions[0].after.designer
-        ? filteredActions[0].after.designer
-        : filteredActions[0].before.designer
-        ? filteredActions[0].before.designer
-        : null;
-      const deleted = filteredActions[0].action === "deleted";
-      return {
-        id: id,
-        title: title,
-        designer: designer,
-        deleted: deleted,
-        currentSet: getSetById(id),
-        latestTimestamp: latestTimestamp,
-      };
-    });
-    alphabeticalSortProp(recentSets, "latestTimestamp", true);
-    setRecentSets(recentSets);
-  };
-  useEffect(generateSets, [JSON.stringify(props.allSets), processedActions]);
+  useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
   const blankSet = new Keyset();
 
@@ -182,7 +100,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
       clearFilter();
     } else {
       setFilterSet({ id, title });
-      setTabScroll("changelog");
+      dispatch(setTab("changelog"));
     }
   };
 
@@ -193,7 +111,10 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   const tabRow = (
     <TopAppBarRow className="tab-row">
       <TopAppBarSection alignStart>
-        <TabBar activeTabIndex={historyTabs.indexOf(tab)} onActivate={(e) => setTabScroll(historyTabs[e.detail.index])}>
+        <TabBar
+          activeTabIndex={historyTabs.indexOf(tab)}
+          onActivate={(e) => dispatch(setTab(historyTabs[e.detail.index]))}
+        >
           {historyTabs.map((tab) => (
             <Tab key={tab}>{capitalise(tab)}</Tab>
           ))}
@@ -228,7 +149,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
   ) : null;
 
   const handleChangeIndex = (index: number) => {
-    setTabScroll(historyTabs[index]);
+    dispatch(setTab(historyTabs[index]));
   };
 
   const slideRenderer = (params: any) => {
@@ -244,8 +165,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
               filtered={recentSet.id === filterSet.id}
               selected={recentSet.id === detailSet.id}
               openDetails={openDetails}
-              setPage={props.setPage}
-              key={recentSet.title}
+              key={recentSet.id}
             />
           ))}
         </div>
@@ -267,8 +187,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav })}>
-        {props.bottomNav ? tabRow : null}
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+        {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -276,20 +196,13 @@ export const ContentHistory = (props: ContentHistoryProps) => {
           </TopAppBarSection>
           {clearFilterButton}
         </TopAppBarRow>
-        {props.bottomNav ? null : tabRow}
-        <LinearProgress closed={props.allSets.length > 0 && !loading} />
+        {bottomNav ? null : tabRow}
+        <LinearProgress closed={allSets.length > 0 && !loading} />
       </TopAppBar>
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
-          <DrawerDetails
-            open={detailsOpen}
-            close={closeDetails}
-            set={detailSet}
-            openSales={openSales}
-            device="mobile"
-            view="compact"
-          />
+          <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}
@@ -308,7 +221,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         </div>
       </div>
       <Footer />
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

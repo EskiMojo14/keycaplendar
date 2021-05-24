@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
-import { queue } from "../../../app/snackbarQueue";
-import { UserContext } from "../../../util/contexts";
+import { useAppSelector } from "../../../app/hooks";
+import { selectDevice } from "../../../app/slices/common/commonSlice";
 import {
-  formatFileName,
-  iconObject,
-  getStorageFolders,
-  batchStorageDelete,
   arrayMove,
+  batchStorageDelete,
+  formatFileName,
+  getStorageFolders,
   hasKey,
-} from "../../../util/functions";
-import { SetType, VendorType } from "../../../util/types";
+  iconObject,
+} from "../../../app/slices/common/functions";
+import {
+  selectAllDesigners,
+  selectAllProfiles,
+  selectAllVendorRegions,
+  selectAllVendors,
+} from "../../../app/slices/main/mainSlice";
+import { getData } from "../../../app/slices/main/functions";
+import { SetType, VendorType } from "../../../app/slices/main/types";
+import { selectUser } from "../../../app/slices/user/userSlice";
+import { queue } from "../../../app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "../../util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "../../util/ConditionalWrapper";
@@ -29,9 +38,9 @@ import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
+import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import "./ModalEntry.scss";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
@@ -52,289 +61,267 @@ const getVendorStyle = (provided: DraggableProvided) => {
 };
 
 type ModalCreateProps = {
-  allDesigners: string[];
-  allProfiles: string[];
-  allVendorRegions: string[];
-  allVendors: string[];
   close: () => void;
-  getData: () => void;
   open: boolean;
-  device: string;
 };
 
-type ModalCreateState = {
-  profile: string;
-  colorway: string;
-  designer: string[];
-  icDate: string;
-  details: string;
-  notes: string;
-  sales: { img: string; thirdParty: boolean };
-  image: Blob | File | null;
-  gbMonth: boolean;
-  gbLaunch: string;
-  gbEnd: string;
-  shipped: boolean;
-  vendors: VendorType[];
-  loading: boolean;
-  imageUploadProgress: number;
-  imageURL: string;
-  salesImageLoaded: boolean;
-  focused: string;
-};
+export const ModalCreate = (props: ModalCreateProps) => {
+  const device = useAppSelector(selectDevice);
 
-export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateState> {
-  state: ModalCreateState = {
+  const user = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+  const allProfiles = useAppSelector(selectAllProfiles);
+  const allVendors = useAppSelector(selectAllVendors);
+  const allVendorRegions = useAppSelector(selectAllVendorRegions);
+
+  const [fields, setFields] = useState({
     profile: "",
     colorway: "",
-    designer: [],
+    designer: [""],
     icDate: "",
     details: "",
     notes: "",
-    sales: { img: "", thirdParty: false },
-    image: null,
     gbMonth: true,
     gbLaunch: "",
     gbEnd: "",
     shipped: false,
-    vendors: [],
-    loading: false,
+  });
+
+  const [vendors, setVendors] = useState<VendorType[]>([]);
+
+  const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
+
+  const [imageInfo, setImageInfo] = useState<{
+    image: Blob | File | null;
+    imageUploadProgress: number;
+    imageURL: string;
+  }>({
+    image: null,
     imageUploadProgress: 0,
     imageURL: "",
-    salesImageLoaded: false,
-    focused: "",
-  };
+  });
 
-  componentDidUpdate(prevProps: ModalCreateProps) {
-    if (this.props.open !== prevProps.open) {
-      if (this.context.user.isEditor === false && this.context.user.isDesigner) {
-        this.setState({
-          designer: [this.context.user.nickname],
-        });
-      }
+  const [loading, setLoading] = useState(false);
+
+  const [focused, setFocused] = useState("");
+
+  useEffect(() => {
+    if (!user.isEditor && user.isDesigner) {
+      setFields((fields) => {
+        return { ...fields, designer: [user.nickname] };
+      });
     }
-  }
+  }, [props.open]);
 
-  closeModal = () => {
-    this.props.close();
-    this.setState({
+  const closeModal = () => {
+    props.close();
+    setFields({
       profile: "",
       colorway: "",
-      designer: [],
+      designer: [""],
       icDate: "",
       details: "",
       notes: "",
-      sales: { img: "", thirdParty: false },
-      image: null,
       gbMonth: true,
       gbLaunch: "",
       gbEnd: "",
       shipped: false,
-      vendors: [],
-      loading: false,
+    });
+    setVendors([]);
+    setSalesInfo({ img: "", thirdParty: false, salesImageLoaded: false });
+    setImageInfo({
+      image: null,
       imageUploadProgress: 0,
       imageURL: "",
-      focused: "",
+    });
+    setLoading(false);
+    setFocused("");
+  };
+
+  const setImage = (image: Blob | File | null) => {
+    setImageInfo((imageInfo) => {
+      return { ...imageInfo, image: image };
     });
   };
 
-  setImage = (image: Blob | File | null) => {
-    this.setState({
-      image: image,
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(e.target.name);
+  };
+
+  const handleBlur = () => {
+    setFocused("");
+  };
+
+  const toggleDate = () => {
+    setFields((fields) => {
+      return { ...fields, gbMonth: !fields.gbMonth };
     });
   };
 
-  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    this.setState({
-      focused: e.target.name,
-    });
-  };
-
-  handleBlur = () => {
-    this.setState({
-      focused: "",
-    });
-  };
-
-  toggleDate = () => {
-    this.setState({
-      gbMonth: !this.state.gbMonth,
-    });
-  };
-
-  selectValue = (prop: string, value: string) => {
+  const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState<never>({
-        [prop]: [value],
-        focused: "",
+      setFields((fields) => {
+        return { ...fields, [prop]: [value] };
       });
+      setFocused("");
     } else {
-      this.setState<never>({
-        [prop]: value,
-        focused: "",
+      setFields((fields) => {
+        return { ...fields, [prop]: value };
       });
+      setFocused("");
     }
   };
 
-  selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(this.state, prop)) {
-      const original = this.state[prop];
+  const selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(fields, prop)) {
+      const original = fields[prop];
       if (original) {
         if (original instanceof Array) {
           const array = [...original];
           array[array.length - 1] = value;
-          this.setState<never>({
-            [prop]: array,
-            focused: "",
+          setFields((fields) => {
+            return { ...fields, [prop]: array };
           });
+          setFocused("");
         } else if (typeof original === "string") {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          this.setState<never>({
-            [prop]: array.join(", "),
-            focused: "",
+          setFields((fields) => {
+            return { ...fields, [prop]: array.join(", ") };
           });
+          setFocused("");
         }
       }
     }
   };
 
-  selectVendor = (prop: string, value: string) => {
+  const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const vendors = [...this.state.vendors];
-    const vendor = vendors[index];
+    const newVendors = [...vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = value;
-      this.setState({
-        vendors: vendors,
-        focused: "",
-      });
+      setVendors(newVendors);
+      setFocused("");
     }
   };
 
-  selectVendorAppend = (prop: string, value: string) => {
+  const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const vendors = [...this.state.vendors];
-    const vendor = vendors[index];
+    const newVendors = [...vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       const original = vendor[property];
       if (original) {
         const array = original.split(", ");
         array[array.length - 1] = value;
         vendor[property] = array.join(", ");
-        this.setState<never>({
-          vendors: vendors,
-          focused: "",
-        });
+        setVendors(newVendors);
+        setFocused("");
       }
     }
   };
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    if (e.target.name === "designer") {
-      this.setState<never>({
-        [e.target.name]: e.target.value.split(", "),
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    const checked = e.target.checked;
+    if (name === "designer") {
+      setFields((fields) => {
+        return { ...fields, [name]: value.split(", ") };
       });
-    } else if (e.target.name === "shipped") {
-      this.setState<never>({
-        [e.target.name]: e.target.checked,
+    } else if (name === "shipped") {
+      setFields((fields) => {
+        return { ...fields, [name]: checked };
       });
-    } else if (e.target.name === "salesImg") {
-      this.setState<never>((prevState) => {
-        return { sales: { ...prevState.sales, img: e.target.value } };
+    } else if (name === "salesImg") {
+      setSalesInfo((salesInfo) => {
+        return { ...salesInfo, img: value };
       });
-    } else if (e.target.name === "salesThirdParty") {
-      this.setState<never>((prevState) => {
-        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
+    } else if (name === "salesThirdParty") {
+      setSalesInfo((salesInfo) => {
+        return { ...salesInfo, thirdParty: checked };
       });
     } else {
-      this.setState<never>({
-        [e.target.name]: e.target.value,
+      setFields((fields) => {
+        return { ...fields, [name]: value };
       });
     }
   };
 
-  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const vendors = [...this.state.vendors];
+  const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
-      this.setState({
-        vendors: vendors,
-      });
+      setVendors(newVendors);
     }
   };
 
-  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const vendors = [...this.state.vendors];
+  const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = vendors[index];
+    const vendor = newVendors[index];
     if (e.target.checked) {
       vendor.endDate = "";
     } else {
       delete vendor.endDate;
     }
-    this.setState({
-      vendors: vendors,
-    });
+    setVendors(newVendors);
   };
 
-  addVendor = () => {
+  const addVendor = () => {
     const emptyVendor = {
       id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
     };
-    this.setState((prevState) => ({
-      vendors: [...prevState.vendors, emptyVendor],
-    }));
+    setVendors((vendors) => [...vendors, emptyVendor]);
   };
 
-  removeVendor = (index: number) => {
-    const vendors = [...this.state.vendors];
-    vendors.splice(index, 1);
-    this.setState({
-      vendors: vendors,
-    });
+  const removeVendor = (index: number) => {
+    const newVendors = [...vendors];
+    newVendors.splice(index, 1);
+    setVendors(newVendors);
   };
 
-  handleDragVendor = (result: DropResult) => {
+  const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const vendors = [...this.state.vendors];
-    arrayMove(vendors, result.source.index, result.destination.index);
-    this.setState({
-      vendors: vendors,
-    });
+    const newVendors = [...vendors];
+    arrayMove(newVendors, result.source.index, result.destination.index);
+    setVendors(newVendors);
   };
 
-  uploadImage = () => {
-    if (this.state.image instanceof Blob) {
-      this.setState({ loading: true });
+  const uploadImage = () => {
+    if (imageInfo.image instanceof Blob) {
+      setLoading(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${moment
         .utc()
         .format("YYYYMMDDHHmmSS")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(this.state.image);
+      const uploadTask = imageRef.put(imageInfo.image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.setState({ imageUploadProgress: progress });
+          setImageInfo((imageInfo) => {
+            return { ...imageInfo, imageUploadProgress: progress };
+          });
         },
         (error) => {
           // Handle unsuccessful uploads
           queue.notify({ title: "Failed to upload image: " + error });
-          this.setState({ loading: false });
+          setLoading(false);
         },
         () => {
           // Handle successful uploads on complete
@@ -343,55 +330,54 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
-              this.setState({
-                imageURL: downloadURL,
-                loading: false,
+              setImageInfo((imageInfo) => {
+                return { ...imageInfo, imageURL: downloadURL };
               });
-              this.createEntry();
+              setLoading(false);
+              createEntry();
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
-              this.setState({
-                loading: false,
-              });
+              setLoading(false);
             });
         }
       );
     }
   };
 
-  createEntry = () => {
-    if (
-      this.state.profile &&
-      this.state.colorway &&
-      this.state.designer.length > 0 &&
-      this.state.icDate &&
-      this.state.details &&
-      this.state.imageURL
-    ) {
+  const formFilled =
+    !!fields.profile &&
+    !!fields.colorway &&
+    !!fields.designer &&
+    !!fields.icDate &&
+    !!fields.details &&
+    !!imageInfo.imageURL;
+
+  const createEntry = () => {
+    if (formFilled) {
       const db = firebase.firestore();
       db.collection("keysets")
         .add({
-          profile: this.state.profile,
-          colorway: this.state.colorway,
-          designer: this.state.designer,
-          icDate: this.state.icDate,
-          details: this.state.details,
-          notes: this.state.notes,
-          sales: this.state.sales,
-          shipped: this.state.shipped,
-          image: this.state.imageURL,
-          gbMonth: this.state.gbMonth,
-          gbLaunch: this.state.gbLaunch,
-          gbEnd: this.state.gbEnd,
-          vendors: this.state.vendors,
-          latestEditor: this.context.user.id,
+          profile: fields.profile,
+          colorway: fields.colorway,
+          designer: fields.designer,
+          icDate: fields.icDate,
+          details: fields.details,
+          notes: fields.notes,
+          sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
+          shipped: fields.shipped,
+          image: imageInfo.imageURL,
+          gbMonth: fields.gbMonth,
+          gbLaunch: fields.gbLaunch,
+          gbEnd: fields.gbEnd,
+          vendors: vendors,
+          latestEditor: user.id,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          this.props.getData();
-          this.closeModal();
+          getData();
+          closeModal();
         })
         .catch((error) => {
           console.error("Error adding document: ", error);
@@ -400,890 +386,879 @@ export class ModalCreate extends React.Component<ModalCreateProps, ModalCreateSt
     }
   };
 
-  setSalesImageLoaded = (val: boolean) => {
-    this.setState({ salesImageLoaded: val });
+  const setSalesImageLoaded = (val: boolean) => {
+    setSalesInfo((salesInfo) => {
+      return { ...salesInfo, salesImageLoaded: val };
+    });
   };
-
-  render() {
-    const useDrawer = this.props.device !== "mobile";
-    const formFilled =
-      this.state.profile &&
-      this.state.colorway &&
-      this.state.designer.length > 0 &&
-      this.state.icDate &&
-      this.state.details &&
-      this.state.image;
-    const dateCard = this.state.gbMonth ? (
-      <Card outlined className="date-container">
-        <Typography use="caption" tag="h3" className="date-title">
-          Month
-        </Typography>
-        <div className="date-form">
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
+  const useDrawer = device !== "mobile";
+  const dateCard = fields.gbMonth ? (
+    <Card outlined className="date-container">
+      <Typography use="caption" tag="h3" className="date-title">
+        Month
+      </Typography>
+      <div className="date-form">
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB month"
+          pattern="^\d{4}-\d{1,2}$"
+          value={fields.gbLaunch}
+          name="gbLaunch"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+      </div>
+      <CardActions>
+        <CardActionButtons>
+          <CardActionButton
+            label="Date"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleDate();
             }}
-            outlined
-            label="GB month"
-            pattern="^\d{4}-\d{1,2}$"
-            value={this.state.gbLaunch}
-            name="gbLaunch"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-            onChange={this.handleChange}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
           />
-        </div>
-        <CardActions>
-          <CardActionButtons>
-            <CardActionButton
-              label="Date"
-              onClick={(e) => {
-                e.preventDefault();
-                this.toggleDate();
-              }}
-            />
-          </CardActionButtons>
-        </CardActions>
-      </Card>
-    ) : (
-      <Card outlined className="date-container">
-        <Typography use="caption" tag="h3" className="date-title">
-          Date
-        </Typography>
-        <div className="date-form">
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
+        </CardActionButtons>
+      </CardActions>
+    </Card>
+  ) : (
+    <Card outlined className="date-container">
+      <Typography use="caption" tag="h3" className="date-title">
+        Date
+      </Typography>
+      <div className="date-form">
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB launch"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
+          value={fields.gbLaunch}
+          name="gbLaunch"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB end"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+          value={fields.gbEnd}
+          name="gbEnd"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+      </div>
+      <CardActions>
+        <CardActionButtons>
+          <CardActionButton
+            label="Month"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleDate();
             }}
-            outlined
-            label="GB launch"
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
-            value={this.state.gbLaunch}
-            name="gbLaunch"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-            onChange={this.handleChange}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
           />
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
-            outlined
-            label="GB end"
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-            value={this.state.gbEnd}
-            name="gbEnd"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={this.handleChange}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-          />
-        </div>
-        <CardActions>
-          <CardActionButtons>
-            <CardActionButton
-              label="Month"
-              onClick={(e) => {
-                e.preventDefault();
-                this.toggleDate();
-              }}
-            />
-          </CardActionButtons>
-        </CardActions>
-      </Card>
-    );
-    return (
+        </CardActionButtons>
+      </CardActions>
+    </Card>
+  );
+  return (
+    <BoolWrapper
+      condition={useDrawer}
+      trueWrapper={(children) => (
+        <Drawer modal open={props.open} onClose={closeModal} className="drawer-right entry-modal">
+          {children}
+        </Drawer>
+      )}
+      falseWrapper={(children) => (
+        <FullScreenDialog open={props.open} onClose={closeModal} className="entry-modal">
+          {children}
+        </FullScreenDialog>
+      )}
+    >
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => (
-          <Drawer modal open={this.props.open} onClose={this.closeModal} className="drawer-right entry-modal">
+          <DrawerHeader>
             {children}
-          </Drawer>
+            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+          </DrawerHeader>
         )}
         falseWrapper={(children) => (
-          <FullScreenDialog open={this.props.open} onClose={this.closeModal} className="entry-modal">
-            {children}
-          </FullScreenDialog>
+          <FullScreenDialogAppBar>
+            <TopAppBarRow>{children}</TopAppBarRow>
+            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+          </FullScreenDialogAppBar>
         )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => (
-            <DrawerHeader>
-              {children}
-              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-            </DrawerHeader>
-          )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
-            <FullScreenDialogAppBar>
-              <TopAppBarRow>{children}</TopAppBarRow>
-              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-            </FullScreenDialogAppBar>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
+              <TopAppBarTitle>{children}</TopAppBarTitle>
+            </TopAppBarSection>
           )}
         >
-          <BoolWrapper
-            condition={useDrawer}
-            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
-            falseWrapper={(children) => (
-              <TopAppBarSection alignStart>
-                <TopAppBarNavigationIcon icon="close" onClick={this.closeModal} />
-                <TopAppBarTitle>{children}</TopAppBarTitle>
-              </TopAppBarSection>
-            )}
-          >
-            Create Entry
-          </BoolWrapper>
-
-          <ConditionalWrapper
-            condition={!useDrawer}
-            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
-          >
-            <Button
-              outlined={useDrawer}
-              label="Save"
-              onClick={(e) => {
-                if (formFilled) {
-                  e.preventDefault();
-                  this.uploadImage();
-                }
-              }}
-              disabled={!formFilled}
-            />
-          </ConditionalWrapper>
+          Create Entry
         </BoolWrapper>
-        <BoolWrapper
-          condition={useDrawer}
-          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+
+        <ConditionalWrapper
+          condition={!useDrawer}
+          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <div className="banner">
-            <div className="banner-text">Make sure to read the entry guide.</div>
-            <div className="banner-button">
-              <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
-                <Button label="guide" />
-              </a>
-            </div>
+          <Button
+            outlined={useDrawer}
+            label="Save"
+            onClick={(e) => {
+              if (formFilled) {
+                e.preventDefault();
+                uploadImage();
+              }
+            }}
+            disabled={!formFilled}
+          />
+        </ConditionalWrapper>
+      </BoolWrapper>
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+      >
+        <div className="banner">
+          <div className="banner-text">Make sure to read the entry guide.</div>
+          <div className="banner-button">
+            <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+              <Button label="guide" />
+            </a>
           </div>
-          <form className="form">
-            <div className="form-double">
-              <div className="select-container">
-                <MenuSurfaceAnchor>
-                  <TextField
-                    autoComplete="off"
-                    outlined
-                    required
-                    label="Profile"
-                    value={this.state.profile}
-                    name="profile"
-                    onChange={this.handleChange}
-                    onFocus={this.handleFocus}
-                    onBlur={this.handleBlur}
-                  />
-                  <Autocomplete
-                    open={this.state.focused === "profile"}
-                    array={this.props.allProfiles}
-                    query={this.state.profile}
-                    prop="profile"
-                    select={this.selectValue}
-                    minChars={1}
-                  />
-                </MenuSurfaceAnchor>
-              </div>
-              <div className="field-container">
+        </div>
+        <form className="form">
+          <div className="form-double">
+            <div className="select-container">
+              <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  className="field"
                   outlined
                   required
-                  label="Colorway"
-                  value={this.state.colorway}
-                  name="colorway"
-                  onChange={this.handleChange}
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
+                  label="Profile"
+                  value={fields.profile}
+                  name="profile"
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
                 />
-              </div>
+                <Autocomplete
+                  open={focused === "profile"}
+                  array={allProfiles}
+                  query={fields.profile}
+                  prop="profile"
+                  select={selectValue}
+                  minChars={1}
+                />
+              </MenuSurfaceAnchor>
             </div>
-            <MenuSurfaceAnchor>
+            <div className="field-container">
               <TextField
                 autoComplete="off"
+                className="field"
                 outlined
-                label="Designer"
                 required
-                pattern="(\w+)[^\s](,\s*.+)*"
-                value={this.state.designer.join(", ")}
-                name="designer"
-                helpText={{
-                  persistent: false,
-                  validationMsg: true,
-                  children:
-                    this.state.designer[0] && this.state.designer[0].includes(" ")
-                      ? "Separate multiple designers with a comma and a space."
-                      : "",
-                }}
-                onChange={this.handleChange}
-                onFocus={this.handleFocus}
-                onBlur={this.handleBlur}
-                disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
+                label="Colorway"
+                value={fields.colorway}
+                name="colorway"
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
-              <Autocomplete
-                open={this.state.focused === "designer"}
-                array={this.props.allDesigners}
-                query={this.state.designer.join(", ")}
-                prop="designer"
-                select={this.selectValueAppend}
-                minChars={2}
-                listSplit
-              />
-            </MenuSurfaceAnchor>
+            </div>
+          </div>
+          <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              icon={{
-                icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                    <path d="M4 5.01h16V8H4z" opacity=".3" />
-                  </svg>
-                ),
+              outlined
+              label="Designer"
+              required
+              pattern="(\w+)[^\s](,\s*.+)*"
+              value={fields.designer.join(", ")}
+              name="designer"
+              helpText={{
+                persistent: false,
+                validationMsg: true,
+                children:
+                  fields.designer[0] && fields.designer[0].includes(" ")
+                    ? "Separate multiple designers with a comma and a space."
+                    : "",
               }}
-              outlined
-              label="IC date"
-              required
-              pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-              value={this.state.icDate}
-              name="icDate"
-              helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-              onChange={this.handleChange}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              disabled={user.isEditor === false && user.isDesigner}
             />
-            <TextField
-              autoComplete="off"
-              icon="link"
-              outlined
-              label="Details"
-              required
-              pattern="https?:\/\/.+"
-              value={this.state.details}
-              name="details"
-              helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
-              onChange={this.handleChange}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
+            <Autocomplete
+              open={focused === "designer"}
+              array={allDesigners}
+              query={fields.designer.join(", ")}
+              prop="designer"
+              select={selectValueAppend}
+              minChars={2}
+              listSplit
             />
-            <TextField
-              textarea
-              rows={2}
-              autoComplete="off"
-              outlined
-              label="Notes"
-              value={this.state.notes}
-              name="notes"
-              onChange={this.handleChange}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
-            />
-            <ImageUpload image={this.state.image} setImage={this.setImage} desktop />
-            {dateCard}
-            <Checkbox
-              label="Shipped"
-              id="create-shipped"
-              name="shipped"
-              checked={this.state.shipped}
-              onChange={this.handleChange}
-            />
-            <Typography use="caption" tag="h3" className="subheader">
-              Vendors
-            </Typography>
-            <DragDropContext onDragEnd={this.handleDragVendor}>
-              <Droppable droppableId="vendors-create">
-                {(provided) => (
-                  <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
-                    {this.state.vendors.map((vendor, index) => {
-                      const endDateField =
-                        vendor.endDate || vendor.endDate === "" ? (
-                          <TextField
-                            autoComplete="off"
-                            icon={{
-                              icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                  <path d="M0 0h24v24H0V0z" fill="none" />
-                                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                                </svg>
-                              ),
-                            }}
+          </MenuSurfaceAnchor>
+          <TextField
+            autoComplete="off"
+            icon={{
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                  <path d="M4 5.01h16V8H4z" opacity=".3" />
+                </svg>
+              ),
+            }}
+            outlined
+            label="IC date"
+            required
+            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+            value={fields.icDate}
+            name="icDate"
+            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+          <TextField
+            autoComplete="off"
+            icon="link"
+            outlined
+            label="Details"
+            required
+            pattern="https?:\/\/.+"
+            value={fields.details}
+            name="details"
+            helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+          <TextField
+            textarea
+            rows={2}
+            autoComplete="off"
+            outlined
+            label="Notes"
+            value={fields.notes}
+            name="notes"
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+          <ImageUpload image={imageInfo.image} setImage={setImage} desktop />
+          {dateCard}
+          <Checkbox
+            label="Shipped"
+            id="create-shipped"
+            name="shipped"
+            checked={fields.shipped}
+            onChange={handleChange}
+          />
+          <Typography use="caption" tag="h3" className="subheader">
+            Vendors
+          </Typography>
+          <DragDropContext onDragEnd={handleDragVendor}>
+            <Droppable droppableId="vendors-create">
+              {(provided) => (
+                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                  {vendors.map((vendor, index) => {
+                    const endDateField =
+                      vendor.endDate || vendor.endDate === "" ? (
+                        <TextField
+                          autoComplete="off"
+                          icon={{
+                            icon: (
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                                <path d="M4 5.01h16V8H4z" opacity=".3" />
+                              </svg>
+                            ),
+                          }}
+                          outlined
+                          label="End date"
+                          required
+                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+                          value={vendor.endDate}
+                          name={"endDate" + index}
+                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+                          onChange={handleChangeVendor}
+                        />
+                      ) : null;
+                    return (
+                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                        {(provided, snapshot) => (
+                          <Card
                             outlined
-                            label="End date"
-                            required
-                            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-                            value={vendor.endDate}
-                            name={"endDate" + index}
-                            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                            onChange={this.handleChangeVendor}
-                          />
-                        ) : null;
-                      return (
-                        <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
-                          {(provided, snapshot) => (
-                            <Card
-                              outlined
-                              className={classNames("vendor-container", { dragged: snapshot.isDragging })}
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              style={getVendorStyle(provided)}
-                            >
-                              <div className="title-container">
-                                <Typography use="caption" className="vendor-title">
-                                  {"Vendor " + (index + 1)}
-                                </Typography>
-                                <Tooltip enterDelay={500} content="Delete" align="bottom">
-                                  <IconButton
-                                    icon={iconObject(
-                                      <div>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M8 9h8v10H8z" opacity=".3" />
-                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                        </svg>
-                                      </div>
-                                    )}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      this.removeVendor(index);
-                                    }}
-                                  />
-                                </Tooltip>
-                                <Tooltip enterDelay={500} content="Drag" align="bottom">
-                                  <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
-                                </Tooltip>
-                              </div>
-                              <div className="vendor-form">
-                                <MenuSurfaceAnchor>
-                                  <TextField
-                                    autoComplete="off"
-                                    icon={{
-                                      icon: (
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                          <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                        </svg>
-                                      ),
-                                    }}
-                                    required
-                                    outlined
-                                    label="Name"
-                                    value={vendor.name}
-                                    name={"name" + index}
-                                    onChange={this.handleChangeVendor}
-                                    onFocus={this.handleFocus}
-                                    onBlur={this.handleBlur}
-                                  />
-                                  <Autocomplete
-                                    open={this.state.focused === "name" + index}
-                                    array={this.props.allVendors}
-                                    query={this.state.vendors[index].name}
-                                    prop={"name" + index}
-                                    select={this.selectVendor}
-                                    minChars={1}
-                                  />
-                                </MenuSurfaceAnchor>
-                                <MenuSurfaceAnchor>
-                                  <TextField
-                                    autoComplete="off"
-                                    icon={{
-                                      icon: (
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path
-                                            d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                            opacity=".3"
-                                          />
-                                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                        </svg>
-                                      ),
-                                    }}
-                                    required
-                                    outlined
-                                    label="Region"
-                                    value={vendor.region}
-                                    name={"region" + index}
-                                    onChange={this.handleChangeVendor}
-                                    onFocus={this.handleFocus}
-                                    onBlur={this.handleBlur}
-                                  />
-                                  <Autocomplete
-                                    open={this.state.focused === "region" + index}
-                                    array={this.props.allVendorRegions}
-                                    query={this.state.vendors[index].region}
-                                    prop={"region" + index}
-                                    select={this.selectVendorAppend}
-                                    minChars={1}
-                                    listSplit
-                                  />
-                                </MenuSurfaceAnchor>
-                                <TextField
-                                  autoComplete="off"
-                                  icon="link"
-                                  outlined
-                                  label="Store link"
-                                  pattern="https?:\/\/.+"
-                                  value={vendor.storeLink}
-                                  name={"storeLink" + index}
-                                  onChange={this.handleChangeVendor}
-                                  onFocus={this.handleFocus}
-                                  onBlur={this.handleBlur}
-                                  helpText={{
-                                    persistent: false,
-                                    validationMsg: true,
-                                    children: "Must be valid link",
+                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            style={getVendorStyle(provided)}
+                          >
+                            <div className="title-container">
+                              <Typography use="caption" className="vendor-title">
+                                {"Vendor " + (index + 1)}
+                              </Typography>
+                              <Tooltip enterDelay={500} content="Delete" align="bottom">
+                                <IconButton
+                                  icon={iconObject(
+                                    <div>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path d="M8 9h8v10H8z" opacity=".3" />
+                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    removeVendor(index);
                                   }}
                                 />
-                                <Checkbox
-                                  className="end-date-field"
-                                  label="Different end date"
-                                  name={"endDate" + index}
-                                  id={"editEndDate" + index}
-                                  onChange={this.handleChangeVendorEndDate}
-                                  checked={!!vendor.endDate || vendor.endDate === ""}
+                              </Tooltip>
+                              <Tooltip enterDelay={500} content="Drag" align="bottom">
+                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                              </Tooltip>
+                            </div>
+                            <div className="vendor-form">
+                              <MenuSurfaceAnchor>
+                                <TextField
+                                  autoComplete="off"
+                                  icon={{
+                                    icon: (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                                      </svg>
+                                    ),
+                                  }}
+                                  required
+                                  outlined
+                                  label="Name"
+                                  value={vendor.name}
+                                  name={"name" + index}
+                                  onChange={handleChangeVendor}
+                                  onFocus={handleFocus}
+                                  onBlur={handleBlur}
                                 />
-                                {endDateField}
-                              </div>
-                            </Card>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-            <div className="add-button">
-              <Button
-                outlined
-                label="Add vendor"
-                onClick={(e) => {
-                  e.preventDefault();
-                  this.addVendor();
+                                <Autocomplete
+                                  open={focused === "name" + index}
+                                  array={allVendors}
+                                  query={vendor.name}
+                                  prop={"name" + index}
+                                  select={selectVendor}
+                                  minChars={1}
+                                />
+                              </MenuSurfaceAnchor>
+                              <MenuSurfaceAnchor>
+                                <TextField
+                                  autoComplete="off"
+                                  icon={{
+                                    icon: (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path
+                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                                          opacity=".3"
+                                        />
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                                      </svg>
+                                    ),
+                                  }}
+                                  required
+                                  outlined
+                                  label="Region"
+                                  value={vendor.region}
+                                  name={"region" + index}
+                                  onChange={handleChangeVendor}
+                                  onFocus={handleFocus}
+                                  onBlur={handleBlur}
+                                />
+                                <Autocomplete
+                                  open={focused === "region" + index}
+                                  array={allVendorRegions}
+                                  query={vendor.region}
+                                  prop={"region" + index}
+                                  select={selectVendorAppend}
+                                  minChars={1}
+                                  listSplit
+                                />
+                              </MenuSurfaceAnchor>
+                              <TextField
+                                autoComplete="off"
+                                icon="link"
+                                outlined
+                                label="Store link"
+                                pattern="https?:\/\/.+"
+                                value={vendor.storeLink}
+                                name={"storeLink" + index}
+                                onChange={handleChangeVendor}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                                helpText={{
+                                  persistent: false,
+                                  validationMsg: true,
+                                  children: "Must be valid link",
+                                }}
+                              />
+                              <Checkbox
+                                className="end-date-field"
+                                label="Different end date"
+                                name={"endDate" + index}
+                                id={"editEndDate" + index}
+                                onChange={handleChangeVendorEndDate}
+                                checked={!!vendor.endDate || vendor.endDate === ""}
+                              />
+                              {endDateField}
+                            </div>
+                          </Card>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <div className="add-button">
+            <Button
+              outlined
+              label="Add vendor"
+              onClick={(e) => {
+                e.preventDefault();
+                addVendor();
+              }}
+            />
+          </div>
+          <Card outlined className="sales-container">
+            <Typography use="caption" tag="h3" className="sales-title">
+              Sales
+            </Typography>
+            <div className={classNames("sales-image", { loaded: salesInfo.salesImageLoaded })}>
+              <div className="sales-image-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
+                  <path
+                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
+                    opacity=".3"
+                  />
+                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
+                </svg>
+              </div>
+              <img
+                src={salesInfo.img}
+                alt=""
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                onError={() => {
+                  setSalesImageLoaded(false);
                 }}
               />
             </div>
-            <Card outlined className="sales-container">
-              <Typography use="caption" tag="h3" className="sales-title">
-                Sales
-              </Typography>
-              <div className={classNames("sales-image", { loaded: this.state.salesImageLoaded })}>
-                <div className="sales-image-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                    <path
-                      d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                      opacity=".3"
-                    />
-                    <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                  </svg>
-                </div>
-                <img
-                  src={this.state.sales.img}
-                  alt=""
-                  onLoad={() => {
-                    this.setSalesImageLoaded(true);
-                  }}
-                  onError={() => {
-                    this.setSalesImageLoaded(false);
-                  }}
-                />
-              </div>
-              <div className="sales-field">
-                <TextField
-                  autoComplete="off"
-                  icon="link"
-                  outlined
-                  label="URL"
-                  pattern="https?:\/\/.+"
-                  value={this.state.sales.img}
-                  name="salesImg"
-                  helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
-                  onChange={this.handleChange}
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                />
-                <Checkbox
-                  className="sales-checkbox"
-                  label="Third party graph"
-                  name={"salesThirdParty"}
-                  id={"CreateSalesThirdParty"}
-                  onChange={this.handleChange}
-                  checked={this.state.sales.thirdParty}
-                />
-              </div>
-            </Card>
-          </form>
-        </BoolWrapper>
+            <div className="sales-field">
+              <TextField
+                autoComplete="off"
+                icon="link"
+                outlined
+                label="URL"
+                pattern="https?:\/\/.+"
+                value={salesInfo.img}
+                name="salesImg"
+                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <Checkbox
+                className="sales-checkbox"
+                label="Third party graph"
+                name="salesThirdParty"
+                id={"CreateSalesThirdParty"}
+                onChange={handleChange}
+                checked={salesInfo.thirdParty}
+              />
+            </div>
+          </Card>
+        </form>
       </BoolWrapper>
-    );
-  }
-}
-
-ModalCreate.contextType = UserContext;
+    </BoolWrapper>
+  );
+};
 
 type ModalEditProps = ModalCreateProps & {
   set: SetType;
 };
 
-type ModalEditState = {
-  id: string;
-  profile: string;
-  colorway: string;
-  designer: string[];
-  icDate: string;
-  details: string;
-  notes: string;
-  sales: { img: string; thirdParty: boolean };
-  image: Blob | File | string | null;
-  gbMonth: boolean;
-  gbLaunch: string;
-  gbEnd: string;
-  shipped: boolean;
-  vendors: VendorType[];
-  loading: boolean;
-  imageUploadProgress: number;
-  imageURL: string;
-  salesImageLoaded: boolean;
-  focused: string;
-};
+export const ModalEdit = (props: ModalEditProps) => {
+  const device = useAppSelector(selectDevice);
 
-export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
-  state: ModalEditState = {
-    id: "",
+  const user = useAppSelector(selectUser);
+
+  const allDesigners = useAppSelector(selectAllDesigners);
+  const allProfiles = useAppSelector(selectAllProfiles);
+  const allVendors = useAppSelector(selectAllVendors);
+  const allVendorRegions = useAppSelector(selectAllVendorRegions);
+
+  const [id, setId] = useState("");
+
+  const [fields, setFields] = useState({
     profile: "",
     colorway: "",
-    designer: [],
+    designer: [""],
     icDate: "",
     details: "",
     notes: "",
-    sales: { img: "", thirdParty: false },
-    image: "",
-    gbMonth: false,
+    gbMonth: true,
     gbLaunch: "",
     gbEnd: "",
     shipped: false,
-    vendors: [],
-    loading: false,
+  });
+
+  const [vendors, setVendors] = useState<VendorType[]>([]);
+
+  const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
+
+  const [imageInfo, setImageInfo] = useState<{
+    image: Blob | File | string | null;
+    imageUploadProgress: number;
+    imageURL: string;
+  }>({
+    image: null,
     imageUploadProgress: 0,
     imageURL: "",
-    salesImageLoaded: false,
-    focused: "",
-  };
+  });
 
-  componentDidUpdate(prevProps: ModalEditProps) {
-    if (this.props.open !== prevProps.open) {
-      if (this.props.open) {
-        this.setValues();
-      } else {
-        setTimeout(this.closeModal, 300);
-      }
+  const [loading, setLoading] = useState(false);
+
+  const [focused, setFocused] = useState("");
+
+  useEffect(() => {
+    if (props.open) {
+      setValues();
+    } else {
+      setTimeout(closeModal, 300);
     }
-  }
+  }, [props.open]);
 
-  setValues = () => {
+  const setValues = () => {
     let gbLaunch = "";
-    if (this.props.set.gbLaunch) {
-      if (this.props.set.gbMonth) {
+    if (props.set.gbLaunch) {
+      if (props.set.gbMonth) {
         const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
         const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
-        if (twoNumRegExp.test(this.props.set.gbLaunch)) {
-          gbLaunch = this.props.set.gbLaunch.slice(0, -3);
-        } else if (oneNumRegExp.test(this.props.set.gbLaunch)) {
-          gbLaunch = this.props.set.gbLaunch.slice(0, -2);
+        if (twoNumRegExp.test(props.set.gbLaunch)) {
+          gbLaunch = props.set.gbLaunch.slice(0, -3);
+        } else if (oneNumRegExp.test(props.set.gbLaunch)) {
+          gbLaunch = props.set.gbLaunch.slice(0, -2);
         } else {
-          gbLaunch = this.props.set.gbLaunch;
+          gbLaunch = props.set.gbLaunch;
         }
       } else {
-        gbLaunch = this.props.set.gbLaunch;
+        gbLaunch = props.set.gbLaunch;
       }
     }
-    this.setState({
-      ...this.props.set,
-      gbMonth: typeof this.props.set.gbMonth === "boolean" ? this.props.set.gbMonth : false,
-      sales: this.props.set.sales ? this.props.set.sales : { img: "", thirdParty: false },
+
+    setId(props.set.id);
+    setFields({
+      profile: props.set.profile,
+      colorway: props.set.colorway,
+      designer: props.set.designer,
+      icDate: props.set.icDate,
+      details: props.set.details,
+      notes: props.set.notes ? props.set.notes : "",
+      gbMonth: typeof props.set.gbMonth === "boolean" ? props.set.gbMonth : false,
       gbLaunch: gbLaunch,
-      shipped: this.props.set.shipped ? this.props.set.shipped : false,
-      notes: this.props.set.notes ? this.props.set.notes : "",
-      vendors: this.props.set.vendors
-        ? this.props.set.vendors.map((vendor) => {
+      gbEnd: props.set.gbEnd,
+      shipped: props.set.shipped ? props.set.shipped : false,
+    });
+    setImageInfo((imageInfo) => {
+      return { ...imageInfo, image: props.set.image };
+    });
+    setVendors(
+      props.set.vendors
+        ? props.set.vendors.map((vendor) => {
             if (!vendor.id) {
               vendor.id = nanoid();
             }
             return vendor;
           })
-        : [],
+        : []
+    );
+    setSalesInfo((salesInfo) => {
+      return props.set.sales
+        ? { ...salesInfo, ...props.set.sales }
+        : { img: "", thirdParty: false, salesImageLoaded: false };
     });
   };
 
-  closeModal = () => {
-    this.setState({
-      id: "",
+  const closeModal = () => {
+    props.close();
+    setFields({
       profile: "",
       colorway: "",
-      designer: [],
+      designer: [""],
       icDate: "",
       details: "",
       notes: "",
-      sales: { img: "", thirdParty: false },
-      image: "",
-      gbMonth: false,
+      gbMonth: true,
       gbLaunch: "",
       gbEnd: "",
       shipped: false,
-      vendors: [],
-      loading: false,
+    });
+    setVendors([]);
+    setSalesInfo({ img: "", thirdParty: false, salesImageLoaded: false });
+    setImageInfo({
+      image: null,
       imageUploadProgress: 0,
       imageURL: "",
-      focused: "",
     });
-    this.props.close();
+    setLoading(false);
+    setFocused("");
   };
 
-  setImage = (image: File | Blob | null) => {
-    this.setState({
-      image: image,
-    });
-  };
-
-  handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    this.setState({
-      focused: e.target.name,
+  const setImage = (image: File | Blob | null) => {
+    setImageInfo((imageInfo) => {
+      return { ...imageInfo, image: image };
     });
   };
 
-  handleBlur = () => {
-    this.setState({
-      focused: "",
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFocused(e.target.name);
+  };
+
+  const handleBlur = () => {
+    setFocused("");
+  };
+
+  const toggleDate = () => {
+    setFields((fields) => {
+      return { ...fields, gbMonth: !fields.gbMonth };
     });
   };
 
-  toggleDate = () => {
-    this.setState({
-      gbMonth: !this.state.gbMonth,
-    });
-  };
-
-  selectValue = (prop: string, value: string) => {
+  const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      this.setState<never>({
-        [prop]: [value],
-        focused: "",
+      setFields((fields) => {
+        return { ...fields, [prop]: [value] };
       });
+      setFocused("");
     } else {
-      this.setState<never>({
-        [prop]: value,
-        focused: "",
+      setFields((fields) => {
+        return { ...fields, [prop]: value };
       });
+      setFocused("");
     }
   };
 
-  selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(this.state, prop)) {
-      const original = this.state[prop];
+  const selectValueAppend = (prop: string, value: string) => {
+    if (hasKey(fields, prop)) {
+      const original = fields[prop];
       if (original) {
         if (original instanceof Array) {
           const array = [...original];
           array[array.length - 1] = value;
-          this.setState<never>({
-            [prop]: array,
-            focused: "",
+          setFields((fields) => {
+            return { ...fields, [prop]: array };
           });
+          setFocused("");
         } else if (typeof original === "string") {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          this.setState<never>({
-            [prop]: array.join(", "),
-            focused: "",
+          setFields((fields) => {
+            return { ...fields, [prop]: array.join(", ") };
           });
+          setFocused("");
         }
       }
     }
   };
 
-  selectVendor = (prop: string, value: string) => {
+  const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const vendors = [...this.state.vendors];
-    const vendor = vendors[index];
+    const newVendors = [...vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = value;
-      this.setState({
-        vendors: vendors,
-        focused: "",
-      });
+      setVendors(newVendors);
+      setFocused("");
     }
   };
 
-  selectVendorAppend = (prop: string, value: string) => {
+  const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const vendors = [...this.state.vendors];
-    const vendor = vendors[index];
+    const newVendors = [...vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       const original = vendor[property];
       if (original) {
         const array = original.split(", ");
         array[array.length - 1] = value;
         vendor[property] = array.join(", ");
-        this.setState<never>({
-          vendors: vendors,
-          focused: "",
-        });
+        setVendors(newVendors);
+        setFocused("");
       }
     }
   };
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    if (e.target.name === "designer") {
-      this.setState<never>({
-        [e.target.name]: e.target.value.split(", "),
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    const checked = e.target.checked;
+    if (name === "designer") {
+      setFields((fields) => {
+        return { ...fields, [name]: value.split(", ") };
       });
-    } else if (e.target.name === "shipped") {
-      this.setState<never>({
-        [e.target.name]: e.target.checked,
+    } else if (name === "shipped") {
+      setFields((fields) => {
+        return { ...fields, [name]: checked };
       });
-    } else if (e.target.name === "salesImg") {
-      this.setState<never>((prevState) => {
-        return { sales: { ...prevState.sales, img: e.target.value } };
+    } else if (name === "salesImg") {
+      setSalesInfo((salesInfo) => {
+        return { ...salesInfo, img: value };
       });
-    } else if (e.target.name === "salesThirdParty") {
-      this.setState<never>((prevState) => {
-        return { sales: { ...prevState.sales, thirdParty: e.target.checked } };
+    } else if (name === "salesThirdParty") {
+      setSalesInfo((salesInfo) => {
+        return { ...salesInfo, thirdParty: checked };
       });
     } else {
-      this.setState<never>({
-        [e.target.name]: e.target.value,
+      setFields((fields) => {
+        return { ...fields, [name]: value };
       });
     }
   };
 
-  handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const vendors = [...this.state.vendors];
+  const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
-      this.setState({
-        vendors: vendors,
-      });
+      setVendors(newVendors);
     }
   };
 
-  handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendors = [...this.state.vendors];
-    const vendor = vendors[index];
+    const vendor = newVendors[index];
     if (e.target.checked) {
       vendor.endDate = "";
     } else {
       delete vendor.endDate;
     }
-    this.setState({
-      vendors: vendors,
-    });
+    setVendors(newVendors);
   };
 
-  addVendor = () => {
+  const addVendor = () => {
     const emptyVendor = {
       id: nanoid(),
       name: "",
       region: "",
       storeLink: "",
     };
-    this.setState((prevState) => ({
-      vendors: [...prevState.vendors, emptyVendor],
-    }));
+    setVendors((vendors) => [...vendors, emptyVendor]);
   };
 
-  removeVendor = (index: number) => {
-    const vendors = [...this.state.vendors];
-    vendors.splice(index, 1);
-    this.setState({
-      vendors: vendors,
-    });
+  const removeVendor = (index: number) => {
+    const newVendors = [...vendors];
+    newVendors.splice(index, 1);
+    setVendors(newVendors);
   };
 
-  handleDragVendor = (result: DropResult) => {
+  const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const vendors = [...this.state.vendors];
-    arrayMove(vendors, result.source.index, result.destination.index);
-    this.setState({
-      vendors: vendors,
-    });
+    const newVendors = [...vendors];
+    arrayMove(newVendors, result.source.index, result.destination.index);
+    setVendors(newVendors);
   };
 
-  uploadImage = () => {
-    if (this.state.image instanceof Blob) {
-      this.setState({ loading: true });
+  const uploadImage = () => {
+    if (imageInfo.image instanceof Blob) {
+      setLoading(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${this.state.profile} ${this.state.colorway}`)}T${moment
+      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${moment
         .utc()
         .format("YYYYMMDDHHmmSS")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(this.state.image);
+      const uploadTask = imageRef.put(imageInfo.image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          this.setState({ imageUploadProgress: progress });
+          setImageInfo((imageInfo) => {
+            return { ...imageInfo, imageUploadProgress: progress };
+          });
         },
         (error) => {
           // Handle unsuccessful uploads
           queue.notify({ title: "Failed to upload image: " + error });
-          this.setState({ loading: false });
+          setLoading(false);
         },
         () => {
           // Handle successful uploads on complete
@@ -1292,13 +1267,13 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
-              this.setState({
-                imageURL: downloadURL,
-                loading: false,
+              setImageInfo((imageInfo) => {
+                return { ...imageInfo, imageURL: downloadURL };
               });
-              this.editEntry();
+              setLoading(false);
+              editEntry();
               const fileNameRegex = /keysets%2F(.*)\?/;
-              const regexMatch = this.props.set.image.match(fileNameRegex);
+              const regexMatch = props.set.image.match(fileNameRegex);
               if (regexMatch) {
                 const imageName = regexMatch[1];
                 const folders = await getStorageFolders();
@@ -1315,612 +1290,602 @@ export class ModalEdit extends React.Component<ModalEditProps, ModalEditState> {
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
-              this.setState({
-                loading: false,
-              });
+              setLoading(false);
             });
         }
       );
     }
   };
 
-  editEntry = () => {
-    const db = firebase.firestore();
-    db.collection("keysets")
-      .doc(this.state.id)
-      .update({
-        profile: this.state.profile,
-        colorway: this.state.colorway,
-        designer: this.state.designer,
-        icDate: this.state.icDate,
-        details: this.state.details,
-        notes: this.state.notes,
-        sales: this.state.sales,
-        image: typeof this.state.image === "string" ? this.state.image : this.state.imageURL,
-        gbMonth: this.state.gbMonth,
-        gbLaunch: this.state.gbLaunch,
-        gbEnd: this.state.gbEnd,
-        shipped: this.state.shipped,
-        vendors: this.state.vendors,
-        latestEditor: this.context.user.id,
-      })
-      .then(() => {
-        queue.notify({ title: "Entry edited successfully." });
-        this.closeModal();
-        this.props.getData();
-      })
-      .catch((error) => {
-        queue.notify({ title: "Error editing document: " + error });
-      });
+  const formFilled =
+    !!fields.profile &&
+    !!fields.colorway &&
+    !!fields.designer &&
+    !!fields.icDate &&
+    !!fields.details &&
+    !!imageInfo.imageURL;
+
+  const editEntry = () => {
+    if (formFilled) {
+      const db = firebase.firestore();
+      db.collection("keysets")
+        .doc(id)
+        .update({
+          profile: fields.profile,
+          colorway: fields.colorway,
+          designer: fields.designer,
+          icDate: fields.icDate,
+          details: fields.details,
+          notes: fields.notes,
+          sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
+          shipped: fields.shipped,
+          image: imageInfo.imageURL,
+          gbMonth: fields.gbMonth,
+          gbLaunch: fields.gbLaunch,
+          gbEnd: fields.gbEnd,
+          vendors: vendors,
+          latestEditor: user.id,
+        })
+        .then(() => {
+          queue.notify({ title: "Entry edited successfully." });
+          closeModal();
+          getData();
+        })
+        .catch((error) => {
+          queue.notify({ title: "Error editing document: " + error });
+        });
+    }
   };
 
-  setSalesImageLoaded = (val: boolean) => {
-    this.setState({ salesImageLoaded: val });
+  const setSalesImageLoaded = (val: boolean) => {
+    setSalesInfo((salesInfo) => {
+      return { ...salesInfo, salesImageLoaded: val };
+    });
   };
-
-  render() {
-    const useDrawer = this.props.device !== "mobile";
-    const formFilled =
-      this.state.profile &&
-      this.state.colorway &&
-      this.state.designer.length > 0 &&
-      this.state.icDate &&
-      this.state.details &&
-      this.state.image;
-    const dateCard = this.state.gbMonth ? (
-      <Card outlined className="date-container">
-        <Typography use="caption" tag="h3" className="date-title">
-          Month
-        </Typography>
-        <div className="date-form">
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
+  const useDrawer = device !== "mobile";
+  const dateCard = fields.gbMonth ? (
+    <Card outlined className="date-container">
+      <Typography use="caption" tag="h3" className="date-title">
+        Month
+      </Typography>
+      <div className="date-form">
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB month"
+          pattern="^\d{4}-\d{1,2}$"
+          value={fields.gbLaunch}
+          name="gbLaunch"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
+          onChange={handleChange}
+        />
+      </div>
+      <CardActions>
+        <CardActionButtons>
+          <CardActionButton
+            label="Date"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleDate();
             }}
-            outlined
-            label="GB month"
-            pattern="^\d{4}-\d{1,2}$"
-            value={this.state.gbLaunch}
-            name="gbLaunch"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-            onChange={this.handleChange}
           />
-        </div>
-        <CardActions>
-          <CardActionButtons>
-            <CardActionButton
-              label="Date"
-              onClick={(e) => {
-                e.preventDefault();
-                this.toggleDate();
-              }}
-            />
-          </CardActionButtons>
-        </CardActions>
-      </Card>
-    ) : (
-      <Card outlined className="date-container">
-        <Typography use="caption" tag="h3" className="date-title">
-          Date
-        </Typography>
-        <div className="date-form">
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
+        </CardActionButtons>
+      </CardActions>
+    </Card>
+  ) : (
+    <Card outlined className="date-container">
+      <Typography use="caption" tag="h3" className="date-title">
+        Date
+      </Typography>
+      <div className="date-form">
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB launch"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
+          value={fields.gbLaunch}
+          name="gbLaunch"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
+          onChange={handleChange}
+        />
+        <TextField
+          autoComplete="off"
+          icon={{
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            ),
+          }}
+          outlined
+          label="GB end"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+          value={fields.gbEnd}
+          name="gbEnd"
+          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+          onChange={handleChange}
+        />
+      </div>
+      <CardActions>
+        <CardActionButtons>
+          <CardActionButton
+            label="Month"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleDate();
             }}
-            outlined
-            label="GB launch"
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
-            value={this.state.gbLaunch}
-            name="gbLaunch"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-            onChange={this.handleChange}
           />
-          <TextField
-            autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
-            outlined
-            label="GB end"
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-            value={this.state.gbEnd}
-            name="gbEnd"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={this.handleChange}
-          />
-        </div>
-        <CardActions>
-          <CardActionButtons>
-            <CardActionButton
-              label="Month"
-              onClick={(e) => {
-                e.preventDefault();
-                this.toggleDate();
-              }}
-            />
-          </CardActionButtons>
-        </CardActions>
-      </Card>
-    );
-    return (
+        </CardActionButtons>
+      </CardActions>
+    </Card>
+  );
+  return (
+    <BoolWrapper
+      condition={useDrawer}
+      trueWrapper={(children) => (
+        <Drawer modal open={props.open} onClose={closeModal} className="drawer-right entry-modal">
+          {children}
+        </Drawer>
+      )}
+      falseWrapper={(children) => (
+        <FullScreenDialog open={props.open} onClose={closeModal} className="entry-modal">
+          {children}
+        </FullScreenDialog>
+      )}
+    >
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => (
-          <Drawer modal open={this.props.open} onClose={this.closeModal} className="drawer-right entry-modal">
+          <DrawerHeader>
             {children}
-          </Drawer>
+            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+          </DrawerHeader>
         )}
         falseWrapper={(children) => (
-          <FullScreenDialog open={this.props.open} onClose={this.closeModal} className="entry-modal">
-            {children}
-          </FullScreenDialog>
+          <FullScreenDialogAppBar>
+            <TopAppBarRow>{children}</TopAppBarRow>
+            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+          </FullScreenDialogAppBar>
         )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => (
-            <DrawerHeader>
-              {children}
-              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-            </DrawerHeader>
-          )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
-            <FullScreenDialogAppBar>
-              <TopAppBarRow>{children}</TopAppBarRow>
-              <LinearProgress closed={!this.state.loading} progress={this.state.imageUploadProgress / 100} />
-            </FullScreenDialogAppBar>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
+              <TopAppBarTitle>{children}</TopAppBarTitle>
+            </TopAppBarSection>
           )}
         >
-          <BoolWrapper
-            condition={useDrawer}
-            trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
-            falseWrapper={(children) => (
-              <TopAppBarSection alignStart>
-                <TopAppBarNavigationIcon icon="close" onClick={this.closeModal} />
-                <TopAppBarTitle>{children}</TopAppBarTitle>
-              </TopAppBarSection>
-            )}
-          >
-            Edit Entry
-          </BoolWrapper>
-
-          <ConditionalWrapper
-            condition={!useDrawer}
-            wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
-          >
-            <Button
-              outlined={useDrawer}
-              label="Save"
-              onClick={(e) => {
-                if (formFilled) {
-                  e.preventDefault();
-                  if (typeof this.state.image !== "string") {
-                    this.uploadImage();
-                  } else {
-                    this.editEntry();
-                  }
-                }
-              }}
-              disabled={!formFilled}
-            />
-          </ConditionalWrapper>
+          Edit Entry
         </BoolWrapper>
-        <BoolWrapper
-          condition={useDrawer}
-          trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-          falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+
+        <ConditionalWrapper
+          condition={!useDrawer}
+          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <div className="banner">
-            <div className="banner-text">Make sure to read the entry guide.</div>
-            <div className="banner-button">
-              <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
-                <Button label="guide" />
-              </a>
-            </div>
+          <Button
+            outlined={useDrawer}
+            label="Save"
+            onClick={(e) => {
+              if (formFilled) {
+                e.preventDefault();
+                if (typeof imageInfo.image !== "string") {
+                  uploadImage();
+                } else {
+                  editEntry();
+                }
+              }
+            }}
+            disabled={!formFilled}
+          />
+        </ConditionalWrapper>
+      </BoolWrapper>
+      <BoolWrapper
+        condition={useDrawer}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
+        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+      >
+        <div className="banner">
+          <div className="banner-text">Make sure to read the entry guide.</div>
+          <div className="banner-button">
+            <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+              <Button label="guide" />
+            </a>
           </div>
-          <form className="form">
-            <div className="form-double">
-              <div className="select-container">
-                <MenuSurfaceAnchor>
-                  <TextField
-                    autoComplete="off"
-                    outlined
-                    required
-                    label="Profile"
-                    value={this.state.profile}
-                    name="profile"
-                    onChange={this.handleChange}
-                    onFocus={this.handleFocus}
-                    onBlur={this.handleBlur}
-                  />
-                  <Autocomplete
-                    open={this.state.focused === "profile"}
-                    array={this.props.allProfiles}
-                    query={this.state.profile}
-                    prop="profile"
-                    select={this.selectValue}
-                    minChars={1}
-                  />
-                </MenuSurfaceAnchor>
-              </div>
-              <div className="field-container">
+        </div>
+        <form className="form">
+          <div className="form-double">
+            <div className="select-container">
+              <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  className="field"
                   outlined
                   required
-                  label="Colorway"
-                  value={this.state.colorway}
-                  name="colorway"
-                  helpText={{ persistent: false, validationMsg: true, children: "Enter a name" }}
-                  onChange={this.handleChange}
+                  label="Profile"
+                  value={fields.profile}
+                  name="profile"
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
                 />
-              </div>
+                <Autocomplete
+                  open={focused === "profile"}
+                  array={allProfiles}
+                  query={fields.profile}
+                  prop="profile"
+                  select={selectValue}
+                  minChars={1}
+                />
+              </MenuSurfaceAnchor>
             </div>
-            <MenuSurfaceAnchor>
+            <div className="field-container">
               <TextField
                 autoComplete="off"
+                className="field"
                 outlined
-                label="Designer"
                 required
-                pattern="(\w+)[^\s](,\s*.+)*"
-                value={this.state.designer.join(", ")}
-                name="designer"
-                helpText={{
-                  persistent: false,
-                  validationMsg: true,
-                  children:
-                    this.state.designer[0] && this.state.designer[0].includes(" ")
-                      ? "Separate multiple designers with a comma and a space."
-                      : "",
-                }}
-                onChange={this.handleChange}
-                onFocus={this.handleFocus}
-                onBlur={this.handleBlur}
-                disabled={this.context.user.isEditor === false && this.context.user.isDesigner}
+                label="Colorway"
+                value={fields.colorway}
+                name="colorway"
+                helpText={{ persistent: false, validationMsg: true, children: "Enter a name" }}
+                onChange={handleChange}
               />
-              <Autocomplete
-                open={this.state.focused === "designer"}
-                array={this.props.allDesigners}
-                query={this.state.designer.join(", ")}
-                prop="designer"
-                select={this.selectValueAppend}
-                minChars={2}
-                listSplit
-              />
-            </MenuSurfaceAnchor>
+            </div>
+          </div>
+          <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              icon={{
-                icon: (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                    <path d="M4 5.01h16V8H4z" opacity=".3" />
-                  </svg>
-                ),
-              }}
               outlined
-              label="IC date"
+              label="Designer"
               required
-              pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-              value={this.state.icDate}
-              name="icDate"
-              helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-              onChange={this.handleChange}
-            />
-            <TextField
-              autoComplete="off"
-              icon="link"
-              outlined
-              label="Details"
-              required
-              pattern="https?:\/\/.+"
-              value={this.state.details}
-              name="details"
+              pattern="(\w+)[^\s](,\s*.+)*"
+              value={fields.designer.join(", ")}
+              name="designer"
               helpText={{
                 persistent: false,
                 validationMsg: true,
-                children: this.state.details.length > 0 ? "Must be valid link" : "Enter a link",
+                children:
+                  fields.designer[0] && fields.designer[0].includes(" ")
+                    ? "Separate multiple designers with a comma and a space."
+                    : "",
               }}
-              onChange={this.handleChange}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              disabled={user.isEditor === false && user.isDesigner}
             />
-            <TextField
-              textarea
-              rows={2}
-              autoComplete="off"
-              outlined
-              label="Notes"
-              value={this.state.notes}
-              name="notes"
-              onChange={this.handleChange}
-              onFocus={this.handleFocus}
-              onBlur={this.handleBlur}
+            <Autocomplete
+              open={focused === "designer"}
+              array={allDesigners}
+              query={fields.designer.join(", ")}
+              prop="designer"
+              select={selectValueAppend}
+              minChars={2}
+              listSplit
             />
-            <ImageUpload
-              image={
-                typeof this.state.image === "string"
-                  ? this.state.image.replace("keysets%2F", "thumbs%2F")
-                  : this.state.image
-              }
-              setImage={this.setImage}
-              desktop
-            />
-            {dateCard}
-            <Checkbox
-              label="Shipped"
-              id="edit-shipped"
-              name="shipped"
-              checked={this.state.shipped}
-              onChange={this.handleChange}
-            />
-            <Typography use="caption" tag="h3" className="subheader">
-              Vendors
-            </Typography>
-            <DragDropContext onDragEnd={this.handleDragVendor}>
-              <Droppable droppableId="vendors-edit">
-                {(provided) => (
-                  <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
-                    {this.state.vendors.map((vendor, index) => {
-                      const endDateField =
-                        vendor.endDate || vendor.endDate === "" ? (
-                          <TextField
-                            autoComplete="off"
-                            icon={{
-                              icon: (
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                  <path d="M0 0h24v24H0V0z" fill="none" />
-                                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                                </svg>
-                              ),
-                            }}
+          </MenuSurfaceAnchor>
+          <TextField
+            autoComplete="off"
+            icon={{
+              icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                  <path d="M4 5.01h16V8H4z" opacity=".3" />
+                </svg>
+              ),
+            }}
+            outlined
+            label="IC date"
+            required
+            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+            value={fields.icDate}
+            name="icDate"
+            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+            onChange={handleChange}
+          />
+          <TextField
+            autoComplete="off"
+            icon="link"
+            outlined
+            label="Details"
+            required
+            pattern="https?:\/\/.+"
+            value={fields.details}
+            name="details"
+            helpText={{
+              persistent: false,
+              validationMsg: true,
+              children: fields.details.length > 0 ? "Must be valid link" : "Enter a link",
+            }}
+            onChange={handleChange}
+          />
+          <TextField
+            textarea
+            rows={2}
+            autoComplete="off"
+            outlined
+            label="Notes"
+            value={fields.notes}
+            name="notes"
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+          <ImageUpload
+            image={
+              typeof imageInfo.image === "string" ? imageInfo.image.replace("keysets%2F", "thumbs%2F") : imageInfo.image
+            }
+            setImage={setImage}
+            desktop
+          />
+          {dateCard}
+          <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={fields.shipped} onChange={handleChange} />
+          <Typography use="caption" tag="h3" className="subheader">
+            Vendors
+          </Typography>
+          <DragDropContext onDragEnd={handleDragVendor}>
+            <Droppable droppableId="vendors-edit">
+              {(provided) => (
+                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                  {vendors.map((vendor, index) => {
+                    const endDateField =
+                      vendor.endDate || vendor.endDate === "" ? (
+                        <TextField
+                          autoComplete="off"
+                          icon={{
+                            icon: (
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                                <path d="M4 5.01h16V8H4z" opacity=".3" />
+                              </svg>
+                            ),
+                          }}
+                          outlined
+                          label="End date"
+                          required
+                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
+                          value={vendor.endDate}
+                          name={"endDate" + index}
+                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
+                          onChange={handleChangeVendor}
+                        />
+                      ) : null;
+                    return (
+                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                        {(provided, snapshot) => (
+                          <Card
                             outlined
-                            label="End date"
-                            required
-                            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-                            value={vendor.endDate}
-                            name={"endDate" + index}
-                            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                            onChange={this.handleChangeVendor}
-                          />
-                        ) : null;
-                      return (
-                        <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
-                          {(provided, snapshot) => (
-                            <Card
-                              outlined
-                              className={classNames("vendor-container", { dragged: snapshot.isDragging })}
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              style={getVendorStyle(provided)}
-                            >
-                              <div className="title-container">
-                                <Typography use="caption" className="vendor-title">
-                                  {"Vendor " + (index + 1)}
-                                </Typography>
-                                <Tooltip enterDelay={500} content="Delete" align="bottom">
-                                  <IconButton
-                                    icon={iconObject(
-                                      <div>
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M8 9h8v10H8z" opacity=".3" />
-                                          <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                        </svg>
-                                      </div>
-                                    )}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      this.removeVendor(index);
-                                    }}
-                                  />
-                                </Tooltip>
-                                <Tooltip enterDelay={500} content="Drag" align="bottom">
-                                  <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
-                                </Tooltip>
-                              </div>
-                              <div className="vendor-form">
-                                <MenuSurfaceAnchor>
-                                  <TextField
-                                    autoComplete="off"
-                                    icon={{
-                                      icon: (
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                          <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                        </svg>
-                                      ),
-                                    }}
-                                    required
-                                    outlined
-                                    label="Name"
-                                    value={vendor.name}
-                                    name={"name" + index}
-                                    onChange={this.handleChangeVendor}
-                                    onFocus={this.handleFocus}
-                                    onBlur={this.handleBlur}
-                                  />
-                                  <Autocomplete
-                                    open={this.state.focused === "name" + index}
-                                    array={this.props.allVendors}
-                                    query={this.state.vendors[index].name}
-                                    prop={"name" + index}
-                                    select={this.selectVendor}
-                                    minChars={1}
-                                  />
-                                </MenuSurfaceAnchor>
-                                <MenuSurfaceAnchor>
-                                  <TextField
-                                    autoComplete="off"
-                                    icon={{
-                                      icon: (
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          height="24"
-                                          viewBox="0 0 24 24"
-                                          width="24"
-                                        >
-                                          <path d="M0 0h24v24H0V0z" fill="none" />
-                                          <path
-                                            d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                            opacity=".3"
-                                          />
-                                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                        </svg>
-                                      ),
-                                    }}
-                                    required
-                                    outlined
-                                    label="Region"
-                                    value={vendor.region}
-                                    name={"region" + index}
-                                    onChange={this.handleChangeVendor}
-                                    onFocus={this.handleFocus}
-                                    onBlur={this.handleBlur}
-                                  />
-                                  <Autocomplete
-                                    open={this.state.focused === "region" + index}
-                                    array={this.props.allVendorRegions}
-                                    query={this.state.vendors[index].region}
-                                    prop={"region" + index}
-                                    select={this.selectVendorAppend}
-                                    minChars={1}
-                                  />
-                                </MenuSurfaceAnchor>
+                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            style={getVendorStyle(provided)}
+                          >
+                            <div className="title-container">
+                              <Typography use="caption" className="vendor-title">
+                                {"Vendor " + (index + 1)}
+                              </Typography>
+                              <Tooltip enterDelay={500} content="Delete" align="bottom">
+                                <IconButton
+                                  icon={iconObject(
+                                    <div>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path d="M8 9h8v10H8z" opacity=".3" />
+                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    removeVendor(index);
+                                  }}
+                                />
+                              </Tooltip>
+                              <Tooltip enterDelay={500} content="Drag" align="bottom">
+                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
+                              </Tooltip>
+                            </div>
+                            <div className="vendor-form">
+                              <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon="link"
+                                  icon={{
+                                    icon: (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
+                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
+                                      </svg>
+                                    ),
+                                  }}
+                                  required
                                   outlined
-                                  label="Store link"
-                                  pattern="https?:\/\/.+"
-                                  value={vendor.storeLink}
-                                  name={"storeLink" + index}
-                                  onChange={this.handleChangeVendor}
-                                  onFocus={this.handleFocus}
-                                  onBlur={this.handleBlur}
-                                  helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                                  label="Name"
+                                  value={vendor.name}
+                                  name={"name" + index}
+                                  onChange={handleChangeVendor}
+                                  onFocus={handleFocus}
+                                  onBlur={handleBlur}
                                 />
-                                <Checkbox
-                                  className="end-date-field"
-                                  label="Different end date"
-                                  name={"endDate" + index}
-                                  id={"editEndDate" + index}
-                                  onChange={this.handleChangeVendorEndDate}
-                                  checked={!!vendor.endDate || vendor.endDate === ""}
+                                <Autocomplete
+                                  open={focused === "name" + index}
+                                  array={allVendors}
+                                  query={vendor.name}
+                                  prop={"name" + index}
+                                  select={selectVendor}
+                                  minChars={1}
                                 />
-                                {endDateField}
-                              </div>
-                            </Card>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-            <div className="add-button">
-              <Button
-                outlined
-                label="Add vendor"
-                onClick={(e) => {
-                  e.preventDefault();
-                  this.addVendor();
+                              </MenuSurfaceAnchor>
+                              <MenuSurfaceAnchor>
+                                <TextField
+                                  autoComplete="off"
+                                  icon={{
+                                    icon: (
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        width="24"
+                                      >
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path
+                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                                          opacity=".3"
+                                        />
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
+                                      </svg>
+                                    ),
+                                  }}
+                                  required
+                                  outlined
+                                  label="Region"
+                                  value={vendor.region}
+                                  name={"region" + index}
+                                  onChange={handleChangeVendor}
+                                  onFocus={handleFocus}
+                                  onBlur={handleBlur}
+                                />
+                                <Autocomplete
+                                  open={focused === "region" + index}
+                                  array={allVendorRegions}
+                                  query={vendor.region}
+                                  prop={"region" + index}
+                                  select={selectVendorAppend}
+                                  minChars={1}
+                                />
+                              </MenuSurfaceAnchor>
+                              <TextField
+                                autoComplete="off"
+                                icon="link"
+                                outlined
+                                label="Store link"
+                                pattern="https?:\/\/.+"
+                                value={vendor.storeLink}
+                                name={"storeLink" + index}
+                                onChange={handleChangeVendor}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                                helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                              />
+                              <Checkbox
+                                className="end-date-field"
+                                label="Different end date"
+                                name={"endDate" + index}
+                                id={"editEndDate" + index}
+                                onChange={handleChangeVendorEndDate}
+                                checked={!!vendor.endDate || vendor.endDate === ""}
+                              />
+                              {endDateField}
+                            </div>
+                          </Card>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <div className="add-button">
+            <Button
+              outlined
+              label="Add vendor"
+              onClick={(e) => {
+                e.preventDefault();
+                addVendor();
+              }}
+            />
+          </div>
+          <Card outlined className="sales-container">
+            <Typography use="caption" tag="h3" className="sales-title">
+              Sales
+            </Typography>
+            <div className={classNames("sales-image", { loaded: salesInfo.salesImageLoaded })}>
+              <div className="sales-image-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
+                  <path
+                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
+                    opacity=".3"
+                  />
+                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
+                </svg>
+              </div>
+              <img
+                src={salesInfo.img}
+                alt=""
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                onError={() => {
+                  setSalesImageLoaded(false);
                 }}
               />
             </div>
-            <Card outlined className="sales-container">
-              <Typography use="caption" tag="h3" className="sales-title">
-                Sales
-              </Typography>
-              <div className={classNames("sales-image", { loaded: this.state.salesImageLoaded })}>
-                <div className="sales-image-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                    <path
-                      d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                      opacity=".3"
-                    />
-                    <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                  </svg>
-                </div>
-                <img
-                  src={this.state.sales.img}
-                  alt=""
-                  onLoad={() => {
-                    this.setSalesImageLoaded(true);
-                  }}
-                  onError={() => {
-                    this.setSalesImageLoaded(false);
-                  }}
-                />
-              </div>
-              <div className="sales-field">
-                <TextField
-                  autoComplete="off"
-                  icon="link"
-                  outlined
-                  label="URL"
-                  pattern="https?:\/\/.+"
-                  value={this.state.sales.img}
-                  name="salesImg"
-                  helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
-                  onChange={this.handleChange}
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                />
-                <Checkbox
-                  className="sales-checkbox"
-                  label="Third party graph"
-                  name={"salesThirdParty"}
-                  id={"editSalesThirdParty"}
-                  onChange={this.handleChange}
-                  checked={this.state.sales.thirdParty}
-                />
-              </div>
-            </Card>
-          </form>
-        </BoolWrapper>
+            <div className="sales-field">
+              <TextField
+                autoComplete="off"
+                icon="link"
+                outlined
+                label="URL"
+                pattern="https?:\/\/.+"
+                value={salesInfo.img}
+                name="salesImg"
+                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <Checkbox
+                className="sales-checkbox"
+                label="Third party graph"
+                name="salesThirdParty"
+                id={"editSalesThirdParty"}
+                onChange={handleChange}
+                checked={salesInfo.thirdParty}
+              />
+            </div>
+          </Card>
+        </form>
       </BoolWrapper>
-    );
-  }
-}
-
-ModalEdit.contextType = UserContext;
+    </BoolWrapper>
+  );
+};
 
 export default ModalCreate;

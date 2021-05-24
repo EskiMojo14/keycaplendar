@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import firebase from "../../../firebase";
+import { useAppSelector } from "../../../app/hooks";
+import { selectDevice } from "../../../app/slices/common/commonSlice";
+import { iconObject } from "../../../app/slices/common/functions";
+import { UpdateEntryType } from "../../../app/slices/updates/types";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
-import { DeviceContext, UserContext } from "../../../util/contexts";
-import { iconObject } from "../../../util/functions";
-import { UpdateEntryType } from "../../../util/types";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -12,7 +14,7 @@ import { TextField } from "@rmwc/textfield";
 import { Tooltip } from "@rmwc/tooltip";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import ConditionalWrapper, { BoolWrapper } from "../../util/ConditionalWrapper";
+import { ConditionalWrapper, BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { CustomReactMarkdown } from "../../util/ReactMarkdown";
 import "./ModalEntry.scss";
@@ -28,8 +30,9 @@ type ModalCreateProps = {
 };
 
 export const ModalCreate = (props: ModalCreateProps) => {
-  const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
+  const user = useAppSelector(selectUser);
+
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");
@@ -210,8 +213,9 @@ type ModalEditProps = {
 
 export const ModalEdit = (props: ModalEditProps) => {
   const { entry } = props;
-  const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
+  const user = useAppSelector(selectUser);
+
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");

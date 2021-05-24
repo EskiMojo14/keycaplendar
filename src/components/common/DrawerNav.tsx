@@ -1,45 +1,53 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
+import moment from "moment";
 import firebase from "../../firebase";
-import { standardPages, userPages, adminPages, pageIcons, pageTitle } from "../../util/constants";
-import { UserContext, DeviceContext } from "../../util/contexts";
-import { hasKey, iconObject } from "../../util/functions";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
+import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "../../app/slices/common/constants";
+import { setPage as setMainPage } from "../../app/slices/common/coreFunctions";
+import { hasKey, iconObject } from "../../app/slices/common/functions";
+import { Page } from "../../app/slices/common/types";
+import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
-import moment from "moment";
-import { Page } from "../../util/types";
 
 const db = firebase.firestore();
 
 type DrawerNavProps = {
-  bottomNav: boolean;
   close: () => void;
   open: boolean;
-  page: Page;
-  setPage: (page: Page) => void;
 };
 
 export const DrawerNav = (props: DrawerNavProps) => {
+  const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
+
+  const appPage = useAppSelector(selectPage);
+
+  const user = useAppSelector(selectUser);
+  const favorites = useAppSelector(selectFavorites);
+  const hidden = useAppSelector(selectHidden);
+
+  const dismissible = device === "desktop";
+
   const setPage = (page: Page) => {
-    props.setPage(page);
+    setMainPage(page);
     if (!dismissible) {
       props.close();
     }
   };
 
-  const { user, favorites, hidden } = useContext(UserContext);
   const quantities: {
     [key: string]: number;
   } = {
     favorites: favorites.length,
     hidden: hidden.length,
   };
-
-  const device = useContext(DeviceContext);
-  const dismissible = device === "desktop";
 
   const [newUpdate, setNewUpdate] = useState(false);
 
@@ -78,7 +86,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     <>
       {userPages.map((page) => {
         return (
-          <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
             {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
@@ -93,7 +101,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       <ListDivider />
       {adminPages.map((page) => {
         return (
-          <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
           </ListItem>
@@ -103,17 +111,17 @@ export const DrawerNav = (props: DrawerNavProps) => {
   ) : null;
 
   const closeIcon =
-    dismissible || props.bottomNav ? (
+    dismissible || bottomNav ? (
       <IconButton
-        className={classNames({ "rtl-flip": !props.bottomNav })}
-        icon={props.bottomNav ? "close" : "chevron_left"}
+        className={classNames({ "rtl-flip": !bottomNav })}
+        icon={bottomNav ? "close" : "chevron_left"}
         onClick={props.close}
       />
     ) : null;
 
   return (
     <Drawer
-      className={classNames("nav", { rail: dismissible, "drawer-bottom": props.bottomNav })}
+      className={classNames("nav", { rail: dismissible, "drawer-bottom": bottomNav })}
       dismissible={dismissible}
       modal={!dismissible}
       open={props.open}
@@ -128,7 +136,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
         <List>
           {standardPages.map((page) => {
             return (
-              <ListItem key={page} onClick={() => setPage(page)} activated={props.page === page}>
+              <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
                 <ListItemGraphic icon={pageIcons[page]} />
                 {pageTitle[page]}
               </ListItem>
@@ -136,22 +144,22 @@ export const DrawerNav = (props: DrawerNavProps) => {
           })}
           {userOptions}
           <ListDivider />
-          <ListItem onClick={() => setPage("statistics")} activated={props.page === "statistics"}>
+          <ListItem onClick={() => setPage("statistics")} activated={appPage === "statistics"}>
             <ListItemGraphic icon={pageIcons.statistics} />
             Statistics
           </ListItem>
-          <ListItem onClick={() => setPage("history")} activated={props.page === "history"}>
+          <ListItem onClick={() => setPage("history")} activated={appPage === "history"}>
             <ListItemGraphic icon={pageIcons.history} />
             History
           </ListItem>
           {adminOptions}
           <ListDivider />
-          <ListItem onClick={() => setPage("updates")} activated={props.page === "updates"}>
+          <ListItem onClick={() => setPage("updates")} activated={appPage === "updates"}>
             <ListItemGraphic icon={pageIcons.updates} />
             Updates
             {newUpdateIcon}
           </ListItem>
-          <ListItem onClick={() => setPage("settings")} activated={props.page === "settings"}>
+          <ListItem onClick={() => setPage("settings")} activated={appPage === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
             Settings
           </ListItem>

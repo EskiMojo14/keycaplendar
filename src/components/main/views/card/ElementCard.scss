@@ -1,0 +1,161 @@
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/icon-button/_index" as icon-button;
+@use "@material/ripple/_index" as ripple;
+@use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
+@use "../../../../util";
+
+.card-container .mdc-card {
+  height: 100%;
+  transition: elevation.transition-value();
+  position: relative;
+  overflow: hidden;
+  &__primary-action {
+    height: 100%;
+  }
+  &__actions {
+    @include util.divider-border(top);
+  }
+  .media-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: placeholder 2s ease infinite;
+    .lazy-load {
+      display: flex;
+      flex-direction: column;
+      margin-top: 56.25%;
+      .mdc-card__media {
+        margin-top: -56.25%;
+        animation: animation.standard(fade-in, 500ms) forwards;
+      }
+    }
+    .time-indicator {
+      position: absolute;
+      bottom: 8px;
+      @include rtl.reflexive-position(left, 8px);
+      display: flex;
+      align-items: center;
+      margin: 0;
+      height: 24px;
+      padding: 0 12px;
+      @include shape.radius(12px);
+      z-index: 3;
+      background-color: #333333;
+      color: white;
+    }
+  }
+
+  .text-row {
+    display: flex;
+    flex-grow: 1;
+    .text-container {
+      flex: auto 1 1;
+      padding: 8px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      .overline {
+        width: 100%;
+        display: flex;
+        justify-content: stretch;
+        margin-bottom: 4px;
+        display: flex;
+        .mdc-typography--overline {
+          margin: 0;
+          flex-shrink: 1;
+          flex-grow: 1;
+        }
+      }
+      .title {
+        padding-bottom: 8px;
+        display: flex;
+        width: 100%;
+        .mdc-typography--headline5 {
+          margin: 0;
+          width: 100%;
+          div {
+            display: inline-flex;
+            align-items: center;
+            .twemoji {
+              height: 1.5625rem;
+              @include rtl.reflexive-box(margin, left, 0.5rem);
+            }
+          }
+        }
+      }
+      .mdc-typography--subtitle2 {
+        margin: 0;
+      }
+      .live-indicator,
+      .ship-indicator {
+        @include rtl.reflexive-box(margin, left, 8px);
+        flex-shrink: 0;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        height: 2rem;
+        fill: currentColor;
+      }
+    }
+  }
+}
+
+@media (min-width: 840px) {
+  .card-container .mdc-card {
+    .hover-button {
+      position: absolute;
+      z-index: 3;
+      width: 100%;
+      border: none;
+      &::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        right: 0;
+        top: 0;
+        content: "";
+        background: linear-gradient(rgba(black, 0.5), transparent);
+        opacity: 0;
+        transition: animation.standard(opacity, 250ms);
+      }
+      .mdc-icon-button.mdc-card__action--icon {
+        opacity: 0;
+        animation: animation.standard(fade-out, 150ms) forwards;
+        @include icon-button.ink-color(white);
+      }
+      .mdc-card__action-buttons {
+        display: none;
+      }
+    }
+    &:hover {
+      @include elevation.elevation(4);
+      .hover-button {
+        &::before {
+          opacity: 1;
+        }
+        .mdc-icon-button {
+          animation: animation.standard(fade-in-scale, 150ms) forwards;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 479px) {
+  .card-container .mdc-card {
+    &__primary-action {
+      flex-direction: row;
+      align-items: center;
+    }
+    .media-container {
+      flex-shrink: 0;
+      width: 120px;
+      height: 68px;
+      margin: 16px;
+      @include rtl.reflexive-property(margin, 16px, 0);
+    }
+  }
+}

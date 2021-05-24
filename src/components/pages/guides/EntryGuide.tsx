@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import { DeviceContext } from "../../../util/contexts";
-import { iconObject } from "../../../util/functions";
+import { useAppSelector } from "../../../app/hooks";
+import { selectDevice } from "../../../app/slices/common/commonSlice";
+import { iconObject } from "../../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import {
@@ -28,7 +29,7 @@ import { Typography } from "@rmwc/typography";
 import "./Guides.scss";
 
 export const EntryGuide = () => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const collapsible = device === "mobile";
   return (
     <>
