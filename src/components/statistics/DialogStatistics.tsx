@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { hasKey } from "../../app/slices/common/functions";
-import { selectStatsSettings, selectStatsTab, setStatisticsSetting } from "../../app/slices/statistics/statisticsSlice";
+import { selectSettings, selectTab, setStatisticsSetting } from "../../app/slices/statistics/statisticsSlice";
 import { Categories, Properties } from "../../app/slices/statistics/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
@@ -14,8 +14,8 @@ type DialogStatisticsProps = {
 };
 
 export const DialogStatistics = (props: DialogStatisticsProps) => {
-  const statisticsTab = useAppSelector(selectStatsTab);
-  const settings = useAppSelector(selectStatsSettings);
+  const statisticsTab = useAppSelector(selectTab);
+  const settings = useAppSelector(selectSettings);
 
   const [statistics, setStatistics] = useState<Properties | Categories>("profile");
 

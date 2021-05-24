@@ -6,7 +6,7 @@ import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
 import { selectContent } from "../../app/slices/main/mainSlice";
 import { PresetType, SetType } from "../../app/slices/main/types";
-import { selectBottomNav, selectMainView } from "../../app/slices/settings/settingsSlice";
+import { selectBottomNav, selectView } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -33,7 +33,7 @@ type ContentMainProps = {
 export const ContentMain = (props: ContentMainProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
-  const view = useAppSelector(selectMainView);
+  const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
 

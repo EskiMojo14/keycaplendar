@@ -161,14 +161,14 @@ export const {
   setStatisticsSort,
 } = statisticsSlice.actions;
 
-export const selectStatsTab = (state: RootState) => state.statistics.tab;
+export const selectTab = (state: RootState) => state.statistics.tab;
 
-export const selectStatsData = (state: RootState) => state.statistics.data;
+export const selectData = (state: RootState) => state.statistics.data;
 
 export const selectLoading = (state: RootState) => state.statistics.loading;
 
-export const selectStatsSettings = (state: RootState) => state.statistics.settings;
+export const selectSettings = (state: RootState) => state.statistics.settings;
 
-export const selectStatsSort = (state: RootState) => state.statistics.sort;
+export const selectSort = (state: RootState) => state.statistics.sort;
 
 export default statisticsSlice.reducer;

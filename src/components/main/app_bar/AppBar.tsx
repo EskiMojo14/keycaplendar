@@ -6,7 +6,7 @@ import { pageTitle } from "../../../app/slices/common/constants";
 import { useBoolStates } from "../../../app/slices/common/functions";
 import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice";
 import { setSearch } from "../../../app/slices/main/functions";
-import { selectBottomNav, selectMainView } from "../../../app/slices/settings/settingsSlice";
+import { selectBottomNav, selectView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
@@ -32,7 +32,7 @@ type AppBarProps = {
 
 export const AppBar = (props: AppBarProps) => {
   const device = useAppSelector(selectDevice);
-  const view = useAppSelector(selectMainView);
+  const view = useAppSelector(selectView);
   const bottomNav = useAppSelector(selectBottomNav);
 
   const page = useAppSelector(selectPage);

@@ -10,11 +10,11 @@ import { statsTabs } from "../../app/slices/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "../../app/slices/statistics/functions";
 import { StatisticsType } from "../../app/slices/statistics/types";
 import {
-  selectStatsTab,
-  selectStatsData,
+  selectTab,
+  selectData,
   selectLoading,
-  selectStatsSettings,
-  selectStatsSort,
+  selectSettings,
+  selectSort,
 } from "../../app/slices/statistics/statisticsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -47,11 +47,11 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
-  const statisticsTab = useAppSelector(selectStatsTab);
+  const statisticsTab = useAppSelector(selectTab);
   const loading = useAppSelector(selectLoading);
-  const statisticsData = useAppSelector(selectStatsData);
-  const settings = useAppSelector(selectStatsSettings);
-  const statisticsSort = useAppSelector(selectStatsSort);
+  const statisticsData = useAppSelector(selectData);
+  const settings = useAppSelector(selectSettings);
+  const statisticsSort = useAppSelector(selectSort);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);

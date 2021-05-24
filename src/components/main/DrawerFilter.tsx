@@ -16,7 +16,7 @@ import { whitelistParams, whitelistShipped } from "../../app/slices/main/constan
 import { Preset, Whitelist } from "../../app/slices/main/constructors";
 import { selectPreset, setWhitelist, setWhitelistMerge } from "../../app/slices/main/functions";
 import { PresetType } from "../../app/slices/main/types";
-import { selectMainView } from "../../app/slices/settings/settingsSlice";
+import { selectView } from "../../app/slices/settings/settingsSlice";
 import { selectUser, selectUserPresets } from "../../app/slices/user/userSlice";
 import { queue } from "../../app/snackbarQueue";
 import { Button } from "@rmwc/button";
@@ -41,7 +41,7 @@ type DrawerFilterProps = {
 export const DrawerFilter = (props: DrawerFilterProps) => {
   const device = useAppSelector(selectDevice);
 
-  const view = useAppSelector(selectMainView);
+  const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectUserPresets);

@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppSelector } from "../../../app/hooks";
-import { selectMainView } from "../../../app/slices/settings/settingsSlice";
+import { selectView } from "../../../app/slices/settings/settingsSlice";
 import { allViews, viewNames } from "../../../app/slices/settings/constants";
 import { setView } from "../../../app/slices/settings/functions";
 import { Menu, MenuItem } from "@rmwc/menu";
@@ -11,7 +11,7 @@ type MenuViewProps = {
 };
 
 export const MenuView = (props: MenuViewProps) => {
-  const view = useAppSelector(selectMainView);
+  const view = useAppSelector(selectView);
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
       {allViews.map((key) => {

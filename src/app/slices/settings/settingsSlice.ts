@@ -61,7 +61,7 @@ export const selectSettings = (state: RootState) => state.settings;
 
 export const selectBottomNav = (state: RootState) => state.settings.bottomNav && state.common.device === "mobile";
 
-export const selectMainView = (state: RootState) => state.settings.view;
+export const selectView = (state: RootState) => state.settings.view;
 
 export const selectCookies = (state: RootState) => state.settings.cookies;
 

@@ -9,7 +9,7 @@ import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject } from "../../a
 import { selectSearch } from "../../app/slices/main/mainSlice";
 import { setSearch } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
-import { selectMainView } from "../../app/slices/settings/settingsSlice";
+import { selectView } from "../../app/slices/settings/settingsSlice";
 import { toggleLichTheme } from "../../app/slices/settings/functions";
 import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
@@ -36,7 +36,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
-  const view = useAppSelector(selectMainView);
+  const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
