@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import BEMHelper from "../../app/slices/common/bemHelper";
-import { iconObject } from "../../app/slices/common/functions";
-import { typographyBuilder } from "../../app/slices/common/markdownFunctions";
+import { markdownIcons } from "../../app/slices/common/markdownConstants";
+import {
+  headerFiveCommand,
+  headerFourCommand,
+  headerOneCommand,
+  headerSixCommand,
+  headerThreeCommand,
+  headerTwoCommand,
+  typographyBuilder,
+} from "../../app/slices/common/markdownFunctions";
 import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
 import { IconButton } from "@rmwc/icon-button";
-import { IconPropT } from "@rmwc/types";
 import { SegmentedButton, SegmentedButtonSegment } from "./SegmentedButton";
 import "./ReactMarkdown.scss";
 
@@ -38,26 +45,6 @@ export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
 };
 const bemClasses = new BEMHelper("markdown-editor");
 
-const icons: Record<string, IconPropT> = {
-  header: "title",
-  bold: "format_bold",
-  italic: "format_italic",
-  strikethrough: "strikethrough_s",
-  link: "link",
-  quote: "format_quote",
-  code: "code",
-  image: iconObject(
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
-      <path d="M0 0h24v24H0V0z" fill="none" />
-      <path d="M5 19h14V5H5v14zm4-5.86l2.14 2.58 3-3.87L18 17H6l3-3.86z" opacity=".3" />
-      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-4.86-7.14l-3 3.86L9 13.14 6 17h12z" />
-    </svg>
-  ),
-  "unordered-list": "format_list_bulleted",
-  "ordered-list": "format_list_numbered",
-  "checked-list": "checklist",
-};
-
 type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "selectedTab" | "onTabChange"> & {
   required?: boolean;
 };
@@ -71,6 +58,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
         ["bold", "italic"],
         ["link", "code"],
         ["unordered-list", "ordered-list"],
+        ["h1", "h2", "h3", "h4", "h5", "h6"],
       ];
   const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
   const customTabButtons: L18n = {
@@ -132,10 +120,18 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
       selectedTab={selectedTab}
       onTabChange={onTabChange}
       value={value}
+      commands={{
+        h1: headerOneCommand,
+        h2: headerTwoCommand,
+        h3: headerThreeCommand,
+        h4: headerFourCommand,
+        h5: headerFiveCommand,
+        h6: headerSixCommand,
+      }}
       toolbarCommands={customToolbarCommands}
       l18n={customTabButtons}
       classes={customClasses}
-      getIcon={(command) => <IconButton tag="div" icon={icons[command]} />}
+      getIcon={(command) => <IconButton tag="div" icon={markdownIcons[command]} />}
       generateMarkdownPreview={(markdown) => Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)}
       childProps={customChildProps}
       {...filteredProps}
