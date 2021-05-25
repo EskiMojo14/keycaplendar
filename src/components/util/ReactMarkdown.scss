@@ -24,6 +24,11 @@
     white-space: nowrap;
     background-color: rgba(black, 0.1);
   }
+  blockquote {
+    @include rtl.reflexive-box(border, left, 4px solid var(--divider-color));
+    @include rtl.reflexive-box(padding, left, 12px);
+    margin: 8px 0;
+  }
   div.mdc-checkbox {
     padding: 0;
     @include rtl.reflexive-box(margin, right, 8px);
