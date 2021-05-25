@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import BEMHelper from "../../app/slices/common/bemHelper";
-import { markdownIcons } from "../../app/slices/common/markdownConstants";
 import {
-  componentBuilder,
-  headerFiveCommand,
-  headerFourCommand,
   headerOneCommand,
-  headerSixCommand,
-  headerThreeCommand,
   headerTwoCommand,
-  typographyBuilder,
-} from "../../app/slices/common/markdownFunctions";
+  headerThreeCommand,
+  headerFourCommand,
+  headerFiveCommand,
+  headerSixCommand,
+  insertTableCommand,
+  insertTableColumnAfter,
+} from "../../app/slices/common/markdownCommands";
+import { markdownIcons } from "../../app/slices/common/markdownConstants";
+import { componentBuilder, typographyBuilder } from "../../app/slices/common/markdownFunctions";
 import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
+import { CommandMap } from "react-mde/lib/definitions/types";
 import gfm from "remark-gfm";
 import { Checkbox } from "@rmwc/checkbox";
 import {
@@ -98,12 +100,23 @@ type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "sele
 export const CustomReactMde = (props: CustomReactMdeProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { toolbarCommands, l18n, classes, childProps, required, value, ...filteredProps } = props;
+  const customCommands: CommandMap = {
+    h1: headerOneCommand,
+    h2: headerTwoCommand,
+    h3: headerThreeCommand,
+    h4: headerFourCommand,
+    h5: headerFiveCommand,
+    h6: headerSixCommand,
+    "insert-table": insertTableCommand,
+    "column-after": insertTableColumnAfter,
+  };
   const customToolbarCommands = toolbarCommands
     ? toolbarCommands
     : [
         ["bold", "italic", "strikethrough"],
         ["link", "code"],
         ["unordered-list", "ordered-list", "checked-list"],
+        ["insert-table", "column-after"],
         ["h1", "h2", "h3", "h4", "h5", "h6"],
       ];
   const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
@@ -166,14 +179,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
       selectedTab={selectedTab}
       onTabChange={onTabChange}
       value={value}
-      commands={{
-        h1: headerOneCommand,
-        h2: headerTwoCommand,
-        h3: headerThreeCommand,
-        h4: headerFourCommand,
-        h5: headerFiveCommand,
-        h6: headerSixCommand,
-      }}
+      commands={customCommands}
       toolbarCommands={customToolbarCommands}
       l18n={customTabButtons}
       classes={customClasses}
