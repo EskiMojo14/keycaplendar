@@ -30,12 +30,14 @@
     &__toolbar {
       background-color: transparent;
       border-color: var(--divider-color);
+      padding: 4px;
       .mde-tabs {
         button {
           cursor: default;
           border-radius: 0;
           margin: 0;
-          padding: 8px;
+          padding: 4px;
+
           &.selected {
             border: none;
           }
@@ -46,10 +48,13 @@
       }
       .mde-header-group {
         padding: 0;
+        margin: 0 4px;
         .mde-header-item {
           display: flex;
           align-items: center;
+          margin: 0;
           button {
+            cursor: default;
             padding: 0;
             height: auto;
           }

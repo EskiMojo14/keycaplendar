@@ -59,7 +59,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const onEditorChange = (name: string, value: string) => {
+  const handleEditorChange = (name: string, value: string) => {
     if (name === "body") {
       setBody(value);
     }
@@ -187,21 +187,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
             required
           />
           <div>
-            <Typography use="caption" className="subheader">
+            <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => onEditorChange("body", string)} required />
+            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
           </div>
-          <TextField
-            outlined
-            autoComplete="off"
-            label="Body"
-            name="body"
-            value={body}
-            onChange={handleChange}
-            textarea
-            required
-          />
         </div>
         <div className="preview">
           <div className="subheader">
@@ -257,6 +247,13 @@ export const ModalEdit = (props: ModalEditProps) => {
       setBody(value);
     }
   };
+
+  const handleEditorChange = (name: string, value: string) => {
+    if (name === "body") {
+      setBody(value);
+    }
+  };
+
   const dateToday = () => {
     const today = moment().format("YYYY-MM-DD");
     setDate(today);
@@ -379,16 +376,12 @@ export const ModalEdit = (props: ModalEditProps) => {
             onChange={handleChange}
             required
           />
-          <TextField
-            outlined
-            autoComplete="off"
-            label="Body"
-            name="body"
-            value={body}
-            onChange={handleChange}
-            textarea
-            required
-          />
+          <div>
+            <Typography use="caption" tag="div" className="subheader">
+              Body*
+            </Typography>
+            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+          </div>
         </div>
         <div className="preview">
           <div className="subheader">
