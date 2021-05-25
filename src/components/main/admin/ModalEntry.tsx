@@ -1303,7 +1303,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     !!fields.designer &&
     !!fields.icDate &&
     !!fields.details &&
-    !!imageInfo.imageURL;
+    ((typeof imageInfo.image === "string" && !!imageInfo.image) || !!imageInfo.imageURL);
 
   const editEntry = () => {
     if (formFilled) {
@@ -1319,7 +1319,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           notes: fields.notes,
           sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
           shipped: fields.shipped,
-          image: imageInfo.imageURL,
+          image: typeof imageInfo.image === "string" ? imageInfo.image : imageInfo.imageURL,
           gbMonth: fields.gbMonth,
           gbLaunch: fields.gbLaunch,
           gbEnd: fields.gbEnd,
