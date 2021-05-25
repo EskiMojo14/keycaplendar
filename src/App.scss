@@ -246,9 +246,7 @@
 .mdc-data-table,
 .mdc-data-table__row,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
-.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions,
-.react-mde,
-.mde-header {
+.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
   border-color: var(--divider-color);
 }
 
@@ -513,6 +511,7 @@ svg.material-icons,
   .markdown-editor {
     &__textarea {
       @include typography.typography(subtitle1, $exclude-props: (line-height));
+      @include shape.radius(small);
     }
   }
 }

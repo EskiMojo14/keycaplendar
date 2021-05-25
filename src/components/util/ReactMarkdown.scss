@@ -25,9 +25,11 @@
 }
 
 .react-mde.markdown-editor {
+  border-color: var(--divider-color);
   .markdown-editor {
     &__toolbar {
       background-color: transparent;
+      border-color: var(--divider-color);
       .mde-tabs {
         button {
           cursor: default;
@@ -54,12 +56,19 @@
         }
       }
     }
-    &__preview {
-    }
     &__textarea {
       background-color: transparent;
+      padding: 8px 16px;
+      min-height: 48px;
+      line-height: 1.75rem;
+      border: var(--divider-color) 1px solid;
+      &--focused {
+        border-width: 2px;
+        padding: 7px 15px;
+      }
     }
-    &__dropdown {
-    }
+  }
+  .mde-textarea-wrapper {
+    margin: 6px;
   }
 }
