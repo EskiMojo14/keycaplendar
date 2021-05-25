@@ -3,6 +3,7 @@ import classNames from "classnames";
 import BEMHelper from "../../app/slices/common/bemHelper";
 import { markdownIcons } from "../../app/slices/common/markdownConstants";
 import {
+  componentBuilder,
   headerFiveCommand,
   headerFourCommand,
   headerOneCommand,
@@ -15,6 +16,15 @@ import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
 import gfm from "remark-gfm";
 import { Checkbox } from "@rmwc/checkbox";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { SegmentedButton, SegmentedButtonSegment } from "./SegmentedButton";
 import "./ReactMarkdown.scss";
@@ -32,6 +42,19 @@ const input = Object.assign(
   { displayName: "Custom Input" }
 );
 
+const dataTableContainer = Object.assign(
+  (props: Record<string, any>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { node, children, ...allProps } = props;
+    return (
+      <DataTable {...allProps}>
+        <DataTableContent>{children}</DataTableContent>
+      </DataTable>
+    );
+  },
+  { displayName: "Custom table" }
+);
+
 const customComponents = {
   h1: typographyBuilder("h1", "headline5"),
   h2: typographyBuilder("h2", "headline6"),
@@ -43,6 +66,12 @@ const customComponents = {
   li: typographyBuilder("li", "body2"),
   code: typographyBuilder("code", "body2"),
   input: input,
+  table: dataTableContainer,
+  thead: componentBuilder("thead", DataTableHead),
+  tbody: componentBuilder("tbody", DataTableBody),
+  tr: componentBuilder("tr", DataTableRow),
+  th: componentBuilder("th", DataTableHeadCell),
+  td: componentBuilder("td", DataTableCell),
 };
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;

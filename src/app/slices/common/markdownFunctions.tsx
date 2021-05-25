@@ -1,8 +1,18 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { TypographyT, Typography } from "@rmwc/typography";
 import { Command, MarkdownUtil, TextApi, TextState } from "react-mde";
 import { IconButton } from "@rmwc/icon-button";
 import { markdownIcons } from "./markdownConstants";
+
+export const componentBuilder = (name: string, Component: FunctionComponent) =>
+  Object.assign(
+    (props: Record<string, any>) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { node, ordered, level, inline, isHeader, ...allProps } = props;
+      return <Component {...allProps} />;
+    },
+    { displayName: "Custom " + name }
+  );
 
 export const typographyBuilder = (tag: string, typography: TypographyT) => {
   const component = (props: Record<string, any>) => {
