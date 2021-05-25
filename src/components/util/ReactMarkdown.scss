@@ -72,6 +72,11 @@
         padding: 7px 15px;
       }
     }
+    &__preview {
+      a {
+        text-decoration: underline;
+      }
+    }
   }
   .mde-textarea-wrapper {
     margin: 6px;
