@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import moment from "moment";
 import { nanoid } from "nanoid";
+import cloneDeep from "lodash.clonedeep";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
@@ -1002,41 +1003,42 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const setValues = () => {
     let gbLaunch = "";
-    if (props.set.gbLaunch) {
-      if (props.set.gbMonth) {
+    const set = cloneDeep(props.set);
+    if (set.gbLaunch) {
+      if (set.gbMonth) {
         const twoNumRegExp = /^\d{4}-\d{1,2}-\d{2}$/g;
         const oneNumRegExp = /^\d{4}-\d{1,2}-\d{1}$/g;
-        if (twoNumRegExp.test(props.set.gbLaunch)) {
-          gbLaunch = props.set.gbLaunch.slice(0, -3);
-        } else if (oneNumRegExp.test(props.set.gbLaunch)) {
-          gbLaunch = props.set.gbLaunch.slice(0, -2);
+        if (twoNumRegExp.test(set.gbLaunch)) {
+          gbLaunch = set.gbLaunch.slice(0, -3);
+        } else if (oneNumRegExp.test(set.gbLaunch)) {
+          gbLaunch = set.gbLaunch.slice(0, -2);
         } else {
-          gbLaunch = props.set.gbLaunch;
+          gbLaunch = set.gbLaunch;
         }
       } else {
-        gbLaunch = props.set.gbLaunch;
+        gbLaunch = set.gbLaunch;
       }
     }
 
-    setId(props.set.id);
+    setId(set.id);
     setFields({
-      profile: props.set.profile,
-      colorway: props.set.colorway,
-      designer: props.set.designer,
-      icDate: props.set.icDate,
-      details: props.set.details,
-      notes: props.set.notes ? props.set.notes : "",
-      gbMonth: typeof props.set.gbMonth === "boolean" ? props.set.gbMonth : false,
+      profile: set.profile,
+      colorway: set.colorway,
+      designer: set.designer,
+      icDate: set.icDate,
+      details: set.details,
+      notes: set.notes ? set.notes : "",
+      gbMonth: typeof set.gbMonth === "boolean" ? set.gbMonth : false,
       gbLaunch: gbLaunch,
-      gbEnd: props.set.gbEnd,
-      shipped: props.set.shipped ? props.set.shipped : false,
+      gbEnd: set.gbEnd,
+      shipped: set.shipped ? set.shipped : false,
     });
     setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: props.set.image };
+      return { ...imageInfo, image: set.image };
     });
     setVendors(
-      props.set.vendors
-        ? props.set.vendors.map((vendor) => {
+      set.vendors
+        ? set.vendors.map((vendor) => {
             if (!vendor.id) {
               vendor.id = nanoid();
             }
@@ -1045,9 +1047,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         : []
     );
     setSalesInfo((salesInfo) => {
-      return props.set.sales
-        ? { ...salesInfo, ...props.set.sales }
-        : { img: "", thirdParty: false, salesImageLoaded: false };
+      return set.sales ? { ...salesInfo, ...set.sales } : { img: "", thirdParty: false, salesImageLoaded: false };
     });
   };
 
