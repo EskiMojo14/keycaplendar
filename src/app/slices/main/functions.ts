@@ -355,7 +355,7 @@ export const filterData = (
   createGroups(page, sort, sortOrder, filteredSets);
 
   dispatch(setSetList({ name: "filteredSets", array: filteredSets }));
-  dispatch(setContent(true));
+  dispatch(setContent(filteredSets.length > 0));
   dispatch(setLoading(false));
 };
 

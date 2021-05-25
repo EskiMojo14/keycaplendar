@@ -168,15 +168,15 @@ export const setPage = (page: Page) => {
   if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
     dispatch(setTransition(true));
     setTimeout(() => {
+      dispatch(setMainSearch(""));
       if (arrayIncludes(mainPages, page)) {
-        filterData(page, allSets, pageSort[page], pageSortOrder[page]);
+        filterData(page, allSets, pageSort[page], pageSortOrder[page], "");
         dispatch(setAppPage(page));
         dispatch(setMainSort(pageSort[page]));
         dispatch(setMainSortOrder(pageSortOrder[page]));
       } else {
         dispatch(setAppPage(page));
       }
-      dispatch(setMainSearch(""));
       document.documentElement.scrollTop = 0;
     }, 90);
     setTimeout(() => {
