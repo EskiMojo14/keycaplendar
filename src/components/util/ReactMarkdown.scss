@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .markdown {
   h1,
   h2,
@@ -21,6 +23,18 @@
     font-family: "Roboto Mono", monospace;
     white-space: nowrap;
     background-color: rgba(black, 0.1);
+  }
+  div.mdc-checkbox {
+    padding: 0;
+    @include rtl.reflexive-box(margin, right, 8px);
+    .mdc-checkbox__background {
+      top: 0;
+      left: 0;
+    }
+    .mdc-checkbox__native-control {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 

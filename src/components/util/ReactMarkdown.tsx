@@ -13,9 +13,24 @@ import {
 } from "../../app/slices/common/markdownFunctions";
 import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
+import gfm from "remark-gfm";
+import { Checkbox } from "@rmwc/checkbox";
 import { IconButton } from "@rmwc/icon-button";
 import { SegmentedButton, SegmentedButtonSegment } from "./SegmentedButton";
 import "./ReactMarkdown.scss";
+
+const input = Object.assign(
+  (props: Record<string, any>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { type, node, ...allProps } = props;
+    if (type === "checkbox") {
+      return <Checkbox {...allProps} />;
+    } else {
+      return <input type={type} {...allProps} />;
+    }
+  },
+  { displayName: "Custom Input" }
+);
 
 const customComponents = {
   h1: typographyBuilder("h1", "headline5"),
@@ -27,6 +42,7 @@ const customComponents = {
   p: typographyBuilder("p", "body2"),
   li: typographyBuilder("li", "body2"),
   code: typographyBuilder("code", "body2"),
+  input: input,
 };
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;
@@ -35,6 +51,7 @@ export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
   const { components, className, children, ...filteredProps } = props;
   return (
     <ReactMarkdown
+      remarkPlugins={[gfm]}
       components={{ ...customComponents, ...components }}
       className={classNames("markdown", className)}
       {...filteredProps}
@@ -55,9 +72,9 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
   const customToolbarCommands = toolbarCommands
     ? toolbarCommands
     : [
-        ["bold", "italic"],
+        ["bold", "italic", "strikethrough"],
         ["link", "code"],
-        ["unordered-list", "ordered-list"],
+        ["unordered-list", "ordered-list", "checked-list"],
         ["h1", "h2", "h3", "h4", "h5", "h6"],
       ];
   const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");

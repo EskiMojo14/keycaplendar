@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { TypographyT, Typography } from "@rmwc/typography";
 import { Command, MarkdownUtil, TextApi, TextState } from "react-mde";
@@ -7,6 +6,7 @@ import { markdownIcons } from "./markdownConstants";
 
 export const typographyBuilder = (tag: string, typography: TypographyT) => {
   const component = (props: Record<string, any>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { node, ordered, level, inline, children, ...allProps } = props;
     return (
       <Typography use={typography} tag={tag} {...allProps}>
