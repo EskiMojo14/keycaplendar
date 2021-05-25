@@ -16,7 +16,7 @@ import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper, BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
-import { CustomReactMarkdown } from "../../util/ReactMarkdown";
+import { CustomReactMarkdown, CustomReactMde } from "../../util/ReactMarkdown";
 import "./ModalEntry.scss";
 
 const db = firebase.firestore();
@@ -58,6 +58,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setBody(value);
     }
   };
+
+  const onEditorChange = (name: string, value: string) => {
+    if (name === "body") {
+      setBody(value);
+    }
+  };
+
   const dateToday = () => {
     const today = moment().format("YYYY-MM-DD");
     setDate(today);
@@ -179,6 +186,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
             onChange={handleChange}
             required
           />
+          <div>
+            <Typography use="caption" className="subheader">
+              Body*
+            </Typography>
+            <CustomReactMde value={body} onChange={(string) => onEditorChange("body", string)} required />
+          </div>
           <TextField
             outlined
             autoComplete="off"

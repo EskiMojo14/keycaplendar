@@ -42,7 +42,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   useEffect(getEntries, []);
 
   const blankEntry: UpdateEntryType = new Update();
-  const [createOpen, setCreateOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(true);
   const openCreate = () => {
     setCreateOpen(true);
     openModal();

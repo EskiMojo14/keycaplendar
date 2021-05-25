@@ -23,3 +23,43 @@
     background-color: rgba(black, 0.1);
   }
 }
+
+.react-mde.markdown-editor {
+  .markdown-editor {
+    &__toolbar {
+      background-color: transparent;
+      .mde-tabs {
+        button {
+          cursor: default;
+          border-radius: 0;
+          margin: 0;
+          padding: 8px;
+          &.selected {
+            border: none;
+          }
+          &:nth-child(2) {
+            display: none;
+          }
+        }
+      }
+      .mde-header-group {
+        padding: 0;
+        .mde-header-item {
+          display: flex;
+          align-items: center;
+          button {
+            padding: 0;
+            height: auto;
+          }
+        }
+      }
+    }
+    &__preview {
+    }
+    &__textarea {
+      background-color: transparent;
+    }
+    &__dropdown {
+    }
+  }
+}

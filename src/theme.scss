@@ -1329,6 +1329,16 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
     }
   }
+
+  .react-mde.markdown-editor {
+    .markdown-editor {
+      &__textarea {
+        color: map-get($variables, text-high);
+        caret-color: map-get($variables, primary);
+      }
+    }
+  }
+
   @media (max-width: 479px) {
     .settings-container {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));

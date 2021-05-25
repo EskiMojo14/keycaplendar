@@ -1,5 +1,6 @@
 @use "chartist/dist/scss/chartist";
 @use "chartist-plugin-tooltips-updated/dist/chartist-plugin-tooltip";
+@use "react-mde/lib/styles/scss/react-mde-all";
 
 @use "@material/shape" with (
   $small-component-radius: 4px,
@@ -245,7 +246,9 @@
 .mdc-data-table,
 .mdc-data-table__row,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
-.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
+.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions,
+.react-mde,
+.mde-header {
   border-color: var(--divider-color);
 }
 
@@ -503,6 +506,15 @@ svg.material-icons,
 .image-display,
 .mdc-list-item__graphic.image {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
+}
+
+.react-mde.markdown-editor {
+  @include shape.radius(small);
+  .markdown-editor {
+    &__textarea {
+      @include typography.typography(subtitle1, $exclude-props: (line-height));
+    }
+  }
 }
 
 .rtl-flip {
