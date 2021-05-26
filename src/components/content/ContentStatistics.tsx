@@ -4,6 +4,7 @@ import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import { capitalise, hasKey, iconObject, useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { statsTabs } from "../../app/slices/statistics/constants";
@@ -394,7 +395,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{device !== "mobile" ? "Statistics" : null}</TopAppBarTitle>
+            <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>

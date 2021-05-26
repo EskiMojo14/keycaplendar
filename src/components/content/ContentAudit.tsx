@@ -15,6 +15,7 @@ import {
 import { getActions, filterActions } from "../../app/slices/audit/functions";
 import { ActionType } from "../../app/slices/audit/types";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import { arrayIncludes, closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset } from "../../app/slices/main/constructors";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
@@ -153,7 +154,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>Audit Log</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle.audit}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             <Tooltip enterDelay={500} content="Filter" align="bottom">

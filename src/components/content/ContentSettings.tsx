@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import { useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav, selectSettings, selectSyncSettings } from "../../app/slices/settings/settingsSlice";
 import {
@@ -328,7 +329,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>Settings</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle.settings}</TopAppBarTitle>
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>

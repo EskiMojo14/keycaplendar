@@ -212,27 +212,27 @@ export const DrawerNav = (props: DrawerNavProps) => {
           <ListDivider />
           <ListItem onClick={() => setPage("statistics")} activated={appPage === "statistics"}>
             <ListItemGraphic icon={pageIcons.statistics} />
-            Statistics
+            {pageTitle.statistics}
           </ListItem>
           <ListItem onClick={() => setPage("history")} activated={appPage === "history"}>
             <ListItemGraphic icon={pageIcons.history} />
-            History
+            {pageTitle.history}
           </ListItem>
           {userOptions}
           {adminOptions}
           <ListDivider />
           <ListItem onClick={() => setPage("guides")} activated={appPage === "guides"}>
             <ListItemGraphic icon={pageIcons.guides} />
-            Guides
+            {pageTitle.guides}
           </ListItem>
           <ListItem onClick={() => setPage("updates")} activated={appPage === "updates"}>
             <ListItemGraphic icon={pageIcons.updates} />
-            Updates
+            {pageTitle.updates}
             {newUpdateIcon}
           </ListItem>
           <ListItem onClick={() => setPage("settings")} activated={appPage === "settings"}>
             <ListItemGraphic icon={pageIcons.settings} />
-            Settings
+            {pageTitle.settings}
           </ListItem>
         </List>
       </DrawerContent>
