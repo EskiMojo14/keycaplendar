@@ -336,6 +336,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           @include list.item-primary-text-ink-color(map-get($variables, primary));
           @include list.item-graphic-ink-color(map-get($variables, primary));
           @include list.item-meta-ink-color(map-get($variables, primary));
+          @include ripple.states(map-get($variables, primary));
           .mdc-typography--caption {
             color: map-get($variables, primary);
           }
@@ -490,7 +491,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
   :not(.mdc-list--non-interactive):not(.theme-list)
-    > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated) {
+    > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated):not(.contains-activated) {
     @include ripple.states(map-get($variables, on-surface));
   }
   .mdc-list .mdc-list-item,

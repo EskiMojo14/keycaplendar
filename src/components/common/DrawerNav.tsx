@@ -89,7 +89,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
       <CollapsibleList
         defaultOpen
         handle={
-          <ListItem className={classNames({ "contains-selected": userPages.includes(appPage) })}>
+          <ListItem className={classNames({ "contains-activated": userPages.includes(appPage) })}>
             <ListItemGraphic
               icon={iconObject(
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
@@ -221,6 +221,10 @@ export const DrawerNav = (props: DrawerNavProps) => {
           {userOptions}
           {adminOptions}
           <ListDivider />
+          <ListItem onClick={() => setPage("guides")} activated={appPage === "guides"}>
+            <ListItemGraphic icon={pageIcons.guides} />
+            Guides
+          </ListItem>
           <ListItem onClick={() => setPage("updates")} activated={appPage === "updates"}>
             <ListItemGraphic icon={pageIcons.updates} />
             Updates

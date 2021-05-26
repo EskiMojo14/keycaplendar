@@ -41,6 +41,7 @@ export const allPages = [
   "audit",
   "users",
   "images",
+  "guides",
   "updates",
   "settings",
 ] as const;
@@ -64,6 +65,7 @@ export const urlPages: Page[] = [
   "archive",
   "statistics",
   "history",
+  "guides",
   "updates",
   "settings",
 ];
@@ -92,6 +94,7 @@ export const pageTitle: Record<Page, string> = {
   audit: "Audit Log",
   users: "Users",
   images: "Images",
+  guides: "Guides",
   updates: "Updates",
   settings: "Settings",
 };
@@ -184,6 +187,13 @@ export const pageIcons: Record<Page, IconPropT> = {
       <path d="M0 0h24v24H0V0z" fill="none" />
       <path d="M8 16h12V4H8v12zm3.5-4.33l1.69 2.26 2.48-3.09L19 15H9l2.5-3.33z" opacity=".3" />
       <path d="M8 2c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H8zm12 14H8V4h12v12zm-4.33-5.17l-2.48 3.09-1.69-2.25L9 15h10zM4 22h14v-2H4V6H2v14c0 1.1.9 2 2 2z" />
+    </svg>
+  ),
+  guides: iconObject(
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M12 4c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8zm1 13h-2v-6h2v6zm0-8h-2V7h2v2z" opacity=".3" />
+      <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
     </svg>
   ),
   updates: iconObject(
