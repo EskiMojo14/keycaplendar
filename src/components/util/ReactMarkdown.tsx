@@ -114,7 +114,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
     ? toolbarCommands
     : [
         ["bold", "italic", "strikethrough"],
-        ["link", "quote", "code"],
+        ["link", "quote", "code", "image"],
         ["unordered-list", "ordered-list", "checked-list"],
         ["insert-table", "column-after"],
         ["h1", "h2", "h3", "h4", "h5", "h6"],

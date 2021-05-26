@@ -19,15 +19,18 @@
   ul {
     margin: 0;
   }
+  blockquote {
+    @include rtl.reflexive-box(border, left, 4px solid var(--divider-color));
+    @include rtl.reflexive-box(padding, left, 12px);
+    margin: 8px 0;
+  }
   code {
     font-family: "Roboto Mono", monospace;
     white-space: nowrap;
     background-color: rgba(black, 0.1);
   }
-  blockquote {
-    @include rtl.reflexive-box(border, left, 4px solid var(--divider-color));
-    @include rtl.reflexive-box(padding, left, 12px);
-    margin: 8px 0;
+  img {
+    max-width: 100%;
   }
   div.mdc-checkbox {
     padding: 0;
