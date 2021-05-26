@@ -347,6 +347,13 @@
   .mdc-data-table__cell .rmwc-circular-progress {
     padding: 12px + $diff;
   }
+  .markdown-editor {
+    .markdown-editor {
+      &__textarea {
+        min-height: 56px - 8px + $diff;
+      }
+    }
+  }
   .settings-container .settings-group .mdc-card {
     .switch-container {
       height: 48px + $diff;

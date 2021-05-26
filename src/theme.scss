@@ -1329,6 +1329,32 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
     }
   }
+
+  .react-mde.markdown-editor {
+    .markdown-editor {
+      &__toolbar {
+        .mdc-icon-button {
+          color: map-get($variables, text-medium);
+          @include ripple.states(map-get($variables, on-surface));
+        }
+      }
+      &__textarea {
+        color: map-get($variables, text-high);
+        caret-color: map-get($variables, primary);
+        border-color: rgba(map-get($variables, on-surface), 0.38);
+        &--hovered {
+          border-color: rgba(map-get($variables, on-surface), 0.87);
+        }
+        &--focused {
+          border-color: map-get($variables, primary);
+        }
+        &--invalid:not(.markdown-editor__textarea--focused) {
+          border-color: map-get($variables, error);
+        }
+      }
+    }
+  }
+
   @media (max-width: 479px) {
     .settings-container {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));

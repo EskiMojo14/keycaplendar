@@ -2,6 +2,7 @@ import React from "react";
 import BEMHelper from "../../app/slices/common/bemHelper";
 import { HTMLProps } from "../../app/slices/common/types";
 import { Button, ButtonProps } from "@rmwc/button";
+import { TagT } from "@rmwc/types";
 import "./SegmentedButton.scss";
 
 const bemClasses = new BEMHelper("segmented-button");
@@ -22,6 +23,7 @@ export const SegmentedButton = (props: SegmentedButtonProps) => {
 type SegmentedButtonSegmentProps = HTMLProps &
   ButtonProps & {
     selected?: boolean;
+    tag?: TagT;
   };
 
 export const SegmentedButtonSegment = (props: SegmentedButtonSegmentProps) => {

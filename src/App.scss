@@ -1,5 +1,6 @@
 @use "chartist/dist/scss/chartist";
 @use "chartist-plugin-tooltips-updated/dist/chartist-plugin-tooltip";
+@use "react-mde/lib/styles/scss/react-mde-all";
 
 @use "@material/shape" with (
   $small-component-radius: 4px,
@@ -503,6 +504,16 @@ svg.material-icons,
 .image-display,
 .mdc-list-item__graphic.image {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
+}
+
+.react-mde.markdown-editor {
+  @include shape.radius(small);
+  .markdown-editor {
+    &__textarea {
+      @include typography.typography(subtitle1, $exclude-props: (line-height));
+      @include shape.radius(small);
+    }
+  }
 }
 
 .rtl-flip {

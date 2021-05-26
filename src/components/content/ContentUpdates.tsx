@@ -46,7 +46,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   }, []);
 
   const blankEntry: UpdateEntryType = new Update();
-  const [createOpen, setCreateOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(true);
   const openCreate = () => {
     setCreateOpen(true);
     openModal();

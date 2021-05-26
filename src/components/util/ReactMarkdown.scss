@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .markdown {
   h1,
   h2,
@@ -17,9 +19,91 @@
   ul {
     margin: 0;
   }
+  blockquote {
+    @include rtl.reflexive-box(border, left, 4px solid var(--divider-color));
+    @include rtl.reflexive-box(padding, left, 12px);
+    margin: 8px 0;
+  }
   code {
     font-family: "Roboto Mono", monospace;
     white-space: nowrap;
     background-color: rgba(black, 0.1);
+  }
+  img {
+    max-width: 100%;
+  }
+  div.mdc-checkbox {
+    padding: 0;
+    @include rtl.reflexive-box(margin, right, 8px);
+    .mdc-checkbox__background {
+      top: 0;
+      left: 0;
+      .mdc-checkbox__checkmark {
+        box-sizing: content-box;
+      }
+    }
+    .mdc-checkbox__native-control {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.react-mde.markdown-editor {
+  border-color: var(--divider-color);
+  .markdown-editor {
+    &__toolbar {
+      background-color: transparent;
+      border-color: var(--divider-color);
+      padding: 4px;
+      .mde-tabs {
+        button {
+          cursor: default;
+          border-radius: 0;
+          margin: 0;
+          padding: 4px;
+
+          &.selected {
+            border: none;
+          }
+          &:nth-child(2) {
+            display: none;
+          }
+        }
+      }
+      .mde-header-group {
+        padding: 0;
+        margin: 0 4px;
+        .mde-header-item {
+          display: flex;
+          align-items: center;
+          margin: 0;
+          button {
+            cursor: default;
+            padding: 0;
+            height: auto;
+          }
+        }
+      }
+    }
+    &__textarea {
+      background-color: transparent;
+      padding: 8px 16px;
+      min-height: 48px;
+      line-height: 1.75rem;
+      border: var(--divider-color) 1px solid;
+      &--focused {
+        border-width: 2px;
+        padding: 7px 15px;
+      }
+    }
+    &__preview {
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+  .mde-textarea-wrapper {
+    margin: 6px;
   }
 }
