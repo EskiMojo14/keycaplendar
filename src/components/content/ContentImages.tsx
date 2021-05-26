@@ -112,9 +112,11 @@ export const ContentImages = (props: ContentImagesProps) => {
   const [closeDelete, openDelete] = useBoolStates(setDeleteOpen);
 
   useEffect(() => {
-    getFolders();
-    listAll();
-    createSetImageList();
+    if (images.length === 0) {
+      getFolders();
+      listAll();
+      createSetImageList();
+    }
   }, []);
   useEffect(createSetImageList, [JSON.stringify(allSets)]);
 

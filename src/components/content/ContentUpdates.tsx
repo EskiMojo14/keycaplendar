@@ -39,7 +39,11 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
   const loading = useAppSelector(selectLoading);
   const entries = useAppSelector(selectEntries);
 
-  useEffect(getEntries, []);
+  useEffect(() => {
+    if (entries.length === 0) {
+      getEntries();
+    }
+  }, []);
 
   const blankEntry: UpdateEntryType = new Update();
   const [createOpen, setCreateOpen] = useState(true);
