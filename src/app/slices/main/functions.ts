@@ -783,7 +783,7 @@ export const newGlobalPreset = (preset: PresetType) => {
   const presets = [...appPresets, preset];
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(preset));
-  dispatch(setUserPresets(presets));
+  dispatch(setAppPresets(presets));
   syncGlobalPresets(presets);
 };
 
@@ -802,7 +802,7 @@ export const editGlobalPreset = (preset: PresetType) => {
   }
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(preset));
-  dispatch(setUserPresets(presets));
+  dispatch(setAppPresets(presets));
   syncGlobalPresets(presets);
 };
 

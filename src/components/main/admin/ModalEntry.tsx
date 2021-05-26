@@ -335,7 +335,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 return { ...imageInfo, imageURL: downloadURL };
               });
               setLoading(false);
-              createEntry();
+              createEntry(downloadURL);
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
@@ -352,9 +352,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
     !!fields.designer &&
     !!fields.icDate &&
     !!fields.details &&
-    !!imageInfo.imageURL;
+    !!imageInfo.image;
 
-  const createEntry = () => {
+  const createEntry = (url = imageInfo.imageURL) => {
     if (formFilled) {
       const db = firebase.firestore();
       db.collection("keysets")
@@ -367,7 +367,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           notes: fields.notes,
           sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
           shipped: fields.shipped,
-          image: imageInfo.imageURL,
+          image: url,
           gbMonth: fields.gbMonth,
           gbLaunch: fields.gbLaunch,
           gbEnd: fields.gbEnd,
