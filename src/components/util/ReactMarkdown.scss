@@ -35,6 +35,9 @@
     .mdc-checkbox__background {
       top: 0;
       left: 0;
+      .mdc-checkbox__checkmark {
+        box-sizing: content-box;
+      }
     }
     .mdc-checkbox__native-control {
       width: 18px;
