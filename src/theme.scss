@@ -331,12 +331,22 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         );
         @include chips.selected-ink-color(map-get($variables, primary));
       }
-      &.nav.mdc-drawer--open,
-      &.nav.mdc-drawer--opening {
-        .mdc-list-item {
-          color: map-get($variables, text-high);
-          &.mdc-list-item--activated {
+      &.nav {
+        .mdc-list-item.contains-activated {
+          @include list.item-primary-text-ink-color(map-get($variables, primary));
+          @include list.item-graphic-ink-color(map-get($variables, primary));
+          @include list.item-meta-ink-color(map-get($variables, primary));
+          .mdc-typography--caption {
             color: map-get($variables, primary);
+          }
+        }
+        &.mdc-drawer--open,
+        &.mdc-drawer--opening {
+          .mdc-list-item {
+            color: map-get($variables, text-high);
+            &.mdc-list-item--activated {
+              color: map-get($variables, primary);
+            }
           }
         }
       }
