@@ -15,6 +15,7 @@ import { ContentSettings } from "./content/ContentSettings";
 import { ContentStatistics } from "./content/ContentStatistics";
 import { ContentHistory } from "./content/ContentHistory";
 import { ContentUsers } from "./content/ContentUsers";
+import { ContentGuides } from "./content/ContentGuides";
 import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
@@ -60,6 +61,7 @@ export const Content = (props: ContentProps) => {
   const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
   const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
   const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
+  const contentGuides = page === "guides" ? <ContentGuides openNav={openNav} /> : null;
   const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
   const contentSettings = page === "settings" ? <ContentSettings openNav={openNav} /> : null;
   return (
@@ -77,6 +79,7 @@ export const Content = (props: ContentProps) => {
         {contentAudit}
         {contentUsers}
         {contentImages}
+        {contentGuides}
         {contentUpdates}
         {contentSettings}
       </DrawerAppContent>
