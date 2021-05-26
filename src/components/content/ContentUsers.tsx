@@ -106,7 +106,11 @@ export const ContentUsers = (props: ContentUsersProps) => {
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [closeSortMenu, openSortMenu] = useBoolStates(setSortMenuOpen);
 
-  useEffect(getUsers, []);
+  useEffect(() => {
+    if (sortedUsers.length === 0) {
+      getUsers();
+    }
+  }, []);
 
   const openDeleteDialog = (user: UserType) => {
     setDeleteOpen(true);

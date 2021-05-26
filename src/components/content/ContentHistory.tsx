@@ -59,7 +59,11 @@ export const ContentHistory = (props: ContentHistoryProps) => {
 
   const [swiping, setSwiping] = useState(false);
 
-  useEffect(getData, []);
+  useEffect(() => {
+    if (processedActions.length === 0) {
+      getData();
+    }
+  }, []);
   useEffect(generateSets, [JSON.stringify(allSets), processedActions]);
 
   const blankSet = new Keyset();

@@ -57,7 +57,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
 
   useEffect(() => {
-    getData();
+    if (statisticsData.summaryData.count.icDate.total === 0) {
+      getData();
+    }
   }, []);
 
   const handleChangeIndex = (index: number) => {

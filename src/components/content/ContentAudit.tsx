@@ -112,7 +112,11 @@ export const ContentAudit = (props: ContentAuditProps) => {
     }
   };
 
-  useEffect(getActions, []);
+  useEffect(() => {
+    if (allAuditActions.length === 0) {
+      getActions();
+    }
+  }, []);
 
   const deleteActionFn = (action: ActionType) => {
     const db = firebase.firestore();
