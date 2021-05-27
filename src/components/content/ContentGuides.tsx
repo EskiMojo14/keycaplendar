@@ -1,14 +1,17 @@
 import classNames from "classnames";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";
 import { closeModal, openModal } from "../../app/slices/common/functions";
+import { selectEntries, selectLoading } from "../../app/slices/guides/guidesSlice";
 import { Guide } from "../../app/slices/guides/constructors";
+import { getEntries } from "../../app/slices/guides/functions";
 import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
+import { LinearProgress } from "@rmwc/linear-progress";
 import {
   TopAppBar,
   TopAppBarFixedAdjust,
@@ -18,8 +21,10 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
+import { GuideEntry } from "../guides/GuideEntry";
 import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
 import { DialogDelete } from "../guides/admin/DialogDelete";
+import "./ContentGuides.scss";
 
 type ContentGuidesProps = {
   openNav: () => void;
@@ -31,6 +36,15 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
 
   const user = useAppSelector(selectUser);
+
+  const loading = useAppSelector(selectLoading);
+  const entries = useAppSelector(selectEntries);
+
+  useEffect(() => {
+    if (entries.length === 0) {
+      getEntries();
+    }
+  }, []);
 
   const blankEntry: GuideEntryType = new Guide();
   const [createOpen, setCreateOpen] = useState(false);
@@ -94,29 +108,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate
-        open={createOpen}
-        onClose={closeCreate}
-        getEntries={() => {
-          console.log("hi");
-        }}
-      />
-      <ModalEdit
-        open={editOpen}
-        onClose={closeEdit}
-        entry={editEntry}
-        getEntries={() => {
-          console.log("hi");
-        }}
-      />
-      <DialogDelete
-        open={deleteOpen}
-        onClose={closeDelete}
-        entry={deleteEntry}
-        getEntries={() => {
-          console.log("hi");
-        }}
-      />
+      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
+      <ModalEdit open={editOpen} onClose={closeEdit} entry={editEntry} getEntries={getEntries} />
+      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
     </>
   ) : null;
 
@@ -133,10 +127,17 @@ export const ContentGuides = (props: ContentGuidesProps) => {
           </TopAppBarSection>
           {indent}
         </TopAppBarRow>
+        <LinearProgress closed={!loading} />
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="main extended-app-bar"></div>
+        <div className="main extended-app-bar">
+          <div className="guide-container">
+            {entries.map((entry) => (
+              <GuideEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} />
+            ))}
+          </div>
+        </div>
         {editorElements}
       </div>
       <Footer />

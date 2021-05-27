@@ -8,6 +8,7 @@ import historyReducer from "./slices/history/historySlice";
 import auditReducer from "./slices/audit/auditSlice";
 import usersReducer from "./slices/users/usersSlice";
 import imagesReducer from "./slices/images/imagesSlice";
+import guidesReducer from "./slices/guides/guidesSlice";
 import updatesReducer from "./slices/updates/updatesSlice";
 
 export const store = configureStore({
@@ -21,6 +22,7 @@ export const store = configureStore({
     audit: auditReducer,
     users: usersReducer,
     images: imagesReducer,
+    guides: guidesReducer,
     updates: updatesReducer,
   },
   middleware: (getDefaultMiddleware) =>

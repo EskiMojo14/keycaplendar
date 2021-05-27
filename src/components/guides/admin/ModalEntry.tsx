@@ -263,7 +263,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      db.collection("updates")
+      db.collection("guides")
         .doc(entry.id)
         .set({
           name: user.nickname,
@@ -290,12 +290,12 @@ export const ModalEdit = (props: ModalEditProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right update-entry-modal">
+        <Drawer modal open={props.open} onClose={props.onClose} className="drawer-right guide-entry-modal">
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={props.open} onClose={props.onClose} className="update-entry-modal">
+        <FullScreenDialog open={props.open} onClose={props.onClose} className="guide-entry-modal">
           {children}
         </FullScreenDialog>
       )}
