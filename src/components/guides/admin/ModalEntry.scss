@@ -41,8 +41,15 @@
         margin-bottom: 0;
       }
     }
+    .mdc-select {
+      &__anchor,
+      &__menu {
+        width: 100%;
+      }
+    }
     .double-field {
       display: flex;
+      margin-bottom: 16px;
       .half-field {
         flex: 1 0;
         &:first-child {

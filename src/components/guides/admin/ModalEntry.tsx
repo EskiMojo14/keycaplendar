@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import firebase from "../../../firebase";
+import { queue } from "../../../app/snackbarQueue";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
+import { arrayIncludes } from "../../../app/slices/common/functions";
 import { GuideEntryType } from "../../../app/slices/guides/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
-import { queue } from "../../../app/snackbarQueue";
+import { userRoles } from "../../../app/slices/users/constants";
+import { UserRoles } from "../../../app/slices/users/types";
 import { Button } from "@rmwc/button";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
+import { Select } from "@rmwc/select";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
@@ -14,7 +19,7 @@ import { ConditionalWrapper, BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { CustomReactMarkdown, CustomReactMde } from "../../util/ReactMarkdown";
 import "./ModalEntry.scss";
-import { Chip, ChipSet } from "@rmwc/chip";
+import { formattedVisibility, visibilityIcons } from "../../../app/slices/guides/constants";
 
 const db = firebase.firestore();
 
@@ -28,21 +33,18 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
-  const [name, setName] = useState("");
+  const [visibility, setVisibility] = useState<UserRoles | "all">("all");
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
-    if (props.open) {
-      setName(user.nickname);
-    } else {
+    if (!props.open) {
       setTags([]);
       setTitle("");
       setBody("");
     }
   }, [props.open]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist();
     const name = e.target.name;
     const value = e.target.value;
     if (name === "tags") {
@@ -54,19 +56,27 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
+  const selectVisibility = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
+      setVisibility(value);
+    }
+  };
+
   const handleEditorChange = (name: string, value: string) => {
     if (name === "body") {
       setBody(value);
     }
   };
 
-  const formFilled = !!name && !!tags && !!title && !!body;
+  const formFilled = !!tags && !!title && !!body;
 
   const saveEntry = () => {
     if (formFilled) {
       db.collection("guides")
         .add({
-          name,
+          name: user.nickname,
+          visibility,
           tags,
           title,
           body,
@@ -135,7 +145,23 @@ export const ModalCreate = (props: ModalCreateProps) => {
       >
         <div className="form">
           <div className="double-field">
-            <TextField outlined disabled label="Name" value={name} className="half-field" readOnly required />
+            <div className="half-field">
+              <Select
+                outlined
+                enhanced
+                label="Visibility"
+                options={(["all", ...userRoles] as const).map((role) => {
+                  return {
+                    value: role,
+                    label: formattedVisibility[role],
+                    key: role,
+                  };
+                })}
+                icon={visibilityIcons[visibility]}
+                value={visibility}
+                onChange={selectVisibility}
+              />
+            </div>
             <div className="half-field">
               <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
             </div>
@@ -160,10 +186,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
           <div className="subheader">
             <Typography use="caption">Live preview</Typography>
           </div>
-          <Typography use="overline">{name}</Typography>
+          <Typography use="overline">{user.nickname}</Typography>
           <Typography use="headline5">{title}</Typography>
           <div className="tag-container">
             <ChipSet>
+              <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
               {tags.map((tag) => (
                 <Chip label={tag} key={tag} disabled />
               ))}
@@ -188,22 +215,24 @@ export const ModalEdit = (props: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
-  const [name, setName] = useState("");
+  const [visibility, setVisibility] = useState<UserRoles | "all">("all");
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
     if (props.open) {
-      setName(user.nickname);
+      setVisibility(entry.visibility);
       setTags(entry.tags);
       setTitle(entry.title);
       setBody(entry.body);
     } else {
+      setVisibility("all");
       setTags([]);
       setTitle("");
       setBody("");
     }
   }, [props.open, entry]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     const name = e.target.name;
@@ -217,20 +246,28 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
+  const selectVisibility = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
+      setVisibility(value);
+    }
+  };
+
   const handleEditorChange = (name: string, value: string) => {
     if (name === "body") {
       setBody(value);
     }
   };
 
-  const formFilled = !!name && !!tags && !!title && !!body;
+  const formFilled = !!tags && !!title && !!body;
 
   const saveEntry = () => {
     if (formFilled) {
       db.collection("updates")
         .doc(entry.id)
         .set({
-          name,
+          name: user.nickname,
+          visibility,
           tags,
           title,
           body,
@@ -299,7 +336,23 @@ export const ModalEdit = (props: ModalEditProps) => {
       >
         <div className="form">
           <div className="double-field">
-            <TextField outlined disabled label="Name" value={name} className="half-field" readOnly required />
+            <div className="half-field">
+              <Select
+                outlined
+                enhanced
+                label="Visibility"
+                options={(["all", ...userRoles] as const).map((role) => {
+                  return {
+                    value: role,
+                    label: formattedVisibility[role],
+                    key: role,
+                  };
+                })}
+                icon={visibilityIcons[visibility]}
+                value={visibility}
+                onChange={selectVisibility}
+              />
+            </div>
             <div className="half-field">
               <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
             </div>
@@ -324,10 +377,10 @@ export const ModalEdit = (props: ModalEditProps) => {
           <div className="subheader">
             <Typography use="caption">Live preview</Typography>
           </div>
-          <Typography use="overline">{name}</Typography>
           <Typography use="headline5">{title}</Typography>
           <div className="tag-container">
             <ChipSet>
+              <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
               {tags.map((tag) => (
                 <Chip label={tag} key={tag} disabled />
               ))}
