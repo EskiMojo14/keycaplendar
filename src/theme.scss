@@ -158,6 +158,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     background: rgba(map-get($variables, secondary), 0.45);
     color: inherit;
   }
+  a {
+    color: map-get($variables, primary);
+  }
   .mdc-button {
     @include button.ink-color(map-get($variables, primary));
     @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -423,9 +426,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       .mdc-typography--body2,
       .mdc-form-field {
         color: map-get($variables, text-high);
-      }
-      a {
-        color: map-get($variables, primary);
       }
     }
     .mdc-linear-progress {
@@ -1165,9 +1165,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     .mdc-form-field {
       color: map-get($variables, text-high);
     }
-    a {
-      color: map-get($variables, primary);
-    }
   }
   .image-upload {
     &-title {
@@ -1220,9 +1217,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
   .legal,
   .guide {
     color: map-get($variables, text-high);
-    a {
-      color: map-get($variables, primary);
-    }
     .mdc-typography--button {
       color: map-get($variables, primary);
       &.delete {
@@ -1275,9 +1269,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .update-entry {
     color: map-get($variables, text-high);
-    a {
-      color: map-get($variables, primary);
-    }
     &.pinned {
       a,
       .pin-indicator {
