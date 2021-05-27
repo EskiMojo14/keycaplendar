@@ -25,6 +25,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
 import { GuideEntry } from "../guides/GuideEntry";
+import { EntriesList } from "../guides/EntriesList";
 import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
 import { DialogDelete } from "../guides/admin/DialogDelete";
 import "./ContentGuides.scss";
@@ -156,11 +157,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="main extended-app-bar">
-          <div className="guide-container">
-            {entries.map((entry) => (
-              <GuideEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} />
-            ))}
+        <div className="main">
+          <div className="guides-container">
+            <EntriesList />
           </div>
         </div>
         {editorElements}

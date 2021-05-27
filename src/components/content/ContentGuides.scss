@@ -1,14 +1,7 @@
-.guide-container {
+@use "@material/top-app-bar/_index" as top-app-bar;
+
+.guides-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  padding: 8px;
   position: relative;
-  .guide-entry {
-    width: 768px;
-    max-width: calc(100% - 16px);
-    position: relative;
-    margin: 8px;
-  }
+  height: calc(100vh - #{top-app-bar.$row-height});
 }

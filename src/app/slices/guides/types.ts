@@ -1,4 +1,6 @@
-import { UserRoles } from "../users/types";
+import { visibilityVals } from "./constants";
+
+export type Visibility = typeof visibilityVals[number];
 
 export type GuideEntryType = {
   id: string;
@@ -7,5 +9,5 @@ export type GuideEntryType = {
   title: string;
   tags: string[];
   body: string;
-  visibility: UserRoles | "all";
+  visibility: Visibility;
 };
