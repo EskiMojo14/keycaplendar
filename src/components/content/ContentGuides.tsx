@@ -1,8 +1,11 @@
 import classNames from "classnames";
-import React from "react";
+import React, { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";
+import { closeModal, openModal } from "../../app/slices/common/functions";
+import { Guide } from "../../app/slices/guides/constructors";
+import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
@@ -15,6 +18,8 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Footer } from "../common/Footer";
+import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
+import { DialogDelete } from "../guides/admin/DialogDelete";
 
 type ContentGuidesProps = {
   openNav: () => void;
@@ -26,6 +31,47 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const bottomNav = useAppSelector(selectBottomNav);
 
   const user = useAppSelector(selectUser);
+
+  const blankEntry: GuideEntryType = new Guide();
+  const [createOpen, setCreateOpen] = useState(false);
+  const openCreate = () => {
+    setCreateOpen(true);
+    openModal();
+  };
+  const closeCreate = () => {
+    setCreateOpen(false);
+    closeModal();
+  };
+
+  const [editEntry, setEditEntry] = useState(blankEntry);
+  const [editOpen, setEditOpen] = useState(false);
+  const openEdit = (entry: GuideEntryType) => {
+    setEditOpen(true);
+    setEditEntry(entry);
+    openModal();
+  };
+  const closeEdit = () => {
+    setEditOpen(false);
+    setTimeout(() => {
+      setEditEntry(blankEntry);
+    }, 300);
+    closeModal();
+  };
+
+  const [deleteEntry, setDeleteEntry] = useState(blankEntry);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const openDelete = (entry: GuideEntryType) => {
+    setDeleteOpen(true);
+    setDeleteEntry(entry);
+    openModal();
+  };
+  const closeDelete = () => {
+    setDeleteOpen(false);
+    setTimeout(() => {
+      setDeleteEntry(blankEntry);
+    }, 300);
+    closeModal();
+  };
 
   const indent =
     user.isAdmin && bottomNav ? (
@@ -46,6 +92,30 @@ export const ContentGuides = (props: ContentGuidesProps) => {
         className={classNames("create-fab", { middle: bottomNav })}
         icon="add"
         label={device === "desktop" ? "Create" : null}
+        onClick={openCreate}
+      />
+      <ModalCreate
+        open={createOpen}
+        onClose={closeCreate}
+        getEntries={() => {
+          console.log("hi");
+        }}
+      />
+      <ModalEdit
+        open={editOpen}
+        onClose={closeEdit}
+        entry={editEntry}
+        getEntries={() => {
+          console.log("hi");
+        }}
+      />
+      <DialogDelete
+        open={deleteOpen}
+        onClose={closeDelete}
+        entry={deleteEntry}
+        getEntries={() => {
+          console.log("hi");
+        }}
       />
     </>
   ) : null;

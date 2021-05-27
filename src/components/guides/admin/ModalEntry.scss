@@ -1,0 +1,72 @@
+@use "@material/rtl/_index" as rtl;
+@use "../../../util";
+
+.mdc-drawer.drawer-right.guide-entry-modal {
+  width: 480px;
+}
+
+.guide-entry-modal {
+  .mdc-drawer__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px;
+    @include util.divider-border(bottom);
+    .mdc-drawer__title {
+      flex-grow: 1;
+      align-self: flex-start;
+      &::before {
+        height: 42px;
+      }
+      &::after {
+        content: none;
+      }
+    }
+  }
+  .form {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    @include util.divider-border(bottom);
+    .mdc-text-field {
+      margin-bottom: 16px;
+      & + .mdc-text-field-helper-line {
+        margin-top: -16px;
+        margin-bottom: 16px;
+      }
+      textarea {
+        resize: vertical;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .double-field {
+      display: flex;
+      .half-field {
+        flex: 1 0;
+        &:first-child {
+          @include rtl.reflexive-box(margin, right, 8px);
+        }
+        &:last-child {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
+    .subheader {
+      margin-bottom: 8px;
+    }
+  }
+  .preview {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    .subheader {
+      margin-bottom: 16px;
+    }
+    .tag-container {
+      margin: -4px;
+      margin-top: 0;
+    }
+  }
+}

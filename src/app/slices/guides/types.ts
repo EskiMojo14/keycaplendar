@@ -1,9 +1,8 @@
-export type UpdateEntryType = {
+export type GuideEntryType = {
   id: string;
   /** The author of the update. */
   name: string;
   title: string;
-  date: string;
+  tags: string[];
   body: string;
-  pinned: boolean;
 };
