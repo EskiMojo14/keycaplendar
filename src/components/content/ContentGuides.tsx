@@ -10,10 +10,13 @@ import { getEntries } from "../../app/slices/guides/functions";
 import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
+import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
+import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
+  TopAppBarActionItem,
   TopAppBarFixedAdjust,
   TopAppBarNavigationIcon,
   TopAppBarRow,
@@ -87,6 +90,24 @@ export const ContentGuides = (props: ContentGuidesProps) => {
     closeModal();
   };
 
+  const refreshButton =
+    user.isAdmin || user.isEditor || user.isDesigner ? (
+      loading ? (
+        <CircularProgress />
+      ) : (
+        <Tooltip enterDelay={500} content="Refresh" align="bottom">
+          <TopAppBarActionItem
+            icon="refresh"
+            onClick={() => {
+              getEntries();
+            }}
+          />
+        </Tooltip>
+      )
+    ) : null;
+
+  const buttons = <>{refreshButton}</>;
+
   const indent =
     user.isAdmin && bottomNav ? (
       <TopAppBarSection className="indent" alignEnd>
@@ -114,6 +135,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
     </>
   ) : null;
 
+  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle> : buttons;
+  const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
+
   return (
     <>
       <TopAppBar
@@ -123,8 +147,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle>
+            {leftButtons}
           </TopAppBarSection>
+          {rightButtons}
           {indent}
         </TopAppBarRow>
         <LinearProgress closed={!loading} />

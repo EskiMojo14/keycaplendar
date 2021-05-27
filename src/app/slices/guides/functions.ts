@@ -5,27 +5,14 @@ import { alphabeticalSortProp } from "../common/functions";
 import { setEntries, setLoading } from "./guidesSlice";
 import { GuideEntryType } from "./types";
 
-const db = firebase.firestore();
-
 const { dispatch } = store;
 
 export const getEntries = () => {
+  const cloudFn = firebase.functions().httpsCallable("getGuides");
   dispatch(setLoading(true));
-  db.collection("guides")
-    .get()
-    .then((querySnapshot) => {
-      const entries: GuideEntryType[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        entries.push({
-          id: doc.id,
-          name: data.name,
-          tags: data.tags,
-          visibility: data.visibility,
-          title: data.title,
-          body: data.body,
-        });
-      });
+  cloudFn()
+    .then((result) => {
+      const entries: GuideEntryType[] = result.data;
       sortEntries(entries);
     })
     .catch((error) => {
