@@ -347,10 +347,12 @@
   .mdc-data-table__cell .rmwc-circular-progress {
     padding: 12px + $diff;
   }
-  .markdown-editor {
-    .markdown-editor {
-      &__textarea {
-        min-height: 56px - 8px + $diff;
+  .markdown {
+    &-editor {
+      .markdown-editor {
+        &__textarea {
+          min-height: 56px - 8px + $diff;
+        }
       }
     }
   }
