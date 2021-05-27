@@ -26,6 +26,7 @@ import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import { FormField } from "@rmwc/formfield";
+import { Icon } from "@rmwc/icon";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { Select } from "@rmwc/select";
@@ -84,17 +85,24 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const selectApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setApplyTheme(e.target.value.toLowerCase());
   };
+  const permissionIcon =
+    user.isAdmin && typeof userRoleIcons.admin === "object"
+      ? userRoleIcons.admin
+      : user.isEditor && typeof userRoleIcons.editor === "object"
+      ? userRoleIcons.editor
+      : user.isDesigner && typeof userRoleIcons.designer === "object"
+      ? userRoleIcons.designer
+      : {};
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
       <Badge
         label={
-          user.isAdmin
-            ? userRoleIcons.admin
-            : user.isEditor
-            ? userRoleIcons.editor
-            : user.isDesigner
-            ? userRoleIcons.designer
-            : null
+          <Icon
+            icon={{
+              ...permissionIcon,
+              size: "xsmall",
+            }}
+          />
         }
         className="user-icon material-icons"
       />
