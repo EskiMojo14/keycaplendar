@@ -1,7 +1,20 @@
 @use "@material/top-app-bar/_index" as top-app-bar;
+@use "@material/rtl/_index" as rtl;
 
 .guides-container {
   display: flex;
   position: relative;
-  height: calc(100vh - #{top-app-bar.$row-height});
+  min-height: calc(100vh - #{top-app-bar.$row-height});
+  .drawer-margin {
+    @include rtl.reflexive-box(margin, left, 320px);
+  }
+  .guide-container {
+    flex-grow: 1;
+  }
+  .guide-entry {
+    width: 768px;
+    max-width: calc(100vw - 32px);
+    box-sizing: border-box;
+    margin: 8px;
+  }
 }

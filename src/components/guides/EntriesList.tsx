@@ -4,6 +4,7 @@ import { selectDevice } from "../../app/slices/common/commonSlice";
 import { iconObject } from "../../app/slices/common/functions";
 import { selectEntries } from "../../app/slices/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons, visibilityVals } from "../../app/slices/guides/constants";
+import { GuideEntryType } from "../../app/slices/guides/types";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
 import {
@@ -20,14 +21,17 @@ import {
 import { BoolWrapper } from "../util/ConditionalWrapper";
 import "./EntriesList.scss";
 
-type EntriesDrawerProps = any;
+type EntriesDrawerProps = {
+  openEntry: (entry: GuideEntryType) => void;
+  detailEntry: GuideEntryType;
+};
 
 export const EntriesList = (props: EntriesDrawerProps) => {
   const device = useAppSelector(selectDevice);
   const entries = useAppSelector(selectEntries);
   return (
     <BoolWrapper
-      condition={device !== "mobile"}
+      condition={device === "desktop"}
       trueWrapper={(children) => (
         <Drawer className="entries-drawer">
           <DrawerContent>{children}</DrawerContent>
@@ -53,7 +57,13 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                   </ListGroupSubheader>
                   {filteredEntries.map((entry) => {
                     return (
-                      <ListItem key={entry.id}>
+                      <ListItem
+                        key={entry.id}
+                        onClick={() => {
+                          props.openEntry(entry);
+                        }}
+                        selected={props.detailEntry === entry}
+                      >
                         <ListItemGraphic
                           icon={iconObject(
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">

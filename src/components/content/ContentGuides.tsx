@@ -51,6 +51,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   }, []);
 
   const blankEntry: GuideEntryType = new Guide();
+
+  const [detailEntry, setDetailEntry] = useState(blankEntry);
+
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
     setCreateOpen(true);
@@ -157,14 +160,17 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="main">
-          <div className="guides-container">
-            <EntriesList />
+        <div className="guides-container">
+          <EntriesList openEntry={setDetailEntry} detailEntry={detailEntry} />
+          <div className={classNames("main", { "drawer-margin": device === "desktop" })}>
+            <div className="guide-container">
+              {detailEntry.id ? <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} /> : null}
+            </div>
+            <Footer />
           </div>
         </div>
         {editorElements}
       </div>
-      <Footer />
       {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );

@@ -1,10 +1,14 @@
 @use "@material/rtl/_index" as rtl;
+@use "@material/top-app-bar/_index" as top-app-bar;
 
 .entries {
   &-drawer.mdc-drawer {
+    height: calc(100vh - top-app-bar.$row-height);
     width: 320px;
     z-index: 1;
-    @include rtl.reflexive-position(left, 0);
+    position: fixed;
+    top: top-app-bar.$row-height;
+    bottom: 0;
   }
   &-list,
   .mdc-drawer &-list {
