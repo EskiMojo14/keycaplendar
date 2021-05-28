@@ -62,7 +62,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                         onClick={() => {
                           props.openEntry(entry);
                         }}
-                        selected={props.detailEntry === entry}
+                        selected={props.detailEntry.id === entry.id}
                       >
                         <ListItemGraphic
                           icon={iconObject(
@@ -80,7 +80,9 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                         />
                         <ListItemText>
                           <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
-                          <ListItemSecondaryText>{entry.tags.join(", ")}</ListItemSecondaryText>
+                          {entry.description ? (
+                            <ListItemSecondaryText>{entry.description}</ListItemSecondaryText>
+                          ) : null}
                         </ListItemText>
                       </ListItem>
                     );

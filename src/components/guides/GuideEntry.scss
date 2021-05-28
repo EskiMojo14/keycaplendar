@@ -5,12 +5,14 @@
     padding: 16px;
     padding-bottom: 0;
     h1,
-    h3 {
+    h3,
+    p {
       margin: 0;
     }
     .tags-container {
       margin: 0 -4px;
     }
+    @include util.divider-border(bottom);
   }
   .content {
     padding: 16px;

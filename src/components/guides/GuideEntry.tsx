@@ -67,6 +67,9 @@ export const GuideEntry = (props: GuideEntryProps) => {
         <Typography use="headline5" tag="h1">
           {entry.title}
         </Typography>
+        <Typography use="caption" tag="p">
+          {entry.description}
+        </Typography>
         <div className="tags-container">
           <ChipSet>
             <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />

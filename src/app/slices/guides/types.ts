@@ -7,6 +7,7 @@ export type GuideEntryType = {
   /** The author of the update. */
   name: string;
   title: string;
+  description: string;
   tags: string[];
   body: string;
   visibility: Visibility;

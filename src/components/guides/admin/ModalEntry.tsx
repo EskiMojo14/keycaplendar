@@ -36,11 +36,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const [visibility, setVisibility] = useState<UserRoles | "all">("all");
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
     if (!props.open) {
       setTags([]);
       setTitle("");
+      setDescription("");
       setBody("");
     }
   }, [props.open]);
@@ -51,6 +53,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setTags(value.split(", "));
     } else if (name === "title") {
       setTitle(value);
+    } else if (name === "description") {
+      setDescription(value);
     } else if (name === "body") {
       setBody(value);
     }
@@ -175,6 +179,17 @@ export const ModalCreate = (props: ModalCreateProps) => {
             onChange={handleChange}
             required
           />
+          <TextField
+            outlined
+            autoComplete="off"
+            label="Description"
+            value={description}
+            name="description"
+            onChange={handleChange}
+            required
+            textarea
+            rows={2}
+          />
           <div>
             <Typography use="caption" tag="div" className="subheader">
               Body*
@@ -218,17 +233,20 @@ export const ModalEdit = (props: ModalEditProps) => {
   const [visibility, setVisibility] = useState<UserRoles | "all">("all");
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   useEffect(() => {
     if (props.open) {
       setVisibility(entry.visibility);
       setTags(entry.tags);
       setTitle(entry.title);
+      setDescription(entry.description);
       setBody(entry.body);
     } else {
       setVisibility("all");
       setTags([]);
       setTitle("");
+      setDescription("");
       setBody("");
     }
   }, [props.open, entry]);
@@ -241,6 +259,8 @@ export const ModalEdit = (props: ModalEditProps) => {
       setTags(value.split(", "));
     } else if (name === "title") {
       setTitle(value);
+    } else if (name === "description") {
+      setDescription(value);
     } else if (name === "body") {
       setBody(value);
     }
@@ -270,6 +290,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           visibility,
           tags,
           title,
+          description,
           body,
         })
         .then(() => {
@@ -365,6 +386,17 @@ export const ModalEdit = (props: ModalEditProps) => {
             name="title"
             onChange={handleChange}
             required
+          />
+          <TextField
+            outlined
+            autoComplete="off"
+            label="Description"
+            value={description}
+            name="description"
+            onChange={handleChange}
+            required
+            textarea
+            rows={2}
           />
           <div>
             <Typography use="caption" tag="div" className="subheader">
