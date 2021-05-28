@@ -29,6 +29,7 @@ import { EntriesList } from "../guides/EntriesList";
 import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
 import { DialogDelete } from "../guides/admin/DialogDelete";
 import "./ContentGuides.scss";
+import { ModalDetail } from "../guides/ModalDetail";
 
 type ContentGuidesProps = {
   openNav: () => void;
@@ -52,7 +53,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
 
   useEffect(() => {
     const welcomeIndex = entries.findIndex((entry) => entry.id === "Di1F9XkWTG2M9qbP2ZcN");
-    if (welcomeIndex >= 0) {
+    if (welcomeIndex >= 0 && device === "desktop") {
       const welcomeEntry = entries[welcomeIndex];
       setDetailEntry(welcomeEntry);
     }
@@ -61,6 +62,19 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const blankEntry: GuideEntryType = new Guide();
 
   const [detailEntry, setDetailEntry] = useState(blankEntry);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const openDetail = (entry: GuideEntryType) => {
+    setDetailOpen(true);
+    setDetailEntry(entry);
+    openModal();
+  };
+  const closeDetail = () => {
+    setDetailOpen(false);
+    setTimeout(() => {
+      setDetailEntry(blankEntry);
+    }, 300);
+    closeModal();
+  };
 
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {
@@ -75,9 +89,17 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const [editEntry, setEditEntry] = useState(blankEntry);
   const [editOpen, setEditOpen] = useState(false);
   const openEdit = (entry: GuideEntryType) => {
-    setEditOpen(true);
-    setEditEntry(entry);
-    openModal();
+    const open = () => {
+      setEditOpen(true);
+      setEditEntry(entry);
+      openModal();
+    };
+    if (detailOpen && device !== "desktop") {
+      closeDetail();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
   };
   const closeEdit = () => {
     setEditOpen(false);
@@ -90,9 +112,17 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const [deleteEntry, setDeleteEntry] = useState(blankEntry);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const openDelete = (entry: GuideEntryType) => {
-    setDeleteOpen(true);
-    setDeleteEntry(entry);
-    openModal();
+    const open = () => {
+      setDeleteOpen(true);
+      setDeleteEntry(entry);
+      openModal();
+    };
+    if (detailOpen && device !== "desktop") {
+      closeDetail();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
   };
   const closeDelete = () => {
     setDeleteOpen(false);
@@ -150,6 +180,33 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const leftButtons = !indent ? <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle> : buttons;
   const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
 
+  const content =
+    device === "desktop" ? (
+      <div className="guides-container">
+        <EntriesList openEntry={setDetailEntry} detailEntry={detailEntry} />
+        <div className="main drawer-margin">
+          <div className="guide-container">
+            {detailEntry.id ? <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} /> : null}
+          </div>
+          <Footer />
+        </div>
+      </div>
+    ) : (
+      <div className="guides-container">
+        <div className="main">
+          <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
+          <ModalDetail
+            open={detailOpen}
+            onClose={closeDetail}
+            entry={detailEntry}
+            edit={openEdit}
+            delete={openDelete}
+          />
+          <Footer />
+        </div>
+      </div>
+    );
+
   return (
     <>
       <TopAppBar
@@ -168,15 +225,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className="guides-container">
-          <EntriesList openEntry={setDetailEntry} detailEntry={detailEntry} />
-          <div className={classNames("main", { "drawer-margin": device === "desktop" })}>
-            <div className="guide-container">
-              {detailEntry.id ? <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} /> : null}
-            </div>
-            <Footer />
-          </div>
-        </div>
+        {content}
         {editorElements}
       </div>
       {bottomNav ? <TopAppBarFixedAdjust /> : null}

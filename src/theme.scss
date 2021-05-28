@@ -1280,6 +1280,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
+  .entries-list {
+    &-container {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    }
+    .mdc-list {
+      &-group {
+        &__subheader {
+          color: map-get($variables, text-medium);
+        }
+      }
+    }
+  }
+
   .sponsors {
     .cannonkeys {
       fill: if($dark, white, #060d44);

@@ -22,7 +22,7 @@ export const getEntries = () => {
 };
 
 const sortEntries = (entries: GuideEntryType[]) => {
-  const sortedEntries = alphabeticalSortProp(entries, "title");
+  const sortedEntries = alphabeticalSortProp(entries, "title", false, "Welcome to KeycapLendar!");
   dispatch(setEntries(sortedEntries));
   dispatch(setLoading(false));
 };

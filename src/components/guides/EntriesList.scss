@@ -1,7 +1,8 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
-.entries {
+.entries,
+.entries-drawer .entries {
   &-drawer.mdc-drawer {
     height: calc(100vh - #{top-app-bar.$row-height});
     width: 320px;
@@ -10,18 +11,19 @@
     top: top-app-bar.$row-height;
     bottom: 0;
   }
-  &-list,
-  .mdc-drawer &-list {
+  &-list {
     &-container {
       width: 100%;
+      .mdc-list-divider:last-child {
+        display: none;
+      }
     }
     .mdc-list {
       &-divider {
         @include rtl.reflexive-property(margin, 72px, 16px);
       }
       &-group {
-        &__subheader,
-        .mdc-drawer &__subheader {
+        &__subheader {
           display: flex;
           align-items: center;
           .rmwc-icon {
