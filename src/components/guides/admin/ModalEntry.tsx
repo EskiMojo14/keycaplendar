@@ -83,6 +83,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           visibility,
           tags,
           title,
+          description,
           body,
         })
         .then((docRef) => {

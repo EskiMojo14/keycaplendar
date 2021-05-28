@@ -3,7 +3,7 @@
 
 .entries {
   &-drawer.mdc-drawer {
-    height: calc(100vh - top-app-bar.$row-height);
+    height: calc(100vh - #{top-app-bar.$row-height});
     width: 320px;
     z-index: 1;
     position: fixed;
@@ -13,15 +13,19 @@
   &-list,
   .mdc-drawer &-list {
     &-container {
+      width: 100%;
     }
     .mdc-list {
+      &-divider {
+        @include rtl.reflexive-property(margin, 72px, 16px);
+      }
       &-group {
         &__subheader,
         .mdc-drawer &__subheader {
           display: flex;
           align-items: center;
           .rmwc-icon {
-            @include rtl.reflexive-box(margin, right, 16px);
+            @include rtl.reflexive-box(margin, right, 38px);
           }
         }
       }

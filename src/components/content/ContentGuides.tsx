@@ -50,6 +50,14 @@ export const ContentGuides = (props: ContentGuidesProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    const welcomeIndex = entries.findIndex((entry) => entry.id === "Di1F9XkWTG2M9qbP2ZcN");
+    if (welcomeIndex >= 0) {
+      const welcomeEntry = entries[welcomeIndex];
+      setDetailEntry(welcomeEntry);
+    }
+  }, [entries]);
+
   const blankEntry: GuideEntryType = new Guide();
 
   const [detailEntry, setDetailEntry] = useState(blankEntry);

@@ -315,8 +315,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         overlay-elevation(map-get($variables, surface), 16),
         map-get($variables, surface)
       )};
-    &.mdc-drawer--dismissible,
     &.entries-drawer {
+      @include drawer.surface-fill-color(transparent);
+    }
+    &.mdc-drawer--dismissible {
       @include drawer.surface-fill-color(
         if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface))
       );
