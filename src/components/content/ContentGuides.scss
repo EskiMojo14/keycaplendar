@@ -11,6 +11,9 @@
   }
   .guide-container {
     flex-grow: 1;
+    .empty-container {
+      height: 100%;
+    }
   }
   .guide-entry {
     width: 768px;

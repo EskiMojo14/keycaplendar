@@ -71,9 +71,15 @@
     .subheader {
       margin-bottom: 16px;
     }
-    .tag-container {
-      margin: -4px;
-      margin-top: 0;
+    .title {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 4px;
+      @include util.divider-border(bottom);
+      .tag-container {
+        margin: -4px;
+        margin-top: 0;
+      }
     }
   }
 }

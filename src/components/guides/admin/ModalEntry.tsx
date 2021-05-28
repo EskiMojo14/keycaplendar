@@ -202,15 +202,18 @@ export const ModalCreate = (props: ModalCreateProps) => {
           <div className="subheader">
             <Typography use="caption">Live preview</Typography>
           </div>
-          <Typography use="overline">{user.nickname}</Typography>
-          <Typography use="headline5">{title}</Typography>
-          <div className="tag-container">
-            <ChipSet>
-              <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
-              {tags.map((tag) => (
-                <Chip label={tag} key={tag} disabled />
-              ))}
-            </ChipSet>
+          <div className="title">
+            <Typography use="overline">{user.nickname}</Typography>
+            <Typography use="headline5">{title}</Typography>
+            <Typography use="caption">{description}</Typography>
+            <div className="tag-container">
+              <ChipSet>
+                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                {tags.map((tag) => (
+                  <Chip label={tag} key={tag} disabled />
+                ))}
+              </ChipSet>
+            </div>
           </div>
           <CustomReactMarkdown>{body}</CustomReactMarkdown>
         </div>
@@ -410,14 +413,18 @@ export const ModalEdit = (props: ModalEditProps) => {
           <div className="subheader">
             <Typography use="caption">Live preview</Typography>
           </div>
-          <Typography use="headline5">{title}</Typography>
-          <div className="tag-container">
-            <ChipSet>
-              <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
-              {tags.map((tag) => (
-                <Chip label={tag} key={tag} disabled />
-              ))}
-            </ChipSet>
+          <div className="title">
+            <Typography use="overline">{user.nickname}</Typography>
+            <Typography use="headline5">{title}</Typography>
+            <Typography use="caption">{description}</Typography>
+            <div className="tag-container">
+              <ChipSet>
+                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                {tags.map((tag) => (
+                  <Chip label={tag} key={tag} disabled />
+                ))}
+              </ChipSet>
+            </div>
           </div>
           <CustomReactMarkdown>{body}</CustomReactMarkdown>
         </div>

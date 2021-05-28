@@ -26,10 +26,12 @@ import {
 import { Footer } from "../common/Footer";
 import { GuideEntry } from "../guides/GuideEntry";
 import { EntriesList } from "../guides/EntriesList";
+import { ModalDetail } from "../guides/ModalDetail";
 import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
 import { DialogDelete } from "../guides/admin/DialogDelete";
+import emptyImg from "../../media/empty.svg";
 import "./ContentGuides.scss";
-import { ModalDetail } from "../guides/ModalDetail";
+import { Typography } from "@rmwc/typography";
 
 type ContentGuidesProps = {
   openNav: () => void;
@@ -186,7 +188,19 @@ export const ContentGuides = (props: ContentGuidesProps) => {
         <EntriesList openEntry={setDetailEntry} detailEntry={detailEntry} />
         <div className="main drawer-margin">
           <div className="guide-container">
-            {detailEntry.id ? <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} /> : null}
+            {detailEntry.id ? (
+              <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} />
+            ) : (
+              <div className="empty-container">
+                <img className="image" src={emptyImg} alt="Empty" />
+                <Typography className="title" use="headline6" tag="h3">
+                  Nothing to see here
+                </Typography>
+                <Typography className="subtitle" use="body1" tag="p">
+                  No guide selected.
+                </Typography>
+              </div>
+            )}
           </div>
           <Footer />
         </div>
