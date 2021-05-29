@@ -556,9 +556,11 @@ export const setSort = (sort: SortType, clearUrl = true) => {
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    params.delete("sort");
-    const questionParam = params.has("page") ? "?" + params.toString() : "/";
-    window.history.pushState({}, "KeycapLendar", questionParam);
+    if (params.has("sort")) {
+      params.delete("sort");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   }
 };
 
@@ -571,9 +573,11 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
   sortData(sort, sortOrder);
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    params.delete("sortOrder");
-    const questionParam = params.has("page") ? "?" + params.toString() : "/";
-    window.history.pushState({}, "KeycapLendar", questionParam);
+    if (params.has("sortOrder")) {
+      params.delete("sortOrder");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   }
 };
 
@@ -608,28 +612,30 @@ export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clea
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    whitelistParams.forEach((param, index, array) => {
-      if (params.has(param)) {
-        params.delete(param);
-      }
-      if (index === array.length - 1) {
-        if (params.has("page")) {
-          const page = params.get("page");
-          if (page && arrayIncludes(allPages, page)) {
-            window.history.pushState(
-              {
-                page: page,
-              },
-              "KeycapLendar: " + pageTitle[page],
-              "?" + params.toString()
-            );
-          }
-        } else {
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
-          window.history.pushState({}, "KeycapLendar", questionParam);
+    if (whitelistParams.some((param) => params.has(param))) {
+      whitelistParams.forEach((param, index, array) => {
+        if (params.has(param)) {
+          params.delete(param);
         }
-      }
-    });
+        if (index === array.length - 1) {
+          if (params.has("page")) {
+            const page = params.get("page");
+            if (page && arrayIncludes(allPages, page)) {
+              window.history.pushState(
+                {
+                  page: page,
+                },
+                "KeycapLendar: " + pageTitle[page],
+                "?" + params.toString()
+              );
+            }
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
+          }
+        }
+      });
+    }
   }
 };
 
@@ -649,28 +655,30 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    whitelistParams.forEach((param, index, array) => {
-      if (params.has(param)) {
-        params.delete(param);
-      }
-      if (index === array.length - 1) {
-        if (params.has("page")) {
-          const page = params.get("page");
-          if (page && arrayIncludes(allPages, page)) {
-            window.history.pushState(
-              {
-                page: page,
-              },
-              "KeycapLendar: " + pageTitle[page],
-              "?" + params.toString()
-            );
-          }
-        } else {
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
-          window.history.pushState({}, "KeycapLendar", questionParam);
+    if (whitelistParams.some((param) => params.has(param))) {
+      whitelistParams.forEach((param, index, array) => {
+        if (params.has(param)) {
+          params.delete(param);
         }
-      }
-    });
+        if (index === array.length - 1) {
+          if (params.has("page")) {
+            const page = params.get("page");
+            if (page && arrayIncludes(allPages, page)) {
+              window.history.pushState(
+                {
+                  page: page,
+                },
+                "KeycapLendar: " + pageTitle[page],
+                "?" + params.toString()
+              );
+            }
+          } else {
+            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            window.history.pushState({}, "KeycapLendar", questionParam);
+          }
+        }
+      });
+    }
   }
 };
 

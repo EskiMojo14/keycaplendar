@@ -34,9 +34,11 @@ export const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    params.delete("statisticsTab");
-    const questionParam = params.has("page") ? "?" + params.toString() : "/";
-    window.history.pushState({}, "KeycapLendar", questionParam);
+    if (params.has("statisticsTab")) {
+      params.delete("statisticsTab");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   }
 };
 

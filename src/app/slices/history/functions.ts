@@ -20,9 +20,11 @@ export const setHistoryTab = (tab: HistoryTab, clearUrl = true) => {
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
-    params.delete("historyTab");
-    const questionParam = params.has("page") ? "?" + params.toString() : "/";
-    window.history.pushState({}, "KeycapLendar", questionParam);
+    if (params.has("historyTab")) {
+      params.delete("historyTab");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   }
 };
 
