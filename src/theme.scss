@@ -1287,7 +1287,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     &-drawer.mdc-drawer {
       @include drawer.surface-fill-color(transparent);
       .mdc-chip {
-        @include chips.fill-color-accessible(mix(map-get($variables, on-surface), map-get($variables, surface), 12%));
+        @include chips.fill-color-accessible(
+          mix(map-get($variables, on-surface), map-get($variables, background), 12%)
+        );
         @include chips.selected-ink-color(map-get($variables, primary));
       }
     }
