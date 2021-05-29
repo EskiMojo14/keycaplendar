@@ -44,6 +44,10 @@
         "function": "getPublicAudit"
       },
       {
+        "source": "/api/getGuides",
+        "function": "getGuides"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

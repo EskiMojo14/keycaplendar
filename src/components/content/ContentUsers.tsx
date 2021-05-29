@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import { iconObject, useBoolStates } from "../../app/slices/common/functions";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import {
@@ -208,7 +209,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>Users</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle.users}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             {sortMenu}

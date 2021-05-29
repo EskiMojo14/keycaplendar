@@ -1,0 +1,26 @@
+@use "../../util";
+
+.guide-entry {
+  .title {
+    padding: 16px;
+    padding-bottom: 0;
+    h1,
+    h3,
+    p {
+      margin: 0;
+    }
+    .tags-container {
+      margin: 0 -4px;
+    }
+    @include util.divider-border(bottom);
+  }
+  .content {
+    padding: 16px;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .mdc-card__actions {
+    @include util.divider-border(top);
+  }
+}

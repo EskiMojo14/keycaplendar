@@ -3,6 +3,7 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { pageTitle } from "../../app/slices/common/constants";
 import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "../../app/slices/common/functions";
 import {
   selectLoading,
@@ -12,6 +13,7 @@ import {
   setTab,
 } from "../../app/slices/history/historySlice";
 import { historyTabs } from "../../app/slices/history/constants";
+import { generateSets, getData } from "../../app/slices/history/functions";
 import { RecentSet } from "../../app/slices/history/types";
 import { selectAllSets } from "../../app/slices/main/mainSlice";
 import { Keyset } from "../../app/slices/main/constructors";
@@ -36,7 +38,6 @@ import { ChangelogEntry } from "../history/ChangelogEntry";
 import { RecentSetCard } from "../history/RecentSetCard";
 import { Footer } from "../common/Footer";
 import "./ContentHistory.scss";
-import { generateSets, getData } from "../../app/slices/history/functions";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -196,7 +197,7 @@ export const ContentHistory = (props: ContentHistoryProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>History</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle.history}</TopAppBarTitle>
           </TopAppBarSection>
           {clearFilterButton}
         </TopAppBarRow>

@@ -192,6 +192,14 @@
   &.theme-list {
     @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
   }
+  &-group {
+    &__subheader {
+      @include typography.typography(caption);
+      margin: 0;
+      padding: 0 16px;
+      height: 32px;
+    }
+  }
   &--two-line.three-line .mdc-list-item,
   &-item.three-line {
     height: 88px;
@@ -258,7 +266,8 @@
 .mdc-list-item,
 .mdc-image-list__item,
 .mdc-tab,
-.mdc-top-app-bar {
+.mdc-top-app-bar,
+.mdc-chip {
   user-select: none;
 }
 

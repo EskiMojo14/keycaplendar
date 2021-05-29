@@ -1,3 +1,5 @@
+import { userRoles } from "./constants";
+
 export type VendorType = {
   id?: string;
   name: string;
@@ -67,3 +69,15 @@ export type PublicActionType = {
 export type Categories = "icDate" | "gbLaunch";
 
 export type Properties = "profile" | "designer" | "vendor";
+
+export type UserRoles = typeof userRoles[number];
+
+export type GuideEntryType = {
+  id: string;
+  /** The author of the update. */
+  name: string;
+  title: string;
+  tags: string[];
+  body: string;
+  visibility: UserRoles | "all";
+};

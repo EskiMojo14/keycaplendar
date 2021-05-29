@@ -158,6 +158,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     background: rgba(map-get($variables, secondary), 0.45);
     color: inherit;
   }
+  a {
+    color: map-get($variables, primary);
+  }
   .mdc-button {
     @include button.ink-color(map-get($variables, primary));
     @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -277,6 +280,10 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .mdc-chip {
     @include chips.fill-color-accessible(mix(map-get($variables, on-surface), map-get($variables, surface), 12%));
+    @include chips.selected-ink-color(map-get($variables, primary));
+    &[disabled] {
+      @include chips.ink-color(map-get($variables, text-disabled));
+    }
   }
 
   .mdc-dialog {
@@ -331,12 +338,23 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         );
         @include chips.selected-ink-color(map-get($variables, primary));
       }
-      &.nav.mdc-drawer--open,
-      &.nav.mdc-drawer--opening {
-        .mdc-list-item {
-          color: map-get($variables, text-high);
-          &.mdc-list-item--activated {
+      &.nav {
+        .mdc-list-item.contains-activated {
+          @include list.item-primary-text-ink-color(map-get($variables, primary));
+          @include list.item-graphic-ink-color(map-get($variables, primary));
+          @include list.item-meta-ink-color(map-get($variables, primary));
+          @include ripple.states(map-get($variables, primary));
+          .mdc-typography--caption {
             color: map-get($variables, primary);
+          }
+        }
+        &.mdc-drawer--open,
+        &.mdc-drawer--opening {
+          .mdc-list-item {
+            color: map-get($variables, text-high);
+            &.mdc-list-item--activated {
+              color: map-get($variables, primary);
+            }
           }
         }
       }
@@ -408,13 +426,11 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         color: map-get($variables, text-medium);
       }
       .mdc-typography--headline4,
+      .mdc-typography--headline5,
       .preview,
       .mdc-typography--body2,
       .mdc-form-field {
         color: map-get($variables, text-high);
-      }
-      a {
-        color: map-get($variables, primary);
       }
     }
     .mdc-linear-progress {
@@ -480,7 +496,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
   :not(.mdc-list--non-interactive):not(.theme-list)
-    > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated) {
+    > :not(.mdc-list-item--disabled).mdc-list-item:not(.mdc-list-item--selected):not(.mdc-list-item--activated):not(.contains-activated) {
     @include ripple.states(map-get($variables, on-surface));
   }
   .mdc-list .mdc-list-item,
@@ -1149,13 +1165,11 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       color: map-get($variables, text-medium);
     }
     .mdc-typography--headline4,
+    .mdc-typography--headline5,
     .preview,
     .mdc-typography--body2,
     .mdc-form-field {
       color: map-get($variables, text-high);
-    }
-    a {
-      color: map-get($variables, primary);
     }
   }
   .image-upload {
@@ -1209,9 +1223,6 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
   .legal,
   .guide {
     color: map-get($variables, text-high);
-    a {
-      color: map-get($variables, primary);
-    }
     .mdc-typography--button {
       color: map-get($variables, primary);
       &.delete {
@@ -1264,13 +1275,44 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .update-entry {
     color: map-get($variables, text-high);
-    a {
-      color: map-get($variables, primary);
-    }
     &.pinned {
       a,
       .pin-indicator {
         color: map-get($variables, secondary);
+      }
+    }
+  }
+
+  .entries {
+    &-drawer.mdc-drawer {
+      @include drawer.surface-fill-color(transparent);
+      .mdc-chip {
+        @include chips.fill-color-accessible(
+          mix(map-get($variables, on-surface), map-get($variables, background), 12%)
+        );
+        @include chips.selected-ink-color(map-get($variables, primary));
+      }
+    }
+    &-list {
+      &-container {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+        .mdc-chip {
+          @include chips.fill-color-accessible(
+            mix(
+              map-get($variables, on-surface),
+              if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)),
+              12%
+            )
+          );
+          @include chips.selected-ink-color(map-get($variables, primary));
+        }
+      }
+      .mdc-list {
+        &-group {
+          &__subheader {
+            color: map-get($variables, text-medium);
+          }
+        }
       }
     }
   }
@@ -1327,6 +1369,22 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
       .segmented-button
       .mdc-button:last-child:not(.segmented-button__segment--selected) {
       border-right-color: rgba(map-get($variables, on-primary), 0.38);
+    }
+  }
+
+  .markdown {
+    .mdc-typography {
+      &--headline5,
+      &--headline6,
+      &--subtitle1,
+      &--subtitle2,
+      &--body2 {
+        color: map-get($variables, text-high);
+      }
+      &--overline,
+      &--caption {
+        color: map-get($variables, text-medium);
+      }
     }
   }
 

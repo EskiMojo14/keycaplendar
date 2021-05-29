@@ -263,6 +263,19 @@
       height: 256px - (top-app-bar.$row-height + 48px + $diff * 2);
     }
   }
+  .guides-container {
+    min-height: calc(100vh - #{top-app-bar.$row-height + $diff});
+  }
+  .entries-drawer.mdc-drawer {
+    height: calc(100vh - #{top-app-bar.$row-height + $diff});
+    top: top-app-bar.$row-height + $diff;
+    &,
+    .entries-list-container {
+      .filter-chips-container {
+        height: 48px + $diff;
+      }
+    }
+  }
   .autocomplete-mobile,
   .bottom-nav .search-app-bar .autocomplete-mobile {
     top: top-app-bar.$row-height + $diff;
@@ -347,10 +360,12 @@
   .mdc-data-table__cell .rmwc-circular-progress {
     padding: 12px + $diff;
   }
-  .markdown-editor {
-    .markdown-editor {
-      &__textarea {
-        min-height: 56px - 8px + $diff;
+  .markdown {
+    &-editor {
+      .markdown-editor {
+        &__textarea {
+          min-height: 56px - 8px + $diff;
+        }
       }
     }
   }
@@ -406,6 +421,13 @@
       .main.extended-app-bar::before {
         height: 256px - (top-app-bar.$mobile-row-height + 48px + $diff * 2);
       }
+    }
+    .guides-container {
+      min-height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+    }
+    .entries-drawer.mdc-drawer {
+      height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+      top: top-app-bar.$mobile-row-height + $diff;
     }
     .autocomplete-mobile,
     .bottom-nav .search-app-bar .autocomplete-mobile {

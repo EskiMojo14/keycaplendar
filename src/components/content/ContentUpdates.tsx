@@ -24,6 +24,7 @@ import { UpdateEntry } from "../updates/UpdateEntry";
 import { ModalCreate, ModalEdit } from "../updates/admin/ModalEntry";
 import { DialogDelete } from "../updates/admin/DialogDelete";
 import "./ContentUpdates.scss";
+import { pageTitle } from "../../app/slices/common/constants";
 
 type ContentUpdatesProps = {
   openNav: () => void;
@@ -124,7 +125,7 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>Updates</TopAppBarTitle>
+            <TopAppBarTitle>{pageTitle.updates}</TopAppBarTitle>
           </TopAppBarSection>
           {indent}
         </TopAppBarRow>

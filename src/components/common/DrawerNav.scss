@@ -51,6 +51,11 @@
         text-decoration: none;
       }
     }
+    .group-collapsible .rmwc-collapsible-list {
+      &__handle .mdc-list-item {
+        height: 32px;
+      }
+    }
     .mdc-list-item {
       margin: 0;
       height: 56px;

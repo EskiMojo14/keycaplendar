@@ -16,7 +16,11 @@ service cloud.firestore {
       allow create: if false;
       allow update: if false;
     }
-    match /updates/{action} {
+    match /updates/{update} {
+      allow read;
+      allow write: if request.auth.token.admin == true;
+    }
+    match /guides/{guide} {
       allow read;
       allow write: if request.auth.token.admin == true;
     }

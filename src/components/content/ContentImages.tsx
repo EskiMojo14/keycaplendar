@@ -4,6 +4,7 @@ import LazyLoad from "react-lazy-load";
 import firebase from "../../firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import {
   addOrRemove,
   closeModal,
@@ -219,7 +220,7 @@ export const ContentImages = (props: ContentImagesProps) => {
             ) : (
               <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             )}
-            <TopAppBarTitle>{contextual ? `${checkedImages.length} selected` : "Images"}</TopAppBarTitle>
+            <TopAppBarTitle>{contextual ? `${checkedImages.length} selected` : pageTitle.images}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             {contextual ? (

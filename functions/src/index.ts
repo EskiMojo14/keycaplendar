@@ -12,6 +12,7 @@ admin.initializeApp();
 
 import * as api from "./api";
 import * as audit from "./audit";
+import * as guides from "./guides";
 import * as statistics from "./statistics";
 import * as thumbs from "./thumbs";
 import * as users from "./users";
@@ -29,6 +30,10 @@ exports.getKeysetById = api.getKeysetById;
 exports.onKeysetUpdate = audit.onKeysetUpdate;
 
 exports.getPublicAudit = audit.getPublicAudit;
+
+// guides
+
+exports.getGuides = guides.getGuides;
 
 // statistics
 
