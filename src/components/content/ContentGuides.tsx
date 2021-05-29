@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";
 import { closeModal, openModal } from "../../app/slices/common/functions";
-import { selectEntries, selectLoading } from "../../app/slices/guides/guidesSlice";
+import { selectEntries, selectLoading, selectURLEntry, setUrlEntry } from "../../app/slices/guides/guidesSlice";
 import { Guide } from "../../app/slices/guides/constructors";
 import { getEntries } from "../../app/slices/guides/functions";
 import { GuideEntryType } from "../../app/slices/guides/types";
@@ -23,6 +23,7 @@ import {
   TopAppBarSection,
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
+import { Typography } from "@rmwc/typography";
 import { Footer } from "../common/Footer";
 import { GuideEntry } from "../guides/GuideEntry";
 import { EntriesList } from "../guides/EntriesList";
@@ -31,13 +32,14 @@ import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
 import { DialogDelete } from "../guides/admin/DialogDelete";
 import emptyImg from "../../media/empty.svg";
 import "./ContentGuides.scss";
-import { Typography } from "@rmwc/typography";
 
 type ContentGuidesProps = {
   openNav: () => void;
 };
 
 export const ContentGuides = (props: ContentGuidesProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
 
   const bottomNav = useAppSelector(selectBottomNav);
@@ -46,6 +48,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
 
   const loading = useAppSelector(selectLoading);
   const entries = useAppSelector(selectEntries);
+  const urlEntry = useAppSelector(selectURLEntry);
 
   useEffect(() => {
     if (entries.length === 0) {
@@ -54,10 +57,11 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   }, []);
 
   useEffect(() => {
-    const welcomeIndex = entries.findIndex((entry) => entry.id === "Di1F9XkWTG2M9qbP2ZcN");
-    if (welcomeIndex >= 0 && device === "desktop") {
-      const welcomeEntry = entries[welcomeIndex];
-      setDetailEntry(welcomeEntry);
+    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
+    const index = entries.findIndex((entry) => entry.id === id);
+    if (index >= 0 && device === "desktop") {
+      const entry = entries[index];
+      setDetailEntry(entry);
     }
   }, [entries]);
 
@@ -69,6 +73,15 @@ export const ContentGuides = (props: ContentGuidesProps) => {
     setDetailOpen(true);
     setDetailEntry(entry);
     openModal();
+
+    dispatch(setUrlEntry(""));
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("guideId")) {
+      console.log("hi");
+      params.delete("guideId");
+      const questionParam = params.has("page") ? "?" + params.toString() : "/";
+      window.history.pushState({}, "KeycapLendar", questionParam);
+    }
   };
   const closeDetail = () => {
     setDetailOpen(false);
@@ -185,7 +198,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const content =
     device === "desktop" ? (
       <div className="guides-container">
-        <EntriesList openEntry={setDetailEntry} detailEntry={detailEntry} />
+        <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
         <div className="main drawer-margin">
           <div className="guide-container">
             {detailEntry.id ? (

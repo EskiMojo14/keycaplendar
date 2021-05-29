@@ -6,6 +6,7 @@ type UpdatesState = {
   loading: boolean;
 
   entries: GuideEntryType[];
+  urlEntry: string;
 
   allTags: string[];
   filteredTag: string;
@@ -15,6 +16,7 @@ const initialState: UpdatesState = {
   loading: false,
 
   entries: [],
+  urlEntry: "",
 
   allTags: [],
   filteredTag: "",
@@ -30,6 +32,9 @@ export const guidesSlice = createSlice({
     setEntries: (state, action: PayloadAction<GuideEntryType[]>) => {
       state.entries = action.payload;
     },
+    setUrlEntry: (state, action: PayloadAction<string>) => {
+      state.urlEntry = action.payload;
+    },
     setAllTags: (state, action: PayloadAction<string[]>) => {
       state.allTags = action.payload;
     },
@@ -39,11 +44,13 @@ export const guidesSlice = createSlice({
   },
 });
 
-export const { setLoading, setEntries, setAllTags, setFilteredTag } = guidesSlice.actions;
+export const { setLoading, setEntries, setUrlEntry, setAllTags, setFilteredTag } = guidesSlice.actions;
 
 export const selectLoading = (state: RootState) => state.guides.loading;
 
 export const selectEntries = (state: RootState) => state.guides.entries;
+
+export const selectURLEntry = (state: RootState) => state.guides.urlEntry;
 
 export const selectAllTags = (state: RootState) => state.guides.allTags;
 

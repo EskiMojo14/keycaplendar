@@ -5,6 +5,7 @@ import { setAppPage, setDevice } from "./commonSlice";
 import { allPages, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayEveryType, arrayIncludes, hasKey } from "./functions";
 import { GlobalDoc, Page } from "./types";
+import { setUrlEntry } from "../guides/guidesSlice";
 import { historyTabs } from "../history/constants";
 import { setHistoryTab } from "../history/functions";
 import {
@@ -137,6 +138,12 @@ export const getURLQuery = () => {
     const urlTab = params.get("historyTab");
     if (urlTab && arrayIncludes(historyTabs, urlTab)) {
       setHistoryTab(urlTab);
+    }
+  }
+  if (params.has("guideId")) {
+    const guideId = params.get("guideId");
+    if (guideId) {
+      dispatch(setUrlEntry(guideId));
     }
   }
   getData();

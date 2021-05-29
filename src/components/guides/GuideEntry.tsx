@@ -1,16 +1,17 @@
 import React from "react";
+import { queue } from "../../app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { iconObject } from "../../app/slices/common/functions";
 import { selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons } from "../../app/slices/guides/constants";
 import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectUser } from "../../app/slices/user/userSlice";
-import { Card, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "../util/ReactMarkdown";
 import "./GuideEntry.scss";
-import { Chip, ChipSet } from "@rmwc/chip";
 
 type GuideEntryProps = {
   entry: GuideEntryType;
@@ -34,8 +35,35 @@ export const GuideEntry = (props: GuideEntryProps) => {
     }
   };
 
-  const adminButtons = user.isAdmin ? (
+  const copyLink = () => {
+    const url = window.location.href.split("?")[0] + "?page=guides&guideId=" + entry.id;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        queue.notify({ title: "Copied URL to clipboard." });
+      })
+      .catch((error) => {
+        queue.notify({ title: "Error copying to clipboard" + error });
+      });
+  };
+
+  const buttons = user.isAdmin ? (
     <CardActions>
+      <CardActionButtons>
+        <CardActionButton
+          label="Share"
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <circle cx="18" cy="5" opacity=".3" r="1" />
+              <circle cx="6" cy="12" opacity=".3" r="1" />
+              <circle cx="18" cy="19.02" opacity=".3" r="1" />
+              <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
+            </svg>
+          )}
+          onClick={copyLink}
+        />
+      </CardActionButtons>
       <CardActionIcons>
         <Tooltip enterDelay={500} content="Edit" align="bottom">
           <CardActionIcon
@@ -71,7 +99,28 @@ export const GuideEntry = (props: GuideEntryProps) => {
         </Tooltip>
       </CardActionIcons>
     </CardActions>
-  ) : null;
+  ) : (
+    <CardActions>
+      <CardActionIcons>
+        <Tooltip enterDelay={500} content="Share" align="bottom">
+          <CardActionIcon
+            icon={iconObject(
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                  <path d="M0 0h24v24H0V0z" fill="none" />
+                  <circle cx="18" cy="5" opacity=".3" r="1" />
+                  <circle cx="6" cy="12" opacity=".3" r="1" />
+                  <circle cx="18" cy="19.02" opacity=".3" r="1" />
+                  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
+                </svg>
+              </div>
+            )}
+            onClick={copyLink}
+          />
+        </Tooltip>
+      </CardActionIcons>
+    </CardActions>
+  );
   return (
     <Card className="guide-entry">
       <div className="title">
@@ -103,7 +152,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
       <div className="content">
         <CustomReactMarkdown>{entry.body}</CustomReactMarkdown>
       </div>
-      {adminButtons}
+      {buttons}
     </Card>
   );
 };
