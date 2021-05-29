@@ -562,7 +562,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+            <a href="/?page=guides&guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
               <Button label="guide" />
             </a>
           </div>
@@ -1510,7 +1510,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guide/entries" target="_blank" rel="noopener noreferrer">
+            <a href="/?page=guides&guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
               <Button label="guide" />
             </a>
           </div>

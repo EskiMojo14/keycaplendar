@@ -70,14 +70,15 @@ export const ContentGuides = (props: ContentGuidesProps) => {
   const [detailEntry, setDetailEntry] = useState(blankEntry);
   const [detailOpen, setDetailOpen] = useState(false);
   const openDetail = (entry: GuideEntryType) => {
-    setDetailOpen(true);
     setDetailEntry(entry);
-    openModal();
+    if (device !== "desktop") {
+      setDetailOpen(true);
+      openModal();
+    }
 
     dispatch(setUrlEntry(""));
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
-      console.log("hi");
       params.delete("guideId");
       const questionParam = params.has("page") ? "?" + params.toString() : "/";
       window.history.pushState({}, "KeycapLendar", questionParam);
