@@ -1,8 +1,8 @@
 import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
-import { alphabeticalSortProp } from "../common/functions";
-import { setEntries, setLoading } from "./guidesSlice";
+import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "../common/functions";
+import { setAllTags, setEntries, setLoading } from "./guidesSlice";
 import { GuideEntryType } from "./types";
 
 const { dispatch } = store;
@@ -24,5 +24,7 @@ export const getEntries = () => {
 const sortEntries = (entries: GuideEntryType[]) => {
   const sortedEntries = alphabeticalSortProp(entries, "title", false, "Welcome to KeycapLendar!");
   dispatch(setEntries(sortedEntries));
+  const allTags = alphabeticalSort(uniqueArray(sortedEntries.map((entry) => entry.tags).flat(1)));
+  dispatch(setAllTags(allTags));
   dispatch(setLoading(false));
 };

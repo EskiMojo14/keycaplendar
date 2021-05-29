@@ -269,6 +269,12 @@
   .entries-drawer.mdc-drawer {
     height: calc(100vh - #{top-app-bar.$row-height + $diff});
     top: top-app-bar.$row-height + $diff;
+    &,
+    .entries-list-container {
+      .filter-chips-container {
+        height: 48px + $diff;
+      }
+    }
   }
   .autocomplete-mobile,
   .bottom-nav .search-app-bar .autocomplete-mobile {

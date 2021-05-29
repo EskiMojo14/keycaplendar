@@ -1,6 +1,7 @@
 import React from "react";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { iconObject } from "../../app/slices/common/functions";
+import { selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons } from "../../app/slices/guides/constants";
 import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -19,7 +20,20 @@ type GuideEntryProps = {
 
 export const GuideEntry = (props: GuideEntryProps) => {
   const { entry } = props;
+  const dispatch = useAppDispatch();
+
   const user = useAppSelector(selectUser);
+
+  const filteredTag = useAppSelector(selectFilteredTag);
+
+  const setFilter = (tag: string) => {
+    if (filteredTag === tag) {
+      dispatch(setFilteredTag(""));
+    } else {
+      dispatch(setFilteredTag(tag));
+    }
+  };
+
   const adminButtons = user.isAdmin ? (
     <CardActions>
       <CardActionIcons>
@@ -74,7 +88,14 @@ export const GuideEntry = (props: GuideEntryProps) => {
           <ChipSet>
             <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />
             {entry.tags.map((tag) => (
-              <Chip key={tag} label={tag} />
+              <Chip
+                key={tag}
+                label={tag}
+                selected={tag === filteredTag}
+                onClick={() => {
+                  setFilter(tag);
+                }}
+              />
             ))}
           </ChipSet>
         </div>

@@ -1,6 +1,8 @@
 import React from "react";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { iconObject } from "../../app/slices/common/functions";
+import { selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons } from "../../app/slices/guides/constants";
 import { GuideEntryType } from "../../app/slices/guides/types";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -20,7 +22,6 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { CustomReactMarkdown } from "../util/ReactMarkdown";
 import "./ModalDetail.scss";
 import { Tooltip } from "@rmwc/tooltip";
-import { iconObject } from "../../app/slices/common/functions";
 
 type ModalCreateProps = {
   open: boolean;
@@ -33,10 +34,24 @@ type ModalCreateProps = {
 export const ModalDetail = (props: ModalCreateProps) => {
   const { entry } = props;
 
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
+
   const user = useAppSelector(selectUser);
 
+  const filteredTag = useAppSelector(selectFilteredTag);
+
   const useDrawer = device !== "mobile";
+
+  const setFilter = (tag: string) => {
+    if (filteredTag === tag) {
+      dispatch(setFilteredTag(""));
+    } else {
+      dispatch(setFilteredTag(tag));
+    }
+    props.onClose();
+  };
 
   const actions = user.isAdmin ? (
     useDrawer ? (
@@ -173,7 +188,14 @@ export const ModalDetail = (props: ModalCreateProps) => {
             <ChipSet>
               <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />
               {entry.tags.map((tag) => (
-                <Chip key={tag} label={tag} />
+                <Chip
+                  key={tag}
+                  label={tag}
+                  selected={tag === filteredTag}
+                  onClick={() => {
+                    setFilter(tag);
+                  }}
+                />
               ))}
             </ChipSet>
           </div>

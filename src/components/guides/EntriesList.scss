@@ -1,5 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
+@use "../../util";
 
 .entries,
 .entries-drawer .entries {
@@ -42,6 +43,43 @@
           -webkit-box-orient: vertical;
         }
       }
+    }
+  }
+}
+
+.entries-drawer,
+.entries-list-container {
+  .filter-chips {
+    height: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+    position: relative;
+    .mdc-chip-set {
+      position: relative;
+      height: 100%;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 12px;
+      padding-bottom: 32px;
+      box-sizing: content-box;
+      scroll-behavior: smooth;
+      .mdc-chip {
+        flex-shrink: 0;
+      }
+      .padding-fix {
+        width: 12px;
+        flex-shrink: 0;
+        order: 9999;
+      }
+    }
+    &-container {
+      height: 48px;
+      flex-shrink: 0;
+      @include util.divider-border(bottom);
+      display: flex;
+      justify-content: stretch;
     }
   }
 }

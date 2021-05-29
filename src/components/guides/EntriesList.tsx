@@ -1,10 +1,11 @@
-import React from "react";
-import { useAppSelector } from "../../app/hooks";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { iconObject } from "../../app/slices/common/functions";
-import { selectEntries } from "../../app/slices/guides/guidesSlice";
+import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons, visibilityVals } from "../../app/slices/guides/constants";
 import { GuideEntryType } from "../../app/slices/guides/types";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
 import {
@@ -27,21 +28,78 @@ type EntriesDrawerProps = {
 };
 
 export const EntriesList = (props: EntriesDrawerProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
+
   const entries = useAppSelector(selectEntries);
+  const allTags = useAppSelector(selectAllTags);
+  const filteredTag = useAppSelector(selectFilteredTag);
+
+  const setScroll = () => {
+    const chipSet = document.getElementById("filter-chip-set");
+    if (chipSet) {
+      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
+      if (selectedChip && selectedChip instanceof HTMLElement) {
+        chipSet.scrollLeft = selectedChip.offsetLeft - 24;
+      } else {
+        chipSet.scrollLeft = 0;
+      }
+    }
+  };
+  useEffect(setScroll, [filteredTag]);
+
+  const setFilter = (tag: string) => {
+    if (filteredTag === tag) {
+      dispatch(setFilteredTag(""));
+    } else {
+      dispatch(setFilteredTag(tag));
+    }
+  };
+
+  const filterChips = (
+    <div className="filter-chips-container">
+      <div className="filter-chips">
+        <ChipSet id="filter-chip-set" choice>
+          <div className="padding-fix" />
+          {allTags.map((value) => {
+            return (
+              <Chip
+                label={value}
+                key={value}
+                selected={value === filteredTag}
+                onClick={() => {
+                  setFilter(value);
+                }}
+              />
+            );
+          })}
+        </ChipSet>
+      </div>
+    </div>
+  );
+
   return (
     <BoolWrapper
       condition={device === "desktop"}
       trueWrapper={(children) => (
         <Drawer className="entries-drawer">
+          {filterChips}
           <DrawerContent>{children}</DrawerContent>
         </Drawer>
       )}
-      falseWrapper={(children) => <div className="entries-list-container">{children}</div>}
+      falseWrapper={(children) => (
+        <div className="entries-list-container">
+          {filterChips}
+          {children}
+        </div>
+      )}
     >
       <List twoLine className="entries-list three-line">
         {visibilityVals.map((visibility) => {
-          const filteredEntries = entries.filter((entry) => entry.visibility === visibility);
+          const filteredEntries = entries.filter(
+            (entry) => entry.visibility === visibility && (filteredTag === "" || entry.tags.includes(filteredTag))
+          );
           const icon = visibilityIcons[visibility];
           if (filteredEntries.length > 0) {
             return (
