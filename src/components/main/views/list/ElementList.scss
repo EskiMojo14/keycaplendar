@@ -40,7 +40,7 @@
     flex-shrink: 0;
     animation: animation.standard(fade-in-scale, 150ms) forwards;
   }
-  .link-icon {
+  .share-icon {
     position: absolute;
     box-sizing: border-box;
     height: 100%;
@@ -60,7 +60,7 @@
     .ship-indicator {
       animation: animation.standard(fade-out, 150ms) forwards;
     }
-    .link-icon .mdc-icon-button {
+    .share-icon .mdc-icon-button {
       animation: animation.standard(fade-in-scale, 150ms) forwards;
     }
   }

@@ -21,6 +21,7 @@ type MainState = {
   allSets: SetType[];
   filteredSets: SetType[];
   setGroups: SetGroup[];
+  urlSet: string;
 
   search: string;
   whitelist: WhitelistType;
@@ -50,6 +51,7 @@ const initialState: MainState = {
   allSets: [],
   filteredSets: [],
   setGroups: [],
+  urlSet: "",
 
   // filters
 
@@ -111,6 +113,9 @@ export const mainSlice = createSlice({
     setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
       state.setGroups = action.payload;
     },
+    setURLSet: (state, action: PayloadAction<string>) => {
+      state.urlSet = action.payload;
+    },
     setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
     },
@@ -142,6 +147,7 @@ export const {
   setList,
   setSetList,
   setSetGroups,
+  setURLSet,
   setSearch,
   setWhitelist,
   mergeWhitelist,
@@ -175,6 +181,8 @@ export const selectAllSets = (state: RootState) => state.main.allSets;
 export const selectFilteredSets = (state: RootState) => state.main.filteredSets;
 
 export const selectSetGroups = (state: RootState) => state.main.setGroups;
+
+export const selectURLSet = (state: RootState) => state.main.urlSet;
 
 export const selectSearch = (state: RootState) => state.main.search;
 

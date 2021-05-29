@@ -14,6 +14,7 @@ import {
   setSearch as setMainSearch,
   setAppPresets,
   setTransition,
+  setURLSet,
 } from "../main/mainSlice";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "../main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/functions";
@@ -128,6 +129,12 @@ export const getURLQuery = () => {
       setWhitelistMerge(whitelistObj, false);
     }
   });
+  if (params.has("keysetId")) {
+    const keysetId = params.get("keysetId");
+    if (keysetId) {
+      dispatch(setURLSet(keysetId));
+    }
+  }
   if (params.has("statisticsTab")) {
     const urlTab = params.get("statisticsTab");
     if (urlTab && arrayIncludes(statsTabs, urlTab)) {

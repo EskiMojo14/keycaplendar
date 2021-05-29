@@ -79,7 +79,7 @@ export const ElementCompact = (props: ElementCompactProps) => {
         target="_blank"
         rel="noopener noreferrer"
         icon="open_in_new"
-      ></IconButton>
+      />
     </ListItem>
   );
 };

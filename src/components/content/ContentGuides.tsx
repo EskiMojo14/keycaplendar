@@ -75,8 +75,9 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       setDetailOpen(true);
       openModal();
     }
-
-    dispatch(setUrlEntry(""));
+    if (urlEntry) {
+      dispatch(setUrlEntry(""));
+    }
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {
       params.delete("guideId");

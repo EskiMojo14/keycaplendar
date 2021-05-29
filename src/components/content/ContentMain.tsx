@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
-import { selectContent } from "../../app/slices/main/mainSlice";
+import { selectAllSets, selectContent, selectURLSet, setURLSet } from "../../app/slices/main/mainSlice";
 import { PresetType, SetType } from "../../app/slices/main/types";
 import { selectBottomNav, selectView } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -31,6 +31,8 @@ type ContentMainProps = {
 };
 
 export const ContentMain = (props: ContentMainProps) => {
+  const dispatch = useAppDispatch();
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectView);
@@ -38,6 +40,18 @@ export const ContentMain = (props: ContentMainProps) => {
   const user = useAppSelector(selectUser);
 
   const contentBool = useAppSelector(selectContent);
+  const allSets = useAppSelector(selectAllSets);
+  const urlSet = useAppSelector(selectURLSet);
+
+  useEffect(() => {
+    if (urlSet) {
+      const index = allSets.findIndex((set) => set.id === urlSet);
+      if (index >= 0) {
+        const keyset = allSets[index];
+        openDetails(keyset);
+      }
+    }
+  }, [allSets]);
 
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
@@ -75,6 +89,16 @@ export const ContentMain = (props: ContentMainProps) => {
       }
       setDetailsOpen(true);
       setDetailSet(set);
+
+      if (urlSet) {
+        dispatch(setURLSet(""));
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("keysetId")) {
+        params.delete("keysetId");
+        const questionParam = params.has("page") ? "?" + params.toString() : "/";
+        window.history.pushState({}, "KeycapLendar", questionParam);
+      }
     };
     if (filterOpen) {
       closeFilter();
