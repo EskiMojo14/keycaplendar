@@ -234,7 +234,7 @@ export const setPage = (page: Page) => {
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
-    const pageParams = ["keysetId", "guideId", "updateId"];
+    const pageParams = ["keysetId", "keysetAlias", "keysetName", "guideId", "updateId"];
     pageParams.forEach((param) => {
       if (params.has(param)) {
         params.delete(param);
