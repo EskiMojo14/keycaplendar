@@ -48,7 +48,7 @@ export const ContentMain = (props: ContentMainProps) => {
       const index = allSets.findIndex((set) => set.id === urlSet);
       if (index >= 0) {
         const keyset = allSets[index];
-        openDetails(keyset);
+        openDetails(keyset, false);
       }
     }
   }, [allSets]);
@@ -82,7 +82,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailSet, setDetailSet] = useState(blankSet);
-  const openDetails = (set: SetType) => {
+  const openDetails = (set: SetType, clearUrl = true) => {
     const open = () => {
       if (device !== "desktop" || view === "compact") {
         openModal();
@@ -90,14 +90,16 @@ export const ContentMain = (props: ContentMainProps) => {
       setDetailsOpen(true);
       setDetailSet(set);
 
-      if (urlSet) {
-        dispatch(setURLSet(""));
-      }
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("keysetId")) {
-        params.delete("keysetId");
-        const questionParam = params.has("page") ? "?" + params.toString() : "/";
-        window.history.pushState({}, "KeycapLendar", questionParam);
+      if (clearUrl) {
+        if (urlSet) {
+          dispatch(setURLSet(""));
+        }
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("keysetId")) {
+          params.delete("keysetId");
+          const questionParam = params.has("page") ? "?" + params.toString() : "/";
+          window.history.pushState({}, "KeycapLendar", questionParam);
+        }
       }
     };
     if (filterOpen) {

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
+import { pageTitle } from "../../app/slices/common/constants";
 import { closeModal, openModal } from "../../app/slices/common/functions";
-import { selectEntries, selectLoading } from "../../app/slices/updates/updatesSlice";
+import { selectEntries, selectLoading, selectURLEntry } from "../../app/slices/updates/updatesSlice";
 import { Update } from "../../app/slices/updates/constructors";
 import { getEntries, pinEntry } from "../../app/slices/updates/functions";
 import { UpdateEntryType } from "../../app/slices/updates/types";
@@ -24,7 +25,6 @@ import { UpdateEntry } from "../updates/UpdateEntry";
 import { ModalCreate, ModalEdit } from "../updates/admin/ModalEntry";
 import { DialogDelete } from "../updates/admin/DialogDelete";
 import "./ContentUpdates.scss";
-import { pageTitle } from "../../app/slices/common/constants";
 
 type ContentUpdatesProps = {
   openNav: () => void;
@@ -39,12 +39,28 @@ export const ContentUpdates = (props: ContentUpdatesProps) => {
 
   const loading = useAppSelector(selectLoading);
   const entries = useAppSelector(selectEntries);
+  const urlEntry = useAppSelector(selectURLEntry);
 
   useEffect(() => {
     if (entries.length === 0) {
       getEntries();
     }
   }, []);
+
+  useEffect(() => {
+    if (urlEntry) {
+      const element = document.getElementById("update-entry-" + urlEntry);
+      const topBar = document.querySelector<HTMLElement>(".mdc-top-app-bar");
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView();
+          if (topBar) {
+            document.documentElement.scrollTop -= topBar.offsetHeight + 16;
+          }
+        }, 1000);
+      }
+    }
+  }, [JSON.stringify(entries)]);
 
   const blankEntry: UpdateEntryType = new Update();
   const [createOpen, setCreateOpen] = useState(false);

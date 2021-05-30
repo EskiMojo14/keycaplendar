@@ -21,6 +21,7 @@ import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/fu
 import { WhitelistType } from "../main/types";
 import { statsTabs } from "../statistics/constants";
 import { setStatisticsTab } from "../statistics/functions";
+import { setURLEntry } from "../updates/updatesSlice";
 
 const db = firebase.firestore();
 
@@ -153,6 +154,12 @@ export const getURLQuery = () => {
       dispatch(setUrlEntry(guideId));
     }
   }
+  if (params.has("updateId")) {
+    const updateId = params.get("updateId");
+    if (updateId) {
+      dispatch(setURLEntry(updateId));
+    }
+  }
   getData();
 };
 
@@ -199,6 +206,12 @@ export const setPage = (page: Page) => {
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
     params.set("page", page);
+    const pageParams = ["keysetId", "guideId", "updateId"];
+    pageParams.forEach((param) => {
+      if (params.has(param)) {
+        params.delete(param);
+      }
+    });
     window.history.pushState(
       {
         page: page,

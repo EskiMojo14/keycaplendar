@@ -6,12 +6,14 @@ type UpdatesState = {
   loading: boolean;
 
   entries: UpdateEntryType[];
+  urlEntry: string;
 };
 
 const initialState: UpdatesState = {
   loading: false,
 
   entries: [],
+  urlEntry: "",
 };
 
 export const updatesSlice = createSlice({
@@ -24,13 +26,18 @@ export const updatesSlice = createSlice({
     setEntries: (state, action: PayloadAction<UpdateEntryType[]>) => {
       state.entries = action.payload;
     },
+    setURLEntry: (state, action: PayloadAction<string>) => {
+      state.urlEntry = action.payload;
+    },
   },
 });
 
-export const { setLoading, setEntries } = updatesSlice.actions;
+export const { setLoading, setEntries, setURLEntry } = updatesSlice.actions;
 
 export const selectLoading = (state: RootState) => state.updates.loading;
 
 export const selectEntries = (state: RootState) => state.updates.entries;
+
+export const selectURLEntry = (state: RootState) => state.updates.urlEntry;
 
 export default updatesSlice.reducer;

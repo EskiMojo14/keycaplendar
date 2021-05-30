@@ -1275,10 +1275,19 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
 
   .update-entry {
     color: map-get($variables, text-high);
+    .linked-indicator {
+      color: map-get($variables, text-medium);
+    }
     &.pinned {
       a,
-      .pin-indicator {
+      .pin-indicator,
+      .linked-indicator {
         color: map-get($variables, secondary);
+      }
+    }
+    &.linked {
+      @if ($dark) {
+        background-color: overlay-elevation(map-get($variables, surface), 3);
       }
     }
   }
