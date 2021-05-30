@@ -167,6 +167,11 @@
       }
     }
   }
+  .group-collapsible .rmwc-collapsible-list {
+    &__handle .mdc-list-item {
+      height: 40px;
+    }
+  }
   .content-container &.mdc-drawer--dismissible {
     height: calc(100% - #{top-app-bar.$row-height});
   }

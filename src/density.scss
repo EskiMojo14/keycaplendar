@@ -213,6 +213,19 @@
         height: 64px + $diff;
       }
     }
+    .group-collapsible .rmwc-collapsible-list__handle .mdc-list-item {
+      height: density.prop-value(
+        (
+          height: (
+            default: 40px,
+            maximum: 40px,
+            minimum: 32px,
+          ),
+        ),
+        $density,
+        height
+      );
+    }
   }
   .mdc-fab--extended {
     height: 48px + $diff;

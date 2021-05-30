@@ -424,7 +424,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             <ListItemMeta icon="expand_more" />
           </ListItem>
         }
-        className="preset-collapsible"
+        className="group-collapsible preset-collapsible"
       >
         <div className="preset-group">
           <Select
