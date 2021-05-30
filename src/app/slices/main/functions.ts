@@ -113,6 +113,7 @@ export const getData = () => {
             typeof doc.data().sales === "string" ? { img: doc.data().sales, thirdParty: false } : doc.data().sales;
           sets.push({
             id: doc.id,
+            alias: doc.data().alias ? doc.data().alias : "",
             profile: doc.data().profile,
             colorway: doc.data().colorway,
             designer: doc.data().designer,

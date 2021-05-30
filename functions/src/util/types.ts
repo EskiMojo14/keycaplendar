@@ -9,6 +9,8 @@ export type VendorType = {
 };
 
 export type SetType = {
+  id: string;
+  alias: string;
   latestEditor: string;
   colorway: string;
   designer: string[];
@@ -18,7 +20,6 @@ export type SetType = {
   gbLaunch: string;
   gbMonth?: boolean;
   icDate: string;
-  id: string;
   image: string;
   profile: string;
   sales?: {
