@@ -47,7 +47,8 @@ export const ElementCard = (props: ElementCardProps) => {
   const hidden = useAppSelector(selectHidden);
 
   const copyLink = () => {
-    const url = window.location.href.split("?")[0] + "?keysetId=" + props.set.id;
+    const arr = window.location.href.split("/");
+    const url = arr[0] + "//" + arr[2] + "?keysetId=" + props.set.id;
     navigator.clipboard
       .writeText(url)
       .then(() => {
