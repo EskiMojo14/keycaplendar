@@ -1,9 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames";
-import { UserContext, DeviceContext } from "../util/contexts";
-import { mainPages } from "../util/constants";
-import { openModal, closeModal } from "../util/functions";
-import { MainWhitelistType, QueueType, SetType, SortOrderType } from "../util/types";
+import { useAppSelector } from "../app/hooks";
+import { selectDevice, selectPage } from "../app/slices/common/commonSlice";
+import { mainPages } from "../app/slices/common/constants";
+import { arrayIncludes, closeModal, openModal } from "../app/slices/common/functions";
+import { selectBottomNav } from "../app/slices/settings/settingsSlice";
+import { selectUser } from "../app/slices/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "./common/DrawerNav";
 import { ContentAudit } from "./content/ContentAudit";
@@ -11,59 +13,24 @@ import { ContentImages } from "./content/ContentImages";
 import { ContentMain } from "./content/ContentMain";
 import { ContentSettings } from "./content/ContentSettings";
 import { ContentStatistics } from "./content/ContentStatistics";
+import { ContentHistory } from "./content/ContentHistory";
 import { ContentUsers } from "./content/ContentUsers";
+import { ContentGuides } from "./content/ContentGuides";
+import { ContentUpdates } from "./content/ContentUpdates";
 import "./Content.scss";
 
 type ContentProps = {
-  allDesigners: string[];
-  allRegions: string[];
-  allSets: SetType[];
-  allVendors: string[];
-  applyTheme: string;
-  bottomNav: boolean;
   className: string;
-  content: boolean;
-  darkTheme: string;
-  density: string;
-  fromTimeTheme: string;
-  getData: () => void;
-  groups: string[];
-  lightTheme: string;
-  loading: boolean;
-  manualTheme: boolean;
-  page: string;
-  profiles: string[];
-  search: string;
-  setApplyTheme: (applyTheme: string) => void;
-  setBottomNav: (bottomNav: boolean) => void;
-  setDarkTheme: (darkTheme: string) => void;
-  setDensity: (density: string) => void;
-  setFromTimeTheme: (fromTimeTheme: string) => void;
-  setLightTheme: (lightTheme: string) => void;
-  setManualTheme: (manualTheme: boolean) => void;
-  setPage: (page: string) => void;
-  setSearch: (search: string) => void;
-  setSort: (sort: string) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
-  setStatisticsTab: (tab: string) => void;
-  setToTimeTheme: (toTimeTheme: string) => void;
-  setView: (view: string) => void;
-  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
-  sets: SetType[];
-  snackbarQueue: QueueType;
-  sort: string;
-  sortOrder: SortOrderType;
-  statisticsTab: string;
-  toTimeTheme: string;
-  toggleLichTheme: () => void;
-  toggleLoading: () => void;
-  view: string;
-  whitelist: MainWhitelistType;
 };
 
 export const Content = (props: ContentProps) => {
-  const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
+
+  const user = useAppSelector(selectUser);
+
+  const page = useAppSelector(selectPage);
+
   const [navOpen, setNavOpen] = useState(false);
   const [navEdited, setNavEdited] = useState(false);
   const openNav = () => {
@@ -88,117 +55,32 @@ export const Content = (props: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = mainPages.includes(props.page) ? (
-    <ContentMain
-      bottomNav={props.bottomNav}
-      navOpen={navOpen}
-      openNav={openNav}
-      page={props.page}
-      content={props.content}
-      groups={props.groups}
-      sets={props.sets}
-      sort={props.sort}
-      setSort={props.setSort}
-      sortOrder={props.sortOrder}
-      setSortOrder={props.setSortOrder}
-      view={props.view}
-      setView={props.setView}
-      search={props.search}
-      setSearch={props.setSearch}
-      toggleLichTheme={props.toggleLichTheme}
-      profiles={props.profiles}
-      allDesigners={props.allDesigners}
-      allVendors={props.allVendors}
-      allRegions={props.allRegions}
-      setWhitelist={props.setWhitelist}
-      whitelist={props.whitelist}
-      snackbarQueue={props.snackbarQueue}
-      loading={props.loading}
-      getData={props.getData}
-    />
-  ) : null;
-  const contentStatistics =
-    props.page === "statistics" ? (
-      <ContentStatistics
-        profiles={props.profiles}
-        sets={props.allSets}
-        bottomNav={props.bottomNav}
-        navOpen={navOpen}
-        openNav={openNav}
-        statisticsTab={props.statisticsTab}
-        setStatisticsTab={props.setStatisticsTab}
-        allDesigners={props.allDesigners}
-        allVendors={props.allVendors}
-        snackbarQueue={props.snackbarQueue}
-      />
-    ) : null;
-  const contentAudit =
-    props.page === "audit" && user.isAdmin ? (
-      <ContentAudit openNav={openNav} bottomNav={props.bottomNav} snackbarQueue={props.snackbarQueue} />
-    ) : null;
-  const contentUsers =
-    props.page === "users" && user.isAdmin ? (
-      <ContentUsers
-        bottomNav={props.bottomNav}
-        openNav={openNav}
-        allDesigners={props.allDesigners}
-        snackbarQueue={props.snackbarQueue}
-        device={device}
-      />
-    ) : null;
-  const contentImages =
-    props.page === "images" && user.isAdmin ? (
-      <ContentImages
-        openNav={openNav}
-        bottomNav={props.bottomNav}
-        sets={props.allSets}
-        snackbarQueue={props.snackbarQueue}
-      />
-    ) : null;
-  const contentSettings =
-    props.page === "settings" ? (
-      <ContentSettings
-        openNav={openNav}
-        bottomNav={props.bottomNav}
-        setBottomNav={props.setBottomNav}
-        lightTheme={props.lightTheme}
-        setLightTheme={props.setLightTheme}
-        darkTheme={props.darkTheme}
-        setDarkTheme={props.setDarkTheme}
-        applyTheme={props.applyTheme}
-        setApplyTheme={props.setApplyTheme}
-        manualTheme={props.manualTheme}
-        setManualTheme={props.setManualTheme}
-        fromTimeTheme={props.fromTimeTheme}
-        setFromTimeTheme={props.setFromTimeTheme}
-        toTimeTheme={props.toTimeTheme}
-        setToTimeTheme={props.setToTimeTheme}
-        density={props.density}
-        setDensity={props.setDensity}
-        snackbarQueue={props.snackbarQueue}
-      />
-    ) : null;
+  const contentMain = arrayIncludes(mainPages, page) ? <ContentMain navOpen={navOpen} openNav={openNav} /> : null;
+  const contentStatistics = page === "statistics" ? <ContentStatistics navOpen={navOpen} openNav={openNav} /> : null;
+  const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} /> : null;
+  const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
+  const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
+  const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
+  const contentGuides = page === "guides" ? <ContentGuides openNav={openNav} /> : null;
+  const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
+  const contentSettings = page === "settings" ? <ContentSettings openNav={openNav} /> : null;
   return (
     <div
-      className={classNames(props.className, props.page, "app-container", {
-        "offset-snackbar": (user.isEditor || user.isDesigner) && device !== "desktop" && mainPages.includes(props.page),
-        "bottom-nav": props.bottomNav,
+      className={classNames(props.className, page, "app-container", {
+        "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && arrayIncludes(mainPages, page),
+        "bottom-nav": bottomNav,
       })}
     >
-      <DrawerNav
-        bottomNav={props.bottomNav}
-        view={props.view}
-        open={navOpen}
-        close={closeNav}
-        page={props.page}
-        setPage={props.setPage}
-      />
+      <DrawerNav open={navOpen} close={closeNav} />
       <DrawerAppContent>
         {contentMain}
         {contentStatistics}
+        {contentChangelog}
         {contentAudit}
         {contentUsers}
         {contentImages}
+        {contentGuides}
+        {contentUpdates}
         {contentSettings}
       </DrawerAppContent>
     </div>

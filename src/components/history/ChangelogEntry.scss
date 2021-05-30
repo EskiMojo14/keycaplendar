@@ -1,0 +1,42 @@
+@use "@material/theme/color-palette" as palette;
+@use "@material/shape/_index" as shape;
+@use "../../util";
+
+.changelog-entry {
+  @include util.divider-border(bottom);
+  &:last-child {
+    border-bottom: none;
+  }
+  .rmwc-collapsible-list__children-inner {
+    padding: 16px;
+  }
+  .mdc-data-table {
+    width: 100%;
+    box-sizing: border-box;
+    .mdc-data-table__row {
+      .mdc-data-table__cell {
+        &.before {
+          .highlight {
+            background-color: rgba(palette.$red-200, 0.2);
+            font-weight: bold;
+          }
+        }
+        &.after {
+          .highlight {
+            background-color: rgba(palette.$green-200, 0.2);
+            font-weight: bold;
+          }
+        }
+        .list-checkbox {
+          display: flex;
+          align-items: center;
+        }
+        .vendor-container {
+          margin: 16px 0;
+          padding: 8px;
+          @include util.divider-border(all);
+        }
+      }
+    }
+  }
+}

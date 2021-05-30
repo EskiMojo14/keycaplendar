@@ -1,7 +1,7 @@
 import React from "react";
 import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
-import BEMHelper from "../../util/bemHelper";
+import BEMHelper from "../../app/slices/common/bemHelper";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
@@ -13,12 +13,16 @@ type AutocompleteProps = React.HTMLAttributes<HTMLElement> & {
   prop: string;
   query: string;
   select: (prop: string, item: string) => void;
+  listSplit?: boolean;
 };
 
 export const Autocomplete = (props: AutocompleteProps) => {
-  const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
+  const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
+  const splitQuery = query.split(", ");
+  const lastItem = splitQuery[splitQuery.length - 1];
+  const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(query.toLowerCase());
+    return item.toLowerCase().includes(useQuery.toLowerCase());
   });
   const firstFour = matchingItems.slice(0, 4);
   return (
@@ -26,7 +30,7 @@ export const Autocomplete = (props: AutocompleteProps) => {
       {...filteredProps}
       className={classNames("autocomplete", className)}
       focusOnOpen={false}
-      open={open && query.length >= minChars && matchingItems.length > 0}
+      open={open && useQuery.length >= minChars && matchingItems.length > 0}
       anchorCorner="bottomLeft"
       onSelect={(e) => {
         select(prop, matchingItems[e.detail.index]);
@@ -35,13 +39,13 @@ export const Autocomplete = (props: AutocompleteProps) => {
         }
       }}
     >
-      {query.length >= minChars
+      {useQuery.length >= minChars
         ? open
           ? matchingItems.map((item) => {
               return (
                 <MenuItem key={item}>
-                  {query.length > 0
-                    ? reactStringReplace(item, query, (match, i) => (
+                  {useQuery.length > 0
+                    ? reactStringReplace(item, useQuery, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>
@@ -53,8 +57,8 @@ export const Autocomplete = (props: AutocompleteProps) => {
           : firstFour.map((item) => {
               return (
                 <MenuItem key={item}>
-                  {query.length > 0
-                    ? reactStringReplace(item, query, (match, i) => (
+                  {useQuery.length > 0
+                    ? reactStringReplace(item, useQuery, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>
@@ -71,19 +75,22 @@ export const Autocomplete = (props: AutocompleteProps) => {
 const bemClasses = new BEMHelper("autocomplete-mobile");
 
 export const AutocompleteMobile = (props: AutocompleteProps) => {
-  const { array, className, minChars, open, prop, query, select, ...filteredProps } = props;
+  const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
+  const splitQuery = query.split(", ");
+  const lastItem = splitQuery[splitQuery.length - 1];
+  const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(query.toLowerCase());
+    return item.toLowerCase().includes(useQuery.toLowerCase());
   });
   return (
     <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
       <List>
-        {query.length >= minChars
+        {useQuery.length >= minChars
           ? matchingItems.map((item) => {
               return (
                 <ListItem key={item} onClick={() => select(prop, item)}>
-                  {query.length > 0
-                    ? reactStringReplace(item, query, (match, i) => (
+                  {useQuery.length > 0
+                    ? reactStringReplace(item, useQuery, (match, i) => (
                         <span key={match + i} className="highlight">
                           {match}
                         </span>

@@ -19,6 +19,9 @@
       }
       .mdc-card {
         margin-bottom: 16px;
+        &.placeholder-account {
+          padding: 12px 0;
+        }
         .account {
           &::before,
           &::after {
@@ -35,7 +38,15 @@
           .button {
             @include rtl.reflexive-box(margin, left, auto);
             flex-shrink: 0;
+            a {
+              text-decoration: none;
+            }
           }
+        }
+        .delete-container {
+          padding: 16px;
+          display: flex;
+          justify-content: flex-end;
         }
         &.theme-card {
           padding: 16px;
@@ -172,6 +183,9 @@
             padding: 0;
           }
           .switch-container.account {
+            padding: 0;
+          }
+          .delete-container {
             padding: 0;
           }
         }

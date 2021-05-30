@@ -1,0 +1,65 @@
+@use "@material/animation/_index" as animation;
+@use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
+@use "../../util";
+
+.set-changelog {
+  overflow: hidden;
+  .lazy-load {
+    display: flex;
+    flex-direction: column;
+    margin-top: 56.25%;
+    .mdc-card__media {
+      margin-top: -56.25%;
+      animation: animation.standard(fade-in, 500ms) forwards;
+      &-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--divider-color);
+        .deleted-indicator {
+          position: absolute;
+          bottom: 8px;
+          @include rtl.reflexive-position(left, 8px);
+          display: flex;
+          align-items: center;
+          margin: 0;
+          height: 24px;
+          padding: 0 12px;
+          @include shape.radius(12px);
+          z-index: 3;
+        }
+      }
+    }
+  }
+  .info-container {
+    padding: 16px;
+    .mdc-typography--overline,
+    .mdc-typography--headline5,
+    .mdc-typography--subtitle2 {
+      margin: 0;
+    }
+  }
+  .filter-button-container {
+    @include util.divider-border(top);
+    padding: 16px;
+    display: flex;
+    .mdc-button {
+      flex-grow: 1;
+    }
+  }
+  .page-list {
+    @include util.divider-border(top);
+    padding: 16px;
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      margin: -4px;
+      margin-top: 8px;
+      .mdc-button {
+        flex: calc(50% - 8px) 1 0;
+        margin: 4px;
+      }
+    }
+  }
+}

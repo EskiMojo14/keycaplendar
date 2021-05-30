@@ -30,6 +30,9 @@
     flex-grow: 1;
     flex-shrink: 1;
     height: auto;
+    a {
+      text-decoration: none;
+    }
     .details {
       &-image {
         margin: 16px;
@@ -47,7 +50,8 @@
           margin: 0;
         }
         .mdc-typography--headline4,
-        .mdc-typography--body2 {
+        .mdc-typography--body2,
+        .mdc-typography--caption {
           margin: 8px 0px;
         }
         .mdc-typography--headline4 {

@@ -1,6 +1,4 @@
 @use "@material/theme/color-palette" as palette;
-@use "@material/shape/_index" as shape;
-@use "@material/typography/_index" as typography;
 @use "../../util";
 
 .log .rmwc-collapsible-list {
@@ -27,6 +25,10 @@
             background-color: rgba(palette.$green-200, 0.2);
             font-weight: bold;
           }
+        }
+        .list-checkbox {
+          display: flex;
+          align-items: center;
         }
       }
     }

@@ -1,9 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
-import { pageTitle, viewIcons } from "../../../util/constants";
-import { DeviceContext } from "../../../util/contexts";
-import { boolFunctions } from "../../../util/functions";
-import { SetType, SortOrderType } from "../../../util/types";
+import { useAppSelector } from "../../../app/hooks";
+import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice";
+import { pageTitle } from "../../../app/slices/common/constants";
+import { useBoolStates } from "../../../app/slices/common/functions";
+import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice";
+import { setSearch } from "../../../app/slices/main/functions";
+import { selectBottomNav, selectView } from "../../../app/slices/settings/settingsSlice";
+import { viewIcons } from "../../../app/slices/settings/constants";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -21,30 +25,27 @@ import { SearchBarPersistent, SearchBarModal, SearchAppBar } from "./SearchBar";
 import "./AppBar.scss";
 
 type AppBarProps = {
-  bottomNav: boolean;
   indent: boolean;
-  loading: boolean;
   openFilter: () => void;
   openNav: () => void;
-  page: string;
-  search: string;
-  setSearch: (search: string) => void;
-  setSort: (sort: string) => void;
-  setSortOrder: (sortOrder: SortOrderType) => void;
-  setView: (view: string) => void;
-  sets: SetType[];
-  sort: string;
-  sortOrder: SortOrderType;
-  view: string;
 };
 
 export const AppBar = (props: AppBarProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
+  const view = useAppSelector(selectView);
+  const bottomNav = useAppSelector(selectBottomNav);
+
+  const page = useAppSelector(selectPage);
+
+  const loading = useAppSelector(selectLoading);
+
+  const search = useAppSelector(selectSearch);
+
   const [sortOpen, setSortOpen] = useState(false);
-  const [closeSort, openSort] = boolFunctions(setSortOpen);
+  const [closeSort, openSort] = useBoolStates(setSortOpen);
 
   const [viewOpen, setViewOpen] = useState(false);
-  const [closeView, openView] = boolFunctions(setViewOpen);
+  const [closeView, openView] = useBoolStates(setViewOpen);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const openSearch = () => {
@@ -55,10 +56,10 @@ export const AppBar = (props: AppBarProps) => {
     setSearchOpen(false);
   };
 
-  const tooltipAlign = props.bottomNav ? "top" : "bottom";
+  const tooltipAlign = bottomNav ? "top" : "bottom";
 
   const indent =
-    props.indent && props.bottomNav ? (
+    props.indent && bottomNav ? (
       <TopAppBarSection className="indent" alignEnd>
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
           <path
@@ -71,35 +72,18 @@ export const AppBar = (props: AppBarProps) => {
     ) : null;
 
   const searchBar = indent ? (
-    <SearchAppBar
-      open={searchOpen}
-      openBar={openSearch}
-      close={closeSearch}
-      search={props.search}
-      setSearch={props.setSearch}
-      sets={props.sets}
-    />
+    <SearchAppBar open={searchOpen} openBar={openSearch} close={closeSearch} search={search} setSearch={setSearch} />
   ) : null;
   const buttons = (
     <>
-      {device === "desktop" ? (
-        <SearchBarPersistent search={props.search} setSearch={props.setSearch} sets={props.sets} />
-      ) : null}
-      <MenuSurfaceAnchor className={classNames({ hidden: props.page === "calendar" })}>
-        <MenuSort
-          page={props.page}
-          sort={props.sort}
-          sortOrder={props.sortOrder}
-          open={sortOpen}
-          setSort={props.setSort}
-          setSortOrder={props.setSortOrder}
-          onClose={closeSort}
-        />
+      {device === "desktop" ? <SearchBarPersistent search={search} setSearch={setSearch} /> : null}
+      <MenuSurfaceAnchor className={classNames({ hidden: page === "calendar" })}>
+        <MenuSort open={sortOpen} onClose={closeSort} />
         <Tooltip
           enterDelay={500}
           content="Sort"
           align={tooltipAlign}
-          className={classNames({ hidden: props.page === "calendar" })}
+          className={classNames({ hidden: page === "calendar" })}
         >
           <TopAppBarActionItem style={{ "--animation-delay": 1 }} icon="sort" onClick={openSort} />
         </Tooltip>
@@ -108,20 +92,14 @@ export const AppBar = (props: AppBarProps) => {
         <TopAppBarActionItem style={{ "--animation-delay": 2 }} icon="filter_list" onClick={props.openFilter} />
       </Tooltip>
       <MenuSurfaceAnchor>
-        <MenuView view={props.view} open={viewOpen} setView={props.setView} onClose={closeView} />
+        <MenuView open={viewOpen} onClose={closeView} />
         <Tooltip enterDelay={500} content="View" align={tooltipAlign}>
-          <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[props.view]} />
+          <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[view]} />
         </Tooltip>
       </MenuSurfaceAnchor>
       {device !== "desktop" && !indent ? (
         <div>
-          <SearchBarModal
-            open={searchOpen}
-            close={closeSearch}
-            search={props.search}
-            setSearch={props.setSearch}
-            sets={props.sets}
-          />
+          <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
           <Tooltip enterDelay={500} content="Search" align="bottom">
             <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
           </Tooltip>
@@ -134,12 +112,12 @@ export const AppBar = (props: AppBarProps) => {
       ) : null}
     </>
   );
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[props.page]}</TopAppBarTitle> : buttons;
+  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[page]}</TopAppBarTitle> : buttons;
   const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
   return (
     <>
       {searchBar}
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": props.bottomNav, "bottom-app-bar--indent": indent })}>
+      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": indent })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
@@ -148,7 +126,7 @@ export const AppBar = (props: AppBarProps) => {
           {indent}
           {rightButtons}
         </TopAppBarRow>
-        <LinearProgress closed={!props.loading} />
+        <LinearProgress closed={!loading} />
       </TopAppBar>
     </>
   );

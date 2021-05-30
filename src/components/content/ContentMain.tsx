@@ -1,61 +1,66 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { DeviceContext, UserContext } from "../../util/contexts";
-import { Preset, Keyset } from "../../util/constructors";
-import { openModal, closeModal } from "../../util/functions";
-import { MainWhitelistType, PresetType, QueueType, SetType, SortOrderType } from "../../util/types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../../app/slices/common/commonSlice";
+import { closeModal, openModal } from "../../app/slices/common/functions";
+import { Keyset, Preset } from "../../app/slices/main/constructors";
+import { selectAllSets, selectContent, selectURLSet, setURLSet } from "../../app/slices/main/mainSlice";
+import { PresetType, SetType } from "../../app/slices/main/types";
+import { selectBottomNav, selectView } from "../../app/slices/settings/settingsSlice";
+import { selectUser } from "../../app/slices/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
-import { ContentGrid } from "./ContentGrid";
-import { ContentEmpty } from "./ContentEmpty";
 import { AppBar } from "../main/app_bar/AppBar";
+import { ContentEmpty } from "../main/content/ContentEmpty";
+import { ContentGrid } from "../main/content/ContentGrid";
 import { DrawerDetails } from "../main/DrawerDetails";
 import { DrawerFilter } from "../main/DrawerFilter";
 import { DialogSales } from "../main/DialogSales";
-import { DrawerFilterPreset } from "../main/DrawerFilterPreset";
-import { DialogFilterPreset } from "../main/DialogFilterPreset";
+import { ModalFilterPreset } from "../main/ModalFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
-import { DrawerCreate, DrawerEdit } from "../main/admin/DrawerEntry";
-import { DialogCreate, DialogEdit } from "../main/admin/DialogEntry";
+import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
 import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
-import ConditionalWrapper, { BoolWrapper } from "../util/ConditionalWrapper";
+import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
 
 type ContentMainProps = {
-  bottomNav: boolean;
   navOpen: boolean;
   openNav: () => void;
-  page: string;
-  content: boolean;
-  groups: string[];
-  sets: SetType[];
-  sort: string;
-  setSort: (sort: string) => void;
-  sortOrder: SortOrderType;
-  setSortOrder: (sortOrder: SortOrderType) => void;
-  view: string;
-  setView: (view: string) => void;
-  search: string;
-  setSearch: (search: string) => void;
-  toggleLichTheme: () => void;
-  profiles: string[];
-  allDesigners: string[];
-  allVendors: string[];
-  allRegions: string[];
-  setWhitelist: (prop: string, whitelist: MainWhitelistType | MainWhitelistType[keyof MainWhitelistType]) => void;
-  whitelist: MainWhitelistType;
-  snackbarQueue: QueueType;
-  loading: boolean;
-  getData: () => void;
 };
 
 export const ContentMain = (props: ContentMainProps) => {
-  const { user } = useContext(UserContext);
-  const device = useContext(DeviceContext);
-  const blankSet = new Keyset();
-  const blankPreset = new Preset();
+  const dispatch = useAppDispatch();
+
+  const device = useAppSelector(selectDevice);
+  const bottomNav = useAppSelector(selectBottomNav);
+  const view = useAppSelector(selectView);
+
+  const user = useAppSelector(selectUser);
+
+  const contentBool = useAppSelector(selectContent);
+  const allSets = useAppSelector(selectAllSets);
+  const urlSet = useAppSelector(selectURLSet);
+
+  useEffect(() => {
+    if (urlSet.value) {
+      const index = allSets.findIndex((set) => {
+        if (urlSet.prop === "name") {
+          return urlSet.value === `${set.profile} ${set.colorway}`;
+        } else {
+          return set[urlSet.prop] === urlSet.value;
+        }
+      });
+      if (index >= 0) {
+        const keyset = allSets[index];
+        openDetails(keyset, false);
+      }
+    }
+  }, [allSets]);
+
+  const blankSet: SetType = new Keyset();
+  const blankPreset: PresetType = new Preset();
 
   const [filterOpen, setFilterOpen] = useState(false);
   const openFilter = () => {
@@ -63,7 +68,7 @@ export const ContentMain = (props: ContentMainProps) => {
       if (filterOpen && device === "desktop") {
         closeFilter();
       } else {
-        if (device !== "desktop" || props.view === "compact") {
+        if (device !== "desktop" || view === "compact") {
           openModal();
         }
         setFilterOpen(true);
@@ -83,13 +88,32 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailSet, setDetailSet] = useState(blankSet);
-  const openDetails = (set: SetType) => {
+  const openDetails = (set: SetType, clearUrl = true) => {
     const open = () => {
-      if (device !== "desktop" || props.view === "compact") {
+      if (device !== "desktop" || view === "compact") {
         openModal();
       }
       setDetailsOpen(true);
       setDetailSet(set);
+
+      if (clearUrl) {
+        if (urlSet) {
+          dispatch(
+            setURLSet({
+              prop: "id",
+              value: "",
+            })
+          );
+        }
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {
+          params.delete("keysetId");
+          params.delete("keysetAlias");
+          params.delete("keysetName");
+          const questionParam = params.has("page") ? "?" + params.toString() : "/";
+          window.history.pushState({}, "KeycapLendar", questionParam);
+        }
+      }
     };
     if (filterOpen) {
       closeFilter();
@@ -167,7 +191,7 @@ export const ContentMain = (props: ContentMainProps) => {
       setFilterPresetOpen(true);
       setFilterPreset(preset);
     };
-    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+    if (filterOpen && (view === "compact" || device !== "desktop")) {
       closeFilter();
       setTimeout(() => open(), 300);
     } else {
@@ -188,7 +212,7 @@ export const ContentMain = (props: ContentMainProps) => {
       setDeleteFilterPresetOpen(true);
       setDeleteFilterPreset(preset);
     };
-    if (filterOpen && (props.view === "compact" || device !== "desktop")) {
+    if (filterOpen && (view === "compact" || device !== "desktop")) {
       closeFilter();
       setTimeout(() => open(), 300);
     } else {
@@ -203,11 +227,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const filterPresetElements = user.email ? (
     <>
-      {device !== "mobile" ? (
-        <DrawerFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
-      ) : (
-        <DialogFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
-      )}
+      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
       <DialogDeleteFilterPreset
         open={deleteFilterPresetOpen}
         close={closeDeleteFilterPreset}
@@ -223,16 +243,8 @@ export const ContentMain = (props: ContentMainProps) => {
         close={closeDeleteDialog}
         set={deleteSet}
         openSnackbar={openDeleteSnackbar}
-        getData={props.getData}
-        snackbarQueue={props.snackbarQueue}
       />
-      <SnackbarDeleted
-        open={deleteSnackbarOpen}
-        close={closeDeleteSnackbar}
-        set={deleteSet}
-        getData={props.getData}
-        snackbarQueue={props.snackbarQueue}
-      />
+      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} />
     </>
   ) : null;
 
@@ -243,131 +255,45 @@ export const ContentMain = (props: ContentMainProps) => {
         wrapper={(children) => <div className="editor-elements">{children}</div>}
       >
         <Fab
-          className={classNames("create-fab", { middle: props.bottomNav })}
+          className={classNames("create-fab", { middle: bottomNav })}
           icon="add"
           label={device === "desktop" ? "Create" : null}
           onClick={openCreate}
         />
-        {device !== "mobile" ? (
-          <>
-            <DrawerCreate
-              open={createOpen}
-              close={closeCreate}
-              profiles={props.profiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allRegions={props.allRegions}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-            <DrawerEdit
-              open={editOpen}
-              close={closeEdit}
-              profiles={props.profiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allRegions={props.allRegions}
-              set={editSet}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-          </>
-        ) : (
-          <>
-            <DialogCreate
-              open={createOpen}
-              close={closeCreate}
-              profiles={props.profiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allRegions={props.allRegions}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-            <DialogEdit
-              open={editOpen}
-              close={closeEdit}
-              profiles={props.profiles}
-              allDesigners={props.allDesigners}
-              allVendors={props.allVendors}
-              allRegions={props.allRegions}
-              set={editSet}
-              getData={props.getData}
-              snackbarQueue={props.snackbarQueue}
-            />
-          </>
-        )}
+        <ModalCreate open={createOpen} close={closeCreate} />
+        <ModalEdit open={editOpen} close={closeEdit} set={editSet} />
         {deleteElements}
       </ConditionalWrapper>
     ) : null;
 
-  const content = props.content ? (
-    <ContentGrid
-      groups={props.groups}
-      sets={props.sets}
-      sort={props.sort}
-      sortOrder={props.sortOrder}
-      page={props.page}
-      view={props.view}
-      details={openDetails}
-      closeDetails={closeDetails}
-      detailSet={detailSet}
-      edit={openEdit}
-    />
+  const content = contentBool ? (
+    <ContentGrid details={openDetails} closeDetails={closeDetails} detailSet={detailSet} edit={openEdit} />
   ) : (
-    <ContentEmpty page={props.page} />
+    <ContentEmpty />
   );
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
-  const wrapperClasses = classNames("main", props.view, {
-    "extended-app-bar": props.view === "card" && !props.bottomNav,
+  const wrapperClasses = classNames("main", view, {
+    "extended-app-bar": view === "card" && !bottomNav && contentBool,
     "drawer-open": drawerOpen,
   });
   return (
     <>
-      <AppBar
-        openNav={props.openNav}
-        bottomNav={props.bottomNav}
-        indent={user.isDesigner || user.isEditor}
-        page={props.page}
-        view={props.view}
-        setView={props.setView}
-        sort={props.sort}
-        setSort={props.setSort}
-        sortOrder={props.sortOrder}
-        setSortOrder={props.setSortOrder}
-        search={props.search}
-        setSearch={props.setSearch}
-        sets={props.sets}
-        loading={props.loading}
-        openFilter={openFilter}
-      />
-      {props.bottomNav ? null : <TopAppBarFixedAdjust />}
+      <AppBar openNav={props.openNav} indent={user.isDesigner || user.isEditor} openFilter={openFilter} />
+      {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
-          view={props.view}
-          profiles={props.profiles}
-          vendors={props.allVendors}
           open={filterOpen}
           close={closeFilter}
-          setWhitelist={props.setWhitelist}
-          whitelist={props.whitelist}
-          snackbarQueue={props.snackbarQueue}
           openPreset={openFilterPreset}
           deletePreset={openDeleteFilterPreset}
-          sort={props.sort}
         />
         <DrawerDetails
-          view={props.view}
           set={detailSet}
           open={detailsOpen}
           close={closeDetails}
           edit={openEdit}
           delete={openDeleteDialog}
-          search={props.search}
-          setSearch={props.setSearch}
-          toggleLichTheme={props.toggleLichTheme}
           openSales={openSales}
-          device={device}
         />
         <BoolWrapper
           condition={device === "desktop"}
@@ -381,7 +307,7 @@ export const ContentMain = (props: ContentMainProps) => {
         {filterPresetElements}
         {editorElements}
       </div>
-      {props.bottomNav ? <TopAppBarFixedAdjust /> : null}
+      {bottomNav ? <TopAppBarFixedAdjust /> : null}
     </>
   );
 };

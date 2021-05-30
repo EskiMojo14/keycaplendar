@@ -67,6 +67,9 @@ $exit-time: 400ms;
     position: relative;
     top: 0 !important;
     @include elevation.elevation(4);
+    .mdc-button {
+      margin: 0 12px;
+    }
   }
   &__content {
     width: 100%;

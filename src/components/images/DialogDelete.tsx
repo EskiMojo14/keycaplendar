@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { batchStorageDelete } from "../../util/functions";
-import { ImageType, QueueType } from "../../util/types";
+import { useAppDispatch } from "../../app/hooks";
+import { queue } from "../../app/snackbarQueue";
+import { batchStorageDelete } from "../../app/slices/common/functions";
+import { setLoading } from "../../app/slices/images/imagesSlice";
+import { listAll } from "../../app/slices/images/functions";
+import { ImageType } from "../../app/slices/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
@@ -10,16 +14,14 @@ type DialogDeleteProps = {
   close: () => void;
   folders: string[];
   images: ImageType[];
-  listAll: () => void;
   open: boolean;
-  setLoading: (bool: boolean) => void;
-  snackbarQueue: QueueType;
   toggleImageChecked: (image: ImageType) => void;
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
+  const dispatch = useAppDispatch();
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
   };
   const createArray = (allVersions = deleteAllVersions) => {
@@ -33,24 +35,24 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   };
   const deleteImages = () => {
     const array = createArray();
-    props.setLoading(true);
+    dispatch(setLoading(true));
     batchStorageDelete(array)
       .then(() => {
-        props.snackbarQueue.notify({ title: "Successfully deleted files." });
+        queue.notify({ title: "Successfully deleted files." });
         props.close();
-        props.listAll();
+        listAll();
       })
       .catch((error) => {
-        props.snackbarQueue.notify({ title: "Failed to delete files: " + error });
+        queue.notify({ title: "Failed to delete files: " + error });
         console.log(error);
-        props.setLoading(false);
+        dispatch(setLoading(false));
       });
   };
   return (
     <Dialog open={props.open} onClose={props.close} className="delete-image-dialog">
-      <DialogTitle>{`Delete image${props.images.length > 1 ? "s" : ""}`}</DialogTitle>
+      <DialogTitle>{`Delete image${props.images.length === 1 ? "" : "s"}`}</DialogTitle>
       <DialogContent>
-        {`The following image${props.images.length > 1 ? "s" : ""} will be deleted:`}
+        {`The following image${props.images.length === 1 ? "" : "s"} will be deleted:`}
         <div className="chips-container">
           <ChipSet>
             {props.images.map((image) => (

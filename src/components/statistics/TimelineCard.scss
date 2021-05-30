@@ -10,28 +10,19 @@
     margin-top: 0;
     margin-bottom: 16px;
   }
+  .title-container {
+    display: flex;
+    .text-container {
+      flex-grow: 1;
+    }
+  }
   .timeline-container {
     display: flex;
     flex-direction: column;
-    .timeline-chart-container {
-      padding-top: 16px;
-      &.shipped .ct-chart {
-        .ct-series {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
-    }
     .table-container {
+      & + .timeline-chart-container {
+        padding-top: 16px;
+      }
       flex-grow: 1;
       .mdc-data-table {
         width: 100%;
@@ -57,6 +48,41 @@
           }
         }
       }
+    }
+    .timeline-chart-container {
+      &.shipped .ct-chart {
+        .ct-series {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: var(--divider-color);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: var(--divider-color);
+          }
+        }
+      }
+    }
+    .timeline-chips-container {
+      display: flex;
+      padding-top: 8px;
+      margin: -8px;
+      .mdc-chip-set {
+        flex-grow: 1;
+      }
+    }
+  }
+}
+
+.timeline-card.full-span {
+  .timeline-chart-container {
+    max-width: 100%;
+    overflow: auto;
+    .ct-chart {
+      min-width: 680px;
     }
   }
 }

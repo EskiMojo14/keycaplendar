@@ -86,14 +86,21 @@
   .mdc-tab-bar {
     @include tab-bar.density($density);
   }
-  .mdc-text-field:not(.search-bar__field) {
-    &:not(.mdc-text-field--outlined) {
-      @include textfield.density($density);
+  .mdc-text-field {
+    &:not(.search-bar__field):not(.mdc-text-field--textarea) {
+      &:not(.mdc-text-field--outlined) {
+        @include textfield.density($density);
+      }
+      &.mdc-text-field--outlined {
+        @include textfield.outlined-density($density);
+        &.mdc-text-field--with-leading-icon {
+          @include textfield.outlined-with-leading-icon-density($density);
+        }
+      }
     }
-    &.mdc-text-field--outlined {
-      @include textfield.outlined-density($density);
-      &.mdc-text-field--with-leading-icon {
-        @include textfield.outlined-with-leading-icon-density($density);
+    &.mdc-text-field--textarea {
+      .mdc-text-field__input {
+        min-height: 56px - 8px + $diff;
       }
     }
   }
@@ -152,7 +159,8 @@
         .details-text {
           padding-bottom: 16px + $diff;
           .mdc-typography--headline4,
-          .mdc-typography--body2 {
+          .mdc-typography--body2,
+          .mdc-typography--caption {
             margin: (8px + $diff / 2) 0;
           }
         }
@@ -170,8 +178,28 @@
       }
     }
     &.filter-drawer {
-      .mdc-drawer__content .group:not(:last-child) {
-        margin-bottom: 16px + $diff;
+      .preset {
+        &-group {
+          padding: 16px + $diff 16px;
+        }
+        &-buttons {
+          margin: 16px + $diff 0;
+          &:last-child {
+            margin: 0;
+          }
+        }
+      }
+      .top-buttons {
+        padding: 16px + $diff 16px;
+      }
+      .mdc-drawer__content .group {
+        &-collapsible .rmwc-collapsible-list__children-inner {
+          padding: 16px + $diff 16px;
+        }
+        .filter-segmented-button-container,
+        .filter-button-container {
+          margin-bottom: 16px + $diff;
+        }
       }
       div.subheader {
         padding-bottom: 16px + $diff;
@@ -194,7 +222,8 @@
     &__anchor {
       height: 56px + $diff;
     }
-    &__dropdown-icon {
+    &__dropdown-icon,
+    &--with-leading-icon .mdc-select__icon {
       bottom: 16px + $diff / 2;
     }
     &__selected-text {
@@ -225,12 +254,26 @@
   .drawer-open.main.extended-app-bar::before {
     height: 0;
   }
-  .statistics {
+  .statistics,
+  .history {
     .mdc-top-app-bar--fixed-adjust {
       padding-top: top-app-bar.$row-height + 48px + $diff * 2;
     }
-    .main::before {
+    .main.extended-app-bar::before {
       height: 256px - (top-app-bar.$row-height + 48px + $diff * 2);
+    }
+  }
+  .guides-container {
+    min-height: calc(100vh - #{top-app-bar.$row-height + $diff});
+  }
+  .entries-drawer.mdc-drawer {
+    height: calc(100vh - #{top-app-bar.$row-height + $diff});
+    top: top-app-bar.$row-height + $diff;
+    &,
+    .entries-list-container {
+      .filter-chips-container {
+        height: 48px + $diff;
+      }
     }
   }
   .autocomplete-mobile,
@@ -242,14 +285,9 @@
     }
   }
   .stats-tab .mdc-card {
-    &.count-graph,
-    &.profile-graph {
-      .mdc-typography--headline5 {
-        margin-bottom: 16px + $diff;
-      }
-    }
     &.pie-card,
-    &.table-card {
+    &.table-card,
+    &.timeline-card {
       .mdc-typography--headline5 {
         margin-bottom: 8px + $diff;
       }
@@ -322,6 +360,15 @@
   .mdc-data-table__cell .rmwc-circular-progress {
     padding: 12px + $diff;
   }
+  .markdown {
+    &-editor {
+      .markdown-editor {
+        &__textarea {
+          min-height: 56px - 8px + $diff;
+        }
+      }
+    }
+  }
   .settings-container .settings-group .mdc-card {
     .switch-container {
       height: 48px + $diff;
@@ -366,13 +413,21 @@
     .drawer-open.main.extended-app-bar::before {
       height: 0;
     }
-    .statistics {
+    .statistics,
+    .history {
       .mdc-top-app-bar--fixed-adjust {
         padding-top: top-app-bar.$mobile-row-height + 48px + $diff * 2;
       }
-      .main::before {
+      .main.extended-app-bar::before {
         height: 256px - (top-app-bar.$mobile-row-height + 48px + $diff * 2);
       }
+    }
+    .guides-container {
+      min-height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+    }
+    .entries-drawer.mdc-drawer {
+      height: calc(100vh - #{top-app-bar.$mobile-row-height + $diff});
+      top: top-app-bar.$mobile-row-height + $diff;
     }
     .autocomplete-mobile,
     .bottom-nav .search-app-bar .autocomplete-mobile {

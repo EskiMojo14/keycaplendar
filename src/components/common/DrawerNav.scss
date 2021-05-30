@@ -24,11 +24,6 @@
 
 .mdc-drawer {
   bottom: 0;
-  .mdc-drawer__content {
-    a {
-      text-decoration: none;
-    }
-  }
   &.nav {
     user-select: none;
     .mdc-drawer__header {
@@ -49,6 +44,16 @@
         width: 40px;
         height: 40px;
         @include rtl.reflexive-property(margin, -8px, 8px);
+      }
+    }
+    .mdc-drawer__content {
+      a {
+        text-decoration: none;
+      }
+    }
+    .group-collapsible .rmwc-collapsible-list {
+      &__handle .mdc-list-item {
+        height: 32px;
       }
     }
     .mdc-list-item {

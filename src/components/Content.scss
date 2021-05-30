@@ -1,7 +1,9 @@
 @use "@material/animation/_index" as animation;
 @use "@material/drawer/_index" as drawer;
 @use "@material/elevation/_index" as elevation;
+@use "@material/fab/_index" as fab;
 @use "@material/rtl/_index" as rtl;
+@use "@material/tab/_index" as tab;
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 .mdc-drawer-app-content {
@@ -83,7 +85,8 @@
   &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
   }
-  .statistics &::before {
+  .statistics &.extended-app-bar::before,
+  .history &.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + 48px);
   }
 }
@@ -101,8 +104,11 @@
   .main.extended-app-bar::before {
     height: 256px - top-app-bar.$mobile-row-height;
   }
-  .statistics .main::before {
-    height: 256px - (top-app-bar.$mobile-row-height + 48px);
+  .statistics,
+  .history {
+    .main.extended-app-bar::before {
+      height: 256px - (top-app-bar.$mobile-row-height + 48px);
+    }
   }
 }
 
@@ -119,17 +125,17 @@
     }
     transition-timing-function: linear, animation.$standard-curve-timing-function;
     transition-duration: 280ms, drawer.$animation-enter;
-    .mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--animate:not(.mdc-drawer--closing) ~ .editor-elements & {
       transition-duration: 280ms, drawer.$animation-enter;
     }
-    .mdc-drawer--closing ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--closing ~ .editor-elements & {
       transition-duration: 280ms, drawer.$animation-exit;
     }
-    .mdc-drawer--open.mdc-drawer--dismissible ~ .editor-elements &,
-    .mdc-drawer--opening.mdc-drawer--dismissible ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--open ~ .editor-elements &,
+    .mdc-drawer--dismissible.mdc-drawer--opening ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px + 320px);
     }
-    .mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
+    .mdc-drawer--dismissible.mdc-drawer--open.mdc-drawer--closing ~ .editor-elements & {
       @include rtl.reflexive-position(right, 24px);
     }
   }
@@ -182,13 +188,27 @@
   will-change: transform, opacity;
 }
 
-.offset-snackbar {
-  & + .mdc-snackbar,
+.bottom-nav {
+  & ~ .mdc-snackbar,
   .mdc-snackbar {
-    bottom: 56px + 16px;
+    bottom: top-app-bar.$mobile-row-height;
   }
-  &.bottom-nav + .mdc-snackbar,
+  &.statistics,
+  &.history {
+    & ~ .mdc-snackbar,
+    .mdc-snackbar {
+      bottom: top-app-bar.$mobile-row-height + tab.$height;
+    }
+  }
+}
+
+.has-fab {
+  & ~ .mdc-snackbar,
+  .mdc-snackbar {
+    bottom: fab.$height + 16px;
+  }
+  &.bottom-nav ~ .mdc-snackbar,
   &.bottom-nav .mdc-snackbar {
-    bottom: 84px;
+    bottom: top-app-bar.$mobile-row-height + (fab.$height / 2);
   }
 }

@@ -1,21 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import firebase from "../../../firebase";
-import { UserContext } from "../../../util/contexts";
-import { QueueType, SetType } from "../../../util/types";
+import { useAppSelector } from "../../../app/hooks";
+import { queue } from "../../../app/snackbarQueue";
+import { getData } from "../../../app/slices/main/functions";
+import { SetType } from "../../../app/slices/main/types";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteProps = {
   close: () => void;
-  getData: () => void;
   open: boolean;
   openSnackbar: () => void;
   set: SetType;
-  snackbarQueue: QueueType;
 };
 
 export const DialogDelete = (props: DialogDeleteProps) => {
-  const { user } = useContext(UserContext);
-  const deleteEntry = (e: any) => {
+  const user = useAppSelector(selectUser);
+  const deleteEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const db = firebase.firestore();
     db.collection("keysets")
@@ -25,11 +26,11 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       })
       .then(() => {
         props.openSnackbar();
-        props.getData();
+        getData();
       })
       .catch((error) => {
         console.error("Error deleting document: ", error);
-        props.snackbarQueue.notify({ title: "Error deleting document: " + error });
+        queue.notify({ title: "Error deleting document: " + error });
       });
     props.close();
   };

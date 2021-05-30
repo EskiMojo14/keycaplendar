@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "allowJs": true,
+  },
+  "compileOnSave": true,
+  "include": [
+    "src",
+    ".eslintrc.js"
+  ]
+}

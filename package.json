@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.1",
     "@rmwc/avatar": "^6.1.4",
     "@rmwc/badge": "^6.1.4",
     "@rmwc/button": "^6.1.4",
@@ -53,6 +54,7 @@
     "firebase": "^8.2.2",
     "firebase-admin": "^9.4.2",
     "firebaseui": "^4.7.1",
+    "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "mathjs": "^7.5.0",
@@ -68,12 +70,16 @@
     "react-dom": "^16.13.1",
     "react-firebaseui": "^4.1.0",
     "react-lazy-load": "^3.1.13",
+    "react-markdown": "^6.0.2",
+    "react-mde": "^11.5.0",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "react-string-replace": "^0.4.4",
     "react-swipeable-views": "^0.13.9",
     "react-swipeable-views-utils": "^0.14.0-alpha.0",
     "react-twemoji": "^0.2.3",
+    "remark-gfm": "^1.0.0",
     "typescript": "^4.2.3",
     "websocket-extensions": "^0.1.4"
   },
@@ -99,6 +105,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.6",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "eslint-config-prettier": "^8.1.0",

@@ -1,0 +1,105 @@
+@use "@material/animation/_index" as animation;
+@use "@material/elevation/_index" as elevation;
+@use "@material/top-app-bar/_index" as top-app-bar;
+
+.content-grid {
+  padding: 16px;
+  transform-origin: 50% calc(100vh - #{top-app-bar.$row-height});
+  max-width: 2000px;
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  margin: 0 auto;
+  min-height: 512px;
+  width: 100%;
+  box-sizing: border-box;
+  .subheader {
+    padding-bottom: 16px;
+  }
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  width: 100%;
+  .subheader {
+    transition: animation.standard(color, 250ms);
+  }
+  &:not(:last-of-type) {
+    padding-bottom: 16px;
+  }
+}
+
+.compact .content-grid .outer-container {
+  padding-bottom: 0;
+}
+
+@media (max-width: 839px) {
+  .main.list .content-grid .outer-container {
+    width: 100%;
+  }
+}
+
+.list .content-grid {
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: auto;
+  box-sizing: border-box;
+  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .subheader {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 8px;
+  }
+
+  .outer-container {
+    width: 50%;
+    padding-bottom: 0;
+  }
+}
+
+.compact .content-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-gap: 16px;
+  max-width: 100%;
+}
+
+@media (max-width: 1799px) {
+  .compact .content-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1599px) {
+  .drawer-open.compact .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1299px) {
+  .compact .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .drawer-open.compact .content-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 939px) {
+  .compact .content-grid,
+  .drawer-open.compact .content-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: top-app-bar.$mobile-breakpoint) {
+  .content-grid {
+    transform-origin: 50% calc(100vh - #{top-app-bar.$mobile-row-height});
+  }
+}

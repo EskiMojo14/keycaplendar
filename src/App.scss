@@ -1,5 +1,6 @@
 @use "chartist/dist/scss/chartist";
 @use "chartist-plugin-tooltips-updated/dist/chartist-plugin-tooltip";
+@use "react-mde/lib/styles/scss/react-mde-all";
 
 @use "@material/shape" with (
   $small-component-radius: 4px,
@@ -64,6 +65,7 @@
 @use "@rmwc/circular-progress/circular-progress";
 @use "@rmwc/data-table/data-table";
 @use "@rmwc/list/collapsible-list";
+@use "@rmwc/icon/icon";
 @use "@rmwc/tooltip/tooltip";
 
 @use "@material/animation/_index" as animation;
@@ -74,6 +76,14 @@
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 @include typography.core-styles();
+
+.multiline {
+  white-space: pre-line;
+}
+
+.mdl-button.firebaseui-idp-button {
+  font-family: typography-variables.$body-font;
+}
 
 .mdc-drawer {
   &.drawer-bottom {
@@ -141,9 +151,21 @@
     @include shape.radius(0);
     box-sizing: border-box;
   }
-  .mdc-menu .mdc-list-item {
-    height: 56px;
-    @include typography.typography(subtitle1);
+  .mdc-menu {
+    .mdc-list-item {
+      height: 56px;
+      @include typography.typography(subtitle1);
+    }
+    .mdc-list-group__subheader {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      padding: 4px 16px;
+      @include typography.typography(caption);
+      .rmwc-icon {
+        @include rtl.reflexive-box(margin, right, 16px);
+      }
+    }
   }
   .content-container &.mdc-drawer--dismissible {
     height: calc(100% - #{top-app-bar.$row-height});
@@ -169,6 +191,14 @@
 .mdc-list {
   &.theme-list {
     @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
+  }
+  &-group {
+    &__subheader {
+      @include typography.typography(caption);
+      margin: 0;
+      padding: 0 16px;
+      height: 32px;
+    }
   }
   &--two-line.three-line .mdc-list-item,
   &-item.three-line {
@@ -202,6 +232,10 @@
   }
 }
 
+.mdc-menu .mdc-list-item {
+  white-space: nowrap;
+}
+
 .mdc-top-app-bar {
   &.is-contextual {
     transition: elevation.transition-value(), background-color 100ms linear, color 100ms linear;
@@ -232,7 +266,8 @@
 .mdc-list-item,
 .mdc-image-list__item,
 .mdc-tab,
-.mdc-top-app-bar {
+.mdc-top-app-bar,
+.mdc-chip {
   user-select: none;
 }
 
@@ -314,6 +349,13 @@
     right: -13px;
     left: auto;
   }
+}
+
+.rmwc-icon--url[disabled],
+.rmwc-icon--component[disabled],
+[disabled] > .rmwc-icon--url,
+[disabled] > .rmwc-icon--component {
+  opacity: 1;
 }
 
 .banner {
@@ -430,6 +472,9 @@
     .mdc-data-table__cell {
       @include typography.typography(body2);
       overflow: visible;
+      .vendor-container {
+        @include shape.radius(small);
+      }
     }
   }
 }
@@ -450,8 +495,15 @@ svg.material-icons,
   }
 }
 
-.search-bar--persistent .search-bar__field.mdc-text-field {
-  @include shape.radius(shape.resolve-percentage-radius(40px, small));
+.mdc-text-field {
+  .search-bar--persistent &.search-bar__field {
+    @include shape.radius(shape.resolve-percentage-radius(40px, small));
+  }
+  &.mdc-text-field--textarea {
+    .mdc-text-field__input {
+      min-height: 56px - 8px;
+    }
+  }
 }
 
 .sales-image,
@@ -461,6 +513,16 @@ svg.material-icons,
 .image-display,
 .mdc-list-item__graphic.image {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
+}
+
+.react-mde.markdown-editor {
+  @include shape.radius(small);
+  .markdown-editor {
+    &__textarea {
+      @include typography.typography(subtitle1, $exclude-props: (line-height));
+      @include shape.radius(small);
+    }
+  }
 }
 
 .rtl-flip {

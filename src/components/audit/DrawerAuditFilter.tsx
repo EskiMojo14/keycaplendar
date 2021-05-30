@@ -1,5 +1,13 @@
-import React, { useState, useContext } from "react";
-import { DeviceContext } from "../../util/contexts";
+import React from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  selectFilterAction,
+  selectFilterUser,
+  selectLength,
+  selectUsers,
+  setLength,
+} from "../../app/slices/audit/auditSlice";
+import { selectDevice } from "../../app/slices/common/commonSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
@@ -10,19 +18,22 @@ import { Typography } from "@rmwc/typography";
 import "./DrawerAuditFilter.scss";
 
 type DrawerAuditFilterProps = {
-  auditLength: number;
   close: () => void;
-  filterAction: string;
-  filterUser: string;
   getActions: (num: number) => void;
   handleFilterChange: (e: any, prop: string) => void;
   open: boolean;
-  users: { label: string; value: string }[];
 };
 
 export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
-  const [auditLength, setAuditLength] = useState(props.auditLength);
-  const device = useContext(DeviceContext);
+  const dispatch = useAppDispatch();
+
+  const device = useAppSelector(selectDevice);
+
+  const auditLength = useAppSelector(selectLength);
+  const filterAction = useAppSelector(selectFilterAction);
+  const filterUser = useAppSelector(selectFilterUser);
+  const users = useAppSelector(selectUsers);
+
   const closeButton =
     device === "desktop" ? (
       <Tooltip enterDelay={500} content="Close" align="bottom">
@@ -30,14 +41,15 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
       </Tooltip>
     ) : null;
   const getActions = (num: number) => {
-    if (props.auditLength !== num) {
+    if (length !== num) {
       props.getActions(num);
     }
   };
-  const handleChange = (e: any) => {
-    setAuditLength(e.target.value);
-    if (e.target.value >= 50 && e.target.value % 50 === 0) {
-      getActions(e.target.value);
+  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const length = parseInt(e.target.value);
+    dispatch(setLength(length));
+    if (length >= 50 && length % 50 === 0) {
+      getActions(length);
     }
   };
   return (
@@ -45,7 +57,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
       open={props.open}
       dismissible={device === "desktop"}
       modal={device !== "desktop"}
-      className="drawer-right filter-drawer audit-filter"
+      className="drawer-right audit-filter"
       onClose={props.close}
     >
       <DrawerHeader>
@@ -66,7 +78,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
               step={50}
               value={auditLength}
               onInput={(e) => {
-                setAuditLength(e.detail.value);
+                dispatch(setLength(e.detail.value));
               }}
               onChange={(e) => {
                 getActions(e.detail.value);
@@ -79,7 +91,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
               max={250}
               step={50}
               value={auditLength}
-              onChange={handleChange}
+              onChange={handleLengthChange}
             />
           </div>
         </div>
@@ -96,7 +108,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
               { label: "Updated", value: "updated" },
               { label: "Deleted", value: "deleted" },
             ]}
-            value={props.filterAction}
+            value={filterAction}
             className="action-select"
             onChange={(e) => {
               props.handleFilterChange(e, "filterAction");
@@ -110,8 +122,13 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
           <Select
             outlined
             enhanced={{ fixed: true }}
-            options={props.users}
-            value={props.filterUser}
+            options={[
+              { label: "All", value: "all" },
+              ...users.map((user) => {
+                return { label: user, value: user };
+              }),
+            ]}
+            value={filterUser}
             className="user-select"
             onChange={(e) => {
               props.handleFilterChange(e, "filterUser");

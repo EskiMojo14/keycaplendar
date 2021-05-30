@@ -1,0 +1,36 @@
+@use "@material/elevation/_index" as elevation;
+@use "@material/rtl/_index" as rtl;
+@use "../../util";
+
+.update-entry {
+  &.linked {
+    @include elevation.elevation(3);
+  }
+  .title {
+    flex-grow: 1;
+    &-container {
+      padding: 16px;
+      padding-bottom: 0;
+      display: flex;
+      justify-content: stretch;
+      .linked-indicator {
+        & + .pin-indicator {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
+    h1,
+    h3,
+    p {
+      margin: 0;
+    }
+  }
+  .content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .mdc-card__actions {
+    @include util.divider-border(top);
+  }
+}

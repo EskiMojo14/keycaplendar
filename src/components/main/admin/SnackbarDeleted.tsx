@@ -1,21 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import firebase from "../../../firebase";
-import { UserContext } from "../../../util/contexts";
-import { getStorageFolders, batchStorageDelete } from "../../../util/functions";
-import { QueueType, SetType } from "../../../util/types";
+import { useAppSelector } from "../../../app/hooks";
+import { batchStorageDelete, getStorageFolders } from "../../../app/slices/common/functions";
+import { getData } from "../../../app/slices/main/functions";
+import { SetType } from "../../../app/slices/main/types";
+import { selectUser } from "../../../app/slices/user/userSlice";
+import { queue } from "../../../app/snackbarQueue";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {
   close: () => void;
-  getData: () => void;
   open: boolean;
   set: SetType;
-  snackbarQueue: QueueType;
 };
 
 export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
-  const { user } = useContext(UserContext);
-  const recreateEntry = (e: any) => {
+  const user = useAppSelector(selectUser);
+  const recreateEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { id, ...set } = props.set;
     const db = firebase.firestore();
@@ -31,12 +32,12 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
       )
       .then(() => {
         console.log("Document recreated with ID: ", id);
-        props.snackbarQueue.notify({ title: "Entry successfully recreated." });
-        props.getData();
+        queue.notify({ title: "Entry successfully recreated." });
+        getData();
       })
       .catch((error) => {
         console.error("Error recreating document: ", error);
-        props.snackbarQueue.notify({ title: "Error recreating document: " + error });
+        queue.notify({ title: "Error recreating document: " + error });
       });
     close(true);
   };
@@ -45,10 +46,10 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
     const allImages = folders.map((folder) => `${folder}/${name}`);
     batchStorageDelete(allImages)
       .then(() => {
-        props.snackbarQueue.notify({ title: "Successfully deleted thumbnails." });
+        queue.notify({ title: "Successfully deleted thumbnails." });
       })
       .catch((error) => {
-        props.snackbarQueue.notify({ title: "Failed to delete thumbnails: " + error });
+        queue.notify({ title: "Failed to delete thumbnails: " + error });
         console.log(error);
       });
   };

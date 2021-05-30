@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
   title: KeycapLendar API
-  version: '1.0'
+  version: "1.0"
   contact:
     name: Ben Durrant
     email: keycaplendar@gmail.com
-    url: 'https://discord.gg/zrcN3qF'
-  termsOfService: 'https://keycaplendar.firebaseapp.com/terms'
-  description: 'This is an API for https://keycaplendar.firebaseapp.com/'
+    url: "https://discord.gg/zrcN3qF"
+  termsOfService: "https://keycaplendar.firebaseapp.com/terms"
+  description: "This is an API for https://keycaplendar.firebaseapp.com/"
 servers:
-  - url: 'https://us-central1-keycaplendar.cloudfunctions.net'
+  - url: "https://us-central1-keycaplendar.cloudfunctions.net"
     description: Production
 paths:
   /apiAuth:
@@ -18,13 +18,13 @@ paths:
       tags:
         - authentication
       responses:
-        '200':
+        "200":
           description: OK
           headers: {}
           content:
             application/json:
               schema:
-                description: ''
+                description: ""
                 type: object
                 properties:
                   token:
@@ -32,7 +32,7 @@ paths:
                     minLength: 1
                 required:
                   - token
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              description: ''
+              description: ""
               type: object
               properties:
                 key:
@@ -58,23 +58,23 @@ paths:
               required:
                 - key
                 - secret
-      description: 'Using your API key and secret, generate a session token that will be used in any other subsequent API requests.'
+      description: "Using your API key and secret, generate a session token that will be used in any other subsequent API requests."
   /getAllKeysets:
     get:
       summary: Get All Keysets
       tags:
         - query
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Keyset'
+                  $ref: "#/components/schemas/Keyset"
               examples: {}
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -116,18 +116,18 @@ paths:
       tags:
         - query
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Keyset'
+                $ref: "#/components/schemas/Keyset"
               examples: {}
             application/xml:
               schema:
                 type: object
                 properties: {}
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
@@ -137,7 +137,7 @@ paths:
                   error:
                     type: string
       operationId: get-getKeysetById
-      description: 'Retrieve one keyset from the database, by its ID.'
+      description: "Retrieve one keyset from the database, by its ID."
       security:
         - Bearer Token: []
       parameters:
@@ -145,13 +145,13 @@ paths:
             type: string
           in: query
           name: id
-          description: 'The ID of the keyset you want to retrieve '
+          description: "The ID of the keyset you want to retrieve "
           required: true
     parameters: []
 components:
   schemas:
     Keyset:
-      description: ''
+      description: ""
       type: object
       x-examples: {}
       properties:
@@ -172,7 +172,10 @@ components:
                 thirdParty:
                   type: boolean
             - type: string
+              properties: {}
         details:
+          type: string
+        notes:
           type: string
         icDate:
           type: string

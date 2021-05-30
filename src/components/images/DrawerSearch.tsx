@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
-import { DeviceContext } from "../../util/contexts";
-import { iconObject } from "../../util/functions";
-import { ImageType } from "../../util/types";
+import { useAppSelector } from "../../app/hooks";
+import { selectDevice } from "../../app/slices/common/commonSlice";
+import { iconObject } from "../../app/slices/common/functions";
+import { ImageType } from "../../app/slices/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -27,7 +28,7 @@ type DrawerSearchProps = {
 };
 
 export const DrawerSearch = (props: DrawerSearchProps) => {
-  const device = useContext(DeviceContext);
+  const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible ? (
     <Tooltip enterDelay={500} content="Close" align="bottom">
@@ -38,7 +39,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
