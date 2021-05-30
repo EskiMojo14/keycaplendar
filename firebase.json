@@ -48,6 +48,10 @@
         "function": "getGuides"
       },
       {
+        "source": "/api/generateAliases",
+        "function": "generateAliases"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

@@ -13,6 +13,7 @@ admin.initializeApp();
 import * as api from "./api";
 import * as audit from "./audit";
 import * as guides from "./guides";
+import * as misc from "./misc";
 import * as statistics from "./statistics";
 import * as thumbs from "./thumbs";
 import * as users from "./users";
@@ -34,6 +35,10 @@ exports.getPublicAudit = audit.getPublicAudit;
 // guides
 
 exports.getGuides = guides.getGuides;
+
+// misc
+
+exports.generateAliases = misc.generateAliases;
 
 // statistics
 
