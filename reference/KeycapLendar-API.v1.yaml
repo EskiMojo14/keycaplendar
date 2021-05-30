@@ -153,51 +153,7 @@ components:
     Keyset:
       description: ''
       type: object
-      x-examples:
-        Example - KAT Lich:
-          id: 4RISZuuZy4k9O6467FHm
-          sales: 'https://i.imgur.com/UCV1vMx.png'
-          shipped: true
-          gbEnd: '2020-01-31'
-          details: 'https://geekhack.org/index.php?topic=104129.0'
-          colorway: Lich
-          latestEditor: 9FrBmiMgVmYo4BMIDlJBaCWibSC3
-          gbMonth: false
-          profile: KAT
-          image: 'https://firebasestorage.googleapis.com/v0/b/keycaplendar.appspot.com/o/keysets%2FkatLichT20210122143399.png?alt=media&token=a6d1b787-228b-4457-ae46-a62109caa870'
-          designer:
-            - eskimojo
-          gbLaunch: '2020-01-07'
-          vendors:
-            - id: Bhn62oPLbYe4VtMTaYCTG
-              name: NovelKeys
-              storeLink: 'https://novelkeys.xyz/products/kat-lich-gb'
-              region: America
-            - storeLink: 'https://en.zfrontier.com/collections/groupbuy/products/copy-of-group-buy-kat-lich-1'
-              id: VnGLx7-bFLRiME_iO0sVk
-              region: Asia
-              name: zFrontier
-            - name: DeskHero
-              region: Canada
-              id: TQOZGn7SSdhSm-QL3DxkT
-              storeLink: 'https://www.deskhero.ca/products/kat-lich'
-            - region: China
-              id: NURNAzFPUHLSMQKHb2USI
-              name: zFrontier (CN)
-              storeLink: 'https://www.zfrontier.com/m/5713'
-            - id: U6lIiSkUOOMCgUc3tN3pD
-              storeLink: 'https://mykeyboard.eu/catalogue/category/group-buys/kat-lich_240/'
-              name: MyKeyboard
-              region: Europe
-            - region: Oceania
-              id: pgiBOMv_Ja7tZ25CL0LtA
-              storeLink: 'https://www.switchkeys.com.au/products/kat-liche-group-buy'
-              name: SwitchKeys
-            - name: FunKeys
-              storeLink: 'https://groupbuy.funkeys.com.ua/kat_lich'
-              region: 'Ukraine, Belarus, Russia'
-              id: Bk2nWoofBNVohF7vio_Rr
-          icDate: '2019-10-31'
+      x-examples: {}
       properties:
         id:
           type: string
@@ -216,7 +172,6 @@ components:
                 thirdParty:
                   type: boolean
             - type: string
-              properties: {}
         details:
           type: string
         icDate:
@@ -253,6 +208,8 @@ components:
         image:
           type: string
         colorway:
+          type: string
+        alias:
           type: string
       required:
         - id
