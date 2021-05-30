@@ -359,6 +359,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       const db = firebase.firestore();
       db.collection("keysets")
         .add({
+          alias: nanoid(10),
           profile: fields.profile,
           colorway: fields.colorway,
           designer: fields.designer,
@@ -1311,6 +1312,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       db.collection("keysets")
         .doc(id)
         .update({
+          alias: props.set.alias ? props.set.alias : nanoid(10),
           profile: fields.profile,
           colorway: fields.colorway,
           designer: fields.designer,

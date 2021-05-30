@@ -44,8 +44,14 @@ export const ContentMain = (props: ContentMainProps) => {
   const urlSet = useAppSelector(selectURLSet);
 
   useEffect(() => {
-    if (urlSet) {
-      const index = allSets.findIndex((set) => set.id === urlSet);
+    if (urlSet.value) {
+      const index = allSets.findIndex((set) => {
+        if (urlSet.prop === "name") {
+          return urlSet.value === `${set.profile} ${set.colorway}`;
+        } else {
+          return set[urlSet.prop] === urlSet.value;
+        }
+      });
       if (index >= 0) {
         const keyset = allSets[index];
         openDetails(keyset, false);
@@ -92,11 +98,18 @@ export const ContentMain = (props: ContentMainProps) => {
 
       if (clearUrl) {
         if (urlSet) {
-          dispatch(setURLSet(""));
+          dispatch(
+            setURLSet({
+              prop: "id",
+              value: "",
+            })
+          );
         }
         const params = new URLSearchParams(window.location.search);
-        if (params.has("keysetId")) {
+        if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {
           params.delete("keysetId");
+          params.delete("keysetAlias");
+          params.delete("keysetName");
           const questionParam = params.has("page") ? "?" + params.toString() : "/";
           window.history.pushState({}, "KeycapLendar", questionParam);
         }

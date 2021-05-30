@@ -79,13 +79,14 @@ export class Preset {
  * Useful for creating blank keyset objects.
  */
 export class Keyset {
+  id: string;
+  alias: string;
   colorway: string;
   designer: string[];
   details: string;
   icDate: string;
   gbLaunch: string;
   gbEnd: string;
-  id: string;
   image: string;
   profile: string;
   constructor(
@@ -95,17 +96,19 @@ export class Keyset {
     icDate = "",
     gbLaunch = "",
     gbEnd = "",
-    id = "",
     image = "",
-    profile = ""
+    profile = "",
+    id = "",
+    alias = ""
   ) {
+    this.id = id;
+    this.alias = alias;
     this.colorway = colorway;
     this.designer = designer;
     this.details = details;
     this.icDate = icDate;
     this.gbLaunch = gbLaunch;
     this.gbEnd = gbEnd;
-    this.id = id;
     this.image = image;
     this.profile = profile;
   }

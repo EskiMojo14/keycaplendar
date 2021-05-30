@@ -21,7 +21,10 @@ type MainState = {
   allSets: SetType[];
   filteredSets: SetType[];
   setGroups: SetGroup[];
-  urlSet: string;
+  urlSet: {
+    prop: "id" | "alias" | "name";
+    value: string;
+  };
 
   search: string;
   whitelist: WhitelistType;
@@ -51,7 +54,10 @@ const initialState: MainState = {
   allSets: [],
   filteredSets: [],
   setGroups: [],
-  urlSet: "",
+  urlSet: {
+    prop: "id",
+    value: "",
+  },
 
   // filters
 
@@ -113,7 +119,13 @@ export const mainSlice = createSlice({
     setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
       state.setGroups = action.payload;
     },
-    setURLSet: (state, action: PayloadAction<string>) => {
+    setURLSet: (
+      state,
+      action: PayloadAction<{
+        prop: "id" | "alias" | "name";
+        value: string;
+      }>
+    ) => {
       state.urlSet = action.payload;
     },
     setSearch: (state, action: PayloadAction<string>) => {

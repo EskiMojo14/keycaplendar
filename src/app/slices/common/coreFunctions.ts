@@ -134,7 +134,32 @@ export const getURLQuery = () => {
   if (params.has("keysetId")) {
     const keysetId = params.get("keysetId");
     if (keysetId) {
-      dispatch(setURLSet(keysetId));
+      dispatch(
+        setURLSet({
+          prop: "id",
+          value: keysetId,
+        })
+      );
+    }
+  } else if (params.has("keysetAlias")) {
+    const keysetAlias = params.get("keysetAlias");
+    if (keysetAlias) {
+      dispatch(
+        setURLSet({
+          prop: "alias",
+          value: keysetAlias,
+        })
+      );
+    }
+  } else if (params.has("keysetName")) {
+    const keysetName = params.get("keysetName");
+    if (keysetName) {
+      dispatch(
+        setURLSet({
+          prop: "name",
+          value: keysetName,
+        })
+      );
     }
   }
   if (params.has("statisticsTab")) {
@@ -215,8 +240,13 @@ export const setPage = (page: Page) => {
         params.delete(param);
       }
     });
-    if (urlSet) {
-      dispatch(setURLSet(""));
+    if (urlSet.value) {
+      dispatch(
+        setURLSet({
+          prop: "id",
+          value: "",
+        })
+      );
     }
     if (urlGuide) {
       dispatch(setURLGuide(""));

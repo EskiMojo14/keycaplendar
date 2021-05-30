@@ -1,6 +1,7 @@
 /** Set properties to iterate and check. Order is also used for sorting. */
 
 export const auditProperties = [
+  "alias",
   "profile",
   "colorway",
   "designer",
@@ -19,6 +20,7 @@ export const auditProperties = [
 /** Formatted names. */
 
 export const auditPropertiesFormatted: Record<typeof auditProperties[number], string> = {
+  alias: "Alias",
   profile: "Profile",
   colorway: "Colorway",
   designer: "Designer(s)",
