@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";
 import { closeModal, openModal } from "../../app/slices/common/functions";
-import { selectEntries, selectLoading, selectURLEntry, setUrlEntry } from "../../app/slices/guides/guidesSlice";
+import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "../../app/slices/guides/guidesSlice";
 import { Guide } from "../../app/slices/guides/constructors";
 import { getEntries } from "../../app/slices/guides/functions";
 import { GuideEntryType } from "../../app/slices/guides/types";
@@ -76,7 +76,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       openModal();
     }
     if (urlEntry) {
-      dispatch(setUrlEntry(""));
+      dispatch(setURLEntry(""));
     }
     const params = new URLSearchParams(window.location.search);
     if (params.has("guideId")) {

@@ -32,7 +32,7 @@ export const guidesSlice = createSlice({
     setEntries: (state, action: PayloadAction<GuideEntryType[]>) => {
       state.entries = action.payload;
     },
-    setUrlEntry: (state, action: PayloadAction<string>) => {
+    setURLEntry: (state, action: PayloadAction<string>) => {
       state.urlEntry = action.payload;
     },
     setAllTags: (state, action: PayloadAction<string[]>) => {
@@ -44,7 +44,7 @@ export const guidesSlice = createSlice({
   },
 });
 
-export const { setLoading, setEntries, setUrlEntry, setAllTags, setFilteredTag } = guidesSlice.actions;
+export const { setLoading, setEntries, setURLEntry, setAllTags, setFilteredTag } = guidesSlice.actions;
 
 export const selectLoading = (state: RootState) => state.guides.loading;
 

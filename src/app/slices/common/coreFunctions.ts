@@ -5,7 +5,7 @@ import { setAppPage, setDevice } from "./commonSlice";
 import { allPages, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayEveryType, arrayIncludes, hasKey } from "./functions";
 import { GlobalDoc, Page } from "./types";
-import { setUrlEntry } from "../guides/guidesSlice";
+import { setURLEntry as setURLGuide } from "../guides/guidesSlice";
 import { historyTabs } from "../history/constants";
 import { setHistoryTab } from "../history/functions";
 import {
@@ -21,7 +21,7 @@ import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/fu
 import { WhitelistType } from "../main/types";
 import { statsTabs } from "../statistics/constants";
 import { setStatisticsTab } from "../statistics/functions";
-import { setURLEntry } from "../updates/updatesSlice";
+import { setURLEntry as setURLUpdate } from "../updates/updatesSlice";
 
 const db = firebase.firestore();
 
@@ -151,13 +151,13 @@ export const getURLQuery = () => {
   if (params.has("guideId")) {
     const guideId = params.get("guideId");
     if (guideId) {
-      dispatch(setUrlEntry(guideId));
+      dispatch(setURLGuide(guideId));
     }
   }
   if (params.has("updateId")) {
     const updateId = params.get("updateId");
     if (updateId) {
-      dispatch(setURLEntry(updateId));
+      dispatch(setURLUpdate(updateId));
     }
   }
   getData();
@@ -218,10 +218,10 @@ export const setPage = (page: Page) => {
       dispatch(setURLSet(""));
     }
     if (urlGuide) {
-      dispatch(setUrlEntry(""));
+      dispatch(setURLGuide(""));
     }
     if (urlUpdate) {
-      dispatch(setURLEntry(""));
+      dispatch(setURLUpdate(""));
     }
     window.history.pushState(
       {
