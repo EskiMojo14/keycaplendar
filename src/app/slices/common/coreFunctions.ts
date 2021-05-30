@@ -63,8 +63,9 @@ export const getURLQuery = () => {
     main: { whitelist: mainWhitelist },
   } = store.getState();
   const params = new URLSearchParams(window.location.search);
-  if (params.has("page")) {
-    const pageQuery = params.get("page");
+  const path = window.location.pathname.substring(1);
+  if (path || params.has("page")) {
+    const pageQuery = path || params.get("page");
     if (
       arrayIncludes(urlPages, pageQuery) ||
       (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development")
@@ -207,7 +208,7 @@ export const setPage = (page: Page) => {
     }, 300);
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
-    params.set("page", page);
+    params.delete("page");
     const pageParams = ["keysetId", "guideId", "updateId"];
     pageParams.forEach((param) => {
       if (params.has(param)) {
@@ -223,12 +224,13 @@ export const setPage = (page: Page) => {
     if (urlUpdate) {
       dispatch(setURLUpdate(""));
     }
+    const urlParams = params.toString() ? "?" + params.toString() : "";
     window.history.pushState(
       {
         page: page,
       },
       "KeycapLendar: " + pageTitle[page],
-      "?" + params.toString()
+      "/" + page + urlParams
     );
   }
 };

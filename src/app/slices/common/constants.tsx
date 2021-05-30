@@ -54,7 +54,7 @@ export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "arc
 
 export const standardPages: Page[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
 
-/** Pages to allow linking to using URL params. (e.g. {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
+/** Pages to allow linking to using URL params or path. (e.g. {@link https://keycaplendar.firebaseapp.com/ic} or {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
 
 export const urlPages: Page[] = [
   "calendar",

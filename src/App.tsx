@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectDevice } from "./app/slices/common/commonSlice";
+import { allPages } from "./app/slices/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "./app/slices/common/coreFunctions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "./app/slices/main/mainSlice";
 import { testSets } from "./app/slices/main/functions";
@@ -98,7 +99,7 @@ export const App = () => {
         <Route path="/guide/entries">
           <EntryGuide />
         </Route>
-        <Route exact path="/">
+        <Route exact path={["/", ...allPages.map((page: string) => `/${page}`)]}>
           <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
             <Content className={transitionClass} />
             <SnackbarQueue messages={queue.messages} />

@@ -29,7 +29,8 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
   const urlEntry = useAppSelector(selectURLEntry);
 
   const copyLink = () => {
-    const url = window.location.href.split("?")[0] + "?page=updates&updateId=" + entry.id;
+    const arr = window.location.href.split("/");
+    const url = arr[0] + "//" + arr[2] + "/updates?updateId=" + entry.id;
     navigator.clipboard
       .writeText(url)
       .then(() => {
