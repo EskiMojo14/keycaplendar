@@ -184,7 +184,9 @@ export const getGlobals = () => {
 export const setPage = (page: Page) => {
   const {
     common: { page: appPage },
-    main: { loading, allSets },
+    main: { loading, allSets, urlSet },
+    guides: { urlEntry: urlGuide },
+    updates: { urlEntry: urlUpdate },
   } = store.getState();
   if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
     dispatch(setTransition(true));
@@ -212,6 +214,15 @@ export const setPage = (page: Page) => {
         params.delete(param);
       }
     });
+    if (urlSet) {
+      dispatch(setURLSet(""));
+    }
+    if (urlGuide) {
+      dispatch(setUrlEntry(""));
+    }
+    if (urlUpdate) {
+      dispatch(setURLEntry(""));
+    }
     window.history.pushState(
       {
         page: page,
