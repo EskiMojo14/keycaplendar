@@ -1304,7 +1304,8 @@ export const ModalEdit = (props: ModalEditProps) => {
     !!fields.designer &&
     !!fields.icDate &&
     !!fields.details &&
-    ((typeof imageInfo.image === "string" && !!imageInfo.image) || !!imageInfo.imageURL);
+    (((typeof imageInfo.image === "string" || imageInfo.image instanceof Blob) && !!imageInfo.image) ||
+      !!imageInfo.imageURL);
 
   const editEntry = () => {
     if (formFilled) {
