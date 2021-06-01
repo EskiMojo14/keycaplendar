@@ -1,6 +1,7 @@
 import React from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { SetType } from "../../../../app/slices/main/types";
+import { ordinal } from "../../../../app/slices/common/functions";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";
@@ -13,8 +14,8 @@ type ViewListProps = {
 };
 
 export const ViewList = (props: ViewListProps) => {
-  const today = moment.utc();
-  const yesterday = moment.utc().date(today.date() - 1);
+  const today = DateTime.utc();
+  const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <List twoLine className="view-list three-line">
@@ -22,33 +23,41 @@ export const ViewList = (props: ViewListProps) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
-            : moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"])
+            : DateTime.fromISO(set.gbLaunch, { zone: "utc" })
           : null;
-        const gbEnd = set.gbEnd ? moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 }) : null;
-        const icDate = set.icDate ? moment.utc(set.icDate) : null;
+        const gbLaunchOrdinal = gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
+
+        const gbEnd = set.gbEnd
+          ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({ hour: 23, minute: 59, second: 59, millisecond: 999 })
+          : null;
+        const gbEndOrdinal = gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
+
+        const icDate = set.icDate ? DateTime.fromISO(set.icDate, { zone: "utc" }) : null;
+        const icDateOrdinal = icDate instanceof DateTime ? ordinal(icDate.day) : "";
+
         const title = `${set.profile} ${set.colorway}`;
         let subtitle = "";
-        if (gbLaunch && moment.isMoment(gbLaunch) && gbEnd) {
-          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
-            (gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year()) || gbLaunch.year() !== gbEnd.year()
-              ? gbLaunch.format("\xa0YYYY")
+        if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
+          subtitle = `${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
+            (gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year) || gbLaunch.year !== gbEnd.year
+              ? gbLaunch.toFormat("\xa0yyyy")
               : ""
-          } until ${gbEnd.format("Do\xa0MMMM")}${
-            gbEnd.year() !== today.year() || gbLaunch.year() !== gbEnd.year() ? gbEnd.format("\xa0YYYY") : ""
+          } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
+            gbEnd.year !== today.year || gbLaunch.year !== gbEnd.year ? gbEnd.toFormat("\xa0yyyy") : ""
           }`;
         } else if (gbLaunch && gbLaunch instanceof String) {
           subtitle = "GB expected " + gbLaunch;
-        } else if (set.gbMonth && gbLaunch && moment.isMoment(gbLaunch)) {
+        } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
           subtitle = `GB expected ${
-            gbLaunch.format("MMMM") + (gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : "")
+            gbLaunch.toFormat("MMMM") + (gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : "")
           }`;
-        } else if (gbLaunch && moment.isMoment(gbLaunch)) {
-          subtitle = `${gbLaunch.format("Do\xa0MMMM")}${
-            gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
+        } else if (gbLaunch && gbLaunch instanceof DateTime) {
+          subtitle = `${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
+            gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : ""
           }`;
         } else if (icDate) {
-          subtitle = `IC posted ${icDate.format("Do\xa0MMMM")}${
-            icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""
+          subtitle = `IC posted ${icDate.toFormat(`d'${icDateOrdinal}'\xa0MMMM`)}${
+            icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
         const thisWeek = gbEnd
@@ -56,7 +65,7 @@ export const ViewList = (props: ViewListProps) => {
           : false;
         const daysLeft = gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0;
         let live = false;
-        if (gbLaunch instanceof moment && gbEnd) {
+        if (gbLaunch instanceof DateTime && gbEnd) {
           live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
         }
         return (
