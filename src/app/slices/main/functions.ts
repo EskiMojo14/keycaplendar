@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
@@ -42,8 +42,6 @@ import {
   setAppPresets,
 } from "./mainSlice";
 import {
-  ArraySortKeys,
-  DateSortKeys,
   OldPresetType,
   PresetType,
   SetGroup,
@@ -71,10 +69,17 @@ export const pageConditions = (
   favorites: string[],
   hidden: string[]
 ): Record<typeof mainPages[number], boolean> => {
-  const today = moment.utc();
-  const yesterday = moment.utc().date(today.date() - 1);
-  const startDate = moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]);
-  const endDate = moment.utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+  const today = DateTime.utc();
+  const yesterday = today.minus({ days: 1 });
+  const startDate = DateTime.fromFormat(set.gbLaunch, set.gbLaunch.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", {
+    zone: "utc",
+  });
+  const endDate = DateTime.fromFormat(set.gbEnd, "yyyy-MM-dd").set({
+    hour: 23,
+    minute: 59,
+    second: 59,
+    millisecond: 999,
+  });
   return {
     calendar: startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
     live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
@@ -106,9 +111,12 @@ export const getData = () => {
       const sets: SetType[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().profile) {
-          const lastOfMonth = moment(doc.data().gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]).daysInMonth();
+          const lastInMonth = doc.data().gbLaunch
+            ? DateTime.fromFormat(doc.data().gbLaunch, doc.data().gbLaunch.length === 7 ? "yyyy-MM" : "yyyy-MM-dd")
+                .daysInMonth
+            : 0;
           const gbLaunch =
-            doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
+            doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastInMonth : doc.data().gbLaunch;
           const sales =
             typeof doc.data().sales === "string" ? { img: doc.data().sales, thirdParty: false } : doc.data().sales;
           sets.push({
@@ -374,9 +382,9 @@ const sortData = (sortParam?: SortType, sortOrderParam?: SortOrderType, groupsPa
   array.sort(function (x, y) {
     const a = x.title;
     const b = y.title;
-    if (dateSorts.includes(sort)) {
-      const aDate = moment.utc(a, "MMMM YYYY");
-      const bDate = moment.utc(b, "MMMM YYYY");
+    if (arrayIncludes(dateSorts, sort)) {
+      const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
+      const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
       if (aDate < bDate) {
         return sortOrder === "ascending" ? -1 : 1;
       }
@@ -416,16 +424,18 @@ const createGroups = (
   const sets = setsParam || filteredSets;
 
   const createGroups = (sets: SetType[]): string[] => {
-    if (dateSorts.includes(sort)) {
+    if (arrayIncludes(dateSorts, sort)) {
       return sets
         .map((set) => {
-          const setDate = moment.utc(set[sort as DateSortKeys]);
-          const setMonth = setDate.format("MMMM YYYY");
-          return setMonth === "Invalid date" ? "" : setMonth;
+          const setDate = DateTime.fromFormat(set[sort], set[sort].length === 7 ? "yyyy-MM" : "yyyy-MM-dd", {
+            zone: "utc",
+          });
+          const setMonth = setDate.toFormat("MMMM yyyy");
+          return setMonth;
         })
         .filter(Boolean);
-    } else if (arraySorts.includes(sort)) {
-      return sets.map((set) => set[sort as ArraySortKeys]).flat();
+    } else if (arrayIncludes(arraySorts, sort)) {
+      return sets.map((set) => set[sort]).flat();
     } else if (sort === "vendor") {
       return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
     } else {
@@ -435,9 +445,9 @@ const createGroups = (
   const groups = uniqueArray(createGroups(sets));
 
   groups.sort(function (a, b) {
-    if (dateSorts.includes(sort)) {
-      const aDate = moment.utc(a, "MMMM YYYY");
-      const bDate = moment.utc(b, "MMMM YYYY");
+    if (arrayIncludes(dateSorts, sort)) {
+      const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
+      const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
       if (aDate < bDate) {
         return sortOrder === "ascending" ? -1 : 1;
       }
@@ -460,10 +470,10 @@ const createGroups = (
   const filterSets = (sets: SetType[], group: string, sort: SortType) => {
     const filteredSets = sets.filter((set) => {
       if (hasKey(set, sort) || sort === "vendor") {
-        if (dateSorts.includes(sort) && sort !== "vendor") {
+        if (arrayIncludes(dateSorts, sort)) {
           const val = set[sort];
-          const setDate = typeof val === "string" ? moment.utc(val) : null;
-          const setMonth = setDate ? setDate.format("MMMM YYYY") : null;
+          const setDate = DateTime.fromFormat(val, val.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" });
+          const setMonth = setDate.toFormat("MMMM yyyy");
           return setMonth && setMonth === group;
         } else if (sort === "vendor") {
           if (set.vendors) {
@@ -493,11 +503,17 @@ const createGroups = (
     const dateSort = (a: SetType, b: SetType, prop = sort, order = sortOrder) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (hasKey(a, prop) && hasKey(b, prop)) {
+      if (arrayIncludes(dateSorts, prop)) {
         const aProp = a[prop];
-        const aDate = aProp && typeof aProp === "string" && !aProp.includes("Q") ? moment.utc(aProp) : null;
+        const aDate =
+          aProp && !aProp.includes("Q")
+            ? DateTime.fromFormat(aProp, aProp.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" })
+            : null;
         const bProp = b[prop];
-        const bDate = bProp && typeof bProp === "string" && !bProp.includes("Q") ? moment.utc(bProp) : null;
+        const bDate =
+          bProp && !bProp.includes("Q")
+            ? DateTime.fromFormat(bProp, bProp.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" })
+            : null;
         const returnVal = order === "ascending" ? 1 : -1;
         if (aDate && bDate) {
           if (aDate > bDate) {
@@ -514,7 +530,7 @@ const createGroups = (
     filteredSets.sort((a, b) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
-      if (dateSorts.includes(sort)) {
+      if (arrayIncludes(dateSorts, sort)) {
         if (sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
           if (a.gbMonth && b.gbMonth) {
             return alphabeticalSort(aName, bName);
@@ -523,7 +539,7 @@ const createGroups = (
           }
         }
         return dateSort(a, b, sort, sortOrder);
-      } else if (dateSorts.includes(defaultSort)) {
+      } else if (arrayIncludes(dateSorts, defaultSort)) {
         return dateSort(a, b, defaultSort, defaultSortOrder);
       }
       return alphabeticalSort(aName, bName);

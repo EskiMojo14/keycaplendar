@@ -59,11 +59,11 @@ export const sortBlacklist: Record<SortType, Page[]> = {
 
 /** Sort params which are dates. */
 
-export const dateSorts: SortType[] = ["icDate", "gbLaunch", "gbEnd"];
+export const dateSorts = ["icDate", "gbLaunch", "gbEnd"] as const;
 
 /** Sort params which are arrays. */
 
-export const arraySorts: SortType[] = ["designer"];
+export const arraySorts = ["designer"] as const;
 
 /** Possible values for shipped whitelist items. */
 
