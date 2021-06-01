@@ -1,5 +1,5 @@
-import { StatisticsSetType } from "./types";
-import * as moment from "moment";
+import { StatisticsSetType, DateSortKeys } from "./types";
+import { DateTime } from "luxon";
 
 /**
  * Checks that object contains specified key.
@@ -90,22 +90,18 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>>(
 };
 
 /**
- * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Moment).
+ * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
  * @param sets Array of set objects to be checked.
  * @param prop Property of set to be used.
- * @param format Moment string to specify format. See {@link https://momentjs.com/docs/#/displaying/format/}.
+ * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens}.
  * @returns Array of months from earliest to latest, in specified format.
  */
 
-export const getSetMonthRange = (
-  sets: StatisticsSetType[],
-  prop: keyof StatisticsSetType,
-  format: string
-): string[] => {
+export const getSetMonthRange = (sets: StatisticsSetType[], prop: DateSortKeys, format: string): string[] => {
   const setMonths = uniqueArray(
     sets.map((set) => {
       const val = set[prop];
-      return val && typeof val === "string" && !val.includes("Q") ? moment(val).format("YYYY-MM") : "";
+      return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
     })
   ).filter(Boolean);
   setMonths.sort((a, b) => {
@@ -117,14 +113,18 @@ export const getSetMonthRange = (
     }
     return 0;
   });
-  const monthDiff = (dateFrom: moment.Moment, dateTo: moment.Moment) => {
-    return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
+  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {
+    return dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
   };
-  const length = monthDiff(moment(setMonths[0]), moment(setMonths[setMonths.length - 1])) + 1;
+  const length =
+    monthDiff(
+      DateTime.fromISO(setMonths[0], { zone: "utc" }),
+      DateTime.fromISO(setMonths[setMonths.length - 1], { zone: "utc" })
+    ) + 1;
   let i;
   const allMonths = [];
   for (i = 0; i < length; i++) {
-    allMonths.push(moment(setMonths[0]).add(i, "M").format(format));
+    allMonths.push(DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   }
   return allMonths;
 };

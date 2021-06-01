@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import * as moment from "moment";
-import { utc } from "moment";
+import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import { StatisticsSetType, Categories, Properties } from "./util/types";
 import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./util/functions";
@@ -38,8 +37,8 @@ type SummaryData = {
   profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
 };
 
-const today = utc();
-const yesterday = utc().date(today.date() - 1);
+const today = DateTime.utc();
+const yesterday = today.minus({ days: 1 });
 const categories: Categories[] = ["icDate", "gbLaunch"];
 
 const createSummaryData = (sets: StatisticsSetType[]) => {
@@ -82,7 +81,7 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
     summaryData.count[cat].total = catSets.length;
     summaryData.profile[cat].data.total = catSets.length;
 
-    const months = getSetMonthRange(catSets, cat, "MMM YY");
+    const months = getSetMonthRange(catSets, cat, "MMM yy");
     summaryData.count[cat].months = months;
     summaryData.profile[cat].data.timeline.months = months;
 
@@ -91,7 +90,9 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
         return catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
-            typeof setProp === "string" && !setProp.includes("Q") ? moment(setProp).format("MMM YY") : null;
+            typeof setProp === "string" && !setProp.includes("Q")
+              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+              : null;
           return setMonth && setMonth === month;
         }).length;
       }),
@@ -106,7 +107,9 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
         const length = catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
-            typeof setProp === "string" && !setProp.includes("Q") ? moment(setProp).format("MMM YY") : null;
+            typeof setProp === "string" && !setProp.includes("Q")
+              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+              : null;
           return setMonth && setMonth === month && set.profile === profile;
         }).length;
         return { meta: `${profile}&nbsp;`, value: length };
@@ -153,7 +156,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   Object.keys(timelinesData).forEach((prop) => {
     if (hasKey(timelinesData, prop)) {
       const propSets = prop === "gbLaunch" ? gbSets : sets;
-      const months = getSetMonthRange(propSets, prop, "MMM YY");
+      const months = getSetMonthRange(propSets, prop, "MMM yy");
       const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
       const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
       const vendorNames = alphabeticalSort(
@@ -194,7 +197,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               timelineData = profileNames.map((profile) => {
                 return months.map((month) => {
                   const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                    const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
                     return date && date === month;
                   });
                   const num = monthSets.filter((set) => set.profile === profile).length;
@@ -208,7 +211,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               timelineData = [
                 months.map((month) => {
                   const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? moment(set[prop]).format("MMM YY") : null;
+                    const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
                     return date && date === month;
                   });
                   return monthSets.length;
@@ -301,7 +304,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
         const preGbSets = sets.filter((set) => {
           let startDate;
           if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = utc(set.gbLaunch);
+            startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
           }
           const isPreGb = startDate && startDate > today;
           if (prop === "vendor") {
@@ -320,9 +323,14 @@ const createStatusData = (sets: StatisticsSetType[]) => {
         const liveGbSets = sets.filter((set) => {
           let startDate;
           if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = utc(set.gbLaunch);
+            startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
           }
-          const endDate = utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+          const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+            hour: 23,
+            minute: 59,
+            second: 59,
+            millisecond: 999,
+          });
           const isLiveGb = startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
           if (prop === "vendor") {
             return set.vendors &&
@@ -338,7 +346,12 @@ const createStatusData = (sets: StatisticsSetType[]) => {
           }
         });
         const postGbSets = sets.filter((set) => {
-          const endDate = utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+          const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+            hour: 23,
+            minute: 59,
+            second: 59,
+            millisecond: 999,
+          });
           const isPostGb = endDate <= yesterday;
           if (prop === "vendor") {
             return set.vendors &&
@@ -403,10 +416,15 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     vendor: [],
   };
   const pastSets = sets.filter((set) => {
-    const endDate = utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+    const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+      hour: 23,
+      minute: 59,
+      second: 59,
+      millisecond: 999,
+    });
     return endDate <= yesterday;
   });
-  const months = getSetMonthRange(pastSets, "gbEnd", "MMM YY");
+  const months = getSetMonthRange(pastSets, "gbEnd", "MMM yy");
   const profileNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.profile)));
   const designerNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.designer).flat(1)));
   const vendorNames = alphabeticalSort(
@@ -450,11 +468,11 @@ const createShippedData = (sets: StatisticsSetType[]) => {
         });
         const timelineData = months.map((month) => {
           const shipped = shippedSets.filter((set) => {
-            const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+            const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
             return setEnd && setEnd === month;
           });
           const unshipped = unshippedSets.filter((set) => {
-            const setEnd = set.gbEnd ? moment(set.gbEnd).format("MMM YY") : null;
+            const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
             return setEnd && setEnd === month;
           });
           return {
@@ -544,10 +562,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
             const data: number[] = [];
             if (name === "All") {
               propSets.forEach((set) => {
-                const startDate = moment(set[cat]);
-                const endDate = moment(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+                const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
                 const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                data.push(length);
+                data.push(length[cat === "icDate" ? "months" : "days"]);
               });
             } else {
               propSets
@@ -569,10 +587,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
                   return bool;
                 })
                 .forEach((set) => {
-                  const startDate = moment(set[cat]);
-                  const endDate = moment(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"]);
+                  const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+                  const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
                   const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                  data.push(length);
+                  data.push(length[cat === "icDate" ? "months" : "days"]);
                 });
               Object.keys(durationData[cat]).forEach((key) => {
                 if (hasKey(durationData[cat], key)) {
@@ -655,7 +673,12 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendor: [],
   };
   const pastSets = sets.filter((set) => {
-    const endDate = utc(set.gbEnd).set({ h: 23, m: 59, s: 59, ms: 999 });
+    const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+      hour: 23,
+      minute: 59,
+      second: 59,
+      millisecond: 999,
+    });
     return endDate <= yesterday;
   });
   const vendorSets = pastSets.filter((set) => set.vendors);
@@ -736,7 +759,7 @@ export const createStatistics = functions
     const snapshot = await db.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
-        const lastOfMonth = moment(doc.data().gbLaunch, ["YYYY-MM-DD", "YYYY-MM"]).daysInMonth();
+        const lastOfMonth = DateTime.fromISO(doc.data().gbLaunch, { zone: "utc" }).daysInMonth;
         const gbLaunch =
           doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
         return {
@@ -766,7 +789,7 @@ export const createStatistics = functions
     const limitedSets = sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
-        const thisYear = moment().year();
+        const thisYear = DateTime.utc().year;
         return year >= thisYear - 2 && year <= thisYear + 1;
       } else {
         return true;
@@ -785,7 +808,7 @@ export const createStatistics = functions
       shippedData: await shippedData,
       durationData: await durationData,
       vendorsData: await vendorsData,
-      timestamp: utc().toISOString(),
+      timestamp: DateTime.utc().toISO,
     };
     const jsonString = JSON.stringify(statisticsData);
     const file = bucket.file("statisticsData.json");

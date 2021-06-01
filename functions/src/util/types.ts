@@ -1,5 +1,9 @@
 import { userRoles } from "./constants";
 
+/** Sort params which are dates. */
+
+export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
+
 export type VendorType = {
   id?: string;
   name: string;

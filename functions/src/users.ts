@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { utc } from "moment";
+import { DateTime } from "luxon";
 import { handle } from "./util/functions";
 
 const db = admin.firestore();
@@ -39,9 +39,11 @@ export const listUsers = functions.https.onCall(async (data, context) => {
   const listUsers = async (nextPageToken: string) => {
     const processResult = (result: admin.auth.ListUsersResult) => {
       const users = result.users.map((user) => {
-        const dateCreated = utc(user.metadata.creationTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
-        const lastSignIn = utc(user.metadata.lastSignInTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
-        const lastActive = utc(user.metadata.lastRefreshTime, "ddd, DD MMM YYYY HH:mm:ss z").toISOString();
+        const dateCreated = DateTime.fromHTTP(user.metadata.creationTime).toISO();
+        const lastSignIn = DateTime.fromHTTP(user.metadata.lastSignInTime).toISO();
+        const lastActive = user.metadata.lastRefreshTime
+          ? DateTime.fromHTTP(user.metadata.lastRefreshTime).toISO()
+          : "";
         if (user.customClaims) {
           return {
             displayName: user.displayName,
