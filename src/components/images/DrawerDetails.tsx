@@ -1,8 +1,8 @@
 import React from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { formatBytes, hasKey } from "../../app/slices/common/functions";
+import { formatBytes, hasKey, ordinal } from "../../app/slices/common/functions";
 import { ImageType } from "../../app/slices/images/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -73,7 +73,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
                 <ListItemPrimaryText>{hasKey(metadata, key) ? metadata[key] : null}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
-                    ? moment.utc(props.metadata[key]).format("Do MMMM YYYY, HH:mm:ss")
+                    ? DateTime.fromISO(props.metadata[key], { zone: "utc" }).toFormat(
+                        `d'${ordinal(DateTime.fromISO(props.metadata[key], { zone: "utc" }).day)}' MMMM yyyy, HH:mm:ss`
+                      )
                     : key === "size"
                     ? formatBytes(props.metadata[key])
                     : props.metadata[key]}
