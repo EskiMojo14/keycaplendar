@@ -981,13 +981,15 @@ export const ModalEdit = (props: ModalEditProps) => {
   const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
 
   const [imageInfo, setImageInfo] = useState<{
-    image: Blob | File | string | null;
+    image: Blob | File | null;
     imageUploadProgress: number;
     imageURL: string;
+    newImage: boolean;
   }>({
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
+    newImage: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -1035,7 +1037,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       shipped: set.shipped ? set.shipped : false,
     });
     setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: set.image };
+      return { ...imageInfo, imageURL: set.image };
     });
     setVendors(
       set.vendors
@@ -1072,6 +1074,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       image: null,
       imageUploadProgress: 0,
       imageURL: "",
+      newImage: false,
     });
     setLoading(false);
     setFocused("");
@@ -1079,7 +1082,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const setImage = (image: File | Blob | null) => {
     setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: image };
+      return { ...imageInfo, image: image, newImage: true };
     });
   };
 
@@ -1272,7 +1275,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 return { ...imageInfo, imageURL: downloadURL };
               });
               setLoading(false);
-              editEntry();
+              editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = props.set.image.match(fileNameRegex);
               if (regexMatch) {
@@ -1304,10 +1307,9 @@ export const ModalEdit = (props: ModalEditProps) => {
     !!fields.designer &&
     !!fields.icDate &&
     !!fields.details &&
-    (((typeof imageInfo.image === "string" || imageInfo.image instanceof Blob) && !!imageInfo.image) ||
-      !!imageInfo.imageURL);
+    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
 
-  const editEntry = () => {
+  const editEntry = (imageUrl = imageInfo.imageURL) => {
     if (formFilled) {
       const db = firebase.firestore();
       db.collection("keysets")
@@ -1322,7 +1324,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           notes: fields.notes,
           sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
           shipped: fields.shipped,
-          image: typeof imageInfo.image === "string" ? imageInfo.image : imageInfo.imageURL,
+          image: imageUrl,
           gbMonth: fields.gbMonth,
           gbLaunch: fields.gbLaunch,
           gbEnd: fields.gbEnd,
@@ -1494,7 +1496,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             onClick={(e) => {
               if (formFilled) {
                 e.preventDefault();
-                if (typeof imageInfo.image !== "string") {
+                if (imageInfo.newImage) {
                   uploadImage();
                 } else {
                   editEntry();
@@ -1637,13 +1639,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload
-            image={
-              typeof imageInfo.image === "string" ? imageInfo.image.replace("keysets%2F", "thumbs%2F") : imageInfo.image
-            }
-            setImage={setImage}
-            desktop
-          />
+          <ImageUpload image={imageInfo.newImage ? imageInfo.image : imageInfo.imageURL} setImage={setImage} desktop />
           {dateCard}
           <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={fields.shipped} onChange={handleChange} />
           <Typography use="caption" tag="h3" className="subheader">
