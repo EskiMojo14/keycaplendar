@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { queue } from "../../app/snackbarQueue";
-import { iconObject, mergeObject, truncate } from "../../app/slices/common/functions";
+import { iconObject, mergeObject, ordinal, truncate } from "../../app/slices/common/functions";
 import { selectAllDesigners } from "../../app/slices/main/mainSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { User } from "../../app/slices/users/constructors";
@@ -130,9 +130,21 @@ export const UserRow = (props: UserRowProps) => {
       </DataTableCell>
       <DataTableCell>{user.displayName}</DataTableCell>
       <DataTableCell>{truncate(user.email, 20)}</DataTableCell>
-      <DataTableCell>{moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
-      <DataTableCell>{moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
-      <DataTableCell>{moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YY")}</DataTableCell>
+      <DataTableCell>
+        {DateTime.fromISO(user.dateCreated).toFormat(
+          `HH:mm d'${ordinal(DateTime.fromISO(user.dateCreated).day)}' MMM yyyy`
+        )}
+      </DataTableCell>
+      <DataTableCell>
+        {DateTime.fromISO(user.lastSignIn).toFormat(
+          `HH:mm d'${ordinal(DateTime.fromISO(user.lastSignIn).day)}' MMM yyyy`
+        )}
+      </DataTableCell>
+      <DataTableCell>
+        {DateTime.fromISO(user.lastActive).toFormat(
+          `HH:mm d'${ordinal(DateTime.fromISO(user.lastActive).day)}' MMM yyyy`
+        )}
+      </DataTableCell>
       <DataTableCell>
         <MenuSurfaceAnchor>
           <TextField
