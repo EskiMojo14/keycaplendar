@@ -124,7 +124,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
           <Typography use="subtitle2" tag="p">
             Last updated:{" "}
             {DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).toFormat(
-              `D'${ordinal(DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day)}' MMM YYYY HH:mm`
+              `d'${ordinal(DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day)}' MMM yyyy HH:mm`
             )}
           </Typography>
         </div>
