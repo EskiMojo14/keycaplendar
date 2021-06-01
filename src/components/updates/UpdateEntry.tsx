@@ -1,9 +1,9 @@
 import React from "react";
 import classNames from "classnames";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
-import { iconObject } from "../../app/slices/common/functions";
+import { iconObject, ordinal } from "../../app/slices/common/functions";
 import { selectURLEntry } from "../../app/slices/updates/updatesSlice";
 import { UpdateEntryType } from "../../app/slices/updates/types";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -167,7 +167,7 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
             {entry.title}
           </Typography>
           <Typography use="caption" tag="p">
-            {moment(entry.date).format("Do MMMM YYYY")}
+            {DateTime.fromISO(entry.date).toFormat(`d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`)}
           </Typography>
         </div>
         {linkedIndicator}
