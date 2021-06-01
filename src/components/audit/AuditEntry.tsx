@@ -1,10 +1,10 @@
 import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { auditProperties } from "../../app/slices/audit/constants";
 import { ActionType } from "../../app/slices/audit/types";
-import { alphabeticalSortProp, hasKey } from "../../app/slices/common/functions";
+import { alphabeticalSortProp, hasKey, ordinal } from "../../app/slices/common/functions";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -30,7 +30,7 @@ import "./AuditEntry.scss";
 type AuditEntryProps = {
   action: ActionType;
   openDeleteDialog: (action: ActionType) => void;
-  timestamp: moment.Moment;
+  timestamp: DateTime;
 };
 
 export const AuditEntry = (props: AuditEntryProps) => {
@@ -73,7 +73,9 @@ export const AuditEntry = (props: AuditEntryProps) => {
                 : `${props.action.before.profile} ${props.action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {`${props.action.user.nickname}, ${props.timestamp.format("Do MMM YYYY HH:mm")}`}
+              {`${props.action.user.nickname}, ${props.timestamp.toFormat(
+                `d'${ordinal(props.timestamp.day)}' MMM yyyy HH:mm`
+              )}`}
             </ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />

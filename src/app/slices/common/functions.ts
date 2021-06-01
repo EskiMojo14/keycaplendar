@@ -352,6 +352,34 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 };
 
 /**
+ * Takes a number, and returns the ordinal
+ * @param n Number
+ * @returns "th", "rd", "nd" or "st"
+ */
+
+export const ordinal = (n: number) => {
+  const th = "th";
+  const rd = "rd";
+  const nd = "nd";
+  const st = "st";
+
+  if (n === 11 || n === 12 || n === 13) return th;
+
+  const lastDigit = n.toString().slice(-1);
+
+  switch (lastDigit) {
+    case "1":
+      return st;
+    case "2":
+      return nd;
+    case "3":
+      return rd;
+    default:
+      return th;
+  }
+};
+
+/**
  * Fetches and lists all top level storage folders.
  * @returns Array of all top level folder names.
  */
