@@ -1,8 +1,8 @@
 import React from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { auditProperties, auditPropertiesFormatted } from "../../app/slices/audit/constants";
 import { ActionSetType } from "../../app/slices/audit/types";
-import { arrayIncludes, hasKey } from "../../app/slices/common/functions";
+import { arrayIncludes, hasKey, ordinal } from "../../app/slices/common/functions";
 import { ProcessedPublicActionType } from "../../app/slices/history/types";
 import { VendorType } from "../../app/slices/main/types";
 import { Checkbox } from "@rmwc/checkbox";
@@ -51,7 +51,8 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
       ? { before: props.action.before, after: props.action.after }
       : { data: props.action.action === "deleted" ? props.action.before : props.action.after };
 
-  const timestamp = moment(props.action.timestamp, moment.ISO_8601).format("Do MMM YYYY HH:mm");
+  const timestamp = DateTime.fromISO(props.action.timestamp, { zone: "utc" });
+  const formattedTimestamp = timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`);
 
   const constructRows = (dataObj = data, properties = auditProperties): React.ReactNode => {
     if (dataObj.data) {
@@ -70,7 +71,9 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                       {domain[0]}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
-                    moment.utc(useData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
+                    DateTime.fromISO(useData, { zone: "utc" }).toFormat(
+                      `d'${ordinal(DateTime.fromISO(useData, { zone: "utc" }).day)}' MMM yyyy`
+                    )
                   ) : prop === "image" ? (
                     "<link>"
                   ) : (
@@ -163,7 +166,9 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     beforeData ? (
-                      moment.utc(beforeData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
+                      DateTime.fromISO(beforeData, { zone: "utc" }).toFormat(
+                        `d'${ordinal(DateTime.fromISO(beforeData, { zone: "utc" }).day)}' MMM yyyy`
+                      )
                     ) : null
                   ) : prop === "image" ? (
                     "<link>"
@@ -179,7 +184,9 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                       {afterDomain[0]}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
-                    moment.utc(afterData, ["YYYY-MM-DD", "YYYY-MM"]).format("Do MMM YYYY")
+                    DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
+                      `d'${ordinal(DateTime.fromISO(afterData, { zone: "utc" }).day)}' MMM yyyy`
+                    )
                   ) : prop === "image" ? (
                     "<link>"
                   ) : (
@@ -317,7 +324,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
           <ListItemText>
             <div className="overline">{props.action.action}</div>
             <ListItemPrimaryText>{props.action.title}</ListItemPrimaryText>
-            <ListItemSecondaryText>{timestamp}</ListItemSecondaryText>
+            <ListItemSecondaryText>{formattedTimestamp}</ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
         </ListItem>

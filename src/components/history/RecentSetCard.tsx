@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "../../app/hooks";
 import { mainPages, pageIcons, pageTitle } from "../../app/slices/common/constants";
 import { setPage } from "../../app/slices/common/coreFunctions";
-import { arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
+import { arrayIncludes, hasKey, iconObject, ordinal } from "../../app/slices/common/functions";
 import { MainPage } from "../../app/slices/common/types";
 import { pageConditions } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
@@ -122,7 +122,10 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
             {set ? `${set.profile} ${set.colorway}` : recentSet.title}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            Last updated: {moment(recentSet.latestTimestamp).format("Do MMM YYYY HH:mm")}
+            Last updated:{" "}
+            {DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).toFormat(
+              `D'${ordinal(DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day)}' MMM YYYY HH:mm`
+            )}
           </Typography>
         </div>
       </ConditionalWrapper>
