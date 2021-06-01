@@ -71,10 +71,10 @@ export const pageConditions = (
 ): Record<typeof mainPages[number], boolean> => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
-  const startDate = DateTime.fromFormat(set.gbLaunch, set.gbLaunch.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", {
+  const startDate = DateTime.fromISO(set.gbLaunch, {
     zone: "utc",
   });
-  const endDate = DateTime.fromFormat(set.gbEnd, "yyyy-MM-dd").set({
+  const endDate = DateTime.fromISO(set.gbEnd).set({
     hour: 23,
     minute: 59,
     second: 59,
@@ -111,10 +111,7 @@ export const getData = () => {
       const sets: SetType[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().profile) {
-          const lastInMonth = doc.data().gbLaunch
-            ? DateTime.fromFormat(doc.data().gbLaunch, doc.data().gbLaunch.length === 7 ? "yyyy-MM" : "yyyy-MM-dd")
-                .daysInMonth
-            : 0;
+          const lastInMonth = doc.data().gbLaunch ? DateTime.fromISO(doc.data().gbLaunch).daysInMonth : 0;
           const gbLaunch =
             doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastInMonth : doc.data().gbLaunch;
           const sales =
@@ -427,7 +424,7 @@ const createGroups = (
     if (arrayIncludes(dateSorts, sort)) {
       return sets
         .map((set) => {
-          const setDate = DateTime.fromFormat(set[sort], set[sort].length === 7 ? "yyyy-MM" : "yyyy-MM-dd", {
+          const setDate = DateTime.fromISO(set[sort], {
             zone: "utc",
           });
           const setMonth = setDate.toFormat("MMMM yyyy");
@@ -472,7 +469,7 @@ const createGroups = (
       if (hasKey(set, sort) || sort === "vendor") {
         if (arrayIncludes(dateSorts, sort)) {
           const val = set[sort];
-          const setDate = DateTime.fromFormat(val, val.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" });
+          const setDate = DateTime.fromISO(val, { zone: "utc" });
           const setMonth = setDate.toFormat("MMMM yyyy");
           return setMonth && setMonth === group;
         } else if (sort === "vendor") {
@@ -505,15 +502,9 @@ const createGroups = (
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
       if (arrayIncludes(dateSorts, prop)) {
         const aProp = a[prop];
-        const aDate =
-          aProp && !aProp.includes("Q")
-            ? DateTime.fromFormat(aProp, aProp.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" })
-            : null;
+        const aDate = aProp && !aProp.includes("Q") ? DateTime.fromISO(aProp, { zone: "utc" }) : null;
         const bProp = b[prop];
-        const bDate =
-          bProp && !bProp.includes("Q")
-            ? DateTime.fromFormat(bProp, bProp.length === 7 ? "yyyy-MM" : "yyyy-MM-dd", { zone: "utc" })
-            : null;
+        const bDate = bProp && !bProp.includes("Q") ? DateTime.fromISO(bProp, { zone: "utc" }) : null;
         const returnVal = order === "ascending" ? 1 : -1;
         if (aDate && bDate) {
           if (aDate > bDate) {

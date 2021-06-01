@@ -321,13 +321,13 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
   };
   const length =
     monthDiff(
-      DateTime.fromFormat(setMonths[0], "yyyy-MM"),
-      DateTime.fromFormat(setMonths[setMonths.length - 1], "yyyy-MM")
+      DateTime.fromISO(setMonths[0], { zone: "utc" }),
+      DateTime.fromISO(setMonths[setMonths.length - 1], { zone: "utc" })
     ) + 1;
   let i;
   const allMonths = [];
   for (i = 0; i < length; i++) {
-    allMonths.push(DateTime.fromFormat(setMonths[0], "yyyy-MM").plus({ months: i }).toFormat(format));
+    allMonths.push(DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   }
   return allMonths;
 };
