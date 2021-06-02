@@ -808,7 +808,7 @@ export const createStatistics = functions
       shippedData: await shippedData,
       durationData: await durationData,
       vendorsData: await vendorsData,
-      timestamp: DateTime.utc().toISO,
+      timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);
     const file = bucket.file("statisticsData.json");
