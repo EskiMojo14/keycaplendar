@@ -125,11 +125,11 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
-    } else if (typeof gbLaunch === "string") {
+    } else if (gbLaunch && typeof gbLaunch === "string") {
       gb = "GB expected " + gbLaunch + ".";
-    } else if (set.gbMonth && gbLaunch) {
+    } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
       gb = "Expected " + gbLaunch.toFormat("MMMM") + ".";
-    } else if (gbLaunch) {
+    } else if (gbLaunch && gbLaunch instanceof DateTime) {
       gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
         gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : ""
       }.`;
