@@ -1,4 +1,4 @@
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../../firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "../../store";
@@ -17,7 +17,7 @@ import {
   VendorData,
   VendorDataObject,
 } from "./types";
-import { hasKey, mergeObject } from "../common/functions";
+import { hasKey, mergeObject, ordinal } from "../common/functions";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
@@ -61,8 +61,9 @@ export const getData = async () => {
         .then((response) => {
           response.json().then((data) => {
             const { timestamp, ...statisticsData } = data;
-
-            const formattedTimestamp = moment.utc(timestamp, moment.ISO_8601).format("HH:mm Do MMM YYYY UTC");
+            const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
+            const timestampOrdinal = ordinal(luxonTimetamp.day);
+            const formattedTimestamp = luxonTimetamp.toFormat(`HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`);
             queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
 
             dispatch(setStatisticsData(statisticsData));

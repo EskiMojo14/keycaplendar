@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../../firebase";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
-import { iconObject } from "../../../app/slices/common/functions";
+import { iconObject, ordinal } from "../../../app/slices/common/functions";
 import { UpdateEntryType } from "../../../app/slices/updates/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { queue } from "../../../app/snackbarQueue";
@@ -66,11 +66,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const dateToday = () => {
-    const today = moment().format("YYYY-MM-DD");
+    const today = DateTime.now().toFormat("yyyy-MM-dd");
     setDate(today);
   };
 
-  const formattedDate = isoDate.test(date) ? moment.utc(date).format("Do MMMM YYYY") : date;
+  const formattedDate = isoDate.test(date)
+    ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
+    : date;
 
   const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
 
@@ -255,11 +257,13 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const dateToday = () => {
-    const today = moment().format("YYYY-MM-DD");
+    const today = DateTime.now().toFormat("yyyy-MM-dd");
     setDate(today);
   };
 
-  const formattedDate = isoDate.test(date) ? moment.utc(date).format("Do MMMM YYYY") : date;
+  const formattedDate = isoDate.test(date)
+    ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
+    : date;
 
   const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
 

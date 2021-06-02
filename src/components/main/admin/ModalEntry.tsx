@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
@@ -304,9 +304,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setLoading(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${moment
-        .utc()
-        .format("YYYYMMDDHHmmSS")}`;
+      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
+        "yyyyMMddHHmmss"
+      )}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(imageInfo.image);
       uploadTask.on(
@@ -1244,9 +1244,9 @@ export const ModalEdit = (props: ModalEditProps) => {
       setLoading(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${moment
-        .utc()
-        .format("YYYYMMDDHHmmSS")}`;
+      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
+        "yyyyMMddHHmmss"
+      )}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(imageInfo.image);
       uploadTask.on(

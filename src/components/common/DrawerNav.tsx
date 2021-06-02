@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
@@ -53,14 +53,14 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const [newUpdate, setNewUpdate] = useState(false);
 
   const checkForUpdates = () => {
-    const lastWeek = moment.utc().days(-7);
+    const lastWeek = DateTime.utc().minus({ days: 7 });
     db.collection("updates")
       .orderBy("date", "desc")
       .limit(1)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          const date = moment.utc(doc.data().date);
+          const date = DateTime.fromISO(doc.data().date, { zone: "utc" });
           if (date >= lastWeek) {
             setNewUpdate(true);
           }

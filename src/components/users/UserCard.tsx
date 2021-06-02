@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
-import { hasKey, iconObject, mergeObject } from "../../app/slices/common/functions";
+import { hasKey, iconObject, mergeObject, ordinal } from "../../app/slices/common/functions";
 import { selectAllDesigners } from "../../app/slices/main/mainSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { userRoleIcons } from "../../app/slices/users/constants";
@@ -158,7 +158,9 @@ export const UserCard = (props: UserCardProps) => {
             <ListItemText>
               <ListItemPrimaryText>Date created</ListItemPrimaryText>
               <ListItemSecondaryText>
-                {moment.utc(user.dateCreated, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                {DateTime.fromISO(user.dateCreated).toFormat(
+                  `HH:mm d'${ordinal(DateTime.fromISO(user.dateCreated).day)}' MMM yyyy`
+                )}
               </ListItemSecondaryText>
             </ListItemText>
           </ListItem>
@@ -166,7 +168,9 @@ export const UserCard = (props: UserCardProps) => {
             <ListItemText>
               <ListItemPrimaryText>Last signed in</ListItemPrimaryText>
               <ListItemSecondaryText>
-                {moment.utc(user.lastSignIn, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                {DateTime.fromISO(user.lastSignIn).toFormat(
+                  `HH:mm d'${ordinal(DateTime.fromISO(user.lastSignIn).day)}' MMM yyyy`
+                )}
               </ListItemSecondaryText>
             </ListItemText>
           </ListItem>
@@ -174,7 +178,9 @@ export const UserCard = (props: UserCardProps) => {
             <ListItemText>
               <ListItemPrimaryText>Last active</ListItemPrimaryText>
               <ListItemSecondaryText>
-                {moment.utc(user.lastActive, moment.ISO_8601).format("HH:mm Do MMM YYYY")}
+                {DateTime.fromISO(user.lastActive).toFormat(
+                  `HH:mm d'${ordinal(DateTime.fromISO(user.lastActive).day)}' MMM yyyy`
+                )}
               </ListItemSecondaryText>
             </ListItemText>
           </ListItem>

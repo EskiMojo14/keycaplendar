@@ -19,15 +19,15 @@
     "firebase-admin": "^9.5.0",
     "firebase-functions": "^3.14.1",
     "jsonwebtoken": "^8.5.1",
+    "luxon": "^1.27.0",
     "mathjs": "^9.3.0",
-    "moment": "^2.29.1",
     "nanoid": "^3.1.23",
     "sharp": "^0.27.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.1",
+    "@types/luxon": "^1.26.5",
     "@types/mathjs": "^6.0.11",
-    "@types/moment": "^2.13.0",
     "@types/node": "^14.14.35",
     "@types/sharp": "^0.27.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import classNames from "classnames";
 import firebase from "../../firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -186,7 +186,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
                 <Card className={classNames("log", { placeholder: filteredActions.length === 0 })}>
                   <List twoLine className="three-line">
                     {filteredActions.map((action) => {
-                      const timestamp = moment(action.timestamp);
+                      const timestamp = DateTime.fromISO(action.timestamp);
                       return (
                         <AuditEntry
                           key={action.timestamp}

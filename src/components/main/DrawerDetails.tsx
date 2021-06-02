@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
 import { mainPages } from "../../app/slices/common/constants";
-import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject } from "../../app/slices/common/functions";
+import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "../../app/slices/common/functions";
 import { selectSearch } from "../../app/slices/main/mainSlice";
 import { setSearch } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
@@ -82,14 +82,14 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   if (!set.image) {
     set.image = "";
   }
-  const today = moment.utc();
-  let gbLaunch;
-  let gbEnd;
-  let icDate;
-  let verb;
-  let ic;
-  let gb;
-  let shippedLine;
+  const today = DateTime.utc();
+  let gbLaunch: string | DateTime = "";
+  let gbEnd: DateTime | null = null;
+  let icDate: DateTime;
+  let verb = "";
+  let ic = "";
+  let gb: string | null = "";
+  let shippedLine: React.ReactNode | null = "";
   const chips: string[] = [];
   const chipsContent = ["profile", "colorway", "designer", "vendors"];
   const sortedVendors = set.vendors ? alphabeticalSortProp([...set.vendors], "region") : [];
@@ -98,11 +98,18 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     gbLaunch = set.gbLaunch
       ? set.gbLaunch.includes("Q")
         ? set.gbLaunch
-        : moment.utc(set.gbLaunch, ["YYYY-MM-DD", "YYYY-MM"])
-      : null;
-    gbEnd = set.gbEnd ? moment.utc(set.gbEnd) : null;
-    icDate = moment.utc(set.icDate);
-    ic = `IC posted ${icDate.format("Do\xa0MMMM")}${icDate.year() !== today.year() ? icDate.format("\xa0YYYY") : ""}.`;
+        : DateTime.fromISO(set.gbLaunch, { zone: "utc" })
+      : "";
+    const gbLaunchOrdinal = gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
+
+    gbEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }) : null;
+    const gbEndOrdinal = gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
+
+    icDate = DateTime.fromISO(set.icDate, { zone: "utc" });
+    const icDateOrdinal = icDate instanceof DateTime ? ordinal(icDate.day) : "";
+    ic = `IC posted ${icDate.toFormat(`d'${icDateOrdinal}'\xa0MMMM`)}${
+      icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
+    }.`;
     if (gbLaunch && gbLaunch <= today && gbEnd && gbEnd >= today) {
       verb = "Running";
     } else if (gbEnd && gbEnd <= today) {
@@ -112,17 +119,19 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     } else {
       verb = "Runs";
     }
-    if (gbLaunch && moment.isMoment(gbLaunch) && gbEnd) {
-      gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-        gbLaunch.year() !== today.year() && gbLaunch.year() !== gbEnd.year() ? gbLaunch.format("\xa0YYYY") : ""
-      } until ${gbEnd.format("Do\xa0MMMM")}${gbEnd.year() !== today.year() ? gbEnd.format("\xa0YYYY") : ""}.`;
+    if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
+      gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
+        gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year ? gbLaunch.toFormat("\xa0yyyy") : ""
+      } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
+        gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
+      }.`;
     } else if (typeof gbLaunch === "string") {
       gb = "GB expected " + gbLaunch + ".";
     } else if (set.gbMonth && gbLaunch) {
-      gb = "Expected " + gbLaunch.format("MMMM") + ".";
+      gb = "Expected " + gbLaunch.toFormat("MMMM") + ".";
     } else if (gbLaunch) {
-      gb = `${verb} from ${gbLaunch.format("Do\xa0MMMM")}${
-        gbLaunch.year() !== today.year() ? gbLaunch.format("\xa0YYYY") : ""
+      gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
+        gbLaunch.year !== today.year ? gbLaunch.toFormat("\xa0yyyy") : ""
       }.`;
     } else {
       gb = null;
@@ -177,17 +186,16 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           {sortedVendors.map((vendor) => {
             let differentDate;
             if (vendor.endDate) {
-              const dateObject = moment.utc(vendor.endDate);
-              const todayObject = moment().utc();
-              const yesterdayObject = moment()
-                .utc()
-                .date(todayObject.date() - 1);
+              const dateObject = DateTime.fromISO(vendor.endDate, { zone: "utc" });
+              const dateOrdinal = ordinal(dateObject.day);
+              const todayObject = DateTime.utc();
+              const yesterdayObject = todayObject.minus({ days: 1 });
               const dateVerb = yesterdayObject > dateObject ? "Ended" : "Ends";
               differentDate = (
                 <div className="caption">
                   <Typography use="caption">
-                    {`${dateVerb} ${dateObject.format("Do MMMM")} ${
-                      dateObject.year() !== todayObject.year() ? dateObject.format(" YYYY") : ""
+                    {`${dateVerb} ${dateObject.toFormat(`d'${dateOrdinal}' MMMM`)} ${
+                      dateObject.year !== todayObject.year ? dateObject.toFormat(" yyyy") : ""
                     }`}
                   </Typography>
                 </div>

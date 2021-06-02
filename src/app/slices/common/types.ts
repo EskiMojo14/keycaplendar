@@ -16,6 +16,10 @@ export type Overwrite<T1, T2> = {
 } &
   T2;
 
+/** Create a union of all keys in object T which have values of V type. */
+
+export type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T];
+
 /** Alias for standard HTML props. */
 
 export type HTMLProps = React.HTMLAttributes<HTMLElement>;

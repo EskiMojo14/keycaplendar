@@ -1,4 +1,4 @@
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
@@ -208,11 +208,11 @@ const isDarkTheme = () => {
   const systemBool =
     settings.applyTheme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  const currentDay = moment();
+  const currentDay = DateTime.now();
   const fromArray = settings.fromTimeTheme.split(":");
-  const fromTime = moment().hours(parseInt(fromArray[0])).minutes(parseInt(fromArray[1]));
+  const fromTime = currentDay.set({ hour: parseInt(fromArray[0]), minute: parseInt(fromArray[1]) });
   const toArray = settings.toTimeTheme.split(":");
-  const toTime = moment().hours(parseInt(toArray[0])).minutes(parseInt(toArray[1]));
+  const toTime = currentDay.set({ hour: parseInt(toArray[0]), minute: parseInt(toArray[1]) });
   const timedBool = settings.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
   return manualBool || systemBool || timedBool;
 };

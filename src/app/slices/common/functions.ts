@@ -1,9 +1,9 @@
 import React from "react";
-import moment from "moment";
+import { DateTime } from "luxon";
 import firebase from "../../../firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "./constants";
-import { SetType } from "../main/types";
+import { DateSortKeys, SetType } from "../main/types";
 
 const storage = firebase.storage();
 
@@ -293,18 +293,18 @@ export const useBoolStates = (func: (bool: boolean) => void) => {
 };
 
 /**
- * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Moment).
+ * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
  * @param sets Array of set objects to be checked.
  * @param prop Property of set to be used.
- * @param format Moment string to specify format. See {@link https://momentjs.com/docs/#/displaying/format/}.
+ * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens}.
  * @returns Array of months from earliest to latest, in specified format.
  */
 
-export const getSetMonthRange = (sets: SetType[], prop: keyof SetType, format: string) => {
+export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
   const setMonths = uniqueArray(
     sets.map((set) => {
       const val = set[prop];
-      return val && typeof val === "string" && !val.includes("Q") ? moment(val).format("YYYY-MM") : "";
+      return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
     })
   ).filter(Boolean);
   setMonths.sort(function (a, b) {
@@ -316,14 +316,18 @@ export const getSetMonthRange = (sets: SetType[], prop: keyof SetType, format: s
     }
     return 0;
   });
-  const monthDiff = (dateFrom: moment.Moment, dateTo: moment.Moment) => {
-    return dateTo.month() - dateFrom.month() + 12 * (dateTo.year() - dateFrom.year());
+  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {
+    return dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
   };
-  const length = monthDiff(moment(setMonths[0]), moment(setMonths[setMonths.length - 1])) + 1;
+  const length =
+    monthDiff(
+      DateTime.fromISO(setMonths[0], { zone: "utc" }),
+      DateTime.fromISO(setMonths[setMonths.length - 1], { zone: "utc" })
+    ) + 1;
   let i;
   const allMonths = [];
   for (i = 0; i < length; i++) {
-    allMonths.push(moment(setMonths[0]).add(i, "M").format(format));
+    allMonths.push(DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   }
   return allMonths;
 };
@@ -345,6 +349,34 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
+
+/**
+ * Takes a number, and returns the ordinal
+ * @param n Number
+ * @returns "th", "rd", "nd" or "st"
+ */
+
+export const ordinal = (n: number) => {
+  const th = "th";
+  const rd = "rd";
+  const nd = "nd";
+  const st = "st";
+
+  if (n === 11 || n === 12 || n === 13) return th;
+
+  const lastDigit = n.toString().slice(-1);
+
+  switch (lastDigit) {
+    case "1":
+      return st;
+    case "2":
+      return nd;
+    case "3":
+      return rd;
+    default:
+      return th;
+  }
 };
 
 /**
