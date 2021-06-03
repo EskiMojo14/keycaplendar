@@ -1,0 +1,13 @@
+diff --git a/node_modules/@material/select/_mixins.scss b/node_modules/@material/select/_mixins.scss
+index b2bd1e8..818e348 100644
+--- a/node_modules/@material/select/_mixins.scss
++++ b/node_modules/@material/select/_mixins.scss
+@@ -193,7 +193,7 @@
+ 
+ @mixin dd-arrow-svg-bg_($fill-hex-number, $opacity) {
+   // Lookup color and remove leading #.
+-  $fill-hex-number: theme-variables.prop-value($fill-hex-number);
++  //$fill-hex-number: theme-variables.prop-value($fill-hex-number);
+   $fill-hex-number: string.slice(string.unquote("#{$fill-hex-number}"), 2);
+ 
+   // stylelint-disable-next-line function-url-quotes
