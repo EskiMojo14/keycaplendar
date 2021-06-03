@@ -1,21 +1,20 @@
-import firebase from "../../../firebase";
+import { typedFirestore } from "../firebase/firestore";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { addOrRemove, hasKey } from "../common/functions";
+import { UserId } from "../firebase/types";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
-import { UserPreferencesDoc } from "./types";
 import { setBought, setFavorites, setHidden, setUserPresets } from "./userSlice";
-
-const db = firebase.firestore();
 
 const { dispatch } = store;
 
 export const getUserPreferences = (id: string) => {
   if (id) {
-    db.collection("users")
-      .doc(id)
+    typedFirestore
+      .collection("users")
+      .doc(id as UserId)
       .get()
       .then((doc) => {
         if (doc.exists) {
@@ -25,56 +24,51 @@ export const getUserPreferences = (id: string) => {
             settings,
           } = store.getState();
           const data = doc.data();
-          const {
-            favorites,
-            bought,
-            hidden,
-            settings: settingsPrefs,
-            syncSettings,
-            filterPresets,
-          } = data as UserPreferencesDoc;
+          if (data) {
+            const { favorites, bought, hidden, settings: settingsPrefs, syncSettings, filterPresets } = data;
 
-          filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
+            filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
 
-          if (favorites instanceof Array) {
-            dispatch(setFavorites(favorites));
-          }
-          if (bought instanceof Array) {
-            dispatch(setBought(bought));
-          }
-          if (hidden instanceof Array) {
-            dispatch(setHidden(hidden));
-          }
-
-          if (filterPresets) {
-            const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
-            dispatch(setUserPresets(updatedPresets));
-            const storedPreset = getStorage("presetId");
-            const params = new URLSearchParams(window.location.search);
-            const noUrlParams = !whitelistParams.some((param) => params.has(param));
-            if (storedPreset && storedPreset !== "default" && noUrlParams) {
-              selectPreset(storedPreset, false);
+            if (favorites instanceof Array) {
+              dispatch(setFavorites(favorites));
             }
-          }
-
-          if (typeof syncSettings === "boolean") {
-            if (syncSettings !== settings.syncSettings) {
-              setSyncSettings(syncSettings, false);
+            if (bought instanceof Array) {
+              dispatch(setBought(bought));
             }
-            if (syncSettings) {
-              const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
-                if (settingsPrefs && hasKey(settingsPrefs, setting)) {
-                  if (settingsPrefs[setting] !== settings[setting]) {
-                    setFunction(settingsPrefs[setting], false);
+            if (hidden instanceof Array) {
+              dispatch(setHidden(hidden));
+            }
+
+            if (filterPresets) {
+              const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
+              dispatch(setUserPresets(updatedPresets));
+              const storedPreset = getStorage("presetId");
+              const params = new URLSearchParams(window.location.search);
+              const noUrlParams = !whitelistParams.some((param) => params.has(param));
+              if (storedPreset && storedPreset !== "default" && noUrlParams) {
+                selectPreset(storedPreset, false);
+              }
+            }
+
+            if (typeof syncSettings === "boolean") {
+              if (syncSettings !== settings.syncSettings) {
+                setSyncSettings(syncSettings, false);
+              }
+              if (syncSettings) {
+                const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
+                  if (settingsPrefs && hasKey(settingsPrefs, setting)) {
+                    if (settingsPrefs[setting] !== settings[setting]) {
+                      setFunction(settingsPrefs[setting], false);
+                    }
                   }
-                }
-              };
-              Object.keys(settingFns).forEach((setting) => {
-                if (hasKey(settingFns, setting)) {
-                  const func = settingFns[setting];
-                  getSetting(setting, func);
-                }
-              });
+                };
+                Object.keys(settingFns).forEach((setting) => {
+                  if (hasKey(settingFns, setting)) {
+                    const func = settingFns[setting];
+                    getSetting(setting, func);
+                  }
+                });
+              }
             }
           }
         }
@@ -97,8 +91,9 @@ export const toggleFavorite = (id: string) => {
     filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
   }
   if (user.id) {
-    db.collection("users")
-      .doc(user.id)
+    typedFirestore
+      .collection("users")
+      .doc(user.id as UserId)
       .set(
         {
           favorites: favorites,
@@ -123,8 +118,9 @@ export const toggleBought = (id: string) => {
     filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought);
   }
   if (user.id) {
-    db.collection("users")
-      .doc(user.id)
+    typedFirestore
+      .collection("users")
+      .doc(user.id as UserId)
       .set(
         {
           bought: bought,
@@ -163,8 +159,9 @@ export const toggleHidden = (id: string) => {
     dismissesOnAction: true,
   });
   if (user.id) {
-    db.collection("users")
-      .doc(user.id)
+    typedFirestore
+      .collection("users")
+      .doc(user.id as UserId)
       .set(
         {
           hidden: hidden,
