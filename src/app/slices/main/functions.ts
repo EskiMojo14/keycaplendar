@@ -15,6 +15,8 @@ import {
   uniqueArray,
 } from "../common/functions";
 import { Page } from "../common/types";
+import { typedFirestore } from "../firebase/firestore";
+import { UserId } from "../firebase/types";
 import { setStorage } from "../settings/functions";
 import { setUserPresets } from "../user/userSlice";
 import {
@@ -714,7 +716,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
   }
 };
 
-export const updatePreset = (preset: OldPresetType): PresetType => {
+export const updatePreset = (preset: OldPresetType | PresetType): PresetType => {
   const {
     main: { allRegions },
   } = store.getState();
@@ -807,8 +809,9 @@ export const syncPresets = (presetsParam: PresetType[]) => {
   const sortedPresets = alphabeticalSortProp([...presets], "name", false, "Default").map((preset) => ({
     ...preset,
   }));
-  db.collection("users")
-    .doc(user.id)
+  typedFirestore
+    .collection("users")
+    .doc(user.id as UserId)
     .set({ filterPresets: sortedPresets }, { merge: true })
     .catch((error) => {
       console.log("Failed to sync presets: " + error);
@@ -867,7 +870,8 @@ export const syncGlobalPresets = (presetsParam: PresetType[]) => {
   const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
     ...preset,
   }));
-  db.collection("app")
+  typedFirestore
+    .collection("app")
     .doc("globals")
     .set({ filterPresets: sortedPresets }, { merge: true })
     .catch((error) => {

@@ -1,5 +1,5 @@
 import { GuideEntryType } from "../guides/types";
-import type { OldPresetType } from "../main/types";
+import type { OldPresetType, PresetType } from "../main/types";
 import type { Settings } from "../settings/types";
 import { UpdateEntryType } from "../updates/types";
 
@@ -29,7 +29,7 @@ export type ApiUserDoc = {
 };
 
 export type GlobalDoc = {
-  filterPresets: OldPresetType[];
+  filterPresets: (OldPresetType | PresetType)[];
 };
 
 export type GuideId = FirestoreId<"_guideId">;
@@ -39,7 +39,7 @@ export type UpdateId = FirestoreId<"_updateId">;
 export type UserId = FirestoreId<"_userId">;
 
 export type UserPreferencesDoc = {
-  filterPresets?: OldPresetType[];
+  filterPresets?: (OldPresetType | PresetType)[];
   favorites?: string[];
   bought?: string[];
   hidden?: string[];
