@@ -1,16 +1,16 @@
-import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
+import { typedFirestore } from "../firebase/firestore";
+import { UpdateId } from "../firebase/types";
 import { setEntries, setLoading } from "./updatesSlice";
 import { UpdateEntryType } from "./types";
-
-const db = firebase.firestore();
 
 const { dispatch } = store;
 
 export const getEntries = () => {
   dispatch(setLoading(true));
-  db.collection("updates")
+  typedFirestore
+    .collection("updates")
     .orderBy("date", "desc")
     .get()
     .then((querySnapshot) => {
@@ -18,11 +18,8 @@ export const getEntries = () => {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         entries.push({
+          ...data,
           id: doc.id,
-          name: data.name,
-          title: data.title,
-          date: data.date,
-          body: data.body,
           pinned: data.pinned ? data.pinned : false,
         });
       });
@@ -47,8 +44,9 @@ const sortEntries = (entries: UpdateEntryType[]) => {
 };
 
 export const pinEntry = (entry: UpdateEntryType) => {
-  db.collection("updates")
-    .doc(entry.id)
+  typedFirestore
+    .collection("updates")
+    .doc(entry.id as UpdateId)
     .set({ pinned: !entry.pinned }, { merge: true })
     .then(() => {
       queue.notify({ title: `Entry ${entry.pinned ? "unpinned" : "pinned"}.` });
