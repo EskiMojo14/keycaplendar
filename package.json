@@ -113,6 +113,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "patch-package": "^6.4.7",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "typed-firestore": "^1.1.0"
   }
 }

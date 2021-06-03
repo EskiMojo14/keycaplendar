@@ -1,10 +1,10 @@
-import firebase from "../../../firebase";
+import { typedFirestore } from "../firebase/firestore";
 import store from "../../store";
 import { queue } from "../../snackbarQueue";
 import { setAppPage, setDevice } from "./commonSlice";
 import { allPages, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayEveryType, arrayIncludes, hasKey } from "./functions";
-import { GlobalDoc, Page } from "./types";
+import { Page } from "./types";
 import { setURLEntry as setURLGuide } from "../guides/guidesSlice";
 import { historyTabs } from "../history/constants";
 import { setHistoryTab } from "../history/functions";
@@ -22,8 +22,6 @@ import { WhitelistType } from "../main/types";
 import { statsTabs } from "../statistics/constants";
 import { setStatisticsTab } from "../statistics/functions";
 import { setURLEntry as setURLUpdate } from "../updates/updatesSlice";
-
-const db = firebase.firestore();
 
 const { dispatch } = store;
 
@@ -190,15 +188,18 @@ export const getURLQuery = () => {
 };
 
 export const getGlobals = () => {
-  db.collection("app")
+  typedFirestore
+    .collection("app")
     .doc("globals")
     .get()
     .then((doc) => {
       const data = doc.data();
-      const { filterPresets } = data as GlobalDoc;
-      if (filterPresets) {
-        const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
-        dispatch(setAppPresets(updatedPresets));
+      if (data) {
+        const { filterPresets } = data;
+        if (filterPresets) {
+          const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
+          dispatch(setAppPresets(updatedPresets));
+        }
       }
     })
     .catch((error) => {

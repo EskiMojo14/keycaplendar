@@ -1,0 +1,14 @@
+diff --git a/node_modules/typed-firestore/index.d.ts b/node_modules/typed-firestore/index.d.ts
+index 1fbc2d3..ffc38b4 100644
+--- a/node_modules/typed-firestore/index.d.ts
++++ b/node_modules/typed-firestore/index.d.ts
+@@ -74,7 +74,8 @@ type FirestorePrimitiveType =
+   | null
+   | firestore.CollectionReference
+   | firestore.DocumentReference
+-  | string;
++  | string
++  | undefined;
+ 
+ /**
+  * Update data (for use with `DocumentReference.update()`) consists of field
