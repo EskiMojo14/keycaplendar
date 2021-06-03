@@ -35,6 +35,7 @@ export const allPages = [
   "timeline",
   "archive",
   "favorites",
+  "bought",
   "hidden",
   "statistics",
   "history",
@@ -48,7 +49,17 @@ export const allPages = [
 
 /** Pages which adhere to the normal calendar format. */
 
-export const mainPages = ["calendar", "live", "ic", "previous", "timeline", "archive", "favorites", "hidden"] as const;
+export const mainPages = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+  "favorites",
+  "bought",
+  "hidden",
+] as const;
 
 /** Main pages which can be accessed without being logged in. */
 
@@ -72,7 +83,7 @@ export const urlPages: Page[] = [
 
 /** Pages which require being logged in. */
 
-export const userPages: Page[] = ["favorites", "hidden"];
+export const userPages: Page[] = ["favorites", "bought", "hidden"];
 
 /** Pages which can only be used by users with the admin permission. */
 
@@ -88,6 +99,7 @@ export const pageTitle: Record<Page, string> = {
   timeline: "Timeline",
   archive: "Archive",
   favorites: "Favorites",
+  bought: "Bought",
   hidden: "Hidden",
   statistics: "Statistics",
   history: "History",
@@ -140,6 +152,13 @@ export const pageIcons: Record<Page, IconPropT> = {
 	c5.2-4.7,8.6-7.8,8.6-11.5C23.5,4,21.1,1.6,18,1.6z M13.6,17.2l-0.1,0.1l-0.1-0.1c-4.8-4.3-7.9-7.2-7.9-10c0-2,1.5-3.5,3.5-3.5
 	c1.5,0,3,1,3.6,2.4h1.9c0.5-1.4,2-2.4,3.6-2.4c2,0,3.5,1.5,3.5,3.5C21.5,10,18.4,12.9,13.6,17.2z"
       />
+    </svg>
+  ),
+  bought: iconObject(
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+      <path d="M0 0h24v24H0V0z" fill="none" />
+      <path d="M3.31 11l2.2 8.01L18.5 19l2.2-8H3.31zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" opacity=".3" />
+      <path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1zM12 4.8L14.8 9H9.2L12 4.8zM18.5 19l-12.99.01L3.31 11H20.7l-2.2 8zM12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
     </svg>
   ),
   hidden: iconObject(

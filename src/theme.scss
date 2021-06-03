@@ -462,6 +462,12 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     &--on.favorite {
       @include icon-button.ink-color(map-get($variables, secondary));
     }
+    &--on.bought {
+      @include icon-button.ink-color(map-get($variables, primary));
+    }
+    &--on.hide {
+      @include icon-button.ink-color(map-get($variables, error));
+    }
   }
 
   .mdc-image-list {

@@ -9,7 +9,7 @@ import { setPage as setMainPage } from "../../app/slices/common/coreFunctions";
 import { hasKey, iconObject } from "../../app/slices/common/functions";
 import { Page } from "../../app/slices/common/types";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider, CollapsibleList } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -32,6 +32,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
+  const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
 
   const dismissible = device === "desktop";
@@ -47,6 +48,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     [key: string]: number;
   } = {
     favorites: favorites.length,
+    bought: bought.length,
     hidden: hidden.length,
   };
 

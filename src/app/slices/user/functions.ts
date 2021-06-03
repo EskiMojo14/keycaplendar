@@ -141,11 +141,11 @@ export const toggleHidden = (id: string) => {
   const {
     common: { page },
     main: { allSets, sort, sortOrder, search, whitelist },
-    user: { user, favorites: userFavorites, hidden: userHidden },
+    user: { user, favorites: userFavorites, bought: userBought, hidden: userHidden },
   } = store.getState();
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
-  filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, hidden);
+  filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, userBought, hidden);
   const isHidden = hidden.includes(id);
   queue.notify({
     title: `Set ${isHidden ? "hidden" : "unhidden"}.`,

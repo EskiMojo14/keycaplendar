@@ -10,7 +10,7 @@ import { MainPage } from "../../app/slices/common/types";
 import { pageConditions } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
 import { RecentSet } from "../../app/slices/history/types";
-import { selectFavorites, selectHidden } from "../../app/slices/user/userSlice";
+import { selectBought, selectFavorites, selectHidden } from "../../app/slices/user/userSlice";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
@@ -30,6 +30,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
   const { recentSet, filtered, selected } = props;
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);
+  const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
   const [pages, setPages] = useState<string[]>([]);
 
@@ -43,9 +44,10 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         timeline: false,
         archive: false,
         favorites: false,
+        bought: false,
         hidden: false,
       };
-      const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, hidden) : falsePages;
+      const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, bought, hidden) : falsePages;
       const keysetPages = Object.keys(pageBools).filter((key) => {
         if (hasKey(pageBools, key)) {
           return pageBools[key];
