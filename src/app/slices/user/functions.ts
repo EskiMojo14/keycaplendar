@@ -93,7 +93,7 @@ export const toggleFavorite = (id: string) => {
   } = store.getState();
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
-  if (page === "favorites") {
+  if (page === "favorites" || whitelist.favorites) {
     filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
   }
   if (user.id) {
@@ -115,13 +115,13 @@ export const toggleBought = (id: string) => {
   const {
     common: { page },
     main: { allSets, sort, sortOrder, search, whitelist },
-    user: { user, bought: userBought },
+    user: { user, favorites, bought: userBought },
   } = store.getState();
   const bought = addOrRemove([...userBought], id);
   dispatch(setBought(bought));
-  /*if (page === "favorites") {
-    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
-  }*/
+  if (page === "bought" || whitelist.bought) {
+    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought);
+  }
   if (user.id) {
     db.collection("users")
       .doc(user.id)
@@ -145,7 +145,9 @@ export const toggleHidden = (id: string) => {
   } = store.getState();
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
-  filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, userBought, hidden);
+  if (page !== "favorites" && page !== "bought") {
+    filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, userBought, hidden);
+  }
   const isHidden = hidden.includes(id);
   queue.notify({
     title: `Set ${isHidden ? "hidden" : "unhidden"}.`,
