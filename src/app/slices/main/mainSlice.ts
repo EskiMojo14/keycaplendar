@@ -65,6 +65,7 @@ const initialState: MainState = {
   whitelist: {
     edited: [],
     favorites: false,
+    bought: false,
     hidden: false,
     profiles: [],
     shipped: ["Shipped", "Not shipped"],

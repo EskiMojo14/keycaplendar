@@ -235,7 +235,7 @@ const generateLists = (setsParam?: SetType[]) => {
   // create default preset
 
   const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
+    ...new Whitelist(false, false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
   };
 
   const defaultPreset: PresetType = { ...new Preset("Default", false, defaultWhitelist, "default") };
@@ -332,15 +332,21 @@ export const filterData = (
     const favoritesBool = user.email
       ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
       : true;
+    const boughtBool = user.email ? !whitelist.bought || (whitelist.bought && bought.includes(set.id)) : true;
     if (set.vendors && set.vendors.length > 0) {
       return (
-        vendorBool(set) && regionBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool
+        vendorBool(set) &&
+        regionBool(set) &&
+        whitelist.profiles.includes(set.profile) &&
+        shippedBool &&
+        favoritesBool &&
+        boughtBool
       );
     } else {
       if ((whitelist.vendors.length === 1 && whitelist.vendorMode === "include") || whitelist.regions.length === 1) {
         return false;
       } else {
-        return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
+        return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool && boughtBool;
       }
     }
   };
@@ -702,7 +708,8 @@ export const updatePreset = (preset: OldPresetType): PresetType => {
     hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
       ? preset.whitelist.regions
       : allRegions;
-  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
+  const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
+  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions, bought } };
   return updatedPreset;
 };
 
