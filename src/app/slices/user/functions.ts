@@ -33,6 +33,8 @@ export const getUserPreferences = (id: string) => {
             filterPresets,
           } = data as UserPreferencesDoc;
 
+          filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
+
           if (favorites instanceof Array) {
             dispatch(setFavorites(favorites));
           }
@@ -71,8 +73,6 @@ export const getUserPreferences = (id: string) => {
               });
             }
           }
-
-          filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
         }
       })
       .catch((error) => {
