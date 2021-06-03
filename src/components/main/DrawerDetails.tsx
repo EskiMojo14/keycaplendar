@@ -305,6 +305,40 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           onClick={() => toggleFavorite(props.set.id)}
         />
       </Tooltip>
+      <Tooltip enterDelay={500} content={favorites.includes(props.set.id) ? "Bought" : "Not bought"} align="bottom">
+        <IconButton
+          icon={iconObject(
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path
+                opacity="0.3"
+                d="M18.5,18.9L18.5,18.9L5.5,19l-2.2-8h7.3l2.2,2.2C12.5,13.1,12.3,13,12,13
+	c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2c0-0.3-0.1-0.5-0.2-0.8L18.5,18.9z M19.1,16.7l1.6-5.7h-7.3L19.1,16.7z"
+              />
+              <path
+                d="M12.8,13.2l1.1,1.1c0.1,0.2,0.2,0.5,0.2,0.8c0,1.1-0.9,2-2,2s-2-0.9-2-2s0.9-2,2-2C12.3,13,12.5,13.1,12.8,13.2z M18.5,18.9
+	L18.5,18.9L5.5,19l-2.2-8h7.3L7.5,7.9L6.8,9H2c-0.5,0-1,0.5-1,1c0,0.1,0,0.2,0,0.3l2.5,9.3c0.2,0.8,1,1.5,1.9,1.5h13
+	c0.6,0,1.1-0.2,1.5-0.6L18.5,18.9z M22,9h-4.8l-4.4-6.6C12.6,2.2,12.3,2,12,2s-0.6,0.1-0.8,0.4L8.6,6.2l1.4,1.4L12,4.8L14.8,9h-3.4
+	l2,2h7.3l-1.6,5.7l1.6,1.6l2.2-8.1l0-0.3C23,9.5,22.5,9,22,9z M19.8,23l1.4-1.4L4.4,4.8L3,6.2L19.8,23z M19.8,23l1.4-1.4L4.4,4.8
+	L3,6.2L19.8,23z"
+              />
+            </svg>
+          )}
+          onIcon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M3.31 11l2.2 8.01L18.5 19l2.2-8H3.31zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+                opacity=".3"
+              />
+              <path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1zM12 4.8L14.8 9H9.2L12 4.8zM18.5 19l-12.99.01L3.31 11H20.7l-2.2 8zM12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+            </svg>
+          )}
+          className="bought"
+          checked={favorites.includes(props.set.id)}
+          onClick={() => toggleFavorite(props.set.id)}
+        />
+      </Tooltip>
       <Tooltip enterDelay={500} content={hidden.includes(props.set.id) ? "Unhide" : "Hide"} align="bottom">
         <IconButton
           icon={iconObject(
