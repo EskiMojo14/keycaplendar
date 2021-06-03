@@ -12,8 +12,8 @@ import { setSearch } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
 import { selectView } from "../../app/slices/settings/settingsSlice";
 import { toggleLichTheme } from "../../app/slices/settings/functions";
-import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
-import { toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
+import { toggleBought, toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -41,6 +41,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
+  const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
 
   const search = useAppSelector(selectSearch);
@@ -305,7 +306,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           onClick={() => toggleFavorite(props.set.id)}
         />
       </Tooltip>
-      <Tooltip enterDelay={500} content={favorites.includes(props.set.id) ? "Bought" : "Not bought"} align="bottom">
+      <Tooltip enterDelay={500} content={bought.includes(props.set.id) ? "Bought" : "Not bought"} align="bottom">
         <IconButton
           icon={iconObject(
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
@@ -335,8 +336,8 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
             </svg>
           )}
           className="bought"
-          checked={favorites.includes(props.set.id)}
-          onClick={() => toggleFavorite(props.set.id)}
+          checked={bought.includes(props.set.id)}
+          onClick={() => toggleBought(props.set.id)}
         />
       </Tooltip>
       <Tooltip enterDelay={500} content={hidden.includes(props.set.id) ? "Unhide" : "Hide"} align="bottom">

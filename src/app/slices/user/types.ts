@@ -16,8 +16,9 @@ export type CurrentUserType = {
 };
 
 export type UserPreferencesDoc = {
-  favorites?: string[];
   filterPresets?: OldPresetType[];
+  favorites?: string[];
+  bought?: string[];
   hidden?: string[];
   settings?: Partial<Settings>;
   syncSettings?: boolean;

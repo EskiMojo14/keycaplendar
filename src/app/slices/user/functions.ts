@@ -6,7 +6,7 @@ import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
 import { UserPreferencesDoc } from "./types";
-import { setFavorites, setHidden, setUserPresets } from "./userSlice";
+import { setBought, setFavorites, setHidden, setUserPresets } from "./userSlice";
 
 const db = firebase.firestore();
 
@@ -27,6 +27,7 @@ export const getUserPreferences = (id: string) => {
           const data = doc.data();
           const {
             favorites,
+            bought,
             hidden,
             settings: settingsPrefs,
             syncSettings,
@@ -37,6 +38,9 @@ export const getUserPreferences = (id: string) => {
 
           if (favorites instanceof Array) {
             dispatch(setFavorites(favorites));
+          }
+          if (bought instanceof Array) {
+            dispatch(setBought(bought));
           }
           if (hidden instanceof Array) {
             dispatch(setHidden(hidden));
@@ -104,6 +108,32 @@ export const toggleFavorite = (id: string) => {
       .catch((error) => {
         console.log("Failed to sync favorites: " + error);
         queue.notify({ title: "Failed to sync favorites: " + error });
+      });
+  }
+};
+export const toggleBought = (id: string) => {
+  const {
+    common: { page },
+    main: { allSets, sort, sortOrder, search, whitelist },
+    user: { user, bought: userBought },
+  } = store.getState();
+  const bought = addOrRemove([...userBought], id);
+  dispatch(setBought(bought));
+  /*if (page === "favorites") {
+    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
+  }*/
+  if (user.id) {
+    db.collection("users")
+      .doc(user.id)
+      .set(
+        {
+          bought: bought,
+        },
+        { merge: true }
+      )
+      .catch((error) => {
+        console.log("Failed to sync bought sets: " + error);
+        queue.notify({ title: "Failed to sync bought sets: " + error });
       });
   }
 };
