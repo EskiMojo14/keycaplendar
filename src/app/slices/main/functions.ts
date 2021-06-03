@@ -24,6 +24,7 @@ import {
   pageSort,
   pageSortOrder,
   reverseSortDatePages,
+  sortHiddenCheck,
   whitelistParams,
 } from "./constants";
 import { Preset, Whitelist } from "./constructors";
@@ -434,11 +435,14 @@ const createGroups = (
     if (arrayIncludes(dateSorts, sort)) {
       return sets
         .map((set) => {
-          const setDate = DateTime.fromISO(set[sort], {
-            zone: "utc",
-          });
-          const setMonth = setDate.toFormat("MMMM yyyy");
-          return setMonth;
+          if (set[sort]) {
+            const setDate = DateTime.fromISO(set[sort], {
+              zone: "utc",
+            });
+            const setMonth = setDate.toFormat("MMMM yyyy");
+            return setMonth;
+          }
+          return "";
         })
         .filter(Boolean);
     } else if (arrayIncludes(arraySorts, sort)) {
@@ -556,6 +560,16 @@ const createGroups = (
   });
 
   dispatch(setSetGroups(setGroups));
+
+  if (sortHiddenCheck[sort].includes(page)) {
+    const allGroupedSets = uniqueArray(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
+
+    const diff = filteredSets.length - allGroupedSets.length;
+
+    if (diff > 0) {
+      queue.notify({ title: diff + " sets hidden due to sort setting." });
+    }
+  }
 };
 
 export const setSort = (sort: SortType, clearUrl = true) => {

@@ -53,10 +53,21 @@ export const sortNames: Record<SortType, string> = {
 export const sortBlacklist: Record<SortType, Page[]> = {
   profile: [],
   designer: [],
+  vendor: [],
+  icDate: [],
+  gbLaunch: ["ic"],
+  gbEnd: ["ic"],
+};
+
+/** Pages to check for hidden sets due to sort. */
+
+export const sortHiddenCheck: Record<SortType, Page[]> = {
+  profile: [],
+  designer: [],
   vendor: ["ic", "archive", "favorites", "bought", "hidden"],
   icDate: [],
-  gbLaunch: ["ic", "archive", "favorites", "bought", "hidden"],
-  gbEnd: ["ic", "timeline", "archive", "favorites", "bought", "hidden"],
+  gbLaunch: ["archive", "favorites", "bought", "hidden"],
+  gbEnd: ["timeline", "archive", "favorites", "bought", "hidden"],
 };
 
 /** Sort params which are dates. */
