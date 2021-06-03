@@ -688,7 +688,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload image={imageInfo.image} setImage={setImage} desktop />
+          <ImageUpload image={imageInfo.image} setImage={setImage} desktop={device === "desktop"} />
           {dateCard}
           <Checkbox
             label="Shipped"
@@ -1639,7 +1639,11 @@ export const ModalEdit = (props: ModalEditProps) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload image={imageInfo.newImage ? imageInfo.image : imageInfo.imageURL} setImage={setImage} desktop />
+          <ImageUpload
+            image={imageInfo.newImage ? imageInfo.image : imageInfo.imageURL.replace("keysets", "thumbs")}
+            setImage={setImage}
+            desktop={device === "desktop"}
+          />
           {dateCard}
           <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={fields.shipped} onChange={handleChange} />
           <Typography use="caption" tag="h3" className="subheader">
