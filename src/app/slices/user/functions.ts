@@ -6,7 +6,7 @@ import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
 import { UserPreferencesDoc } from "./types";
-import { setFavorites, setHidden, setUserPresets } from "./userSlice";
+import { setBought, setFavorites, setHidden, setUserPresets } from "./userSlice";
 
 const db = firebase.firestore();
 
@@ -27,6 +27,7 @@ export const getUserPreferences = (id: string) => {
           const data = doc.data();
           const {
             favorites,
+            bought,
             hidden,
             settings: settingsPrefs,
             syncSettings,
@@ -37,6 +38,9 @@ export const getUserPreferences = (id: string) => {
 
           if (favorites instanceof Array) {
             dispatch(setFavorites(favorites));
+          }
+          if (bought instanceof Array) {
+            dispatch(setBought(bought));
           }
           if (hidden instanceof Array) {
             dispatch(setHidden(hidden));
@@ -89,7 +93,7 @@ export const toggleFavorite = (id: string) => {
   } = store.getState();
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
-  if (page === "favorites") {
+  if (page === "favorites" || whitelist.favorites) {
     filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
   }
   if (user.id) {
@@ -107,15 +111,43 @@ export const toggleFavorite = (id: string) => {
       });
   }
 };
+export const toggleBought = (id: string) => {
+  const {
+    common: { page },
+    main: { allSets, sort, sortOrder, search, whitelist },
+    user: { user, favorites, bought: userBought },
+  } = store.getState();
+  const bought = addOrRemove([...userBought], id);
+  dispatch(setBought(bought));
+  if (page === "bought" || whitelist.bought) {
+    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought);
+  }
+  if (user.id) {
+    db.collection("users")
+      .doc(user.id)
+      .set(
+        {
+          bought: bought,
+        },
+        { merge: true }
+      )
+      .catch((error) => {
+        console.log("Failed to sync bought sets: " + error);
+        queue.notify({ title: "Failed to sync bought sets: " + error });
+      });
+  }
+};
 export const toggleHidden = (id: string) => {
   const {
     common: { page },
     main: { allSets, sort, sortOrder, search, whitelist },
-    user: { user, favorites: userFavorites, hidden: userHidden },
+    user: { user, favorites: userFavorites, bought: userBought, hidden: userHidden },
   } = store.getState();
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
-  filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, hidden);
+  if (page !== "favorites" && page !== "bought") {
+    filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, userBought, hidden);
+  }
   const isHidden = hidden.includes(id);
   queue.notify({
     title: `Set ${isHidden ? "hidden" : "unhidden"}.`,

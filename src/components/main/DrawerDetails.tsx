@@ -12,8 +12,8 @@ import { setSearch } from "../../app/slices/main/functions";
 import { SetType } from "../../app/slices/main/types";
 import { selectView } from "../../app/slices/settings/settingsSlice";
 import { toggleLichTheme } from "../../app/slices/settings/functions";
-import { selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
-import { toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
+import { toggleBought, toggleFavorite, toggleHidden } from "../../app/slices/user/functions";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -41,6 +41,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
+  const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
 
   const search = useAppSelector(selectSearch);
@@ -303,6 +304,39 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           className="favorite"
           checked={favorites.includes(props.set.id)}
           onClick={() => toggleFavorite(props.set.id)}
+        />
+      </Tooltip>
+      <Tooltip enterDelay={500} content={bought.includes(props.set.id) ? "Bought" : "Not bought"} align="bottom">
+        <IconButton
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+              <path fill="none" d="M0,0h24v24H0V0z" />
+              <path
+                opacity="0.3"
+                d="M20.7,11l-1.4,5.1L14.2,11H20.7z M12,17c-1.1,0-2-0.9-2-2c0-0.8,0.5-1.6,1.3-1.8
+	L9.1,11H3.3l2.2,8h11.6l-3.3-3.3C13.6,16.5,12.8,17,12,17z"
+              />
+              <path
+                d="M2.4,1.7L1.1,3l5.8,5.8L6.8,9H2c-0.5,0-1,0.4-1,1c0,0.1,0,0.2,0,0.3l2.5,9.3c0.2,0.8,1,1.5,1.9,1.5h13c0.2,0,0.4,0,0.5-0.1
+	l1.8,1.8l1.3-1.3L2.4,1.7 M5.5,19l-2.2-8h5.8l2.2,2.1c-0.8,0.3-1.3,1-1.3,1.9c0,1.1,0.9,2,2,2c0.8,0,1.6-0.5,1.9-1.3l3.3,3.3H5.5
+	 M23,10l0,0.3l-2,7.5l-1.6-1.6l1.4-5.1h-6.5l-2-2h2.6L12,4.8l-1.6,2.4L9,5.8l2.2-3.3C11.4,2.2,11.7,2,12,2s0.6,0.2,0.8,0.4L17.2,9
+	H22C22.5,9,23,9.4,23,10z"
+              />
+            </svg>
+          )}
+          onIcon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path
+                d="M3.31 11l2.2 8.01L18.5 19l2.2-8H3.31zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+                opacity=".3"
+              />
+              <path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1zM12 4.8L14.8 9H9.2L12 4.8zM18.5 19l-12.99.01L3.31 11H20.7l-2.2 8zM12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+            </svg>
+          )}
+          className="bought"
+          checked={bought.includes(props.set.id)}
+          onClick={() => toggleBought(props.set.id)}
         />
       </Tooltip>
       <Tooltip enterDelay={500} content={hidden.includes(props.set.id) ? "Unhide" : "Hide"} align="bottom">

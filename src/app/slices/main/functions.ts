@@ -67,6 +67,7 @@ const { dispatch } = store;
 export const pageConditions = (
   set: SetType,
   favorites: string[],
+  bought: string[],
   hidden: string[]
 ): Record<typeof mainPages[number], boolean> => {
   const today = DateTime.utc();
@@ -88,6 +89,7 @@ export const pageConditions = (
     timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
     archive: true,
     favorites: favorites.includes(set.id),
+    bought: bought.includes(set.id),
     hidden: hidden.includes(set.id),
   };
 };
@@ -233,7 +235,7 @@ const generateLists = (setsParam?: SetType[]) => {
   // create default preset
 
   const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
+    ...new Whitelist(false, false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
   };
 
   const defaultPreset: PresetType = { ...new Preset("Default", false, defaultWhitelist, "default") };
@@ -268,12 +270,13 @@ export const filterData = (
   searchParam?: string,
   whitelistParam?: WhitelistType,
   favoritesParam?: string[],
+  boughtParam?: string[],
   hiddenParam?: string[]
 ) => {
   const {
     common: { page: appPage },
     main: { allSets, sort: mainSort, sortOrder: mainSortOrder, search: mainSearch, whitelist: mainWhitelist },
-    user: { user, favorites: userFavorites, hidden: userHidden },
+    user: { user, favorites: userFavorites, bought: userBought, hidden: userHidden },
   } = store.getState();
 
   const page = pageParam || appPage;
@@ -283,12 +286,13 @@ export const filterData = (
   const search = searchParam || mainSearch;
   const whitelist = whitelistParam || mainWhitelist;
   const favorites = favoritesParam || userFavorites;
+  const bought = boughtParam || userBought;
   const hidden = hiddenParam || userHidden;
 
   // filter bool functions
 
   const hiddenBool = (set: SetType) => {
-    if (page === "favorites") {
+    if (page === "favorites" || page === "bought") {
       return true;
     } else if ((whitelist.hidden && user.email) || page === "hidden") {
       return hidden.includes(set.id);
@@ -299,7 +303,7 @@ export const filterData = (
 
   const pageBool = (set: SetType): boolean => {
     if (arrayIncludes(mainPages, page)) {
-      return pageConditions(set, favorites, hidden)[page];
+      return pageConditions(set, favorites, bought, hidden)[page];
     }
     return false;
   };
@@ -328,15 +332,21 @@ export const filterData = (
     const favoritesBool = user.email
       ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
       : true;
+    const boughtBool = user.email ? !whitelist.bought || (whitelist.bought && bought.includes(set.id)) : true;
     if (set.vendors && set.vendors.length > 0) {
       return (
-        vendorBool(set) && regionBool(set) && whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool
+        vendorBool(set) &&
+        regionBool(set) &&
+        whitelist.profiles.includes(set.profile) &&
+        shippedBool &&
+        favoritesBool &&
+        boughtBool
       );
     } else {
       if ((whitelist.vendors.length === 1 && whitelist.vendorMode === "include") || whitelist.regions.length === 1) {
         return false;
       } else {
-        return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool;
+        return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool && boughtBool;
       }
     }
   };
@@ -698,7 +708,8 @@ export const updatePreset = (preset: OldPresetType): PresetType => {
     hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
       ? preset.whitelist.regions
       : allRegions;
-  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions: regions } };
+  const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
+  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions, bought } };
   return updatedPreset;
 };
 

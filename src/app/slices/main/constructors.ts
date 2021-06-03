@@ -14,10 +14,12 @@ export class Whitelist {
   vendors: string[];
   edited: string[];
   favorites: boolean;
+  bought: boolean;
   hidden: boolean;
 
   /**
    * @param favorites Whether to only display favourites.
+   * @param bought Whether to only display bought sets.
    * @param hidden Whether to only display hidden sets.
    * @param profiles Array of allowed profiles.
    * @param shipped Array of allowed shipped values. Values are `"Shipped"` and `"Not shipped"`.
@@ -29,6 +31,7 @@ export class Whitelist {
 
   constructor(
     favorites = false,
+    bought = false,
     hidden = false,
     profiles: string[] = [],
     shipped: WhitelistType["shipped"] = ["Shipped", "Not shipped"],
@@ -44,6 +47,7 @@ export class Whitelist {
     this.vendors = vendors;
     this.edited = edited;
     this.favorites = favorites;
+    this.bought = bought;
     this.hidden = hidden;
   }
 }

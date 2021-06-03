@@ -11,6 +11,7 @@ export const pageSort: Record<MainPage, SortType> = {
   timeline: "gbLaunch",
   archive: "profile",
   favorites: "profile",
+  bought: "profile",
   hidden: "profile",
 };
 
@@ -24,6 +25,7 @@ export const pageSortOrder: Record<MainPage, SortOrderType> = {
   timeline: "ascending",
   archive: "ascending",
   favorites: "ascending",
+  bought: "ascending",
   hidden: "ascending",
 };
 
@@ -51,10 +53,10 @@ export const sortNames: Record<SortType, string> = {
 export const sortBlacklist: Record<SortType, Page[]> = {
   profile: [],
   designer: [],
-  vendor: ["ic", "archive", "favorites", "hidden"],
+  vendor: ["ic", "archive", "favorites", "bought", "hidden"],
   icDate: [],
-  gbLaunch: ["ic", "archive", "favorites", "hidden"],
-  gbEnd: ["ic", "timeline", "archive", "favorites", "hidden"],
+  gbLaunch: ["ic", "archive", "favorites", "bought", "hidden"],
+  gbEnd: ["ic", "timeline", "archive", "favorites", "bought", "hidden"],
 };
 
 /** Sort params which are dates. */

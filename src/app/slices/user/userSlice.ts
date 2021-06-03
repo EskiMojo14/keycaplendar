@@ -6,6 +6,7 @@ import { PresetType } from "../main/types";
 type UserState = {
   user: CurrentUserType;
   favorites: string[];
+  bought: string[];
   hidden: string[];
   userPresets: PresetType[];
 };
@@ -22,6 +23,7 @@ const initialState: UserState = {
     id: "",
   },
   favorites: [],
+  bought: [],
   hidden: [],
   userPresets: [],
 };
@@ -49,19 +51,24 @@ export const userSlice = createSlice({
     setFavorites: (state, action: PayloadAction<string[]>) => {
       state.favorites = action.payload;
     },
+    setBought: (state, action: PayloadAction<string[]>) => {
+      state.bought = action.payload;
+    },
     setHidden: (state, action: PayloadAction<string[]>) => {
       state.hidden = action.payload;
     },
   },
 });
 
-export const { setUser, setUserPresets, setFavorites, setHidden } = userSlice.actions;
+export const { setUser, setUserPresets, setFavorites, setBought, setHidden } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
 
 export const selectUserPresets = (state: RootState) => state.user.userPresets;
 
 export const selectFavorites = (state: RootState) => state.user.favorites;
+
+export const selectBought = (state: RootState) => state.user.bought;
 
 export const selectHidden = (state: RootState) => state.user.hidden;
 

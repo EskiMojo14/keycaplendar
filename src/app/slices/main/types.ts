@@ -65,6 +65,8 @@ export type WhitelistType = {
   edited?: string[];
   /** Whether to filter to only favourites. */
   favorites: boolean;
+  /** Whether to filter to only bought sets. */
+  bought: boolean;
   /** Whether to filter to only hidden sets. */
   hidden: boolean;
 };
@@ -76,4 +78,7 @@ export type PresetType = {
   whitelist: WhitelistType;
 };
 
-export type OldPresetType = Overwrite<PresetType, { whitelist: Overwrite<WhitelistType, { regions?: string[] }> }>;
+export type OldPresetType = Overwrite<
+  PresetType,
+  { whitelist: Overwrite<WhitelistType, { regions?: string[]; bought?: boolean }> }
+>;
