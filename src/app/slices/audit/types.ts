@@ -1,7 +1,6 @@
-import { SetType } from "../main/types";
+import { KeysetDoc } from "../firebase/types";
 
-/** SetType but with all keys set to optional, as an action can include "deleted" sets. */
-export type ActionSetType = Omit<Partial<SetType>, "id">;
+export type ActionSetType = Partial<KeysetDoc>;
 
 export type ActionType = {
   action: "created" | "deleted" | "updated";

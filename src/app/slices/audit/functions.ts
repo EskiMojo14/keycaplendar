@@ -1,13 +1,11 @@
 import isEqual from "lodash.isequal";
-import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { setAllActions, setFilteredActions, setLength, setLoading, setUsers } from "./auditSlice";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
 import { alphabeticalSortProp } from "../common/functions";
-
-const db = firebase.firestore();
+import { typedFirestore } from "../firebase/firestore";
 
 const { dispatch } = store;
 
@@ -20,7 +18,8 @@ export const getActions = (num?: number) => {
   if (auditLength !== length) {
     dispatch(setLength(auditLength));
   }
-  db.collection("changelog")
+  typedFirestore
+    .collection("changelog")
     .orderBy("timestamp", "desc")
     .limit(auditLength)
     .get()
@@ -29,10 +28,15 @@ export const getActions = (num?: number) => {
       const users: string[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        data.action =
+        const action =
           data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
-        data.changelogId = doc.id;
-        actions.push(data as ActionType);
+        const changelogId = doc.id;
+        const actionObj: ActionType = {
+          ...data,
+          action,
+          changelogId,
+        };
+        actions.push(actionObj);
         if (!users.includes(data.user.nickname)) {
           users.push(data.user.nickname);
         }
