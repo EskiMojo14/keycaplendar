@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { alphabeticalSortProp } from "./util/functions";
-import { GuideEntryType } from "./util/types";
+import { alphabeticalSortProp } from "./slices/common/functions";
+import { GuideEntryType } from "./slices/guides/types";
 
 const db = admin.firestore();
 

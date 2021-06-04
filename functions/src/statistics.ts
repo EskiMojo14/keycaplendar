@@ -2,8 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
-import { StatisticsSetType, Categories, Properties } from "./util/types";
-import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./util/functions";
+import { StatisticsSetType, Categories, Properties } from "./slices/statistics/types";
+import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./slices/common/functions";
 
 const db = admin.firestore();
 

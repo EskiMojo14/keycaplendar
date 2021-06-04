@@ -1,5 +1,6 @@
-import { StatisticsSetType, DateSortKeys } from "./types";
 import { DateTime } from "luxon";
+import { DateSortKeys, SetType } from "../main/types";
+import { StatisticsSetType } from "../statistics/types";
 
 /**
  * Checks that object contains specified key.
@@ -97,7 +98,11 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>>(
  * @returns Array of months from earliest to latest, in specified format.
  */
 
-export const getSetMonthRange = (sets: StatisticsSetType[], prop: DateSortKeys, format: string): string[] => {
+export const getSetMonthRange = (
+  sets: (SetType | StatisticsSetType)[],
+  prop: DateSortKeys,
+  format: string
+): string[] => {
   const setMonths = uniqueArray(
     sets.map((set) => {
       const val = set[prop];

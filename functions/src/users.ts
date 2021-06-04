@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { DateTime } from "luxon";
-import { handle } from "./util/functions";
+import { handle } from "./slices/common/functions";
 
 const db = admin.firestore();
 
