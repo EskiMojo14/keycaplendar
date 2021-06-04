@@ -1,8 +1,10 @@
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as jwt from "jsonwebtoken";
-
-const db = admin.firestore();
+import type * as typedAdminFirestore from "typed-admin-firestore";
+import { arrayIncludes } from "./slices/common/functions";
+import { typedFirestore } from "./slices/firebase/firestore";
+import { KeysetDoc, KeysetId } from "./slices/firebase/types";
+import { dateSorts } from "./slices/main/constants";
 
 /**
  * Takes a key and secret within a POST request, and returns a JWT token to be used in other API operations.
@@ -14,7 +16,7 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
   if (!key || !secret) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const usersRef = db.collection("apiUsers");
+  const usersRef = typedFirestore.collection("apiUsers");
   const snapshot = await usersRef.where("apiKey", "==", key).where("apiSecret", "==", secret).get();
   if (snapshot.empty) {
     response.status(401).send({ error: "Unauthorized" });
@@ -80,7 +82,7 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
   if (auth === false) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const returnKeysets = async (ref: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>) => {
+  const returnKeysets = async (ref: typedAdminFirestore.Query<KeysetId, KeysetDoc>) => {
     const snapshot = await ref.get();
     const keysets: Record<string, unknown>[] = [];
     snapshot.forEach((doc) => {
@@ -91,14 +93,14 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
     });
     response.send(JSON.stringify(keysets));
   };
-  const validDateFilter = (dateFilter: string | undefined): dateFilter is string => {
-    return !!dateFilter && (dateFilter === "icDate" || dateFilter === "gbLaunch" || dateFilter === "gbEnd");
+  const validDateFilter = (dateFilter: string | undefined): dateFilter is typeof dateSorts[number] => {
+    return !!dateFilter && arrayIncludes(dateSorts, dateFilterQuery);
   };
   const validDate = (date: string | undefined): date is string => {
     const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/;
     return !!date && regex.test(date);
   };
-  const keysetsRef = db.collection("keysets");
+  const keysetsRef = typedFirestore.collection("keysets");
   const dateFilterQuery = request.query.dateFilter as string | undefined;
   const beforeDateQuery = request.query.before as string | undefined;
   const afterDateQuery = request.query.date as string | undefined;
@@ -127,9 +129,9 @@ export const getKeysetById = functions.https.onRequest(async (request, response)
   if (auth === false) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const keysetsRef = db.collection("keysets");
+  const keysetsRef = typedFirestore.collection("keysets");
   if (request.query.id) {
-    const docRef = keysetsRef.doc(request.query.id as string);
+    const docRef = keysetsRef.doc(request.query.id as KeysetId);
     const doc = await docRef.get();
     if (!doc.exists) {
       response.send("No document with this ID.");
