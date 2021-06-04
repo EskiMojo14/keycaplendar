@@ -31,7 +31,11 @@ type ChangelogEntryProps = {
   action: ProcessedPublicActionType;
 };
 
-type DataObject = { before?: ActionSetType; after?: ActionSetType; data?: ActionSetType };
+type DataObject = {
+  before?: Omit<ActionSetType, "latestEditor">;
+  after?: Omit<ActionSetType, "latestEditor">;
+  data?: Omit<ActionSetType, "latestEditor">;
+};
 
 const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
 
@@ -57,7 +61,11 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
   const constructRows = (dataObj = data, properties = auditProperties): React.ReactNode => {
     if (dataObj.data) {
       return Object.keys(dataObj.data)
-        .sort((a, b) => properties.indexOf(a as keyof ActionSetType) - properties.indexOf(b as keyof ActionSetType))
+        .sort(
+          (a, b) =>
+            properties.indexOf(a as keyof Omit<ActionSetType, "latestEditor">) -
+            properties.indexOf(b as keyof Omit<ActionSetType, "latestEditor">)
+        )
         .map((prop) => {
           if (dataObj.data && hasKey(dataObj.data, prop)) {
             const useData = dataObj.data[prop];

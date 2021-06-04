@@ -1,5 +1,6 @@
-import { StatisticsSetType, DateSortKeys } from "./types";
 import { DateTime } from "luxon";
+import { DateSortKeys, SetType } from "../main/types";
+import { StatisticsSetType } from "../statistics/types";
 
 /**
  * Checks that object contains specified key.
@@ -10,6 +11,17 @@ import { DateTime } from "luxon";
 
 export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => {
   return key in obj;
+};
+
+/**
+ * Checks if item is included in array, and asserts that the types are the same.
+ * @param arr Array of items
+ * @param item Item to be checked
+ * @returns Whether the item is contained in the array.
+ */
+
+export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => {
+  return arr.includes(item);
 };
 
 /**
@@ -97,7 +109,11 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>>(
  * @returns Array of months from earliest to latest, in specified format.
  */
 
-export const getSetMonthRange = (sets: StatisticsSetType[], prop: DateSortKeys, format: string): string[] => {
+export const getSetMonthRange = (
+  sets: (SetType | StatisticsSetType)[],
+  prop: DateSortKeys,
+  format: string
+): string[] => {
   const setMonths = uniqueArray(
     sets.map((set) => {
       const val = set[prop];

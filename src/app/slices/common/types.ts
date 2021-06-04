@@ -1,4 +1,3 @@
-import { OldPresetType } from "../main/types";
 import { allPages, mainPages } from "./constants";
 
 /** Alias for `Record<string, T>`. */
@@ -31,7 +30,3 @@ export type Page = typeof allPages[number];
 /** Possible main page names */
 
 export type MainPage = typeof mainPages[number];
-
-export type GlobalDoc = {
-  filterPresets: OldPresetType[];
-};

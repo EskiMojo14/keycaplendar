@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import classNames from "classnames";
-import firebase from "../../firebase";
+import { typedFirestore } from "../../app/slices/firebase/firestore";
+import { ChangelogId } from "../../app/slices/firebase/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectAllActions,
@@ -120,9 +121,9 @@ export const ContentAudit = (props: ContentAuditProps) => {
   }, []);
 
   const deleteActionFn = (action: ActionType) => {
-    const db = firebase.firestore();
-    db.collection("changelog")
-      .doc(action.changelogId)
+    typedFirestore
+      .collection("changelog")
+      .doc(action.changelogId as ChangelogId)
       .delete()
       .then(() => {
         queue.notify({ title: "Successfully deleted changelog entry." });

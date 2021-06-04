@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import firebase from "../../firebase";
+import { typedFirestore } from "../../app/slices/firebase/firestore";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
 import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "../../app/slices/common/constants";
@@ -16,8 +16,6 @@ import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import "./DrawerNav.scss";
 import logo from "../../media/logo.svg";
-
-const db = firebase.firestore();
 
 type DrawerNavProps = {
   close: () => void;
@@ -56,7 +54,8 @@ export const DrawerNav = (props: DrawerNavProps) => {
 
   const checkForUpdates = () => {
     const lastWeek = DateTime.utc().minus({ days: 7 });
-    db.collection("updates")
+    typedFirestore
+      .collection("updates")
       .orderBy("date", "desc")
       .limit(1)
       .get()

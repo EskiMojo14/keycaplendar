@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { UpdateId } from "../../../app/slices/firebase/types";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
 import { iconObject, ordinal } from "../../../app/slices/common/functions";
@@ -18,8 +19,6 @@ import { ConditionalWrapper, BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { CustomReactMarkdown, CustomReactMde } from "../../util/ReactMarkdown";
 import "./ModalEntry.scss";
-
-const db = firebase.firestore();
 
 const isoDate = /(\d{4})-(\d{2})-(\d{2})/;
 
@@ -78,7 +77,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      db.collection("updates")
+      typedFirestore
+        .collection("updates")
         .add({
           name,
           date,
@@ -269,8 +269,9 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      db.collection("updates")
-        .doc(entry.id)
+      typedFirestore
+        .collection("updates")
+        .doc(entry.id as UpdateId)
         .set({
           name,
           date,

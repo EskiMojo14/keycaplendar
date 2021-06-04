@@ -5,6 +5,8 @@ import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
 import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { KeysetId } from "../../../app/slices/firebase/types";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
 import {
@@ -356,8 +358,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const createEntry = (url = imageInfo.imageURL) => {
     if (formFilled) {
-      const db = firebase.firestore();
-      db.collection("keysets")
+      typedFirestore
+        .collection("keysets")
         .add({
           alias: nanoid(10),
           profile: fields.profile,
@@ -1311,9 +1313,9 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const editEntry = (imageUrl = imageInfo.imageURL) => {
     if (formFilled) {
-      const db = firebase.firestore();
-      db.collection("keysets")
-        .doc(id)
+      typedFirestore
+        .collection("keysets")
+        .doc(id as KeysetId)
         .update({
           alias: props.set.alias ? props.set.alias : nanoid(10),
           profile: fields.profile,

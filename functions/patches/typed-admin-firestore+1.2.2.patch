@@ -1,0 +1,14 @@
+diff --git a/node_modules/typed-admin-firestore/index.d.ts b/node_modules/typed-admin-firestore/index.d.ts
+index bd42ea5..93c8fb4 100644
+--- a/node_modules/typed-admin-firestore/index.d.ts
++++ b/node_modules/typed-admin-firestore/index.d.ts
+@@ -69,7 +69,8 @@ type firestorePrimitiveType =
+   | null
+   | firestore.CollectionReference
+   | firestore.DocumentReference
+-  | string;
++  | string
++  | undefined;
+ 
+ type UpdateData<doc extends DocumentData> = {
+   [key in keyof doc]?: doc[key] | firestore.FieldValue;

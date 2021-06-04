@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
-import { alphabeticalSortProp } from "./util/functions";
-import { PublicActionType, ActionType, ActionSetType } from "./util/types";
+import { alphabeticalSortProp } from "./slices/common/functions";
+import { PublicActionType, ActionType, ActionSetType } from "./slices/audit/types";
 
 const db = admin.firestore();
 

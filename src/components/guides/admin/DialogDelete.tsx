@@ -1,10 +1,9 @@
 import React from "react";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { GuideId } from "../../../app/slices/firebase/types";
 import { queue } from "../../../app/snackbarQueue";
 import { GuideEntryType } from "../../../app/slices/guides/types";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
-
-const db = firebase.firestore();
 
 type DialogDeleteProps = {
   open: boolean;
@@ -15,8 +14,9 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const deleteEntry = () => {
-    db.collection("guides")
-      .doc(props.entry.id)
+    typedFirestore
+      .collection("guides")
+      .doc(props.entry.id as GuideId)
       .delete()
       .then(() => {
         queue.notify({ title: "Successfully deleted entry." });
