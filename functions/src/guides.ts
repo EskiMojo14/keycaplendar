@@ -1,9 +1,7 @@
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import { typedFirestore } from "./slices/firebase/firestore";
 import { alphabeticalSortProp } from "./slices/common/functions";
 import { GuideEntryType } from "./slices/guides/types";
-
-const db = admin.firestore();
 
 /**
  * Filters guides based on user custom claims and guide visibility.
@@ -19,7 +17,7 @@ export const getGuides = functions.https.onCall((data, context) => {
     editor = Boolean(isEditor);
     admin = Boolean(isAdmin);
   }
-  return db
+  return typedFirestore
     .collection("guides")
     .get()
     .then((querySnapshot) => {

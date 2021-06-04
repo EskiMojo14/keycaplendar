@@ -1,10 +1,9 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-
-import { alphabeticalSortProp } from "./slices/common/functions";
+import { typedFirestore } from "./slices/firebase/firestore";
+import { KeysetId } from "./slices/firebase/types";
 import { PublicActionType, ActionType, ActionSetType } from "./slices/audit/types";
-
-const db = admin.firestore();
+import { alphabeticalSortProp } from "./slices/common/functions";
 
 /**
  * Creates audit log entry upon keyset change. Additionally, deletes document if it's "empty".
@@ -14,18 +13,20 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
   if (!change.before.data()) {
     console.log("Document created");
   }
+  const beforeData = change.before.data();
   const afterData = change.after.data();
   if (afterData && afterData.latestEditor) {
     const user = await admin.auth().getUser(afterData.latestEditor);
-    db.collection("changelog")
+    typedFirestore
+      .collection("changelog")
       .add({
         documentId: context.params.keysetId,
-        before: change.before.data() ? change.before.data() : null,
-        after: change.after.data() ? change.after.data() : null,
+        before: beforeData ? beforeData : {},
+        after: afterData ? afterData : {},
         timestamp: context.timestamp,
         user: {
-          displayName: user.displayName,
-          email: user.email,
+          displayName: user.displayName ? user.displayName : "",
+          email: user.email ? user.email : "",
           nickname: user.customClaims ? user.customClaims.nickname : "",
         },
       })
@@ -42,8 +43,9 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
   }
   if (afterData && !afterData.profile) {
     console.log("Document deleted");
-    db.collection("keysets")
-      .doc(context.params.keysetId)
+    typedFirestore
+      .collection("keysets")
+      .doc(context.params.keysetId as KeysetId)
       .delete()
       .then(() => {
         console.error("Removed document " + context.params.keysetId + ".");
@@ -66,7 +68,7 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
     delete newSet.latestEditor;
     return newSet;
   };
-  return db
+  return typedFirestore
     .collection("changelog")
     .orderBy("timestamp", "desc")
     .limit(data.num)

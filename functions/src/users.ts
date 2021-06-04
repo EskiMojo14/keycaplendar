@@ -1,9 +1,9 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import { typedFirestore } from "./slices/firebase/firestore";
+import { UserId } from "./slices/firebase/types";
 import { DateTime } from "luxon";
 import { handle } from "./slices/common/functions";
-
-const db = admin.firestore();
 
 /**
  * Returns custom claims for current user.
@@ -127,8 +127,9 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
       return { error: "Error deleting user: " + error };
     });
 
-  db.collection("users")
-    .doc(user.uid)
+  typedFirestore
+    .collection("users")
+    .doc(user.uid as UserId)
     .delete()
     .then(() => {
       console.log("Deleted user preference file for " + user.displayName + ".");
@@ -207,9 +208,9 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
         console.log("Error deleting user " + currentUser.displayName + ": " + error);
         return { error: "Error deleting user: " + error };
       });
-    const deleteFile = db
+    const deleteFile = typedFirestore
       .collection("users")
-      .doc(currentUser.uid)
+      .doc(currentUser.uid as UserId)
       .delete()
       .then(() => {
         console.log("Deleted user preference file for " + currentUser.displayName + ".");

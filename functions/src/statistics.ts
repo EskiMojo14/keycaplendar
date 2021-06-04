@@ -1,11 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import { StatisticsSetType, Categories, Properties } from "./slices/statistics/types";
 import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./slices/common/functions";
-
-const db = admin.firestore();
 
 const bucket = admin.storage().bucket();
 
@@ -756,7 +755,7 @@ export const createStatistics = functions
   .runWith(runtimeOpts)
   .pubsub.schedule("every 12 hours")
   .onRun(async (context) => {
-    const snapshot = await db.collection("keysets").get();
+    const snapshot = await typedFirestore.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
         const lastOfMonth = DateTime.fromISO(doc.data().gbLaunch, { zone: "utc" }).daysInMonth;
