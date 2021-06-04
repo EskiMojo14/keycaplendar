@@ -758,22 +758,25 @@ export const createStatistics = functions
     const snapshot = await typedFirestore.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
+        const { profile, colorway, designer, icDate, gbEnd, shipped, vendors } = doc.data();
+
         const lastOfMonth = DateTime.fromISO(doc.data().gbLaunch, { zone: "utc" }).daysInMonth;
         const gbLaunch =
           doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastOfMonth : doc.data().gbLaunch;
+
         return {
           id: doc.id,
-          profile: doc.data().profile,
-          colorway: doc.data().colorway,
-          designer: doc.data().designer,
-          icDate: doc.data().icDate,
-          gbLaunch: gbLaunch,
-          gbEnd: doc.data().gbEnd,
-          shipped: doc.data().shipped,
-          vendors: doc.data().vendors,
+          profile,
+          colorway,
+          designer,
+          icDate,
+          gbLaunch,
+          gbEnd,
+          shipped,
+          vendors,
         };
       })
-      .filter((set) => Boolean(set.colorway));
+      .filter((set) => Boolean(set.profile));
     sets.sort((a, b) => {
       const x = a.colorway.toLowerCase();
       const y = b.colorway.toLowerCase();

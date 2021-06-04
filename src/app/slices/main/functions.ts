@@ -114,27 +114,18 @@ export const getData = () => {
       const sets: SetType[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().profile) {
-          const lastInMonth = doc.data().gbLaunch ? DateTime.fromISO(doc.data().gbLaunch).daysInMonth : 0;
-          const gbLaunch =
-            doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastInMonth : doc.data().gbLaunch;
-          const sales = doc.data().sales;
-          const convertedSales = typeof sales === "string" ? { img: sales, thirdParty: false } : sales;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { gbLaunch: docGbLaunch, sales: docSales, latestEditor, ...data } = doc.data();
+
+          const lastInMonth = docGbLaunch ? DateTime.fromISO(docGbLaunch).daysInMonth : 0;
+          const gbLaunch = doc.data().gbMonth && docGbLaunch ? docGbLaunch + "-" + lastInMonth : docGbLaunch;
+          const sales = typeof docSales === "string" ? { img: docSales, thirdParty: false } : docSales;
+
           sets.push({
             id: doc.id,
-            alias: doc.data().alias,
-            profile: doc.data().profile,
-            colorway: doc.data().colorway,
-            designer: doc.data().designer,
-            icDate: doc.data().icDate,
-            details: doc.data().details,
-            notes: doc.data().notes,
-            sales: convertedSales,
-            image: doc.data().image,
-            gbMonth: doc.data().gbMonth,
-            gbLaunch: gbLaunch,
-            gbEnd: doc.data().gbEnd,
-            shipped: doc.data().shipped,
-            vendors: doc.data().vendors,
+            ...data,
+            gbLaunch,
+            sales,
           });
         }
       });
