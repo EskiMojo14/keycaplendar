@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { GuideId } from "../../../app/slices/firebase/types";
 import { queue } from "../../../app/snackbarQueue";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice } from "../../../app/slices/common/commonSlice";
 import { arrayIncludes } from "../../../app/slices/common/functions";
+import { formattedVisibility, visibilityIcons } from "../../../app/slices/guides/constants";
 import { GuideEntryType } from "../../../app/slices/guides/types";
 import { selectUser } from "../../../app/slices/user/userSlice";
 import { userRoles } from "../../../app/slices/users/constants";
@@ -19,9 +21,6 @@ import { ConditionalWrapper, BoolWrapper } from "../../util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
 import { CustomReactMarkdown, CustomReactMde } from "../../util/ReactMarkdown";
 import "./ModalEntry.scss";
-import { formattedVisibility, visibilityIcons } from "../../../app/slices/guides/constants";
-
-const db = firebase.firestore();
 
 type ModalCreateProps = {
   open: boolean;
@@ -77,7 +76,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      db.collection("guides")
+      typedFirestore
+        .collection("guides")
         .add({
           name: user.nickname,
           visibility,
@@ -287,8 +287,9 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      db.collection("guides")
-        .doc(entry.id)
+      typedFirestore
+        .collection("guides")
+        .doc(entry.id as GuideId)
         .set({
           name: user.nickname,
           visibility,

@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../firebase/firestore";
+import { UserId } from "../firebase/types";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { setCookies, setSettings, toggleLich } from "./settingsSlice";
@@ -9,8 +10,6 @@ import { hasKey } from "../common/functions";
 import { whitelistParams } from "../main/constants";
 import { setTransition } from "../main/mainSlice";
 import { selectPreset } from "../main/functions";
-
-const db = firebase.firestore();
 
 const { dispatch } = store;
 
@@ -159,8 +158,9 @@ export const setSyncSettings = (bool: boolean, write = true) => {
         }
       });
     }
-    db.collection("users")
-      .doc(user.id)
+    typedFirestore
+      .collection("users")
+      .doc(user.id as UserId)
       .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
       .catch((error) => {
         console.log("Failed to set sync setting: " + error);
@@ -175,7 +175,7 @@ export const syncSetting = (setting: string, value: any) => {
     settings: { syncSettings },
   } = store.getState();
   if (user.id && syncSettings) {
-    const userDocRef = db.collection("users").doc(user.id);
+    const userDocRef = typedFirestore.collection("users").doc(user.id as UserId);
     userDocRef.get().then((doc) => {
       if (doc.exists) {
         sync();

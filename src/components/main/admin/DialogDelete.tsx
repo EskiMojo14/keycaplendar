@@ -1,5 +1,6 @@
 import React from "react";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { KeysetDoc, KeysetId } from "../../../app/slices/firebase/types";
 import { useAppSelector } from "../../../app/hooks";
 import { queue } from "../../../app/snackbarQueue";
 import { getData } from "../../../app/slices/main/functions";
@@ -18,12 +19,12 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   const user = useAppSelector(selectUser);
   const deleteEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const db = firebase.firestore();
-    db.collection("keysets")
-      .doc(props.set.id)
+    typedFirestore
+      .collection("keysets")
+      .doc(props.set.id as KeysetId)
       .set({
         latestEditor: user.id,
-      })
+      } as KeysetDoc)
       .then(() => {
         props.openSnackbar();
         getData();

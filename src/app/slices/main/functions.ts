@@ -1,7 +1,6 @@
 import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
-import firebase from "../../../firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { allPages, mainPages, pageTitle } from "../common/constants";
@@ -54,8 +53,6 @@ import {
   VendorType,
   WhitelistType,
 } from "./types";
-
-const db = firebase.firestore();
 
 const { dispatch } = store;
 
@@ -110,7 +107,8 @@ export const getData = () => {
     common: { page },
   } = store.getState();
   dispatch(setLoading(true));
-  db.collection("keysets")
+  typedFirestore
+    .collection("keysets")
     .get()
     .then((querySnapshot) => {
       const sets: SetType[] = [];
@@ -119,18 +117,18 @@ export const getData = () => {
           const lastInMonth = doc.data().gbLaunch ? DateTime.fromISO(doc.data().gbLaunch).daysInMonth : 0;
           const gbLaunch =
             doc.data().gbMonth && doc.data().gbLaunch ? doc.data().gbLaunch + "-" + lastInMonth : doc.data().gbLaunch;
-          const sales =
-            typeof doc.data().sales === "string" ? { img: doc.data().sales, thirdParty: false } : doc.data().sales;
+          const sales = doc.data().sales;
+          const convertedSales = typeof sales === "string" ? { img: sales, thirdParty: false } : sales;
           sets.push({
             id: doc.id,
-            alias: doc.data().alias ? doc.data().alias : "",
+            alias: doc.data().alias,
             profile: doc.data().profile,
             colorway: doc.data().colorway,
             designer: doc.data().designer,
             icDate: doc.data().icDate,
             details: doc.data().details,
             notes: doc.data().notes,
-            sales: sales,
+            sales: convertedSales,
             image: doc.data().image,
             gbMonth: doc.data().gbMonth,
             gbLaunch: gbLaunch,

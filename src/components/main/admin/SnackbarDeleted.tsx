@@ -1,5 +1,6 @@
 import React from "react";
-import firebase from "../../../firebase";
+import { typedFirestore } from "../../../app/slices/firebase/firestore";
+import { KeysetId } from "../../../app/slices/firebase/types";
 import { useAppSelector } from "../../../app/hooks";
 import { batchStorageDelete, getStorageFolders } from "../../../app/slices/common/functions";
 import { getData } from "../../../app/slices/main/functions";
@@ -19,9 +20,9 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const recreateEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { id, ...set } = props.set;
-    const db = firebase.firestore();
-    db.collection("keysets")
-      .doc(id)
+    typedFirestore
+      .collection("keysets")
+      .doc(id as KeysetId)
       .set(
         {
           ...set,
