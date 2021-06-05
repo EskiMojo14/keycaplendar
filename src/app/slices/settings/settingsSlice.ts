@@ -15,6 +15,8 @@ type SettingsState = {
   density: string;
   syncSettings: boolean;
   cookies: boolean;
+
+  shareNameLoading: boolean;
 };
 
 const initialState: SettingsState = {
@@ -30,6 +32,8 @@ const initialState: SettingsState = {
   density: "default",
   syncSettings: false,
   cookies: false,
+
+  shareNameLoading: false,
 };
 
 export const settingsSlice = createSlice({
@@ -52,10 +56,13 @@ export const settingsSlice = createSlice({
     setCookies: (state, action: PayloadAction<boolean>) => {
       state.cookies = action.payload;
     },
+    setShareNameLoading: (state, action: PayloadAction<boolean>) => {
+      state.shareNameLoading = action.payload;
+    },
   },
 });
 
-export const { setSetting, setSettings, toggleLich, setCookies } = settingsSlice.actions;
+export const { setSetting, setSettings, toggleLich, setCookies, setShareNameLoading } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;
 
@@ -66,5 +73,7 @@ export const selectView = (state: RootState) => state.settings.view;
 export const selectCookies = (state: RootState) => state.settings.cookies;
 
 export const selectSyncSettings = (state: RootState) => state.settings.syncSettings;
+
+export const selectShareNameLoading = (state: RootState) => state.settings.shareNameLoading;
 
 export default settingsSlice.reducer;

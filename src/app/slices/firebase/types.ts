@@ -72,8 +72,10 @@ export type UpdateId = FirestoreId<"_updateId">;
 export type UserId = FirestoreId<"_userId">;
 
 export type UserPreferencesDoc = {
+  shareName?: string;
   filterPresets?: (OldPresetType | PresetType)[];
   favorites?: string[];
+  favoritesId?: string;
   bought?: string[];
   hidden?: string[];
   settings?: Partial<Settings>;

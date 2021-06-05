@@ -5,6 +5,7 @@ import { PresetType } from "../main/types";
 
 type UserState = {
   user: CurrentUserType;
+  shareName: string;
   favorites: string[];
   bought: string[];
   hidden: string[];
@@ -22,6 +23,7 @@ const initialState: UserState = {
     isDesigner: false,
     id: "",
   },
+  shareName: "",
   favorites: [],
   bought: [],
   hidden: [],
@@ -45,6 +47,9 @@ export const userSlice = createSlice({
       };
       state.user = action.payload.email ? { ...blankUser, ...action.payload } : blankUser;
     },
+    setShareName: (state, action: PayloadAction<string>) => {
+      state.shareName = action.payload;
+    },
     setUserPresets: (state, action: PayloadAction<PresetType[]>) => {
       state.userPresets = action.payload;
     },
@@ -60,9 +65,11 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setUserPresets, setFavorites, setBought, setHidden } = userSlice.actions;
+export const { setUser, setShareName, setUserPresets, setFavorites, setBought, setHidden } = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
+
+export const selectShareName = (state: RootState) => state.user.shareName;
 
 export const selectUserPresets = (state: RootState) => state.user.userPresets;
 

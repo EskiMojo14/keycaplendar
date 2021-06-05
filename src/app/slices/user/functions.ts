@@ -1,4 +1,5 @@
 import { typedFirestore } from "../firebase/firestore";
+import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { addOrRemove, hasKey } from "../common/functions";
@@ -6,7 +7,8 @@ import { UserId } from "../firebase/types";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
-import { setBought, setFavorites, setHidden, setUserPresets } from "./userSlice";
+import { setBought, setFavorites, setHidden, setShareName, setUserPresets } from "./userSlice";
+import { setShareNameLoading } from "../settings/settingsSlice";
 
 const { dispatch } = store;
 
@@ -25,9 +27,13 @@ export const getUserPreferences = (id: string) => {
           } = store.getState();
           const data = doc.data();
           if (data) {
-            const { favorites, bought, hidden, settings: settingsPrefs, syncSettings, filterPresets } = data;
+            const { favorites, bought, hidden, settings: settingsPrefs, syncSettings, filterPresets, shareName } = data;
 
             filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
+
+            if (shareName) {
+              dispatch(setShareName(shareName));
+            }
 
             if (favorites instanceof Array) {
               dispatch(setFavorites(favorites));
@@ -79,6 +85,7 @@ export const getUserPreferences = (id: string) => {
       });
   }
 };
+
 export const toggleFavorite = (id: string) => {
   const {
     common: { page },
@@ -106,6 +113,7 @@ export const toggleFavorite = (id: string) => {
       });
   }
 };
+
 export const toggleBought = (id: string) => {
   const {
     common: { page },
@@ -133,6 +141,7 @@ export const toggleBought = (id: string) => {
       });
   }
 };
+
 export const toggleHidden = (id: string) => {
   const {
     common: { page },
@@ -174,3 +183,29 @@ export const toggleHidden = (id: string) => {
       });
   }
 };
+
+export const syncShareName = (shareName: string) => {
+  const {
+    user: { user },
+  } = store.getState();
+  console.log("hi");
+  dispatch(setShareNameLoading(true));
+  typedFirestore
+    .collection("users")
+    .doc(user.id as UserId)
+    .set(
+      {
+        shareName,
+      },
+      { merge: true }
+    )
+    .then(() => {
+      dispatch(setShareNameLoading(false));
+    })
+    .catch((error) => {
+      console.log("Failed to sync display name: " + error);
+      queue.notify({ title: "Failed to sync display name: " + error });
+    });
+};
+
+export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: true });

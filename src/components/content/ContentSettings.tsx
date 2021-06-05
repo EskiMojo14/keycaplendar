@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "../../firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -7,7 +7,13 @@ import { queue } from "../../app/snackbarQueue";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";
 import { useBoolStates } from "../../app/slices/common/functions";
-import { selectBottomNav, selectSettings, selectSyncSettings } from "../../app/slices/settings/settingsSlice";
+import {
+  selectBottomNav,
+  selectSettings,
+  selectShareNameLoading,
+  selectSyncSettings,
+  setShareNameLoading,
+} from "../../app/slices/settings/settingsSlice";
 import {
   setApplyTheme,
   setBottomNav,
@@ -19,12 +25,13 @@ import {
   setSyncSettings,
   setToTimeTheme,
 } from "../../app/slices/settings/functions";
-import { selectUser, setUser } from "../../app/slices/user/userSlice";
+import { selectShareName, selectUser, setUser } from "../../app/slices/user/userSlice";
 import { userRoleIcons } from "../../app/slices/users/constants";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
+import { CircularProgress } from "@rmwc/circular-progress";
 import { FormField } from "@rmwc/formfield";
 import { Icon } from "@rmwc/icon";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
@@ -41,10 +48,11 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import { Footer } from "../common/Footer";
 import { DialogDelete } from "../settings/DialogDelete";
+import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
 import "./ContentSettings.scss";
+import { debouncedSyncShareName } from "../../app/slices/user/functions";
 
 type ContentSettingsProps = {
   openNav: () => void;
@@ -67,6 +75,24 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const syncSettings = useAppSelector(selectSyncSettings);
 
   const user = useAppSelector(selectUser);
+  const docShareName = useAppSelector(selectShareName);
+  const shareNameLoading = useAppSelector(selectShareNameLoading);
+
+  const [shareName, setShareName] = useState("");
+
+  useEffect(() => {
+    setShareName(docShareName);
+  }, [docShareName]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    if (name === "shareName") {
+      setShareName(value);
+      dispatch(setShareNameLoading(true));
+      debouncedSyncShareName(value);
+    }
+  };
 
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
   const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
@@ -152,6 +178,25 @@ export const ContentSettings = (props: ContentSettingsProps) => {
             <Button raised label="Log out" onClick={signOut} />
           </div>
         </ListItem>
+        <div className="text-field-container account">
+          <FormField className="text-form-field">
+            <label className="text-field-label" htmlFor="shareName">
+              <Typography use="body2">Display name</Typography>
+              <Typography use="caption">
+                Used for features where a name would be displayed to other users, such as shared favourites.
+              </Typography>
+            </label>
+            <TextField
+              outlined
+              id="shareName"
+              name="shareName"
+              value={shareName}
+              className="name-field"
+              onChange={handleChange}
+              trailingIcon={shareNameLoading ? <CircularProgress size="medium" /> : undefined}
+            />
+          </FormField>
+        </div>
         <div className="switch-container account">
           <Switch
             label="Sync settings to account"
