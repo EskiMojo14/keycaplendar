@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
+import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
 import { selectAllSets, selectContent, selectURLSet, setURLSet } from "../../app/slices/main/mainSlice";
@@ -24,6 +24,7 @@ import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
+import { DialogShare } from "../main/DialogShare";
 
 type ContentMainProps = {
   navOpen: boolean;
@@ -36,6 +37,8 @@ export const ContentMain = (props: ContentMainProps) => {
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
   const view = useAppSelector(selectView);
+
+  const page = useAppSelector(selectPage);
 
   const user = useAppSelector(selectUser);
 
@@ -225,6 +228,18 @@ export const ContentMain = (props: ContentMainProps) => {
     setTimeout(() => setDeleteFilterPreset(blankPreset), 300);
   };
 
+  const [shareOpen, setShareOpen] = useState(false);
+  const openShare = () => {
+    openModal();
+    setShareOpen(true);
+  };
+  const closeShare = () => {
+    closeModal();
+    setShareOpen(false);
+  };
+
+  const shareDialog = page === "favorites" && user.email ? <DialogShare open={shareOpen} close={closeShare} /> : null;
+
   const filterPresetElements = user.email ? (
     <>
       <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
@@ -271,6 +286,7 @@ export const ContentMain = (props: ContentMainProps) => {
   ) : (
     <ContentEmpty />
   );
+
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
     "extended-app-bar": view === "card" && !bottomNav && contentBool,
@@ -278,7 +294,12 @@ export const ContentMain = (props: ContentMainProps) => {
   });
   return (
     <>
-      <AppBar openNav={props.openNav} indent={user.isDesigner || user.isEditor} openFilter={openFilter} />
+      <AppBar
+        openNav={props.openNav}
+        indent={user.isDesigner || user.isEditor}
+        openFilter={openFilter}
+        openShare={openShare}
+      />
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
         <DrawerFilter
@@ -304,6 +325,7 @@ export const ContentMain = (props: ContentMainProps) => {
           <Footer />
         </BoolWrapper>
         <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
+        {shareDialog}
         {filterPresetElements}
         {editorElements}
       </div>

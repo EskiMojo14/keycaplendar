@@ -91,6 +91,7 @@
     .indent {
       padding: 0;
       flex-grow: 0;
+      flex-shrink: 0;
       align-items: flex-start;
     }
     .actions {

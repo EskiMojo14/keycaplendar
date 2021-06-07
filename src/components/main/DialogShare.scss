@@ -1,0 +1,36 @@
+@use "../../util";
+.share-dialog {
+  .mdc-dialog {
+    &__title {
+      @include util.divider-border(bottom);
+    }
+    &__content {
+      padding: 0 0 20px;
+      .group {
+        padding: 0 24px;
+        @include util.divider-border(bottom);
+        .text-field-container {
+          padding: 16px 0;
+        }
+        .switch-container {
+          display: flex;
+          align-items: center;
+          height: 48px;
+          .mdc-form-field {
+            flex-grow: 1;
+            label {
+              padding: 0;
+              flex-grow: 1;
+            }
+            .mdc-switch {
+              order: 1;
+            }
+          }
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
