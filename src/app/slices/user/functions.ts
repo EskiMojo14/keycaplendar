@@ -1,3 +1,4 @@
+import firebase from "../../../firebase";
 import { typedFirestore } from "../firebase/firestore";
 import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";
@@ -7,7 +8,7 @@ import { UserId } from "../firebase/types";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
-import { setBought, setFavorites, setHidden, setShareName, setUserPresets } from "./userSlice";
+import { setBought, setFavorites, setFavoritesId, setHidden, setShareName, setUserPresets } from "./userSlice";
 import { setShareNameLoading } from "../settings/settingsSlice";
 
 const { dispatch } = store;
@@ -27,12 +28,25 @@ export const getUserPreferences = (id: string) => {
           } = store.getState();
           const data = doc.data();
           if (data) {
-            const { favorites, bought, hidden, settings: settingsPrefs, syncSettings, filterPresets, shareName } = data;
+            const {
+              favorites,
+              favoritesId,
+              bought,
+              hidden,
+              settings: settingsPrefs,
+              syncSettings,
+              filterPresets,
+              shareName,
+            } = data;
 
             filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
 
             if (shareName) {
               dispatch(setShareName(shareName));
+            }
+
+            if (favoritesId) {
+              dispatch(setFavoritesId(favoritesId));
             }
 
             if (favorites instanceof Array) {
@@ -188,7 +202,6 @@ export const syncShareName = (shareName: string) => {
   const {
     user: { user },
   } = store.getState();
-  console.log("hi");
   dispatch(setShareNameLoading(true));
   typedFirestore
     .collection("users")
@@ -209,3 +222,24 @@ export const syncShareName = (shareName: string) => {
 };
 
 export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: true });
+
+export const syncFavoritesId = (id: string) => {
+  const {
+    user: { user },
+  } = store.getState();
+  typedFirestore
+    .collection("users")
+    .doc(user.id as UserId)
+    .set(
+      {
+        favoritesId: id ? id : firebase.firestore.FieldValue.delete(),
+      },
+      { merge: true }
+    )
+    .catch((error) => {
+      console.log("Failed to sync favorites ID: " + error);
+      queue.notify({ title: "Failed to sync favorites ID: " + error });
+    });
+};
+
+export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { trailing: true });

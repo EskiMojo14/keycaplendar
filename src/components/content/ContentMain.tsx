@@ -24,7 +24,7 @@ import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
-import { DialogShare } from "../main/DialogShare";
+import { DialogShareFavourites } from "../main/DialogShareFavourites";
 
 type ContentMainProps = {
   navOpen: boolean;
@@ -238,7 +238,8 @@ export const ContentMain = (props: ContentMainProps) => {
     setShareOpen(false);
   };
 
-  const shareDialog = page === "favorites" && user.email ? <DialogShare open={shareOpen} close={closeShare} /> : null;
+  const shareDialog =
+    page === "favorites" && user.email ? <DialogShareFavourites open={shareOpen} close={closeShare} /> : null;
 
   const filterPresetElements = user.email ? (
     <>

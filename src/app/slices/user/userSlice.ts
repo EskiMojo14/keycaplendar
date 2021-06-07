@@ -7,6 +7,7 @@ type UserState = {
   user: CurrentUserType;
   shareName: string;
   favorites: string[];
+  favoritesId: string;
   bought: string[];
   hidden: string[];
   userPresets: PresetType[];
@@ -25,6 +26,7 @@ const initialState: UserState = {
   },
   shareName: "",
   favorites: [],
+  favoritesId: "",
   bought: [],
   hidden: [],
   userPresets: [],
@@ -56,6 +58,9 @@ export const userSlice = createSlice({
     setFavorites: (state, action: PayloadAction<string[]>) => {
       state.favorites = action.payload;
     },
+    setFavoritesId: (state, action: PayloadAction<string>) => {
+      state.favoritesId = action.payload;
+    },
     setBought: (state, action: PayloadAction<string[]>) => {
       state.bought = action.payload;
     },
@@ -65,7 +70,15 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setShareName, setUserPresets, setFavorites, setBought, setHidden } = userSlice.actions;
+export const {
+  setUser,
+  setShareName,
+  setUserPresets,
+  setFavorites,
+  setFavoritesId,
+  setBought,
+  setHidden,
+} = userSlice.actions;
 
 export const selectUser = (state: RootState) => state.user.user;
 
@@ -74,6 +87,8 @@ export const selectShareName = (state: RootState) => state.user.shareName;
 export const selectUserPresets = (state: RootState) => state.user.userPresets;
 
 export const selectFavorites = (state: RootState) => state.user.favorites;
+
+export const selectFavoritesId = (state: RootState) => state.user.favoritesId;
 
 export const selectBought = (state: RootState) => state.user.bought;
 

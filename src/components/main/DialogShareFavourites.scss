@@ -1,4 +1,6 @@
+@use "@material/rtl/_index" as rtl;
 @use "../../util";
+
 .share-dialog {
   .mdc-dialog {
     &__title {
@@ -7,6 +9,8 @@
     &__content {
       padding: 0 0 20px;
       .group {
+        display: flex;
+        flex-direction: column;
         padding: 0 24px;
         @include util.divider-border(bottom);
         .text-field-container {
@@ -29,6 +33,12 @@
         }
         &:last-child {
           border-bottom: none;
+        }
+        .display-link {
+          margin-top: 16px;
+          .mdc-icon-button {
+            @include rtl.reflexive-box(margin, right, -10px);
+          }
         }
       }
     }
