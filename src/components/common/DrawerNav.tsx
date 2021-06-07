@@ -8,6 +8,7 @@ import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "../.
 import { setPage as setMainPage } from "../../app/slices/common/coreFunctions";
 import { hasKey, iconObject } from "../../app/slices/common/functions";
 import { Page } from "../../app/slices/common/types";
+import { selectLinkedFavorites } from "../../app/slices/main/mainSlice";
 import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -33,6 +34,8 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const bought = useAppSelector(selectBought);
   const hidden = useAppSelector(selectHidden);
 
+  const linkedFavorites = useAppSelector(selectLinkedFavorites);
+
   const dismissible = device === "desktop";
 
   const setPage = (page: Page) => {
@@ -45,7 +48,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const quantities: {
     [key: string]: number;
   } = {
-    favorites: favorites.length,
+    favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.length : favorites.length,
     bought: bought.length,
     hidden: hidden.length,
   };
@@ -84,6 +87,20 @@ export const DrawerNav = (props: DrawerNavProps) => {
     />
   ) : null;
 
+  const linkedFavorite =
+    !user.email && linkedFavorites.array.length > 0 ? (
+      <>
+        <ListDivider />
+        <ListItem onClick={() => setPage("favorites")} activated={appPage === "favorites"}>
+          <ListItemGraphic
+            icon={appPage === "favorites" && linkedFavorites.array.length > 0 ? "link" : pageIcons.favorites}
+          />
+          {pageTitle.favorites}
+          <ListItemMeta>{quantities.favorites}</ListItemMeta>
+        </ListItem>
+      </>
+    ) : null;
+
   const userOptions = user.email ? (
     <>
       <ListDivider />
@@ -112,7 +129,13 @@ export const DrawerNav = (props: DrawerNavProps) => {
         {userPages.map((page) => {
           return (
             <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
-              <ListItemGraphic icon={pageIcons[page]} />
+              <ListItemGraphic
+                icon={
+                  appPage === "favorites" && page === "favorites" && linkedFavorites.array.length > 0
+                    ? "link"
+                    : pageIcons[page]
+                }
+              />
               {pageTitle[page]}
               {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
             </ListItem>
@@ -219,6 +242,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
             <ListItemGraphic icon={pageIcons.history} />
             {pageTitle.history}
           </ListItem>
+          {linkedFavorite}
           {userOptions}
           {adminOptions}
           <ListDivider />

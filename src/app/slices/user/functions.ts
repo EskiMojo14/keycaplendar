@@ -1,12 +1,16 @@
+import firebase from "../../../firebase";
 import { typedFirestore } from "../firebase/firestore";
+import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
-import { addOrRemove, hasKey } from "../common/functions";
 import { UserId } from "../firebase/types";
+import { addOrRemove, arrayEveryType, hasKey } from "../common/functions";
+import { setLinkedFavorites } from "../main/mainSlice";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
-import { setBought, setFavorites, setHidden, setUserPresets } from "./userSlice";
+import { setBought, setFavorites, setFavoritesId, setHidden, setShareName, setUserPresets } from "./userSlice";
+import { setShareNameLoading } from "../settings/settingsSlice";
 
 const { dispatch } = store;
 
@@ -25,9 +29,26 @@ export const getUserPreferences = (id: string) => {
           } = store.getState();
           const data = doc.data();
           if (data) {
-            const { favorites, bought, hidden, settings: settingsPrefs, syncSettings, filterPresets } = data;
+            const {
+              favorites,
+              favoritesId,
+              bought,
+              hidden,
+              settings: settingsPrefs,
+              syncSettings,
+              filterPresets,
+              shareName,
+            } = data;
 
             filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
+
+            if (shareName) {
+              dispatch(setShareName(shareName));
+            }
+
+            if (favoritesId) {
+              dispatch(setFavoritesId(favoritesId));
+            }
 
             if (favorites instanceof Array) {
               dispatch(setFavorites(favorites));
@@ -79,6 +100,7 @@ export const getUserPreferences = (id: string) => {
       });
   }
 };
+
 export const toggleFavorite = (id: string) => {
   const {
     common: { page },
@@ -106,6 +128,7 @@ export const toggleFavorite = (id: string) => {
       });
   }
 };
+
 export const toggleBought = (id: string) => {
   const {
     common: { page },
@@ -133,6 +156,7 @@ export const toggleBought = (id: string) => {
       });
   }
 };
+
 export const toggleHidden = (id: string) => {
   const {
     common: { page },
@@ -173,4 +197,70 @@ export const toggleHidden = (id: string) => {
         queue.notify({ title: "Failed to sync hidden sets: " + error });
       });
   }
+};
+
+export const syncShareName = (shareName: string) => {
+  const {
+    user: { user },
+  } = store.getState();
+  dispatch(setShareNameLoading(true));
+  typedFirestore
+    .collection("users")
+    .doc(user.id as UserId)
+    .set(
+      {
+        shareName,
+      },
+      { merge: true }
+    )
+    .then(() => {
+      dispatch(setShareNameLoading(false));
+    })
+    .catch((error) => {
+      console.log("Failed to sync display name: " + error);
+      queue.notify({ title: "Failed to sync display name: " + error });
+    });
+};
+
+export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: true });
+
+export const syncFavoritesId = (id: string) => {
+  const {
+    user: { user },
+  } = store.getState();
+  typedFirestore
+    .collection("users")
+    .doc(user.id as UserId)
+    .set(
+      {
+        favoritesId: id ? id : firebase.firestore.FieldValue.delete(),
+      },
+      { merge: true }
+    )
+    .catch((error) => {
+      console.log("Failed to sync favorites ID: " + error);
+      queue.notify({ title: "Failed to sync favorites ID: " + error });
+    });
+};
+
+export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { trailing: true });
+
+export const getLinkedFavorites = (id: string) => {
+  const cloudFn = firebase.functions().httpsCallable("getFavorites");
+  cloudFn({ id })
+    .then((result) => {
+      const data = result.data;
+      if (
+        hasKey(data, "array") &&
+        data.array instanceof Array &&
+        arrayEveryType<string>(data.array, (item) => typeof item === "string")
+      ) {
+        dispatch(setLinkedFavorites(data));
+        filterData();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      queue.notify({ title: "Failed to get linked favorites: " + error });
+    });
 };

@@ -15,6 +15,7 @@ import {
   setAppPresets,
   setTransition,
   setURLSet,
+  setLinkedFavorites,
 } from "../main/mainSlice";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "../main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/functions";
@@ -22,6 +23,7 @@ import { WhitelistType } from "../main/types";
 import { statsTabs } from "../statistics/constants";
 import { setStatisticsTab } from "../statistics/functions";
 import { setURLEntry as setURLUpdate } from "../updates/updatesSlice";
+import { getLinkedFavorites } from "../user/functions";
 
 const { dispatch } = store;
 
@@ -184,6 +186,12 @@ export const getURLQuery = () => {
       dispatch(setURLUpdate(updateId));
     }
   }
+  if (params.has("favoritesId")) {
+    const favoritesId = params.get("favoritesId");
+    if (favoritesId) {
+      getLinkedFavorites(favoritesId);
+    }
+  }
   getData();
 };
 
@@ -211,7 +219,7 @@ export const getGlobals = () => {
 export const setPage = (page: Page) => {
   const {
     common: { page: appPage },
-    main: { loading, allSets, urlSet },
+    main: { loading, allSets, urlSet, linkedFavorites },
     guides: { urlEntry: urlGuide },
     updates: { urlEntry: urlUpdate },
   } = store.getState();
@@ -235,7 +243,7 @@ export const setPage = (page: Page) => {
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
-    const pageParams = ["keysetId", "keysetAlias", "keysetName", "guideId", "updateId"];
+    const pageParams = ["keysetId", "keysetAlias", "keysetName", "guideId", "updateId", "favoritesId"];
     pageParams.forEach((param) => {
       if (params.has(param)) {
         params.delete(param);
@@ -254,6 +262,9 @@ export const setPage = (page: Page) => {
     }
     if (urlUpdate) {
       dispatch(setURLUpdate(""));
+    }
+    if (linkedFavorites.array.length > 0) {
+      dispatch(setLinkedFavorites({ array: [], displayName: "" }));
     }
     const urlParams = params.toString() ? "?" + params.toString() : "";
     window.history.pushState(

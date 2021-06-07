@@ -227,3 +227,42 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
     };
   }
 });
+
+/** Returns a list of keyset IDs if the provided ID matches with a favoritesId in a user doc. */
+
+export const getFavorites = functions.https.onCall(async (data, context) => {
+  if (!data.id) {
+    return Promise.reject(Error("No ID provided."));
+  }
+  return typedFirestore
+    .collection("users")
+    .where("favoritesId", "==", data.id)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        return Promise.reject(Error("No favourites with this ID"));
+      } else {
+        const favorites: {
+          array: string[];
+          displayName: string;
+        } = {
+          array: [],
+          displayName: "",
+        };
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.favorites) {
+            favorites.array = data.favorites;
+            if (data.shareName) {
+              favorites.displayName = data.shareName;
+            }
+          }
+        });
+        return Promise.resolve(favorites);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return Promise.reject(Error(error));
+    });
+});

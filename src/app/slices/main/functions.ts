@@ -70,6 +70,10 @@ export const pageConditions = (
   bought: string[],
   hidden: string[]
 ): Record<typeof mainPages[number], boolean> => {
+  const {
+    main: { linkedFavorites },
+  } = store.getState();
+
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const startDate = DateTime.fromISO(set.gbLaunch, {
@@ -88,7 +92,7 @@ export const pageConditions = (
     previous: !!(endDate && endDate <= yesterday),
     timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
     archive: true,
-    favorites: favorites.includes(set.id),
+    favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.includes(set.id) : favorites.includes(set.id),
     bought: bought.includes(set.id),
     hidden: hidden.includes(set.id),
   };

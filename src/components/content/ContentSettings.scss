@@ -155,6 +155,33 @@
             }
           }
         }
+        .text-field-container {
+          display: flex;
+          justify-content: stretch;
+          align-items: center;
+          &.account {
+            padding: 8px 16px;
+          }
+          .mdc-form-field {
+            flex-grow: 1;
+            flex-wrap: wrap;
+            .text-field-label {
+              padding: 0;
+              flex-grow: 1;
+              display: flex;
+              flex-direction: column;
+              max-width: 320px;
+            }
+            .mdc-text-field {
+              margin: 0;
+              &.name-field {
+                .mdc-text-field__icon {
+                  cursor: default;
+                }
+              }
+            }
+          }
+        }
       }
     }
     &-group:last-child {
@@ -182,7 +209,8 @@
           .account {
             padding: 0;
           }
-          .switch-container.account {
+          .switch-container.account,
+          .text-field-container.account {
             padding: 0;
           }
           .delete-container {

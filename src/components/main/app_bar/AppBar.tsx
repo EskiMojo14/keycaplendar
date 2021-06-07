@@ -3,13 +3,14 @@ import classNames from "classnames";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice";
 import { pageTitle } from "../../../app/slices/common/constants";
-import { useBoolStates } from "../../../app/slices/common/functions";
-import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice";
+import { iconObject, useBoolStates } from "../../../app/slices/common/functions";
+import { selectLoading, selectSearch, selectLinkedFavorites } from "../../../app/slices/main/mainSlice";
 import { setSearch } from "../../../app/slices/main/functions";
 import { selectBottomNav, selectView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor } from "@rmwc/menu";
+import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
@@ -28,6 +29,7 @@ type AppBarProps = {
   indent: boolean;
   openFilter: () => void;
   openNav: () => void;
+  openShare: () => void;
 };
 
 export const AppBar = (props: AppBarProps) => {
@@ -37,9 +39,12 @@ export const AppBar = (props: AppBarProps) => {
 
   const page = useAppSelector(selectPage);
 
+  const user = useAppSelector(selectUser);
+
   const loading = useAppSelector(selectLoading);
 
   const search = useAppSelector(selectSearch);
+  const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
@@ -56,7 +61,31 @@ export const AppBar = (props: AppBarProps) => {
     setSearchOpen(false);
   };
 
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [closeMore, openMore] = useBoolStates(setMoreOpen);
+
   const tooltipAlign = bottomNav ? "top" : "bottom";
+
+  const shareButton =
+    page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+      <Tooltip enterDelay={500} content="Share" align={tooltipAlign}>
+        <TopAppBarActionItem
+          style={{ "--animation-delay": 4 }}
+          icon={iconObject(
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <circle cx="18" cy="5" opacity=".3" r="1" />
+                <circle cx="6" cy="12" opacity=".3" r="1" />
+                <circle cx="18" cy="19.02" opacity=".3" r="1" />
+                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
+              </svg>
+            </div>
+          )}
+          onClick={props.openShare}
+        />
+      </Tooltip>
+    ) : null;
 
   const indent =
     props.indent && bottomNav ? (
@@ -97,22 +126,50 @@ export const AppBar = (props: AppBarProps) => {
           <TopAppBarActionItem onClick={openView} style={{ "--animation-delay": 3 }} icon={viewIcons[view]} />
         </Tooltip>
       </MenuSurfaceAnchor>
+      {device === "desktop" ? shareButton : null}
       {device !== "desktop" && !indent ? (
         <div>
           <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
-          <Tooltip enterDelay={500} content="Search" align="bottom">
-            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
-          </Tooltip>
+          {page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+            <MenuSurfaceAnchor>
+              <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
+                <MenuItem onClick={openSearch}>Search</MenuItem>
+                <MenuItem onClick={props.openShare}>Share</MenuItem>
+              </Menu>
+              <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
+            </MenuSurfaceAnchor>
+          ) : (
+            <Tooltip enterDelay={500} content="Search" align="bottom">
+              <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
+            </Tooltip>
+          )}
         </div>
       ) : null}
       {indent ? (
-        <Tooltip enterDelay={500} content="Search" align="bottom">
-          <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
-        </Tooltip>
+        page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+          <MenuSurfaceAnchor>
+            <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
+              <MenuItem onClick={openSearch}>Search</MenuItem>
+              <MenuItem onClick={props.openShare}>Share</MenuItem>
+            </Menu>
+            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="more_vert" onClick={openMore} />
+          </MenuSurfaceAnchor>
+        ) : (
+          <Tooltip enterDelay={500} content="Search" align="bottom">
+            <TopAppBarActionItem style={{ "--animation-delay": 4 }} icon="search" onClick={openSearch} />
+          </Tooltip>
+        )
       ) : null}
     </>
   );
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[page]}</TopAppBarTitle> : buttons;
+  const leftButtons = !indent ? (
+    <TopAppBarTitle>
+      {pageTitle[page] +
+        (page === "favorites" && linkedFavorites.displayName ? `: ${linkedFavorites.displayName}` : "")}
+    </TopAppBarTitle>
+  ) : (
+    buttons
+  );
   const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
   return (
     <>
