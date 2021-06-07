@@ -8,6 +8,7 @@ import { selectLoading, selectSearch, selectLinkedFavorites } from "../../../app
 import { setSearch } from "../../../app/slices/main/functions";
 import { selectBottomNav, selectView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
+import { selectUser } from "../../../app/slices/user/userSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";
@@ -38,6 +39,8 @@ export const AppBar = (props: AppBarProps) => {
 
   const page = useAppSelector(selectPage);
 
+  const user = useAppSelector(selectUser);
+
   const loading = useAppSelector(selectLoading);
 
   const search = useAppSelector(selectSearch);
@@ -64,7 +67,7 @@ export const AppBar = (props: AppBarProps) => {
   const tooltipAlign = bottomNav ? "top" : "bottom";
 
   const shareButton =
-    page === "favorites" ? (
+    page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
       <Tooltip enterDelay={500} content="Share" align={tooltipAlign}>
         <TopAppBarActionItem
           style={{ "--animation-delay": 4 }}
@@ -127,7 +130,7 @@ export const AppBar = (props: AppBarProps) => {
       {device !== "desktop" && !indent ? (
         <div>
           <SearchBarModal open={searchOpen} close={closeSearch} search={search} setSearch={setSearch} />
-          {page === "favorites" ? (
+          {page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
             <MenuSurfaceAnchor>
               <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
                 <MenuItem onClick={openSearch}>Search</MenuItem>
@@ -143,7 +146,7 @@ export const AppBar = (props: AppBarProps) => {
         </div>
       ) : null}
       {indent ? (
-        page === "favorites" ? (
+        page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
           <MenuSurfaceAnchor>
             <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
               <MenuItem onClick={openSearch}>Search</MenuItem>

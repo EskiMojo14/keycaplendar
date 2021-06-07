@@ -4,7 +4,13 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
 import { closeModal, openModal } from "../../app/slices/common/functions";
 import { Keyset, Preset } from "../../app/slices/main/constructors";
-import { selectAllSets, selectContent, selectURLSet, setURLSet } from "../../app/slices/main/mainSlice";
+import {
+  selectAllSets,
+  selectContent,
+  selectLinkedFavorites,
+  selectURLSet,
+  setURLSet,
+} from "../../app/slices/main/mainSlice";
 import { PresetType, SetType } from "../../app/slices/main/types";
 import { selectBottomNav, selectView } from "../../app/slices/settings/settingsSlice";
 import { selectUser } from "../../app/slices/user/userSlice";
@@ -45,6 +51,7 @@ export const ContentMain = (props: ContentMainProps) => {
   const contentBool = useAppSelector(selectContent);
   const allSets = useAppSelector(selectAllSets);
   const urlSet = useAppSelector(selectURLSet);
+  const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   useEffect(() => {
     if (urlSet.value) {
@@ -239,7 +246,9 @@ export const ContentMain = (props: ContentMainProps) => {
   };
 
   const shareDialog =
-    page === "favorites" && user.email ? <DialogShareFavourites open={shareOpen} close={closeShare} /> : null;
+    page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
+      <DialogShareFavourites open={shareOpen} close={closeShare} />
+    ) : null;
 
   const filterPresetElements = user.email ? (
     <>
