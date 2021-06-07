@@ -68,7 +68,8 @@ export const getURLQuery = () => {
     const pageQuery = path || params.get("page");
     if (
       arrayIncludes(urlPages, pageQuery) ||
-      (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development")
+      (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development") ||
+      (pageQuery === "favorites" && params.has("favoritesId"))
     ) {
       if (arrayIncludes(mainPages, pageQuery)) {
         if (pageQuery === "calendar") {
@@ -97,6 +98,8 @@ export const getURLQuery = () => {
       } else {
         dispatch(setAppPage(pageQuery));
       }
+    } else {
+      dispatch(setAppPage("calendar"));
     }
   } else {
     dispatch(setAppPage("calendar"));
