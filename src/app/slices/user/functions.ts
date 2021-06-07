@@ -256,6 +256,7 @@ export const getLinkedFavorites = (id: string) => {
         arrayEveryType<string>(data.array, (item) => typeof item === "string")
       ) {
         dispatch(setLinkedFavorites(data));
+        filterData();
       }
     })
     .catch((error) => {

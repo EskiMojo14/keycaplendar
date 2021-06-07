@@ -48,7 +48,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
   const quantities: {
     [key: string]: number;
   } = {
-    favorites: favorites.length,
+    favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.length : favorites.length,
     bought: bought.length,
     hidden: hidden.length,
   };
@@ -86,6 +86,20 @@ export const DrawerNav = (props: DrawerNavProps) => {
       )}
     />
   ) : null;
+
+  const linkedFavorite =
+    !user.email && linkedFavorites.array.length > 0 ? (
+      <>
+        <ListDivider />
+        <ListItem onClick={() => setPage("favorites")} activated={appPage === "favorites"}>
+          <ListItemGraphic
+            icon={appPage === "favorites" && linkedFavorites.array.length > 0 ? "link" : pageIcons.favorites}
+          />
+          {pageTitle.favorites}
+          <ListItemMeta>{quantities.favorites}</ListItemMeta>
+        </ListItem>
+      </>
+    ) : null;
 
   const userOptions = user.email ? (
     <>
@@ -228,6 +242,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
             <ListItemGraphic icon={pageIcons.history} />
             {pageTitle.history}
           </ListItem>
+          {linkedFavorite}
           {userOptions}
           {adminOptions}
           <ListDivider />
