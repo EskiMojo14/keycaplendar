@@ -61,3 +61,5 @@ exports.deleteUser = users.deleteUser;
 exports.setRoles = users.setRoles;
 
 exports.deleteOwnUser = users.deleteOwnUser;
+
+exports.getFavorites = users.getFavorites;

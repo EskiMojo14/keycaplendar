@@ -52,6 +52,10 @@
         "function": "generateAliases"
       },
       {
+        "source": "/api/getFavorites",
+        "function": "getFavorites"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

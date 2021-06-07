@@ -3,8 +3,9 @@ import { typedFirestore } from "../firebase/firestore";
 import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
-import { addOrRemove, hasKey } from "../common/functions";
 import { UserId } from "../firebase/types";
+import { addOrRemove, arrayEveryType, hasKey } from "../common/functions";
+import { setLinkedFavorites } from "../main/mainSlice";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
 import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
@@ -243,3 +244,22 @@ export const syncFavoritesId = (id: string) => {
 };
 
 export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { trailing: true });
+
+export const getLinkedFavorites = (id: string) => {
+  const cloudFn = firebase.functions().httpsCallable("getFavorites");
+  cloudFn({ id })
+    .then((result) => {
+      const data = result.data;
+      if (
+        hasKey(data, "array") &&
+        data.array instanceof Array &&
+        arrayEveryType<string>(data.array, (item) => typeof item === "string")
+      ) {
+        dispatch(setLinkedFavorites(data));
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      queue.notify({ title: "Failed to get linked favorites: " + error });
+    });
+};

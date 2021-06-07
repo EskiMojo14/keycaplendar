@@ -8,7 +8,7 @@ import { allPages } from "./app/slices/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "./app/slices/common/coreFunctions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "./app/slices/main/mainSlice";
 import { testSets } from "./app/slices/main/functions";
-import { setUser, setUserPresets, setFavorites, setHidden } from "./app/slices/user/userSlice";
+import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "./app/slices/user/userSlice";
 import { selectCookies, selectSettings } from "./app/slices/settings/settingsSlice";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "./app/slices/settings/functions";
 import { getUserPreferences } from "./app/slices/user/functions";
@@ -80,6 +80,7 @@ export const App = () => {
         dispatch(setUserPresets([]));
         dispatch(setFavorites([]));
         dispatch(setHidden([]));
+        dispatch(setShareName(""));
         if (defaultPreset.name) {
           dispatch(setCurrentPreset(defaultPreset));
         }

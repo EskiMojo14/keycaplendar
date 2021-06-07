@@ -31,6 +31,8 @@ type MainState = {
   currentPreset: PresetType;
   defaultPreset: PresetType;
   appPresets: PresetType[];
+
+  linkedFavorites: { array: string[]; displayName: string };
 };
 
 const initialState: MainState = {
@@ -76,6 +78,8 @@ const initialState: MainState = {
   currentPreset: { ...new Preset() },
   defaultPreset: { ...new Preset() },
   appPresets: [],
+
+  linkedFavorites: { array: [], displayName: "" },
 };
 
 export const mainSlice = createSlice({
@@ -148,6 +152,9 @@ export const mainSlice = createSlice({
     setAppPresets: (state, action: PayloadAction<PresetType[]>) => {
       state.appPresets = action.payload;
     },
+    setLinkedFavorites: (state, action: PayloadAction<{ array: string[]; displayName: string }>) => {
+      state.linkedFavorites = action.payload;
+    },
   },
 });
 
@@ -167,6 +174,7 @@ export const {
   setCurrentPreset,
   setDefaultPreset,
   setAppPresets,
+  setLinkedFavorites,
 } = mainSlice.actions;
 
 export const selectTransition = (state: RootState) => state.main.transition;
@@ -206,5 +214,7 @@ export const selectCurrentPreset = (state: RootState) => state.main.currentPrese
 export const selectDefaultPreset = (state: RootState) => state.main.defaultPreset;
 
 export const selectAppPresets = (state: RootState) => state.main.appPresets;
+
+export const selectLinkedFavorites = (state: RootState) => state.main.linkedFavorites;
 
 export default mainSlice.reducer;

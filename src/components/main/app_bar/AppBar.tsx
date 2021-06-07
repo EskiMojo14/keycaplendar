@@ -4,7 +4,7 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectDevice, selectPage } from "../../../app/slices/common/commonSlice";
 import { pageTitle } from "../../../app/slices/common/constants";
 import { iconObject, useBoolStates } from "../../../app/slices/common/functions";
-import { selectLoading, selectSearch } from "../../../app/slices/main/mainSlice";
+import { selectLoading, selectSearch, selectLinkedFavorites } from "../../../app/slices/main/mainSlice";
 import { setSearch } from "../../../app/slices/main/functions";
 import { selectBottomNav, selectView } from "../../../app/slices/settings/settingsSlice";
 import { viewIcons } from "../../../app/slices/settings/constants";
@@ -41,6 +41,7 @@ export const AppBar = (props: AppBarProps) => {
   const loading = useAppSelector(selectLoading);
 
   const search = useAppSelector(selectSearch);
+  const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
   const [sortOpen, setSortOpen] = useState(false);
   const [closeSort, openSort] = useBoolStates(setSortOpen);
@@ -158,7 +159,14 @@ export const AppBar = (props: AppBarProps) => {
       ) : null}
     </>
   );
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle[page]}</TopAppBarTitle> : buttons;
+  const leftButtons = !indent ? (
+    <TopAppBarTitle>
+      {pageTitle[page] +
+        (page === "favorites" && linkedFavorites.displayName ? `: ${linkedFavorites.displayName}` : "")}
+    </TopAppBarTitle>
+  ) : (
+    buttons
+  );
   const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
   return (
     <>
