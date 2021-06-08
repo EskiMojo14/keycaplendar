@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { pageTitle } from "../../app/slices/common/constants";

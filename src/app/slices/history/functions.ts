@@ -1,5 +1,5 @@
 import isEqual from "lodash.isequal";
-import firebase from "../../../firebase";
+import firebase from "../firebase/firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { auditProperties } from "../audit/constants";

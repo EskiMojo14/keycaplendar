@@ -1,4 +1,4 @@
-import firebase from "../../../firebase";
+import firebase from "../firebase/firebase";
 import { typedFirestore } from "../firebase/firestore";
 import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";

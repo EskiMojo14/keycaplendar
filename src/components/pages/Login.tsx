@@ -1,6 +1,6 @@
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../app/slices/user/userSlice";
 import { selectDevice } from "../../app/slices/common/commonSlice";

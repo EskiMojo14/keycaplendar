@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import firebase from "../../../firebase";
+import firebase from "../firebase/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "../../store";
 import { queue } from "../../snackbarQueue";

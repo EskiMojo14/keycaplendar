@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import { DateTime } from "luxon";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";

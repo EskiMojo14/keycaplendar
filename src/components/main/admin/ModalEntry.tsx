@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
-import firebase from "../../../firebase";
+import firebase from "../../../app/slices/firebase/firebase";
 import { typedFirestore } from "../../../app/slices/firebase/firestore";
 import { KeysetId } from "../../../app/slices/firebase/types";
 import { useAppSelector } from "../../../app/hooks";

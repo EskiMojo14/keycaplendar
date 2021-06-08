@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import { useAppSelector } from "../../app/hooks";
 import { queue } from "../../app/snackbarQueue";
 import { iconObject, mergeObject, ordinal, truncate } from "../../app/slices/common/functions";

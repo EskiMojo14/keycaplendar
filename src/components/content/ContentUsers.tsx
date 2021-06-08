@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import classNames from "classnames";
 import { queue } from "../../app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

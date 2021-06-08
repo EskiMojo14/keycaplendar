@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

@@ -1,4 +1,4 @@
-import firebase from "../../../firebase";
+import firebase from "../firebase/firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "../common/functions";

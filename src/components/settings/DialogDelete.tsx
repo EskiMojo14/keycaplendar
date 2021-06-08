@@ -1,5 +1,5 @@
 import React from "react";
-import firebase from "../../firebase";
+import firebase from "../../app/slices/firebase/firebase";
 import { queue } from "../../app/snackbarQueue";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 
