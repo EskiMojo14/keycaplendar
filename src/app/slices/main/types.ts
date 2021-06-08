@@ -63,7 +63,7 @@ export type WhitelistType = {
   vendors: string[];
   /** Array of all keys that have been edited. */
   edited?: string[];
-  /** Whether to filter to only favourites. */
+  /** Whether to filter to only favorites. */
   favorites: boolean;
   /** Whether to filter to only bought sets. */
   bought: boolean;

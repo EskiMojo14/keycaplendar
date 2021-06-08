@@ -183,7 +183,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
             <label className="text-field-label" htmlFor="shareName">
               <Typography use="body2">Display name</Typography>
               <Typography use="caption">
-                Used for features where a name would be displayed to other users, such as shared favourites.
+                Used for features where a name would be displayed to other users, such as shared favorites.
               </Typography>
             </label>
             <TextField

@@ -18,7 +18,7 @@ export class Whitelist {
   hidden: boolean;
 
   /**
-   * @param favorites Whether to only display favourites.
+   * @param favorites Whether to only display favorites.
    * @param bought Whether to only display bought sets.
    * @param hidden Whether to only display hidden sets.
    * @param profiles Array of allowed profiles.

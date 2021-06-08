@@ -25,12 +25,12 @@ import { DrawerFilter } from "../main/DrawerFilter";
 import { DialogSales } from "../main/DialogSales";
 import { ModalFilterPreset } from "../main/ModalFilterPreset";
 import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
+import { DialogShareFavorites } from "../main/DialogShareFavorites";
 import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
 import { DialogDelete } from "../main/admin/DialogDelete";
 import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
 import { Footer } from "../common/Footer";
 import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
-import { DialogShareFavourites } from "../main/DialogShareFavourites";
 
 type ContentMainProps = {
   navOpen: boolean;
@@ -247,7 +247,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const shareDialog =
     page === "favorites" && user.email && linkedFavorites.array.length === 0 ? (
-      <DialogShareFavourites open={shareOpen} close={closeShare} />
+      <DialogShareFavorites open={shareOpen} close={closeShare} />
     ) : null;
 
   const filterPresetElements = user.email ? (

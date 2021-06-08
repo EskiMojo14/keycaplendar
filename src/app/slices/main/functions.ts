@@ -59,7 +59,7 @@ const { dispatch } = store;
 /**
  * Tests whether a set would be shown on each page.
  * @param set Set to be tested.
- * @param favorites Array of set IDs which are favourited.
+ * @param favorites Array of set IDs which are favorited.
  * @param hidden Array of set IDs which are hidden
  * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
  */

@@ -8,17 +8,17 @@ import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
-import "./DialogShareFavourites.scss";
+import "./DialogShareFavorites.scss";
 import { Typography } from "@rmwc/typography";
 import { IconButton } from "@rmwc/icon-button";
 import { queue } from "../../app/snackbarQueue";
 
-type DialogShareFavouritesProps = {
+type DialogShareFavoritesProps = {
   open: boolean;
   close: () => void;
 };
 
-export const DialogShareFavourites = (props: DialogShareFavouritesProps) => {
+export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
   const dispatch = useAppDispatch();
 
   const docShareName = useAppSelector(selectShareName);

@@ -240,7 +240,7 @@ export const getFavorites = functions.https.onCall(async (data, context) => {
     .get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        return Promise.reject(Error("No favourites with this ID"));
+        return Promise.reject(Error("No favorites with this ID"));
       } else {
         const favorites: {
           array: string[];

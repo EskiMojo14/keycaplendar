@@ -44,7 +44,7 @@ export const DialogDelete = (props: DialogDeleteProps) => {
       <DialogTitle>Delete account</DialogTitle>
       <DialogContent>
         Are you sure you want to delete your account and all associated information? You will lose all information
-        stored in the database, such as presets and favourites. This cannot be undone.
+        stored in the database, such as presets and favorites. This cannot be undone.
       </DialogContent>
       <DialogActions>
         <DialogButton onClick={props.close}>Cancel</DialogButton>

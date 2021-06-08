@@ -52,7 +52,7 @@ export const Login = () => {
           Sign in
         </Typography>
         <Typography className="subtitle" use="body1" tag="p">
-          Log in to gain access to features such as favourites, hiding sets, and filter presets.
+          Log in to gain access to features such as favorites, hiding sets, and filter presets.
         </Typography>
         <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
       </div>
