@@ -67,7 +67,10 @@ export const getStorage = (name: string) => {
 
 export const checkStorage = () => {
   const accepted = getCookie("accepted");
-  const { settings } = store.getState();
+  const {
+    main: { urlWhitelist },
+    settings,
+  } = store.getState();
   if (accepted && accepted === "true") {
     dispatch(setCookies(true));
 
@@ -113,7 +116,7 @@ export const checkStorage = () => {
 
     const storedPreset = getStorage("presetId");
     const params = new URLSearchParams(window.location.search);
-    const noUrlParams = !whitelistParams.some((param) => params.has(param));
+    const noUrlParams = !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
     if (storedPreset && storedPreset !== "default" && noUrlParams) {
       selectPreset(storedPreset, false);
     }

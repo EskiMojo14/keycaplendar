@@ -42,6 +42,7 @@ import {
   setSearch as setMainSearch,
   mergeWhitelist,
   setAppPresets,
+  setURLWhitelist,
 } from "./mainSlice";
 import {
   OldPresetType,
@@ -205,7 +206,7 @@ export const testSets = (setsParam?: SetType[]) => {
 
 const generateLists = (setsParam?: SetType[]) => {
   const {
-    main: { allSets, currentPreset },
+    main: { allSets, currentPreset, urlWhitelist },
   } = store.getState();
   const sets = setsParam || allSets;
 
@@ -252,9 +253,22 @@ const generateLists = (setsParam?: SetType[]) => {
     }
   });
 
-  if (!currentPreset.name) {
+  const params = new URLSearchParams(window.location.search);
+  const noUrlParams = !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
+  const urlParams = [...whitelistParams.filter((param) => params.has(param)), ...Object.keys(urlWhitelist)];
+  if (!currentPreset.name && noUrlParams) {
     dispatch(setCurrentPreset(defaultPreset));
     setWhitelistMerge(defaultPreset.whitelist);
+  } else if (!currentPreset.name && !noUrlParams) {
+    dispatch(setCurrentPreset(defaultPreset));
+    const partialWhitelist: Partial<WhitelistType> = {};
+    const defaultParams = ["profiles", "regions"] as const;
+    defaultParams.forEach((param) => {
+      if (!urlParams.includes(param)) {
+        partialWhitelist[param] = defaultPreset.whitelist[param];
+      }
+    });
+    setWhitelistMerge(partialWhitelist, false);
   }
 };
 
@@ -638,6 +652,7 @@ export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clea
     filterData(page, allSets, sort, sortOrder, search, whitelist);
   }
   if (clearUrl) {
+    dispatch(setURLWhitelist({}));
     const params = new URLSearchParams(window.location.search);
     if (whitelistParams.some((param) => params.has(param))) {
       whitelistParams.forEach((param, index, array) => {
@@ -681,6 +696,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
     }
   }
   if (clearUrl) {
+    dispatch(setURLWhitelist({}));
     const params = new URLSearchParams(window.location.search);
     if (whitelistParams.some((param) => params.has(param))) {
       whitelistParams.forEach((param, index, array) => {

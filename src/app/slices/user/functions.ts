@@ -64,8 +64,12 @@ export const getUserPreferences = (id: string) => {
               const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
               dispatch(setUserPresets(updatedPresets));
               const storedPreset = getStorage("presetId");
+              const {
+                main: { urlWhitelist },
+              } = store.getState();
               const params = new URLSearchParams(window.location.search);
-              const noUrlParams = !whitelistParams.some((param) => params.has(param));
+              const noUrlParams =
+                !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
               if (storedPreset && storedPreset !== "default" && noUrlParams) {
                 selectPreset(storedPreset, false);
               }

@@ -3,7 +3,7 @@ import store from "../../store";
 import { queue } from "../../snackbarQueue";
 import { setAppPage, setDevice } from "./commonSlice";
 import { allPages, mainPages, pageTitle, urlPages } from "./constants";
-import { arrayEveryType, arrayIncludes, hasKey } from "./functions";
+import { arrayEveryType, arrayIncludes } from "./functions";
 import { Page } from "./types";
 import { setURLEntry as setURLGuide } from "../guides/guidesSlice";
 import { historyTabs } from "../history/constants";
@@ -16,6 +16,7 @@ import {
   setTransition,
   setURLSet,
   setLinkedFavorites,
+  setURLWhitelist,
 } from "../main/mainSlice";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "../main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/functions";
@@ -59,9 +60,6 @@ export const checkDevice = () => {
 };
 
 export const getURLQuery = () => {
-  const {
-    main: { whitelist: mainWhitelist },
-  } = store.getState();
   const params = new URLSearchParams(window.location.search);
   const path = window.location.pathname.substring(1);
   if (path || params.has("page")) {
@@ -104,15 +102,16 @@ export const getURLQuery = () => {
   } else {
     dispatch(setAppPage("calendar"));
   }
-  const whitelistObj: WhitelistType = { ...mainWhitelist };
+  const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
     if (params.has(param)) {
       const val = params.get(param);
       if (val) {
         if (param === "profile" || param === "region" || param === "vendor") {
           const plural = `${param}s`;
-          if (hasKey(whitelistObj, plural)) {
-            whitelistObj[plural] = [val.replace("-", " ")] as never;
+          const plurals = ["profiles", "regions", "vendors"] as const;
+          if (arrayIncludes(plurals, plural)) {
+            whitelistObj[plural] = [val.replace("-", " ")];
           }
         } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
           const array = val.split(" ").map((item) => item.replace("-", " "));
@@ -131,6 +130,7 @@ export const getURLQuery = () => {
       }
     }
     if (index === array.length - 1) {
+      dispatch(setURLWhitelist(whitelistObj));
       setWhitelistMerge(whitelistObj, false);
     }
   });

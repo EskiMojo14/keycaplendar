@@ -28,6 +28,7 @@ type MainState = {
 
   search: string;
   whitelist: WhitelistType;
+  urlWhitelist: Partial<WhitelistType>;
   currentPreset: PresetType;
   defaultPreset: PresetType;
   appPresets: PresetType[];
@@ -75,6 +76,7 @@ const initialState: MainState = {
     vendorMode: "exclude",
     vendors: [],
   },
+  urlWhitelist: {},
   currentPreset: { ...new Preset() },
   defaultPreset: { ...new Preset() },
   appPresets: [],
@@ -143,6 +145,9 @@ export const mainSlice = createSlice({
       const edited = uniqueArray([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
       state.whitelist = Object.assign(state.whitelist, action.payload, { edited: edited });
     },
+    setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
+      state.urlWhitelist = action.payload;
+    },
     setCurrentPreset: (state, action: PayloadAction<PresetType>) => {
       state.currentPreset = action.payload;
     },
@@ -171,6 +176,7 @@ export const {
   setSearch,
   setWhitelist,
   mergeWhitelist,
+  setURLWhitelist,
   setCurrentPreset,
   setDefaultPreset,
   setAppPresets,
