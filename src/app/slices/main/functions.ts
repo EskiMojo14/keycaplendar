@@ -1,6 +1,7 @@
 import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
+import { is } from "typescript-is";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { allPages, mainPages, pageTitle } from "../common/constants";
@@ -124,7 +125,7 @@ export const getData = () => {
 
           const lastInMonth = docGbLaunch ? DateTime.fromISO(docGbLaunch).daysInMonth : 0;
           const gbLaunch = doc.data().gbMonth && docGbLaunch ? docGbLaunch + "-" + lastInMonth : docGbLaunch;
-          const sales = typeof docSales === "string" ? { img: docSales, thirdParty: false } : docSales;
+          const sales = is<string>(docSales) ? { img: docSales, thirdParty: false } : docSales;
 
           sets.push({
             id: doc.id,
@@ -175,13 +176,13 @@ export const testSets = (setsParam?: SetType[]) => {
     Object.keys(set).forEach((key) => {
       if (hasKey(set, key)) {
         const value = set[key];
-        if (typeof value === "string") {
+        if (is<string>(value)) {
           testValue(set, key, value);
-        } else if (value instanceof Array) {
+        } else if (is<Array<any>>(value)) {
           value.forEach((item: string | VendorType) => {
-            if (typeof item === "string") {
+            if (is<string>(item)) {
               testValue(set, key, item);
-            } else if (typeof item === "object") {
+            } else if (is<VendorType>(item)) {
               Object.keys(item).forEach((itemKey) => {
                 if (hasKey(item, itemKey)) {
                   if (itemKey === "region") {
@@ -191,7 +192,7 @@ export const testSets = (setsParam?: SetType[]) => {
                       }
                       testValue(set, `${key} ${itemKey}`, region);
                     });
-                  } else if (typeof item[itemKey] === "string") {
+                  } else if (is<string>(item[itemKey])) {
                     testValue(set, `${key} ${itemKey}`, item[itemKey]);
                   }
                 }
@@ -640,7 +641,7 @@ export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clea
   const edited = Object.keys(partialWhitelist).filter((key) => {
     if (hasKey(partialWhitelist, key)) {
       const value = partialWhitelist[key];
-      return value && value instanceof Array && value.length > 0;
+      return value && is<Array<any>>(value) && value.length > 0;
     } else {
       return false;
     }
@@ -686,7 +687,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
     common: { page },
     main: { whitelist: mainWhitelist, sort, sortOrder, search, allSets },
   } = store.getState();
-  if (mainWhitelist.edited instanceof Array) {
+  if (is<Array<string>>(mainWhitelist.edited)) {
     const edited = uniqueArray([...(mainWhitelist.edited || []), prop]);
     const whitelist = { ...mainWhitelist, [prop]: val, edited: edited };
     dispatch(mergeWhitelist({ [prop]: val }));
@@ -730,7 +731,7 @@ export const updatePreset = (preset: OldPresetType | PresetType): PresetType => 
     main: { allRegions },
   } = store.getState();
   const regions =
-    hasKey(preset.whitelist, "regions") && preset.whitelist.regions instanceof Array
+    hasKey(preset.whitelist, "regions") && is<Array<string>>(preset.whitelist.regions)
       ? preset.whitelist.regions
       : allRegions;
   const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
