@@ -72,9 +72,9 @@
     "websocket-extensions": "^0.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -114,6 +114,9 @@
     "eslint-plugin-react": "^7.22.0",
     "patch-package": "^6.4.7",
     "prettier": "^2.2.1",
+    "react-app-rewired": "^2.1.8",
+    "ts-loader": "^8.3.0",
+    "ttypescript": "^1.5.12",
     "typed-firestore": "^1.1.0"
   }
 }
