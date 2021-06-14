@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import firebase from "../../app/slices/firebase/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { IconOptions } from "@rmwc/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { queue } from "../../app/snackbarQueue";
 import { selectDevice } from "../../app/slices/common/commonSlice";
@@ -111,27 +112,23 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const selectApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setApplyTheme(e.target.value.toLowerCase());
   };
-  const permissionIcon =
-    user.isAdmin && typeof userRoleIcons.admin === "object"
-      ? userRoleIcons.admin
-      : user.isEditor && typeof userRoleIcons.editor === "object"
-      ? userRoleIcons.editor
-      : user.isDesigner && typeof userRoleIcons.designer === "object"
-      ? userRoleIcons.designer
-      : {};
+  const permissionIcon = user.isAdmin
+    ? userRoleIcons.admin
+    : user.isEditor
+    ? userRoleIcons.editor
+    : user.isDesigner
+    ? userRoleIcons.designer
+    : null;
+  const sizedIcon =
+    permissionIcon && typeof permissionIcon === "object" && "strategy" in permissionIcon
+      ? ({
+          ...permissionIcon,
+          size: "xsmall",
+        } as IconOptions)
+      : permissionIcon;
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
-      <Badge
-        label={
-          <Icon
-            icon={{
-              ...permissionIcon,
-              size: "xsmall",
-            }}
-          />
-        }
-        className="user-icon material-icons"
-      />
+      <Badge label={<Icon icon={sizedIcon} />} className="user-icon material-icons" />
     ) : null;
   const userDisplay = user.email ? (
     <div className="settings-group">

@@ -26,6 +26,8 @@ import {
 } from "@rmwc/data-table";
 import { Checkbox } from "@rmwc/checkbox";
 import "./AuditEntry.scss";
+import { is } from "typescript-is";
+import { KeysetDoc } from "../../app/slices/firebase/types";
 
 type AuditEntryProps = {
   action: ActionType;
@@ -102,8 +104,12 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   ((property === "profile" || property === "colorway") &&
                     !isEqual(props.action.before[property], props.action.after[property])))
               ) {
-                const beforeProp = props.action.before[property] ? props.action.before[property] : "";
-                const afterProp = props.action.after[property] ? props.action.after[property] : "";
+                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.before[property]
+                  ? props.action.before[property]
+                  : "";
+                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = props.action.after[property]
+                  ? props.action.after[property]
+                  : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -122,13 +128,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (
-                  arrayProps.includes(property) &&
-                  beforeProp &&
-                  afterProp &&
-                  beforeProp instanceof Array &&
-                  afterProp instanceof Array
-                ) {
+                } else if (arrayProps.includes(property) && is<Array<any>>(beforeProp) && is<Array<any>>(afterProp)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -238,11 +238,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                     }
                     return null;
                   });
-                } else if (
-                  urlProps.includes(property) &&
-                  typeof beforeProp === "string" &&
-                  typeof afterProp === "string"
-                ) {
+                } else if (urlProps.includes(property) && is<string>(beforeProp) && is<string>(afterProp)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -274,11 +270,13 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "sales") {
-                  const beforeSales =
-                    typeof beforeProp === "object" && !(beforeProp instanceof Array) ? beforeProp.img : `${beforeProp}`;
-                  const afterSales =
-                    typeof afterProp === "object" && !(afterProp instanceof Array) ? afterProp.img : `${afterProp}`;
+                } else if (
+                  property === "sales" &&
+                  is<KeysetDoc["sales"]>(beforeProp) &&
+                  is<KeysetDoc["sales"]>(afterProp)
+                ) {
+                  const beforeSales = !is<string>(beforeProp) ? beforeProp.img : beforeProp;
+                  const afterSales = !is<string>(afterProp) ? afterProp.img : afterProp;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -295,7 +293,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                             </a>
                           </span>
                         </div>
-                        {typeof beforeProp === "object" && !(beforeProp instanceof Array) ? (
+                        {!is<string>(beforeProp) ? (
                           <div className="list-checkbox">
                             Third party: <Checkbox checked={beforeProp.thirdParty} disabled />
                           </div>
@@ -314,7 +312,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                             </a>
                           </span>
                         </div>
-                        {typeof afterProp === "object" && !(afterProp instanceof Array) ? (
+                        {!is<string>(afterProp) ? (
                           <div className="list-checkbox">
                             Third party: <Checkbox checked={afterProp.thirdParty} disabled />
                           </div>
@@ -342,7 +340,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && prop instanceof Array) {
+                } else if (arrayProps.includes(property) && is<Array<any>>(prop)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -386,7 +384,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableRow>
                     );
                   });
-                } else if (urlProps.includes(property) && typeof prop === "string") {
+                } else if (urlProps.includes(property) && is<string>(prop)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -399,7 +397,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (boolProps.includes(property) && typeof prop === "boolean") {
+                } else if (boolProps.includes(property) && is<boolean>(prop)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -408,8 +406,8 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "sales") {
-                  const sales = typeof prop === "object" && !(prop instanceof Array) ? prop.img : `${prop}`;
+                } else if (property === "sales" && is<KeysetDoc["sales"]>(prop)) {
+                  const sales = !is<string>(prop) ? prop.img : `${prop}`;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -422,7 +420,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                             </a>
                           </span>
                         </div>
-                        {typeof prop === "object" && !(prop instanceof Array) ? (
+                        {!is<string>(prop) ? (
                           <div className="list-checkbox">
                             Third party: <Checkbox checked={prop.thirdParty} disabled />
                           </div>
