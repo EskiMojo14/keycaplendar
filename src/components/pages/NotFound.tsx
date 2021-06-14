@@ -5,7 +5,7 @@ import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
 import { Footer } from "../common/Footer";
 import "./NotFound.scss";
-import { ReactComponent as Image } from "../../media/404.svg";
+import image from "../../media/404.svg";
 
 export const NotFound = () => {
   return (
@@ -18,7 +18,7 @@ export const NotFound = () => {
         </TopAppBarRow>
       </TopAppBar>
       <div className="message-container">
-        <Image className="image" />
+        <img src={image} className="image" />
         <Typography className="title" use="headline6" tag="h3">
           404: Page not found
         </Typography>
