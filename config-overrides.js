@@ -10,6 +10,7 @@ module.exports = function override(config, env) {
           options: {
             compilerOptions: {
               noEmit: false,
+              plugins: [{ transform: "typescript-is/lib/transform-inline/transformer" }],
             },
             compiler: "ttypescript",
           },

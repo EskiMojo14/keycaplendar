@@ -1,13 +1,14 @@
+import { is } from "typescript-is";
 import { typedFirestore } from "../firebase/firestore";
 import store from "../../store";
 import { queue } from "../../snackbarQueue";
 import { setAppPage, setDevice } from "./commonSlice";
-import { allPages, mainPages, pageTitle, urlPages } from "./constants";
-import { arrayEveryType, arrayIncludes } from "./functions";
+import { mainPages, pageTitle, urlPages } from "./constants";
+import { arrayIncludes } from "./functions";
 import { Page } from "./types";
 import { setURLEntry as setURLGuide } from "../guides/guidesSlice";
-import { historyTabs } from "../history/constants";
 import { setHistoryTab } from "../history/functions";
+import { HistoryTab } from "../history/types";
 import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
@@ -21,8 +22,8 @@ import {
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "../main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/functions";
 import { WhitelistType } from "../main/types";
-import { statsTabs } from "../statistics/constants";
 import { setStatisticsTab } from "../statistics/functions";
+import { StatsTab } from "../statistics/types";
 import { setURLEntry as setURLUpdate } from "../updates/updatesSlice";
 import { getLinkedFavorites } from "../user/functions";
 
@@ -66,7 +67,7 @@ export const getURLQuery = () => {
     const pageQuery = path || params.get("page");
     if (
       arrayIncludes(urlPages, pageQuery) ||
-      (arrayIncludes(allPages, pageQuery) && process.env.NODE_ENV === "development") ||
+      (is<Page>(pageQuery) && process.env.NODE_ENV === "development") ||
       (pageQuery === "favorites" && params.has("favoritesId"))
     ) {
       if (arrayIncludes(mainPages, pageQuery)) {
@@ -116,9 +117,7 @@ export const getURLQuery = () => {
         } else if (param === "profiles" || param === "shipped" || param === "vendors" || param === "regions") {
           const array = val.split(" ").map((item) => item.replace("-", " "));
           if (param === "shipped") {
-            if (
-              arrayEveryType<typeof whitelistShipped[number]>(array, (item) => arrayIncludes(whitelistShipped, item))
-            ) {
+            if (is<typeof whitelistShipped[number][]>(array)) {
               whitelistObj[param] = array;
             }
           } else {
@@ -167,13 +166,13 @@ export const getURLQuery = () => {
   }
   if (params.has("statisticsTab")) {
     const urlTab = params.get("statisticsTab");
-    if (urlTab && arrayIncludes(statsTabs, urlTab)) {
+    if (urlTab && is<StatsTab>(urlTab)) {
       setStatisticsTab(urlTab);
     }
   }
   if (params.has("historyTab")) {
     const urlTab = params.get("historyTab");
-    if (urlTab && arrayIncludes(historyTabs, urlTab)) {
+    if (urlTab && is<HistoryTab>(urlTab)) {
       setHistoryTab(urlTab);
     }
   }
@@ -226,7 +225,7 @@ export const setPage = (page: Page) => {
     guides: { urlEntry: urlGuide },
     updates: { urlEntry: urlUpdate },
   } = store.getState();
-  if (page !== appPage && !loading && arrayIncludes(allPages, page)) {
+  if (page !== appPage && !loading && is<Page>(page)) {
     dispatch(setTransition(true));
     setTimeout(() => {
       dispatch(setMainSearch(""));
