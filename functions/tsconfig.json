@@ -7,6 +7,11 @@
     "strict": true,
     "target": "esnext",
     "allowJs": true,
+    "plugins": [
+      {
+        "transform": "typescript-is/lib/transform-inline/transformer"
+      }
+    ]
   },
   "compileOnSave": true,
   "include": [

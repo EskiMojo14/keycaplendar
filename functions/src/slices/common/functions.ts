@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { is } from "typescript-is";
 import { DateSortKeys, SetType } from "../main/types";
 import { StatisticsSetType } from "../statistics/types";
 
@@ -88,8 +89,8 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>>(
     if (hoist && (x === hoist || y === hoist)) {
       return x === hoist ? -1 : 1;
     }
-    const c = typeof x === "string" ? x.toLowerCase() : x;
-    const d = typeof y === "string" ? y.toLowerCase() : y;
+    const c = is<string>(x) ? x.toLowerCase() : x;
+    const d = is<string>(y) ? y.toLowerCase() : y;
     if (c < d) {
       return descending ? 1 : -1;
     }
