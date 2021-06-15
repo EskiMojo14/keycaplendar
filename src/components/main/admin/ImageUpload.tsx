@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
+import { is } from "typescript-is";
 import { queue } from "../../../app/snackbarQueue";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -23,7 +24,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
 
   useEffect(() => {
     if (props.image) {
-      if (typeof props.image === "string") {
+      if (is<string>(props.image)) {
         setImageBase64(props.image);
         setHasImage(true);
       } else {

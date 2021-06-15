@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
@@ -89,7 +90,7 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
         return catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
-            typeof setProp === "string" && !setProp.includes("Q")
+            is<string>(setProp) && !setProp.includes("Q")
               ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
               : null;
           return setMonth && setMonth === month;
@@ -106,7 +107,7 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
         const length = catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
-            typeof setProp === "string" && !setProp.includes("Q")
+            is<string>(setProp) && !setProp.includes("Q")
               ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
               : null;
           return setMonth && setMonth === month && set.profile === profile;

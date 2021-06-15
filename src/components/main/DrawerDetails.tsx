@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import { DateTime } from "luxon";
+import { is } from "typescript-is";
 import { queue } from "../../app/snackbarQueue";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
@@ -126,7 +127,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
-    } else if (gbLaunch && typeof gbLaunch === "string") {
+    } else if (gbLaunch && is<string>(gbLaunch)) {
       gb = "GB expected " + gbLaunch + ".";
     } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
       gb = "Expected " + gbLaunch.toFormat("MMMM") + ".";
@@ -147,12 +148,12 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           const val = set[prop];
           if (val && Array.isArray(val)) {
             val.forEach((entry: any) => {
-              if (typeof entry === "string") {
+              if (is<string>(entry)) {
                 chips.push(entry);
               }
             });
           } else {
-            if (typeof val === "string") {
+            if (is<string>(val)) {
               chips.push(val);
             }
           }

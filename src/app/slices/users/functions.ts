@@ -1,3 +1,4 @@
+import { is } from "typescript-is";
 import firebase from "../firebase/firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
@@ -60,7 +61,7 @@ export const sortUsers = (usersParam?: UserType[], sortParam?: keyof UserType, r
     if (hasKey(a, sort) && hasKey(b, sort)) {
       const aVal = a[sort];
       const bVal = b[sort];
-      if (typeof aVal === "string" && typeof bVal === "string") {
+      if (is<string>(aVal) && is<string>(bVal)) {
         if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
           return aVal === "" ? 1 : -1;
         }

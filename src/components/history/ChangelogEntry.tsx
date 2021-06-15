@@ -1,8 +1,10 @@
 import React from "react";
 import { DateTime } from "luxon";
+import { is } from "typescript-is";
 import { auditProperties, auditPropertiesFormatted } from "../../app/slices/audit/constants";
 import { ActionSetType } from "../../app/slices/audit/types";
 import { arrayIncludes, hasKey, ordinal } from "../../app/slices/common/functions";
+import { KeysetDoc } from "../../app/slices/firebase/types";
 import { ProcessedPublicActionType } from "../../app/slices/history/types";
 import { VendorType } from "../../app/slices/main/types";
 import { Checkbox } from "@rmwc/checkbox";
@@ -70,7 +72,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
           if (dataObj.data && hasKey(dataObj.data, prop)) {
             const useData = dataObj.data[prop];
             let contents: React.ReactNode;
-            if (typeof useData === "string") {
+            if (is<string>(useData)) {
               const domain = useData.match(domainRegex);
               contents = (
                 <span className="highlight">
@@ -89,11 +91,11 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                   )}
                 </span>
               );
-            } else if (arrayIncludes(arrayProps, prop) && useData instanceof Array) {
+            } else if (arrayIncludes(arrayProps, prop) && is<string[]>(useData)) {
               contents = <span className="highlight">{useData.join(", ")}</span>;
-            } else if (arrayIncludes(boolProps, prop) && typeof useData === "boolean") {
+            } else if (arrayIncludes(boolProps, prop) && is<boolean>(useData)) {
               contents = <Checkbox checked={useData} disabled />;
-            } else if (prop === "sales" && typeof useData === "object" && !(useData instanceof Array)) {
+            } else if (prop === "sales" && is<KeysetDoc["sales"]>(useData)) {
               const domain = useData.img.match(domainRegex);
               contents = (
                 <>
@@ -110,7 +112,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                   </div>
                 </>
               );
-            } else if (prop === "vendors" && useData instanceof Array && useData === dataObj.data.vendors) {
+            } else if (prop === "vendors" && is<VendorType[]>(useData)) {
               contents = useData.map((vendor, index) => {
                 const domain = vendor.storeLink ? vendor.storeLink.match(domainRegex) : null;
                 return (
@@ -146,7 +148,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
               <DataTableRow key={prop}>
                 <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
                 <DataTableCell
-                  hasFormControl={arrayIncludes(boolProps, prop) && typeof useData === "boolean"}
+                  hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(useData)}
                   className={props.action.action === "created" ? "after" : "before"}
                 >
                   {contents}
@@ -162,7 +164,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
           const beforeData = dataObj.before[prop];
           const afterData = dataObj.after[prop];
           let contents: { before: React.ReactNode; after: React.ReactNode } = { before: null, after: null };
-          if (typeof beforeData === "string" && typeof afterData === "string") {
+          if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);
             const afterDomain = afterData.match(domainRegex);
             contents = {
@@ -203,44 +205,40 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                 </span>
               ),
             };
-          } else if (arrayIncludes(arrayProps, prop) && beforeData instanceof Array && afterData instanceof Array) {
+          } else if (arrayIncludes(arrayProps, prop) && is<string[]>(beforeData) && is<string[]>(afterData)) {
             contents = {
               before: <span className="highlight">{beforeData.join(", ")}</span>,
               after: <span className="highlight">{afterData.join(", ")}</span>,
             };
-          } else if (
-            arrayIncludes(boolProps, prop) &&
-            typeof beforeData === "boolean" &&
-            typeof afterData === "boolean"
-          ) {
+          } else if (arrayIncludes(boolProps, prop) && is<boolean>(beforeData) && is<boolean>(afterData)) {
             contents = {
               before: <Checkbox checked={beforeData} disabled />,
               after: <Checkbox checked={afterData} disabled />,
             };
-          } else if (
-            prop === "sales" &&
-            typeof beforeData === "object" &&
-            !(beforeData instanceof Array) &&
-            typeof afterData === "object" &&
-            !(afterData instanceof Array)
-          ) {
-            const beforeDomain = beforeData.img.match(domainRegex);
-            const afterDomain = afterData.img.match(domainRegex);
+          } else if (prop === "sales" && is<KeysetDoc["sales"]>(beforeData) && is<KeysetDoc["sales"]>(afterData)) {
+            const beforeDomain = (is<string>(beforeData) ? beforeData : beforeData.img).match(domainRegex);
+            const afterDomain = (is<string>(afterData) ? afterData : afterData.img).match(domainRegex);
             contents = {
               before: (
                 <>
                   <div>
                     <span className="highlight">
                       Image:{" "}
-                      <a href={beforeData.img} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={is<string>(afterData) ? afterData : afterData.img}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {beforeDomain ? beforeDomain[0] : null}
                       </a>
                     </span>
                   </div>
-                  <div className="list-checkbox">
-                    <span className="highlight">Third party:</span>{" "}
-                    <Checkbox checked={beforeData.thirdParty} disabled />
-                  </div>
+                  {is<string>(beforeData) ? null : (
+                    <div className="list-checkbox">
+                      <span className="highlight">Third party:</span>{" "}
+                      <Checkbox checked={beforeData.thirdParty} disabled />
+                    </div>
+                  )}
                 </>
               ),
               after: (
@@ -248,24 +246,25 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
                   <div>
                     <span className="highlight">
                       Image:{" "}
-                      <a href={afterData.img} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={is<string>(afterData) ? afterData : afterData.img}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {afterDomain ? afterDomain[0] : null}
                       </a>
                     </span>
                   </div>
-                  <div className="list-checkbox">
-                    <span className="highlight">Third party:</span> <Checkbox checked={afterData.thirdParty} disabled />
-                  </div>
+                  {is<string>(afterData) ? null : (
+                    <div className="list-checkbox">
+                      <span className="highlight">Third party:</span>{" "}
+                      <Checkbox checked={afterData.thirdParty} disabled />
+                    </div>
+                  )}
                 </>
               ),
             };
-          } else if (
-            prop === "vendors" &&
-            beforeData instanceof Array &&
-            beforeData === dataObj.before.vendors &&
-            afterData instanceof Array &&
-            afterData === dataObj.after.vendors
-          ) {
+          } else if (prop === "vendors" && is<VendorType[]>(beforeData) && is<VendorType[]>(afterData)) {
             const displayVendor = (vendor: VendorType, index: number) => {
               const domain = vendor.storeLink ? vendor.storeLink.match(domainRegex) : null;
               return (
@@ -305,13 +304,13 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
             <DataTableRow key={prop}>
               <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
               <DataTableCell
-                hasFormControl={arrayIncludes(boolProps, prop) && typeof beforeData === "boolean"}
+                hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(beforeData)}
                 className="before"
               >
                 {contents.before}
               </DataTableCell>
               <DataTableCell
-                hasFormControl={arrayIncludes(boolProps, prop) && typeof afterData === "boolean"}
+                hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(afterData)}
                 className="after"
               >
                 {contents.after}

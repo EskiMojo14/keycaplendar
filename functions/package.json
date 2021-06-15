@@ -3,7 +3,7 @@
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "lint": "eslint **/*.ts --parser-options={tsconfigRootDir:null}",
-    "build": "npm run lint && tsc",
+    "build": "npm run lint && ttsc",
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
@@ -23,7 +23,8 @@
     "mathjs": "^9.3.0",
     "nanoid": "^3.1.23",
     "patch-package": "^6.4.7",
-    "sharp": "^0.27.2"
+    "sharp": "^0.27.2",
+    "typescript-is": "^0.18.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.1",
@@ -37,6 +38,7 @@
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-promise": "^4.3.1",
     "firebase-functions-test": "^0.2.0",
+    "ttypescript": "^1.5.12",
     "typed-admin-firestore": "^1.2.2",
     "typescript": "^4.2.3"
   },

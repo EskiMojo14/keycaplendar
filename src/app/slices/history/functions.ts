@@ -1,4 +1,5 @@
 import isEqual from "lodash.isequal";
+import { is } from "typescript-is";
 import firebase from "../firebase/firebase";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
@@ -55,7 +56,7 @@ export const processActions = (actions: PublicActionType[]) => {
         const afterProp = after[prop];
         if (
           isEqual(beforeProp, afterProp) ||
-          (!(typeof beforeProp === "boolean") && !beforeProp && !(typeof afterProp === "boolean") && !afterProp)
+          (!is<boolean>(beforeProp) && !beforeProp && !is<boolean>(afterProp) && !afterProp)
         ) {
           delete before[prop];
           delete after[prop];

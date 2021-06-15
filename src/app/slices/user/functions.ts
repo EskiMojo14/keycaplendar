@@ -1,10 +1,11 @@
 import firebase from "../firebase/firebase";
 import { typedFirestore } from "../firebase/firestore";
+import { is } from "typescript-is";
 import debounce from "lodash.debounce";
 import { queue } from "../../snackbarQueue";
 import store from "../../store";
 import { UserId } from "../firebase/types";
-import { addOrRemove, arrayEveryType, hasKey } from "../common/functions";
+import { addOrRemove, hasKey } from "../common/functions";
 import { setLinkedFavorites } from "../main/mainSlice";
 import { whitelistParams } from "../main/constants";
 import { filterData, selectPreset, updatePreset } from "../main/functions";
@@ -50,13 +51,13 @@ export const getUserPreferences = (id: string) => {
               dispatch(setFavoritesId(favoritesId));
             }
 
-            if (favorites instanceof Array) {
+            if (is<string[]>(favorites)) {
               dispatch(setFavorites(favorites));
             }
-            if (bought instanceof Array) {
+            if (is<string[]>(bought)) {
               dispatch(setBought(bought));
             }
-            if (hidden instanceof Array) {
+            if (is<string[]>(hidden)) {
               dispatch(setHidden(hidden));
             }
 
@@ -75,7 +76,7 @@ export const getUserPreferences = (id: string) => {
               }
             }
 
-            if (typeof syncSettings === "boolean") {
+            if (is<boolean>(syncSettings)) {
               if (syncSettings !== settings.syncSettings) {
                 setSyncSettings(syncSettings, false);
               }
@@ -254,11 +255,7 @@ export const getLinkedFavorites = (id: string) => {
   cloudFn({ id })
     .then((result) => {
       const data = result.data;
-      if (
-        hasKey(data, "array") &&
-        data.array instanceof Array &&
-        arrayEveryType<string>(data.array, (item) => typeof item === "string")
-      ) {
+      if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
         filterData();
       }
