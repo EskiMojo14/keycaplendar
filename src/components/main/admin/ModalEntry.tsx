@@ -44,6 +44,7 @@ import { Tooltip } from "@rmwc/tooltip";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import "./ModalEntry.scss";
+import { is } from "typescript-is";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
@@ -180,14 +181,14 @@ export const ModalCreate = (props: ModalCreateProps) => {
     if (hasKey(fields, prop)) {
       const original = fields[prop];
       if (original) {
-        if (original instanceof Array) {
+        if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
           setFields((fields) => {
             return { ...fields, [prop]: array };
           });
           setFocused("");
-        } else if (typeof original === "string") {
+        } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
           setFields((fields) => {
@@ -1033,7 +1034,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       icDate: set.icDate,
       details: set.details,
       notes: set.notes ? set.notes : "",
-      gbMonth: typeof set.gbMonth === "boolean" ? set.gbMonth : false,
+      gbMonth: is<boolean>(set.gbMonth) ? set.gbMonth : false,
       gbLaunch: gbLaunch,
       gbEnd: set.gbEnd,
       shipped: set.shipped ? set.shipped : false,
@@ -1120,14 +1121,14 @@ export const ModalEdit = (props: ModalEditProps) => {
     if (hasKey(fields, prop)) {
       const original = fields[prop];
       if (original) {
-        if (original instanceof Array) {
+        if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
           setFields((fields) => {
             return { ...fields, [prop]: array };
           });
           setFocused("");
-        } else if (typeof original === "string") {
+        } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
           setFields((fields) => {

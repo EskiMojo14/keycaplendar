@@ -51,13 +51,13 @@ export const getUserPreferences = (id: string) => {
               dispatch(setFavoritesId(favoritesId));
             }
 
-            if (is<Array<string>>(favorites)) {
+            if (is<string[]>(favorites)) {
               dispatch(setFavorites(favorites));
             }
-            if (is<Array<string>>(bought)) {
+            if (is<string[]>(bought)) {
               dispatch(setBought(bought));
             }
-            if (is<Array<string>>(hidden)) {
+            if (is<string[]>(hidden)) {
               dispatch(setHidden(hidden));
             }
 

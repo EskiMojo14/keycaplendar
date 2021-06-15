@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
+import { is } from "typescript-is";
 import { useAppSelector } from "../../app/hooks";
 import { selectDevice } from "../../app/slices/common/commonSlice";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../app/slices/common/functions";
@@ -106,15 +107,14 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const handleChange = (name: string, prop: string) => {
     if (hasKey(mainWhitelist, prop)) {
       const original = mainWhitelist[prop];
-      const edited =
-        typeof original === "boolean"
-          ? !original
-          : original instanceof Array
-          ? alphabeticalSort(addOrRemove(original, name))
-          : original === "include"
-          ? "exclude"
-          : "include";
-      if (typeof edited === "boolean") {
+      const edited = is<boolean>(original)
+        ? !original
+        : is<string[]>(original)
+        ? alphabeticalSort(addOrRemove(original, name))
+        : original === "include"
+        ? "exclude"
+        : "include";
+      if (is<boolean>(edited)) {
         if (prop === "favorites" && edited && mainWhitelist.hidden) {
           setWhitelistMerge({ hidden: false, favorites: edited });
         } else if (prop === "hidden" && edited && mainWhitelist.favorites) {
@@ -164,7 +164,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         const whitelist = mainWhitelist;
         if (hasKey(whitelist, plural)) {
           const array = whitelist[plural];
-          if (array instanceof Array && array.length === 1) {
+          if (is<string[]>(array) && array.length === 1) {
             params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
           } else {
             params.delete(param);

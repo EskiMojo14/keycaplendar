@@ -128,7 +128,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && is<Array<any>>(beforeProp) && is<Array<any>>(afterProp)) {
+                } else if (arrayProps.includes(property) && is<any[]>(beforeProp) && is<any[]>(afterProp)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -340,7 +340,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && is<Array<any>>(prop)) {
+                } else if (arrayProps.includes(property) && is<any[]>(prop)) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>

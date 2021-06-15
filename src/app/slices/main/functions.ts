@@ -178,7 +178,7 @@ export const testSets = (setsParam?: SetType[]) => {
         const value = set[key];
         if (is<string>(value)) {
           testValue(set, key, value);
-        } else if (is<Array<any>>(value)) {
+        } else if (is<any[]>(value)) {
           value.forEach((item: string | VendorType) => {
             if (is<string>(item)) {
               testValue(set, key, item);
@@ -641,7 +641,7 @@ export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clea
   const edited = Object.keys(partialWhitelist).filter((key) => {
     if (hasKey(partialWhitelist, key)) {
       const value = partialWhitelist[key];
-      return value && is<Array<any>>(value) && value.length > 0;
+      return value && is<any[]>(value) && value.length > 0;
     } else {
       return false;
     }
@@ -687,7 +687,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
     common: { page },
     main: { whitelist: mainWhitelist, sort, sortOrder, search, allSets },
   } = store.getState();
-  if (is<Array<string>>(mainWhitelist.edited)) {
+  if (is<string[]>(mainWhitelist.edited)) {
     const edited = uniqueArray([...(mainWhitelist.edited || []), prop]);
     const whitelist = { ...mainWhitelist, [prop]: val, edited: edited };
     dispatch(mergeWhitelist({ [prop]: val }));
@@ -731,7 +731,7 @@ export const updatePreset = (preset: OldPresetType | PresetType): PresetType => 
     main: { allRegions },
   } = store.getState();
   const regions =
-    hasKey(preset.whitelist, "regions") && is<Array<string>>(preset.whitelist.regions)
+    hasKey(preset.whitelist, "regions") && is<string[]>(preset.whitelist.regions)
       ? preset.whitelist.regions
       : allRegions;
   const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
