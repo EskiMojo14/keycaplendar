@@ -1,5 +1,6 @@
 import React from "react";
 import { DateTime } from "luxon";
+import { is } from "typescript-is";
 import { SetType } from "../../../../app/slices/main/types";
 import { ordinal } from "../../../../app/slices/common/functions";
 import { Card } from "@rmwc/card";
@@ -46,7 +47,7 @@ export const ViewCompact = (props: ViewCompactProps) => {
             } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMM`)}${
               gbEnd.year !== today.year || gbLaunch.year !== gbEnd.year ? gbEnd.toFormat("\xa0yyyy") : ""
             }`;
-          } else if (gbLaunch && gbLaunch instanceof String) {
+          } else if (gbLaunch && is<string>(gbLaunch)) {
             subtitle = "GB expected " + gbLaunch;
           } else if (set.gbMonth && gbLaunch && gbLaunch instanceof DateTime) {
             subtitle = `GB expected ${
