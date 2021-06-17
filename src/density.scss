@@ -259,6 +259,9 @@
     &--fixed-adjust {
       padding-top: top-app-bar.$row-height + $diff;
     }
+    .mdc-linear-progress {
+      top: top-app-bar.$row-height + $diff - 4px;
+    }
   }
   .main.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + $diff);
