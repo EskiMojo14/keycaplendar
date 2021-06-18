@@ -4,7 +4,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { markdownIcons } from "./markdownConstants";
 
 // define the custom command handlers
-function customPrefix(initialState: TextState, api: TextApi, prefix: string) {
+const customPrefix = (initialState: TextState, api: TextApi, prefix: string) => {
   // Adjust the selection to encompass the whole word if the caret is inside one
   const newSelectionRange = MarkdownUtil.selectWord({
     text: initialState.text,
@@ -19,10 +19,10 @@ function customPrefix(initialState: TextState, api: TextApi, prefix: string) {
     start: state2.selection.end,
     end: state2.selection.end,
   });
-}
+};
 
 // define the custom command handlers
-function customSuffix(initialState: TextState, api: TextApi, suffix: string) {
+const customSuffix = (initialState: TextState, api: TextApi, suffix: string) => {
   // Adjust the selection to encompass the whole word if the caret is inside one
   const newSelectionRange = MarkdownUtil.selectWord({
     text: initialState.text,
@@ -37,7 +37,7 @@ function customSuffix(initialState: TextState, api: TextApi, suffix: string) {
     start: state2.selection.end,
     end: state2.selection.end,
   });
-}
+};
 
 export const headerOneCommand: Command = {
   icon: Object.assign(() => <IconButton tag="div" icon={markdownIcons.h1} role="img" aria-label="Add header one" />, {

@@ -293,7 +293,7 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
       return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
     })
   ).filter(Boolean);
-  setMonths.sort(function (a, b) {
+  setMonths.sort((a, b) => {
     if (a < b) {
       return -1;
     }

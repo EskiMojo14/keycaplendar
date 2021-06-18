@@ -397,7 +397,7 @@ const sortData = (sortParam?: SortType, sortOrderParam?: SortOrderType, groupsPa
   const groups = groupsParam || setGroups;
 
   const array = [...groups];
-  array.sort(function (x, y) {
+  array.sort((x, y) => {
     const a = x.title;
     const b = y.title;
     if (arrayIncludes(dateSorts, sort)) {
@@ -465,7 +465,7 @@ const createGroups = (
   };
   const groups = uniqueArray(createGroups(sets));
 
-  groups.sort(function (a, b) {
+  groups.sort((a, b) => {
     if (arrayIncludes(dateSorts, sort)) {
       const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
       const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
