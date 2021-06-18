@@ -17,9 +17,7 @@ const storageRef = storage.ref();
  * @returns Whether `obj` has the specified `key`.
  */
 
-export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
-  return key in obj;
-}
+export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.
@@ -28,9 +26,7 @@ export function hasKey<O>(obj: O, key: keyof any): key is keyof O {
  * @returns Whether the item is contained in the array.
  */
 
-export function arrayIncludes<T>(arr: T[] | Readonly<T[]>, item: any): item is T {
-  return arr.includes(item);
-}
+export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
 
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
@@ -39,15 +35,11 @@ export function arrayIncludes<T>(arr: T[] | Readonly<T[]>, item: any): item is T
  * @returns If all items meet the callback requirement.
  */
 
-export function arrayEveryType<T>(arr: any[], callback: (item: any) => boolean): arr is T[] {
-  return arr.every(callback);
-}
+export const arrayEveryType = <T>(arr: any[], callback: (item: any) => boolean): arr is T[] => arr.every(callback);
 
 /** Merge object and modify specified keys. */
 
-export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => {
-  return { ...obj, ...obj2 };
-};
+export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
 
 /**
  * Remove all duplicate values within an array.
@@ -55,9 +47,8 @@ export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => {
  * @returns `array` with only unique values.
  */
 
-export function uniqueArray<T>(array: T[]): T[] {
-  return Array.from(new Set(array));
-}
+export const uniqueArray = <T extends string | number>(arr: T[]): T[] =>
+  arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array.
@@ -66,7 +57,7 @@ export function uniqueArray<T>(array: T[]): T[] {
  * @returns `array` with element added or removed.
  */
 
-export function addOrRemove<T>(array: T[], value: T): T[] {
+export const addOrRemove = <T>(array: T[], value: T): T[] => {
   const newArray: any[] = [...array];
   const index: number = newArray.indexOf(value);
 
@@ -76,7 +67,7 @@ export function addOrRemove<T>(array: T[], value: T): T[] {
     newArray.splice(index, 1);
   }
   return newArray;
-}
+};
 
 /**
  * Sorts an array of strings in alphabetical order.
@@ -85,7 +76,7 @@ export function addOrRemove<T>(array: T[], value: T): T[] {
  * @returns `array` sorted alphabetically in ascending or descending order.
  */
 
-export function alphabeticalSort(array: string[], descending = false) {
+export const alphabeticalSort = (array: string[], descending = false) => {
   array.sort((a, b) => {
     const x = a.toLowerCase();
     const y = b.toLowerCase();
@@ -98,7 +89,7 @@ export function alphabeticalSort(array: string[], descending = false) {
     return 0;
   });
   return array;
-}
+};
 
 /**
  * Sorts an array of objects by a specified prop, in alphabetical order.
@@ -109,12 +100,12 @@ export function alphabeticalSort(array: string[], descending = false) {
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export function alphabeticalSortProp<O extends Record<string, unknown>>(
+export const alphabeticalSortProp = <O extends Record<string, unknown>>(
   array: O[],
   prop: keyof O,
   descending = false,
   hoist?: O[keyof O]
-) {
+) => {
   array.sort((a, b) => {
     const x = a[prop];
     const y = b[prop];
@@ -132,7 +123,7 @@ export function alphabeticalSortProp<O extends Record<string, unknown>>(
     return 0;
   });
   return array;
-}
+};
 
 /**
  * Truncates a string to a specified length.
@@ -151,9 +142,7 @@ export const truncate = (str: string, num: number) => {
  * @returns `str` with first character capitalised.
  */
 
-export const capitalise = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+export const capitalise = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 /**
  * Convert a string to camelCase.
@@ -207,9 +196,7 @@ export const replaceFunction = (str: string) => {
  * @returns `str` after being replaced, normalised, and camelCased.
  */
 
-export const formatFileName = (str: string) => {
-  return camelise(normalise(replaceFunction(str)));
-};
+export const formatFileName = (str: string) => camelise(normalise(replaceFunction(str)));
 
 /**
  * Counts occurrences of specified value within provided array.
@@ -218,9 +205,7 @@ export const formatFileName = (str: string) => {
  * @returns Amount of items within `arr` equal to `val`.
  */
 
-export const countInArray = (arr: any[], val: any) => {
-  return arr.reduce((count, item) => count + (item === val), 0);
-};
+export const countInArray = (arr: any[], val: any) => arr.reduce((count, item) => count + (item === val), 0);
 
 /**
  * Moves an item within an array to a new position.
