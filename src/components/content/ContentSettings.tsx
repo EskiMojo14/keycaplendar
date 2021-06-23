@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../app/slices/firebase/firebase";
+import firebase from "@s/firebase/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { IconOptions } from "@rmwc/types";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { queue } from "../../app/snackbarQueue";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { useBoolStates } from "../../app/slices/common/functions";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { useBoolStates } from "@s/common/functions";
 import {
   selectBottomNav,
   selectSettings,
   selectShareNameLoading,
   selectSyncSettings,
   setShareNameLoading,
-} from "../../app/slices/settings/settingsSlice";
+} from "@s/settings/settingsSlice";
 import {
   setApplyTheme,
   setBottomNav,
@@ -25,9 +25,10 @@ import {
   setManualTheme,
   setSyncSettings,
   setToTimeTheme,
-} from "../../app/slices/settings/functions";
-import { selectShareName, selectUser, setUser } from "../../app/slices/user/userSlice";
-import { userRoleIcons } from "../../app/slices/users/constants";
+} from "@s/settings/functions";
+import { selectShareName, selectUser, setUser } from "@s/user/userSlice";
+import { userRoleIcons } from "@s/users/constants";
+import { debouncedSyncShareName } from "@s/user/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -49,11 +50,10 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "../common/Footer";
-import { DialogDelete } from "../settings/DialogDelete";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { Footer } from "@c/common/Footer";
+import { DialogDelete } from "@c/settings/DialogDelete";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./ContentSettings.scss";
-import { debouncedSyncShareName } from "../../app/slices/user/functions";
 
 type ContentSettingsProps = {
   openNav: () => void;

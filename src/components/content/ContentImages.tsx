@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import firebase from "../../app/slices/firebase/firebase";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import {
-  addOrRemove,
-  closeModal,
-  hasKey,
-  iconObject,
-  openModal,
-  useBoolStates,
-} from "../../app/slices/common/functions";
+import firebase from "@s/firebase/firebase";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/common/functions";
 import {
   selectCheckedImages,
   selectCurrentFolder,
@@ -26,13 +19,13 @@ import {
   setCheckedImages,
   setDetailImage,
   setDetailMetadata,
-} from "../../app/slices/images/imagesSlice";
-import { ImageObj } from "../../app/slices/images/constructors";
-import { createSetImageList, getFolders, listAll, setFolder } from "../../app/slices/images/functions";
-import { ImageType } from "../../app/slices/images/types";
-import { selectAllSets } from "../../app/slices/main/mainSlice";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { queue } from "../../app/snackbarQueue";
+} from "@s/images/imagesSlice";
+import { ImageObj } from "@s/images/constructors";
+import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
+import { ImageType } from "@s/images/types";
+import { selectAllSets } from "@s/main/mainSlice";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -58,12 +51,12 @@ import {
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { DrawerDetails } from "../images/DrawerDetails";
-import { DrawerSearch } from "../images/DrawerSearch";
-import { DialogDelete } from "../images/DialogDelete";
-import { Footer } from "../common/Footer";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
-import { ConditionalWrapper } from "../util/ConditionalWrapper";
+import { DrawerDetails } from "@c/images/DrawerDetails";
+import { DrawerSearch } from "@c/images/DrawerSearch";
+import { DialogDelete } from "@c/images/DialogDelete";
+import { Footer } from "@c/common/Footer";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
+import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
 import "./ContentImages.scss";
 
 const storage = firebase.storage();

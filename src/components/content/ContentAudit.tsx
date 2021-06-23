@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import classNames from "classnames";
-import { typedFirestore } from "../../app/slices/firebase/firestore";
-import { ChangelogId } from "../../app/slices/firebase/types";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { typedFirestore } from "@s/firebase/firestore";
+import { ChangelogId } from "@s/firebase/types";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import {
   selectAllActions,
   selectFilterAction,
@@ -12,15 +12,15 @@ import {
   selectLoading,
   setFilterAction,
   setFilterUser,
-} from "../../app/slices/audit/auditSlice";
-import { getActions, filterActions } from "../../app/slices/audit/functions";
-import { ActionType } from "../../app/slices/audit/types";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { arrayIncludes, closeModal, openModal } from "../../app/slices/common/functions";
-import { Keyset } from "../../app/slices/main/constructors";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { queue } from "../../app/snackbarQueue";
+} from "@s/audit/auditSlice";
+import { getActions, filterActions } from "@s/audit/functions";
+import { ActionType } from "@s/audit/types";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { arrayIncludes, closeModal, openModal } from "@s/common/functions";
+import { Keyset } from "@s/main/constructors";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { queue } from "~/app/snackbarQueue";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -35,11 +35,11 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { DrawerAuditFilter } from "../audit/DrawerAuditFilter";
-import { DialogAuditDelete } from "../audit/DialogAuditDelete";
-import { AuditEntry } from "../audit/AuditEntry";
-import { ConditionalWrapper } from "../util/ConditionalWrapper";
-import { Footer } from "../common/Footer";
+import { DrawerAuditFilter } from "@c/audit/DrawerAuditFilter";
+import { DialogAuditDelete } from "@c/audit/DialogAuditDelete";
+import { AuditEntry } from "@c/audit/AuditEntry";
+import { Footer } from "@c/common/Footer";
+import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
 import "./ContentAudit.scss";
 
 type ContentAuditProps = {
