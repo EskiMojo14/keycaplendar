@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { iconObject } from "../../app/slices/common/functions";
-import { ImageType } from "../../app/slices/images/types";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { iconObject } from "@s/common/functions";
+import { ImageType } from "@s/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
