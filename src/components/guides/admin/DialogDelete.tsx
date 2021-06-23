@@ -1,8 +1,8 @@
 import React from "react";
-import { typedFirestore } from "../../../app/slices/firebase/firestore";
-import { GuideId } from "../../../app/slices/firebase/types";
-import { queue } from "../../../app/snackbarQueue";
-import { GuideEntryType } from "../../../app/slices/guides/types";
+import { queue } from "~/app/snackbarQueue";
+import { typedFirestore } from "@s/firebase/firestore";
+import { GuideId } from "@s/firebase/types";
+import { GuideEntryType } from "@s/guides/types";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 
 type DialogDeleteProps = {

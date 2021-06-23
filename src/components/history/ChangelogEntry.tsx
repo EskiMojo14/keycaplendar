@@ -1,12 +1,12 @@
 import React from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { auditProperties, auditPropertiesFormatted } from "../../app/slices/audit/constants";
-import { ActionSetType } from "../../app/slices/audit/types";
-import { arrayIncludes, hasKey, ordinal } from "../../app/slices/common/functions";
-import { KeysetDoc } from "../../app/slices/firebase/types";
-import { ProcessedPublicActionType } from "../../app/slices/history/types";
-import { VendorType } from "../../app/slices/main/types";
+import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
+import { ActionSetType } from "@s/audit/types";
+import { arrayIncludes, hasKey, ordinal } from "@s/common/functions";
+import { KeysetDoc } from "@s/firebase/types";
+import { ProcessedPublicActionType } from "@s/history/types";
+import { VendorType } from "@s/main/types";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,

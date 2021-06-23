@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { iconObject } from "../../app/slices/common/functions";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
-import { formattedVisibility, visibilityIcons, visibilityVals } from "../../app/slices/guides/constants";
-import { GuideEntryType } from "../../app/slices/guides/types";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { iconObject } from "@s/common/functions";
+import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
+import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
+import { GuideEntryType } from "@s/guides/types";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -19,7 +19,7 @@ import {
   ListItemSecondaryText,
   ListItemText,
 } from "@rmwc/list";
-import { BoolWrapper } from "../util/ConditionalWrapper";
+import { BoolWrapper } from "@c/util/ConditionalWrapper";
 import "./EntriesList.scss";
 
 type EntriesDrawerProps = {

@@ -1,16 +1,16 @@
 import React from "react";
-import { queue } from "../../app/snackbarQueue";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { iconObject } from "../../app/slices/common/functions";
-import { selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
-import { formattedVisibility, visibilityIcons } from "../../app/slices/guides/constants";
-import { GuideEntryType } from "../../app/slices/guides/types";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { queue } from "~/app/snackbarQueue";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { iconObject } from "@s/common/functions";
+import { selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
+import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { GuideEntryType } from "@s/guides/types";
+import { selectUser } from "@s/user/userSlice";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import { CustomReactMarkdown } from "../util/ReactMarkdown";
+import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
 import "./GuideEntry.scss";
 
 type GuideEntryProps = {
