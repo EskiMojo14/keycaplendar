@@ -2,9 +2,11 @@ import React from "react";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import { DateTime } from "luxon";
-import { auditProperties } from "../../app/slices/audit/constants";
-import { ActionType } from "../../app/slices/audit/types";
-import { alphabeticalSortProp, hasKey, ordinal } from "../../app/slices/common/functions";
+import { is } from "typescript-is";
+import { auditProperties } from "@s/audit/constants";
+import { ActionType } from "@s/audit/types";
+import { alphabeticalSortProp, hasKey, ordinal } from "@s/common/functions";
+import { KeysetDoc } from "@s/firebase/types";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,
@@ -26,8 +28,6 @@ import {
 } from "@rmwc/data-table";
 import { Checkbox } from "@rmwc/checkbox";
 import "./AuditEntry.scss";
-import { is } from "typescript-is";
-import { KeysetDoc } from "../../app/slices/firebase/types";
 
 type AuditEntryProps = {
   action: ActionType;

@@ -1,5 +1,5 @@
 import React from "react";
-import { iconObject } from "../../app/slices/common/functions";
+import { iconObject } from "@s/common/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { Tooltip } from "@rmwc/tooltip";
