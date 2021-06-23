@@ -1,4 +1,4 @@
-import { KeysetDoc } from "../firebase/types";
+import { KeysetDoc } from "@s/firebase/types";
 
 export type ActionSetType = Partial<KeysetDoc>;
 

@@ -1,8 +1,8 @@
 import { is } from "typescript-is";
-import firebase from "../firebase/firebase";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { hasKey } from "../common/functions";
+import firebase from "@s/firebase/firebase";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { hasKey } from "@s/common/functions";
 import { UserType } from "./types";
 import {
   setAllUsers,

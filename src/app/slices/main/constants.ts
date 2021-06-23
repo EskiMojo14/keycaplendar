@@ -1,7 +1,7 @@
-/** Default sorts for each page. */
-
-import { MainPage, Page } from "../common/types";
+import { MainPage, Page } from "@s/common/types";
 import { SortOrderType, SortType } from "./types";
+
+/** Default sorts for each page. */
 
 export const pageSort: Record<MainPage, SortType> = {
   calendar: "gbLaunch",

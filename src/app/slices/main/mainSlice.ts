@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../../store";
-import { uniqueArray } from "../common/functions";
+import type { RootState } from "~/app/store";
+import { uniqueArray } from "@s/common/functions";
 import { Preset } from "./constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 

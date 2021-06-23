@@ -1,7 +1,7 @@
-import firebase from "../firebase/firebase";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "../common/functions";
+import firebase from "@s/firebase/firebase";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "@s/common/functions";
 import { setAllTags, setEntries, setLoading } from "./guidesSlice";
 import { GuideEntryType } from "./types";
 

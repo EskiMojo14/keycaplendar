@@ -1,8 +1,8 @@
-import type { Overwrite } from "../common/types";
-import type { GuideEntryType } from "../guides/types";
-import type { OldPresetType, PresetType, SetType } from "../main/types";
-import type { Settings } from "../settings/types";
-import type { UpdateEntryType } from "../updates/types";
+import type { Overwrite } from "@s/common/types";
+import type { GuideEntryType } from "@s/guides/types";
+import type { OldPresetType, PresetType, SetType } from "@s/main/types";
+import type { Settings } from "@s/settings/types";
+import type { UpdateEntryType } from "@s/updates/types";
 
 type FirestoreCollection<K, V, S = Record<string, never>> = {
   key: K;
