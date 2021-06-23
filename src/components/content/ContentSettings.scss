@@ -4,7 +4,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "@material/theme/color-palette" as palette;
-@use "../../util";
+@use "~/util";
 
 .settings-container {
   display: flex;

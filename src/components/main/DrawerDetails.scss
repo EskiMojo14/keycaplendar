@@ -2,7 +2,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 @use "@material/typography/_index" as typography;
-@use "../../util";
+@use "~/util";
 
 .mdc-drawer.details-drawer {
   justify-content: stretch;

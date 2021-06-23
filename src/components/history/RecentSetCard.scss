@@ -1,7 +1,7 @@
 @use "@material/animation/_index" as animation;
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
-@use "../../util";
+@use "~/util";
 
 .set-changelog {
   overflow: hidden;

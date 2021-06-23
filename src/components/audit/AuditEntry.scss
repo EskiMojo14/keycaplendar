@@ -1,5 +1,5 @@
 @use "@material/theme/color-palette" as palette;
-@use "../../util";
+@use "~/util";
 
 .log .rmwc-collapsible-list {
   @include util.divider-border(bottom);

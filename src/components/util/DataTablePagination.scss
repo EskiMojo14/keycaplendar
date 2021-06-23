@@ -1,6 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/typography/_index" as typography;
-@use "../../util";
+@use "~/util";
 
 .mdc-data-table__pagination {
   @include typography.typography(body2);
