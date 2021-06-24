@@ -1,7 +1,7 @@
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { typedFirestore } from "../firebase/firestore";
-import { UpdateId } from "../firebase/types";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { typedFirestore } from "@s/firebase/firestore";
+import { UpdateId } from "@s/firebase/types";
 import { setEntries, setLoading } from "./updatesSlice";
 import { UpdateEntryType } from "./types";
 

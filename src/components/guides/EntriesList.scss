@@ -1,6 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/top-app-bar/_index" as top-app-bar;
-@use "../../util";
+@use "~/util";
 
 .entries,
 .entries-drawer .entries {

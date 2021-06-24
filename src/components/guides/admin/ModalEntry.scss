@@ -1,5 +1,5 @@
 @use "@material/rtl/_index" as rtl;
-@use "../../../util";
+@use "~/util";
 
 .mdc-drawer.drawer-right.guide-entry-modal {
   width: 480px;

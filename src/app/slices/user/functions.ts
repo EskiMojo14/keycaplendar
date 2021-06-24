@@ -1,17 +1,17 @@
-import firebase from "../firebase/firebase";
-import { typedFirestore } from "../firebase/firestore";
+import firebase from "@s/firebase/firebase";
+import { typedFirestore } from "@s/firebase/firestore";
 import { is } from "typescript-is";
 import debounce from "lodash.debounce";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { UserId } from "../firebase/types";
-import { addOrRemove, hasKey } from "../common/functions";
-import { setLinkedFavorites } from "../main/mainSlice";
-import { whitelistParams } from "../main/constants";
-import { filterData, selectPreset, updatePreset } from "../main/functions";
-import { getStorage, setSyncSettings, settingFns } from "../settings/functions";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { UserId } from "@s/firebase/types";
+import { addOrRemove, hasKey } from "@s/common/functions";
+import { setLinkedFavorites } from "@s/main/mainSlice";
+import { whitelistParams } from "@s/main/constants";
+import { filterData, selectPreset, updatePreset } from "@s/main/functions";
+import { getStorage, setSyncSettings, settingFns } from "@s/settings/functions";
 import { setBought, setFavorites, setFavoritesId, setHidden, setShareName, setUserPresets } from "./userSlice";
-import { setShareNameLoading } from "../settings/settingsSlice";
+import { setShareNameLoading } from "@s/settings/settingsSlice";
 
 const { dispatch } = store;
 

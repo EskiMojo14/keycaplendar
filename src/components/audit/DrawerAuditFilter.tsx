@@ -1,13 +1,7 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  selectFilterAction,
-  selectFilterUser,
-  selectLength,
-  selectUsers,
-  setLength,
-} from "../../app/slices/audit/auditSlice";
-import { selectDevice } from "../../app/slices/common/commonSlice";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit/auditSlice";
+import { selectDevice } from "@s/common/commonSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";

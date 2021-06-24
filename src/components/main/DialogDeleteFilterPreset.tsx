@@ -1,6 +1,6 @@
 import React from "react";
-import { deleteGlobalPreset, deletePreset } from "../../app/slices/main/functions";
-import { PresetType } from "../../app/slices/main/types";
+import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
+import { PresetType } from "@s/main/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteFilterPresetProps = {

@@ -1,6 +1,6 @@
 @use "@material/elevation/_index" as elevation;
 @use "@material/rtl/_index" as rtl;
-@use "../../util";
+@use "~/util";
 
 .update-entry {
   &.linked {

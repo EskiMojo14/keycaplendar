@@ -3,12 +3,13 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
+import { is } from "typescript-is";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
-import firebase from "../../../app/slices/firebase/firebase";
-import { typedFirestore } from "../../../app/slices/firebase/firestore";
-import { KeysetId } from "../../../app/slices/firebase/types";
-import { useAppSelector } from "../../../app/hooks";
-import { selectDevice } from "../../../app/slices/common/commonSlice";
+import firebase from "@s/firebase/firebase";
+import { typedFirestore } from "@s/firebase/firestore";
+import { KeysetId } from "@s/firebase/types";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
 import {
   arrayMove,
   batchStorageDelete,
@@ -16,21 +17,16 @@ import {
   getStorageFolders,
   hasKey,
   iconObject,
-} from "../../../app/slices/common/functions";
-import {
-  selectAllDesigners,
-  selectAllProfiles,
-  selectAllVendorRegions,
-  selectAllVendors,
-} from "../../../app/slices/main/mainSlice";
-import { getData } from "../../../app/slices/main/functions";
-import { SetType, VendorType } from "../../../app/slices/main/types";
-import { selectUser } from "../../../app/slices/user/userSlice";
-import { queue } from "../../../app/snackbarQueue";
+} from "@s/common/functions";
+import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main/mainSlice";
+import { getData } from "@s/main/functions";
+import { SetType, VendorType } from "@s/main/types";
+import { selectUser } from "@s/user/userSlice";
+import { queue } from "~/app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
-import { Autocomplete } from "../../util/Autocomplete";
-import { BoolWrapper, ConditionalWrapper } from "../../util/ConditionalWrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../../util/FullScreenDialog";
+import { Autocomplete } from "@c/util/Autocomplete";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -44,7 +40,6 @@ import { Tooltip } from "@rmwc/tooltip";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import "./ModalEntry.scss";
-import { is } from "typescript-is";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;

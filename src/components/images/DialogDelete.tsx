@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
-import { queue } from "../../app/snackbarQueue";
-import { batchStorageDelete } from "../../app/slices/common/functions";
-import { setLoading } from "../../app/slices/images/imagesSlice";
-import { listAll } from "../../app/slices/images/functions";
-import { ImageType } from "../../app/slices/images/types";
+import { useAppDispatch } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
+import { batchStorageDelete } from "@s/common/functions";
+import { setLoading } from "@s/images/imagesSlice";
+import { listAll } from "@s/images/functions";
+import { ImageType } from "@s/images/types";
 import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";

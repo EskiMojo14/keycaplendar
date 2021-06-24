@@ -1,8 +1,8 @@
 import React from "react";
-import emptyImg from "../../../media/empty.svg";
-import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/common/commonSlice";
-import { selectFavorites, selectHidden } from "../../../app/slices/user/userSlice";
+import emptyImg from "@m/empty.svg";
+import { useAppSelector } from "~/app/hooks";
+import { selectPage } from "@s/common/commonSlice";
+import { selectFavorites, selectHidden } from "@s/user/userSlice";
 import { Typography } from "@rmwc/typography";
 import "./ContentEmpty.scss";
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { hasKey } from "../../app/slices/common/functions";
-import { selectSettings, selectTab, setStatisticsSetting } from "../../app/slices/statistics/statisticsSlice";
-import { Categories, Properties } from "../../app/slices/statistics/types";
+import { useAppSelector } from "~/app/hooks";
+import { hasKey } from "@s/common/functions";
+import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics/statisticsSlice";
+import { Categories, Properties } from "@s/statistics/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";

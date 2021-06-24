@@ -2,21 +2,15 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { capitalise, hasKey, iconObject, useBoolStates } from "../../app/slices/common/functions";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { statsTabs } from "../../app/slices/statistics/constants";
-import { getData, setSetting, setSort, setStatisticsTab } from "../../app/slices/statistics/functions";
-import { StatisticsType } from "../../app/slices/statistics/types";
-import {
-  selectTab,
-  selectData,
-  selectLoading,
-  selectSettings,
-  selectSort,
-} from "../../app/slices/statistics/statisticsSlice";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { capitalise, hasKey, iconObject, useBoolStates } from "@s/common/functions";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { statsTabs } from "@s/statistics/constants";
+import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
+import { StatisticsType } from "@s/statistics/types";
+import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics/statisticsSlice";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";
@@ -29,12 +23,12 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Footer } from "../common/Footer";
-import { StatusCard } from "../statistics/PieCard";
-import { TableCard } from "../statistics/TableCard";
-import { ShippedCard, TimelinesCard, CountCard } from "../statistics/TimelineCard";
-import { DialogStatistics } from "../statistics/DialogStatistics";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { Footer } from "@c/common/Footer";
+import { StatusCard } from "@c/statistics/PieCard";
+import { TableCard } from "@c/statistics/TableCard";
+import { ShippedCard, TimelinesCard, CountCard } from "@c/statistics/TimelineCard";
+import { DialogStatistics } from "@c/statistics/DialogStatistics";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./ContentStatistics.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);

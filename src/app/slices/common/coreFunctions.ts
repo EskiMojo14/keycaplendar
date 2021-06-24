@@ -1,14 +1,14 @@
 import { is } from "typescript-is";
-import { typedFirestore } from "../firebase/firestore";
-import store from "../../store";
-import { queue } from "../../snackbarQueue";
+import { typedFirestore } from "@s/firebase/firestore";
+import store from "~/app/store";
+import { queue } from "~/app/snackbarQueue";
 import { setAppPage, setDevice } from "./commonSlice";
 import { mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes } from "./functions";
 import { Page } from "./types";
-import { setURLEntry as setURLGuide } from "../guides/guidesSlice";
-import { setHistoryTab } from "../history/functions";
-import { HistoryTab } from "../history/types";
+import { setURLEntry as setURLGuide } from "@s/guides/guidesSlice";
+import { setHistoryTab } from "@s/history/functions";
+import { HistoryTab } from "@s/history/types";
 import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
@@ -18,14 +18,14 @@ import {
   setURLSet,
   setLinkedFavorites,
   setURLWhitelist,
-} from "../main/mainSlice";
-import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "../main/constants";
-import { filterData, getData, setWhitelistMerge, updatePreset } from "../main/functions";
-import { WhitelistType } from "../main/types";
-import { setStatisticsTab } from "../statistics/functions";
-import { StatsTab } from "../statistics/types";
-import { setURLEntry as setURLUpdate } from "../updates/updatesSlice";
-import { getLinkedFavorites } from "../user/functions";
+} from "@s/main/mainSlice";
+import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
+import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
+import { WhitelistType } from "@s/main/types";
+import { setStatisticsTab } from "@s/statistics/functions";
+import { StatsTab } from "@s/statistics/types";
+import { setURLEntry as setURLUpdate } from "@s/updates/updatesSlice";
+import { getLinkedFavorites } from "@s/user/functions";
 
 const { dispatch } = store;
 

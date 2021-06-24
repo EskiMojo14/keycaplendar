@@ -1,15 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import commonReducer from "./slices/common/commonSlice";
-import userReducer from "./slices/user/userSlice";
-import settingsReducer from "./slices/settings/settingsSlice";
-import mainReducer from "./slices/main/mainSlice";
-import statisticsReducer from "./slices/statistics/statisticsSlice";
-import historyReducer from "./slices/history/historySlice";
-import auditReducer from "./slices/audit/auditSlice";
-import usersReducer from "./slices/users/usersSlice";
-import imagesReducer from "./slices/images/imagesSlice";
-import guidesReducer from "./slices/guides/guidesSlice";
-import updatesReducer from "./slices/updates/updatesSlice";
+import commonReducer from "@s/common/commonSlice";
+import userReducer from "@s/user/userSlice";
+import settingsReducer from "@s/settings/settingsSlice";
+import mainReducer from "@s/main/mainSlice";
+import statisticsReducer from "@s/statistics/statisticsSlice";
+import historyReducer from "@s/history/historySlice";
+import auditReducer from "@s/audit/auditSlice";
+import usersReducer from "@s/users/usersSlice";
+import imagesReducer from "@s/images/imagesSlice";
+import guidesReducer from "@s/guides/guidesSlice";
+import updatesReducer from "@s/updates/updatesSlice";
 
 export const store = configureStore({
   reducer: {

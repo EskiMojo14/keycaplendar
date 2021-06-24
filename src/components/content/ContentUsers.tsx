@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../app/slices/firebase/firebase";
+import firebase from "@s/firebase/firebase";
 import classNames from "classnames";
-import { queue } from "../../app/snackbarQueue";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { iconObject, useBoolStates } from "../../app/slices/common/functions";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { queue } from "~/app/snackbarQueue";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { iconObject, useBoolStates } from "@s/common/functions";
+import { selectBottomNav } from "@s/settings/settingsSlice";
 import {
   selectFirstIndex,
   selectLastIndex,
@@ -20,9 +20,10 @@ import {
   selectSortedUsers,
   selectView,
   setLoading,
-} from "../../app/slices/users/usersSlice";
-import { User } from "../../app/slices/users/constructors";
-import { UserType } from "../../app/slices/users/types";
+} from "@s/users/usersSlice";
+import { User } from "@s/users/constructors";
+import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
+import { UserType } from "@s/users/types";
 import {
   DataTable,
   DataTableContent,
@@ -46,8 +47,8 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { UserRow } from "../users/UserRow";
-import { UserCard } from "../users/UserCard";
+import { UserRow } from "@c/users/UserRow";
+import { UserCard } from "@c/users/UserCard";
 import {
   DataTablePagination,
   DataTablePaginationTrailing,
@@ -57,17 +58,9 @@ import {
   DataTablePaginationNavigation,
   DataTablePaginationTotal,
   DataTablePaginationButton,
-} from "../util/DataTablePagination";
-import { Footer } from "../common/Footer";
+} from "@c/util/DataTablePagination";
+import { Footer } from "@c/common/Footer";
 import "./ContentUsers.scss";
-import {
-  getUsers,
-  setPage,
-  setRowsPerPage,
-  setSort,
-  setSortIndex,
-  setViewIndex,
-} from "../../app/slices/users/functions";
 
 const length = 1000;
 const rows = 25;

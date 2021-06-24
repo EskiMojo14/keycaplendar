@@ -4,7 +4,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/textfield/_index" as textfield;
 @use "@material/typography/_index" as typography;
-@use "../../util";
+@use "~/util";
 
 .users-container {
   padding: 16px;

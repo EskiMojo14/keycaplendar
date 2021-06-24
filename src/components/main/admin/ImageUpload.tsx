@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { is } from "typescript-is";
-import { queue } from "../../../app/snackbarQueue";
+import { queue } from "~/app/snackbarQueue";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { TextField } from "@rmwc/textfield";

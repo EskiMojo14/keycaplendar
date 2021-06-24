@@ -1,11 +1,11 @@
 import isEqual from "lodash.isequal";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
 import { setAllActions, setFilteredActions, setLength, setLoading, setUsers } from "./auditSlice";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
-import { alphabeticalSortProp } from "../common/functions";
-import { typedFirestore } from "../firebase/firestore";
+import { alphabeticalSortProp } from "@s/common/functions";
+import { typedFirestore } from "@s/firebase/firestore";
 
 const { dispatch } = store;
 

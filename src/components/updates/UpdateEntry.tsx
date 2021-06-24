@@ -1,17 +1,17 @@
 import React from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { queue } from "../../app/snackbarQueue";
-import { useAppSelector } from "../../app/hooks";
-import { iconObject, ordinal } from "../../app/slices/common/functions";
-import { selectURLEntry } from "../../app/slices/updates/updatesSlice";
-import { UpdateEntryType } from "../../app/slices/updates/types";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { queue } from "~/app/snackbarQueue";
+import { useAppSelector } from "~/app/hooks";
+import { iconObject, ordinal } from "@s/common/functions";
+import { selectURLEntry } from "@s/updates/updatesSlice";
+import { UpdateEntryType } from "@s/updates/types";
+import { selectUser } from "@s/user/userSlice";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import { CustomReactMarkdown } from "../util/ReactMarkdown";
+import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
 import "./UpdateEntry.scss";
 
 type UpdateEntryProps = {

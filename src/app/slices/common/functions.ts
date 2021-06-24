@@ -1,10 +1,10 @@
 import React from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import firebase from "../firebase/firebase";
+import firebase from "@s/firebase/firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "./constants";
-import { DateSortKeys, SetType } from "../main/types";
+import { DateSortKeys, SetType } from "@s/main/types";
 
 const storage = firebase.storage();
 

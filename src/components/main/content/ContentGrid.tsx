@@ -1,13 +1,13 @@
 import React from "react";
-import { useAppSelector } from "../../../app/hooks";
-import { selectSetGroups } from "../../../app/slices/main/mainSlice";
-import { SetType } from "../../../app/slices/main/types";
-import { selectView } from "../../../app/slices/settings/settingsSlice";
+import { useAppSelector } from "~/app/hooks";
+import { selectSetGroups } from "@s/main/mainSlice";
+import { SetType } from "@s/main/types";
+import { selectView } from "@s/settings/settingsSlice";
 import { Typography } from "@rmwc/typography";
-import { ViewCard } from "../views/card/ViewCard";
-import { ViewList } from "../views/list/ViewList";
-import { ViewImageList } from "../views/image-list/ViewImageList";
-import { ViewCompact } from "../views/compact/ViewCompact";
+import { ViewCard } from "@c/main/views/card/ViewCard";
+import { ViewList } from "@c/main/views/list/ViewList";
+import { ViewImageList } from "@c/main/views/image-list/ViewImageList";
+import { ViewCompact } from "@c/main/views/compact/ViewCompact";
 import "./ContentGrid.scss";
 
 type ContentGridProps = {

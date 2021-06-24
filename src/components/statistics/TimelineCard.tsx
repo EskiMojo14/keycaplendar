@@ -4,9 +4,9 @@ import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { addOrRemove, iconObject } from "../../app/slices/common/functions";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { addOrRemove, iconObject } from "@s/common/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -20,7 +20,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./TimelineCard.scss";
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");

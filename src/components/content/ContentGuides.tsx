@@ -1,15 +1,15 @@
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { closeModal, openModal } from "../../app/slices/common/functions";
-import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "../../app/slices/guides/guidesSlice";
-import { Guide } from "../../app/slices/guides/constructors";
-import { getEntries } from "../../app/slices/guides/functions";
-import { GuideEntryType } from "../../app/slices/guides/types";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { closeModal, openModal } from "@s/common/functions";
+import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides/guidesSlice";
+import { Guide } from "@s/guides/constructors";
+import { getEntries } from "@s/guides/functions";
+import { GuideEntryType } from "@s/guides/types";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectUser } from "@s/user/userSlice";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -24,13 +24,13 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "../common/Footer";
-import { GuideEntry } from "../guides/GuideEntry";
-import { EntriesList } from "../guides/EntriesList";
-import { ModalDetail } from "../guides/ModalDetail";
-import { ModalCreate, ModalEdit } from "../guides/admin/ModalEntry";
-import { DialogDelete } from "../guides/admin/DialogDelete";
-import emptyImg from "../../media/empty.svg";
+import { Footer } from "@c/common/Footer";
+import { GuideEntry } from "@c/guides/GuideEntry";
+import { EntriesList } from "@c/guides/EntriesList";
+import { ModalDetail } from "@c/guides/ModalDetail";
+import { ModalCreate, ModalEdit } from "@c/guides/admin/ModalEntry";
+import { DialogDelete } from "@c/guides/admin/DialogDelete";
+import emptyImg from "@m/empty.svg";
 import "./ContentGuides.scss";
 
 type ContentGuidesProps = {

@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { typedFirestore } from "../../app/slices/firebase/firestore";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
-import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "../../app/slices/common/constants";
-import { setPage as setMainPage } from "../../app/slices/common/coreFunctions";
-import { hasKey, iconObject } from "../../app/slices/common/functions";
-import { Page } from "../../app/slices/common/types";
-import { selectLinkedFavorites } from "../../app/slices/main/mainSlice";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "../../app/slices/user/userSlice";
+import { typedFirestore } from "@s/firebase/firestore";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/common/constants";
+import { setPage as setMainPage } from "@s/common/coreFunctions";
+import { hasKey, iconObject } from "@s/common/functions";
+import { Page } from "@s/common/types";
+import { selectLinkedFavorites } from "@s/main/mainSlice";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider, CollapsibleList } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import "./DrawerNav.scss";
-import logo from "../../media/logo.svg";
+import logo from "@m/logo.svg";
 
 type DrawerNavProps = {
   close: () => void;

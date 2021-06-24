@@ -2,23 +2,17 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { pageTitle } from "../../app/slices/common/constants";
-import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "../../app/slices/common/functions";
-import {
-  selectLoading,
-  selectProcessedActions,
-  selectRecentSets,
-  selectTab,
-  setTab,
-} from "../../app/slices/history/historySlice";
-import { historyTabs } from "../../app/slices/history/constants";
-import { generateSets, getData } from "../../app/slices/history/functions";
-import { RecentSet } from "../../app/slices/history/types";
-import { selectAllSets } from "../../app/slices/main/mainSlice";
-import { Keyset } from "../../app/slices/main/constructors";
-import { SetType } from "../../app/slices/main/types";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { pageTitle } from "@s/common/constants";
+import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/common/functions";
+import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history/historySlice";
+import { historyTabs } from "@s/history/constants";
+import { generateSets, getData } from "@s/history/functions";
+import { RecentSet } from "@s/history/types";
+import { selectAllSets } from "@s/main/mainSlice";
+import { Keyset } from "@s/main/constructors";
+import { SetType } from "@s/main/types";
+import { selectBottomNav } from "@s/settings/settingsSlice";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -32,11 +26,11 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { DialogSales } from "../main/DialogSales";
-import { DrawerDetails } from "../main/DrawerDetails";
-import { ChangelogEntry } from "../history/ChangelogEntry";
-import { RecentSetCard } from "../history/RecentSetCard";
-import { Footer } from "../common/Footer";
+import { DialogSales } from "@c/main/DialogSales";
+import { DrawerDetails } from "@c/main/DrawerDetails";
+import { ChangelogEntry } from "@c/history/ChangelogEntry";
+import { RecentSetCard } from "@c/history/RecentSetCard";
+import { Footer } from "@c/common/Footer";
 import "./ContentHistory.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);

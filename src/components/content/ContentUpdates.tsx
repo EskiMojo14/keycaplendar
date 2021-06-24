@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { pageTitle } from "../../app/slices/common/constants";
-import { closeModal, openModal } from "../../app/slices/common/functions";
-import { selectEntries, selectLoading, selectURLEntry } from "../../app/slices/updates/updatesSlice";
-import { Update } from "../../app/slices/updates/constructors";
-import { getEntries, pinEntry } from "../../app/slices/updates/functions";
-import { UpdateEntryType } from "../../app/slices/updates/types";
-import { selectBottomNav } from "../../app/slices/settings/settingsSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { pageTitle } from "@s/common/constants";
+import { closeModal, openModal } from "@s/common/functions";
+import { selectEntries, selectLoading, selectURLEntry } from "@s/updates/updatesSlice";
+import { Update } from "@s/updates/constructors";
+import { getEntries, pinEntry } from "@s/updates/functions";
+import { UpdateEntryType } from "@s/updates/types";
+import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectUser } from "@s/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {
@@ -20,10 +20,10 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Footer } from "../common/Footer";
-import { UpdateEntry } from "../updates/UpdateEntry";
-import { ModalCreate, ModalEdit } from "../updates/admin/ModalEntry";
-import { DialogDelete } from "../updates/admin/DialogDelete";
+import { Footer } from "@c/common/Footer";
+import { UpdateEntry } from "@c/updates/UpdateEntry";
+import { ModalCreate, ModalEdit } from "@c/updates/admin/ModalEntry";
+import { DialogDelete } from "@c/updates/admin/DialogDelete";
 import "./ContentUpdates.scss";
 
 type ContentUpdatesProps = {

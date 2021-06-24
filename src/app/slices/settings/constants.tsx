@@ -1,6 +1,6 @@
 import React from "react";
 import { IconPropT } from "@rmwc/types";
-import { iconObject } from "../common/functions";
+import { iconObject } from "@s/common/functions";
 import { ViewType } from "./types";
 
 /** All possible views. */

@@ -1,15 +1,15 @@
 import { DateTime } from "luxon";
-import { typedFirestore } from "../firebase/firestore";
-import { UserId } from "../firebase/types";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
+import { typedFirestore } from "@s/firebase/firestore";
+import { UserId } from "@s/firebase/types";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
 import { setCookies, setSettings, toggleLich } from "./settingsSlice";
 import { ViewType } from "./types";
-import { Interval } from "../common/constructors";
-import { hasKey } from "../common/functions";
-import { whitelistParams } from "../main/constants";
-import { setTransition } from "../main/mainSlice";
-import { selectPreset } from "../main/functions";
+import { Interval } from "@s/common/constructors";
+import { hasKey } from "@s/common/functions";
+import { whitelistParams } from "@s/main/constants";
+import { setTransition } from "@s/main/mainSlice";
+import { selectPreset } from "@s/main/functions";
 
 const { dispatch } = store;
 

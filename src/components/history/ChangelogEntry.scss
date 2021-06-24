@@ -1,6 +1,6 @@
 @use "@material/theme/color-palette" as palette;
 @use "@material/shape/_index" as shape;
-@use "../../util";
+@use "~/util";
 
 .changelog-entry {
   @include util.divider-border(bottom);

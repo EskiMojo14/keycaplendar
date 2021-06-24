@@ -1,11 +1,11 @@
 import React from "react";
-import { useAppSelector } from "../../../app/hooks";
-import { selectPage } from "../../../app/slices/common/commonSlice";
-import { arrayIncludes, capitalise } from "../../../app/slices/common/functions";
-import { selectSort, selectSortOrder } from "../../../app/slices/main/mainSlice";
-import { allSorts, sortBlacklist, sortNames } from "../../../app/slices/main/constants";
-import { setSort, setSortOrder } from "../../../app/slices/main/functions";
-import { SortOrderType } from "../../../app/slices/main/types";
+import { useAppSelector } from "~/app/hooks";
+import { selectPage } from "@s/common/commonSlice";
+import { arrayIncludes, capitalise } from "@s/common/functions";
+import { selectSort, selectSortOrder } from "@s/main/mainSlice";
+import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
+import { setSort, setSortOrder } from "@s/main/functions";
+import { SortOrderType } from "@s/main/types";
 import { Menu, MenuItem } from "@rmwc/menu";
 import { ListDivider } from "@rmwc/list";
 

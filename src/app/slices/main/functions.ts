@@ -2,9 +2,9 @@ import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { allPages, mainPages, pageTitle } from "../common/constants";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import {
   alphabeticalSort,
   alphabeticalSortProp,
@@ -13,12 +13,12 @@ import {
   normalise,
   replaceFunction,
   uniqueArray,
-} from "../common/functions";
-import { Page } from "../common/types";
-import { typedFirestore } from "../firebase/firestore";
-import { UserId } from "../firebase/types";
-import { setStorage } from "../settings/functions";
-import { setUserPresets } from "../user/userSlice";
+} from "@s/common/functions";
+import { Page } from "@s/common/types";
+import { typedFirestore } from "@s/firebase/firestore";
+import { UserId } from "@s/firebase/types";
+import { setStorage } from "@s/settings/functions";
+import { setUserPresets } from "@s/user/userSlice";
 import {
   allSorts,
   arraySorts,

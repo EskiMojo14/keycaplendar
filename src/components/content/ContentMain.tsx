@@ -1,36 +1,30 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice, selectPage } from "../../app/slices/common/commonSlice";
-import { closeModal, openModal } from "../../app/slices/common/functions";
-import { Keyset, Preset } from "../../app/slices/main/constructors";
-import {
-  selectAllSets,
-  selectContent,
-  selectLinkedFavorites,
-  selectURLSet,
-  setURLSet,
-} from "../../app/slices/main/mainSlice";
-import { PresetType, SetType } from "../../app/slices/main/types";
-import { selectBottomNav, selectView } from "../../app/slices/settings/settingsSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { closeModal, openModal } from "@s/common/functions";
+import { Keyset, Preset } from "@s/main/constructors";
+import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main/mainSlice";
+import { PresetType, SetType } from "@s/main/types";
+import { selectBottomNav, selectView } from "@s/settings/settingsSlice";
+import { selectUser } from "@s/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
-import { AppBar } from "../main/app_bar/AppBar";
-import { ContentEmpty } from "../main/content/ContentEmpty";
-import { ContentGrid } from "../main/content/ContentGrid";
-import { DrawerDetails } from "../main/DrawerDetails";
-import { DrawerFilter } from "../main/DrawerFilter";
-import { DialogSales } from "../main/DialogSales";
-import { ModalFilterPreset } from "../main/ModalFilterPreset";
-import { DialogDeleteFilterPreset } from "../main/DialogDeleteFilterPreset";
-import { DialogShareFavorites } from "../main/DialogShareFavorites";
-import { ModalCreate, ModalEdit } from "../main/admin/ModalEntry";
-import { DialogDelete } from "../main/admin/DialogDelete";
-import { SnackbarDeleted } from "../main/admin/SnackbarDeleted";
-import { Footer } from "../common/Footer";
-import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
+import { AppBar } from "@c/main/app_bar/AppBar";
+import { ContentEmpty } from "@c/main/content/ContentEmpty";
+import { ContentGrid } from "@c/main/content/ContentGrid";
+import { DrawerDetails } from "@c/main/DrawerDetails";
+import { DrawerFilter } from "@c/main/DrawerFilter";
+import { DialogSales } from "@c/main/DialogSales";
+import { ModalFilterPreset } from "@c/main/ModalFilterPreset";
+import { DialogDeleteFilterPreset } from "@c/main/DialogDeleteFilterPreset";
+import { DialogShareFavorites } from "@c/main/DialogShareFavorites";
+import { ModalCreate, ModalEdit } from "@c/main/admin/ModalEntry";
+import { DialogDelete } from "@c/main/admin/DialogDelete";
+import { SnackbarDeleted } from "@c/main/admin/SnackbarDeleted";
+import { Footer } from "@c/common/Footer";
+import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
 
 type ContentMainProps = {
   navOpen: boolean;

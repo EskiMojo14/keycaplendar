@@ -1,12 +1,12 @@
 import React from "react";
-import { queue } from "../../app/snackbarQueue";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { iconObject } from "../../app/slices/common/functions";
-import { selectFilteredTag, setFilteredTag } from "../../app/slices/guides/guidesSlice";
-import { formattedVisibility, visibilityIcons } from "../../app/slices/guides/constants";
-import { GuideEntryType } from "../../app/slices/guides/types";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { queue } from "~/app/snackbarQueue";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { iconObject } from "@s/common/functions";
+import { selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
+import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { GuideEntryType } from "@s/guides/types";
+import { selectUser } from "@s/user/userSlice";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -19,9 +19,9 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
-import { CustomReactMarkdown } from "../util/ReactMarkdown";
+import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
+import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
 import "./ModalDetail.scss";
 
 type ModalCreateProps = {

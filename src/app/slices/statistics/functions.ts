@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import firebase from "../firebase/firebase";
+import firebase from "@s/firebase/firebase";
 import cloneDeep from "lodash.clonedeep";
-import store from "../../store";
-import { queue } from "../../snackbarQueue";
+import store from "~/app/store";
+import { queue } from "~/app/snackbarQueue";
 import { setStatisticsData, setLoading, setStatisticsSetting, setStatisticsSort, setStatsTab } from "./statisticsSlice";
 import {
   DurationData,
@@ -17,7 +17,7 @@ import {
   VendorData,
   VendorDataObject,
 } from "./types";
-import { hasKey, mergeObject, ordinal } from "../common/functions";
+import { hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();

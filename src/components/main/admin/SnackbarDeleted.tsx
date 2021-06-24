@@ -1,12 +1,12 @@
 import React from "react";
-import { typedFirestore } from "../../../app/slices/firebase/firestore";
-import { KeysetId } from "../../../app/slices/firebase/types";
-import { useAppSelector } from "../../../app/hooks";
-import { batchStorageDelete, getStorageFolders } from "../../../app/slices/common/functions";
-import { getData } from "../../../app/slices/main/functions";
-import { SetType } from "../../../app/slices/main/types";
-import { selectUser } from "../../../app/slices/user/userSlice";
-import { queue } from "../../../app/snackbarQueue";
+import { typedFirestore } from "@s/firebase/firestore";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
+import { KeysetId } from "@s/firebase/types";
+import { batchStorageDelete, getStorageFolders } from "@s/common/functions";
+import { getData } from "@s/main/functions";
+import { SetType } from "@s/main/types";
+import { selectUser } from "@s/user/userSlice";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {

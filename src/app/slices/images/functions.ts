@@ -1,5 +1,5 @@
-import firebase from "../firebase/firebase";
-import store from "../../store";
+import firebase from "@s/firebase/firebase";
+import store from "~/app/store";
 import {
   appendImages,
   setCheckedImages,
@@ -10,10 +10,10 @@ import {
   setLoading,
   setSetImages,
 } from "./imagesSlice";
-import { alphabeticalSort, getStorageFolders } from "../common/functions";
+import { alphabeticalSort, getStorageFolders } from "@s/common/functions";
 import { ImageType } from "./types";
 import { ImageObj } from "./constructors";
-import { queue } from "../../snackbarQueue";
+import { queue } from "~/app/snackbarQueue";
 
 const storage = firebase.storage();
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { ActionType } from "../../app/slices/audit/types";
+import { ActionType } from "@s/audit/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogAuditDeleteProps = {

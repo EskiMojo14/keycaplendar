@@ -1,11 +1,11 @@
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import firebase from "../firebase/firebase";
-import { queue } from "../../snackbarQueue";
-import store from "../../store";
-import { auditProperties } from "../audit/constants";
-import { alphabeticalSortProp, uniqueArray } from "../common/functions";
-import { getSetById } from "../main/functions";
+import firebase from "@s/firebase/firebase";
+import { queue } from "~/app/snackbarQueue";
+import store from "~/app/store";
+import { auditProperties } from "@s/audit/constants";
+import { alphabeticalSortProp, uniqueArray } from "@s/common/functions";
+import { getSetById } from "@s/main/functions";
 import { setLoading, setProcessedActions, setRecentSets, setTab } from "./historySlice";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 

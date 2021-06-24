@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { alias, aliasJest, configPaths } = require("react-app-rewire-alias");
+
+const aliasMap = configPaths("./tsconfig.paths.json");
+
 module.exports = function override(config, env) {
   const moduleRules = config.module.rules;
   const index = moduleRules.findIndex((val) => "oneOf" in val);
@@ -19,5 +24,7 @@ module.exports = function override(config, env) {
     },
     ...moduleRules[index].oneOf,
   ];
-  return config;
+  return alias(aliasMap)(config);
 };
+
+module.exports.jest = aliasJest(aliasMap);

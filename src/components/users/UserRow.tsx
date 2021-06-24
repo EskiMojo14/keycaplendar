@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import firebase from "../../app/slices/firebase/firebase";
-import { useAppSelector } from "../../app/hooks";
-import { queue } from "../../app/snackbarQueue";
-import { iconObject, mergeObject, ordinal, truncate } from "../../app/slices/common/functions";
-import { selectAllDesigners } from "../../app/slices/main/mainSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
-import { User } from "../../app/slices/users/constructors";
-import { UserType } from "../../app/slices/users/types";
+import firebase from "@s/firebase/firebase";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
+import { iconObject, mergeObject, ordinal, truncate } from "@s/common/functions";
+import { selectAllDesigners } from "@s/main/mainSlice";
+import { selectUser } from "@s/user/userSlice";
+import { User } from "@s/users/constructors";
+import { UserType } from "@s/users/types";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -15,7 +15,7 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "../util/Autocomplete";
+import { Autocomplete } from "@c/util/Autocomplete";
 
 type UserRowProps = {
   delete: (user: UserType) => void;

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
-import { Footer } from "../common/Footer";
+import { Footer } from "@c/common/Footer";
 import "./NotFound.scss";
-import image from "../../media/404.svg";
+import image from "@m/404.svg";
 
 export const NotFound = () => {
   return (

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import { useAppSelector } from "../../../app/hooks";
-import { selectDevice } from "../../../app/slices/common/commonSlice";
-import { iconObject } from "../../../app/slices/common/functions";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { iconObject } from "@s/common/functions";
 import { Button } from "@rmwc/button";
 import { Card } from "@rmwc/card";
 import {
