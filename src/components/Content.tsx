@@ -19,11 +19,11 @@ import { ContentGuides } from "@c/content/ContentGuides";
 import { ContentUpdates } from "@c/content/ContentUpdates";
 import "./Content.scss";
 
-type ContentProps = {
-  className: string;
-};
+type ContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Content = (props: ContentProps) => {
+  const { className, ...filteredProps } = props;
+
   const device = useAppSelector(selectDevice);
   const bottomNav = useAppSelector(selectBottomNav);
 
@@ -66,10 +66,11 @@ export const Content = (props: ContentProps) => {
   const contentSettings = page === "settings" ? <ContentSettings openNav={openNav} /> : null;
   return (
     <div
-      className={classNames(props.className, page, "app-container", {
+      className={classNames(className, page, "app-container", {
         "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && arrayIncludes(mainPages, page),
         "bottom-nav": bottomNav,
       })}
+      {...filteredProps}
     >
       <DrawerNav open={navOpen} close={closeNav} />
       <DrawerAppContent>
