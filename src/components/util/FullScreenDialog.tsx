@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import BEMHelper from "../../app/slices/common/bemHelper";
-import { HTMLProps } from "../../app/slices/common/types";
+import BEMHelper from "@s/common/bemHelper";
+import { HTMLProps } from "@s/common/types";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import "./FullScreenDialog.scss";
 

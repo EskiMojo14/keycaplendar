@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import firebase from "../../app/slices/firebase/firebase";
+import firebase from "@s/firebase/firebase";
 import { DateTime } from "luxon";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { hasKey, iconObject, mergeObject, ordinal } from "../../app/slices/common/functions";
-import { selectAllDesigners } from "../../app/slices/main/mainSlice";
-import { selectUser } from "../../app/slices/user/userSlice";
-import { userRoleIcons } from "../../app/slices/users/constants";
-import { User } from "../../app/slices/users/constructors";
-import { UserType } from "../../app/slices/users/types";
-import { queue } from "../../app/snackbarQueue";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
+import { selectDevice } from "@s/common/commonSlice";
+import { hasKey, iconObject, mergeObject, ordinal } from "@s/common/functions";
+import { selectAllDesigners } from "@s/main/mainSlice";
+import { selectUser } from "@s/user/userSlice";
+import { userRoleIcons } from "@s/users/constants";
+import { User } from "@s/users/constructors";
+import { UserType } from "@s/users/types";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -26,8 +26,8 @@ import {
 } from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "../util/Autocomplete";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { Autocomplete } from "@c/util/Autocomplete";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 
 type UserCardProps = {
   delete: (user: UserType) => void;

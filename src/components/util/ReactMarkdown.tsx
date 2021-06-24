@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-import BEMHelper from "../../app/slices/common/bemHelper";
+import BEMHelper from "@s/common/bemHelper";
 import {
   headerOneCommand,
   headerTwoCommand,
@@ -10,9 +10,9 @@ import {
   headerSixCommand,
   insertTableCommand,
   insertTableColumnAfter,
-} from "../../app/slices/common/markdownCommands";
-import { markdownIcons } from "../../app/slices/common/markdownConstants";
-import { componentBuilder, typographyBuilder } from "../../app/slices/common/markdownFunctions";
+} from "@s/common/markdownCommands";
+import { markdownIcons } from "@s/common/markdownConstants";
+import { componentBuilder, typographyBuilder } from "@s/common/markdownFunctions";
 import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
 import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
 import { CommandMap } from "react-mde/lib/definitions/types";

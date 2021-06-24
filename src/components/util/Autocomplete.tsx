@@ -1,7 +1,7 @@
 import React from "react";
 import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
-import BEMHelper from "../../app/slices/common/bemHelper";
+import BEMHelper from "@s/common/bemHelper";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
