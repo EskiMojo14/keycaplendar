@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "../../app/slices/main/functions";
-import { PresetType } from "../../app/slices/main/types";
-import { selectUser } from "../../app/slices/user/userSlice";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
+import { PresetType } from "@s/main/types";
+import { selectUser } from "@s/user/userSlice";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -11,9 +11,9 @@ import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ConditionalWrapper, BoolWrapper } from "../util/ConditionalWrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "../util/FullScreenDialog";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./ModalFilterPreset.scss";
 
 type ModalFilterPresetProps = {

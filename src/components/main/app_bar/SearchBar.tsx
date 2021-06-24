@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import BEMHelper from "../../../app/slices/common/bemHelper";
-import { useAppSelector } from "../../../app/hooks";
-import { alphabeticalSort, iconObject } from "../../../app/slices/common/functions";
-import { selectFilteredSets } from "../../../app/slices/main/mainSlice";
+import BEMHelper from "@s/common/bemHelper";
+import { useAppSelector } from "~/app/hooks";
+import { alphabeticalSort, iconObject } from "@s/common/functions";
+import { selectFilteredSets } from "@s/main/mainSlice";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Autocomplete, AutocompleteMobile } from "../../util/Autocomplete";
+import { Autocomplete, AutocompleteMobile } from "@c/util/Autocomplete";
 import "./SearchBar.scss";
 
 const bemClasses = new BEMHelper("search-bar");

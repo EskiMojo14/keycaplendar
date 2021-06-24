@@ -2,11 +2,11 @@ import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
-import { queue } from "../../../../app/snackbarQueue";
-import { useAppSelector } from "../../../../app/hooks";
-import { selectPage } from "../../../../app/slices/common/commonSlice";
-import { iconObject } from "../../../../app/slices/common/functions";
-import { SetType } from "../../../../app/slices/main/types";
+import { queue } from "~/app/snackbarQueue";
+import { useAppSelector } from "~/app/hooks";
+import { selectPage } from "@s/common/commonSlice";
+import { iconObject } from "@s/common/functions";
+import { SetType } from "@s/main/types";
 import {
   ImageListItem,
   ImageListImageAspectContainer,

@@ -1,8 +1,8 @@
 import React from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { SetType } from "../../../../app/slices/main/types";
-import { ordinal } from "../../../../app/slices/common/functions";
+import { SetType } from "~/app/slices/main/types";
+import { ordinal } from "~/app/slices/common/functions";
 import { List, ListDivider } from "@rmwc/list";
 import { ElementList } from "./ElementList";
 import "./ViewList.scss";

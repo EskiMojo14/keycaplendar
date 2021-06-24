@@ -1,8 +1,8 @@
 import React from "react";
-import { useAppSelector } from "../../../app/hooks";
-import { selectView } from "../../../app/slices/settings/settingsSlice";
-import { allViews, viewNames } from "../../../app/slices/settings/constants";
-import { setView } from "../../../app/slices/settings/functions";
+import { useAppSelector } from "~/app/hooks";
+import { selectView } from "@s/settings/settingsSlice";
+import { allViews, viewNames } from "@s/settings/constants";
+import { setView } from "@s/settings/functions";
 import { Menu, MenuItem } from "@rmwc/menu";
 
 type MenuViewProps = {

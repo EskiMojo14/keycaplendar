@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectShareNameLoading, setShareNameLoading } from "../../app/slices/settings/settingsSlice";
-import { selectFavoritesId, selectShareName, setFavoritesId } from "../../app/slices/user/userSlice";
-import { debouncedSyncFavoritesId, debouncedSyncShareName } from "../../app/slices/user/functions";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { selectShareNameLoading, setShareNameLoading } from "@s/settings/settingsSlice";
+import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user/userSlice";
+import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { Switch } from "@rmwc/switch";
@@ -11,7 +11,7 @@ import { TextField } from "@rmwc/textfield";
 import "./DialogShareFavorites.scss";
 import { Typography } from "@rmwc/typography";
 import { IconButton } from "@rmwc/icon-button";
-import { queue } from "../../app/snackbarQueue";
+import { queue } from "~/app/snackbarQueue";
 
 type DialogShareFavoritesProps = {
   open: boolean;

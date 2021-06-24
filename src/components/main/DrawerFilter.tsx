@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
-import { useAppSelector } from "../../app/hooks";
-import { selectDevice } from "../../app/slices/common/commonSlice";
-import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "../../app/slices/common/functions";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common/commonSlice";
+import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/common/functions";
 import {
   selectAllProfiles,
   selectAllRegions,
@@ -12,14 +12,14 @@ import {
   selectAppPresets,
   selectCurrentPreset,
   selectWhitelist,
-} from "../../app/slices/main/mainSlice";
-import { whitelistParams, whitelistShipped } from "../../app/slices/main/constants";
-import { Preset, Whitelist } from "../../app/slices/main/constructors";
-import { selectPreset, setWhitelist, setWhitelistMerge } from "../../app/slices/main/functions";
-import { PresetType } from "../../app/slices/main/types";
-import { selectView } from "../../app/slices/settings/settingsSlice";
-import { selectUser, selectUserPresets } from "../../app/slices/user/userSlice";
-import { queue } from "../../app/snackbarQueue";
+} from "@s/main/mainSlice";
+import { whitelistParams, whitelistShipped } from "@s/main/constants";
+import { Preset, Whitelist } from "@s/main/constructors";
+import { selectPreset, setWhitelist, setWhitelistMerge } from "@s/main/functions";
+import { PresetType } from "@s/main/types";
+import { selectView } from "@s/settings/settingsSlice";
+import { selectUser, selectUserPresets } from "@s/user/userSlice";
+import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
@@ -29,7 +29,7 @@ import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
 import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
-import { SegmentedButton, SegmentedButtonSegment } from "../util/SegmentedButton";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
