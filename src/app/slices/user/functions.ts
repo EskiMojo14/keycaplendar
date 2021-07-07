@@ -41,7 +41,7 @@ export const getUserPreferences = (id: string) => {
               shareName,
             } = data;
 
-            filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, hidden);
+            filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought, hidden);
 
             if (shareName) {
               dispatch(setShareName(shareName));
