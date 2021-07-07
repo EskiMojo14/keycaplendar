@@ -290,7 +290,6 @@ export const filterData = (
   const {
     user: { user },
   } = store.getState();
-  console.log(favorites);
 
   // filter bool functions
 
