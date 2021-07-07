@@ -1,7 +1,16 @@
 import isEqual from "lodash.isequal";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { setAllActions, setFilteredActions, setLength, setLoading, setUsers } from "./auditSlice";
+import {
+  selectAllActions,
+  selectFilterAction,
+  selectFilterUser,
+  setAllActions,
+  setFilteredActions,
+  setLength,
+  setLoading,
+  setUsers,
+} from "./auditSlice";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
 import { alphabeticalSortProp } from "@s/common/functions";
@@ -80,16 +89,10 @@ const processActions = (actions: ActionType[]) => {
 };
 
 export const filterActions = (
-  allActionsParam?: ActionType[],
-  filterActionParam?: "none" | "created" | "updated" | "deleted",
-  filterUserParam?: string
+  allActions = selectAllActions(store.getState()),
+  filterAction = selectFilterAction(store.getState()),
+  filterUser = selectFilterUser(store.getState())
 ) => {
-  const {
-    audit: { allActions: allAuditActions, filterAction: auditFilterAction, filterUser: auditFilterUser },
-  } = store.getState();
-  const allActions = allActionsParam || allAuditActions;
-  const filterAction = filterActionParam || auditFilterAction;
-  const filterUser = filterUserParam || auditFilterUser;
   let filteredActions = [...allActions];
 
   if (filterAction !== "none") {

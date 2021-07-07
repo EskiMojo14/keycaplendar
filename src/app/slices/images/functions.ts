@@ -2,6 +2,7 @@ import firebase from "@s/firebase/firebase";
 import store from "~/app/store";
 import {
   appendImages,
+  selectCurrentFolder,
   setCheckedImages,
   setCurrentFolder,
   setDuplicateSetImages,
@@ -89,11 +90,7 @@ export const getFolders = async () => {
   dispatch(setFolders(folders));
 };
 
-export const listAll = (pathParam?: string) => {
-  const {
-    images: { currentFolder },
-  } = store.getState();
-  const path = pathParam || currentFolder;
+export const listAll = (path = selectCurrentFolder(store.getState())) => {
   const paginatedListAll = (nextPageToken?: string) => {
     dispatch(setLoading(true));
     storageRef

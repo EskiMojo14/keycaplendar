@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
+import { selectPage } from "@s/common/commonSlice";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import {
   alphabeticalSort,
@@ -14,11 +15,10 @@ import {
   replaceFunction,
   uniqueArray,
 } from "@s/common/functions";
-import { Page } from "@s/common/types";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { setStorage } from "@s/settings/functions";
-import { setUserPresets } from "@s/user/userSlice";
+import { selectBought, selectFavorites, selectHidden, selectUserPresets, setUserPresets } from "@s/user/userSlice";
 import {
   allSorts,
   arraySorts,
@@ -44,6 +44,14 @@ import {
   mergeWhitelist,
   setAppPresets,
   setURLWhitelist,
+  selectAllSets,
+  selectSort,
+  selectSortOrder,
+  selectSearch,
+  selectWhitelist,
+  selectSetGroups,
+  selectFilteredSets,
+  selectAppPresets,
 } from "./mainSlice";
 import {
   OldPresetType,
@@ -62,7 +70,8 @@ const { dispatch } = store;
  * Tests whether a set would be shown on each page.
  * @param set Set to be tested.
  * @param favorites Array of set IDs which are favorited.
- * @param hidden Array of set IDs which are hidden
+ * @param bought Array of set IDs which are bought.
+ * @param hidden Array of set IDs which are hidden.
  * @returns Object with page keys, containing a boolean of if that set would be shown on the page.
  */
 
@@ -151,12 +160,7 @@ export const getData = () => {
     });
 };
 
-export const testSets = (setsParam?: SetType[]) => {
-  const {
-    main: { allSets },
-  } = store.getState();
-  const sets = setsParam || allSets;
-
+export const testSets = (sets = selectAllSets(store.getState())) => {
   const testValue = (set: SetType, key: string, value?: string) => {
     if (value) {
       const endSpace = /\s+$/m;
@@ -205,11 +209,10 @@ export const testSets = (setsParam?: SetType[]) => {
   });
 };
 
-const generateLists = (setsParam?: SetType[]) => {
+const generateLists = (sets = selectAllSets(store.getState())) => {
   const {
-    main: { allSets, currentPreset, urlWhitelist },
+    main: { currentPreset, urlWhitelist },
   } = store.getState();
-  const sets = setsParam || allSets;
 
   const allVendors = alphabeticalSort(
     uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
@@ -274,31 +277,20 @@ const generateLists = (setsParam?: SetType[]) => {
 };
 
 export const filterData = (
-  pageParam?: Page,
-  setsParam?: SetType[],
-  sortParam?: SortType,
-  sortOrderParam?: SortOrderType,
-  searchParam?: string,
-  whitelistParam?: WhitelistType,
-  favoritesParam?: string[],
-  boughtParam?: string[],
-  hiddenParam?: string[]
+  page = selectPage(store.getState()),
+  sets = selectAllSets(store.getState()),
+  sort = selectSort(store.getState()),
+  sortOrder = selectSortOrder(store.getState()),
+  search = selectSearch(store.getState()),
+  whitelist = selectWhitelist(store.getState()),
+  favorites = selectFavorites(store.getState()),
+  bought = selectBought(store.getState()),
+  hidden = selectHidden(store.getState())
 ) => {
   const {
-    common: { page: appPage },
-    main: { allSets, sort: mainSort, sortOrder: mainSortOrder, search: mainSearch, whitelist: mainWhitelist },
-    user: { user, favorites: userFavorites, bought: userBought, hidden: userHidden },
+    user: { user },
   } = store.getState();
-
-  const page = pageParam || appPage;
-  const sets = setsParam || allSets;
-  const sort = sortParam || mainSort;
-  const sortOrder = sortOrderParam || mainSortOrder;
-  const search = searchParam || mainSearch;
-  const whitelist = whitelistParam || mainWhitelist;
-  const favorites = favoritesParam || userFavorites;
-  const bought = boughtParam || userBought;
-  const hidden = hiddenParam || userHidden;
+  console.log(favorites);
 
   // filter bool functions
 
@@ -388,14 +380,11 @@ export const filterData = (
 
 const debouncedFilterData = debounce(filterData, 350, { trailing: true });
 
-const sortData = (sortParam?: SortType, sortOrderParam?: SortOrderType, groupsParam?: SetGroup[]) => {
-  const {
-    main: { sort: mainSort, sortOrder: mainSortOrder, setGroups },
-  } = store.getState();
-  const sort = sortParam || mainSort;
-  const sortOrder = sortOrderParam || mainSortOrder;
-  const groups = groupsParam || setGroups;
-
+const sortData = (
+  sort = selectSort(store.getState()),
+  sortOrder = selectSortOrder(store.getState()),
+  groups = selectSetGroups(store.getState())
+) => {
   const array = [...groups];
   array.sort((x, y) => {
     const a = x.title;
@@ -426,21 +415,11 @@ const sortData = (sortParam?: SortType, sortOrderParam?: SortOrderType, groupsPa
 };
 
 const createGroups = (
-  pageParam?: Page,
-  sortParam?: SortType,
-  sortOrderParam?: SortOrderType,
-  setsParam?: SetType[]
+  page = selectPage(store.getState()),
+  sort = selectSort(store.getState()),
+  sortOrder = selectSortOrder(store.getState()),
+  sets = selectFilteredSets(store.getState())
 ) => {
-  const {
-    common: { page: appPage },
-    main: { sort: mainSort, sortOrder: mainSortOrder, filteredSets },
-  } = store.getState();
-
-  const page = pageParam || appPage;
-  const sort = sortParam || mainSort;
-  const sortOrder = sortOrderParam || mainSortOrder;
-  const sets = setsParam || filteredSets;
-
   const createGroups = (sets: SetType[]): string[] => {
     if (arrayIncludes(dateSorts, sort)) {
       return sets
@@ -574,7 +553,7 @@ const createGroups = (
   if (sortHiddenCheck[sort].includes(page)) {
     const allGroupedSets = uniqueArray(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
 
-    const diff = filteredSets.length - allGroupedSets.length;
+    const diff = sets.length - allGroupedSets.length;
 
     if (diff > 0) {
       queue.notify({ title: diff + " sets hidden due to sort setting." });
@@ -811,11 +790,10 @@ export const deletePreset = (preset: PresetType) => {
   syncPresets(presets);
 };
 
-export const syncPresets = (presetsParam: PresetType[]) => {
+export const syncPresets = (presets = selectUserPresets(store.getState())) => {
   const {
-    user: { user, userPresets },
+    user: { user },
   } = store.getState();
-  const presets = presetsParam || userPresets;
   const sortedPresets = alphabeticalSortProp([...presets], "name", false, "Default").map((preset) => ({
     ...preset,
   }));
@@ -871,11 +849,7 @@ export const deleteGlobalPreset = (preset: PresetType) => {
   syncGlobalPresets(presets);
 };
 
-export const syncGlobalPresets = (presetsParam: PresetType[]) => {
-  const {
-    main: { appPresets },
-  } = store.getState();
-  const presets = presetsParam || appPresets;
+export const syncGlobalPresets = (presets = selectAppPresets(store.getState())) => {
   const filteredPresets = presets.filter((preset) => preset.id !== "default");
   const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
     ...preset,

@@ -6,7 +6,7 @@ import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import { alphabeticalSortProp, uniqueArray } from "@s/common/functions";
 import { getSetById } from "@s/main/functions";
-import { setLoading, setProcessedActions, setRecentSets, setTab } from "./historySlice";
+import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from "./historySlice";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 
 const { dispatch } = store;
@@ -74,11 +74,7 @@ export const processActions = (actions: PublicActionType[]) => {
   dispatch(setLoading(false));
 };
 
-export const generateSets = (actionsParam?: ProcessedPublicActionType[]) => {
-  const {
-    history: { processedActions },
-  } = store.getState();
-  const actions = actionsParam || processedActions;
+export const generateSets = (actions = selectProcessedActions(store.getState())) => {
   const ids = uniqueArray(actions.map((action) => action.documentId));
   const recentSets: RecentSet[] = ids.map((id) => {
     const filteredActions = alphabeticalSortProp(

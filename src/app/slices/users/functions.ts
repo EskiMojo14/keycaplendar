@@ -16,6 +16,12 @@ import {
   setRowsPerPage as setRowsPerPageFn,
   setSort as setUserSort,
   setView,
+  selectAllUsers,
+  selectSort,
+  selectReverseSort,
+  selectSortedUsers,
+  selectPage,
+  selectRowsPerPage,
 } from "./usersSlice";
 
 const { dispatch } = store;
@@ -49,14 +55,12 @@ export const getUsers = (append = false) => {
     });
 };
 
-export const sortUsers = (usersParam?: UserType[], sortParam?: keyof UserType, reverseSortParam?: boolean) => {
-  const {
-    users: { allUsers, sort: userSort, reverseSort: reverseUserSort },
-  } = store.getState();
-  const useUsers = usersParam || allUsers;
-  const sort = sortParam || userSort;
-  const reverseSort = reverseSortParam || reverseUserSort;
-  const sortedUsers = [...useUsers];
+export const sortUsers = (
+  users = selectAllUsers(store.getState()),
+  sort = selectSort(store.getState()),
+  reverseSort = selectReverseSort(store.getState())
+) => {
+  const sortedUsers = [...users];
   sortedUsers.sort((a, b) => {
     if (hasKey(a, sort) && hasKey(b, sort)) {
       const aVal = a[sort];
@@ -119,14 +123,12 @@ export const sortUsers = (usersParam?: UserType[], sortParam?: keyof UserType, r
   dispatch(setLoading(false));
 };
 
-export const paginateUsers = (usersParam?: UserType[], pageParam?: number, rowsPerPageParam?: number) => {
-  const {
-    users: { sortedUsers, page, rowsPerPage },
-  } = store.getState();
-  const users = usersParam || sortedUsers;
-  const pageNum = pageParam || page;
-  const rowsPerPageNum = rowsPerPageParam || rowsPerPage;
-  const paginatedUsers = users.slice((pageNum - 1) * rowsPerPageNum, pageNum * rowsPerPageNum);
+export const paginateUsers = (
+  users = selectSortedUsers(store.getState()),
+  page = selectPage(store.getState()),
+  rowsPerPage = selectRowsPerPage(store.getState())
+) => {
+  const paginatedUsers = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const firstIndex = users.indexOf(paginatedUsers[0]);
   const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
   dispatch(setPaginatedUsers(paginatedUsers));
