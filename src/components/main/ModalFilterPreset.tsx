@@ -119,6 +119,22 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
       >
         <div className="group">
           <div className="subheader">
+            <Typography use="caption">Hidden</Typography>
+          </div>
+          <div className="toggle-container">
+            <SegmentedButton toggle>
+              <SegmentedButtonSegment
+                disabled
+                label="Unhidden"
+                selected={props.preset.whitelist.hidden === "unhidden"}
+              />
+              <SegmentedButtonSegment disabled label="Hidden" selected={props.preset.whitelist.hidden === "hidden"} />
+              <SegmentedButtonSegment disabled label="All" selected={props.preset.whitelist.hidden === "all"} />
+            </SegmentedButton>
+          </div>
+        </div>
+        <div className="group">
+          <div className="subheader">
             <Typography use="caption">Favorites</Typography>
           </div>
           <div className="checkbox-container">
