@@ -135,14 +135,6 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
         </div>
         <div className="group">
           <div className="subheader">
-            <Typography use="caption">Hidden</Typography>
-          </div>
-          <div className="checkbox-container">
-            <Checkbox checked={props.preset.whitelist.hidden} disabled />
-          </div>
-        </div>
-        <div className="group">
-          <div className="subheader">
             <Typography use="caption">Profiles</Typography>
           </div>
           <div className="chip-set-container">

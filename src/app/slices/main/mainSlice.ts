@@ -69,7 +69,7 @@ const initialState: MainState = {
     edited: [],
     favorites: false,
     bought: false,
-    hidden: false,
+    hidden: "unhidden",
     profiles: [],
     shipped: ["Shipped", "Not shipped"],
     regions: [],
