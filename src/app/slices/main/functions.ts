@@ -26,6 +26,7 @@ import {
   pageSort,
   pageSortOrder,
   reverseSortDatePages,
+  showAllPages,
   sortHiddenCheck,
   whitelistParams,
 } from "./constants";
@@ -294,7 +295,7 @@ export const filterData = (
   // filter bool functions
 
   const hiddenBool = (set: SetType) => {
-    if (page === "favorites" || page === "bought" || (whitelist.hidden === "all" && user.email)) {
+    if (showAllPages.includes(page) || (whitelist.hidden === "all" && user.email)) {
       return true;
     } else if ((whitelist.hidden === "hidden" && user.email) || page === "hidden") {
       return hidden.includes(set.id);

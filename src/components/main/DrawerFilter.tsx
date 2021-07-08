@@ -3,7 +3,7 @@ import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common/commonSlice";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/common/functions";
 import {
   selectAllProfiles,
@@ -13,12 +13,12 @@ import {
   selectCurrentPreset,
   selectWhitelist,
 } from "@s/main/mainSlice";
-import { whitelistParams, whitelistShipped } from "@s/main/constants";
+import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings/settingsSlice";
-import { selectHidden, selectUser, selectUserPresets } from "@s/user/userSlice";
+import { selectUser, selectUserPresets } from "@s/user/userSlice";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -41,12 +41,12 @@ type DrawerFilterProps = {
 
 export const DrawerFilter = (props: DrawerFilterProps) => {
   const device = useAppSelector(selectDevice);
+  const page = useAppSelector(selectPage);
 
   const view = useAppSelector(selectView);
 
   const user = useAppSelector(selectUser);
   const userPresets = useAppSelector(selectUserPresets);
-  const hidden = useAppSelector(selectHidden);
 
   const profiles = useAppSelector(selectAllProfiles);
   const vendors = useAppSelector(selectAllVendors);
@@ -108,13 +108,16 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   const handleChange = (name: string, prop: string) => {
     if (hasKey(mainWhitelist, prop)) {
       const original = mainWhitelist[prop];
-      const edited = is<boolean>(original)
-        ? !original
-        : is<string[]>(original)
-        ? alphabeticalSort(addOrRemove(original, name))
-        : original === "include"
-        ? "exclude"
-        : "include";
+      let edited = original;
+      if (is<boolean>(original)) {
+        edited = !original;
+      } else if (is<string[]>(original)) {
+        edited = alphabeticalSort(addOrRemove(original, name));
+      } else if (original === "include" || original === "exclude") {
+        edited = original === "include" ? "exclude" : "include";
+      } else if (name === "unhidden" || name === "hidden" || name === "all") {
+        edited = name;
+      }
       setWhitelist(prop, edited);
     }
   };
@@ -344,6 +347,8 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     </>
   ) : null;
 
+  const disableHiddenButtons = showAllPages.includes(page) || page === "hidden";
+
   const userFilterOptions = user.email ? (
     <div className="group">
       <CollapsibleList
@@ -358,6 +363,28 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         }
         className="group-collapsible"
       >
+        <div className="filter-segmented-button-container">
+          <SegmentedButton toggle>
+            <SegmentedButtonSegment
+              label="Unhidden"
+              selected={mainWhitelist.hidden === "unhidden" && !showAllPages.includes(page) && !(page === "hidden")}
+              onClick={() => handleChange("unhidden", "hidden")}
+              disabled={disableHiddenButtons}
+            />
+            <SegmentedButtonSegment
+              label="Hidden"
+              selected={(mainWhitelist.hidden === "hidden" && !showAllPages.includes(page)) || page == "hidden"}
+              onClick={() => handleChange("hidden", "hidden")}
+              disabled={disableHiddenButtons}
+            />
+            <SegmentedButtonSegment
+              label="All"
+              selected={mainWhitelist.hidden === "all" || (showAllPages.includes(page) && !(page === "hidden"))}
+              onClick={() => handleChange("all", "hidden")}
+              disabled={disableHiddenButtons}
+            />
+          </SegmentedButton>
+        </div>
         <div className="filter-chip-container">
           <ChipSet choice>
             <Chip
@@ -372,8 +399,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
                 </svg>
               )}
-              selected={mainWhitelist.favorites}
+              selected={mainWhitelist.favorites || page === "favorites"}
               onInteraction={() => handleChange("favorites", "favorites")}
+              disabled={page === "favorites"}
             />
             <Chip
               label="Bought"
@@ -387,8 +415,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   <path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1zM12 4.8L14.8 9H9.2L12 4.8zM18.5 19l-12.99.01L3.31 11H20.7l-2.2 8zM12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                 </svg>
               )}
-              selected={mainWhitelist.bought}
+              selected={mainWhitelist.bought || page === "bought"}
               onInteraction={() => handleChange("bought", "bought")}
+              disabled={page === "bought"}
             />
           </ChipSet>
         </div>
