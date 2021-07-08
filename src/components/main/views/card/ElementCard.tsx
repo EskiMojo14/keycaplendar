@@ -139,7 +139,8 @@ export const ElementCard = (props: ElementCardProps) => {
     </Tooltip>
   ) : null;
   const hiddenIcon =
-    user.email && !user.isEditor ? (
+    user.email &&
+    !(user.isEditor || (user.isDesigner && props.set.designer && props.set.designer.includes(user.nickname))) ? (
       <Tooltip enterDelay={500} content={hidden.includes(props.set.id) ? "Unhide" : "Hide"} align="bottom">
         <CardActionIcon
           icon={iconObject(
