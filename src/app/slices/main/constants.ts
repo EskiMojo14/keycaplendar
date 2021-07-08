@@ -29,6 +29,10 @@ export const pageSortOrder: Record<MainPage, SortOrderType> = {
   hidden: "ascending",
 };
 
+/** Pages where hidden setting is ignored. */
+
+export const showAllPages: Page[] = ["favorites", "bought"];
+
 /** Pages to default to descending sort order if specified sort is a date. */
 
 export const reverseSortDatePages: Page[] = ["ic", "previous"];

@@ -26,6 +26,7 @@ import {
   pageSort,
   pageSortOrder,
   reverseSortDatePages,
+  showAllPages,
   sortHiddenCheck,
   whitelistParams,
 } from "./constants";
@@ -236,7 +237,7 @@ const generateLists = (sets = selectAllSets(store.getState())) => {
   // create default preset
 
   const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(false, false, false, allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
+    ...new Whitelist(false, false, "unhidden", allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
   };
 
   const defaultPreset: PresetType = { ...new Preset("Default", false, defaultWhitelist, "default") };
@@ -294,9 +295,9 @@ export const filterData = (
   // filter bool functions
 
   const hiddenBool = (set: SetType) => {
-    if (page === "favorites" || page === "bought") {
+    if (showAllPages.includes(page) || (whitelist.hidden === "all" && user.email)) {
       return true;
-    } else if ((whitelist.hidden && user.email) || page === "hidden") {
+    } else if ((whitelist.hidden === "hidden" && user.email) || page === "hidden") {
       return hidden.includes(set.id);
     } else {
       return !hidden.includes(set.id);
@@ -713,7 +714,12 @@ export const updatePreset = (preset: OldPresetType | PresetType): PresetType => 
       ? preset.whitelist.regions
       : allRegions;
   const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
-  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions, bought } };
+  const hidden = is<boolean>(preset.whitelist.hidden)
+    ? preset.whitelist.hidden
+      ? "hidden"
+      : "unhidden"
+    : preset.whitelist.hidden;
+  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions, bought, hidden } };
   return updatedPreset;
 };
 

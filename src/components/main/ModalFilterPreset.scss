@@ -37,6 +37,9 @@
       &:not(:last-child) {
         @include util.divider-border(bottom);
       }
+      &:last-child {
+        padding-bottom: 0;
+      }
       .subheader {
         margin-top: 16px;
       }
@@ -51,7 +54,10 @@
         }
       }
       .toggle-container {
-        padding-top: 16px;
+        padding: 16px 0;
+        & + .chip-set-container {
+          padding-top: 0;
+        }
       }
       .chip-set-container {
         padding: 16px 0;

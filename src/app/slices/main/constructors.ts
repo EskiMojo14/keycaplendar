@@ -15,7 +15,7 @@ export class Whitelist {
   edited: string[];
   favorites: boolean;
   bought: boolean;
-  hidden: boolean;
+  hidden: "unhidden" | "hidden" | "all";
 
   /**
    * @param favorites Whether to only display favorites.
@@ -32,7 +32,7 @@ export class Whitelist {
   constructor(
     favorites = false,
     bought = false,
-    hidden = false,
+    hidden: "unhidden" | "hidden" | "all" = "unhidden",
     profiles: string[] = [],
     shipped: WhitelistType["shipped"] = ["Shipped", "Not shipped"],
     regions: string[] = [],
