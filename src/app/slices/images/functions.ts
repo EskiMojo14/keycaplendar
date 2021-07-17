@@ -1,5 +1,8 @@
 import firebase from "@s/firebase/firebase";
 import store from "~/app/store";
+import { queue } from "~/app/snackbarQueue";
+import { alphabeticalSort, getStorageFolders } from "@s/common/functions";
+import { selectAllSets } from "@s/main/mainSlice";
 import {
   appendImages,
   selectCurrentFolder,
@@ -11,10 +14,8 @@ import {
   setLoading,
   setSetImages,
 } from "./imagesSlice";
-import { alphabeticalSort, getStorageFolders } from "@s/common/functions";
 import { ImageType } from "./types";
 import { ImageObj } from "./constructors";
-import { queue } from "~/app/snackbarQueue";
 
 const storage = firebase.storage();
 
@@ -22,10 +23,9 @@ const storageRef = storage.ref();
 
 const { dispatch } = store;
 
-export const createSetImageList = () => {
-  const {
-    main: { allSets },
-  } = store.getState();
+export const createSetImageList = (state = store.getState()) => {
+  const allSets = selectAllSets(state);
+
   const fileNameRegex = /keysets%2F(.*)\?/;
   const setImages = alphabeticalSort(
     allSets
@@ -90,7 +90,8 @@ export const getFolders = async () => {
   dispatch(setFolders(folders));
 };
 
-export const listAll = (path = selectCurrentFolder(store.getState())) => {
+export const listAll = (state = store.getState()) => {
+  const path = selectCurrentFolder(state);
   const paginatedListAll = (nextPageToken?: string) => {
     dispatch(setLoading(true));
     storageRef
@@ -112,5 +113,5 @@ export const listAll = (path = selectCurrentFolder(store.getState())) => {
 
 export const setFolder = (folder: string) => {
   dispatch(setCurrentFolder(folder));
-  listAll(folder);
+  listAll();
 };

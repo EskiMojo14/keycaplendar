@@ -6,9 +6,7 @@ import { ChangelogId } from "@s/firebase/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import {
   selectAllActions,
-  selectFilterAction,
   selectFilteredActions,
-  selectFilterUser,
   selectLoading,
   setFilterAction,
   setFilterUser,
@@ -56,9 +54,6 @@ export const ContentAudit = (props: ContentAuditProps) => {
   const allAuditActions = useAppSelector(selectAllActions);
   const filteredActions = useAppSelector(selectFilteredActions);
 
-  const auditFilterAction = useAppSelector(selectFilterAction);
-  const auditFilterUser = useAppSelector(selectFilterUser);
-
   const blankAction: ActionType = {
     before: new Keyset(),
     after: new Keyset(),
@@ -104,13 +99,13 @@ export const ContentAudit = (props: ContentAuditProps) => {
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
     if (prop === "filterUser") {
       dispatch(setFilterUser(e.target.value));
-      filterActions(allAuditActions, auditFilterAction, e.target.value);
+      filterActions();
     } else if (
       prop === "filterAction" &&
       arrayIncludes(["none", "created", "updated", "deleted"] as const, e.target.value)
     ) {
       dispatch(setFilterAction(e.target.value));
-      filterActions(allAuditActions, e.target.value, auditFilterUser);
+      filterActions();
     }
   };
 
@@ -172,12 +167,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
         })}
       >
         <div className="main extended-app-bar">
-          <DrawerAuditFilter
-            open={filterOpen}
-            close={closeFilter}
-            handleFilterChange={handleFilterChange}
-            getActions={getActions}
-          />
+          <DrawerAuditFilter open={filterOpen} close={closeFilter} handleFilterChange={handleFilterChange} />
           <ConditionalWrapper
             condition={device === "desktop"}
             wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}

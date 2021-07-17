@@ -2,7 +2,7 @@ import React from "react";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
-import { formatBytes, hasKey, ordinal } from "@s/common/functions";
+import { formatBytes, objectKeys, ordinal } from "@s/common/functions";
 import { ImageType } from "@s/images/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -56,21 +56,21 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           <div className="subheader">
             <Typography use="caption">Image</Typography>
           </div>
-          {Object.keys(imageProps).map((key) => (
+          {objectKeys(imageProps).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{hasKey(imageProps, key) ? imageProps[key] : null}</ListItemPrimaryText>
-                <ListItemSecondaryText>{hasKey(props.image, key) ? props.image[key] : null}</ListItemSecondaryText>
+                <ListItemPrimaryText>{imageProps[key]}</ListItemPrimaryText>
+                <ListItemSecondaryText>{props.image[key]}</ListItemSecondaryText>
               </ListItemText>
             </ListItem>
           ))}
           <div className="subheader">
             <Typography use="caption">Metadata</Typography>
           </div>
-          {Object.keys(metadata).map((key) => (
+          {objectKeys(metadata).map((key) => (
             <ListItem key={key} disabled>
               <ListItemText>
-                <ListItemPrimaryText>{hasKey(metadata, key) ? metadata[key] : null}</ListItemPrimaryText>
+                <ListItemPrimaryText>{metadata[key]}</ListItemPrimaryText>
                 <ListItemSecondaryText>
                   {key === "updated" || key === "timeCreated"
                     ? DateTime.fromISO(props.metadata[key], { zone: "utc" }).toFormat(

@@ -3,7 +3,16 @@ import firebase from "@s/firebase/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setStatisticsData, setLoading, setStatisticsSetting, setStatisticsSort, setStatsTab } from "./statisticsSlice";
+import {
+  setStatisticsData,
+  setLoading,
+  setStatisticsSetting,
+  setStatisticsSort,
+  setStatsTab,
+  selectTab,
+  selectData,
+  selectSort,
+} from "./statisticsSlice";
 import {
   DurationData,
   ShippedData,
@@ -24,13 +33,11 @@ const storage = firebase.storage();
 
 const { dispatch } = store;
 
-export const setStatisticsTab = (tab: StatsTab, clearUrl = true) => {
-  const {
-    statistics: { tab: statsTab },
-  } = store.getState();
+export const setStatisticsTab = (tab: StatsTab, clearUrl = true, state = store.getState()) => {
+  const statsTab = selectTab(state);
+  dispatch(setStatsTab(tab));
   if (statsTab !== tab) {
     document.documentElement.scrollTop = 0;
-    dispatch(setStatsTab(tab));
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
@@ -83,10 +90,10 @@ export const getData = async () => {
     });
 };
 
-export const sortData = () => {
-  const {
-    statistics: { tab: statisticsTab, data: statisticsData, sort },
-  } = store.getState();
+export const sortData = (state = store.getState()) => {
+  const statisticsTab = selectTab(state);
+  const statisticsData = selectData(state);
+  const sort = selectSort(state);
   dispatch(setLoading(true));
   const key = statisticsTab + "Data";
   if (hasKey(statisticsData, key)) {

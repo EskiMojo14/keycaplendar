@@ -3,13 +3,14 @@ import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { setCookies, setSettings, toggleLich } from "./settingsSlice";
+import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from "./settingsSlice";
 import { ViewType } from "./types";
 import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/common/functions";
 import { whitelistParams } from "@s/main/constants";
-import { setTransition } from "@s/main/mainSlice";
+import { selectLoading, selectURLWhitelist, setTransition } from "@s/main/mainSlice";
 import { selectPreset } from "@s/main/functions";
+import { selectUser } from "@s/user/userSlice";
 
 const { dispatch } = store;
 
@@ -23,10 +24,8 @@ export const clearCookies = () => {
   setCookie("accepted", "false", -1);
 };
 
-export const setCookie = (cname: string, cvalue: string, exdays: number) => {
-  const {
-    settings: { cookies },
-  } = store.getState();
+export const setCookie = (cname: string, cvalue: string, exdays: number, state = store.getState()) => {
+  const cookies = selectCookies(state);
   if (cookies || cname === "accepted") {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
@@ -51,10 +50,8 @@ export const getCookie = (cname: string) => {
   return "";
 };
 
-export const setStorage = (name: string, value: any) => {
-  const {
-    settings: { cookies },
-  } = store.getState();
+export const setStorage = (name: string, value: any, state = store.getState()) => {
+  const cookies = selectCookies(state);
   if (cookies) {
     localStorage.setItem(name, JSON.stringify(value));
   }
@@ -65,12 +62,10 @@ export const getStorage = (name: string) => {
   return value ? JSON.parse(value) : value;
 };
 
-export const checkStorage = () => {
+export const checkStorage = (state = store.getState()) => {
   const accepted = getCookie("accepted");
-  const {
-    main: { urlWhitelist },
-    settings,
-  } = store.getState();
+  const { settings } = state;
+  const urlWhitelist = selectURLWhitelist(state);
   if (accepted && accepted === "true") {
     dispatch(setCookies(true));
 
@@ -123,11 +118,9 @@ export const checkStorage = () => {
   }
 };
 
-export const setView = (view: ViewType, write = true) => {
-  const {
-    settings,
-    main: { loading },
-  } = store.getState();
+export const setView = (view: ViewType, write = true, state = store.getState()) => {
+  const { settings } = state;
+  const loading = selectLoading(state);
   if (view !== settings.view && !loading) {
     dispatch(setTransition(true));
     setTimeout(() => {
@@ -146,11 +139,9 @@ export const setView = (view: ViewType, write = true) => {
   }
 };
 
-export const setSyncSettings = (bool: boolean, write = true) => {
-  const {
-    settings,
-    user: { user },
-  } = store.getState();
+export const setSyncSettings = (bool: boolean, write = true, state = store.getState()) => {
+  const { settings } = state;
+  const user = selectUser(state);
   dispatch(setSettings({ syncSettings: bool }));
   if (write) {
     const settingsObject: { [key: string]: any } = {};
@@ -172,13 +163,19 @@ export const setSyncSettings = (bool: boolean, write = true) => {
   }
 };
 
-export const syncSetting = (setting: string, value: any) => {
-  const {
-    user: { user },
-    settings: { syncSettings },
-  } = store.getState();
+export const syncSetting = (setting: string, value: any, state = store.getState()) => {
+  const user = selectUser(state);
+  const syncSettings = selectSyncSettings(state);
   if (user.id && syncSettings) {
     const userDocRef = typedFirestore.collection("users").doc(user.id as UserId);
+    const sync = () => {
+      const settingObject: { [key: string]: any } = {};
+      settingObject[`settings.${setting}`] = value;
+      userDocRef.update(settingObject).catch((error) => {
+        console.log("Failed to sync settings: " + error);
+        queue.notify({ title: "Failed to sync settings: " + error });
+      });
+    };
     userDocRef.get().then((doc) => {
       if (doc.exists) {
         sync();
@@ -194,19 +191,11 @@ export const syncSetting = (setting: string, value: any) => {
           });
       }
     });
-    const sync = () => {
-      const settingObject: { [key: string]: any } = {};
-      settingObject[`settings.${setting}`] = value;
-      userDocRef.update(settingObject).catch((error) => {
-        console.log("Failed to sync settings: " + error);
-        queue.notify({ title: "Failed to sync settings: " + error });
-      });
-    };
   }
 };
 
-const isDarkTheme = () => {
-  const { settings } = store.getState();
+const isDarkTheme = (state = store.getState()) => {
+  const { settings } = state;
   const manualBool = settings.applyTheme === "manual" && settings.manualTheme;
   const systemBool =
     settings.applyTheme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -220,8 +209,8 @@ const isDarkTheme = () => {
   return manualBool || systemBool || timedBool;
 };
 
-export const checkTheme = () => {
-  const { settings } = store.getState();
+export const checkTheme = (state = store.getState()) => {
+  const { settings } = state;
   const themeBool = isDarkTheme();
   const theme = settings.lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme;
   const html = document.documentElement;

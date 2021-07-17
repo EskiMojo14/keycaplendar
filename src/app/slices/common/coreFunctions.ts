@@ -218,24 +218,22 @@ export const getGlobals = () => {
     });
 };
 
-export const setPage = (page: Page) => {
+export const setPage = (page: Page, state = store.getState()) => {
   const {
     common: { page: appPage },
-    main: { loading, allSets, urlSet, linkedFavorites },
+    main: { loading, urlSet, linkedFavorites },
     guides: { urlEntry: urlGuide },
     updates: { urlEntry: urlUpdate },
-  } = store.getState();
+  } = state;
   if (page !== appPage && !loading && is<Page>(page)) {
     dispatch(setTransition(true));
     setTimeout(() => {
       dispatch(setMainSearch(""));
+      dispatch(setAppPage(page));
       if (arrayIncludes(mainPages, page)) {
-        filterData(page, allSets, pageSort[page], pageSortOrder[page], "");
-        dispatch(setAppPage(page));
         dispatch(setMainSort(pageSort[page]));
         dispatch(setMainSortOrder(pageSortOrder[page]));
-      } else {
-        dispatch(setAppPage(page));
+        filterData(store.getState());
       }
       document.documentElement.scrollTop = 0;
     }, 90);

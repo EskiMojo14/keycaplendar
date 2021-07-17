@@ -11,10 +11,10 @@ import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } fr
 
 const { dispatch } = store;
 
-export const setHistoryTab = (tab: HistoryTab, clearUrl = true) => {
+export const setHistoryTab = (tab: HistoryTab, clearUrl = true, state = store.getState()) => {
   const {
     history: { tab: historyTab },
-  } = store.getState();
+  } = state;
   if (historyTab !== tab) {
     document.documentElement.scrollTop = 0;
     dispatch(setTab(tab));
@@ -44,7 +44,7 @@ export const getData = () => {
 };
 
 export const processActions = (actions: PublicActionType[]) => {
-  const processedActions: ProcessedPublicActionType[] = [...actions].map((action) => {
+  const processedActions: ProcessedPublicActionType[] = actions.map((action) => {
     const { before, after, ...restAction } = action;
     const title =
       action.action !== "deleted"
@@ -74,7 +74,8 @@ export const processActions = (actions: PublicActionType[]) => {
   dispatch(setLoading(false));
 };
 
-export const generateSets = (actions = selectProcessedActions(store.getState())) => {
+export const generateSets = (state = store.getState()) => {
+  const actions = selectProcessedActions(state);
   const ids = uniqueArray(actions.map((action) => action.documentId));
   const recentSets: RecentSet[] = ids.map((id) => {
     const filteredActions = alphabeticalSortProp(

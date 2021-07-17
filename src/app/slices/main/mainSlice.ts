@@ -143,7 +143,7 @@ export const mainSlice = createSlice({
     },
     mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
       const edited = uniqueArray([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
-      state.whitelist = Object.assign(state.whitelist, action.payload, { edited: edited });
+      state.whitelist = Object.assign(state.whitelist, action.payload, { edited });
     },
     setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
       state.urlWhitelist = action.payload;
@@ -222,5 +222,7 @@ export const selectDefaultPreset = (state: RootState) => state.main.defaultPrese
 export const selectAppPresets = (state: RootState) => state.main.appPresets;
 
 export const selectLinkedFavorites = (state: RootState) => state.main.linkedFavorites;
+
+export const selectURLWhitelist = (state: RootState) => state.main.urlWhitelist;
 
 export default mainSlice.reducer;

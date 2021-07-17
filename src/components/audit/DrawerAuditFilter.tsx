@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit/auditSlice";
+import { getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common/commonSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -13,7 +14,6 @@ import "./DrawerAuditFilter.scss";
 
 type DrawerAuditFilterProps = {
   close: () => void;
-  getActions: (num: number) => void;
   handleFilterChange: (e: any, prop: string) => void;
   open: boolean;
 };
@@ -34,16 +34,11 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
         <IconButton className="close-icon" icon="close" onClick={props.close} />
       </Tooltip>
     ) : null;
-  const getActions = (num: number) => {
-    if (length !== num) {
-      props.getActions(num);
-    }
-  };
   const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
     dispatch(setLength(length));
-    if (length >= 50 && length % 50 === 0) {
-      getActions(length);
+    if (length >= 50 && length % 50 === 0 && length <= 250) {
+      getActions();
     }
   };
   return (
@@ -74,8 +69,8 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
               onInput={(e) => {
                 dispatch(setLength(e.detail.value));
               }}
-              onChange={(e) => {
-                getActions(e.detail.value);
+              onChange={() => {
+                getActions();
               }}
             />
             <TextField

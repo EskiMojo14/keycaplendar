@@ -5,9 +5,9 @@ import {
   selectAllActions,
   selectFilterAction,
   selectFilterUser,
+  selectLength,
   setAllActions,
   setFilteredActions,
-  setLength,
   setLoading,
   setUsers,
 } from "./auditSlice";
@@ -18,19 +18,13 @@ import { typedFirestore } from "@s/firebase/firestore";
 
 const { dispatch } = store;
 
-export const getActions = (num?: number) => {
-  const {
-    audit: { length },
-  } = store.getState();
-  const auditLength = num || length;
+export const getActions = (state = store.getState()) => {
+  const length = selectLength(state);
   dispatch(setLoading(true));
-  if (auditLength !== length) {
-    dispatch(setLength(auditLength));
-  }
   typedFirestore
     .collection("changelog")
     .orderBy("timestamp", "desc")
-    .limit(auditLength)
+    .limit(length)
     .get()
     .then((querySnapshot) => {
       const actions: ActionType[] = [];
@@ -56,8 +50,6 @@ export const getActions = (num?: number) => {
       dispatch(setUsers(users));
 
       processActions(actions);
-
-      dispatch(setAllActions(actions));
     })
     .catch((error) => {
       queue.notify({ title: "Error getting data: " + error });
@@ -66,7 +58,7 @@ export const getActions = (num?: number) => {
 };
 
 const processActions = (actions: ActionType[]) => {
-  const processedActions: ActionType[] = [...actions].map((action) => {
+  const processedActions: ActionType[] = actions.map((action) => {
     const { before, after, ...restAction } = action;
     if (before && after) {
       auditProperties.forEach((prop) => {
@@ -85,15 +77,17 @@ const processActions = (actions: ActionType[]) => {
     };
   });
 
-  filterActions(processedActions);
+  dispatch(setAllActions(processedActions));
+
+  filterActions(store.getState());
 };
 
-export const filterActions = (
-  allActions = selectAllActions(store.getState()),
-  filterAction = selectFilterAction(store.getState()),
-  filterUser = selectFilterUser(store.getState())
-) => {
-  let filteredActions = [...allActions];
+export const filterActions = (state = store.getState()) => {
+  const allActions = selectAllActions(state);
+  const filterAction = selectFilterAction(state);
+  const filterUser = selectFilterUser(state);
+
+  let filteredActions = allActions;
 
   if (filterAction !== "none") {
     filteredActions = filteredActions.filter((action) => {
