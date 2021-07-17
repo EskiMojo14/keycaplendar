@@ -83,7 +83,7 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
  */
 
 export const alphabeticalSort = (array: string[], descending = false) => {
-  array.sort((a, b) => {
+  return array.sort((a, b) => {
     const x = a.toLowerCase();
     const y = b.toLowerCase();
     if (x < y) {
@@ -94,7 +94,31 @@ export const alphabeticalSort = (array: string[], descending = false) => {
     }
     return 0;
   });
-  return array;
+};
+
+/**
+ * Creates a function to pass to sort an array of strings in alphabetical order.
+ * @param descending Whether to sort the items in descending order. Defaults to false.
+ * @param hoist Value to be hoisted to beginning of array.
+ * @returns Function to pass `a` and `b` to
+ * @example arr.sort(alphabeticalSortCurried())
+ * @example arr.sort(alphabeticalSortCurried(true))
+ * @example arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
+ */
+
+export const alphabeticalSortCurried = (descending = false, hoist?: string) => (a: string, b: string) => {
+  const x = a.toLowerCase();
+  const y = b.toLowerCase();
+  if (hoist && (x === hoist.toLowerCase() || y === hoist.toLowerCase())) {
+    return x === hoist ? -1 : 1;
+  }
+  if (x < y) {
+    return descending ? 1 : -1;
+  }
+  if (x > y) {
+    return descending ? -1 : 1;
+  }
+  return 0;
 };
 
 /**

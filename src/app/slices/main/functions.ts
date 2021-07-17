@@ -8,6 +8,7 @@ import { selectPage } from "@s/common/commonSlice";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import {
   alphabeticalSort,
+  alphabeticalSortCurried,
   alphabeticalSortProp,
   arrayIncludes,
   hasKey,
@@ -492,17 +493,10 @@ const createGroups = (state = store.getState()) => {
     });
     const defaultSort = arrayIncludes(mainPages, page) ? pageSort[page] : "icDate";
     const defaultSortOrder = arrayIncludes(mainPages, page) ? pageSortOrder[page] : "descending";
-    const alphabeticalSort = (a: string, b: string) => {
-      if (a > b) {
-        return 1;
-      } else if (a < b) {
-        return -1;
-      }
-      return 0;
-    };
     const dateSort = (a: SetType, b: SetType, prop = sort, order = sortOrder) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+      const nameSort = alphabeticalSortCurried()(aName, bName);
       if (arrayIncludes(dateSorts, prop)) {
         const aProp = a[prop];
         const aDate = aProp && !aProp.includes("Q") ? DateTime.fromISO(aProp, { zone: "utc" }) : null;
@@ -515,19 +509,20 @@ const createGroups = (state = store.getState()) => {
           } else if (aDate < bDate) {
             return -returnVal;
           }
-          return alphabeticalSort(aName, bName);
+          return nameSort;
         }
-        return alphabeticalSort(aName, bName);
+        return nameSort;
       }
-      return alphabeticalSort(aName, bName);
+      return nameSort;
     };
     filteredSets.sort((a, b) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
+      const nameSort = alphabeticalSortCurried()(aName, bName);
       if (arrayIncludes(dateSorts, sort)) {
         if (sort === "gbLaunch" && (a.gbMonth || b.gbMonth)) {
           if (a.gbMonth && b.gbMonth) {
-            return alphabeticalSort(aName, bName);
+            return nameSort;
           } else {
             return a.gbMonth ? 1 : -1;
           }
@@ -536,7 +531,7 @@ const createGroups = (state = store.getState()) => {
       } else if (arrayIncludes(dateSorts, defaultSort)) {
         return dateSort(a, b, defaultSort, defaultSortOrder);
       }
-      return alphabeticalSort(aName, bName);
+      return nameSort;
     });
     return filteredSets;
   };
