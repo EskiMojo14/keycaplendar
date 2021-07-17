@@ -150,11 +150,11 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSortProp = <O extends Record<string, unknown>>(
+export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O>(
   array: O[],
-  prop: keyof O,
+  prop: K,
   descending = false,
-  hoist?: O[keyof O]
+  hoist?: O[K]
 ) => array.sort(alphabeticalSortPropCurried(prop, descending, hoist));
 
 /**
