@@ -5,12 +5,24 @@ import debounce from "lodash.debounce";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
+import { selectPage } from "@s/common/commonSlice";
 import { addOrRemove, hasKey } from "@s/common/functions";
-import { setLinkedFavorites } from "@s/main/mainSlice";
+import { selectWhitelist, setLinkedFavorites } from "@s/main/mainSlice";
 import { whitelistParams } from "@s/main/constants";
 import { filterData, selectPreset, updatePreset } from "@s/main/functions";
 import { getStorage, setSyncSettings, settingFns } from "@s/settings/functions";
-import { setBought, setFavorites, setFavoritesId, setHidden, setShareName, setUserPresets } from "./userSlice";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+  setBought,
+  setFavorites,
+  setFavoritesId,
+  setHidden,
+  setShareName,
+  setUserPresets,
+} from "./userSlice";
 import { setShareNameLoading } from "@s/settings/settingsSlice";
 
 const { dispatch } = store;
@@ -102,12 +114,11 @@ export const getUserPreferences = (id: string) => {
   }
 };
 
-export const toggleFavorite = (id: string) => {
-  const {
-    common: { page },
-    main: { whitelist },
-    user: { user, favorites: userFavorites },
-  } = store.getState();
+export const toggleFavorite = (id: string, state = store.getState()) => {
+  const page = selectPage(state);
+  const whitelist = selectWhitelist(state);
+  const user = selectUser(state);
+  const userFavorites = selectFavorites(state);
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
   if (page === "favorites" || whitelist.favorites) {
@@ -130,12 +141,11 @@ export const toggleFavorite = (id: string) => {
   }
 };
 
-export const toggleBought = (id: string) => {
-  const {
-    common: { page },
-    main: { whitelist },
-    user: { user, bought: userBought },
-  } = store.getState();
+export const toggleBought = (id: string, state = store.getState()) => {
+  const page = selectPage(state);
+  const whitelist = selectWhitelist(state);
+  const user = selectUser(state);
+  const userBought = selectBought(state);
   const bought = addOrRemove([...userBought], id);
   dispatch(setBought(bought));
   if (page === "bought" || whitelist.bought) {
@@ -158,11 +168,10 @@ export const toggleBought = (id: string) => {
   }
 };
 
-export const toggleHidden = (id: string) => {
-  const {
-    common: { page },
-    user: { user, hidden: userHidden },
-  } = store.getState();
+export const toggleHidden = (id: string, state = store.getState()) => {
+  const page = selectPage(state);
+  const user = selectUser(state);
+  const userHidden = selectHidden(state);
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
   if (page !== "favorites" && page !== "bought") {
@@ -199,10 +208,8 @@ export const toggleHidden = (id: string) => {
   }
 };
 
-export const syncShareName = (shareName: string) => {
-  const {
-    user: { user },
-  } = store.getState();
+export const syncShareName = (shareName: string, state = store.getState()) => {
+  const user = selectUser(state);
   dispatch(setShareNameLoading(true));
   typedFirestore
     .collection("users")
@@ -224,10 +231,8 @@ export const syncShareName = (shareName: string) => {
 
 export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: true });
 
-export const syncFavoritesId = (id: string) => {
-  const {
-    user: { user },
-  } = store.getState();
+export const syncFavoritesId = (id: string, state = store.getState()) => {
+  const user = selectUser(state);
   typedFirestore
     .collection("users")
     .doc(user.id as UserId)
@@ -252,7 +257,7 @@ export const getLinkedFavorites = (id: string) => {
       const data = result.data;
       if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
-        filterData();
+        filterData(store.getState());
       }
     })
     .catch((error) => {
