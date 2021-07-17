@@ -22,16 +22,16 @@ import {
   selectSortedUsers,
   selectPage,
   selectRowsPerPage,
+  selectNextPageToken,
 } from "./usersSlice";
 
 const { dispatch } = store;
 
 const length = 1000;
 
-export const getUsers = (append = false) => {
-  const {
-    users: { nextPageToken, allUsers },
-  } = store.getState();
+export const getUsers = (append = false, state = store.getState()) => {
+  const nextPageToken = selectNextPageToken(state);
+  const allUsers = selectAllUsers(state);
   dispatch(setLoading(true));
   const listUsersFn = firebase.functions().httpsCallable("listUsers");
   listUsersFn({ length: length, nextPageToken: nextPageToken })
@@ -43,9 +43,9 @@ export const getUsers = (append = false) => {
         } else {
           dispatch(setLoading(false));
           const newUsers = append ? [...allUsers, ...result.data.users] : [...result.data.users];
-          sortUsers(newUsers);
           dispatch(setAllUsers(newUsers));
           dispatch(setNextPageToken(result.data.nextPageToken ? result.data.nextPageToken : ""));
+          sortUsers(store.getState());
         }
       }
     })
@@ -55,11 +55,10 @@ export const getUsers = (append = false) => {
     });
 };
 
-export const sortUsers = (
-  users = selectAllUsers(store.getState()),
-  sort = selectSort(store.getState()),
-  reverseSort = selectReverseSort(store.getState())
-) => {
+export const sortUsers = (state = store.getState()) => {
+  const users = selectAllUsers(state);
+  const sort = selectSort(state);
+  const reverseSort = selectReverseSort(state);
   const sortedUsers = [...users];
   sortedUsers.sort((a, b) => {
     if (hasKey(a, sort) && hasKey(b, sort)) {
@@ -119,15 +118,14 @@ export const sortUsers = (
     }
   });
   dispatch(setSortedUsers(sortedUsers));
-  paginateUsers(sortedUsers);
   dispatch(setLoading(false));
+  paginateUsers(store.getState());
 };
 
-export const paginateUsers = (
-  users = selectSortedUsers(store.getState()),
-  page = selectPage(store.getState()),
-  rowsPerPage = selectRowsPerPage(store.getState())
-) => {
+export const paginateUsers = (state = store.getState()) => {
+  const users = selectSortedUsers(state);
+  const page = selectPage(state);
+  const rowsPerPage = selectRowsPerPage(state);
   const paginatedUsers = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const firstIndex = users.indexOf(paginatedUsers[0]);
   const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
@@ -136,21 +134,15 @@ export const paginateUsers = (
 };
 
 export const setRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const {
-    users: { sortedUsers },
-  } = store.getState();
   const val = parseInt(e.target.value);
   dispatch(setRowsPerPageFn(val));
   dispatch(setPageFn(1));
-  paginateUsers(sortedUsers, 1, val);
+  paginateUsers(store.getState());
 };
 
 export const setPage = (num: number) => {
-  const {
-    users: { sortedUsers },
-  } = store.getState();
   dispatch(setPageFn(num));
-  paginateUsers(sortedUsers, num);
+  paginateUsers(store.getState());
 };
 
 export const setViewIndex = (index: number) => {
@@ -158,10 +150,9 @@ export const setViewIndex = (index: number) => {
   dispatch(setView(views[index]));
 };
 
-export const setSort = (sort: keyof UserType) => {
-  const {
-    users: { allUsers, sort: userSort, reverseSort: reverseUserSort },
-  } = store.getState();
+export const setSort = (sort: keyof UserType, state = store.getState()) => {
+  const userSort = selectSort(state);
+  const reverseUserSort = selectReverseSort(state);
   let reverseSort;
   if (sort === userSort) {
     reverseSort = !reverseUserSort;
@@ -171,13 +162,10 @@ export const setSort = (sort: keyof UserType) => {
   dispatch(setPageFn(1));
   dispatch(setUserSort(sort));
   dispatch(setReverseUserSort(reverseSort));
-  sortUsers(allUsers, sort, reverseSort);
+  sortUsers(store.getState());
 };
 
 export const setSortIndex = (index: number) => {
-  const {
-    users: { allUsers },
-  } = store.getState();
   const props = [
     "displayName",
     "email",
@@ -192,5 +180,5 @@ export const setSortIndex = (index: number) => {
   dispatch(setPageFn(1));
   dispatch(setUserSort(props[index]));
   dispatch(setReverseUserSort(false));
-  sortUsers(allUsers, props[index], false);
+  sortUsers(store.getState());
 };
