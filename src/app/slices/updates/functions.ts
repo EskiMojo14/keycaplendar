@@ -2,6 +2,7 @@ import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UpdateId } from "@s/firebase/types";
+import { alphabeticalSortPropCurried } from "@s/common/functions";
 import { setEntries, setLoading } from "./updatesSlice";
 import { UpdateEntryType } from "./types";
 
@@ -36,7 +37,10 @@ const sortEntries = (entries: UpdateEntryType[]) => {
     if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
       return a.pinned ? -1 : 1;
     } else {
-      return a.date > b.date ? -1 : 1;
+      return (
+        alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("date")(a, b) ||
+        alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("title")(a, b)
+      );
     }
   });
   dispatch(setEntries(sortedEntries));

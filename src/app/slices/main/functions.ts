@@ -394,23 +394,9 @@ const sortData = (state = store.getState()) => {
     if (arrayIncludes(dateSorts, sort)) {
       const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
       const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
-      if (aDate < bDate) {
-        return sortOrder === "ascending" ? -1 : 1;
-      }
-      if (aDate > bDate) {
-        return sortOrder === "ascending" ? 1 : -1;
-      }
-    } else {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return sortOrder === "ascending" ? -1 : 1;
-      }
-      if (x > y) {
-        return sortOrder === "ascending" ? 1 : -1;
-      }
+      return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
     }
-    return 0;
+    return alphabeticalSortCurried()(a, b);
   });
 
   dispatch(setSetGroups(array));
@@ -449,23 +435,9 @@ const createGroups = (state = store.getState()) => {
     if (arrayIncludes(dateSorts, sort)) {
       const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
       const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
-      if (aDate < bDate) {
-        return sortOrder === "ascending" ? -1 : 1;
-      }
-      if (aDate > bDate) {
-        return sortOrder === "ascending" ? 1 : -1;
-      }
-    } else {
-      const x = a.toLowerCase();
-      const y = b.toLowerCase();
-      if (x < y) {
-        return sortOrder === "ascending" ? -1 : 1;
-      }
-      if (x > y) {
-        return sortOrder === "ascending" ? 1 : -1;
-      }
+      return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
     }
-    return 0;
+    return alphabeticalSortCurried()(a, b);
   });
 
   const filterSets = (sets: SetType[], group: string, sort: SortType) => {

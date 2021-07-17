@@ -2,7 +2,7 @@ import { is } from "typescript-is";
 import firebase from "@s/firebase/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { hasKey } from "@s/common/functions";
+import { alphabeticalSortCurried, alphabeticalSortPropCurried, hasKey } from "@s/common/functions";
 import { UserType } from "./types";
 import {
   setAllUsers,
@@ -68,50 +68,20 @@ export const sortUsers = (state = store.getState()) => {
         if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
           return aVal === "" ? 1 : -1;
         }
-        const x = aVal.toLowerCase();
-        const y = bVal.toLowerCase();
-        if (x < y) {
-          return reverseSort ? 1 : -1;
-        }
-        if (x > y) {
-          return reverseSort ? -1 : 1;
-        }
-        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-          return 1;
-        }
-        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-          return -1;
-        }
-        if (a.email.toLowerCase() > b.email.toLowerCase()) {
-          return 1;
-        }
-        if (a.email.toLowerCase() < b.email.toLowerCase()) {
-          return -1;
-        }
-        return 0;
+        return (
+          alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
+          alphabeticalSortPropCurried("nickname")(a, b) ||
+          alphabeticalSortPropCurried("email")(a, b)
+        );
       } else {
         if (aVal === null || bVal === null) {
           return aVal === null ? 1 : -1;
         }
-        if (aVal < bVal) {
-          return reverseSort ? -1 : 1;
-        }
-        if (aVal > bVal) {
-          return reverseSort ? 1 : -1;
-        }
-        if (a.nickname.toLowerCase() > b.nickname.toLowerCase()) {
-          return 1;
-        }
-        if (a.nickname.toLowerCase() < b.nickname.toLowerCase()) {
-          return -1;
-        }
-        if (a.email.toLowerCase() > b.email.toLowerCase()) {
-          return 1;
-        }
-        if (a.email.toLowerCase() < b.email.toLowerCase()) {
-          return -1;
-        }
-        return 0;
+        return (
+          alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
+          alphabeticalSortPropCurried("nickname")(a, b) ||
+          alphabeticalSortPropCurried("email")(a, b)
+        );
       }
     } else {
       return 0;

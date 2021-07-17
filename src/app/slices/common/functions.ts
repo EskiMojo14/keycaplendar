@@ -76,21 +76,26 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
 };
 
 /**
- * Creates a function to pass to sort an array of strings in alphabetical order.
+ * Creates a function to pass to sort an array of items in alphabetical order.
  * @param descending Whether to sort the items in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of array.
- * @returns Function to pass `a` and `b` strings to.
- * @example arr.sort(alphabeticalSortCurried())
- * @example arr.sort(alphabeticalSortCurried(true))
- * @example arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
+ * @returns Function to pass `a` and `b` to.
+ * @example
+ * arr.sort(alphabeticalSortCurried())
+ * @example
+ * arr.sort(alphabeticalSortCurried(true))
+ * @example
+ * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
+ * @example
+ * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
-export const alphabeticalSortCurried = (descending = false, hoist?: string) => (a: string, b: string) => {
+export const alphabeticalSortCurried = <T extends unknown>(descending = false, hoist?: T) => (a: T, b: T) => {
   if (hoist && (a === hoist || b === hoist) && a !== b) {
     return a === hoist ? -1 : 1;
   }
-  const x = a.toLowerCase();
-  const y = b.toLowerCase();
+  const x = is<string>(a) ? a.toLowerCase() : a;
+  const y = is<string>(b) ? b.toLowerCase() : b;
   if (x < y) {
     return descending ? 1 : -1;
   }
@@ -117,7 +122,10 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of `array`.
  * @returns Function to pass `a` and `b` objects to.
- * @example arr.sort(alphabeticalSortProp("key"))
+ * @example
+ * arr.sort(alphabeticalSortProp("key"))
+ * @example
+ * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
 export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O>(
