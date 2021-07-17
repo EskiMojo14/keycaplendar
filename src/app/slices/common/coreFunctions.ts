@@ -218,13 +218,13 @@ export const getGlobals = () => {
     });
 };
 
-export const setPage = (page: Page) => {
+export const setPage = (page: Page, state = store.getState()) => {
   const {
     common: { page: appPage },
     main: { loading, allSets, urlSet, linkedFavorites },
     guides: { urlEntry: urlGuide },
     updates: { urlEntry: urlUpdate },
-  } = store.getState();
+  } = state;
   if (page !== appPage && !loading && is<Page>(page)) {
     dispatch(setTransition(true));
     setTimeout(() => {
