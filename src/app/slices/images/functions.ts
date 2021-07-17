@@ -1,7 +1,7 @@
 import firebase from "@s/firebase/firebase";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { alphabeticalSort, getStorageFolders } from "@s/common/functions";
+import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/common/functions";
 import { selectAllSets } from "@s/main/mainSlice";
 import {
   appendImages,
@@ -56,13 +56,7 @@ const processItems = (items: firebase.storage.Reference[], append = false) => {
   images.sort((a, b) => {
     const nameA = a.name.replace(".png", "").toLowerCase();
     const nameB = b.name.replace(".png", "").toLowerCase();
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
+    return alphabeticalSortCurried()(nameA, nameB);
   });
   if (append) {
     dispatch(appendImages(images));
@@ -77,15 +71,9 @@ export const getFolders = async () => {
   const folders = await getStorageFolders();
   const sortOrder = ["thumbs", "card", "list", "image-list"];
   folders.sort((a, b) => {
-    const nameA = sortOrder.indexOf(a);
-    const nameB = sortOrder.indexOf(b);
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
+    const indexA = sortOrder.indexOf(a);
+    const indexB = sortOrder.indexOf(b);
+    return indexA - indexB;
   });
   dispatch(setFolders(folders));
 };

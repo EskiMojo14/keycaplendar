@@ -17,6 +17,7 @@ import {
   DurationData,
   ShippedData,
   ShippedDataObject,
+  StatisticsData,
   StatisticsSortType,
   StatisticsType,
   StatsTab,
@@ -26,7 +27,7 @@ import {
   VendorData,
   VendorDataObject,
 } from "./types";
-import { hasKey, mergeObject, ordinal } from "@s/common/functions";
+import { alphabeticalSortCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
@@ -97,6 +98,10 @@ export const sortData = (state = store.getState()) => {
   dispatch(setLoading(true));
   const key = statisticsTab + "Data";
   if (hasKey(statisticsData, key)) {
+    const setData = (data: StatisticsData[keyof StatisticsData]) => {
+      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+      dispatch(setLoading(false));
+    };
     const stateData = statisticsData[key];
     const tab = statisticsTab;
     if (tab === "duration") {
@@ -106,7 +111,7 @@ export const sortData = (state = store.getState()) => {
           const value = data[category][property];
           const sortedValue = value.slice().sort((a, b) => {
             if (a.name === "All" || b.name === "All") {
-              return a.name === "all" ? -1 : 1;
+              return a.name === "All" ? -1 : 1;
             }
             const x =
               sort[tab] === "alphabetical" ? a.name.toLowerCase() : a[sort[tab] === "duration" ? "mean" : "total"];
@@ -114,25 +119,12 @@ export const sortData = (state = store.getState()) => {
               sort[tab] === "alphabetical" ? b.name.toLowerCase() : b[sort[tab] === "duration" ? "mean" : "total"];
             const c = a.name.toLowerCase();
             const d = b.name.toLowerCase();
-            if (x < y) {
-              return sort[tab] === "alphabetical" ? -1 : 1;
-            }
-            if (x > y) {
-              return sort[tab] === "alphabetical" ? 1 : -1;
-            }
-            if (c < d) {
-              return -1;
-            }
-            if (c > d) {
-              return 1;
-            }
-            return 0;
+            return alphabeticalSortCurried(sort[tab] !== "alphabetical")(x, y) || alphabeticalSortCurried()(c, d);
           });
           data[category][property] = sortedValue;
         });
       });
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
-      dispatch(setLoading(false));
+      setData(data);
     } else if (tab === "timelines") {
       const data = cloneDeep(stateData) as TimelinesData;
       categories.forEach((category) => {
@@ -143,25 +135,12 @@ export const sortData = (state = store.getState()) => {
             const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
             const c = a.name.toLowerCase();
             const d = b.name.toLowerCase();
-            if (x < y) {
-              return sort[tab] === "alphabetical" ? -1 : 1;
-            }
-            if (x > y) {
-              return sort[tab] === "alphabetical" ? 1 : -1;
-            }
-            if (c < d) {
-              return -1;
-            }
-            if (c > d) {
-              return 1;
-            }
-            return 0;
+            return alphabeticalSortCurried(sort[tab] !== "alphabetical")(x, y) || alphabeticalSortCurried()(c, d);
           });
           data[category][property].data = sortedValue;
         });
       });
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
-      dispatch(setLoading(false));
+      setData(data);
     } else {
       const data = cloneDeep(stateData) as StatusData | ShippedData | VendorData;
       properties.forEach((properties) => {
@@ -173,27 +152,13 @@ export const sortData = (state = store.getState()) => {
             const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
             const c = a.name.toLowerCase();
             const d = b.name.toLowerCase();
-            if (x < y) {
-              return sort[tab] === "total" ? 1 : -1;
-            }
-            if (x > y) {
-              return sort[tab] === "total" ? -1 : 1;
-            }
-            if (c < d) {
-              return -1;
-            }
-            if (c > d) {
-              return 1;
-            }
-            return 0;
-          } else {
-            return 0;
+            return alphabeticalSortCurried(sort[tab] === "total")(x, y) || alphabeticalSortCurried()(c, d);
           }
+          return 0;
         });
         data[properties] = sortedValue;
       });
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
-      dispatch(setLoading(false));
+      setData(data);
     }
   }
 };
