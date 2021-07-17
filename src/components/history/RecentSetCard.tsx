@@ -5,7 +5,7 @@ import LazyLoad from "react-lazy-load";
 import { useAppSelector } from "~/app/hooks";
 import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
 import { setPage } from "@s/common/coreFunctions";
-import { arrayIncludes, hasKey, iconObject, ordinal } from "@s/common/functions";
+import { arrayIncludes, iconObject, objectKeys, ordinal } from "@s/common/functions";
 import { MainPage } from "@s/common/types";
 import { pageConditions } from "@s/main/functions";
 import { SetType } from "@s/main/types";
@@ -48,11 +48,8 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         hidden: false,
       };
       const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, bought, hidden) : falsePages;
-      const keysetPages = Object.keys(pageBools).filter((key) => {
-        if (hasKey(pageBools, key)) {
-          return pageBools[key];
-        }
-        return false;
+      const keysetPages = objectKeys(pageBools).filter((key) => {
+        return pageBools[key];
       });
       setPages(keysetPages);
     }

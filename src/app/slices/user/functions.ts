@@ -23,11 +23,7 @@ export const getUserPreferences = (id: string) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          const {
-            common: { page },
-            main: { allSets, sort, sortOrder, search, whitelist },
-            settings,
-          } = store.getState();
+          const { settings } = store.getState();
           const data = doc.data();
           if (data) {
             const {
@@ -40,8 +36,6 @@ export const getUserPreferences = (id: string) => {
               filterPresets,
               shareName,
             } = data;
-
-            filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought, hidden);
 
             if (shareName) {
               dispatch(setShareName(shareName));
@@ -96,6 +90,8 @@ export const getUserPreferences = (id: string) => {
                 });
               }
             }
+
+            filterData(store.getState());
           }
         }
       })
@@ -109,13 +105,13 @@ export const getUserPreferences = (id: string) => {
 export const toggleFavorite = (id: string) => {
   const {
     common: { page },
-    main: { allSets, sort, sortOrder, search, whitelist },
+    main: { whitelist },
     user: { user, favorites: userFavorites },
   } = store.getState();
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
   if (page === "favorites" || whitelist.favorites) {
-    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites);
+    filterData(store.getState());
   }
   if (user.id) {
     typedFirestore
@@ -137,13 +133,13 @@ export const toggleFavorite = (id: string) => {
 export const toggleBought = (id: string) => {
   const {
     common: { page },
-    main: { allSets, sort, sortOrder, search, whitelist },
-    user: { user, favorites, bought: userBought },
+    main: { whitelist },
+    user: { user, bought: userBought },
   } = store.getState();
   const bought = addOrRemove([...userBought], id);
   dispatch(setBought(bought));
   if (page === "bought" || whitelist.bought) {
-    filterData(page, allSets, sort, sortOrder, search, whitelist, favorites, bought);
+    filterData(store.getState());
   }
   if (user.id) {
     typedFirestore
@@ -165,13 +161,12 @@ export const toggleBought = (id: string) => {
 export const toggleHidden = (id: string) => {
   const {
     common: { page },
-    main: { allSets, sort, sortOrder, search, whitelist },
-    user: { user, favorites: userFavorites, bought: userBought, hidden: userHidden },
+    user: { user, hidden: userHidden },
   } = store.getState();
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
   if (page !== "favorites" && page !== "bought") {
-    filterData(page, allSets, sort, sortOrder, search, whitelist, userFavorites, userBought, hidden);
+    filterData(store.getState());
   }
   const isHidden = hidden.includes(id);
   queue.notify({

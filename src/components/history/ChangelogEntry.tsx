@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
 import { ActionSetType } from "@s/audit/types";
-import { arrayIncludes, hasKey, ordinal } from "@s/common/functions";
+import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/common/functions";
 import { KeysetDoc } from "@s/firebase/types";
 import { ProcessedPublicActionType } from "@s/history/types";
 import { VendorType } from "@s/main/types";
@@ -62,14 +62,14 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
 
   const constructRows = (dataObj = data, properties = auditProperties): React.ReactNode => {
     if (dataObj.data) {
-      return Object.keys(dataObj.data)
+      return objectKeys(dataObj.data)
         .sort(
           (a, b) =>
             properties.indexOf(a as keyof Omit<ActionSetType, "latestEditor">) -
             properties.indexOf(b as keyof Omit<ActionSetType, "latestEditor">)
         )
         .map((prop) => {
-          if (dataObj.data && hasKey(dataObj.data, prop)) {
+          if (dataObj.data) {
             const useData = dataObj.data[prop];
             let contents: React.ReactNode;
             if (is<string>(useData)) {

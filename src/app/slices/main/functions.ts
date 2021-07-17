@@ -12,13 +12,21 @@ import {
   arrayIncludes,
   hasKey,
   normalise,
+  objectKeys,
   replaceFunction,
   uniqueArray,
 } from "@s/common/functions";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { setStorage } from "@s/settings/functions";
-import { selectBought, selectFavorites, selectHidden, selectUserPresets, setUserPresets } from "@s/user/userSlice";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+  selectUserPresets,
+  setUserPresets,
+} from "@s/user/userSlice";
 import {
   allSorts,
   arraySorts,
@@ -53,6 +61,11 @@ import {
   selectSetGroups,
   selectFilteredSets,
   selectAppPresets,
+  selectLinkedFavorites,
+  selectCurrentPreset,
+  selectURLWhitelist,
+  selectAllRegions,
+  selectDefaultPreset,
 } from "./mainSlice";
 import {
   OldPresetType,
@@ -80,11 +93,10 @@ export const pageConditions = (
   set: SetType,
   favorites: string[],
   bought: string[],
-  hidden: string[]
+  hidden: string[],
+  state = store.getState()
 ): Record<typeof mainPages[number], boolean> => {
-  const {
-    main: { linkedFavorites },
-  } = store.getState();
+  const linkedFavorites = selectLinkedFavorites(state);
 
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
@@ -110,18 +122,13 @@ export const pageConditions = (
   };
 };
 
-export const getSetById = (id: string) => {
-  const {
-    main: { allSets },
-  } = store.getState();
+export const getSetById = (id: string, state = store.getState()) => {
+  const allSets = selectAllSets(state);
   const index = allSets.findIndex((set) => set.id === id);
   return index > -1 ? allSets[index] : null;
 };
 
 export const getData = () => {
-  const {
-    common: { page },
-  } = store.getState();
   dispatch(setLoading(true));
   typedFirestore
     .collection("keysets")
@@ -150,8 +157,8 @@ export const getData = () => {
 
       dispatch(setSetList({ name: "allSets", array: sets }));
 
-      filterData(page, sets);
-      generateLists(sets);
+      filterData(store.getState());
+      generateLists(store.getState());
     })
     .catch((error) => {
       console.log("Error getting data: " + error);
@@ -161,7 +168,8 @@ export const getData = () => {
     });
 };
 
-export const testSets = (sets = selectAllSets(store.getState())) => {
+export const testSets = (state = store.getState()) => {
+  const sets = selectAllSets(state);
   const testValue = (set: SetType, key: string, value?: string) => {
     if (value) {
       const endSpace = /\s+$/m;
@@ -210,10 +218,10 @@ export const testSets = (sets = selectAllSets(store.getState())) => {
   });
 };
 
-const generateLists = (sets = selectAllSets(store.getState())) => {
-  const {
-    main: { currentPreset, urlWhitelist },
-  } = store.getState();
+const generateLists = (state = store.getState()) => {
+  const sets = selectAllSets(state);
+  const currentPreset = selectCurrentPreset(state);
+  const urlWhitelist = selectURLWhitelist(state);
 
   const allVendors = alphabeticalSort(
     uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
@@ -245,17 +253,15 @@ const generateLists = (sets = selectAllSets(store.getState())) => {
   dispatch(setDefaultPreset(defaultPreset));
 
   const lists = {
-    allVendorRegions: allVendorRegions,
-    allRegions: allRegions,
-    allVendors: allVendors,
-    allDesigners: allDesigners,
-    allProfiles: allProfiles,
+    allVendorRegions,
+    allRegions,
+    allVendors,
+    allDesigners,
+    allProfiles,
   } as const;
 
-  Object.keys(lists).forEach((key) => {
-    if (hasKey(lists, key)) {
-      dispatch(setList({ name: key, array: lists[key] }));
-    }
+  objectKeys(lists).forEach((key) => {
+    dispatch(setList({ name: key, array: lists[key] }));
   });
 
   const params = new URLSearchParams(window.location.search);
@@ -277,20 +283,15 @@ const generateLists = (sets = selectAllSets(store.getState())) => {
   }
 };
 
-export const filterData = (
-  page = selectPage(store.getState()),
-  sets = selectAllSets(store.getState()),
-  sort = selectSort(store.getState()),
-  sortOrder = selectSortOrder(store.getState()),
-  search = selectSearch(store.getState()),
-  whitelist = selectWhitelist(store.getState()),
-  favorites = selectFavorites(store.getState()),
-  bought = selectBought(store.getState()),
-  hidden = selectHidden(store.getState())
-) => {
-  const {
-    user: { user },
-  } = store.getState();
+export const filterData = (state = store.getState()) => {
+  const page = selectPage(state);
+  const sets = selectAllSets(state);
+  const search = selectSearch(state);
+  const whitelist = selectWhitelist(state);
+  const favorites = selectFavorites(state);
+  const bought = selectBought(state);
+  const hidden = selectHidden(state);
+  const user = selectUser(state);
 
   // filter bool functions
 
@@ -371,20 +372,20 @@ export const filterData = (
 
   const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-  createGroups(page, sort, sortOrder, filteredSets);
-
   dispatch(setSetList({ name: "filteredSets", array: filteredSets }));
+
+  createGroups(store.getState());
+
   dispatch(setContent(filteredSets.length > 0));
   dispatch(setLoading(false));
 };
 
 const debouncedFilterData = debounce(filterData, 350, { trailing: true });
 
-const sortData = (
-  sort = selectSort(store.getState()),
-  sortOrder = selectSortOrder(store.getState()),
-  groups = selectSetGroups(store.getState())
-) => {
+const sortData = (state = store.getState()) => {
+  const sort = selectSort(state);
+  const sortOrder = selectSortOrder(state);
+  const groups = selectSetGroups(state);
   const array = [...groups];
   array.sort((x, y) => {
     const a = x.title;
@@ -414,12 +415,11 @@ const sortData = (
   dispatch(setSetGroups(array));
 };
 
-const createGroups = (
-  page = selectPage(store.getState()),
-  sort = selectSort(store.getState()),
-  sortOrder = selectSortOrder(store.getState()),
-  sets = selectFilteredSets(store.getState())
-) => {
+const createGroups = (state = store.getState()) => {
+  const page = selectPage(state);
+  const sort = selectSort(state);
+  const sortOrder = selectSortOrder(state);
+  const sets = selectFilteredSets(state);
   const createGroups = (sets: SetType[]): string[] => {
     if (arrayIncludes(dateSorts, sort)) {
       return sets
@@ -561,10 +561,8 @@ const createGroups = (
   }
 };
 
-export const setSort = (sort: SortType, clearUrl = true) => {
-  const {
-    common: { page },
-  } = store.getState();
+export const setSort = (sort: SortType, clearUrl = true, state = store.getState()) => {
+  const page = selectPage(state);
   document.documentElement.scrollTop = 0;
   let sortOrder: SortOrderType = "ascending";
   if (arrayIncludes(dateSorts, sort) && reverseSortDatePages.includes(page)) {
@@ -573,7 +571,7 @@ export const setSort = (sort: SortType, clearUrl = true) => {
   if (arrayIncludes(allSorts, sort)) {
     dispatch(setMainSort(sort));
     dispatch(setMainSortOrder(sortOrder));
-    createGroups(page, sort, sortOrder);
+    createGroups(store.getState());
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
@@ -586,12 +584,9 @@ export const setSort = (sort: SortType, clearUrl = true) => {
 };
 
 export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
-  const {
-    main: { sort },
-  } = store.getState();
   document.documentElement.scrollTop = 0;
   dispatch(setMainSortOrder(sortOrder));
-  sortData(sort, sortOrder);
+  sortData(store.getState());
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
     if (params.has("sortOrder")) {
@@ -603,33 +598,21 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
 };
 
 export const setSearch = (query: string) => {
-  const {
-    common: { page },
-    main: { allSets, sort, sortOrder },
-  } = store.getState();
   dispatch(setMainSearch(query));
   document.documentElement.scrollTop = 0;
-  debouncedFilterData(page, allSets, sort, sortOrder, query);
+  debouncedFilterData(store.getState());
 };
 
-export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clearUrl = true) => {
-  const {
-    common: { page },
-    main: { whitelist: mainWhitelist, sort, sortOrder, search, allSets },
-  } = store.getState();
-  const edited = Object.keys(partialWhitelist).filter((key) => {
-    if (hasKey(partialWhitelist, key)) {
-      const value = partialWhitelist[key];
-      return value && is<any[]>(value) && value.length > 0;
-    } else {
-      return false;
-    }
-  });
-  const whitelist = { ...mainWhitelist, ...partialWhitelist, edited: edited };
+export const setWhitelistMerge = (
+  partialWhitelist: Partial<WhitelistType>,
+  clearUrl = true,
+  state = store.getState()
+) => {
+  const allSets = selectAllSets(state);
   dispatch(mergeWhitelist(partialWhitelist));
   document.documentElement.scrollTop = 0;
   if (allSets.length > 0) {
-    filterData(page, allSets, sort, sortOrder, search, whitelist);
+    filterData(store.getState());
   }
   if (clearUrl) {
     dispatch(setURLWhitelist({}));
@@ -661,18 +644,19 @@ export const setWhitelistMerge = (partialWhitelist: Partial<WhitelistType>, clea
   }
 };
 
-export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: WhitelistType[T], clearUrl = true) => {
-  const {
-    common: { page },
-    main: { whitelist: mainWhitelist, sort, sortOrder, search, allSets },
-  } = store.getState();
+export const setWhitelist = <T extends keyof WhitelistType>(
+  prop: T,
+  val: WhitelistType[T],
+  clearUrl = true,
+  state = store.getState()
+) => {
+  const mainWhitelist = selectWhitelist(state);
+  const allSets = selectAllSets(state);
   if (is<string[]>(mainWhitelist.edited)) {
-    const edited = uniqueArray([...(mainWhitelist.edited || []), prop]);
-    const whitelist = { ...mainWhitelist, [prop]: val, edited: edited };
     dispatch(mergeWhitelist({ [prop]: val }));
     document.documentElement.scrollTop = 0;
     if (allSets.length > 0) {
-      filterData(page, allSets, sort, sortOrder, search, whitelist);
+      filterData(store.getState());
     }
   }
   if (clearUrl) {
@@ -705,10 +689,8 @@ export const setWhitelist = <T extends keyof WhitelistType>(prop: T, val: Whitel
   }
 };
 
-export const updatePreset = (preset: OldPresetType | PresetType): PresetType => {
-  const {
-    main: { allRegions },
-  } = store.getState();
+export const updatePreset = (preset: OldPresetType | PresetType, state = store.getState()): PresetType => {
+  const allRegions = selectAllRegions(state);
   const regions =
     hasKey(preset.whitelist, "regions") && is<string[]>(preset.whitelist.regions)
       ? preset.whitelist.regions
@@ -723,20 +705,16 @@ export const updatePreset = (preset: OldPresetType | PresetType): PresetType => 
   return updatedPreset;
 };
 
-export const findPreset = (prop: keyof PresetType, val: string): PresetType | undefined => {
-  const {
-    main: { appPresets },
-    user: { userPresets },
-  } = store.getState();
+export const findPreset = (prop: keyof PresetType, val: string, state = store.getState()): PresetType | undefined => {
+  const appPresets = selectAppPresets(state);
+  const userPresets = selectUserPresets(state);
   const allPresets = [...appPresets, ...userPresets];
   const index = allPresets.findIndex((preset) => preset[prop] === val);
   return allPresets[index];
 };
 
-export const selectPreset = (id: string, write = true) => {
-  const {
-    main: { defaultPreset },
-  } = store.getState();
+export const selectPreset = (id: string, write = true, state = store.getState()) => {
+  const defaultPreset = selectDefaultPreset(state);
   if (id === "default") {
     dispatch(setCurrentPreset(defaultPreset));
     setWhitelistMerge(defaultPreset.whitelist);
@@ -752,22 +730,18 @@ export const selectPreset = (id: string, write = true) => {
   }
 };
 
-export const newPreset = (preset: PresetType) => {
-  const {
-    user: { userPresets },
-  } = store.getState();
+export const newPreset = (preset: PresetType, state = store.getState()) => {
+  const userPresets = selectUserPresets(state);
   preset.id = nanoid();
   const presets = [...userPresets, preset];
   alphabeticalSortProp(presets, "name", false);
   dispatch(setCurrentPreset(preset));
   dispatch(setUserPresets(presets));
-  syncPresets(presets);
+  syncPresets(store.getState());
 };
 
-export const editPreset = (preset: PresetType) => {
-  const {
-    user: { userPresets },
-  } = store.getState();
+export const editPreset = (preset: PresetType, state = store.getState()) => {
+  const userPresets = selectUserPresets(state);
   const savedPreset = findPreset("id", preset.id);
   let presets: PresetType[];
   if (savedPreset) {
@@ -780,25 +754,22 @@ export const editPreset = (preset: PresetType) => {
   alphabeticalSortProp(presets, "name", false);
   dispatch(setCurrentPreset(preset));
   dispatch(setUserPresets(presets));
-  syncPresets(presets);
+  syncPresets(store.getState());
 };
 
-export const deletePreset = (preset: PresetType) => {
-  const {
-    main: { defaultPreset },
-    user: { userPresets },
-  } = store.getState();
+export const deletePreset = (preset: PresetType, state = store.getState()) => {
+  const defaultPreset = selectDefaultPreset(state);
+  const userPresets = selectUserPresets(state);
   const presets = userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
   alphabeticalSortProp(presets, "name", false);
   dispatch(setCurrentPreset(defaultPreset));
   dispatch(setUserPresets(presets));
-  syncPresets(presets);
+  syncPresets(store.getState());
 };
 
-export const syncPresets = (presets = selectUserPresets(store.getState())) => {
-  const {
-    user: { user },
-  } = store.getState();
+export const syncPresets = (state = store.getState()) => {
+  const presets = selectUserPresets(state);
+  const user = selectUser(state);
   const sortedPresets = alphabeticalSortProp([...presets], "name", false, "Default").map((preset) => ({
     ...preset,
   }));
@@ -812,22 +783,18 @@ export const syncPresets = (presets = selectUserPresets(store.getState())) => {
     });
 };
 
-export const newGlobalPreset = (preset: PresetType) => {
-  const {
-    main: { appPresets },
-  } = store.getState();
+export const newGlobalPreset = (preset: PresetType, state = store.getState()) => {
+  const appPresets = selectAppPresets(state);
   preset.id = nanoid();
   const presets = [...appPresets, preset];
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(preset));
   dispatch(setAppPresets(presets));
-  syncGlobalPresets(presets);
+  syncGlobalPresets(store.getState());
 };
 
-export const editGlobalPreset = (preset: PresetType) => {
-  const {
-    main: { appPresets },
-  } = store.getState();
+export const editGlobalPreset = (preset: PresetType, state = store.getState()) => {
+  const appPresets = selectAppPresets(state);
   const savedPreset = findPreset("id", preset.id);
   let presets: PresetType[];
   if (savedPreset) {
@@ -840,21 +807,21 @@ export const editGlobalPreset = (preset: PresetType) => {
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(preset));
   dispatch(setAppPresets(presets));
-  syncGlobalPresets(presets);
+  syncGlobalPresets(store.getState());
 };
 
-export const deleteGlobalPreset = (preset: PresetType) => {
-  const {
-    main: { appPresets, defaultPreset },
-  } = store.getState();
+export const deleteGlobalPreset = (preset: PresetType, state = store.getState()) => {
+  const appPresets = selectAppPresets(state);
+  const defaultPreset = selectDefaultPreset(state);
   const presets = appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(defaultPreset));
   dispatch(setAppPresets(presets));
-  syncGlobalPresets(presets);
+  syncGlobalPresets(store.getState());
 };
 
-export const syncGlobalPresets = (presets = selectAppPresets(store.getState())) => {
+export const syncGlobalPresets = (state = store.getState()) => {
+  const presets = selectAppPresets(state);
   const filteredPresets = presets.filter((preset) => preset.id !== "default");
   const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
     ...preset,

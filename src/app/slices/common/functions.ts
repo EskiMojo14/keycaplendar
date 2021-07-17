@@ -41,6 +41,12 @@ export const arrayEveryType = <T>(arr: any[], callback: (item: any) => boolean):
 
 export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
 
+/** Returns an array of object keys to iterate on.
+ * Only use for objects you're certain won't gain more keys in runtime.
+ */
+
+export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] => Object.keys(obj);
+
 /**
  * Remove all duplicate values within an array.
  * @param array Array of values.
