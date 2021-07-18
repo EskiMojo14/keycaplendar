@@ -5,7 +5,14 @@ import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import { StatisticsSetType, Categories, Properties } from "./slices/statistics/types";
-import { getSetMonthRange, alphabeticalSort, uniqueArray, hasKey, countInArray } from "./slices/common/functions";
+import {
+  getSetMonthRange,
+  alphabeticalSort,
+  uniqueArray,
+  hasKey,
+  countInArray,
+  alphabeticalSortPropCurried,
+} from "./slices/common/functions";
 
 const bucket = admin.storage().bucket();
 
@@ -229,25 +236,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               },
             });
           });
-          data.sort((a, b) => {
-            const x = a.total;
-            const y = b.total;
-            const c = a.name.toLowerCase();
-            const d = b.name.toLowerCase();
-            if (x < y) {
-              return 1;
-            }
-            if (x > y) {
-              return -1;
-            }
-            if (c < d) {
-              return -1;
-            }
-            if (c > d) {
-              return 1;
-            }
-            return 0;
-          });
+          data.sort((a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b));
           timelinesData[prop][property].data = data;
         }
       });
@@ -375,17 +364,9 @@ const createStatusData = (sets: StatisticsSetType[]) => {
           total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
         });
       });
-      statusData[prop].sort((a, b) => {
-        const x = a.total;
-        const y = b.total;
-        if (x < y) {
-          return 1;
-        }
-        if (x > y) {
-          return -1;
-        }
-        return 0;
-      });
+      statusData[prop].sort(
+        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      );
     }
   });
   return Promise.resolve(statusData);
@@ -491,17 +472,9 @@ const createShippedData = (sets: StatisticsSetType[]) => {
           },
         });
       });
-      shippedData[prop].sort((a, b) => {
-        const x = a.total;
-        const y = b.total;
-        if (x < y) {
-          return 1;
-        }
-        if (x > y) {
-          return -1;
-        }
-        return 0;
-      });
+      shippedData[prop].sort(
+        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      );
     }
   });
   return Promise.resolve(shippedData);
@@ -598,36 +571,12 @@ const createDurationData = (sets: StatisticsSetType[]) => {
                     if (a.name === "All" || b.name === "All") {
                       return a.name === "All" ? -1 : 1;
                     }
-                    const x = a.total;
-                    const y = b.total;
-                    const c = a.name.toLowerCase();
-                    const d = b.name.toLowerCase();
-                    if (x < y) {
-                      return 1;
-                    }
-                    if (x > y) {
-                      return -1;
-                    }
-                    if (c < d) {
-                      return -1;
-                    }
-                    if (c > d) {
-                      return 1;
-                    }
-                    return 0;
+                    return alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b);
                   });
                 }
               });
             }
-            data.sort((a, b) => {
-              if (a < b) {
-                return -1;
-              }
-              if (a > b) {
-                return 1;
-              }
-              return 0;
-            });
+            data.sort();
             const labels = [...math.range(math.min(data), math.max(data), 1, true).toArray()] as number[];
             const count: number[] = [];
             labels.forEach((label) => {
@@ -727,17 +676,9 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
         }
       });
 
-      vendorsData[prop].sort((a, b) => {
-        const x = a.total;
-        const y = b.total;
-        if (x < y) {
-          return 1;
-        }
-        if (x > y) {
-          return -1;
-        }
-        return 0;
-      });
+      vendorsData[prop].sort(
+        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      );
     }
   });
   return Promise.resolve(vendorsData);
@@ -778,17 +719,7 @@ export const createStatistics = functions
         };
       })
       .filter((set) => Boolean(set.profile));
-    sets.sort((a, b) => {
-      const x = a.colorway.toLowerCase();
-      const y = b.colorway.toLowerCase();
-      if (x < y) {
-        return -1;
-      }
-      if (x > y) {
-        return 1;
-      }
-      return 0;
-    });
+    sets.sort(alphabeticalSortPropCurried("colorway"));
     const limitedSets = sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));

@@ -36,10 +36,7 @@
       "error",
       "double"
     ],
-    "indent": [
-      "error",
-      2
-    ],
+    "indent": 0,
     "max-len": [
       "error",
       {

@@ -27,7 +27,7 @@ import {
   VendorData,
   VendorDataObject,
 } from "./types";
-import { alphabeticalSortCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
+import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
@@ -113,13 +113,11 @@ export const sortData = (state = store.getState()) => {
             if (a.name === "All" || b.name === "All") {
               return a.name === "All" ? -1 : 1;
             }
-            const x =
-              sort[tab] === "alphabetical" ? a.name.toLowerCase() : a[sort[tab] === "duration" ? "mean" : "total"];
-            const y =
-              sort[tab] === "alphabetical" ? b.name.toLowerCase() : b[sort[tab] === "duration" ? "mean" : "total"];
-            const c = a.name.toLowerCase();
-            const d = b.name.toLowerCase();
-            return alphabeticalSortCurried(sort[tab] !== "alphabetical")(x, y) || alphabeticalSortCurried()(c, d);
+            const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+              alphabeticalSortPropCurried("name")(a, b)
+            );
           });
           data[category][property] = sortedValue;
         });
@@ -131,11 +129,11 @@ export const sortData = (state = store.getState()) => {
         properties.forEach((property) => {
           const value = data[category][property].data;
           const sortedValue = value.slice().sort((a, b) => {
-            const x = sort[tab] === "alphabetical" ? a.name.toLowerCase() : a.total;
-            const y = sort[tab] === "alphabetical" ? b.name.toLowerCase() : b.total;
-            const c = a.name.toLowerCase();
-            const d = b.name.toLowerCase();
-            return alphabeticalSortCurried(sort[tab] !== "alphabetical")(x, y) || alphabeticalSortCurried()(c, d);
+            const key = sort[tab] === "alphabetical" ? "name" : "total";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+              alphabeticalSortPropCurried("name")(a, b)
+            );
           });
           data[category][property].data = sortedValue;
         });
@@ -148,11 +146,10 @@ export const sortData = (state = store.getState()) => {
         const value = data[properties];
         const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
           if (hasKey(sort, tab)) {
-            const x = sort[tab] === "total" ? a.total : a.name.toLowerCase();
-            const y = sort[tab] === "total" ? b.total : b.name.toLowerCase();
-            const c = a.name.toLowerCase();
-            const d = b.name.toLowerCase();
-            return alphabeticalSortCurried(sort[tab] === "total")(x, y) || alphabeticalSortCurried()(c, d);
+            const key = sort[tab] === "total" ? "total" : "name";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
+            );
           }
           return 0;
         });
