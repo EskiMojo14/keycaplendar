@@ -119,7 +119,7 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
               : null;
           return setMonth && setMonth === month && set.profile === profile;
         }).length;
-        return { meta: `${profile}&nbsp;`, value: length };
+        return { meta: profile, value: length };
       });
     });
   });
@@ -209,7 +209,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
                   });
                   const num = monthSets.filter((set) => set.profile === profile).length;
                   return {
-                    meta: `${profile}:&nbsp;`,
+                    meta: profile,
                     value: num,
                   };
                 });
@@ -457,8 +457,8 @@ const createShippedData = (sets: StatisticsSetType[]) => {
             return setEnd && setEnd === month;
           });
           return {
-            shipped: { meta: "Shipped:&nbsp;", value: shipped.length },
-            unshipped: { meta: "Unshipped:&nbsp;", value: unshipped.length },
+            shipped: { meta: "Shipped", value: shipped.length },
+            unshipped: { meta: "Unshipped", value: unshipped.length },
           };
         });
         shippedData[prop].push({
