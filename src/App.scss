@@ -311,6 +311,9 @@
   }
   &-meta {
     font-weight: bold;
+    &::after {
+      content: ":\a0";
+    }
   }
 }
 
