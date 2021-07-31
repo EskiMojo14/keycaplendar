@@ -8,6 +8,15 @@ export type Sorts = "total" | "alphabetical";
 
 export type StatsTab = typeof statsTabs[number];
 
+export type ChartDatumObject = {
+  meta: string;
+  value: number;
+};
+
+export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
+
+export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string }[];
+
 export type StatisticsType = {
   summary: Categories;
   timelinesCat: Categories;
@@ -33,19 +42,14 @@ export type TimelineDataObject = {
   timeline: {
     months: string[];
     profiles: string[];
-    series:
-      | {
-          meta: string;
-          value: number;
-        }[][]
-      | number[][];
+    series: ChartData;
   };
 };
 
 export type CountDataObject = {
   total: number;
   months: string[];
-  series: number[][];
+  series: ChartData;
 };
 
 export type SummaryData = {
@@ -73,19 +77,14 @@ export type ShippedDataObject = {
   unshipped: number;
   timeline: {
     months: string[];
-    series: {
-      [key: string]: {
-        meta: string;
-        value: number;
-      };
-    }[];
+    series: Record<string, ChartDatumObject>[];
   };
 };
 
 export type ShippedData = Record<Properties, ShippedDataObject[]>;
 
 export type DurationDataObject = {
-  chartData: number[][];
+  chartData: ChartData;
   mean: number;
   median: number;
   mode: number[];
@@ -98,7 +97,7 @@ export type DurationDataObject = {
 export type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
 export type VendorDataObject = {
-  chartData: number[][];
+  chartData: ChartData;
   mean: number;
   median: number;
   mode: number[];

@@ -7,6 +7,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
 import { addOrRemove, iconObject } from "@s/common/functions";
+import { ChartData, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -22,8 +23,6 @@ import {
 } from "@rmwc/data-table";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import "./TimelineCard.scss";
-
-const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -45,21 +44,7 @@ const customPoint = (data: any) => {
 const listener = { draw: (e: any) => customPoint(e) };
 
 type ShippedCardProps = {
-  data: {
-    name: string;
-    shipped: number;
-    total: number;
-    unshipped: number;
-    timeline: {
-      months: string[];
-      series: {
-        [key: string]: {
-          meta: string;
-          value: number;
-        };
-      }[];
-    };
-  };
+  data: ShippedDataObject;
 };
 
 const chartOptions = (monthLabel: string) => {
@@ -196,27 +181,14 @@ type TimelinesCardProps = {
   allProfiles: string[];
   profileGroups?: boolean;
   category?: string;
-  data: {
-    name: string;
-    total: number;
-    timeline: {
-      months: string[];
-      profiles: string[];
-      series:
-        | {
-            meta: string;
-            value: number;
-          }[][]
-        | number[][];
-    };
-  };
+  data: TimelineDataObject;
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
-  const [focused, setFocused] = useState<string[]>([]);
+  const [focused, setFocused] = useState<number[]>([]);
   const [graphType, setGraphType] = useState("bar");
-  const setFocus = (letter: string) => {
-    const newFocused = addOrRemove(focused, letter);
+  const setFocus = (index: number) => {
+    const newFocused = addOrRemove(focused, index);
     setFocused(newFocused);
   };
   const clearFocus = () => {
@@ -297,7 +269,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
               single: props.profileGroups,
               focused: focused.length > 0,
             },
-            focused.map((letter) => "series-" + letter)
+            focused.map((index) => `series-index-${index}`)
           )}
         >
           {barChart}
@@ -314,11 +286,11 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                       key={profile}
                       icon="fiber_manual_record"
                       label={profile}
-                      selected={focused.includes(letters[index])}
+                      selected={focused.includes(index)}
                       onInteraction={() => {
-                        setFocus(letters[index]);
+                        setFocus(index);
                       }}
-                      className={"focus-chip-" + letters[index]}
+                      className={`focus-chip-index-${index}`}
                     />
                   );
                 }
@@ -339,7 +311,7 @@ type CountCardProps = {
   data: {
     total: number;
     months: string[];
-    series: number[][];
+    series: ChartData;
   };
 };
 
