@@ -20,13 +20,17 @@ export type ChartSeriesObject = {
   value: number;
 };
 
+export type ChartData =
+  | (ChartSeriesObject | number)[][]
+  | { data: (ChartSeriesObject | number)[]; className?: string }[];
+
 export type TimelineDataObject = {
   name: string;
   total: number;
   timeline: {
     months: string[];
     profiles: string[];
-    series: (ChartSeriesObject | number)[][];
+    series: ChartData;
   };
 };
 

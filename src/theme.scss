@@ -135,8 +135,6 @@ $graph-colors-dark: (
   palette.$brown-200
 );
 
-$letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
-
 @mixin theme($theme, $dark: false) {
   $text-colors: (
     text-high: rgba(map-get($theme, on-surface), 0.87),
@@ -975,6 +973,7 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
     }
   }
 
+  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
   @each $letter in $letters {
     $color: if($dark, nth($graph-colors-dark, index($letters, $letter)), nth($graph-colors, index($letters, $letter)));
     .ct-series-#{$letter} {
@@ -991,14 +990,37 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
         fill: $color;
       }
     }
-    .focus-chips .focus-chip-#{$letter} {
+  }
+
+  @for $index from 0 to 40 {
+    $color: if(
+      $dark,
+      nth($graph-colors-dark, ($index % length($graph-colors-dark) + 1)),
+      nth($graph-colors, ($index % length($graph-colors-dark) + 1))
+    );
+    .ct-series-index-#{$index} {
+      .ct-point,
+      .ct-line,
+      .ct-bar,
+      .ct-slice-donut {
+        stroke: $color;
+      }
+      .ct-slice-pie,
+      .ct-donut-solid,
+      .ct-area,
+      .ct-stroked-point {
+        fill: $color;
+      }
+    }
+    .focus-chips .focus-chip-index-#{$index} {
       @include chips.leading-icon-color($color, 1);
       @include ripple.states($color);
       @include chips.selected-ink-color($color);
     }
     .focused {
-      &:not(.series-#{$letter}) {
-        .ct-series-#{$letter} {
+      &:not(.series-index-#{$index}) {
+        .ct-series-index-#{$index} {
+          pointer-events: none;
           .ct-point,
           .ct-line,
           .ct-bar,
@@ -1010,6 +1032,9 @@ $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, 
           .ct-area,
           .ct-stroked-point {
             fill: rgba($color, 0.1);
+          }
+          .ct-stroked-point {
+            pointer-events: none !important;
           }
         }
       }

@@ -93,18 +93,21 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
     summaryData.profile[cat].profiles = profiles;
     summaryData.profile[cat].data.timeline.profiles = profiles;
 
-    summaryData.profile[cat].data.timeline.series = profiles.map((profile) => {
-      return months.map((month) => {
-        const length = catSets.filter((set) => {
-          const setProp = set[cat];
-          const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
-              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-              : null;
-          return setMonth && setMonth === month && set.profile === profile;
-        }).length;
-        return { meta: profile, value: length };
-      });
+    summaryData.profile[cat].data.timeline.series = profiles.map((profile, index) => {
+      return {
+        data: months.map((month) => {
+          const length = catSets.filter((set) => {
+            const setProp = set[cat];
+            const setMonth =
+              is<string>(setProp) && !setProp.includes("Q")
+                ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+                : null;
+            return setMonth && setMonth === month && set.profile === profile;
+          }).length;
+          return { meta: profile, value: length };
+        }),
+        className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+      };
     });
   });
   return Promise.resolve(summaryData);
@@ -183,18 +186,21 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
             let timelineData;
             if (property === "vendor" || property === "designer") {
-              timelineData = profileNames.map((profile) => {
-                return months.map((month) => {
-                  const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
-                    return date && date === month;
-                  });
-                  const num = monthSets.filter((set) => set.profile === profile).length;
-                  return {
-                    meta: profile,
-                    value: num,
-                  };
-                });
+              timelineData = profileNames.map((profile, index) => {
+                return {
+                  data: months.map((month) => {
+                    const monthSets = filteredSets.filter((set) => {
+                      const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
+                      return date && date === month;
+                    });
+                    const num = monthSets.filter((set) => set.profile === profile).length;
+                    return {
+                      meta: profile,
+                      value: num,
+                    };
+                  }),
+                  className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+                };
               });
             } else {
               timelineData = [
