@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
 import { addOrRemove, iconObject } from "@s/common/functions";
-import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import { ChartData, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -311,7 +311,7 @@ type CountCardProps = {
   data: {
     total: number;
     months: string[];
-    series: number[][];
+    series: ChartData;
   };
 };
 

@@ -15,14 +15,14 @@ export type Categories = "icDate" | "gbLaunch";
 
 export type Properties = "profile" | "designer" | "vendor";
 
-export type ChartSeriesObject = {
+export type ChartDatumObject = {
   meta: string;
   value: number;
 };
 
-export type ChartData =
-  | (ChartSeriesObject | number)[][]
-  | { data: (ChartSeriesObject | number)[]; className?: string }[];
+export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
+
+export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string }[];
 
 export type TimelineDataObject = {
   name: string;
@@ -37,7 +37,7 @@ export type TimelineDataObject = {
 export type CountDataObject = {
   total: number;
   months: string[];
-  series: number[][];
+  series: ChartData;
 };
 
 export type SummaryData = {
@@ -65,16 +65,14 @@ export type ShippedDataObject = {
   unshipped: number;
   timeline: {
     months: string[];
-    series: {
-      [key: string]: ChartSeriesObject;
-    }[];
+    series: Record<string, ChartDatumObject>[];
   };
 };
 
 export type ShippedData = Record<Properties, ShippedDataObject[]>;
 
 export type DurationDataObject = {
-  chartData: number[][];
+  chartData: ChartData;
   mean: number;
   median: number;
   mode: number[];
@@ -87,7 +85,7 @@ export type DurationDataObject = {
 export type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
 export type VendorDataObject = {
-  chartData: number[][];
+  chartData: ChartData;
   mean: number;
   median: number;
   mode: number[];

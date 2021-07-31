@@ -104,7 +104,7 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
                 : null;
             return setMonth && setMonth === month && set.profile === profile;
           }).length;
-          return { meta: profile, value: length };
+          return length > 0 ? { meta: profile, value: length } : 0;
         }),
         className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
       };
@@ -194,10 +194,12 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
                       return date && date === month;
                     });
                     const num = monthSets.filter((set) => set.profile === profile).length;
-                    return {
-                      meta: profile,
-                      value: num,
-                    };
+                    return num > 0
+                      ? {
+                          meta: profile,
+                          value: num,
+                        }
+                      : 0;
                   }),
                   className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
                 };

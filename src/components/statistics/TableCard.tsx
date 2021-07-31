@@ -4,6 +4,8 @@ import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
+import { is } from "typescript-is";
+import { ChartData } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -38,7 +40,7 @@ const listener = { draw: (e: any) => customPoint(e) };
 
 type TableCardProps = {
   data: {
-    chartData: number[][];
+    chartData: ChartData;
     mean: number;
     median: number;
     mode: number[];
@@ -80,7 +82,7 @@ export const TableCard = (props: TableCardProps) => {
               },
               axisX: {
                 labelInterpolationFnc: (value: number, index: number) => {
-                  return props.data.chartData[0].length >= 16
+                  return is<Array<any>>(props.data.chartData[0]) && props.data.chartData[0].length >= 16
                     ? index % (props.data.chartData[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
                       ? value
                       : null
