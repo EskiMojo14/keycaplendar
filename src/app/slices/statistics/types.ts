@@ -8,6 +8,11 @@ export type Sorts = "total" | "alphabetical";
 
 export type StatsTab = typeof statsTabs[number];
 
+export type ChartSeriesObject = {
+  meta: string;
+  value: number;
+};
+
 export type StatisticsType = {
   summary: Categories;
   timelinesCat: Categories;
@@ -33,12 +38,7 @@ export type TimelineDataObject = {
   timeline: {
     months: string[];
     profiles: string[];
-    series:
-      | {
-          meta: string;
-          value: number;
-        }[][]
-      | number[][];
+    series: (ChartSeriesObject | number)[][];
   };
 };
 
@@ -73,12 +73,7 @@ export type ShippedDataObject = {
   unshipped: number;
   timeline: {
     months: string[];
-    series: {
-      [key: string]: {
-        meta: string;
-        value: number;
-      };
-    }[];
+    series: Record<string, ChartSeriesObject>[];
   };
 };
 

@@ -7,6 +7,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
 import { addOrRemove, iconObject } from "@s/common/functions";
+import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -45,21 +46,7 @@ const customPoint = (data: any) => {
 const listener = { draw: (e: any) => customPoint(e) };
 
 type ShippedCardProps = {
-  data: {
-    name: string;
-    shipped: number;
-    total: number;
-    unshipped: number;
-    timeline: {
-      months: string[];
-      series: {
-        [key: string]: {
-          meta: string;
-          value: number;
-        };
-      }[];
-    };
-  };
+  data: ShippedDataObject;
 };
 
 const chartOptions = (monthLabel: string) => {
@@ -196,20 +183,7 @@ type TimelinesCardProps = {
   allProfiles: string[];
   profileGroups?: boolean;
   category?: string;
-  data: {
-    name: string;
-    total: number;
-    timeline: {
-      months: string[];
-      profiles: string[];
-      series:
-        | {
-            meta: string;
-            value: number;
-          }[][]
-        | number[][];
-    };
-  };
+  data: TimelineDataObject;
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
