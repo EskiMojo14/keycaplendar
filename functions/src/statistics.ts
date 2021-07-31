@@ -4,7 +4,17 @@ import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
-import { StatisticsSetType, Categories, Properties } from "./slices/statistics/types";
+import {
+  StatisticsSetType,
+  Categories,
+  SummaryData,
+  TimelinesData,
+  TimelineDataObject,
+  StatusData,
+  ShippedData,
+  DurationData,
+  VendorData,
+} from "./slices/statistics/types";
 import {
   getSetMonthRange,
   alphabeticalSort,
@@ -17,32 +27,6 @@ import {
 const bucket = admin.storage().bucket();
 
 const math = create(all) as MathJsStatic;
-
-type TimelineDataObject = {
-  name: string;
-  total: number;
-  timeline: {
-    months: string[];
-    profiles: string[];
-    series:
-      | {
-          meta: string;
-          value: number;
-        }[][]
-      | number[][];
-  };
-};
-
-type CountDataObject = {
-  total: number;
-  months: string[];
-  series: number[][];
-};
-
-type SummaryData = {
-  count: Record<Categories, CountDataObject>;
-  profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
-};
 
 const today = DateTime.utc();
 const yesterday = today.minus({ days: 1 });
@@ -125,8 +109,6 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
   });
   return Promise.resolve(summaryData);
 };
-
-type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
 
 const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
@@ -245,17 +227,6 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   return Promise.resolve(timelinesData);
 };
 
-type StatusDataObject = {
-  ic: number;
-  liveGb: number;
-  name: string;
-  postGb: number;
-  preGb: number;
-  total: number;
-};
-
-type StatusData = Record<Properties, StatusDataObject[]>;
-
 const createStatusData = (sets: StatisticsSetType[]) => {
   const statusData: StatusData = {
     profile: [],
@@ -372,24 +343,6 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   return Promise.resolve(statusData);
 };
 
-type ShippedDataObject = {
-  name: string;
-  shipped: number;
-  total: number;
-  unshipped: number;
-  timeline: {
-    months: string[];
-    series: {
-      [key: string]: {
-        meta: string;
-        value: number;
-      };
-    }[];
-  };
-};
-
-type ShippedData = Record<Properties, ShippedDataObject[]>;
-
 const createShippedData = (sets: StatisticsSetType[]) => {
   const shippedData: ShippedData = {
     profile: [],
@@ -480,19 +433,6 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   return Promise.resolve(shippedData);
 };
 
-type DurationDataObject = {
-  chartData: number[][];
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
-
-type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
-
 const createDurationData = (sets: StatisticsSetType[]) => {
   const durationData: DurationData = {
     icDate: {
@@ -506,16 +446,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
       vendor: [],
     },
   };
-  const dateSets = sets.filter((set) => {
-    return set.gbLaunch && set.gbLaunch.length === 10;
-  });
+  const dateSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
   categories.forEach((cat) => {
     const propSets: StatisticsSetType[] =
-      cat === "gbLaunch"
-        ? dateSets.filter((set) => {
-            return set.gbEnd.length === 10; // eslint-disable-line indent
-          }) // eslint-disable-line indent
-        : dateSets;
+      cat === "gbLaunch" ? dateSets.filter((set) => set.gbEnd.length === 10) : dateSets;
     if (hasKey(durationData, cat)) {
       const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
       const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
@@ -601,19 +535,6 @@ const createDurationData = (sets: StatisticsSetType[]) => {
   });
   return Promise.resolve(durationData);
 };
-
-type VendorDataObject = {
-  chartData: number[][];
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
-
-type VendorData = Record<Properties, VendorDataObject[]>;
 
 const createVendorsData = (sets: StatisticsSetType[]) => {
   const vendorsData: VendorData = {
