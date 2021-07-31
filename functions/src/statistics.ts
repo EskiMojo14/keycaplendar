@@ -626,9 +626,9 @@ const runtimeOpts: functions.RuntimeOptions = {
 
 export const createStatistics = functions
   .runWith(runtimeOpts)
-  .https.onCall(async (data, contextverylongnameevenlongerpls) => {
-    // .pubsub.schedule("every 12 hours")
-    // .onRun(async (context) => {
+  .pubsub.schedule("every 12 hours")
+  .onRun(async (context) => {
+    // .https.onCall(async (data, contextverylongnameevenlongerpls) => {
     const snapshot = await typedFirestore.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
@@ -677,6 +677,6 @@ export const createStatistics = functions
       timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);
-    const file = bucket.file("statisticsDataTest.json");
+    const file = bucket.file("statisticsData.json");
     return file.save(jsonString, { contentType: "application/json" });
   });
