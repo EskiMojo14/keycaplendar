@@ -226,7 +226,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               },
             });
           });
-          data.sort((a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b));
+          data.sort(
+            (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+          );
           timelinesData[prop][property].data = data;
         }
       });
@@ -344,7 +346,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
         });
       });
       statusData[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
     }
   });
@@ -434,7 +436,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
         });
       });
       shippedData[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
     }
   });
@@ -606,7 +608,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
       });
 
       vendorsData[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
     }
   });
