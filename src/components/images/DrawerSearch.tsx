@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { iconObject } from "@s/common/functions";
 import { ImageType } from "@s/images/types";
 import { Checkbox } from "@rmwc/checkbox";

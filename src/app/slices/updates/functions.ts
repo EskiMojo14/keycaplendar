@@ -3,7 +3,7 @@ import store from "~/app/store";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UpdateId } from "@s/firebase/types";
 import { alphabeticalSortPropCurried } from "@s/common/functions";
-import { setEntries, setLoading } from "./updatesSlice";
+import { setEntries, setLoading } from ".";
 import { UpdateEntryType } from "./types";
 
 const { dispatch } = store;

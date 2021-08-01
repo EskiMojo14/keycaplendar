@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { iconObject, useBoolStates } from "@s/common/functions";
-import { selectLoading, selectSearch, selectLinkedFavorites } from "@s/main/mainSlice";
+import { selectLoading, selectSearch, selectLinkedFavorites } from "@s/main";
 import { setSearch } from "@s/main/functions";
-import { selectBottomNav, selectView } from "@s/settings/settingsSlice";
+import { selectBottomNav, selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";

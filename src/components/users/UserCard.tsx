@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { hasKey, iconObject, mergeObject, ordinal } from "@s/common/functions";
-import { selectAllDesigners } from "@s/main/mainSlice";
-import { selectUser } from "@s/user/userSlice";
+import { selectAllDesigners } from "@s/main";
+import { selectUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";

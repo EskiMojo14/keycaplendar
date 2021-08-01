@@ -2,11 +2,11 @@ import { is } from "typescript-is";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setAppPage, setDevice } from "./commonSlice";
+import { setAppPage, setDevice } from ".";
 import { mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes } from "./functions";
 import { Page } from "./types";
-import { setURLEntry as setURLGuide } from "@s/guides/guidesSlice";
+import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
 import {
@@ -18,13 +18,13 @@ import {
   setURLSet,
   setLinkedFavorites,
   setURLWhitelist,
-} from "@s/main/mainSlice";
+} from "@s/main";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
 import { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
 import { StatsTab } from "@s/statistics/types";
-import { setURLEntry as setURLUpdate } from "@s/updates/updatesSlice";
+import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 
 const { dispatch } = store;

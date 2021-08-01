@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
@@ -12,7 +12,7 @@ import {
   selectTab,
   selectData,
   selectSort,
-} from "./statisticsSlice";
+} from ".";
 import {
   DurationData,
   ShippedData,

@@ -6,7 +6,7 @@ import { KeysetId } from "@s/firebase/types";
 import { batchStorageDelete, getStorageFolders } from "@s/common/functions";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {

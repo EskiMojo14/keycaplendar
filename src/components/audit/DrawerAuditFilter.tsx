@@ -2,7 +2,7 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
 import { getActions } from "@s/audit/functions";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";

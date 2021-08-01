@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/common/functions";
 import {
@@ -19,12 +19,12 @@ import {
   setCheckedImages,
   setDetailImage,
   setDetailMetadata,
-} from "@s/images/imagesSlice";
+} from "@s/images";
 import { ImageObj } from "@s/images/constructors";
 import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
 import { ImageType } from "@s/images/types";
-import { selectAllSets } from "@s/main/mainSlice";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectAllSets } from "@s/main";
+import { selectBottomNav } from "@s/settings";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";

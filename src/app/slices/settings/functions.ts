@@ -3,14 +3,14 @@ import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from "./settingsSlice";
+import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
 import { ViewType } from "./types";
 import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/common/functions";
 import { whitelistParams } from "@s/main/constants";
-import { selectLoading, selectURLWhitelist, setTransition } from "@s/main/mainSlice";
+import { selectLoading, selectURLWhitelist, setTransition } from "@s/main";
 import { selectPreset } from "@s/main/functions";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 
 const { dispatch } = store;
 

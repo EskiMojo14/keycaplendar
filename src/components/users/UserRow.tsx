@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { iconObject, mergeObject, ordinal, truncate } from "@s/common/functions";
-import { selectAllDesigners } from "@s/main/mainSlice";
-import { selectUser } from "@s/user/userSlice";
+import { selectAllDesigners } from "@s/main";
+import { selectUser } from "@s/user";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";
 import { Avatar } from "@rmwc/avatar";

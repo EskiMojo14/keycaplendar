@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { closeModal, openModal } from "@s/common/functions";
 import { Keyset, Preset } from "@s/main/constructors";
-import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main/mainSlice";
+import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
 import { PresetType, SetType } from "@s/main/types";
-import { selectBottomNav, selectView } from "@s/settings/settingsSlice";
-import { selectUser } from "@s/user/userSlice";
+import { selectBottomNav, selectView } from "@s/settings";
+import { selectUser } from "@s/user";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";

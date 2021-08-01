@@ -1,9 +1,9 @@
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { useAppSelector } from "~/app/hooks";
-import { selectUser } from "@s/user/userSlice";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectUser } from "@s/user";
+import { selectDevice } from "@s/common";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";

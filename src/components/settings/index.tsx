@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { IconOptions } from "@rmwc/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { useBoolStates } from "@s/common/functions";
 import {
@@ -14,7 +14,7 @@ import {
   selectShareNameLoading,
   selectSyncSettings,
   setShareNameLoading,
-} from "@s/settings/settingsSlice";
+} from "@s/settings";
 import {
   setApplyTheme,
   setBottomNav,
@@ -26,7 +26,7 @@ import {
   setSyncSettings,
   setToTimeTheme,
 } from "@s/settings/functions";
-import { selectShareName, selectUser, setUser } from "@s/user/userSlice";
+import { selectShareName, selectUser, setUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { debouncedSyncShareName } from "@s/user/functions";
 import { Avatar } from "@rmwc/avatar";

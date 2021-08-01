@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { closeModal, openModal } from "@s/common/functions";
-import { selectEntries, selectLoading, selectURLEntry } from "@s/updates/updatesSlice";
+import { selectEntries, selectLoading, selectURLEntry } from "@s/updates";
 import { Update } from "@s/updates/constructors";
 import { getEntries, pinEntry } from "@s/updates/functions";
 import { UpdateEntryType } from "@s/updates/types";
-import { selectBottomNav } from "@s/settings/settingsSlice";
-import { selectUser } from "@s/user/userSlice";
+import { selectBottomNav } from "@s/settings";
+import { selectUser } from "@s/user";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {

@@ -1,13 +1,13 @@
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { is } from "typescript-is";
 import debounce from "lodash.debounce";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
-import { selectPage } from "@s/common/commonSlice";
+import { selectPage } from "@s/common";
 import { addOrRemove, hasKey } from "@s/common/functions";
-import { selectWhitelist, setLinkedFavorites } from "@s/main/mainSlice";
+import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { whitelistParams } from "@s/main/constants";
 import { filterData, selectPreset, updatePreset } from "@s/main/functions";
 import { getStorage, setSyncSettings, settingFns } from "@s/settings/functions";
@@ -22,8 +22,8 @@ import {
   setHidden,
   setShareName,
   setUserPresets,
-} from "./userSlice";
-import { setShareNameLoading } from "@s/settings/settingsSlice";
+} from ".";
+import { setShareNameLoading } from "@s/settings";
 
 const { dispatch } = store;
 

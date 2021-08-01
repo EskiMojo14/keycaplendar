@@ -5,11 +5,11 @@ import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { is } from "typescript-is";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import {
   arrayMove,
   batchStorageDelete,
@@ -18,10 +18,10 @@ import {
   hasKey,
   iconObject,
 } from "@s/common/functions";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main/mainSlice";
+import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
 import { SetType, VendorType } from "@s/main/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { queue } from "~/app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "@c/util/Autocomplete";

@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "@s/common/coreFunctions";
-import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main/mainSlice";
+import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
 import { testSets } from "@s/main/functions";
-import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user/userSlice";
-import { selectCookies, selectSettings } from "@s/settings/settingsSlice";
+import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user";
+import { selectCookies, selectSettings } from "@s/settings";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "@s/settings/functions";
 import { getUserPreferences } from "@s/user/functions";
 import { queue } from "~/app/snackbarQueue";
@@ -20,7 +20,7 @@ import { NotFound } from "@c/pages/NotFound";
 import { PrivacyPolicy } from "@c/pages/legal/Privacy";
 import { TermsOfService } from "@c/pages/legal/Terms";
 import { SnackbarCookies } from "@c/common/SnackbarCookies";
-import "~/App.scss";
+import "./App.scss";
 
 export const App = () => {
   const dispatch = useAppDispatch();

@@ -3,7 +3,7 @@ import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/common/functions";
 import {
   selectAllProfiles,
@@ -12,13 +12,13 @@ import {
   selectAppPresets,
   selectCurrentPreset,
   selectWhitelist,
-} from "@s/main/mainSlice";
+} from "@s/main";
 import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
-import { selectView } from "@s/settings/settingsSlice";
-import { selectUser, selectUserPresets } from "@s/user/userSlice";
+import { selectView } from "@s/settings";
+import { selectUser, selectUserPresets } from "@s/user";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
