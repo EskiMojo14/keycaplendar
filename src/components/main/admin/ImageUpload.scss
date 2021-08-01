@@ -43,7 +43,7 @@
       height: 0;
       padding-top: 100% * 9/16;
       box-sizing: border-box;
-      @include util.divider-border(all, 1px, dashed);
+      @include util.divider-border($style: dashed);
       user-select: none;
       overflow: hidden;
       transition: animation.standard(border-color, 150ms);
