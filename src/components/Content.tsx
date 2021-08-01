@@ -15,7 +15,7 @@ import { ContentSettings } from "@c/content/ContentSettings";
 import { ContentStatistics } from "@c/content/ContentStatistics";
 import { ContentHistory } from "@c/content/ContentHistory";
 import { ContentUsers } from "@c/content/ContentUsers";
-import { ContentGuides } from "@c/content/ContentGuides";
+import { ContentGuides } from "@c/guides";
 import { ContentUpdates } from "@c/content/ContentUpdates";
 import "./Content.scss";
 
