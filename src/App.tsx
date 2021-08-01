@@ -17,7 +17,6 @@ import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "@c/Content";
 import { Login } from "@c/pages/Login";
 import { NotFound } from "@c/pages/NotFound";
-import { EntryGuide } from "@c/pages/guides/EntryGuide";
 import { PrivacyPolicy } from "@c/pages/legal/Privacy";
 import { TermsOfService } from "@c/pages/legal/Terms";
 import { SnackbarCookies } from "@c/common/SnackbarCookies";
@@ -97,9 +96,6 @@ export const App = () => {
         </Route>
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/terms" component={TermsOfService} />
-        <Route path="/guide/entries">
-          <EntryGuide />
-        </Route>
         <Route exact path={["/", ...allPages.map((page: string) => `/${page}`)]}>
           <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
             <Content className={transitionClass} />
