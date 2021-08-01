@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAppDispatch } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { batchStorageDelete } from "@s/common/functions";
-import { setLoading } from "@s/images/imagesSlice";
+import { setLoading } from "@s/images";
 import { listAll } from "@s/images/functions";
 import { ImageType } from "@s/images/types";
 import { Checkbox } from "@rmwc/checkbox";

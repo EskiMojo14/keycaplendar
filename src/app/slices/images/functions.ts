@@ -13,7 +13,7 @@ import {
   setImages,
   setLoading,
   setSetImages,
-} from "./imagesSlice";
+} from ".";
 import { ImageType } from "./types";
 import { ImageObj } from "./constructors";
 

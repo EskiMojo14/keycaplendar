@@ -19,7 +19,7 @@ import {
   setCheckedImages,
   setDetailImage,
   setDetailMetadata,
-} from "@s/images/imagesSlice";
+} from "@s/images";
 import { ImageObj } from "@s/images/constructors";
 import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
 import { ImageType } from "@s/images/types";
