@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import routerReducer from "@s/router/routerSlice";
 import commonReducer from "@s/common/commonSlice";
 import userReducer from "@s/user/userSlice";
 import settingsReducer from "@s/settings/settingsSlice";
@@ -13,6 +14,7 @@ import updatesReducer from "@s/updates/updatesSlice";
 
 export const store = configureStore({
   reducer: {
+    router: routerReducer,
     common: commonReducer,
     settings: settingsReducer,
     user: userReducer,

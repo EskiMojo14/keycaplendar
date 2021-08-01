@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import firebase from "@s/firebase/firebase";
 import classNames from "classnames";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
+import { ConnectedRouter } from "connected-react-router";
+import { history } from "@s/router/routerSlice";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
 import { allPages } from "@s/common/constants";
@@ -89,7 +91,7 @@ export const App = () => {
   }, []);
   const transitionClass = classNames({ "view-transition": transition });
   return (
-    <Router>
+    <ConnectedRouter history={history}>
       <Switch>
         <Route path="/login">
           <Login />
@@ -105,7 +107,7 @@ export const App = () => {
         </Route>
         <Route component={NotFound} />
       </Switch>
-    </Router>
+    </ConnectedRouter>
   );
 };
 
