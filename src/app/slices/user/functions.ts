@@ -1,4 +1,4 @@
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { is } from "typescript-is";
 import debounce from "lodash.debounce";

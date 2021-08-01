@@ -1,5 +1,5 @@
 import { is } from "typescript-is";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { alphabeticalSortCurried, alphabeticalSortPropCurried, hasKey } from "@s/common/functions";

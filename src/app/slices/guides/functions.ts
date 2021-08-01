@@ -1,4 +1,4 @@
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "@s/common/functions";

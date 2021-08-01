@@ -1,7 +1,7 @@
 import React from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "./constants";
 import { DateSortKeys, SetType } from "@s/main/types";

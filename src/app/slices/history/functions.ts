@@ -1,6 +1,6 @@
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";

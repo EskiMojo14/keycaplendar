@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
@@ -20,7 +20,7 @@ import { NotFound } from "@c/pages/NotFound";
 import { PrivacyPolicy } from "@c/pages/legal/Privacy";
 import { TermsOfService } from "@c/pages/legal/Terms";
 import { SnackbarCookies } from "@c/common/SnackbarCookies";
-import "~/App.scss";
+import "./App.scss";
 
 export const App = () => {
   const dispatch = useAppDispatch();

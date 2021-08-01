@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { IconOptions } from "@rmwc/types";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";

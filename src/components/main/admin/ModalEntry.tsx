@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { is } from "typescript-is";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
-import firebase from "@s/firebase/firebase";
+import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
