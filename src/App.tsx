@@ -96,7 +96,7 @@ export const App = () => {
         </Route>
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/terms" component={TermsOfService} />
-        <Route exact path={["/", ...allPages.map((page: string) => `/${page}`)]}>
+        <Route exact path={["/", ...allPages.map((page) => `/${page}`)]}>
           <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
             <Content className={transitionClass} />
             <SnackbarQueue messages={queue.messages} />
