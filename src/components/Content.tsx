@@ -10,7 +10,7 @@ import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "@c/common/DrawerNav";
 import { ContentAudit } from "@c/audit";
 import { ContentImages } from "@c/images";
-import { ContentMain } from "@c/content/ContentMain";
+import { ContentMain } from "@c/main";
 import { ContentSettings } from "@c/content/ContentSettings";
 import { ContentStatistics } from "@c/content/ContentStatistics";
 import { ContentHistory } from "@c/history";
