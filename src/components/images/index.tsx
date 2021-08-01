@@ -51,13 +51,13 @@ import {
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { DrawerDetails } from "@c/images/DrawerDetails";
-import { DrawerSearch } from "@c/images/DrawerSearch";
-import { DialogDelete } from "@c/images/DialogDelete";
 import { Footer } from "@c/common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
-import "./ContentImages.scss";
+import { DrawerDetails } from "./DrawerDetails";
+import { DrawerSearch } from "./DrawerSearch";
+import { DialogDelete } from "./DialogDelete";
+import "./index.scss";
 
 const storage = firebase.storage();
 

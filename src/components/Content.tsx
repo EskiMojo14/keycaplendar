@@ -9,7 +9,7 @@ import { selectUser } from "@s/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "@c/common/DrawerNav";
 import { ContentAudit } from "@c/audit";
-import { ContentImages } from "@c/content/ContentImages";
+import { ContentImages } from "@c/images";
 import { ContentMain } from "@c/content/ContentMain";
 import { ContentSettings } from "@c/content/ContentSettings";
 import { ContentStatistics } from "@c/content/ContentStatistics";
