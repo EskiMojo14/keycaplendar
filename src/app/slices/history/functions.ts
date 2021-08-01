@@ -6,7 +6,7 @@ import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import { alphabeticalSortProp, uniqueArray } from "@s/common/functions";
 import { getSetById } from "@s/main/functions";
-import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from "./historySlice";
+import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 
 const { dispatch } = store;

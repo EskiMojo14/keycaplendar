@@ -5,7 +5,7 @@ import { virtualize } from "react-swipeable-views-utils";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { pageTitle } from "@s/common/constants";
 import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/common/functions";
-import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history/historySlice";
+import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import { RecentSet } from "@s/history/types";
