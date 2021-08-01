@@ -13,7 +13,7 @@ import { ContentImages } from "@c/content/ContentImages";
 import { ContentMain } from "@c/content/ContentMain";
 import { ContentSettings } from "@c/content/ContentSettings";
 import { ContentStatistics } from "@c/content/ContentStatistics";
-import { ContentHistory } from "@c/content/ContentHistory";
+import { ContentHistory } from "@c/history";
 import { ContentUsers } from "@c/content/ContentUsers";
 import { ContentGuides } from "@c/guides";
 import { ContentUpdates } from "@c/content/ContentUpdates";
