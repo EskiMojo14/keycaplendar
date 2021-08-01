@@ -9,14 +9,14 @@ import { selectUser } from "@s/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "@c/common/DrawerNav";
 import { ContentAudit } from "@c/audit";
+import { ContentGuides } from "@c/guides";
+import { ContentHistory } from "@c/history";
 import { ContentImages } from "@c/images";
 import { ContentMain } from "@c/main";
-import { ContentSettings } from "@c/content/ContentSettings";
+import { ContentSettings } from "@c/settings";
 import { ContentStatistics } from "@c/content/ContentStatistics";
-import { ContentHistory } from "@c/history";
-import { ContentUsers } from "@c/content/ContentUsers";
-import { ContentGuides } from "@c/guides";
 import { ContentUpdates } from "@c/content/ContentUpdates";
+import { ContentUsers } from "@c/content/ContentUsers";
 import "./Content.scss";
 
 type ContentProps = React.HTMLAttributes<HTMLDivElement>;

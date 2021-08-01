@@ -51,9 +51,9 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "@c/common/Footer";
-import { DialogDelete } from "@c/settings/DialogDelete";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import "./ContentSettings.scss";
+import { DialogDelete } from "./DialogDelete";
+import "./index.scss";
 
 type ContentSettingsProps = {
   openNav: () => void;
