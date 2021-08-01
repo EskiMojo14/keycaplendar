@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { closeModal, openModal } from "@s/common/functions";
-import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides/guidesSlice";
+import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
 import { Guide } from "@s/guides/constructors";
 import { getEntries } from "@s/guides/functions";
 import { GuideEntryType } from "@s/guides/types";

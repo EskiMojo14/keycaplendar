@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import audit from "@s/audit";
 import common from "@s/common";
-import guides from "@s/guides/guidesSlice";
+import guides from "@s/guides";
 import history from "@s/history/historySlice";
 import images from "@s/images/imagesSlice";
 import main from "@s/main/mainSlice";

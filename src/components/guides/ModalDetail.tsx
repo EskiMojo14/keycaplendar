@@ -3,7 +3,7 @@ import { queue } from "~/app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { iconObject } from "@s/common/functions";
-import { selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
+import { selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user/userSlice";

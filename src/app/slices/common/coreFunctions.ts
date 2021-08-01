@@ -6,7 +6,7 @@ import { setAppPage, setDevice } from ".";
 import { mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes } from "./functions";
 import { Page } from "./types";
-import { setURLEntry as setURLGuide } from "@s/guides/guidesSlice";
+import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
 import {

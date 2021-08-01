@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { iconObject } from "@s/common/functions";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
+import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
 import { Chip, ChipSet } from "@rmwc/chip";

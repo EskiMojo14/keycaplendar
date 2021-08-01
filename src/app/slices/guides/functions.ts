@@ -2,7 +2,7 @@ import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { alphabeticalSort, alphabeticalSortProp, uniqueArray } from "@s/common/functions";
-import { setAllTags, setEntries, setLoading } from "./guidesSlice";
+import { setAllTags, setEntries, setLoading } from ".";
 import { GuideEntryType } from "./types";
 
 const { dispatch } = store;
