@@ -5,7 +5,7 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
 import { hasKey, iconObject, mergeObject, ordinal } from "@s/common/functions";
-import { selectAllDesigners } from "@s/main/mainSlice";
+import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user/userSlice";
 import { userRoleIcons } from "@s/users/constants";
 import { User } from "@s/users/constructors";

@@ -18,7 +18,7 @@ import {
   hasKey,
   iconObject,
 } from "@s/common/functions";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main/mainSlice";
+import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
 import { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user/userSlice";

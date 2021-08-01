@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppSelector } from "~/app/hooks";
-import { selectSetGroups } from "@s/main/mainSlice";
+import { selectSetGroups } from "@s/main";
 import { SetType } from "@s/main/types";
 import { selectView } from "@s/settings/settingsSlice";
 import { Typography } from "@rmwc/typography";

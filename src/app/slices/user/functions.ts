@@ -7,7 +7,7 @@ import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";
 import { addOrRemove, hasKey } from "@s/common/functions";
-import { selectWhitelist, setLinkedFavorites } from "@s/main/mainSlice";
+import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { whitelistParams } from "@s/main/constants";
 import { filterData, selectPreset, updatePreset } from "@s/main/functions";
 import { getStorage, setSyncSettings, settingFns } from "@s/settings/functions";

@@ -18,7 +18,7 @@ import {
   setURLSet,
   setLinkedFavorites,
   setURLWhitelist,
-} from "@s/main/mainSlice";
+} from "@s/main";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
 import { WhitelistType } from "@s/main/types";

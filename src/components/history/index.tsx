@@ -9,7 +9,7 @@ import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, set
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import { RecentSet } from "@s/history/types";
-import { selectAllSets } from "@s/main/mainSlice";
+import { selectAllSets } from "@s/main";
 import { Keyset } from "@s/main/constructors";
 import { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings/settingsSlice";

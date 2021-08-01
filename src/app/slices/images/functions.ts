@@ -2,7 +2,7 @@ import firebase from "@s/firebase";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
 import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/common/functions";
-import { selectAllSets } from "@s/main/mainSlice";
+import { selectAllSets } from "@s/main";
 import {
   appendImages,
   selectCurrentFolder,

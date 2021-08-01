@@ -8,7 +8,7 @@ import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "@s/common/functions";
-import { selectSearch } from "@s/main/mainSlice";
+import { selectSearch } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import { SetType } from "@s/main/types";
 import { selectView } from "@s/settings/settingsSlice";

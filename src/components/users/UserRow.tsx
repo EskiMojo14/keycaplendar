@@ -4,7 +4,7 @@ import firebase from "@s/firebase";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { iconObject, mergeObject, ordinal, truncate } from "@s/common/functions";
-import { selectAllDesigners } from "@s/main/mainSlice";
+import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user/userSlice";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";

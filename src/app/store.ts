@@ -4,7 +4,7 @@ import common from "@s/common";
 import guides from "@s/guides";
 import history from "@s/history";
 import images from "@s/images";
-import main from "@s/main/mainSlice";
+import main from "@s/main";
 import settings from "@s/settings/settingsSlice";
 import statistics from "@s/statistics/statisticsSlice";
 import updates from "@s/updates/updatesSlice";

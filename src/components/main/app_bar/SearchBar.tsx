@@ -3,7 +3,7 @@ import classNames from "classnames";
 import BEMHelper from "@s/common/bemHelper";
 import { useAppSelector } from "~/app/hooks";
 import { alphabeticalSort, iconObject } from "@s/common/functions";
-import { selectFilteredSets } from "@s/main/mainSlice";
+import { selectFilteredSets } from "@s/main";
 import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";

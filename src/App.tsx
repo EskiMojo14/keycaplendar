@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "@s/common/coreFunctions";
-import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main/mainSlice";
+import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
 import { testSets } from "@s/main/functions";
 import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user/userSlice";
 import { selectCookies, selectSettings } from "@s/settings/settingsSlice";

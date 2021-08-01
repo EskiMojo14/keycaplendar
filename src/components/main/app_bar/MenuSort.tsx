@@ -2,7 +2,7 @@ import React from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
 import { arrayIncludes, capitalise } from "@s/common/functions";
-import { selectSort, selectSortOrder } from "@s/main/mainSlice";
+import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
 import { setSort, setSortOrder } from "@s/main/functions";
 import { SortOrderType } from "@s/main/types";

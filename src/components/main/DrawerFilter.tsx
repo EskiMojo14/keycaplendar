@@ -12,7 +12,7 @@ import {
   selectAppPresets,
   selectCurrentPreset,
   selectWhitelist,
-} from "@s/main/mainSlice";
+} from "@s/main";
 import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";

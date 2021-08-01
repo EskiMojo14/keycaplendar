@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { closeModal, openModal } from "@s/common/functions";
 import { Keyset, Preset } from "@s/main/constructors";
-import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main/mainSlice";
+import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
 import { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings/settingsSlice";
 import { selectUser } from "@s/user/userSlice";

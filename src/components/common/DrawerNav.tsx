@@ -8,7 +8,7 @@ import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/c
 import { setPage as setMainPage } from "@s/common/coreFunctions";
 import { hasKey, iconObject } from "@s/common/functions";
 import { Page } from "@s/common/types";
-import { selectLinkedFavorites } from "@s/main/mainSlice";
+import { selectLinkedFavorites } from "@s/main";
 import { selectBottomNav } from "@s/settings/settingsSlice";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";

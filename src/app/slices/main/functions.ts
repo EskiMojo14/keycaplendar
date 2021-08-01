@@ -67,7 +67,7 @@ import {
   selectURLWhitelist,
   selectAllRegions,
   selectDefaultPreset,
-} from "./mainSlice";
+} from ".";
 import {
   OldPresetType,
   PresetType,
