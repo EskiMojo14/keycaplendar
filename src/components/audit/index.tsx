@@ -4,13 +4,7 @@ import classNames from "classnames";
 import { typedFirestore } from "@s/firebase/firestore";
 import { ChangelogId } from "@s/firebase/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import {
-  selectAllActions,
-  selectFilteredActions,
-  selectLoading,
-  setFilterAction,
-  setFilterUser,
-} from "@s/audit/auditSlice";
+import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
 import { getActions, filterActions } from "@s/audit/functions";
 import { ActionType } from "@s/audit/types";
 import { selectDevice } from "@s/common/commonSlice";

@@ -10,7 +10,7 @@ import {
   setFilteredActions,
   setLoading,
   setUsers,
-} from "./auditSlice";
+} from ".";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
 import { alphabeticalSortProp } from "@s/common/functions";

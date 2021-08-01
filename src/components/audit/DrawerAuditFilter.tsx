@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit/auditSlice";
+import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
 import { getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common/commonSlice";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
