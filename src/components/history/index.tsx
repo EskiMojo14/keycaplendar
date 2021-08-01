@@ -26,12 +26,12 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import { Footer } from "@c/common/Footer";
 import { DialogSales } from "@c/main/DialogSales";
 import { DrawerDetails } from "@c/main/DrawerDetails";
-import { ChangelogEntry } from "@c/history/ChangelogEntry";
-import { RecentSetCard } from "@c/history/RecentSetCard";
-import { Footer } from "@c/common/Footer";
-import "./ContentHistory.scss";
+import { ChangelogEntry } from "./ChangelogEntry";
+import { RecentSetCard } from "./RecentSetCard";
+import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 

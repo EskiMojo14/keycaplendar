@@ -21,10 +21,10 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Footer } from "@c/common/Footer";
-import { UpdateEntry } from "@c/updates/UpdateEntry";
+import { UpdateEntry } from "./UpdateEntry";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/ModalEntry";
 import { DialogDelete } from "@c/updates/admin/DialogDelete";
-import "./ContentUpdates.scss";
+import "./index.scss";
 
 type ContentUpdatesProps = {
   openNav: () => void;

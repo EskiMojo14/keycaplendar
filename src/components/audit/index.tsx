@@ -33,12 +33,12 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { DrawerAuditFilter } from "@c/audit/DrawerAuditFilter";
-import { DialogAuditDelete } from "@c/audit/DialogAuditDelete";
-import { AuditEntry } from "@c/audit/AuditEntry";
 import { Footer } from "@c/common/Footer";
 import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
-import "./ContentAudit.scss";
+import { DrawerAuditFilter } from "./DrawerAuditFilter";
+import { DialogAuditDelete } from "./DialogAuditDelete";
+import { AuditEntry } from "./AuditEntry";
+import "./index.scss";
 
 type ContentAuditProps = {
   openNav: () => void;

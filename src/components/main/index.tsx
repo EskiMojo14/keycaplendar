@@ -11,20 +11,20 @@ import { selectUser } from "@s/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
+import { Footer } from "@c/common/Footer";
+import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
+import { DrawerDetails } from "./DrawerDetails";
+import { DrawerFilter } from "./DrawerFilter";
+import { DialogSales } from "./DialogSales";
+import { ModalFilterPreset } from "./ModalFilterPreset";
+import { DialogDeleteFilterPreset } from "./DialogDeleteFilterPreset";
+import { DialogShareFavorites } from "./DialogShareFavorites";
 import { AppBar } from "@c/main/app_bar/AppBar";
 import { ContentEmpty } from "@c/main/content/ContentEmpty";
 import { ContentGrid } from "@c/main/content/ContentGrid";
-import { DrawerDetails } from "@c/main/DrawerDetails";
-import { DrawerFilter } from "@c/main/DrawerFilter";
-import { DialogSales } from "@c/main/DialogSales";
-import { ModalFilterPreset } from "@c/main/ModalFilterPreset";
-import { DialogDeleteFilterPreset } from "@c/main/DialogDeleteFilterPreset";
-import { DialogShareFavorites } from "@c/main/DialogShareFavorites";
 import { ModalCreate, ModalEdit } from "@c/main/admin/ModalEntry";
 import { DialogDelete } from "@c/main/admin/DialogDelete";
 import { SnackbarDeleted } from "@c/main/admin/SnackbarDeleted";
-import { Footer } from "@c/common/Footer";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
 
 type ContentMainProps = {
   navOpen: boolean;

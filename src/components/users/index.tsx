@@ -47,8 +47,7 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { UserRow } from "@c/users/UserRow";
-import { UserCard } from "@c/users/UserCard";
+import { Footer } from "@c/common/Footer";
 import {
   DataTablePagination,
   DataTablePaginationTrailing,
@@ -59,8 +58,9 @@ import {
   DataTablePaginationTotal,
   DataTablePaginationButton,
 } from "@c/util/DataTablePagination";
-import { Footer } from "@c/common/Footer";
-import "./ContentUsers.scss";
+import { UserRow } from "./UserRow";
+import { UserCard } from "./UserCard";
+import "./index.scss";
 
 const length = 1000;
 const rows = 25;

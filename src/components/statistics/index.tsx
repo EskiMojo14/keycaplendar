@@ -24,12 +24,12 @@ import {
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import { Footer } from "@c/common/Footer";
-import { StatusCard } from "@c/statistics/PieCard";
-import { TableCard } from "@c/statistics/TableCard";
-import { ShippedCard, TimelinesCard, CountCard } from "@c/statistics/TimelineCard";
-import { DialogStatistics } from "@c/statistics/DialogStatistics";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import "./ContentStatistics.scss";
+import { StatusCard } from "./PieCard";
+import { TableCard } from "./TableCard";
+import { ShippedCard, TimelinesCard, CountCard } from "./TimelineCard";
+import { DialogStatistics } from "./DialogStatistics";
+import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 

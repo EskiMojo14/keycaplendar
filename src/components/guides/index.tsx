@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import React, { useEffect, useState } from "react";
+import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common/commonSlice";
 import { pageTitle } from "@s/common/constants";
@@ -25,13 +25,13 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "@c/common/Footer";
-import { GuideEntry } from "@c/guides/GuideEntry";
-import { EntriesList } from "@c/guides/EntriesList";
-import { ModalDetail } from "@c/guides/ModalDetail";
+import { GuideEntry } from "./GuideEntry";
+import { EntriesList } from "./EntriesList";
+import { ModalDetail } from "./ModalDetail";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/ModalEntry";
 import { DialogDelete } from "@c/guides/admin/DialogDelete";
 import emptyImg from "@m/empty.svg";
-import "./ContentGuides.scss";
+import "./index.scss";
 
 type ContentGuidesProps = {
   openNav: () => void;
