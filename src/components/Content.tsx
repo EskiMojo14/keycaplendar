@@ -15,7 +15,7 @@ import { ContentImages } from "@c/images";
 import { ContentMain } from "@c/main";
 import { ContentSettings } from "@c/settings";
 import { ContentStatistics } from "@c/statistics";
-import { ContentUpdates } from "@c/content/ContentUpdates";
+import { ContentUpdates } from "@c/updates";
 import { ContentUsers } from "@c/content/ContentUsers";
 import "./Content.scss";
 
