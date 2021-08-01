@@ -20,7 +20,7 @@ import {
   selectSortedUsers,
   selectView,
   setLoading,
-} from "@s/users/usersSlice";
+} from "@s/users";
 import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
 import { UserType } from "@s/users/types";

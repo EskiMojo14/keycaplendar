@@ -9,7 +9,7 @@ import settings from "@s/settings";
 import statistics from "@s/statistics";
 import updates from "@s/updates";
 import user from "@s/user";
-import users from "@s/users/usersSlice";
+import users from "@s/users";
 
 export const store = configureStore({
   reducer: {
