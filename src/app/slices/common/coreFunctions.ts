@@ -24,7 +24,7 @@ import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/fu
 import { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
 import { StatsTab } from "@s/statistics/types";
-import { setURLEntry as setURLUpdate } from "@s/updates/updatesSlice";
+import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 
 const { dispatch } = store;
