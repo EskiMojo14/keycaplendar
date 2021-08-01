@@ -3,7 +3,7 @@ import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
 import { setAppPage, setDevice } from "./commonSlice";
-import { mainPages, pageTitle, urlPages } from "./constants";
+import { mainPages, urlPages } from "./constants";
 import { arrayIncludes } from "./functions";
 import { Page } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides/guidesSlice";
@@ -12,15 +12,12 @@ import { HistoryTab } from "@s/history/types";
 import {
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
-  setSearch as setMainSearch,
   setAppPresets,
-  setTransition,
   setURLSet,
-  setLinkedFavorites,
   setURLWhitelist,
 } from "@s/main/mainSlice";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
-import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
+import { getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
 import { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
 import { StatsTab } from "@s/statistics/types";
@@ -216,63 +213,4 @@ export const getGlobals = () => {
       console.log("Failed to get global settings: " + error);
       queue.notify({ title: "Failed to get global settings: " + error });
     });
-};
-
-export const setPage = (page: Page, state = store.getState()) => {
-  const {
-    common: { page: appPage },
-    main: { loading, urlSet, linkedFavorites },
-    guides: { urlEntry: urlGuide },
-    updates: { urlEntry: urlUpdate },
-  } = state;
-  if (page !== appPage && !loading && is<Page>(page)) {
-    dispatch(setTransition(true));
-    setTimeout(() => {
-      dispatch(setMainSearch(""));
-      dispatch(setAppPage(page));
-      if (arrayIncludes(mainPages, page)) {
-        dispatch(setMainSort(pageSort[page]));
-        dispatch(setMainSortOrder(pageSortOrder[page]));
-        filterData(store.getState());
-      }
-      document.documentElement.scrollTop = 0;
-    }, 90);
-    setTimeout(() => {
-      dispatch(setTransition(true));
-    }, 300);
-    document.title = "KeycapLendar: " + pageTitle[page];
-    const params = new URLSearchParams(window.location.search);
-    params.delete("page");
-    const pageParams = ["keysetId", "keysetAlias", "keysetName", "guideId", "updateId", "favoritesId"];
-    pageParams.forEach((param) => {
-      if (params.has(param)) {
-        params.delete(param);
-      }
-    });
-    if (urlSet.value) {
-      dispatch(
-        setURLSet({
-          prop: "id",
-          value: "",
-        })
-      );
-    }
-    if (urlGuide) {
-      dispatch(setURLGuide(""));
-    }
-    if (urlUpdate) {
-      dispatch(setURLUpdate(""));
-    }
-    if (linkedFavorites.array.length > 0) {
-      dispatch(setLinkedFavorites({ array: [], displayName: "" }));
-    }
-    const urlParams = params.toString() ? "?" + params.toString() : "";
-    window.history.pushState(
-      {
-        page: page,
-      },
-      "KeycapLendar: " + pageTitle[page],
-      "/" + page + urlParams
-    );
-  }
 };
