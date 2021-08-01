@@ -14,7 +14,7 @@ import {
   selectShareNameLoading,
   selectSyncSettings,
   setShareNameLoading,
-} from "@s/settings/settingsSlice";
+} from "@s/settings";
 import {
   setApplyTheme,
   setBottomNav,

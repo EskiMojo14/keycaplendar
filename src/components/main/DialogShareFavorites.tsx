@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectShareNameLoading, setShareNameLoading } from "@s/settings/settingsSlice";
+import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user/userSlice";
 import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
 import { CircularProgress } from "@rmwc/circular-progress";

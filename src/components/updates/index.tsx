@@ -8,7 +8,7 @@ import { selectEntries, selectLoading, selectURLEntry } from "@s/updates/updates
 import { Update } from "@s/updates/constructors";
 import { getEntries, pinEntry } from "@s/updates/functions";
 import { UpdateEntryType } from "@s/updates/types";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user/userSlice";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";

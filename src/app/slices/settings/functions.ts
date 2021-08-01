@@ -3,7 +3,7 @@ import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from "./settingsSlice";
+import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
 import { ViewType } from "./types";
 import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/common/functions";

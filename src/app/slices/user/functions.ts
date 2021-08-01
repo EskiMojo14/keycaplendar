@@ -23,7 +23,7 @@ import {
   setShareName,
   setUserPresets,
 } from "./userSlice";
-import { setShareNameLoading } from "@s/settings/settingsSlice";
+import { setShareNameLoading } from "@s/settings";
 
 const { dispatch } = store;
 

@@ -4,7 +4,7 @@ import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { arrayIncludes, closeModal, openModal } from "@s/common/functions";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "@c/common/DrawerNav";

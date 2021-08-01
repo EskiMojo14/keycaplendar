@@ -11,7 +11,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { arrayIncludes, closeModal, openModal } from "@s/common/functions";
 import { Keyset } from "@s/main/constructors";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { queue } from "~/app/snackbarQueue";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";

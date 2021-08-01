@@ -12,7 +12,7 @@ import { RecentSet } from "@s/history/types";
 import { selectAllSets } from "@s/main";
 import { Keyset } from "@s/main/constructors";
 import { SetType } from "@s/main/types";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";

@@ -8,7 +8,7 @@ import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/gu
 import { Guide } from "@s/guides/constructors";
 import { getEntries } from "@s/guides/functions";
 import { GuideEntryType } from "@s/guides/types";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user/userSlice";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";

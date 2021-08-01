@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { iconObject, useBoolStates } from "@s/common/functions";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import {
   selectFirstIndex,
   selectLastIndex,

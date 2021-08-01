@@ -2,7 +2,7 @@ import React from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectSetGroups } from "@s/main";
 import { SetType } from "@s/main/types";
-import { selectView } from "@s/settings/settingsSlice";
+import { selectView } from "@s/settings";
 import { Typography } from "@rmwc/typography";
 import { ViewCard } from "@c/main/views/card/ViewCard";
 import { ViewList } from "@c/main/views/list/ViewList";

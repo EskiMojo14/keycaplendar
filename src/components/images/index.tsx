@@ -24,7 +24,7 @@ import { ImageObj } from "@s/images/constructors";
 import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
 import { ImageType } from "@s/images/types";
 import { selectAllSets } from "@s/main";
-import { selectBottomNav } from "@s/settings/settingsSlice";
+import { selectBottomNav } from "@s/settings";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";

@@ -17,7 +17,7 @@ import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constan
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
-import { selectView } from "@s/settings/settingsSlice";
+import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user/userSlice";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";

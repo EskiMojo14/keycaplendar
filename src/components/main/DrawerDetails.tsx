@@ -11,7 +11,7 @@ import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from
 import { selectSearch } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import { SetType } from "@s/main/types";
-import { selectView } from "@s/settings/settingsSlice";
+import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
