@@ -8,7 +8,7 @@ import { selectBottomNav } from "@s/settings/settingsSlice";
 import { selectUser } from "@s/user/userSlice";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { DrawerNav } from "@c/common/DrawerNav";
-import { ContentAudit } from "@c/content/ContentAudit";
+import { ContentAudit } from "@c/audit";
 import { ContentImages } from "@c/content/ContentImages";
 import { ContentMain } from "@c/content/ContentMain";
 import { ContentSettings } from "@c/content/ContentSettings";
