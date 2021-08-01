@@ -9,7 +9,7 @@ import firebase from "@s/firebase/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import {
   arrayMove,
   batchStorageDelete,

@@ -1,7 +1,7 @@
 import React from "react";
 import { queue } from "~/app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { iconObject } from "@s/common/functions";
 import { selectFilteredTag, setFilteredTag } from "@s/guides/guidesSlice";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";

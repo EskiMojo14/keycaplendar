@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
-import { selectPage } from "@s/common/commonSlice";
+import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import {
   alphabeticalSort,

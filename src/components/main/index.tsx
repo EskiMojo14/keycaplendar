@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { closeModal, openModal } from "@s/common/functions";
 import { Keyset, Preset } from "@s/main/constructors";
 import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main/mainSlice";

@@ -3,7 +3,7 @@ import firebase from "@s/firebase/firebase";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { hasKey, iconObject, mergeObject, ordinal } from "@s/common/functions";
 import { selectAllDesigners } from "@s/main/mainSlice";
 import { selectUser } from "@s/user/userSlice";

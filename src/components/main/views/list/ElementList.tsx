@@ -3,7 +3,7 @@ import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
-import { selectPage } from "@s/common/commonSlice";
+import { selectPage } from "@s/common";
 import { iconObject } from "@s/common/functions";
 import { SetType } from "@s/main/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";

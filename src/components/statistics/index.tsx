@@ -3,7 +3,7 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { capitalise, hasKey, iconObject, useBoolStates } from "@s/common/functions";
 import { selectBottomNav } from "@s/settings/settingsSlice";

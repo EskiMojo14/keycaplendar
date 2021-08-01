@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { IconOptions } from "@rmwc/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { useBoolStates } from "@s/common/functions";
 import {

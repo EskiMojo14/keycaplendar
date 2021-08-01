@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 import { selectUser } from "@s/user/userSlice";

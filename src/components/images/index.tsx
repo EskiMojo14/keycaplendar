@@ -3,7 +3,7 @@ import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "@s/firebase/firebase";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/common/functions";
 import {

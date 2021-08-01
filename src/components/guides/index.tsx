@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { closeModal, openModal } from "@s/common/functions";
 import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides/guidesSlice";

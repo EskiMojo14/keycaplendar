@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "@s/common/functions";
 import { selectSearch } from "@s/main/mainSlice";

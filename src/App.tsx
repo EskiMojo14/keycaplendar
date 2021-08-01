@@ -3,7 +3,7 @@ import firebase from "@s/firebase/firebase";
 import classNames from "classnames";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "@s/common/coreFunctions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main/mainSlice";

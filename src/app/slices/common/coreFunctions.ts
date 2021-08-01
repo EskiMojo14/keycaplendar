@@ -2,7 +2,7 @@ import { is } from "typescript-is";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setAppPage, setDevice } from "./commonSlice";
+import { setAppPage, setDevice } from ".";
 import { mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes } from "./functions";
 import { Page } from "./types";

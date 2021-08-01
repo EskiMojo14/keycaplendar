@@ -3,7 +3,7 @@ import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/common/functions";
 import {
   selectAllProfiles,

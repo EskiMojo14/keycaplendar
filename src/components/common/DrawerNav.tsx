@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/common/constants";
 import { setPage as setMainPage } from "@s/common/coreFunctions";
 import { hasKey, iconObject } from "@s/common/functions";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common/commonSlice";
+import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { arrayIncludes, closeModal, openModal } from "@s/common/functions";
 import { selectBottomNav } from "@s/settings/settingsSlice";

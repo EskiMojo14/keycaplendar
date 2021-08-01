@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
 import { getActions, filterActions } from "@s/audit/functions";
 import { ActionType } from "@s/audit/types";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { arrayIncludes, closeModal, openModal } from "@s/common/functions";
 import { Keyset } from "@s/main/constructors";

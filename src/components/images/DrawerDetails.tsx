@@ -1,7 +1,7 @@
 import React from "react";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { formatBytes, objectKeys, ordinal } from "@s/common/functions";
 import { ImageType } from "@s/images/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";

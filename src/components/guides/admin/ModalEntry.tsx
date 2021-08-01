@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { typedFirestore } from "@s/firebase/firestore";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { arrayIncludes } from "@s/common/functions";
 import { GuideId } from "@s/firebase/types";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";

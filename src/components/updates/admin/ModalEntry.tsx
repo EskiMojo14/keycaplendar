@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common/commonSlice";
+import { selectDevice } from "@s/common";
 import { iconObject, ordinal } from "@s/common/functions";
 import { UpdateId } from "@s/firebase/types";
 import { UpdateEntryType } from "@s/updates/types";

@@ -5,7 +5,7 @@ import debounce from "lodash.debounce";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
-import { selectPage } from "@s/common/commonSlice";
+import { selectPage } from "@s/common";
 import { addOrRemove, hasKey } from "@s/common/functions";
 import { selectWhitelist, setLinkedFavorites } from "@s/main/mainSlice";
 import { whitelistParams } from "@s/main/constants";
