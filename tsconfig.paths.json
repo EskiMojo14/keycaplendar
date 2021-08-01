@@ -2,9 +2,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "~/*": [
-                "src/*"
-            ],
             "@s/*": [
                 "src/app/slices/*"
             ],
@@ -13,6 +10,9 @@
             ],
             "@m/*": [
                 "src/media/*"
+            ],
+            "~/*": [
+                "src/*"
             ]
         }
     }
