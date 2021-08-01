@@ -10,7 +10,7 @@ import { selectBottomNav } from "@s/settings";
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
 import { StatisticsType } from "@s/statistics/types";
-import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics/statisticsSlice";
+import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import { Tooltip } from "@rmwc/tooltip";

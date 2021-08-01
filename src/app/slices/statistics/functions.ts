@@ -12,7 +12,7 @@ import {
   selectTab,
   selectData,
   selectSort,
-} from "./statisticsSlice";
+} from ".";
 import {
   DurationData,
   ShippedData,

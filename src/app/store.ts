@@ -6,7 +6,7 @@ import history from "@s/history";
 import images from "@s/images";
 import main from "@s/main";
 import settings from "@s/settings";
-import statistics from "@s/statistics/statisticsSlice";
+import statistics from "@s/statistics";
 import updates from "@s/updates/updatesSlice";
 import user from "@s/user/userSlice";
 import users from "@s/users/usersSlice";
