@@ -9,7 +9,7 @@ import { Update } from "@s/updates/constructors";
 import { getEntries, pinEntry } from "@s/updates/functions";
 import { UpdateEntryType } from "@s/updates/types";
 import { selectBottomNav } from "@s/settings";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
 import {

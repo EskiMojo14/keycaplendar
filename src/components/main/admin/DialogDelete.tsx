@@ -5,7 +5,7 @@ import { queue } from "~/app/snackbarQueue";
 import { KeysetDoc, KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 
 type DialogDeleteProps = {

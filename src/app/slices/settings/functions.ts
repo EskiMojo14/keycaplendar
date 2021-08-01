@@ -10,7 +10,7 @@ import { hasKey } from "@s/common/functions";
 import { whitelistParams } from "@s/main/constants";
 import { selectLoading, selectURLWhitelist, setTransition } from "@s/main";
 import { selectPreset } from "@s/main/functions";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 
 const { dispatch } = store;
 

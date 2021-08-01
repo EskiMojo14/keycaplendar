@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
-import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user/userSlice";
+import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";

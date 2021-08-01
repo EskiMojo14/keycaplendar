@@ -7,7 +7,7 @@ import { arrayIncludes } from "@s/common/functions";
 import { GuideId } from "@s/firebase/types";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { userRoles } from "@s/users/constants";
 import { UserRoles } from "@s/users/types";
 import { Button } from "@rmwc/button";

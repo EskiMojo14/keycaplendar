@@ -8,7 +8,7 @@ import main from "@s/main";
 import settings from "@s/settings";
 import statistics from "@s/statistics";
 import updates from "@s/updates";
-import user from "@s/user/userSlice";
+import user from "@s/user";
 import users from "@s/users/usersSlice";
 
 export const store = configureStore({

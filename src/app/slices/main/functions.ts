@@ -20,14 +20,7 @@ import {
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { setStorage } from "@s/settings/functions";
-import {
-  selectBought,
-  selectFavorites,
-  selectHidden,
-  selectUser,
-  selectUserPresets,
-  setUserPresets,
-} from "@s/user/userSlice";
+import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
   allSorts,
   arraySorts,

@@ -10,7 +10,7 @@ import { MainPage } from "@s/common/types";
 import { pageConditions } from "@s/main/functions";
 import { SetType } from "@s/main/types";
 import { RecentSet } from "@s/history/types";
-import { selectBought, selectFavorites, selectHidden } from "@s/user/userSlice";
+import { selectBought, selectFavorites, selectHidden } from "@s/user";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";

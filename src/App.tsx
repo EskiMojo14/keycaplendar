@@ -8,7 +8,7 @@ import { allPages } from "@s/common/constants";
 import { checkDevice, getGlobals, getURLQuery } from "@s/common/coreFunctions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
 import { testSets } from "@s/main/functions";
-import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user/userSlice";
+import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user";
 import { selectCookies, selectSettings } from "@s/settings";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "@s/settings/functions";
 import { getUserPreferences } from "@s/user/functions";

@@ -8,7 +8,7 @@ import { selectLoading, selectSearch, selectLinkedFavorites } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import { selectBottomNav, selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import { Tooltip } from "@rmwc/tooltip";

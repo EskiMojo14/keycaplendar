@@ -6,7 +6,7 @@ import { selectDevice } from "@s/common";
 import { iconObject, ordinal } from "@s/common/functions";
 import { UpdateId } from "@s/firebase/types";
 import { UpdateEntryType } from "@s/updates/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";

@@ -5,7 +5,7 @@ import { iconObject } from "@s/common/functions";
 import { selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Tooltip } from "@rmwc/tooltip";

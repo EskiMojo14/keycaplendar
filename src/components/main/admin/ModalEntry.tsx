@@ -21,7 +21,7 @@ import {
 import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
 import { SetType, VendorType } from "@s/main/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { queue } from "~/app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
 import { Autocomplete } from "@c/util/Autocomplete";

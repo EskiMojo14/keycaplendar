@@ -3,7 +3,7 @@ import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";

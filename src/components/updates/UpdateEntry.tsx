@@ -6,7 +6,7 @@ import { useAppSelector } from "~/app/hooks";
 import { iconObject, ordinal } from "@s/common/functions";
 import { selectURLEntry } from "@s/updates";
 import { UpdateEntryType } from "@s/updates/types";
-import { selectUser } from "@s/user/userSlice";
+import { selectUser } from "@s/user";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Tooltip } from "@rmwc/tooltip";

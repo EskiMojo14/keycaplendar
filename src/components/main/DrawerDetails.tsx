@@ -13,7 +13,7 @@ import { setSearch } from "@s/main/functions";
 import { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";

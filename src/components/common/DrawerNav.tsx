@@ -10,7 +10,7 @@ import { hasKey, iconObject } from "@s/common/functions";
 import { Page } from "@s/common/types";
 import { selectLinkedFavorites } from "@s/main";
 import { selectBottomNav } from "@s/settings";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
+import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider, CollapsibleList } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";

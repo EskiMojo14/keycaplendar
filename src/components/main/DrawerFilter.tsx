@@ -18,7 +18,7 @@ import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
-import { selectUser, selectUserPresets } from "@s/user/userSlice";
+import { selectUser, selectUserPresets } from "@s/user";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";

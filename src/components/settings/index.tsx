@@ -26,7 +26,7 @@ import {
   setSyncSettings,
   setToTimeTheme,
 } from "@s/settings/functions";
-import { selectShareName, selectUser, setUser } from "@s/user/userSlice";
+import { selectShareName, selectUser, setUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { debouncedSyncShareName } from "@s/user/functions";
 import { Avatar } from "@rmwc/avatar";

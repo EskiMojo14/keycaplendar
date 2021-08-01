@@ -22,7 +22,7 @@ import {
   setHidden,
   setShareName,
   setUserPresets,
-} from "./userSlice";
+} from ".";
 import { setShareNameLoading } from "@s/settings";
 
 const { dispatch } = store;

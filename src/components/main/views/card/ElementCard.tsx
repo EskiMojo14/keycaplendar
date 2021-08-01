@@ -7,7 +7,7 @@ import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
 import { iconObject } from "@s/common/functions";
 import { SetType } from "@s/main/types";
-import { selectFavorites, selectHidden, selectUser } from "@s/user/userSlice";
+import { selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
 import { Typography } from "@rmwc/typography";
 import {
