@@ -86,12 +86,15 @@
 }
 
 .mdc-drawer {
+  @include util.divider-border(right);
+  @include rtl.rtl {
+    @include util.divider-border(left);
+  }
   &.drawer-bottom {
     width: 100%;
     height: auto;
     max-height: 100%;
-    border-width: 1px 0 0;
-    border-top-style: solid;
+    @include util.divider-border(top);
     &.mdc-drawer--animate {
       transform: translateY(101%);
     }
@@ -106,9 +109,7 @@
   &.drawer-right {
     width: 320px;
     border-right-width: 0;
-    border-left-width: 1px;
-    border-right-style: none;
-    border-left-style: solid;
+    @include util.divider-border(left);
     @include rtl.reflexive-position(left, initial);
     @include rtl.reflexive-position(right, 0);
     &.mdc-drawer--animate,
@@ -129,9 +130,7 @@
     }
     @include rtl.rtl {
       border-left-width: 0;
-      border-right-width: 1px;
-      border-left-style: none;
-      border-right-style: solid;
+      @include util.divider-border(right);
       left: 0;
       right: initial;
     }
@@ -254,13 +253,18 @@
 
 .mdc-button.mdc-button--outlined,
 .mdc-card.mdc-card--outlined,
-.mdc-drawer,
-.mdc-list-divider,
-.mdc-data-table,
+.mdc-data-table {
+  @include util.divider-border();
+}
+
 .mdc-data-table__row,
-.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title,
 .mdc-dialog.mdc-dialog--scrollable .mdc-dialog__actions {
-  border-color: var(--divider-color);
+  @include util.divider-border(top);
+}
+
+.mdc-list-divider,
+.mdc-dialog.mdc-dialog--scrollable .mdc-dialog__title {
+  @include util.divider-border(bottom);
 }
 
 .material-icons,

@@ -1,4 +1,5 @@
 @use "@material/rtl/_index" as rtl;
+@use "~/util";
 
 .segmented-button {
   display: flex;
@@ -10,8 +11,8 @@
       border-radius: inherit;
     }
     &:not(.segmented-button__segment--selected) {
-      border-left-color: var(--lighter-color);
-      border-right-color: var(--lighter-color);
+      @include util.half-divider-border(left);
+      @include util.half-divider-border(right);
     }
     &.segmented-button__segment--only-icon .mdc-button__icon {
       margin: 0;
@@ -27,12 +28,12 @@
       }
       &:first-child {
         &:not(.segmented-button__segment--selected) {
-          border-left-color: var(--divider-color);
+          @include util.divider-border(left);
         }
       }
       &:last-child {
         &:not(.segmented-button__segment--selected) {
-          border-right-color: var(--divider-color);
+          @include util.divider-border(right);
         }
       }
     }
@@ -47,12 +48,12 @@
       }
       &:first-child {
         &:not(.segmented-button__segment--selected) {
-          border-right-color: var(--divider-color);
+          @include util.divider-border(right);
         }
       }
       &:last-child {
         &:not(.segmented-button__segment--selected) {
-          border-left-color: var(--divider-color);
+          @include util.divider-border(left);
         }
       }
     }
