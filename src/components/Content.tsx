@@ -16,7 +16,7 @@ import { ContentMain } from "@c/main";
 import { ContentSettings } from "@c/settings";
 import { ContentStatistics } from "@c/statistics";
 import { ContentUpdates } from "@c/updates";
-import { ContentUsers } from "@c/content/ContentUsers";
+import { ContentUsers } from "@c/users";
 import "./Content.scss";
 
 type ContentProps = React.HTMLAttributes<HTMLDivElement>;
