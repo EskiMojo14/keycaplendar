@@ -193,6 +193,12 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     const newFocused = addOrRemove(focused, index);
     setFocused(newFocused);
   };
+  const focusAll = () => {
+    const allIndexes = Array(props.data.timeline.series.length)
+      .fill("")
+      .map((v, i) => i);
+    setFocused(allIndexes);
+  };
   const clearFocus = () => {
     setFocused([]);
   };
@@ -233,8 +239,47 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         responsiveOptions={responsiveOptions}
       />
     ) : null;
-  const onlyFocusedButton = !props.profileGroups
-    ? withTooltip(
+  const focusButtons = !props.profileGroups ? (
+    <>
+      {withTooltip(
+        <IconButton
+          icon={iconObject(
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px">
+                <path d="M0,0H24V24H0Z" fill="none" />
+                <path
+                  d="M13.71655,16.15582a4.5119,4.5119,0,1,1,2.43927-2.43927,5.9945,5.9945,0,0,1,4.01758-.60016A9.949,9.949,0,0,0,20.82,12,9.82205,9.82205,0,0,0,3.18,12,9.77027,9.77027,0,0,0,12,17.5a9.95876,9.95876,0,0,0,1.21863-.08539A5.96389,5.96389,0,0,1,13.71655,16.15582Z"
+                  opacity="0.3"
+                />
+                <path d="M12,7.5a4.5,4.5,0,1,0,1.71655,8.65582,6.02548,6.02548,0,0,1,2.43927-2.43927A4.49209,4.49209,0,0,0,12,7.5Zm0,7A2.5,2.5,0,1,1,14.5,12,2.50091,2.50091,0,0,1,12,14.5Zm1.02289,4.95294C12.68549,19.48193,12.345,19.5,12,19.5A11.82679,11.82679,0,0,1,1,12a11.81667,11.81667,0,0,1,22,0,11.81143,11.81143,0,0,1-.93243,1.85028,5.952,5.952,0,0,0-1.89417-.73389A9.949,9.949,0,0,0,20.82,12,9.82205,9.82205,0,0,0,3.18,12,9.77027,9.77027,0,0,0,12,17.5a9.95876,9.95876,0,0,0,1.21863-.08539A5.99107,5.99107,0,0,0,13,19C13,19.15289,13.01166,19.30292,13.02289,19.45294ZM23.5,17l-5,5L15,18.5,16.5,17l2,2L22,15.5,23.5,17" />
+              </svg>
+            </div>
+          )}
+          disabled={focused.length === props.data.timeline.series.length}
+          onClick={focusAll}
+        />,
+        "Focus all series"
+      )}
+      {withTooltip(
+        <IconButton
+          icon={iconObject(
+            <div>
+              <svg viewBox="0 0 24 24" height="24px" width="24px">
+                <path d="M0,0H24V24H0Z" fill="none" />
+                <path
+                  d="M13.71655,16.15582a4.5119,4.5119,0,1,1,2.43927-2.43927,5.9945,5.9945,0,0,1,4.01758-.60016A9.949,9.949,0,0,0,20.82,12,9.82205,9.82205,0,0,0,3.18,12,9.77027,9.77027,0,0,0,12,17.5a9.95876,9.95876,0,0,0,1.21863-.08539A5.96389,5.96389,0,0,1,13.71655,16.15582Z"
+                  opacity="0.3"
+                />
+                <path d="M12,7.5a4.5,4.5,0,1,0,1.71655,8.65582,6.02548,6.02548,0,0,1,2.43927-2.43927A4.49209,4.49209,0,0,0,12,7.5Zm0,7A2.5,2.5,0,1,1,14.5,12,2.50091,2.50091,0,0,1,12,14.5Zm1.02289,4.95294C12.68549,19.48193,12.345,19.5,12,19.5A11.82679,11.82679,0,0,1,1,12a11.81667,11.81667,0,0,1,22,0,11.81143,11.81143,0,0,1-.93243,1.85028,5.952,5.952,0,0,0-1.89417-.73389A9.949,9.949,0,0,0,20.82,12,9.82205,9.82205,0,0,0,3.18,12,9.77027,9.77027,0,0,0,12,17.5a9.95876,9.95876,0,0,0,1.21863-.08539A5.99107,5.99107,0,0,0,13,19C13,19.15289,13.01166,19.30292,13.02289,19.45294ZM22.54,16.88,20.41,19l2.13,2.12-1.42,1.42L19,20.41l-2.12,2.13-1.41-1.42L17.59,19l-2.12-2.12,1.41-1.41L19,17.59l2.12-2.12,1.42,1.41" />
+              </svg>
+            </div>
+          )}
+          disabled={focused.length === 0}
+          onClick={clearFocus}
+        />,
+        "Clear focus"
+      )}
+      {withTooltip(
         <IconButton
           className="primary-on"
           icon={iconObject(
@@ -267,8 +312,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           onClick={() => setOnlyFocused((prev) => !prev)}
         />,
         "Filter to focused items"
-      )
-    : null;
+      )}
+    </>
+  ) : null;
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
@@ -281,7 +327,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           </Typography>
         </div>
         <div className="button-container">
-          {onlyFocusedButton}
+          {focusButtons}
           <SegmentedButton toggle>
             <SegmentedButtonSegment
               icon={iconObject(
@@ -326,7 +372,6 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         </div>
         {!props.profileGroups ? (
           <div className="timeline-chips-container focus-chips">
-            <IconButton icon="clear" disabled={focused.length === 0} onClick={clearFocus} />
             <ChipSet choice>
               {props.allProfiles.map((profile, index) => {
                 if (props.data.timeline.profiles.includes(profile)) {

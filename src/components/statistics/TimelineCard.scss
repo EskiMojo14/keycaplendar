@@ -19,7 +19,9 @@
       display: flex;
       align-items: center;
       .mdc-icon-button {
-        @include rtl.reflexive-box(margin, right, 8px);
+        & + .segmented-button {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
       }
     }
   }
