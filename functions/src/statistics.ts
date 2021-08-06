@@ -589,7 +589,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
         } else {
           propSets = vendorSets.filter((set) => set[prop] === name);
         }
-        const lengthArray = propSets.map((set) => set.vendors?.length || 0).sort();
+        const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
         if (lengthArray.length > 0) {
           const labels = [...math.range(0, math.max(lengthArray), 1, true).toArray()] as number[];
           const count = labels.map((_val, index) => countInArray(lengthArray, index));
