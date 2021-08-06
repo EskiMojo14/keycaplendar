@@ -6,7 +6,7 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { addOrRemove, hasKey, iconObject } from "@s/common/functions";
+import { addOrRemove, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
 import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -185,9 +185,6 @@ type TimelinesCardProps = {
   data: TimelineDataObject;
 };
 
-const isDataObjects = (series: ChartData): series is { data: ChartSeriesItem[]; className?: string }[] =>
-  hasKey(series[0], "data");
-
 export const TimelinesCard = (props: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [focused, setFocused] = useState<number[]>([]);
@@ -202,7 +199,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const chartSeries =
     onlyFocused &&
     !props.profileGroups &&
-    isDataObjects(props.data.timeline.series) &&
+    arrayEveryType<{ data: ChartSeriesItem[]; className?: string }>(props.data.timeline.series, (series) =>
+      hasKey(series, "data")
+    ) &&
     focused.length > 0 &&
     focused.length !== props.data.timeline.series.length
       ? props.data.timeline.series.filter((_series, index) => focused.includes(index))
