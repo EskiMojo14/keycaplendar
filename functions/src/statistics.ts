@@ -507,7 +507,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
                   const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
                   const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
                   const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                  data.push(length[cat === "icDate" ? "months" : "days"]);
+                  data.push(math.round(length[cat === "icDate" ? "months" : "days"], 2));
                 });
               Object.keys(durationData[cat]).forEach((key) => {
                 if (hasKey(durationData[cat], key)) {
@@ -515,7 +515,9 @@ const createDurationData = (sets: StatisticsSetType[]) => {
                     if (a.name === "All" || b.name === "All") {
                       return a.name === "All" ? -1 : 1;
                     }
-                    return alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b);
+                    return (
+                      alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+                    );
                   });
                 }
               });
