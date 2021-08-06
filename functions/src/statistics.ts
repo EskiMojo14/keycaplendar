@@ -482,7 +482,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
                 const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
                 const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
                 const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                data.push(length[cat === "icDate" ? "months" : "days"]);
+                data.push(math.round(length[cat === "icDate" ? "months" : "days"], 2));
               });
             } else {
               propSets
