@@ -17,7 +17,6 @@ import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { List } from "@rmwc/list";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -29,6 +28,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Footer } from "@c/common/Footer";
 import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { withTooltip } from "@c/util/HOCs";
 import { DrawerAuditFilter } from "./DrawerAuditFilter";
 import { DialogAuditDelete } from "./DialogAuditDelete";
 import { AuditEntry } from "./AuditEntry";
@@ -128,14 +128,15 @@ export const ContentAudit = (props: ContentAuditProps) => {
   const refreshButton = loading ? (
     <CircularProgress />
   ) : (
-    <Tooltip enterDelay={500} content="Refresh" align="bottom">
+    withTooltip(
       <TopAppBarActionItem
         icon="refresh"
         onClick={() => {
           getActions();
         }}
-      />
-    </Tooltip>
+      />,
+      "Refresh"
+    )
   );
 
   return (
@@ -147,9 +148,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
             <TopAppBarTitle>{pageTitle.audit}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
-            <Tooltip enterDelay={500} content="Filter" align="bottom">
-              <TopAppBarActionItem icon="filter_list" onClick={toggleFilter} />
-            </Tooltip>
+            {withTooltip(<TopAppBarActionItem icon="filter_list" onClick={toggleFilter} />, "Filter")}
             {refreshButton}
           </TopAppBarSection>
         </TopAppBarRow>

@@ -8,8 +8,8 @@ import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
+import { withTooltip } from "@c/util/HOCs";
 import "./DrawerAuditFilter.scss";
 
 type DrawerAuditFilterProps = {
@@ -29,11 +29,9 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
   const users = useAppSelector(selectUsers);
 
   const closeButton =
-    device === "desktop" ? (
-      <Tooltip enterDelay={500} content="Close" align="bottom">
-        <IconButton className="close-icon" icon="close" onClick={props.close} />
-      </Tooltip>
-    ) : null;
+    device === "desktop"
+      ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+      : null;
   const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
     dispatch(setLength(length));
