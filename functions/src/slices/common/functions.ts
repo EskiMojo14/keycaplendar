@@ -10,9 +10,7 @@ import { StatisticsSetType } from "../statistics/types";
  * @returns Whether `obj` has the specified `key`.
  */
 
-export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => {
-  return key in obj;
-};
+export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.
@@ -21,9 +19,7 @@ export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => {
  * @returns Whether the item is contained in the array.
  */
 
-export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => {
-  return arr.includes(item);
-};
+export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
 
 /**
  * Remove all duplicate values within an array.
@@ -31,9 +27,7 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
  * @returns `array` with only unique values.
  */
 
-export const uniqueArray = <T>(oldArray: T[]): T[] => {
-  return Array.from(new Set(oldArray));
-};
+export const uniqueArray = <T>(array: T[]): T[] => array.filter((v, i, a) => a.indexOf(v) === i);
 
 /**
  * Counts occurrences of specified value within provided array.
@@ -42,23 +36,21 @@ export const uniqueArray = <T>(oldArray: T[]): T[] => {
  * @returns Amount of items within `arr` equal to `val`.
  */
 
-export const countInArray = (arr: any[], val: any): number => {
-  return arr.reduce((count, item) => count + (item === val), 0);
-};
+export const countInArray = (arr: any[], val: any): number => arr.reduce((count, item) => count + (item === val), 0);
 
 /**
  * Creates a function to pass to sort an array of items in alphabetical order.
  * @param descending Whether to sort the items in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of array.
  * @returns Function to pass `a` and `b` to.
- * @example
- * arr.sort(alphabeticalSortCurried())
- * @example
- * arr.sort(alphabeticalSortCurried(true))
- * @example
- * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
- * @example
- * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
+ * @example <caption>Simple string sort</caption>
+ * strArr.sort(alphabeticalSortCurried())
+ * @example <caption>Simple string sort (descending)</caption>
+ * strArr.sort(alphabeticalSortCurried(true))
+ * @example <caption>Sorting by object key</caption>
+ * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
+ * @example <caption>Sorting by object key with fallback sort</caption>
+ * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
 export const alphabeticalSortCurried = <T extends unknown>(descending = false, hoist?: T) => (
@@ -96,9 +88,9 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of `array`.
  * @returns Function to pass `a` and `b` objects to.
- * @example
+ * @example <caption>Sorting by object key</caption>
  * arr.sort(alphabeticalSortProp("key"))
- * @example
+ * @example <caption>Sorting by object key with fallback sort</caption>
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
@@ -167,38 +159,32 @@ export const getSetMonthRange = (
       DateTime.fromISO(setMonths[0], { zone: "utc" }),
       DateTime.fromISO(setMonths[setMonths.length - 1], { zone: "utc" })
     ) + 1;
-  let i;
-  const allMonths = [];
-  for (i = 0; i < length; i++) {
-    allMonths.push(DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
-  }
+  const allMonths = Array(length)
+    .fill("")
+    .map((v, i) => DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   return allMonths;
 };
 
 /**
  * ### Returns Go / Lua like responses(data, err)
- * when used with await
- *
- * - Example response [ data, undefined ]
- * - Example response [ undefined, Error ]
- *
- *
- * When used with Promise.all([req1, req2, req3])
- * - Example response [ [data1, data2, data3], undefined ]
- * - Example response [ undefined, Error ]
- *
- *
- * When used with Promise.race([req1, req2, req3])
- * - Example response [ data, undefined ]
- * - Example response [ undefined, Error ]
- *
+ * @example
+ * const [data, error] = await handle(fetch(url));
+ * if (error) {
+ *  console.error(error)
+ * } else {
+ *  console.log(data)
+ * }
  * @param {Promise} promise
- * @returns {Promise} [ data, undefined ]
- * @returns {Promise} [ undefined, Error ]
+ * @param defaultError Error to return when promise is rejected without error.
+ * @returns {Promise} `[ data, undefined ]`
+ * @returns {Promise} `[ undefined, Error ]`
  */
 
-export const handle = <T>(promise: Promise<T>): Promise<[T, undefined] | [undefined, any]> => {
+export const handle = <T>(
+  promise: Promise<T>,
+  defaultError: any = "rejected"
+): Promise<[T, undefined] | [undefined, any]> => {
   return promise
     .then((data) => [data, undefined] as [T, undefined])
-    .catch((error) => Promise.resolve([undefined, error] as [undefined, any]));
+    .catch((error) => [undefined, error || defaultError]);
 };

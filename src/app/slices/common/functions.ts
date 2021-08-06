@@ -80,14 +80,14 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
  * @param descending Whether to sort the items in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of array.
  * @returns Function to pass `a` and `b` to.
- * @example
- * arr.sort(alphabeticalSortCurried())
- * @example
- * arr.sort(alphabeticalSortCurried(true))
- * @example
- * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
- * @example
- * arr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
+ * @example <caption>Simple string sort</caption>
+ * strArr.sort(alphabeticalSortCurried())
+ * @example <caption>Simple string sort (descending)</caption>
+ * strArr.sort(alphabeticalSortCurried(true))
+ * @example <caption>Sorting by object key</caption>
+ * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key))
+ * @example <caption>Sorting by object key with fallback sort</caption>
+ * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
 export const alphabeticalSortCurried = <T extends unknown>(descending = false, hoist?: T) => (a: T, b: T) => {
@@ -122,9 +122,9 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of `array`.
  * @returns Function to pass `a` and `b` objects to.
- * @example
+ * @example <caption>Sorting by object key</caption>
  * arr.sort(alphabeticalSortProp("key"))
- * @example
+ * @example <caption>Sorting by object key with fallback sort</caption>
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
@@ -342,11 +342,9 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
       DateTime.fromISO(setMonths[0], { zone: "utc" }),
       DateTime.fromISO(setMonths[setMonths.length - 1], { zone: "utc" })
     ) + 1;
-  let i;
-  const allMonths = [];
-  for (i = 0; i < length; i++) {
-    allMonths.push(DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
-  }
+  const allMonths = Array(length)
+    .fill("")
+    .map((v, i) => DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   return allMonths;
 };
 
@@ -375,12 +373,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
  * @returns "th", "rd", "nd" or "st"
  */
 
-export const ordinal = (n: number) => {
-  const th = "th";
-  const rd = "rd";
-  const nd = "nd";
-  const st = "st";
-
+export const ordinal = (n: number, { th = "th", rd = "rd", nd = "nd", st = "st" } = {}) => {
   if (n === 11 || n === 12 || n === 13) return th;
 
   const lastDigit = n.toString().slice(-1);
@@ -413,7 +406,7 @@ export const getStorageFolders = async () => {
 /**
  * Takes an array of storage file locations (e.g. `"/thumbs/katLich.png"`), and deletes each specified file, returning the promise from the operation.
  * @param array Array of storage file locations (e.g. `"/thumbs/katLich.png"`).
- * @returns Array of promises from deletion (uses `Promise.all()`).
+ * @returns Promise from deletions (uses `Promise.all()`).
  */
 
 export const batchStorageDelete = (array: string[] = []) => {
