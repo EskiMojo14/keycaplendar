@@ -22,8 +22,8 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import "./TimelineCard.scss";
 import { withTooltip } from "@c/util/HOCs";
+import "./TimelineCard.scss";
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
