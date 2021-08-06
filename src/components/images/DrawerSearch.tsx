@@ -17,7 +17,7 @@ import {
   ListItemMeta,
 } from "@rmwc/list";
 import { TextField } from "@rmwc/textfield";
-import { Tooltip } from "@rmwc/tooltip";
+import { withTooltip } from "@c/util/HOCs";
 import "./DrawerSearch.scss";
 
 type DrawerSearchProps = {
@@ -30,11 +30,9 @@ type DrawerSearchProps = {
 export const DrawerSearch = (props: DrawerSearchProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
-  const closeIcon = dismissible ? (
-    <Tooltip enterDelay={500} content="Close" align="bottom">
-      <IconButton className="close-icon" icon="close" onClick={props.close} />
-    </Tooltip>
-  ) : null;
+  const closeIcon = dismissible
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    : null;
 
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
@@ -74,7 +72,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
           label="Search"
           value={search}
           onChange={handleChange}
-          trailingIcon={
+          trailingIcon={withTooltip(
             <IconButton
               checked={regexSearch}
               onClick={toggleRegex}
@@ -111,8 +109,9 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
                   />
                 </svg>
               )}
-            />
-          }
+            />,
+            (regexSearch ? "Disable" : "Enable") + " regex search"
+          )}
         />
       </div>
       <DrawerContent>
@@ -120,7 +119,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
           {searchedImages.map((image) => (
             <ListItem disabled key={image.fullPath}>
               <ListItemGraphic className="image" style={{ backgroundImage: "url(" + image.src + ")" }} />
-              <Tooltip content={image.name} enterDelay={500} align="top">
+              {withTooltip(
                 <ListItemText>
                   <ListItemPrimaryText>
                     {reactStringReplace(image.name, search, (match, i) => (
@@ -130,8 +129,9 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
                     ))}
                   </ListItemPrimaryText>
                   <ListItemSecondaryText>{image.fullPath}</ListItemSecondaryText>
-                </ListItemText>
-              </Tooltip>
+                </ListItemText>,
+                image.name
+              )}
               <ListItemMeta>
                 <Checkbox
                   checked={!props.unusedImages.map((image) => image.name).includes(image.name)}
