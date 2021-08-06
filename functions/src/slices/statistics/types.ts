@@ -72,7 +72,7 @@ export type ShippedDataObject = {
 export type ShippedData = Record<Properties, ShippedDataObject[]>;
 
 export type DurationDataObject = {
-  chartData: ChartData;
+  chartData: { labels: (string | number)[]; series: ChartData };
   mean: number;
   median: number;
   mode: number[];
@@ -85,7 +85,7 @@ export type DurationDataObject = {
 export type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
 
 export type VendorDataObject = {
-  chartData: ChartData;
+  chartData: { labels: (string | number)[]; series: ChartData };
   mean: number;
   median: number;
   mode: number[];

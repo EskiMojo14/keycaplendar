@@ -40,7 +40,7 @@ const listener = { draw: (e: any) => customPoint(e) };
 
 type TableCardProps = {
   data: {
-    chartData: ChartData;
+    chartData: { labels: (string | number)[]; series: ChartData };
     mean: number;
     median: number;
     mode: number[];
@@ -68,10 +68,7 @@ export const TableCard = (props: TableCardProps) => {
             className={classNames("ct-double-octave", {
               "min-width": props.data.name === "All",
             })}
-            data={{
-              series: [props.data.chartData[1]],
-              labels: props.data.chartData[0],
-            }}
+            data={{ ...props.data.chartData }}
             options={{
               showArea: true,
               chartPadding: {
@@ -82,8 +79,8 @@ export const TableCard = (props: TableCardProps) => {
               },
               axisX: {
                 labelInterpolationFnc: (value: number, index: number) => {
-                  return is<Array<any>>(props.data.chartData[0]) && props.data.chartData[0].length >= 16
-                    ? index % (props.data.chartData[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
+                  return is<Array<any>>(props.data.chartData.series[0]) && props.data.chartData.series[0].length >= 16
+                    ? index % (props.data.chartData.series[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
                       ? value
                       : null
                     : value;

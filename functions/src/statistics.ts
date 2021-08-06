@@ -523,11 +523,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
               });
             }
             data.sort();
-            const labels = [...math.range(math.min(data), math.max(data), 1, true).toArray()] as number[];
-            const count: number[] = [];
-            labels.forEach((label) => {
-              count.push(countInArray(data, label));
-            });
+            const labels = [
+              ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
+            ] as number[];
+            const count = labels.map((label) => countInArray(math.round(data), label));
             const range = math.max(data) - math.min(data);
             const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
             durationData[cat][property].push({
@@ -538,7 +537,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
               mode: math.mode(data),
               range: rangeDisplay,
               standardDev: math.round(math.std(data), 2),
-              chartData: [labels, count],
+              chartData: { labels, series: [count] },
             });
           });
         }
@@ -590,10 +589,10 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
         } else {
           propSets = vendorSets.filter((set) => set[prop] === name);
         }
-        const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+        const lengthArray = propSets.map((set) => set.vendors?.length || 0).sort();
         if (lengthArray.length > 0) {
           const labels = [...math.range(0, math.max(lengthArray), 1, true).toArray()] as number[];
-          const countArray = labels.map((_val, index) => countInArray(lengthArray, index));
+          const count = labels.map((_val, index) => countInArray(lengthArray, index));
           const range = math.max(lengthArray) - math.min(lengthArray);
           const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
           vendorsData[prop].push({
@@ -604,7 +603,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
             mode: math.mode(lengthArray),
             range: rangeDisplay,
             standardDev: math.round(math.std(lengthArray), 2),
-            chartData: [labels, countArray],
+            chartData: { labels, series: [count] },
           });
         }
       });
