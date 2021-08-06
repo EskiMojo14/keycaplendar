@@ -10,7 +10,6 @@ import { selectUser } from "@s/user";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBarActionItem,
   TopAppBarNavigationIcon,
@@ -22,6 +21,7 @@ import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
 import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
+import { withTooltip } from "@c/util/HOCs";
 import "./ModalDetail.scss";
 
 type ModalCreateProps = {
@@ -70,7 +70,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
   const actions = user.isAdmin ? (
     useDrawer ? (
       <>
-        <Tooltip enterDelay={500} content="Share" align="bottom">
+        {withTooltip(
           <IconButton
             icon={iconObject(
               <div>
@@ -84,9 +84,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
               </div>
             )}
             onClick={copyLink}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Edit" align="bottom">
+          />,
+          "Share"
+        )}
+        {withTooltip(
           <IconButton
             icon={iconObject(
               <div>
@@ -100,9 +101,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
             onClick={() => {
               props.edit(entry);
             }}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Delete" align="bottom">
+          />,
+          "Edit"
+        )}
+        {withTooltip(
           <IconButton
             icon={iconObject(
               <div>
@@ -116,12 +118,13 @@ export const ModalDetail = (props: ModalCreateProps) => {
             onClick={() => {
               props.delete(entry);
             }}
-          />
-        </Tooltip>
+          />,
+          "Delete"
+        )}
       </>
     ) : (
       <>
-        <Tooltip enterDelay={500} content="Share" align="bottom">
+        {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(
               <div>
@@ -135,9 +138,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
               </div>
             )}
             onClick={copyLink}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Edit" align="bottom">
+          />,
+          "Share"
+        )}
+        {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(
               <div>
@@ -151,9 +155,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
             onClick={() => {
               props.edit(entry);
             }}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Delete" align="bottom">
+          />,
+          "Edit"
+        )}
+        {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(
               <div>
@@ -167,8 +172,9 @@ export const ModalDetail = (props: ModalCreateProps) => {
             onClick={() => {
               props.edit(entry);
             }}
-          />
-        </Tooltip>
+          />,
+          "Delete"
+        )}
       </>
     )
   ) : null;

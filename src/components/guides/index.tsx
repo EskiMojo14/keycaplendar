@@ -13,7 +13,6 @@ import { selectUser } from "@s/user";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarActionItem,
@@ -30,6 +29,7 @@ import { EntriesList } from "./EntriesList";
 import { ModalDetail } from "./ModalDetail";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/ModalEntry";
 import { DialogDelete } from "@c/guides/admin/DialogDelete";
+import { withTooltip } from "@c/util/HOCs";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
 
@@ -154,14 +154,15 @@ export const ContentGuides = (props: ContentGuidesProps) => {
       loading ? (
         <CircularProgress />
       ) : (
-        <Tooltip enterDelay={500} content="Refresh" align="bottom">
+        withTooltip(
           <TopAppBarActionItem
             icon="refresh"
             onClick={() => {
               getEntries();
             }}
-          />
-        </Tooltip>
+          />,
+          "Refresh"
+        )
       )
     ) : null;
 

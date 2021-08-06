@@ -135,7 +135,8 @@ export const ContentAudit = (props: ContentAuditProps) => {
           getActions();
         }}
       />,
-      "Refresh"
+      "Refresh",
+      { align: bottomNav ? "top" : "bottom" }
     )
   );
 
