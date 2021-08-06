@@ -15,6 +15,13 @@
     .text-container {
       flex-grow: 1;
     }
+    .button-container {
+      display: flex;
+      align-items: center;
+      .mdc-icon-button {
+        @include rtl.reflexive-box(margin, right, 8px);
+      }
+    }
   }
   .timeline-container {
     display: flex;

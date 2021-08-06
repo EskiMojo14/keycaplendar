@@ -457,12 +457,15 @@ $graph-colors-dark: (
   .mdc-icon-button {
     @include icon-button.ink-color(map-get($variables, text-medium));
     @include icon-button.disabled-ink-color(map-get($variables, text-disabled));
+    &--on.secondary-on,
     &--on.favorite {
       @include icon-button.ink-color(map-get($variables, secondary));
     }
+    &--on.primary-on,
     &--on.bought {
       @include icon-button.ink-color(map-get($variables, primary));
     }
+    &--on.danger-on,
     &--on.hide {
       @include icon-button.ink-color(map-get($variables, error));
     }
