@@ -6,9 +6,8 @@ export const withTooltip = (
   content: TooltipProps["content"],
   props?: Omit<TooltipProps, "content" | "children">
 ) => {
-  const defaultProps: Omit<TooltipProps, "content" | "children"> = { enterDelay: 500, align: "bottom" };
   return (
-    <Tooltip content={content} {...defaultProps} {...props}>
+    <Tooltip content={content} {...props}>
       {children}
     </Tooltip>
   );
