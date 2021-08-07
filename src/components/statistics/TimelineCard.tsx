@@ -415,7 +415,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           </div>
         ) : null}
         {props.note ? (
-          <Typography use="caption" tag="p">
+          <Typography use="caption" tag="p" className="note">
             {props.note}
           </Typography>
         ) : null}
@@ -510,7 +510,7 @@ export const CountCard = (props: CountCardProps) => {
           {lineChart}
         </div>
         {props.note ? (
-          <Typography use="caption" tag="p">
+          <Typography use="caption" tag="p" className="note">
             {props.note}
           </Typography>
         ) : null}
