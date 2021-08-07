@@ -8,9 +8,9 @@ import { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
+import { withTooltip } from "@c/util/HOCs";
 import "./GuideEntry.scss";
 
 type GuideEntryProps = {
@@ -66,7 +66,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
         />
       </CardActionButtons>
       <CardActionIcons>
-        <Tooltip enterDelay={500} content="Edit" align="bottom">
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -80,9 +80,10 @@ export const GuideEntry = (props: GuideEntryProps) => {
             onClick={() => {
               props.edit(entry);
             }}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Delete" align="bottom">
+          />,
+          "Edit"
+        )}
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -96,14 +97,15 @@ export const GuideEntry = (props: GuideEntryProps) => {
             onClick={() => {
               props.delete(entry);
             }}
-          />
-        </Tooltip>
+          />,
+          "Delete"
+        )}
       </CardActionIcons>
     </CardActions>
   ) : (
     <CardActions>
       <CardActionIcons>
-        <Tooltip enterDelay={500} content="Share" align="bottom">
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -117,8 +119,9 @@ export const GuideEntry = (props: GuideEntryProps) => {
               </div>
             )}
             onClick={copyLink}
-          />
-        </Tooltip>
+          />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );

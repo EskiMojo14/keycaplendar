@@ -7,8 +7,8 @@ import { ImageType } from "@s/images/types";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
+import { withTooltip } from "@c/util/HOCs";
 import "./DrawerDetails.scss";
 
 type DrawerDetailsProps = {
@@ -21,11 +21,9 @@ type DrawerDetailsProps = {
 export const DrawerDetails = (props: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
-  const closeIcon = dismissible ? (
-    <Tooltip enterDelay={500} content="Close" align="bottom">
-      <IconButton className="close-icon" icon="close" onClick={props.close} />
-    </Tooltip>
-  ) : null;
+  const closeIcon = dismissible
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    : null;
   const imageProps = {
     name: "File name",
     fullPath: "Path",

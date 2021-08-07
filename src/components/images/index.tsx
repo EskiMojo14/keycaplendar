@@ -40,7 +40,6 @@ import {
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
 import { Ripple } from "@rmwc/ripple";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -54,6 +53,7 @@ import { Typography } from "@rmwc/typography";
 import { Footer } from "@c/common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { withTooltip } from "@c/util/HOCs";
 import { DrawerDetails } from "./DrawerDetails";
 import { DrawerSearch } from "./DrawerSearch";
 import { DialogDelete } from "./DialogDelete";
@@ -207,9 +207,7 @@ export const ContentImages = (props: ContentImagesProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             {contextual ? (
-              <Tooltip enterDelay={500} content="Close" align={tooltipAlign}>
-                <TopAppBarActionItem icon="close" onClick={clearChecked} />
-              </Tooltip>
+              withTooltip(<TopAppBarActionItem icon="close" onClick={clearChecked} />, "Close", { align: tooltipAlign })
             ) : (
               <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
             )}
@@ -218,7 +216,7 @@ export const ContentImages = (props: ContentImagesProps) => {
           <TopAppBarSection alignEnd>
             {contextual ? (
               <>
-                <Tooltip enterDelay={500} content="Delete" align={tooltipAlign}>
+                {withTooltip(
                   <TopAppBarActionItem
                     icon={iconObject(
                       <div>
@@ -230,17 +228,19 @@ export const ContentImages = (props: ContentImagesProps) => {
                       </div>
                     )}
                     onClick={openDelete}
-                  />
-                </Tooltip>
+                  />,
+                  "Delete",
+                  { align: tooltipAlign }
+                )}
               </>
             ) : (
               <>
-                <Tooltip enterDelay={500} content="Search" align={tooltipAlign}>
-                  <TopAppBarActionItem icon="search" onClick={openSearch} />
-                </Tooltip>
+                {withTooltip(<TopAppBarActionItem icon="search" onClick={openSearch} />, "Search", {
+                  align: tooltipAlign,
+                })}
                 {device === "mobile" ? (
                   <MenuSurfaceAnchor>
-                    <Tooltip enterDelay={500} content="Folder" align={tooltipAlign}>
+                    {withTooltip(
                       <TopAppBarActionItem
                         icon={iconObject(
                           <div>
@@ -255,8 +255,10 @@ export const ContentImages = (props: ContentImagesProps) => {
                           </div>
                         )}
                         onClick={openFolderMenu}
-                      />
-                    </Tooltip>
+                      />,
+                      "Folder",
+                      { align: tooltipAlign }
+                    )}
                     <Menu
                       open={folderMenuOpen}
                       onClose={closeFolderMenu}
