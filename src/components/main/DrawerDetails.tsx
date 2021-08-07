@@ -20,9 +20,9 @@ import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { withTooltip } from "@c/util/HOCs";
 import "./DrawerDetails.scss";
 
 type DrawerDetailsProps = {
@@ -289,7 +289,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     ) : null;
   const userButtons = user.email ? (
     <>
-      <Tooltip enterDelay={500} content={favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"} align="bottom">
+      {withTooltip(
         <IconButton
           icon="favorite_border"
           onIcon={iconObject(
@@ -305,9 +305,10 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           className="favorite"
           checked={favorites.includes(props.set.id)}
           onClick={() => toggleFavorite(props.set.id)}
-        />
-      </Tooltip>
-      <Tooltip enterDelay={500} content={bought.includes(props.set.id) ? "Bought" : "Not bought"} align="bottom">
+        />,
+        favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"
+      )}
+      {withTooltip(
         <IconButton
           icon={iconObject(
             <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
@@ -338,9 +339,10 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           className="bought"
           checked={bought.includes(props.set.id)}
           onClick={() => toggleBought(props.set.id)}
-        />
-      </Tooltip>
-      <Tooltip enterDelay={500} content={hidden.includes(props.set.id) ? "Unhide" : "Hide"} align="bottom">
+        />,
+        bought.includes(props.set.id) ? "Bought" : "Not bought"
+      )}
+      {withTooltip(
         <IconButton
           icon={iconObject(
             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -365,15 +367,14 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
           className="hide"
           checked={hidden.includes(props.set.id)}
           onClick={() => toggleHidden(props.set.id)}
-        />
-      </Tooltip>
+        />,
+        hidden.includes(props.set.id) ? "Unhide" : "Hide"
+      )}
     </>
   ) : null;
-  const closeIcon = dismissible ? (
-    <Tooltip enterDelay={500} content="Close" align="bottom">
-      <IconButton className="close-icon" icon="close" onClick={props.close} />
-    </Tooltip>
-  ) : null;
+  const closeIcon = dismissible
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    : null;
   const salesButton =
     props.set.sales && props.set.sales.img ? (
       <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />

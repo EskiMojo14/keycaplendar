@@ -27,9 +27,9 @@ import { Icon } from "@rmwc/icon";
 import { IconButton } from "@rmwc/icon-button";
 import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
 import { Select } from "@rmwc/select";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
+import { withTooltip } from "@c/util/HOCs";
 import "./DrawerFilter.scss";
 
 type DrawerFilterProps = {
@@ -205,11 +205,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const dismissible = device === "desktop" && view !== "compact";
 
-  const closeIcon = dismissible ? (
-    <Tooltip enterDelay={500} content="Close" align="bottom">
-      <IconButton className="close-icon" icon="close" onClick={props.close} />
-    </Tooltip>
-  ) : null;
+  const closeIcon = dismissible
+    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
+    : null;
 
   const newPresetButton = user.isAdmin ? (
     <div className="preset-buttons">

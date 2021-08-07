@@ -22,11 +22,6 @@ import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAl
 import { getData } from "@s/main/functions";
 import { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
-import { queue } from "~/app/snackbarQueue";
-import { ImageUpload } from "./ImageUpload";
-import { Autocomplete } from "@c/util/Autocomplete";
-import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -36,9 +31,14 @@ import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Tooltip } from "@rmwc/tooltip";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import { queue } from "~/app/snackbarQueue";
+import { ImageUpload } from "./ImageUpload";
+import { Autocomplete } from "@c/util/Autocomplete";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
+import { withTooltip } from "@c/util/HOCs";
 import "./ModalEntry.scss";
 
 const getVendorStyle = (provided: DraggableProvided) => {
@@ -422,13 +422,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton
-            label="Date"
-            onClick={(e) => {
-              e.preventDefault();
-              toggleDate();
-            }}
-          />
+          <CardActionButton type="button" label="Date" onClick={toggleDate} />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -483,13 +477,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton
-            label="Month"
-            onClick={(e) => {
-              e.preventDefault();
-              toggleDate();
-            }}
-          />
+          <CardActionButton type="button" label="Month" onClick={toggleDate} />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -541,11 +529,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
           <Button
+            type="button"
             outlined={useDrawer}
             label="Save"
-            onClick={(e) => {
+            onClick={() => {
               if (formFilled) {
-                e.preventDefault();
                 uploadImage();
               }
             }}
@@ -740,8 +728,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               <Typography use="caption" className="vendor-title">
                                 {"Vendor " + (index + 1)}
                               </Typography>
-                              <Tooltip enterDelay={500} content="Delete" align="bottom">
+                              {withTooltip(
                                 <IconButton
+                                  type="button"
                                   icon={iconObject(
                                     <div>
                                       <svg
@@ -756,15 +745,16 @@ export const ModalCreate = (props: ModalCreateProps) => {
                                       </svg>
                                     </div>
                                   )}
-                                  onClick={(e) => {
-                                    e.preventDefault();
+                                  onClick={() => {
                                     removeVendor(index);
                                   }}
-                                />
-                              </Tooltip>
-                              <Tooltip enterDelay={500} content="Drag" align="bottom">
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
-                              </Tooltip>
+                                />,
+                                "Delete"
+                              )}
+                              {withTooltip(
+                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                "Drag"
+                              )}
                             </div>
                             <div className="vendor-form">
                               <MenuSurfaceAnchor>
@@ -879,14 +869,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button
-              outlined
-              label="Add vendor"
-              onClick={(e) => {
-                e.preventDefault();
-                addVendor();
-              }}
-            />
+            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
           </div>
           <Card outlined className="sales-container">
             <Typography use="caption" tag="h3" className="sales-title">
@@ -1374,13 +1357,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton
-            label="Date"
-            onClick={(e) => {
-              e.preventDefault();
-              toggleDate();
-            }}
-          />
+          <CardActionButton type="button" label="Date" onClick={toggleDate} />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -1431,13 +1408,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton
-            label="Month"
-            onClick={(e) => {
-              e.preventDefault();
-              toggleDate();
-            }}
-          />
+          <CardActionButton type="button" label="Month" onClick={toggleDate} />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -1489,11 +1460,11 @@ export const ModalEdit = (props: ModalEditProps) => {
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
           <Button
+            type="button"
             outlined={useDrawer}
             label="Save"
-            onClick={(e) => {
+            onClick={() => {
               if (formFilled) {
-                e.preventDefault();
                 if (imageInfo.newImage) {
                   uploadImage();
                 } else {
@@ -1689,8 +1660,9 @@ export const ModalEdit = (props: ModalEditProps) => {
                               <Typography use="caption" className="vendor-title">
                                 {"Vendor " + (index + 1)}
                               </Typography>
-                              <Tooltip enterDelay={500} content="Delete" align="bottom">
+                              {withTooltip(
                                 <IconButton
+                                  type="button"
                                   icon={iconObject(
                                     <div>
                                       <svg
@@ -1705,15 +1677,16 @@ export const ModalEdit = (props: ModalEditProps) => {
                                       </svg>
                                     </div>
                                   )}
-                                  onClick={(e) => {
-                                    e.preventDefault();
+                                  onClick={() => {
                                     removeVendor(index);
                                   }}
-                                />
-                              </Tooltip>
-                              <Tooltip enterDelay={500} content="Drag" align="bottom">
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />
-                              </Tooltip>
+                                />,
+                                "Delete"
+                              )}
+                              {withTooltip(
+                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                "Drag"
+                              )}
                             </div>
                             <div className="vendor-form">
                               <MenuSurfaceAnchor>
@@ -1823,14 +1796,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button
-              outlined
-              label="Add vendor"
-              onClick={(e) => {
-                e.preventDefault();
-                addVendor();
-              }}
-            />
+            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
           </div>
           <Card outlined className="sales-container">
             <Typography use="caption" tag="h3" className="sales-title">
