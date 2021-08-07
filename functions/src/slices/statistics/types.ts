@@ -78,7 +78,13 @@ export type DurationDataObject = {
   total: number;
 };
 
-export type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
+export type DurationData = Record<
+  Categories,
+  {
+    summary: DurationDataObject;
+    breakdown: Record<Properties, DurationDataObject[]>;
+  }
+>;
 
 export type VendorDataObject = {
   chartData: { labels: (string | number)[]; series: ChartData };
@@ -91,4 +97,7 @@ export type VendorDataObject = {
   total: number;
 };
 
-export type VendorData = Record<Properties, VendorDataObject[]>;
+export type VendorData = {
+  summary: VendorDataObject;
+  breakdown: Record<Properties, VendorDataObject[]>;
+};

@@ -50,11 +50,13 @@ type TableCardProps = {
     total: number;
   };
   unit: string;
+  note?: React.ReactNode;
+  summary?: boolean;
 };
 
 export const TableCard = (props: TableCardProps) => {
   return (
-    <Card className={classNames("table-card", { "full-span": props.data.name === "All" })}>
+    <Card className={classNames("table-card", { "full-span": props.summary })}>
       <Typography use="headline5" tag="h1">
         {props.data.name}
       </Typography>
@@ -152,6 +154,11 @@ export const TableCard = (props: TableCardProps) => {
             </DataTableContent>
           </DataTable>
         </div>
+        {props.note ? (
+          <Typography use="caption" tag="p" className="note">
+            {props.note}
+          </Typography>
+        ) : null}
       </div>
     </Card>
   );

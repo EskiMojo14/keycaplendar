@@ -107,7 +107,7 @@ export const sortData = (state = store.getState()) => {
       const data = cloneDeep(stateData) as DurationData;
       categories.forEach((category) => {
         properties.forEach((property) => {
-          const value = data[category][property];
+          const value = data[category].breakdown[property];
           const sortedValue = value.slice().sort((a, b) => {
             if (a.name === "All" || b.name === "All") {
               return a.name === "All" ? -1 : 1;
@@ -118,7 +118,7 @@ export const sortData = (state = store.getState()) => {
               alphabeticalSortPropCurried("name")(a, b)
             );
           });
-          data[category][property] = sortedValue;
+          data[category].breakdown[property] = sortedValue;
         });
       });
       setData(data);
@@ -138,8 +138,25 @@ export const sortData = (state = store.getState()) => {
         });
       });
       setData(data);
+    } else if (tab === "vendors") {
+      const data = cloneDeep(stateData) as VendorData;
+      properties.forEach((properties) => {
+        type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
+        const value = data.breakdown[properties];
+        const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
+          if (hasKey(sort, tab)) {
+            const key = sort[tab] === "total" ? "total" : "name";
+            return (
+              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
+            );
+          }
+          return 0;
+        });
+        data.breakdown[properties] = sortedValue;
+      });
+      setData(data);
     } else {
-      const data = cloneDeep(stateData) as StatusData | ShippedData | VendorData;
+      const data = cloneDeep(stateData) as StatusData | ShippedData;
       properties.forEach((properties) => {
         type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
         const value = data[properties];

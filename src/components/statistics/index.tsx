@@ -351,6 +351,17 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             focusable
             category={settings.summary}
           />
+          <TableCard
+            data={statisticsData.durationData[settings.summary].summary}
+            unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
+            summary
+          />
+          <TableCard
+            data={statisticsData.vendorsData.summary}
+            unit="Vendors"
+            summary
+            note="Only includes sets that have completed GB."
+          />
         </div>
       ),
       timelines: (
@@ -386,7 +397,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       duration: (
         <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.durationData[settings.durationCat][settings.durationGroup].map((data) => {
+          {statisticsData.durationData[settings.durationCat].breakdown[settings.durationGroup].map((data) => {
             return (
               <TableCard
                 key={data.name}
@@ -399,7 +410,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       vendors: (
         <div className="stats-tab stats-grid vendors" key={key}>
-          {statisticsData.vendorsData[settings.vendors].map((data) => {
+          {statisticsData.vendorsData.breakdown[settings.vendors].map((data) => {
             return <TableCard key={data.name} data={data} unit="Vendors" />;
           })}
         </div>

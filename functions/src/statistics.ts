@@ -14,6 +14,8 @@ import {
   DurationData,
   VendorData,
   ChartData,
+  DurationDataObject,
+  VendorDataObject,
 } from "./slices/statistics/types";
 import {
   getSetMonthRange,
@@ -422,14 +424,38 @@ const createShippedData = (sets: StatisticsSetType[]) => {
 const createDurationData = (sets: StatisticsSetType[]) => {
   const durationData: DurationData = {
     icDate: {
-      profile: [],
-      designer: [],
-      vendor: [],
+      summary: {
+        chartData: { labels: [], series: [] },
+        mean: 0,
+        median: 0,
+        mode: [],
+        name: "Duration: IC duration (months)",
+        range: "",
+        standardDev: 0,
+        total: 0,
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
     },
     gbLaunch: {
-      profile: [],
-      designer: [],
-      vendor: [],
+      summary: {
+        chartData: { labels: [], series: [] },
+        mean: 0,
+        median: 0,
+        mode: [],
+        name: "Duration: GB duration (days)",
+        range: "",
+        standardDev: 0,
+        total: 0,
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
     },
   };
   const dateSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
@@ -448,73 +474,64 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         vendor: vendorNames,
       };
 
-      Object.keys(durationData[cat]).forEach((property) => {
-        if (hasKey(durationData[cat], property)) {
-          lists[property] = ["All"].concat(lists[property]);
-          lists[property].forEach((name) => {
-            const data: number[] = [];
-            if (name === "All") {
-              propSets.forEach((set) => {
-                const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-                const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-                const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                data.push(math.round(length[cat === "icDate" ? "months" : "days"], 2));
-              });
-            } else {
-              propSets
-                .filter((set) => {
-                  let bool = false;
-                  if (property === "vendor") {
-                    bool =
-                      set.vendors &&
-                      set.vendors.findIndex((vendor) => {
-                        return vendor.name === name;
-                      }) !== -1
-                        ? true
-                        : false;
-                  } else if (property === "designer") {
-                    bool = set.designer.includes(name);
-                  } else {
-                    bool = set[property] === name;
-                  }
-                  return bool;
-                })
-                .forEach((set) => {
-                  const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-                  const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-                  const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-                  data.push(math.round(length[cat === "icDate" ? "months" : "days"], 2));
-                });
-              Object.keys(durationData[cat]).forEach((key) => {
-                if (hasKey(durationData[cat], key)) {
-                  durationData[cat][key].sort((a, b) => {
-                    if (a.name === "All" || b.name === "All") {
-                      return a.name === "All" ? -1 : 1;
-                    }
-                    return (
-                      alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
-                    );
-                  });
-                }
-              });
-            }
-            data.sort();
-            const labels = [
-              ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
-            ] as number[];
-            const count = labels.map((label) => countInArray(math.round(data), label));
-            const range = math.max(data) - math.min(data);
-            const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
-            durationData[cat][property].push({
-              name: name,
-              total: data.length,
-              mean: math.round(math.mean(data), 2),
-              median: math.median(data),
-              mode: math.mode(data),
-              range: rangeDisplay,
-              standardDev: math.round(math.std(data), 2),
-              chartData: { labels, series: [count] },
+      const createDurationDataObject = (data: number[], name: string, total: number): DurationDataObject => {
+        const labels = [
+          ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
+        ] as number[];
+        const count = labels.map((label) => countInArray(math.round(data), label));
+        const range = math.max(data) - math.min(data);
+        const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
+        return {
+          name: name,
+          total: total,
+          mean: math.round(math.mean(summaryData), 2),
+          median: math.median(summaryData),
+          mode: math.mode(summaryData),
+          range: rangeDisplay,
+          standardDev: math.round(math.std(summaryData), 2),
+          chartData: { labels, series: [count] },
+        };
+      };
+
+      const summaryData = propSets.map((set) => {
+        const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+        const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
+        const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+        return math.round(length[cat === "icDate" ? "months" : "days"], 2);
+      });
+
+      const title = cat === "icDate" ? "Duration: IC duration (months)" : "Duration: GB duration (days)";
+
+      durationData[cat].summary = createDurationDataObject(summaryData, title, propSets.length);
+
+      Object.keys(durationData[cat].breakdown).forEach((property) => {
+        if (hasKey(durationData[cat].breakdown, property)) {
+          durationData[cat].breakdown[property] = lists[property].map((name) => {
+            const filteredSets = propSets.filter((set) => {
+              return (
+                (property === "vendor" &&
+                  set.vendors &&
+                  set.vendors.findIndex((vendor) => {
+                    return vendor.name === name;
+                  }) !== -1) ||
+                (property === "designer" && set.designer.includes(name)) ||
+                (property !== "vendor" && property !== "designer" && set[property] === name)
+              );
             });
+            const data = filteredSets.map((set) => {
+              const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+              const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
+              const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+              return math.round(length[cat === "icDate" ? "months" : "days"], 2);
+            });
+            return createDurationDataObject(data, name, filteredSets.length);
+          });
+          Object.keys(durationData[cat].breakdown).forEach((prop) => {
+            if (hasKey(durationData[cat].breakdown, prop)) {
+              durationData[cat].breakdown[prop].sort(
+                (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+              );
+            }
           });
         }
       });
@@ -525,9 +542,21 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
 const createVendorsData = (sets: StatisticsSetType[]) => {
   const vendorsData: VendorData = {
-    profile: [],
-    designer: [],
-    vendor: [],
+    summary: {
+      chartData: { labels: [], series: [] },
+      mean: 0,
+      median: 0,
+      mode: [],
+      name: "Vendors: vendors per set",
+      range: "",
+      standardDev: 0,
+      total: 0,
+    },
+    breakdown: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
   };
   const pastSets = sets.filter((set) => {
     const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
@@ -551,14 +580,31 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  Object.keys(vendorsData).forEach((prop) => {
-    if (hasKey(vendorsData, prop)) {
-      lists[prop] = ["All"].concat(lists[prop]);
-      lists[prop].forEach((name) => {
+  const createVendorsDataObject = (data: number[], name: string, total: number): VendorDataObject => {
+    const labels = [...math.range(0, math.max(data), 1, true).toArray()] as number[];
+    const count = labels.map((_val, index) => countInArray(data, index));
+    const range = math.max(data) - math.min(data);
+    const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
+    return {
+      name: name,
+      total: total,
+      mean: math.round(math.mean(data), 2),
+      median: math.median(data),
+      mode: math.mode(data),
+      range: rangeDisplay,
+      standardDev: math.round(math.std(data), 2),
+      chartData: { labels, series: [count] },
+    };
+  };
+  const summaryLengthArray = vendorSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+
+  vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors: vendors per set", vendorSets.length);
+
+  Object.keys(vendorsData.breakdown).forEach((prop) => {
+    if (hasKey(vendorsData.breakdown, prop)) {
+      vendorsData.breakdown[prop] = lists[prop].map((name) => {
         let propSets = [];
-        if (name === "All") {
-          propSets = vendorSets;
-        } else if (prop === "designer") {
+        if (prop === "designer") {
           propSets = vendorSets.filter((set) => set.designer.includes(name));
         } else if (prop === "vendor") {
           propSets = vendorSets.filter((set) => set.vendors && set.vendors.map((vendor) => vendor.name).includes(name));
@@ -566,25 +612,10 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
           propSets = vendorSets.filter((set) => set[prop] === name);
         }
         const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
-        if (lengthArray.length > 0) {
-          const labels = [...math.range(0, math.max(lengthArray), 1, true).toArray()] as number[];
-          const count = labels.map((_val, index) => countInArray(lengthArray, index));
-          const range = math.max(lengthArray) - math.min(lengthArray);
-          const rangeDisplay = `${math.min(lengthArray)} - ${math.max(lengthArray)} (${range})`;
-          vendorsData[prop].push({
-            name: name,
-            total: propSets.length,
-            mean: math.round(math.mean(lengthArray), 2),
-            median: math.median(lengthArray),
-            mode: math.mode(lengthArray),
-            range: rangeDisplay,
-            standardDev: math.round(math.std(lengthArray), 2),
-            chartData: { labels, series: [count] },
-          });
-        }
+        return createVendorsDataObject(lengthArray, name, propSets.length);
       });
 
-      vendorsData[prop].sort(
+      vendorsData.breakdown[prop].sort(
         (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
     }
