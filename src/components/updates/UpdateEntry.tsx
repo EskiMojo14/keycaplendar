@@ -9,9 +9,9 @@ import { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
-import { Tooltip } from "@rmwc/tooltip";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "@c/util/ReactMarkdown";
+import { withTooltip } from "@c/util/HOCs";
 import "./UpdateEntry.scss";
 
 type UpdateEntryProps = {
@@ -43,16 +43,12 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
 
   const linkedIndicator =
     entry.id === urlEntry ? (
-      <div className="linked-indicator">
-        <Tooltip enterDelay={500} content="Linked" align="bottom">
-          <Icon icon="link" />
-        </Tooltip>
-      </div>
+      <div className="linked-indicator">{withTooltip(<Icon icon="link" />, "Linked")}</div>
     ) : null;
 
   const pinIndicator = entry.pinned ? (
     <div className="pin-indicator">
-      <Tooltip enterDelay={500} content="Pinned" align="bottom">
+      {withTooltip(
         <Icon
           icon={iconObject(
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
@@ -61,8 +57,9 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
               <path d="M19,12c-1.66,0-3-1.34-3-3V4l1,0c0,0,0,0,0,0c0.55,0,1-0.45,1-1s-0.45-1-1-1H7C6.45,2,6,2.45,6,3s0.45,1,1,1c0,0,0,0,0,0 l1,0v5c0,1.66-1.34,3-3,3v2h5.97v7l1,1l1-1v-7H19L19,12C19,12,19,12,19,12z M9,12c0.65-0.86,1-1.9,1-3V4h4v5c0,1.12,0.37,2.16,1,3 H9z" />
             </svg>
           )}
-        />
-      </Tooltip>
+        />,
+        "Pinned"
+      )}
     </div>
   ) : null;
   const buttons = user.isAdmin ? (
@@ -97,7 +94,7 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
         />
       </CardActionButtons>
       <CardActionIcons>
-        <Tooltip enterDelay={500} content="Edit" align="bottom">
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -111,9 +108,10 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
             onClick={() => {
               props.edit(entry);
             }}
-          />
-        </Tooltip>
-        <Tooltip enterDelay={500} content="Delete" align="bottom">
+          />,
+          "Edit"
+        )}
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -127,14 +125,15 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
             onClick={() => {
               props.delete(entry);
             }}
-          />
-        </Tooltip>
+          />,
+          "Delete"
+        )}
       </CardActionIcons>
     </CardActions>
   ) : (
     <CardActions>
       <CardActionIcons>
-        <Tooltip enterDelay={500} content="Share" align="bottom">
+        {withTooltip(
           <CardActionIcon
             icon={iconObject(
               <div>
@@ -148,8 +147,9 @@ export const UpdateEntry = (props: UpdateEntryProps) => {
               </div>
             )}
             onClick={copyLink}
-          />
-        </Tooltip>
+          />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );

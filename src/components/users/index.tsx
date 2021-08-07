@@ -37,7 +37,6 @@ import { Card } from "@rmwc/card";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
-import { Tooltip } from "@rmwc/tooltip";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -58,6 +57,7 @@ import {
   DataTablePaginationTotal,
   DataTablePaginationButton,
 } from "@c/util/DataTablePagination";
+import { withTooltip } from "@c/util/HOCs";
 import { UserRow } from "./UserRow";
 import { UserCard } from "./UserCard";
 import "./index.scss";
@@ -155,9 +155,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
           <MenuItem selected={userSort === "editor"}>Editor</MenuItem>
           <MenuItem selected={userSort === "admin"}>Admin</MenuItem>
         </Menu>
-        <Tooltip enterDelay={500} content="Sort" align="bottom">
-          <TopAppBarActionItem icon="sort" onClick={openSortMenu} />
-        </Tooltip>
+        {withTooltip(<TopAppBarActionItem icon="sort" onClick={openSortMenu} />, "Sort")}
       </MenuSurfaceAnchor>
     ) : null;
   const viewMenu =
@@ -172,7 +170,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
           <MenuItem selected={view === "card"}>Card</MenuItem>
           <MenuItem selected={view === "table"}>Table</MenuItem>
         </Menu>
-        <Tooltip enterDelay={500} content="View" align="bottom">
+        {withTooltip(
           <TopAppBarActionItem
             onClick={openViewMenu}
             icon={iconObject(
@@ -192,8 +190,9 @@ export const ContentUsers = (props: ContentUsersProps) => {
                 )}
               </div>
             )}
-          />
-        </Tooltip>
+          />,
+          "View"
+        )}
       </MenuSurfaceAnchor>
     ) : null;
   return (
