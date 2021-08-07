@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
-import { virtualize } from "react-swipeable-views-utils";
+import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
@@ -328,7 +328,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     </TopAppBarRow>
   );
 
-  const slideRenderer = (params: any) => {
+  const slideRenderer: SlideRendererCallback = (params) => {
     const { index, key } = params;
     const tab = statsTabs[index];
     const tabs = {

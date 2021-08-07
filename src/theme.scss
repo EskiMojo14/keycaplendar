@@ -457,17 +457,19 @@ $graph-colors-dark: (
   .mdc-icon-button {
     @include icon-button.ink-color(map-get($variables, text-medium));
     @include icon-button.disabled-ink-color(map-get($variables, text-disabled));
-    &--on.secondary-on,
-    &--on.favorite {
-      @include icon-button.ink-color(map-get($variables, secondary));
-    }
-    &--on.primary-on,
-    &--on.bought {
-      @include icon-button.ink-color(map-get($variables, primary));
-    }
-    &--on.danger-on,
-    &--on.hide {
-      @include icon-button.ink-color(map-get($variables, error));
+    &--on {
+      &.primary-on,
+      &.bought {
+        @include icon-button.ink-color(map-get($variables, primary));
+      }
+      &.secondary-on,
+      &.favorite {
+        @include icon-button.ink-color(map-get($variables, secondary));
+      }
+      &.danger-on,
+      &.hide {
+        @include icon-button.ink-color(map-get($variables, error));
+      }
     }
   }
 
@@ -992,6 +994,16 @@ $graph-colors-dark: (
       .ct-stroked-point {
         fill: $color;
       }
+    }
+  }
+
+  .focus-chips .mdc-chip.focus-chip {
+    &.mdc-chip--selected {
+      &,
+      &:hover {
+        color: map-get($variables, text-high);
+      }
+      font-weight: bold;
     }
   }
 
