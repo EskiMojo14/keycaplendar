@@ -341,6 +341,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             data={statisticsData.timelinesData[settings.summary].summary.count}
             defaultType="line"
             singleTheme="secondary"
+            overline="Timelines"
             note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
           />
@@ -349,18 +350,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             allProfiles={statisticsData.timelinesData[settings.summary].allProfiles}
             data={statisticsData.timelinesData[settings.summary].summary.breakdown}
             focusable
+            overline="Timelines"
             category={settings.summary}
           />
           <TableCard
             data={statisticsData.durationData[settings.summary].summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
+            overline="Duration"
             summary
           />
           <TableCard
             data={statisticsData.vendorsData.summary}
             unit="Vendors"
-            summary
+            overline="Vendors"
             note="Only includes sets that have completed GB."
+            summary
           />
         </div>
       ),

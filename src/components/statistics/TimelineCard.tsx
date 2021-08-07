@@ -187,6 +187,7 @@ type TimelinesCardProps = {
   category?: string;
   data: TimelineDataObject;
   focusable?: boolean;
+  overline?: React.ReactNode;
   note?: React.ReactNode;
 };
 
@@ -327,6 +328,11 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
+          {props.overline ? (
+            <Typography use="overline" tag="h3">
+              {props.overline}
+            </Typography>
+          ) : null}
           <Typography use="headline5" tag="h1">
             {props.data.name}
           </Typography>

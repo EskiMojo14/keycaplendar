@@ -50,6 +50,7 @@ type TableCardProps = {
     total: number;
   };
   unit: string;
+  overline?: React.ReactNode;
   note?: React.ReactNode;
   summary?: boolean;
 };
@@ -57,6 +58,11 @@ type TableCardProps = {
 export const TableCard = (props: TableCardProps) => {
   return (
     <Card className={classNames("table-card", { "full-span": props.summary })}>
+      {props.overline ? (
+        <Typography use="overline" tag="h3">
+          {props.overline}
+        </Typography>
+      ) : null}
       <Typography use="headline5" tag="h1">
         {props.data.name}
       </Typography>

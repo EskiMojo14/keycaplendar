@@ -18,7 +18,7 @@ const initialState: StatisticsState = {
       icDate: {
         summary: {
           count: {
-            name: "Timeline: ICs per month",
+            name: "ICs per month",
             total: 0,
             timeline: {
               profiles: [],
@@ -26,7 +26,7 @@ const initialState: StatisticsState = {
             },
           },
           breakdown: {
-            name: "Timeline: ICs per month by profile",
+            name: "ICs per month by profile",
             total: 0,
             timeline: {
               profiles: [],
@@ -45,7 +45,7 @@ const initialState: StatisticsState = {
       gbLaunch: {
         summary: {
           count: {
-            name: "Timeline: GBs per month",
+            name: "GBs per month",
             total: 0,
             timeline: {
               profiles: [],
@@ -53,7 +53,7 @@ const initialState: StatisticsState = {
             },
           },
           breakdown: {
-            name: "Timeline: GBs per month by profile",
+            name: "GBs per month by profile",
             total: 0,
             timeline: {
               profiles: [],
@@ -87,7 +87,7 @@ const initialState: StatisticsState = {
           mean: 0,
           median: 0,
           mode: [],
-          name: "Duration: IC duration (months)",
+          name: "IC duration (months)",
           range: "",
           standardDev: 0,
           total: 0,
@@ -104,7 +104,7 @@ const initialState: StatisticsState = {
           mean: 0,
           median: 0,
           mode: [],
-          name: "Duration: GB duration (days)",
+          name: "GB duration (days)",
           range: "",
           standardDev: 0,
           total: 0,
@@ -122,7 +122,7 @@ const initialState: StatisticsState = {
         mean: 0,
         median: 0,
         mode: [],
-        name: "Vendors: vendors per set",
+        name: "Vendors per set",
         range: "",
         standardDev: 0,
         total: 0,

@@ -39,7 +39,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     icDate: {
       summary: {
         count: {
-          name: "Timeline: ICs per month",
+          name: "ICs per month",
           total: 0,
           timeline: {
             profiles: [],
@@ -47,7 +47,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           },
         },
         breakdown: {
-          name: "Timeline: ICs per month by profile",
+          name: "ICs per month by profile",
           total: 0,
           timeline: {
             profiles: [],
@@ -66,7 +66,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     gbLaunch: {
       summary: {
         count: {
-          name: "Timeline: GBs per month",
+          name: "GBs per month",
           total: 0,
           timeline: {
             profiles: [],
@@ -74,7 +74,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           },
         },
         breakdown: {
-          name: "Timeline: GBs per month by profile",
+          name: "GBs per month by profile",
           total: 0,
           timeline: {
             profiles: [],
@@ -429,7 +429,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         mean: 0,
         median: 0,
         mode: [],
-        name: "Duration: IC duration (months)",
+        name: "IC duration (months)",
         range: "",
         standardDev: 0,
         total: 0,
@@ -446,7 +446,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         mean: 0,
         median: 0,
         mode: [],
-        name: "Duration: GB duration (days)",
+        name: "GB duration (days)",
         range: "",
         standardDev: 0,
         total: 0,
@@ -500,7 +500,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         return math.round(length[cat === "icDate" ? "months" : "days"], 2);
       });
 
-      const title = cat === "icDate" ? "Duration: IC duration (months)" : "Duration: GB duration (days)";
+      const title = cat === "icDate" ? "IC duration (months)" : "GB duration (days)";
 
       durationData[cat].summary = createDurationDataObject(summaryData, title, propSets.length);
 
@@ -547,7 +547,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
       mean: 0,
       median: 0,
       mode: [],
-      name: "Vendors: vendors per set",
+      name: "Vendors per set",
       range: "",
       standardDev: 0,
       total: 0,
@@ -598,7 +598,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
   };
   const summaryLengthArray = vendorSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
 
-  vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors: vendors per set", vendorSets.length);
+  vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length);
 
   Object.keys(vendorsData.breakdown).forEach((prop) => {
     if (hasKey(vendorsData.breakdown, prop)) {
