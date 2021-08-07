@@ -131,7 +131,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               </svg>
             )}
           />,
-          "Total",
+          "Sort by total",
           { align: tooltipAlign }
         )}
         {withTooltip(
@@ -149,7 +149,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               </svg>
             )}
           />,
-          "Alphabetical",
+          "Sort alphabetically",
           { align: tooltipAlign }
         )}
       </SegmentedButton>
@@ -194,7 +194,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Total",
+            "Sort by total",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -210,7 +210,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Alphabetical",
+            "Sort alphabetically",
             { align: tooltipAlign }
           )}
         </SegmentedButton>
@@ -251,7 +251,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Total",
+            "Sort by total",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -267,7 +267,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Alphabetical",
+            "Sort alphabetically",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -284,7 +284,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Duration",
+            "Sort by duration",
             { align: tooltipAlign }
           )}
         </SegmentedButton>
