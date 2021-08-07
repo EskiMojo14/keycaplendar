@@ -2,7 +2,7 @@ import React from "react";
 import { iconObject } from "@s/common/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
-import { Tooltip } from "@rmwc/tooltip";
+import { withTooltip } from "@c/util/HOCs";
 import "./Footer.scss";
 
 export const Footer = () => {
@@ -216,14 +216,18 @@ export const Footer = () => {
   return (
     <div className="footer">
       <Typography use="body2" tag="div">
-        Site created by&nbsp;
-        <Tooltip align="top" content="eskimojo" showArrow>
-          <span className="bold">Ben Durrant</span>
-        </Tooltip>
-        , inspired by the spreadsheet created by&nbsp;
-        <Tooltip align="top" content="Langelandia" showArrow>
-          <span className="bold">Jeff Langeland</span>
-        </Tooltip>
+        Site created by{" "}
+        {withTooltip(<span className="bold">Ben Durrant</span>, "eskimojo", {
+          align: "top",
+          showArrow: true,
+          enterDelay: 0,
+        })}
+        , inspired by the spreadsheet created by{" "}
+        {withTooltip(<span className="bold">Jeff Langeland</span>, "Langelandia", {
+          align: "top",
+          showArrow: true,
+          enterDelay: 0,
+        })}
         .
       </Typography>
       <Typography use="body2" tag="div">
@@ -241,7 +245,7 @@ export const Footer = () => {
           rel="noopener noreferrer"
         />{" "}
         and let us know, or contact me via{" "}
-        <Tooltip align="top" content="keycaplendar@gmail.com" showArrow>
+        {withTooltip(
           <Button
             label="Email"
             icon={iconObject(
@@ -255,8 +259,10 @@ export const Footer = () => {
             href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change"
             target="_blank"
             rel="noopener noreferrer"
-          />
-        </Tooltip>
+          />,
+          "keycaplendar@gmail.com",
+          { align: "top", showArrow: true, enterDelay: 0 }
+        )}
         . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not rendered
         by keycaprenders.com).
       </Typography>
