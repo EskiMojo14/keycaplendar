@@ -338,11 +338,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             title="Sets per month"
             data={statisticsData.summaryData.count[settings.summary]}
             //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
-            disclaimer
+            note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
+            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
           />
           <TimelinesCard
             allProfiles={statisticsData.summaryData.profile[settings.summary].profiles}
             data={statisticsData.summaryData.profile[settings.summary].data}
+            focusable
             //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
           />
         </div>
@@ -354,7 +356,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               <TimelinesCard
                 key={data.name}
                 data={data}
-                profileGroups={settings.timelinesGroup === "profile"}
+                focusable={!(settings.timelinesGroup === "profile")}
+                singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
                 allProfiles={statisticsData.timelinesData[settings.timelinesCat][settings.timelinesGroup].profiles}
                 //category={this.state.settings.timelinesCat === "icDate" ? "IC date" : "GB start"}
               />

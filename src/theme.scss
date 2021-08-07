@@ -1106,7 +1106,7 @@ $graph-colors-dark: (
   .timeline-card {
     .timeline-chart-container {
       &.shipped .ct-chart,
-      &.timelines.single .ct-chart {
+      &.single.primary .ct-chart {
         .ct-series.ct-series-a {
           .ct-point,
           .ct-line,
@@ -1119,6 +1119,22 @@ $graph-colors-dark: (
           .ct-area,
           .ct-stroked-point {
             fill: map-get($variables, primary);
+          }
+        }
+      }
+      &.single.secondary .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, secondary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, secondary);
           }
         }
       }

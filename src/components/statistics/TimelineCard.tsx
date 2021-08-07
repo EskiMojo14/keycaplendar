@@ -179,10 +179,12 @@ export const ShippedCard = (props: ShippedCardProps) => {
 };
 
 type TimelinesCardProps = {
-  allProfiles: string[];
-  profileGroups?: boolean;
+  allProfiles?: string[];
+  singleTheme?: "primary" | "secondary";
   category?: string;
   data: TimelineDataObject;
+  focusable?: boolean;
+  note?: React.ReactNode;
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
@@ -204,7 +206,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   };
   const chartSeries =
     onlyFocused &&
-    !props.profileGroups &&
+    props.focusable &&
     arrayEveryType<{ data: ChartSeriesItem[]; className?: string }>(props.data.timeline.series, (series) =>
       hasKey(series, "data")
     ) &&
@@ -239,7 +241,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         responsiveOptions={responsiveOptions}
       />
     ) : null;
-  const focusButtons = !props.profileGroups ? (
+  const focusButtons = props.focusable ? (
     <>
       {withTooltip(
         <IconButton
@@ -361,19 +363,20 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           className={classNames(
             "timeline-chart-container timelines",
             {
-              single: props.profileGroups,
+              single: props.singleTheme,
               focused: focused.length > 0,
             },
+            props.singleTheme,
             focused.map((index) => `series-index-${index}`)
           )}
         >
           {barChart}
           {lineChart}
         </div>
-        {!props.profileGroups ? (
+        {props.focusable ? (
           <div className="timeline-chips-container focus-chips">
             <ChipSet choice>
-              {props.allProfiles.map((profile, index) => {
+              {props.allProfiles?.map((profile, index) => {
                 if (props.data.timeline.profiles.includes(profile)) {
                   return (
                     <Chip
@@ -393,6 +396,11 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             </ChipSet>
           </div>
         ) : null}
+        {props.note ? (
+          <Typography use="caption" tag="p">
+            {props.note}
+          </Typography>
+        ) : null}
       </div>
     </Card>
   );
@@ -401,7 +409,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
 type CountCardProps = {
   title: string;
   category?: string;
-  disclaimer?: boolean;
+  note?: React.ReactNode;
   data: {
     total: number;
     months: string[];
@@ -483,10 +491,9 @@ export const CountCard = (props: CountCardProps) => {
           {barChart}
           {lineChart}
         </div>
-        {props.disclaimer ? (
+        {props.note ? (
           <Typography use="caption" tag="p">
-            Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
-            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019.
+            {props.note}
           </Typography>
         ) : null}
       </div>
