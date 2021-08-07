@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chartist from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { addOrRemove, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
-import { ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -24,7 +24,6 @@ import {
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import "./TimelineCard.scss";
-import { useEffect } from "react";
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -258,9 +257,20 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     setFocused(newFocused);
   };
   const focusAll = () => {
-    const allIndexes = Array(props.data.timeline.series.length)
-      .fill("")
-      .map((v, i) => i);
+    let allIndexes: number[] = [];
+    if (
+      arrayEveryType<{ data: ChartSeriesItem[]; className?: string; index: number }>(
+        props.data.timeline.series,
+        (series: ChartData) => hasKey(series, "index")
+      ) &&
+      props.data.timeline.series.length !== props.allProfiles?.length
+    ) {
+      allIndexes = props.data.timeline.series.map((series) => series.index);
+    } else {
+      allIndexes = Array(props.data.timeline.series.length)
+        .fill("")
+        .map((v, i) => i);
+    }
     setFocused(allIndexes);
   };
   const clearFocus = () => {
