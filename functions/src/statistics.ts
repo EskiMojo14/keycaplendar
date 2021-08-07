@@ -7,13 +7,13 @@ import { create, all, MathJsStatic } from "mathjs";
 import {
   StatisticsSetType,
   Categories,
-  SummaryData,
   TimelinesData,
   TimelineDataObject,
   StatusData,
   ShippedData,
   DurationData,
   VendorData,
+  ChartData,
 } from "./slices/statistics/types";
 import {
   getSetMonthRange,
@@ -32,69 +32,101 @@ const today = DateTime.utc();
 const yesterday = today.minus({ days: 1 });
 const categories: Categories[] = ["icDate", "gbLaunch"];
 
-const createSummaryData = (sets: StatisticsSetType[]) => {
-  const summaryData: SummaryData = {
-    count: {
-      icDate: { total: 0, months: [], series: [] },
-      gbLaunch: { total: 0, months: [], series: [] },
-    },
-    profile: {
-      icDate: {
-        profiles: [],
-        data: {
-          name: "Profile breakdown",
+const createTimelinesData = (sets: StatisticsSetType[]) => {
+  const timelinesData: TimelinesData = {
+    icDate: {
+      summary: {
+        count: {
+          name: "Timeline: ICs per month",
           total: 0,
           timeline: {
-            months: [],
+            profiles: [],
+            series: [],
+          },
+        },
+        breakdown: {
+          name: "Timeline: ICs per month by profile",
+          total: 0,
+          timeline: {
             profiles: [],
             series: [],
           },
         },
       },
-      gbLaunch: {
-        profiles: [],
-        data: {
-          name: "Profile breakdown",
+      months: [],
+      allProfiles: [],
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
+    },
+    gbLaunch: {
+      summary: {
+        count: {
+          name: "Timeline: GBs per month",
           total: 0,
           timeline: {
-            months: [],
             profiles: [],
             series: [],
           },
         },
+        breakdown: {
+          name: "Timeline: GBs per month by profile",
+          total: 0,
+          timeline: {
+            profiles: [],
+            series: [],
+          },
+        },
+      },
+      months: [],
+      allProfiles: [],
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     },
   };
   const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
-  categories.forEach((cat) => {
-    const catSets = cat === "gbLaunch" ? gbSets : sets;
+  Object.keys(timelinesData).forEach((cat) => {
+    if (hasKey(timelinesData, cat)) {
+      const catSets = cat === "gbLaunch" ? gbSets : sets;
+      timelinesData[cat].summary.count.total = catSets.length;
+      timelinesData[cat].summary.breakdown.total = catSets.length;
 
-    summaryData.count[cat].total = catSets.length;
-    summaryData.profile[cat].data.total = catSets.length;
+      const months = getSetMonthRange(catSets, cat, "MMM yy");
 
-    const months = getSetMonthRange(catSets, cat, "MMM yy");
-    summaryData.count[cat].months = months;
-    summaryData.profile[cat].data.timeline.months = months;
+      timelinesData[cat].months = months;
 
-    summaryData.count[cat].series = [
-      months.map((month) => {
-        return catSets.filter((set) => {
-          const setProp = set[cat];
-          const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
-              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-              : null;
-          return setMonth && setMonth === month;
-        }).length;
-      }),
-    ];
+      timelinesData[cat].summary.count.timeline.series = [
+        months.map((month) => {
+          return catSets.filter((set) => {
+            const setProp = set[cat];
+            const setMonth =
+              is<string>(setProp) && !setProp.includes("Q")
+                ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+                : null;
+            return setMonth && setMonth === month;
+          }).length;
+        }),
+      ];
 
-    const profiles = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
-    summaryData.profile[cat].profiles = profiles;
-    summaryData.profile[cat].data.timeline.profiles = profiles;
+      const profileNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
+      const designerNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.designer).flat(1)));
+      const vendorNames = alphabeticalSort(
+        uniqueArray(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+      );
+      const lists = {
+        profile: profileNames,
+        designer: designerNames,
+        vendor: vendorNames,
+      };
 
-    summaryData.profile[cat].data.timeline.series = profiles.map((profile, index) => {
-      return {
+      timelinesData[cat].allProfiles = profileNames;
+
+      timelinesData[cat].summary.breakdown.timeline.series = profileNames.map((profile, index) => ({
         data: months.map((month) => {
           const length = catSets.filter((set) => {
             const setProp = set[cat];
@@ -107,74 +139,17 @@ const createSummaryData = (sets: StatisticsSetType[]) => {
           return length > 0 ? { meta: profile, value: length } : 0;
         }),
         className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-      };
-    });
-  });
-  return Promise.resolve(summaryData);
-};
+        index: index,
+      }));
 
-const createTimelinesData = (sets: StatisticsSetType[]) => {
-  const timelinesData: TimelinesData = {
-    icDate: {
-      profile: {
-        profiles: [],
-        data: [],
-      },
-      designer: {
-        profiles: [],
-        data: [],
-      },
-      vendor: {
-        profiles: [],
-        data: [],
-      },
-    },
-    gbLaunch: {
-      profile: {
-        profiles: [],
-        data: [],
-      },
-      designer: {
-        profiles: [],
-        data: [],
-      },
-      vendor: {
-        profiles: [],
-        data: [],
-      },
-    },
-  };
-  const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
-  Object.keys(timelinesData).forEach((prop) => {
-    if (hasKey(timelinesData, prop)) {
-      const propSets = prop === "gbLaunch" ? gbSets : sets;
-      const months = getSetMonthRange(propSets, prop, "MMM yy");
-      const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
-      const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
-      const vendorNames = alphabeticalSort(
-        uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
-      );
-      const lists = {
-        profile: profileNames,
-        designer: designerNames,
-        vendor: vendorNames,
-      };
-
-      Object.keys(timelinesData[prop]).forEach((property) => {
-        if (hasKey(timelinesData[prop], property)) {
+      Object.keys(timelinesData[cat].breakdown).forEach((property) => {
+        if (hasKey(timelinesData[cat].breakdown, property)) {
           const data: TimelineDataObject[] = [];
-          timelinesData[prop][property].profiles = profileNames;
           lists[property].forEach((name) => {
-            const filteredSets = propSets.filter((set) => {
+            const filteredSets = catSets.filter((set) => {
               let bool = false;
               if (property === "vendor") {
-                bool =
-                  set.vendors &&
-                  set.vendors.findIndex((vendor) => {
-                    return vendor.name === name;
-                  }) !== -1
-                    ? true
-                    : false;
+                bool = set.vendors && set.vendors.some((vendor) => vendor.name === name) ? true : false;
               } else if (property === "designer") {
                 bool = set.designer.includes(name);
               } else {
@@ -184,13 +159,14 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
             });
             const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
 
-            let timelineData;
+            let timelineData: ChartData;
             if (property === "vendor" || property === "designer") {
-              timelineData = profileNames.map((profile, index) => {
+              timelineData = profiles.map((profile) => {
+                const index = profileNames.indexOf(profile);
                 return {
                   data: months.map((month) => {
                     const monthSets = filteredSets.filter((set) => {
-                      const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
+                      const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
                       return date && date === month;
                     });
                     const num = monthSets.filter((set) => set.profile === profile).length;
@@ -202,13 +178,14 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
                       : 0;
                   }),
                   className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+                  index: index,
                 };
               });
             } else {
               timelineData = [
                 months.map((month) => {
                   const monthSets = filteredSets.filter((set) => {
-                    const date = set[prop] ? DateTime.fromISO(set[prop], { zone: "utc" }).toFormat("MMM yy") : null;
+                    const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
                     return date && date === month;
                   });
                   return monthSets.length;
@@ -220,7 +197,6 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               name: name,
               total: filteredSets.length,
               timeline: {
-                months: months,
                 profiles: profiles,
                 series: timelineData,
               },
@@ -229,7 +205,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           data.sort(
             (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
           );
-          timelinesData[prop][property].data = data;
+          timelinesData[cat].breakdown[property] = data;
         }
       });
     }
@@ -627,9 +603,9 @@ const runtimeOpts: functions.RuntimeOptions = {
 
 export const createStatistics = functions
   .runWith(runtimeOpts)
-  .pubsub.schedule("every 12 hours")
-  .onRun(async (context) => {
-    // .https.onCall(async (data, contextverylongnameevenlongerpls) => {
+  // .pubsub.schedule("every 12 hours")
+  // .onRun(async (context) => {
+  .https.onCall(async (data, contextverylongnameevenlongerpls) => {
     const snapshot = await typedFirestore.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
@@ -662,14 +638,12 @@ export const createStatistics = functions
         return true;
       }
     });
-    const summaryData = createSummaryData(limitedSets);
     const timelinesData = createTimelinesData(limitedSets);
     const statusData = createStatusData(limitedSets);
     const shippedData = createShippedData(limitedSets);
     const durationData = createDurationData(limitedSets);
     const vendorsData = createVendorsData(limitedSets);
     const statisticsData = {
-      summaryData: await summaryData,
       timelinesData: await timelinesData,
       statusData: await statusData,
       shippedData: await shippedData,
@@ -678,6 +652,6 @@ export const createStatistics = functions
       timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);
-    const file = bucket.file("statisticsData.json");
+    const file = bucket.file("statisticsDataTest.json");
     return file.save(jsonString, { contentType: "application/json" });
   });

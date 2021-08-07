@@ -22,30 +22,26 @@ export type ChartDatumObject = {
 
 export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
 
-export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string }[];
+export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string; index?: number }[];
 
 export type TimelineDataObject = {
   name: string;
   total: number;
   timeline: {
-    months: string[];
     profiles: string[];
     series: ChartData;
   };
 };
 
-export type CountDataObject = {
-  total: number;
-  months: string[];
-  series: ChartData;
-};
-
-export type SummaryData = {
-  count: Record<Categories, CountDataObject>;
-  profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
-};
-
-export type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
+export type TimelinesData = Record<
+  Categories,
+  {
+    summary: { count: TimelineDataObject; breakdown: TimelineDataObject };
+    breakdown: Record<Properties, TimelineDataObject[]>;
+    allProfiles: string[];
+    months: string[];
+  }
+>;
 
 export type StatusDataObject = {
   ic: number;

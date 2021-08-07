@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { addOrRemove, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
-import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import { ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -24,6 +24,7 @@ import {
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import "./TimelineCard.scss";
+import { useEffect } from "react";
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -180,7 +181,9 @@ export const ShippedCard = (props: ShippedCardProps) => {
 
 type TimelinesCardProps = {
   allProfiles?: string[];
+  months: string[];
   singleTheme?: "primary" | "secondary";
+  defaultType?: "bar" | "line";
   category?: string;
   data: TimelineDataObject;
   focusable?: boolean;
@@ -190,7 +193,7 @@ type TimelinesCardProps = {
 export const TimelinesCard = (props: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [focused, setFocused] = useState<number[]>([]);
-  const [graphType, setGraphType] = useState("bar");
+  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const setFocus = (index: number) => {
     const newFocused = addOrRemove(focused, index);
     setFocused(newFocused);
@@ -204,6 +207,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const clearFocus = () => {
     setFocused([]);
   };
+  useEffect(clearFocus, [props.category]);
   const chartSeries =
     onlyFocused &&
     props.focusable &&
@@ -213,18 +217,18 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     ) &&
     focused.length > 0 &&
     focused.length !== props.data.timeline.series.length
-      ? props.data.timeline.series.filter((_series, index) => focused.includes(index))
+      ? props.data.timeline.series.filter((series) => focused.includes(series.index || -1))
       : props.data.timeline.series;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
         className="ct-double-octave"
         data={{
-          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+          labels: props.months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
         type={"Bar"}
-        options={chartOptions(`Month${props.category ? ` (${props.category})` : ""}`)}
+        options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
       />
     ) : null;
@@ -233,12 +237,12 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       <ChartistGraph
         className="ct-double-octave"
         data={{
-          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+          labels: props.months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
         type={"Line"}
         listener={listener}
-        options={chartOptions(`Month${props.category ? ` (${props.category})` : ""}`)}
+        options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
       />
     ) : null;
@@ -379,7 +383,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           <div className="timeline-chips-container focus-chips">
             <ChipSet choice>
               {props.allProfiles.map((profile, index) => {
-                if (props.data.timeline.profiles.includes(profile)) {
+                if (props.data.timeline.profiles.includes(profile) || props.data.timeline.profiles.length === 0) {
                   return (
                     <Chip
                       key={profile}
@@ -414,101 +418,6 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             </ChipSet>
           </div>
         ) : null}
-        {props.note ? (
-          <Typography use="caption" tag="p" className="note">
-            {props.note}
-          </Typography>
-        ) : null}
-      </div>
-    </Card>
-  );
-};
-
-type CountCardProps = {
-  title: string;
-  category?: string;
-  note?: React.ReactNode;
-  data: {
-    total: number;
-    months: string[];
-    series: ChartData;
-  };
-};
-
-export const CountCard = (props: CountCardProps) => {
-  const [graphType, setGraphType] = useState("line");
-  const barChart =
-    graphType === "bar" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{
-          series: props.data.series,
-          labels: props.data.months.map((label) => label.split(" ").join("\n")),
-        }}
-        type={"Bar"}
-        options={chartOptions(`Month${props.category ? ` (${props.category})` : ""}`)}
-        responsiveOptions={responsiveOptions}
-      />
-    ) : null;
-  const lineChart =
-    graphType === "line" ? (
-      <ChartistGraph
-        className="ct-double-octave"
-        data={{
-          series: props.data.series,
-          labels: props.data.months.map((label) => label.split(" ").join("\n")),
-        }}
-        type={"Line"}
-        listener={listener}
-        options={chartOptions(`Month${props.category ? ` (${props.category})` : ""}`)}
-        responsiveOptions={responsiveOptions}
-      />
-    ) : null;
-  return (
-    <Card className="timeline-card full-span">
-      <div className="title-container">
-        <div className="text-container">
-          <Typography use="headline5" tag="h1">
-            {props.title}
-          </Typography>
-          <Typography use="subtitle2" tag="p">
-            {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
-          </Typography>
-        </div>
-        <div className="button-container">
-          <SegmentedButton toggle>
-            <SegmentedButtonSegment
-              icon={iconObject(
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M22,21H2V3H4V19H6V17H10V19H12V16H16V19H18V17H22V21M18,14H22V16H18V14M12,6H16V9H12V6M16,15H12V10H16V15M6,10H10V12H6V10M10,16H6V13H10V16Z" />
-                </svg>
-              )}
-              selected={graphType === "bar"}
-              onClick={() => {
-                setGraphType("bar");
-              }}
-            />
-            <SegmentedButtonSegment
-              icon={iconObject(
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
-                </svg>
-              )}
-              selected={graphType === "line"}
-              onClick={() => {
-                setGraphType("line");
-              }}
-            />
-          </SegmentedButton>
-        </div>
-      </div>
-      <div className="timeline-container">
-        <div className="timeline-chart-container timelines count-graph">
-          {barChart}
-          {lineChart}
-        </div>
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}

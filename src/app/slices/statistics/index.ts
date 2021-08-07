@@ -14,65 +14,59 @@ const initialState: StatisticsState = {
   tab: "summary",
   loading: false,
   data: {
-    summaryData: {
-      count: {
-        icDate: { total: 0, months: [], series: [] },
-        gbLaunch: { total: 0, months: [], series: [] },
-      },
-      profile: {
-        icDate: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
-            total: 0,
-            timeline: {
-              months: [],
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-        gbLaunch: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
-            total: 0,
-            timeline: {
-              months: [],
-              profiles: [],
-              series: [],
-            },
-          },
-        },
-      },
-    },
     timelinesData: {
       icDate: {
-        profile: {
-          profiles: [],
-          data: [],
+        summary: {
+          count: {
+            name: "Timeline: ICs per month",
+            total: 0,
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+          },
+          breakdown: {
+            name: "Timeline: ICs per month by profile",
+            total: 0,
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+          },
         },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
+        months: [],
+        allProfiles: [],
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
         },
       },
       gbLaunch: {
-        profile: {
-          profiles: [],
-          data: [],
+        summary: {
+          count: {
+            name: "Timeline: GBs per month",
+            total: 0,
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+          },
+          breakdown: {
+            name: "Timeline: GBs per month by profile",
+            total: 0,
+            timeline: {
+              profiles: [],
+              series: [],
+            },
+          },
         },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
+        months: [],
+        allProfiles: [],
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
         },
       },
     },
