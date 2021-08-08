@@ -1,3 +1,4 @@
+@use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 
 .stats-tab .mdc-card.table-card {
@@ -12,6 +13,22 @@
   .mdc-typography--subtitle2 {
     margin-top: 0;
     margin-bottom: 16px;
+  }
+  .title-container {
+    display: flex;
+    align-items: flex-start;
+    .text-container {
+      flex-grow: 1;
+    }
+    .button-container {
+      display: flex;
+      align-items: center;
+      .mdc-icon-button {
+        & + .segmented-button {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
   }
   .content-container {
     display: flex;
