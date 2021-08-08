@@ -14,94 +14,147 @@ const initialState: StatisticsState = {
   tab: "summary",
   loading: false,
   data: {
-    summaryData: {
-      count: {
-        icDate: { total: 0, months: [], series: [] },
-        gbLaunch: { total: 0, months: [], series: [] },
-      },
-      profile: {
-        icDate: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
+    timelines: {
+      icDate: {
+        summary: {
+          count: {
+            name: "ICs per month",
             total: 0,
             timeline: {
-              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+          breakdown: {
+            name: "ICs per month by profile",
+            total: 0,
+            timeline: {
               profiles: [],
               series: [],
             },
           },
         },
-        gbLaunch: {
-          profiles: [],
-          data: {
-            name: "Profile breakdown",
+        months: [],
+        allProfiles: [],
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
+        },
+      },
+      gbLaunch: {
+        summary: {
+          count: {
+            name: "GBs per month",
             total: 0,
             timeline: {
-              months: [],
+              profiles: [],
+              series: [],
+            },
+          },
+          breakdown: {
+            name: "GBs per month by profile",
+            total: 0,
+            timeline: {
               profiles: [],
               series: [],
             },
           },
         },
-      },
-    },
-    timelinesData: {
-      icDate: {
-        profile: {
-          profiles: [],
-          data: [],
-        },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
-        },
-      },
-      gbLaunch: {
-        profile: {
-          profiles: [],
-          data: [],
-        },
-        designer: {
-          profiles: [],
-          data: [],
-        },
-        vendor: {
-          profiles: [],
-          data: [],
+        months: [],
+        allProfiles: [],
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
         },
       },
     },
-    statusData: {
-      profile: [],
-      designer: [],
-      vendor: [],
-    },
-    shippedData: {
-      profile: [],
-      designer: [],
-      vendor: [],
-    },
-    durationData: {
-      icDate: {
-        profile: [],
-        designer: [],
-        vendor: [],
+    status: {
+      summary: {
+        name: "Current keyset status",
+        total: 0,
+        ic: 0,
+        preGb: 0,
+        liveGb: 0,
+        postGb: 0,
       },
-      gbLaunch: {
+      breakdown: {
         profile: [],
         designer: [],
         vendor: [],
       },
     },
-    vendorsData: {
-      profile: [],
-      designer: [],
-      vendor: [],
+    shipped: {
+      summary: {
+        name: "Shipped sets by GB month",
+        total: 0,
+        shipped: 0,
+        unshipped: 0,
+        timeline: {
+          shipped: [],
+          unshipped: [],
+        },
+      },
+      months: [],
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
+    },
+    duration: {
+      icDate: {
+        summary: {
+          chartData: { labels: [], series: [] },
+          mean: 0,
+          median: 0,
+          mode: [],
+          name: "IC duration (months)",
+          range: "",
+          standardDev: 0,
+          total: 0,
+        },
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
+        },
+      },
+      gbLaunch: {
+        summary: {
+          chartData: { labels: [], series: [] },
+          mean: 0,
+          median: 0,
+          mode: [],
+          name: "GB duration (days)",
+          range: "",
+          standardDev: 0,
+          total: 0,
+        },
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
+        },
+      },
+    },
+    vendors: {
+      summary: {
+        chartData: { labels: [], series: [] },
+        mean: 0,
+        median: 0,
+        mode: [],
+        name: "Vendors per set",
+        range: "",
+        standardDev: 0,
+        total: 0,
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
     },
   },
   settings: {

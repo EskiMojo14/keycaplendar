@@ -59,13 +59,12 @@ $button: (
 $overline: (
   font-family: $body-font,
   font-size: toRem(10),
+  line-height: toRem(26),
 );
 $caption: (
   font-family: $body-font,
   font-size: toRem(13),
 );
-
-
 
 $headline6-serif: (
   font-family: $headline-font,
@@ -95,6 +94,7 @@ $button-serif: (
 $overline-serif: (
   font-family: $headline-font,
   font-size: toRem(10),
+  line-height: toRem(30),
 );
 $caption-serif: (
   font-family: $headline-font,

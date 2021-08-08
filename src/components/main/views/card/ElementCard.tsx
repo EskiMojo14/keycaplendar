@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
-import { iconObject } from "@s/common/functions";
+import { iconObject, pluralise } from "@s/common/functions";
 import { SetType } from "@s/main/types";
 import { selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
@@ -93,7 +93,7 @@ export const ElementCard = (props: ElementCardProps) => {
       : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" tag="h4" className="time-indicator">
-      {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
+      {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
     </Typography>
   ) : null;
   const shareButton = user.email ? (

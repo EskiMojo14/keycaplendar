@@ -13,20 +13,7 @@ import {
   selectData,
   selectSort,
 } from ".";
-import {
-  DurationData,
-  ShippedData,
-  ShippedDataObject,
-  StatisticsData,
-  StatisticsSortType,
-  StatisticsType,
-  StatsTab,
-  StatusData,
-  StatusDataObject,
-  TimelinesData,
-  VendorData,
-  VendorDataObject,
-} from "./types";
+import { Properties, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
 import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
@@ -60,7 +47,7 @@ export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: Stat
 };
 
 export const getData = async () => {
-  const fileRef = storage.ref("statisticsData.json");
+  const fileRef = storage.ref("statisticsDataTest.json");
   dispatch(setLoading(true));
   fileRef
     .getDownloadURL()
@@ -73,7 +60,6 @@ export const getData = async () => {
             const timestampOrdinal = ordinal(luxonTimetamp.day);
             const formattedTimestamp = luxonTimetamp.toFormat(`HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`);
             queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
-
             dispatch(setStatisticsData(statisticsData));
             dispatch(setLoading(false));
           });
@@ -95,39 +81,35 @@ export const sortData = (state = store.getState()) => {
   const statisticsTab = selectTab(state);
   const statisticsData = selectData(state);
   const sort = selectSort(state);
-  dispatch(setLoading(true));
-  const key = statisticsTab + "Data";
-  if (hasKey(statisticsData, key)) {
+  if (statisticsTab !== "summary") {
+    dispatch(setLoading(true));
+    const tab = statisticsTab;
     const setData = (data: StatisticsData[keyof StatisticsData]) => {
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+      dispatch(setStatisticsData(mergeObject(statisticsData, { [tab]: data })));
       dispatch(setLoading(false));
     };
-    const stateData = statisticsData[key];
-    const tab = statisticsTab;
+    const stateData = statisticsData[tab];
     if (tab === "duration") {
-      const data = cloneDeep(stateData) as DurationData;
+      const data = cloneDeep(stateData) as StatisticsData["duration"];
       categories.forEach((category) => {
         properties.forEach((property) => {
-          const value = data[category][property];
+          const value = data[category].breakdown[property];
           const sortedValue = value.slice().sort((a, b) => {
-            if (a.name === "All" || b.name === "All") {
-              return a.name === "All" ? -1 : 1;
-            }
             const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
             return (
               alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
               alphabeticalSortPropCurried("name")(a, b)
             );
           });
-          data[category][property] = sortedValue;
+          data[category].breakdown[property] = sortedValue;
         });
       });
       setData(data);
     } else if (tab === "timelines") {
-      const data = cloneDeep(stateData) as TimelinesData;
+      const data = cloneDeep(stateData) as StatisticsData["timelines"];
       categories.forEach((category) => {
         properties.forEach((property) => {
-          const value = data[category][property].data;
+          const value = data[category].breakdown[property];
           const sortedValue = value.slice().sort((a, b) => {
             const key = sort[tab] === "alphabetical" ? "name" : "total";
             return (
@@ -135,15 +117,18 @@ export const sortData = (state = store.getState()) => {
               alphabeticalSortPropCurried("name")(a, b)
             );
           });
-          data[category][property].data = sortedValue;
+          data[category].breakdown[property] = sortedValue;
         });
       });
       setData(data);
     } else {
-      const data = cloneDeep(stateData) as StatusData | ShippedData | VendorData;
+      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines">[keyof Omit<
+        StatisticsData,
+        "duration" | "timelines"
+      >];
       properties.forEach((properties) => {
-        type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
-        const value = data[properties];
+        const value = data.breakdown[properties];
+        type DataObj = typeof data.breakdown[Properties][number];
         const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
           if (hasKey(sort, tab)) {
             const key = sort[tab] === "total" ? "total" : "name";
@@ -153,7 +138,7 @@ export const sortData = (state = store.getState()) => {
           }
           return 0;
         });
-        data[properties] = sortedValue;
+        data.breakdown[properties] = sortedValue;
       });
       setData(data);
     }

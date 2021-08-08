@@ -141,14 +141,17 @@ $graph-colors-dark: (
     text-medium: rgba(map-get($theme, on-surface), 0.6),
     text-disabled: rgba(map-get($theme, on-surface), 0.38),
   );
-  $variables: map-merge($theme, $text-colors);
-  --meta-color: #{if(
-      $dark,
-      darken(overlay-elevation(map-get($variables, surface), 4), 10%),
-      darken(map-get($variables, primary), 10%)
-    )};
-  --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
-  --lighter-color: #{rgba(map-get($variables, on-surface), 0.06)};
+  $dynamic-colors: (
+    meta: if($dark, darken(overlay-elevation(map-get($theme, surface), 4), 10%), darken(map-get($theme, primary), 10%)),
+    divider: rgba(map-get($theme, on-surface), 0.12),
+    lighter-divider: rgba(map-get($theme, on-surface), 0.06),
+    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 6%),
+  );
+  $variables: map-merge($theme, map-merge($text-colors, $dynamic-colors));
+  @each $variable, $value in $variables {
+    --theme-#{$variable}: #{$value};
+  }
   body {
     background-color: map-get($variables, background);
   }
@@ -457,17 +460,19 @@ $graph-colors-dark: (
   .mdc-icon-button {
     @include icon-button.ink-color(map-get($variables, text-medium));
     @include icon-button.disabled-ink-color(map-get($variables, text-disabled));
-    &--on.secondary-on,
-    &--on.favorite {
-      @include icon-button.ink-color(map-get($variables, secondary));
-    }
-    &--on.primary-on,
-    &--on.bought {
-      @include icon-button.ink-color(map-get($variables, primary));
-    }
-    &--on.danger-on,
-    &--on.hide {
-      @include icon-button.ink-color(map-get($variables, error));
+    &--on {
+      &.primary-on,
+      &.bought {
+        @include icon-button.ink-color(map-get($variables, primary));
+      }
+      &.secondary-on,
+      &.favorite {
+        @include icon-button.ink-color(map-get($variables, secondary));
+      }
+      &.danger-on,
+      &.hide {
+        @include icon-button.ink-color(map-get($variables, error));
+      }
     }
   }
 
@@ -995,6 +1000,16 @@ $graph-colors-dark: (
     }
   }
 
+  .focus-chips .mdc-chip.focus-chip {
+    &.mdc-chip--selected {
+      &,
+      &:hover {
+        color: map-get($variables, text-high);
+      }
+      font-weight: bold;
+    }
+  }
+
   @for $index from 0 to 40 {
     $color: if(
       $dark,
@@ -1044,7 +1059,6 @@ $graph-colors-dark: (
     }
   }
 
-  .count-graph,
   .table-card {
     .ct-series-a {
       .ct-point,
@@ -1064,6 +1078,32 @@ $graph-colors-dark: (
   .pie-card {
     .pie-chart-container {
       &.status .ct-chart {
+        .ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-2);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-2);
+          }
+        }
+        .ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-1);
+          }
+        }
         .ct-series.ct-series-c {
           .ct-point,
           .ct-line,
@@ -1105,8 +1145,7 @@ $graph-colors-dark: (
   }
   .timeline-card {
     .timeline-chart-container {
-      &.shipped .ct-chart,
-      &.timelines.single .ct-chart {
+      &.single.primary .ct-chart {
         .ct-series.ct-series-a {
           .ct-point,
           .ct-line,
@@ -1122,10 +1161,63 @@ $graph-colors-dark: (
           }
         }
       }
+      &.single.secondary .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, secondary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, secondary);
+          }
+        }
+      }
+      &.shipped .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, primary);
+          }
+        }
+        .ct-series.ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, grey-1);
+          }
+        }
+      }
     }
     .indicator {
       &.shipped {
         background-color: map-get($variables, primary);
+      }
+      &.unshipped,
+      &.pre-gb {
+        background-color: map-get($variables, grey-1);
+      }
+      &.ic {
+        background-color: map-get($variables, grey-2);
       }
     }
   }

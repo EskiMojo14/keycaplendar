@@ -1,7 +1,11 @@
+@use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 
 .stats-tab .mdc-card.table-card {
   grid-column: span 2;
+  .mdc-typography--overline {
+    margin: 0;
+  }
   .mdc-typography--headline5 {
     margin-top: 0;
     margin-bottom: 8px;
@@ -10,18 +14,34 @@
     margin-top: 0;
     margin-bottom: 16px;
   }
+  .title-container {
+    display: flex;
+    align-items: flex-start;
+    .text-container {
+      flex-grow: 1;
+    }
+    .button-container {
+      display: flex;
+      align-items: center;
+      .mdc-icon-button {
+        & + .segmented-button {
+          @include rtl.reflexive-box(margin, left, 8px);
+        }
+      }
+    }
+  }
   .content-container {
     display: flex;
     flex-direction: column;
     .chart-container {
       max-width: 100%;
       overflow: auto;
-      .ct-chart.min-width {
-        min-width: 1280px;
-      }
     }
     .table-container {
       flex-grow: 1;
+      & + .table-chips-container {
+        padding-top: 16px;
+      }
       .mdc-data-table {
         width: 100%;
         .mdc-data-table__table {
@@ -31,6 +51,22 @@
           }
         }
       }
+    }
+    .table-chips-container {
+      display: flex;
+      padding-top: 8px;
+      margin: -8px;
+      .mdc-chip-set {
+        flex-grow: 1;
+      }
+    }
+    .note {
+      margin: 8px 0 0;
+    }
+  }
+  &.full-span {
+    .chart-container .ct-chart {
+      min-width: 840px;
     }
   }
 }

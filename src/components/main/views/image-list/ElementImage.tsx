@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
-import { iconObject } from "@s/common/functions";
+import { iconObject, pluralise } from "@s/common/functions";
 import { SetType } from "@s/main/types";
 import {
   ImageListItem,
@@ -85,7 +85,7 @@ export const ElementImage = (props: ElementImageProps) => {
   const timeIndicator = props.thisWeek ? (
     <div className="time-indicator">
       <Typography use="overline" className="live-indicator-text">
-        {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
+        {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
       </Typography>
     </div>
   ) : null;

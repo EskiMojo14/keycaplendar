@@ -4,7 +4,7 @@ import LazyLoad from "react-lazy-load";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
-import { iconObject } from "@s/common/functions";
+import { iconObject, pluralise } from "@s/common/functions";
 import { SetType } from "@s/main/types";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
@@ -82,7 +82,7 @@ export const ElementList = (props: ElementListProps) => {
       : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" className="time-indicator">
-      {props.daysLeft} day{props.daysLeft === 1 ? "" : "s"}
+      {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
     </Typography>
   ) : null;
   return (

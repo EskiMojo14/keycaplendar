@@ -22,54 +22,57 @@ export type ChartDatumObject = {
 
 export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
 
-export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string }[];
+export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string; index?: number }[];
 
 export type TimelineDataObject = {
   name: string;
   total: number;
   timeline: {
-    months: string[];
     profiles: string[];
     series: ChartData;
   };
 };
 
-export type CountDataObject = {
-  total: number;
-  months: string[];
-  series: ChartData;
-};
-
-export type SummaryData = {
-  count: Record<Categories, CountDataObject>;
-  profile: Record<Categories, { profiles: string[]; data: TimelineDataObject }>;
-};
-
-export type TimelinesData = Record<Categories, Record<Properties, { profiles: string[]; data: TimelineDataObject[] }>>;
+export type TimelinesData = Record<
+  Categories,
+  {
+    summary: { count: TimelineDataObject; breakdown: TimelineDataObject };
+    breakdown: Record<Properties, TimelineDataObject[]>;
+    allProfiles: string[];
+    months: string[];
+  }
+>;
 
 export type StatusDataObject = {
+  name: string;
+  total: number;
   ic: number;
   liveGb: number;
-  name: string;
   postGb: number;
   preGb: number;
-  total: number;
 };
 
-export type StatusData = Record<Properties, StatusDataObject[]>;
+export type StatusData = {
+  summary: StatusDataObject;
+  breakdown: Record<Properties, StatusDataObject[]>;
+};
 
 export type ShippedDataObject = {
   name: string;
-  shipped: number;
   total: number;
+  shipped: number;
   unshipped: number;
   timeline: {
-    months: string[];
-    series: Record<string, ChartDatumObject>[];
+    shipped: ChartSeriesItem[];
+    unshipped: ChartSeriesItem[];
   };
 };
 
-export type ShippedData = Record<Properties, ShippedDataObject[]>;
+export type ShippedData = {
+  summary: ShippedDataObject;
+  months: string[];
+  breakdown: Record<Properties, ShippedDataObject[]>;
+};
 
 export type DurationDataObject = {
   chartData: { labels: (string | number)[]; series: ChartData };
@@ -82,7 +85,13 @@ export type DurationDataObject = {
   total: number;
 };
 
-export type DurationData = Record<Categories, Record<Properties, DurationDataObject[]>>;
+export type DurationData = Record<
+  Categories,
+  {
+    summary: DurationDataObject;
+    breakdown: Record<Properties, DurationDataObject[]>;
+  }
+>;
 
 export type VendorDataObject = {
   chartData: { labels: (string | number)[]; series: ChartData };
@@ -95,4 +104,7 @@ export type VendorDataObject = {
   total: number;
 };
 
-export type VendorData = Record<Properties, VendorDataObject[]>;
+export type VendorData = {
+  summary: VendorDataObject;
+  breakdown: Record<Properties, VendorDataObject[]>;
+};

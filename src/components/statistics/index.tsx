@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
-import { virtualize } from "react-swipeable-views-utils";
+import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
+import firebase from "@s/firebase";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { capitalise, hasKey, iconObject, useBoolStates } from "@s/common/functions";
@@ -27,9 +28,10 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard } from "./PieCard";
 import { TableCard } from "./TableCard";
-import { ShippedCard, TimelinesCard, CountCard } from "./TimelineCard";
+import { ShippedCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
+import { queue } from "~/app/snackbarQueue";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -52,7 +54,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
 
   useEffect(() => {
-    if (statisticsData.summaryData.count.icDate.total === 0) {
+    if (statisticsData.timelines.icDate.summary.count.total === 0) {
       getData();
     }
   }, []);
@@ -129,7 +131,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               </svg>
             )}
           />,
-          "Total",
+          "Sort by total",
           { align: tooltipAlign }
         )}
         {withTooltip(
@@ -147,7 +149,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               </svg>
             )}
           />,
-          "Alphabetical",
+          "Sort alphabetically",
           { align: tooltipAlign }
         )}
       </SegmentedButton>
@@ -192,7 +194,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Total",
+            "Sort by total",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -208,7 +210,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Alphabetical",
+            "Sort alphabetically",
             { align: tooltipAlign }
           )}
         </SegmentedButton>
@@ -249,7 +251,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Total",
+            "Sort by total",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -265,7 +267,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Alphabetical",
+            "Sort alphabetically",
             { align: tooltipAlign }
           )}
           {withTooltip(
@@ -282,7 +284,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 </svg>
               )}
             />,
-            "Duration",
+            "Sort by duration",
             { align: tooltipAlign }
           )}
         </SegmentedButton>
@@ -328,35 +330,74 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     </TopAppBarRow>
   );
 
-  const slideRenderer = (params: any) => {
+  const slideRenderer: SlideRendererCallback = (params) => {
     const { index, key } = params;
     const tab = statsTabs[index];
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
-          <CountCard
-            title="Sets per month"
-            data={statisticsData.summaryData.count[settings.summary]}
-            //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
-            disclaimer
+          <TimelinesCard
+            months={statisticsData.timelines[settings.summary].months}
+            data={statisticsData.timelines[settings.summary].summary.count}
+            breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
+            defaultType="line"
+            singleTheme="secondary"
+            overline="Timelines"
+            note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
+            included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
+            summary
           />
           <TimelinesCard
-            allProfiles={statisticsData.summaryData.profile[settings.summary].profiles}
-            data={statisticsData.summaryData.profile[settings.summary].data}
-            //category={this.state.settings.summary === "icDate" ? "IC date" : "GB start"}
+            months={statisticsData.timelines[settings.summary].months}
+            allProfiles={statisticsData.timelines[settings.summary].allProfiles}
+            data={statisticsData.timelines[settings.summary].summary.breakdown}
+            focusable
+            overline="Timelines"
+            category={settings.summary}
+            summary
+          />
+          <StatusCard
+            data={statisticsData.status.summary}
+            breakdownData={statisticsData.status.breakdown.profile}
+            overline="Status"
+            summary
+          />
+          <ShippedCard
+            data={statisticsData.shipped.summary}
+            breakdownData={statisticsData.shipped.breakdown.profile}
+            months={statisticsData.shipped.months}
+            overline="Shipped"
+            summary
+          />
+          <TableCard
+            data={statisticsData.duration[settings.summary].summary}
+            breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
+            unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
+            overline="Duration"
+            summary
+          />
+          <TableCard
+            data={statisticsData.vendors.summary}
+            breakdownData={statisticsData.vendors.breakdown.profile}
+            unit="Vendors"
+            overline="Vendors"
+            note="Only includes sets that have completed GB."
+            summary
           />
         </div>
       ),
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelinesData[settings.timelinesCat][settings.timelinesGroup].data.map((data) => {
+          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => {
             return (
               <TimelinesCard
                 key={data.name}
                 data={data}
-                profileGroups={settings.timelinesGroup === "profile"}
-                allProfiles={statisticsData.timelinesData[settings.timelinesCat][settings.timelinesGroup].profiles}
-                //category={this.state.settings.timelinesCat === "icDate" ? "IC date" : "GB start"}
+                focusable={!(settings.timelinesGroup === "profile")}
+                category={settings.timelinesCat}
+                singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
+                allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+                months={statisticsData.timelines[settings.timelinesCat].months}
               />
             );
           })}
@@ -364,21 +405,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       status: (
         <div className="stats-tab stats-grid status" key={key}>
-          {statisticsData.statusData[settings.status].map((data) => {
+          {statisticsData.status.breakdown[settings.status].map((data) => {
             return <StatusCard key={data.name} data={data} />;
           })}
         </div>
       ),
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
-          {statisticsData.shippedData[settings.shipped].map((data) => {
-            return <ShippedCard key={data.name} data={data} />;
+          {statisticsData.shipped.breakdown[settings.shipped].map((data) => {
+            return <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />;
           })}
         </div>
       ),
       duration: (
         <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.durationData[settings.durationCat][settings.durationGroup].map((data) => {
+          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => {
             return (
               <TableCard
                 key={data.name}
@@ -391,13 +432,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       vendors: (
         <div className="stats-tab stats-grid vendors" key={key}>
-          {statisticsData.vendorsData[settings.vendors].map((data) => {
+          {statisticsData.vendors.breakdown[settings.vendors].map((data) => {
             return <TableCard key={data.name} data={data} unit="Vendors" />;
           })}
         </div>
       ),
     };
     return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
+  };
+
+  const createStatistics = () => {
+    const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
+    queue.notify({ title: "Creating statistics" });
+    cloudFn()
+      .then(() => queue.notify({ title: "Created statistics" }))
+      .catch(console.error);
   };
 
   return (
@@ -407,7 +456,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
+            <TopAppBarTitle onClick={createStatistics}>
+              {device !== "mobile" ? pageTitle.statistics : null}
+            </TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>

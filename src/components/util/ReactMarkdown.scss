@@ -20,7 +20,7 @@
     margin: 0;
   }
   blockquote {
-    @include rtl.reflexive-box(border, left, 4px solid var(--divider-color));
+    @include rtl.reflexive-box(border, left, 4px solid var(--theme-divider));
     @include rtl.reflexive-box(padding, left, 12px);
     margin: 8px 0;
   }
@@ -50,11 +50,11 @@
 }
 
 .react-mde.markdown-editor {
-  border-color: var(--divider-color);
+  border-color: var(--theme-divider);
   .markdown-editor {
     &__toolbar {
       background-color: transparent;
-      border-color: var(--divider-color);
+      border-color: var(--theme-divider);
       padding: 4px;
       .mde-tabs {
         button {
@@ -91,7 +91,7 @@
       padding: 8px 16px;
       min-height: 48px;
       line-height: 1.75rem;
-      border: var(--divider-color) 1px solid;
+      border: var(--theme-divider) 1px solid;
       &--focused {
         border-width: 2px;
         padding: 7px 15px;
