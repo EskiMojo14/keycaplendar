@@ -47,7 +47,7 @@ export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: Stat
 };
 
 export const getData = async () => {
-  const fileRef = storage.ref("statisticsDataTest.json");
+  const fileRef = storage.ref("statisticsData.json");
   dispatch(setLoading(true));
   fileRef
     .getDownloadURL()

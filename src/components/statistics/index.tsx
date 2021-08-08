@@ -3,7 +3,6 @@ import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
-import firebase from "@s/firebase";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { capitalise, hasKey, iconObject, useBoolStates } from "@s/common/functions";
@@ -31,7 +30,6 @@ import { TableCard } from "./TableCard";
 import { ShippedCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
-import { queue } from "~/app/snackbarQueue";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -441,14 +439,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
   };
 
-  const createStatistics = () => {
-    const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
-    queue.notify({ title: "Creating statistics" });
-    cloudFn()
-      .then(() => queue.notify({ title: "Created statistics" }))
-      .catch(console.error);
-  };
-
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
@@ -456,9 +446,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle onClick={createStatistics}>
-              {device !== "mobile" ? pageTitle.statistics : null}
-            </TopAppBarTitle>
+            <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>
