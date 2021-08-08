@@ -443,11 +443,11 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         return {
           name: name,
           total: total,
-          mean: math.round(math.mean(summaryData), 2),
-          median: math.median(summaryData),
-          mode: math.mode(summaryData),
+          mean: math.round(math.mean(data), 2),
+          median: math.median(data),
+          mode: math.mode(data),
           range: rangeDisplay,
-          standardDev: math.round(math.std(summaryData), 2),
+          standardDev: math.round(math.std(data), 2),
           chartData: { labels, series: [count] },
         };
       };
