@@ -13,20 +13,7 @@ import {
   selectData,
   selectSort,
 } from ".";
-import {
-  DurationData,
-  ShippedData,
-  ShippedDataObject,
-  StatisticsData,
-  StatisticsSortType,
-  StatisticsType,
-  StatsTab,
-  StatusData,
-  StatusDataObject,
-  TimelinesData,
-  VendorData,
-  VendorDataObject,
-} from "./types";
+import { Properties, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
 import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
@@ -94,24 +81,20 @@ export const sortData = (state = store.getState()) => {
   const statisticsTab = selectTab(state);
   const statisticsData = selectData(state);
   const sort = selectSort(state);
-  dispatch(setLoading(true));
-  const key = statisticsTab + "Data";
-  if (hasKey(statisticsData, key)) {
+  if (statisticsTab !== "summary") {
+    dispatch(setLoading(true));
+    const tab = statisticsTab;
     const setData = (data: StatisticsData[keyof StatisticsData]) => {
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [key]: data })));
+      dispatch(setStatisticsData(mergeObject(statisticsData, { [tab]: data })));
       dispatch(setLoading(false));
     };
-    const stateData = statisticsData[key];
-    const tab = statisticsTab;
+    const stateData = statisticsData[tab];
     if (tab === "duration") {
-      const data = cloneDeep(stateData) as DurationData;
+      const data = cloneDeep(stateData) as StatisticsData["duration"];
       categories.forEach((category) => {
         properties.forEach((property) => {
           const value = data[category].breakdown[property];
           const sortedValue = value.slice().sort((a, b) => {
-            if (a.name === "All" || b.name === "All") {
-              return a.name === "All" ? -1 : 1;
-            }
             const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
             return (
               alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
@@ -123,7 +106,7 @@ export const sortData = (state = store.getState()) => {
       });
       setData(data);
     } else if (tab === "timelines") {
-      const data = cloneDeep(stateData) as TimelinesData;
+      const data = cloneDeep(stateData) as StatisticsData["timelines"];
       categories.forEach((category) => {
         properties.forEach((property) => {
           const value = data[category].breakdown[property];
@@ -138,11 +121,14 @@ export const sortData = (state = store.getState()) => {
         });
       });
       setData(data);
-    } else if (tab === "vendors" || tab === "shipped") {
-      const data = cloneDeep(stateData) as VendorData | ShippedData;
+    } else {
+      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines">[keyof Omit<
+        StatisticsData,
+        "duration" | "timelines"
+      >];
       properties.forEach((properties) => {
-        type DataObj = VendorDataObject | ShippedDataObject;
         const value = data.breakdown[properties];
+        type DataObj = typeof data.breakdown[Properties][number];
         const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
           if (hasKey(sort, tab)) {
             const key = sort[tab] === "total" ? "total" : "name";
@@ -153,23 +139,6 @@ export const sortData = (state = store.getState()) => {
           return 0;
         });
         data.breakdown[properties] = sortedValue;
-      });
-      setData(data);
-    } else {
-      const data = cloneDeep(stateData) as StatusData;
-      properties.forEach((properties) => {
-        type DataObj = StatusDataObject;
-        const value = data[properties];
-        const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
-          if (hasKey(sort, tab)) {
-            const key = sort[tab] === "total" ? "total" : "name";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
-            );
-          }
-          return 0;
-        });
-        data[properties] = sortedValue;
       });
       setData(data);
     }

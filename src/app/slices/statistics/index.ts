@@ -14,7 +14,7 @@ const initialState: StatisticsState = {
   tab: "summary",
   loading: false,
   data: {
-    timelinesData: {
+    timelines: {
       icDate: {
         summary: {
           count: {
@@ -70,12 +70,22 @@ const initialState: StatisticsState = {
         },
       },
     },
-    statusData: {
-      profile: [],
-      designer: [],
-      vendor: [],
+    status: {
+      summary: {
+        name: "Current keyset status",
+        total: 0,
+        ic: 0,
+        preGb: 0,
+        liveGb: 0,
+        postGb: 0,
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
     },
-    shippedData: {
+    shipped: {
       summary: {
         name: "Shipped sets by GB month",
         total: 0,
@@ -93,7 +103,7 @@ const initialState: StatisticsState = {
         vendor: [],
       },
     },
-    durationData: {
+    duration: {
       icDate: {
         summary: {
           chartData: { labels: [], series: [] },
@@ -129,7 +139,7 @@ const initialState: StatisticsState = {
         },
       },
     },
-    vendorsData: {
+    vendors: {
       summary: {
         chartData: { labels: [], series: [] },
         mean: 0,

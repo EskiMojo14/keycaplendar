@@ -2,6 +2,9 @@
 @use "@material/shape/_index" as shape;
 
 .pie-card {
+  .mdc-typography--overline {
+    margin: 0;
+  }
   .mdc-typography--headline5 {
     margin-top: 0;
     margin-bottom: 8px;
@@ -14,21 +17,6 @@
     display: flex;
     flex-direction: column;
     .pie-chart-container {
-      &.shipped .ct-chart {
-        .ct-series {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
       &.status .ct-chart {
         .ct-series-a {
           .ct-point,
@@ -83,6 +71,21 @@
             }
           }
         }
+      }
+    }
+  }
+  &.sideways {
+    .pie-container {
+      flex-direction: row;
+      align-items: center;
+      .pie-chart-container {
+        flex: 1 0 25%;
+        display: flex;
+        justify-content: center;
+      }
+      .table-container {
+        @include rtl.reflexive-box(margin, left, 16px);
+        flex: 1 1 75%;
       }
     }
   }

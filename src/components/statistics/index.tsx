@@ -54,7 +54,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
 
   useEffect(() => {
-    if (statisticsData.timelinesData.icDate.summary.count.total === 0) {
+    if (statisticsData.timelines.icDate.summary.count.total === 0) {
       getData();
     }
   }, []);
@@ -337,8 +337,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
           <TimelinesCard
-            months={statisticsData.timelinesData[settings.summary].months}
-            data={statisticsData.timelinesData[settings.summary].summary.count}
+            months={statisticsData.timelines[settings.summary].months}
+            data={statisticsData.timelines[settings.summary].summary.count}
             defaultType="line"
             singleTheme="secondary"
             overline="Timelines"
@@ -346,28 +346,29 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
           />
           <TimelinesCard
-            months={statisticsData.timelinesData[settings.summary].months}
-            allProfiles={statisticsData.timelinesData[settings.summary].allProfiles}
-            data={statisticsData.timelinesData[settings.summary].summary.breakdown}
+            months={statisticsData.timelines[settings.summary].months}
+            allProfiles={statisticsData.timelines[settings.summary].allProfiles}
+            data={statisticsData.timelines[settings.summary].summary.breakdown}
             focusable
             overline="Timelines"
             category={settings.summary}
           />
+          <StatusCard data={statisticsData.status.summary} overline="Status" summary />
           <ShippedCard
-            data={statisticsData.shippedData.summary}
-            breakdownData={statisticsData.shippedData.breakdown.profile}
-            months={statisticsData.shippedData.months}
+            data={statisticsData.shipped.summary}
+            breakdownData={statisticsData.shipped.breakdown.profile}
+            months={statisticsData.shipped.months}
             overline="Shipped"
             summary
           />
           <TableCard
-            data={statisticsData.durationData[settings.summary].summary}
+            data={statisticsData.duration[settings.summary].summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
             summary
           />
           <TableCard
-            data={statisticsData.vendorsData.summary}
+            data={statisticsData.vendors.summary}
             unit="Vendors"
             overline="Vendors"
             note="Only includes sets that have completed GB."
@@ -377,7 +378,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelinesData[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => {
+          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => {
             return (
               <TimelinesCard
                 key={data.name}
@@ -385,8 +386,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
                 focusable={!(settings.timelinesGroup === "profile")}
                 category={settings.timelinesCat}
                 singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
-                allProfiles={statisticsData.timelinesData[settings.timelinesCat].allProfiles}
-                months={statisticsData.timelinesData[settings.timelinesCat].months}
+                allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+                months={statisticsData.timelines[settings.timelinesCat].months}
               />
             );
           })}
@@ -394,21 +395,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       status: (
         <div className="stats-tab stats-grid status" key={key}>
-          {statisticsData.statusData[settings.status].map((data) => {
+          {statisticsData.status.breakdown[settings.status].map((data) => {
             return <StatusCard key={data.name} data={data} />;
           })}
         </div>
       ),
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
-          {statisticsData.shippedData.breakdown[settings.shipped].map((data) => {
-            return <ShippedCard key={data.name} data={data} months={statisticsData.shippedData.months} />;
+          {statisticsData.shipped.breakdown[settings.shipped].map((data) => {
+            return <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />;
           })}
         </div>
       ),
       duration: (
         <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.durationData[settings.durationCat].breakdown[settings.durationGroup].map((data) => {
+          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => {
             return (
               <TableCard
                 key={data.name}
@@ -421,7 +422,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       vendors: (
         <div className="stats-tab stats-grid vendors" key={key}>
-          {statisticsData.vendorsData.breakdown[settings.vendors].map((data) => {
+          {statisticsData.vendors.breakdown[settings.vendors].map((data) => {
             return <TableCard key={data.name} data={data} unit="Vendors" />;
           })}
         </div>

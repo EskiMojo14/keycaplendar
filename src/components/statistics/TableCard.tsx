@@ -75,7 +75,7 @@ export const TableCard = (props: TableCardProps) => {
           <ChartistGraph
             type="Line"
             className={classNames("ct-double-octave", {
-              "min-width": props.data.name === "All",
+              "min-width": props.summary,
             })}
             data={{ ...props.data.chartData }}
             options={{
@@ -89,7 +89,7 @@ export const TableCard = (props: TableCardProps) => {
               axisX: {
                 labelInterpolationFnc: (value: number, index: number) => {
                   return is<Array<any>>(props.data.chartData.series[0]) && props.data.chartData.series[0].length >= 16
-                    ? index % (props.data.chartData.series[0].length >= 24 && props.data.name !== "All" ? 3 : 2) === 0
+                    ? index % (props.data.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
                       ? value
                       : null
                     : value;

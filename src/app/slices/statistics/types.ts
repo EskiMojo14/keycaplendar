@@ -56,15 +56,18 @@ export type TimelinesData = Record<
 >;
 
 export type StatusDataObject = {
+  name: string;
+  total: number;
   ic: number;
   liveGb: number;
-  name: string;
   postGb: number;
   preGb: number;
-  total: number;
 };
 
-export type StatusData = Record<Properties, StatusDataObject[]>;
+export type StatusData = {
+  summary: StatusDataObject;
+  breakdown: Record<Properties, StatusDataObject[]>;
+};
 
 export type ShippedDataObject = {
   name: string;
@@ -119,9 +122,9 @@ export type VendorData = {
 };
 
 export type StatisticsData = {
-  timelinesData: TimelinesData;
-  statusData: StatusData;
-  shippedData: ShippedData;
-  durationData: DurationData;
-  vendorsData: VendorData;
+  timelines: TimelinesData;
+  status: StatusData;
+  shipped: ShippedData;
+  duration: DurationData;
+  vendors: VendorData;
 };

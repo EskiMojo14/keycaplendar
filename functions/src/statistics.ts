@@ -17,6 +17,8 @@ import {
   DurationDataObject,
   VendorDataObject,
   ShippedDataObject,
+  StatusDataObject,
+  Properties,
 } from "./slices/statistics/types";
 import {
   getSetMonthRange,
@@ -35,6 +37,18 @@ const math = create(all) as MathJsStatic;
 const today = DateTime.utc();
 const yesterday = today.minus({ days: 1 });
 const categories: Categories[] = ["icDate", "gbLaunch"];
+
+const filterSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
+  sets.filter(
+    (set) =>
+      (prop === "vendor" &&
+        set.vendors &&
+        set.vendors.findIndex((vendor) => {
+          return vendor.name === val;
+        }) !== -1) ||
+      (prop === "designer" && set.designer.includes(val)) ||
+      (prop !== "vendor" && prop !== "designer" && set[prop] === val)
+  );
 
 const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
@@ -148,17 +162,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     objectKeys(timelinesData[cat].breakdown).forEach((property) => {
       const data: TimelineDataObject[] = [];
       lists[property].forEach((name) => {
-        const filteredSets = catSets.filter((set) => {
-          let bool = false;
-          if (property === "vendor") {
-            bool = set.vendors && set.vendors.some((vendor) => vendor.name === name) ? true : false;
-          } else if (property === "designer") {
-            bool = set.designer.includes(name);
-          } else {
-            bool = set[property] === name;
-          }
-          return bool;
-        });
+        const filteredSets = filterSets(catSets, property, name);
         const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
 
         let timelineData: ChartData;
@@ -215,9 +219,19 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
 const createStatusData = (sets: StatisticsSetType[]) => {
   const statusData: StatusData = {
-    profile: [],
-    designer: [],
-    vendor: [],
+    summary: {
+      name: "Current keyset status",
+      total: 0,
+      ic: 0,
+      preGb: 0,
+      liveGb: 0,
+      postGb: 0,
+    },
+    breakdown: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
   };
   const profileNames = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
   const designerNames = alphabeticalSort(uniqueArray(sets.map((set) => set.designer).flat(1)));
@@ -229,98 +243,52 @@ const createStatusData = (sets: StatisticsSetType[]) => {
     designer: designerNames,
     vendor: vendorNames,
   };
-  objectKeys(statusData).forEach((prop) => {
-    lists[prop].forEach((name) => {
-      const icSets = sets.filter((set) => {
-        const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
-        if (prop === "vendor") {
-          return set.vendors &&
-            set.vendors.findIndex((vendor) => {
-              return vendor.name === name && isIC;
-            }) !== -1
-            ? true
-            : false;
-        } else if (prop === "designer") {
-          return set.designer.includes(name) && isIC;
-        } else {
-          return set[prop] === name && isIC;
-        }
-      });
-      const preGbSets = sets.filter((set) => {
-        let startDate;
-        if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-          startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
-        }
-        const isPreGb = startDate && startDate > today;
-        if (prop === "vendor") {
-          return set.vendors &&
-            set.vendors.findIndex((vendor) => {
-              return vendor.name === name && isPreGb;
-            }) !== -1
-            ? true
-            : false;
-        } else if (prop === "designer") {
-          return set.designer.includes(name) && isPreGb;
-        } else {
-          return set[prop] === name && isPreGb;
-        }
-      });
-      const liveGbSets = sets.filter((set) => {
-        let startDate;
-        if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-          startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
-        }
-        const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
-          hour: 23,
-          minute: 59,
-          second: 59,
-          millisecond: 999,
-        });
-        const isLiveGb = startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
-        if (prop === "vendor") {
-          return set.vendors &&
-            set.vendors.findIndex((vendor) => {
-              return vendor.name === name && isLiveGb;
-            }) !== -1
-            ? true
-            : false;
-        } else if (prop === "designer") {
-          return set.designer.includes(name) && isLiveGb;
-        } else {
-          return set[prop] === name && isLiveGb;
-        }
-      });
-      const postGbSets = sets.filter((set) => {
-        const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
-          hour: 23,
-          minute: 59,
-          second: 59,
-          millisecond: 999,
-        });
-        const isPostGb = endDate <= yesterday;
-        if (prop === "vendor") {
-          return set.vendors &&
-            set.vendors.findIndex((vendor) => {
-              return vendor.name === name && isPostGb;
-            }) !== -1
-            ? true
-            : false;
-        } else if (prop === "designer") {
-          return set.designer.includes(name) && isPostGb;
-        } else {
-          return set[prop] === name && isPostGb;
-        }
-      });
-      statusData[prop].push({
-        name: name,
-        ic: icSets.length,
-        preGb: preGbSets.length,
-        liveGb: liveGbSets.length,
-        postGb: postGbSets.length,
-        total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
-      });
+  const createStatusDataObject = (sets: StatisticsSetType[], name: string): StatusDataObject => {
+    const icSets = sets.filter((set) => !set.gbLaunch || set.gbLaunch.includes("Q"));
+    const preGbSets = sets.filter((set) => {
+      let startDate;
+      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+        startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
+      }
+      return startDate && startDate > today;
     });
-    statusData[prop].sort(
+    const liveGbSets = sets.filter((set) => {
+      let startDate;
+      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+        startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
+      }
+      const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+        hour: 23,
+        minute: 59,
+        second: 59,
+        millisecond: 999,
+      });
+      return startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
+    });
+    const postGbSets = sets.filter((set) => {
+      const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+        hour: 23,
+        minute: 59,
+        second: 59,
+        millisecond: 999,
+      });
+      return endDate <= yesterday;
+    });
+    return {
+      name: name,
+      ic: icSets.length,
+      preGb: preGbSets.length,
+      liveGb: liveGbSets.length,
+      postGb: postGbSets.length,
+      total: sets.length,
+    };
+  };
+
+  statusData.summary = createStatusDataObject(sets, "Current keyset status");
+
+  objectKeys(statusData.breakdown).forEach((prop) => {
+    statusData.breakdown[prop] = lists[prop].map((name) => createStatusDataObject(filterSets(sets, prop, name), name));
+    statusData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
     );
   });
@@ -402,19 +370,9 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   shippedData.summary = createShippedDataObject(pastSets, "Shipped sets by GB month");
 
   objectKeys(shippedData.breakdown).forEach((prop) => {
-    shippedData.breakdown[prop] = lists[prop].map((name) => {
-      const propSets = pastSets.filter(
-        (set) =>
-          (prop === "vendor" &&
-            set.vendors &&
-            set.vendors.findIndex((vendor) => {
-              return vendor.name === name;
-            }) !== -1) ||
-          (prop === "designer" && set.designer.includes(name)) ||
-          (prop !== "vendor" && prop !== "designer" && set[prop] === name)
-      );
-      return createShippedDataObject(propSets, name);
-    });
+    shippedData.breakdown[prop] = lists[prop].map((name) =>
+      createShippedDataObject(filterSets(pastSets, prop, name), name)
+    );
     shippedData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
     );
@@ -507,17 +465,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
       objectKeys(durationData[cat].breakdown).forEach((property) => {
         durationData[cat].breakdown[property] = lists[property].map((name) => {
-          const filteredSets = propSets.filter((set) => {
-            return (
-              (property === "vendor" &&
-                set.vendors &&
-                set.vendors.findIndex((vendor) => {
-                  return vendor.name === name;
-                }) !== -1) ||
-              (property === "designer" && set.designer.includes(name)) ||
-              (property !== "vendor" && property !== "designer" && set[property] === name)
-            );
-          });
+          const filteredSets = filterSets(propSets, property, name);
           const data = filteredSets.map((set) => {
             const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
             const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
@@ -599,14 +547,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
 
   objectKeys(vendorsData.breakdown).forEach((prop) => {
     vendorsData.breakdown[prop] = lists[prop].map((name) => {
-      let propSets = [];
-      if (prop === "designer") {
-        propSets = vendorSets.filter((set) => set.designer.includes(name));
-      } else if (prop === "vendor") {
-        propSets = vendorSets.filter((set) => set.vendors && set.vendors.map((vendor) => vendor.name).includes(name));
-      } else {
-        propSets = vendorSets.filter((set) => set[prop] === name);
-      }
+      const propSets = filterSets(vendorSets, prop, name);
       const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
       return createVendorsDataObject(lengthArray, name, propSets.length);
     });
@@ -670,11 +611,11 @@ export const createStatistics = functions
     const durationData = createDurationData(limitedSets);
     const vendorsData = createVendorsData(limitedSets);
     const statisticsData = {
-      timelinesData: await timelinesData,
-      statusData: await statusData,
-      shippedData: await shippedData,
-      durationData: await durationData,
-      vendorsData: await vendorsData,
+      timelines: await timelinesData,
+      status: await statusData,
+      shipped: await shippedData,
+      duration: await durationData,
+      vendors: await vendorsData,
       timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);
