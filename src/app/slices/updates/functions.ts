@@ -36,12 +36,11 @@ const sortEntries = (entries: UpdateEntryType[]) => {
   const sortedEntries = entries.sort((a, b) => {
     if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
       return a.pinned ? -1 : 1;
-    } else {
-      return (
-        alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("date")(a, b) ||
-        alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("title")(a, b)
-      );
     }
+    return (
+      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("date", true)(a, b) ||
+      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("title")(a, b)
+    );
   });
   dispatch(setEntries(sortedEntries));
   dispatch(setLoading(false));
