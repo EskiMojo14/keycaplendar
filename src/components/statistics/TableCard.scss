@@ -36,9 +36,6 @@
     .chart-container {
       max-width: 100%;
       overflow: auto;
-      .ct-chart.min-width {
-        min-width: 1280px;
-      }
     }
     .table-container {
       flex-grow: 1;
@@ -65,6 +62,11 @@
     }
     .note {
       margin: 8px 0 0;
+    }
+  }
+  &.full-span {
+    .chart-container .ct-chart {
+      min-width: 840px;
     }
   }
 }

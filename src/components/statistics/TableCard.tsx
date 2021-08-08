@@ -107,9 +107,7 @@ export const TableCard = (props: TableCardProps) => {
     graphType === "bar" ? (
       <ChartistGraph
         type="Bar"
-        className={classNames("ct-double-octave", {
-          "min-width": props.summary,
-        })}
+        className="ct-double-octave"
         data={{ ...chartData.chartData }}
         options={chartOptions}
         listener={listener}
@@ -119,9 +117,7 @@ export const TableCard = (props: TableCardProps) => {
     graphType === "line" ? (
       <ChartistGraph
         type="Line"
-        className={classNames("ct-double-octave", {
-          "min-width": props.summary,
-        })}
+        className="ct-double-octave"
         data={{ ...chartData.chartData }}
         options={chartOptions}
         listener={listener}
