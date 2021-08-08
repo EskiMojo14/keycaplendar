@@ -39,6 +39,8 @@ export const StatusCard = (props: StatusCardProps) => {
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
   const chartOptions: IPieChartOptions = {
+    donut: true,
+    donutWidth: "50%",
     showLabel: false,
     plugins: [chartistTooltip({ metaIsHTML: true })],
   };
