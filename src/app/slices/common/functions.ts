@@ -271,12 +271,8 @@ export const braidArrays = <T>(...arrays: T[][]) => {
 export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) => {
   const plurals = expressions.map((value) => {
     if (is<[number, string] | [number, string, string]>(value)) {
-      const [val, single] = value;
-      let [, , plural] = value;
-      if (!plural) {
-        plural = single + "s";
-      }
-      return val === 1 ? single : plural;
+      const [val, single, plural] = value;
+      return val === 1 ? single : plural || single + "s";
     }
     return value;
   });
