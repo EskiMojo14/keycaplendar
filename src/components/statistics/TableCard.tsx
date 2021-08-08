@@ -6,7 +6,7 @@ import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import { is } from "typescript-is";
 import { alphabeticalSortPropCurried, pluralise } from "@s/common/functions";
-import { DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -22,6 +22,7 @@ import {
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import "./TableCard.scss";
+import { useEffect } from "react";
 
 const customPoint = (data: any) => {
   if (data.type === "point") {
@@ -45,6 +46,7 @@ const listener = { draw: (e: any) => customPoint(e) };
 type TableCardProps = {
   data: DurationDataObject | VendorDataObject;
   unit: string;
+  category?: Categories;
   defaultType?: "bar" | "line";
   breakdownData?: DurationDataObject[] | VendorDataObject[];
   overline?: React.ReactNode;
@@ -54,6 +56,7 @@ type TableCardProps = {
 
 export const TableCard = (props: TableCardProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  useEffect(() => setSelectedIndex(-1), [props.category]);
   const chartData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]

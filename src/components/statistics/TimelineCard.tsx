@@ -286,6 +286,7 @@ type TimelinesCardProps = {
 export const TimelinesCard = (props: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  useEffect(() => setSelectedIndex(-1), [props.category]);
   const chartData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]

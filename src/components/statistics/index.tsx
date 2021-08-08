@@ -338,6 +338,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             months={statisticsData.timelines[settings.summary].months}
             data={statisticsData.timelines[settings.summary].summary.count}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
+            category={settings.summary}
             defaultType="line"
             singleTheme="secondary"
             overline="Timelines"
@@ -370,6 +371,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TableCard
             data={statisticsData.duration[settings.summary].summary}
             breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
+            category={settings.summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
             summary
