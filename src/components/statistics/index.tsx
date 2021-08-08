@@ -371,12 +371,14 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           />
           <TableCard
             data={statisticsData.duration[settings.summary].summary}
+            breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
             summary
           />
           <TableCard
             data={statisticsData.vendors.summary}
+            breakdownData={statisticsData.vendors.breakdown.profile}
             unit="Vendors"
             overline="Vendors"
             note="Only includes sets that have completed GB."

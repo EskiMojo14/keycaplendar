@@ -42,6 +42,9 @@
     }
     .table-container {
       flex-grow: 1;
+      & + .table-chips-container {
+        padding-top: 16px;
+      }
       .mdc-data-table {
         width: 100%;
         .mdc-data-table__table {
@@ -50,6 +53,14 @@
             font-weight: bold;
           }
         }
+      }
+    }
+    .table-chips-container {
+      display: flex;
+      padding-top: 8px;
+      margin: -8px;
+      .mdc-chip-set {
+        flex-grow: 1;
       }
     }
     .note {

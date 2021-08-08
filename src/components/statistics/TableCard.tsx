@@ -5,8 +5,9 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import { is } from "typescript-is";
-import { pluralise } from "@s/common/functions";
+import { alphabeticalSortPropCurried, pluralise } from "@s/common/functions";
 import { DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -45,12 +46,18 @@ type TableCardProps = {
   data: DurationDataObject | VendorDataObject;
   unit: string;
   defaultType?: "bar" | "line";
+  breakdownData?: DurationDataObject[] | VendorDataObject[];
   overline?: React.ReactNode;
   note?: React.ReactNode;
   summary?: boolean;
 };
 
 export const TableCard = (props: TableCardProps) => {
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const chartData =
+    selectedIndex >= 0 && props.summary && props.breakdownData
+      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : props.data;
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
   const chartOptions: ILineChartOptions = {
     showArea: true,
@@ -62,8 +69,8 @@ export const TableCard = (props: TableCardProps) => {
     },
     axisX: {
       labelInterpolationFnc: (value: number, index: number) => {
-        return is<Array<any>>(props.data.chartData.series[0]) && props.data.chartData.series[0].length >= 16
-          ? index % (props.data.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
+        return is<Array<any>>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
+          ? index % (chartData.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
             ? value
             : null
           : value;
@@ -103,7 +110,7 @@ export const TableCard = (props: TableCardProps) => {
         className={classNames("ct-double-octave", {
           "min-width": props.summary,
         })}
-        data={{ ...props.data.chartData }}
+        data={{ ...chartData.chartData }}
         options={chartOptions}
         listener={listener}
       />
@@ -115,10 +122,27 @@ export const TableCard = (props: TableCardProps) => {
         className={classNames("ct-double-octave", {
           "min-width": props.summary,
         })}
-        data={{ ...props.data.chartData }}
+        data={{ ...chartData.chartData }}
         options={chartOptions}
         listener={listener}
       />
+    ) : null;
+  const selectChips =
+    props.summary && props.breakdownData ? (
+      <div className="table-chips-container">
+        <ChipSet choice>
+          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              selected={index === selectedIndex}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+            />
+          ))}
+        </ChipSet>
+      </div>
     ) : null;
   return (
     <Card className={classNames("table-card", { "full-span": props.summary })}>
@@ -133,7 +157,7 @@ export const TableCard = (props: TableCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -178,30 +202,31 @@ export const TableCard = (props: TableCardProps) => {
               <DataTableBody>
                 <DataTableRow>
                   <DataTableCell>Mean</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.mean}</DataTableCell>
+                  <DataTableCell alignEnd>{chartData.mean}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Median</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.median}</DataTableCell>
+                  <DataTableCell alignEnd>{chartData.median}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Mode</DataTableCell>
                   <DataTableCell alignEnd>
-                    {props.data.mode.length === props.data.total ? "None" : props.data.mode.join(", ")}
+                    {chartData.mode.length === chartData.total ? "None" : chartData.mode.join(", ")}
                   </DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Range</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.range}</DataTableCell>
+                  <DataTableCell alignEnd>{chartData.range}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Standard deviation</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.standardDev}</DataTableCell>
+                  <DataTableCell alignEnd>{chartData.standardDev}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
         </div>
+        {selectChips}
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}
