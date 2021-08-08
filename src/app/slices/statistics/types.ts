@@ -68,16 +68,20 @@ export type StatusData = Record<Properties, StatusDataObject[]>;
 
 export type ShippedDataObject = {
   name: string;
-  shipped: number;
   total: number;
+  shipped: number;
   unshipped: number;
   timeline: {
-    months: string[];
-    series: Record<string, ChartDatumObject>[];
+    shipped: ChartSeriesItem[];
+    unshipped: ChartSeriesItem[];
   };
 };
 
-export type ShippedData = Record<Properties, ShippedDataObject[]>;
+export type ShippedData = {
+  summary: ShippedDataObject;
+  months: string[];
+  breakdown: Record<Properties, ShippedDataObject[]>;
+};
 
 export type DurationDataObject = {
   chartData: { labels: (string | number)[]; series: ChartData };

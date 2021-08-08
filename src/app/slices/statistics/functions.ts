@@ -138,10 +138,10 @@ export const sortData = (state = store.getState()) => {
         });
       });
       setData(data);
-    } else if (tab === "vendors") {
-      const data = cloneDeep(stateData) as VendorData;
+    } else if (tab === "vendors" || tab === "shipped") {
+      const data = cloneDeep(stateData) as VendorData | ShippedData;
       properties.forEach((properties) => {
-        type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
+        type DataObj = VendorDataObject | ShippedDataObject;
         const value = data.breakdown[properties];
         const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
           if (hasKey(sort, tab)) {
@@ -156,9 +156,9 @@ export const sortData = (state = store.getState()) => {
       });
       setData(data);
     } else {
-      const data = cloneDeep(stateData) as StatusData | ShippedData;
+      const data = cloneDeep(stateData) as StatusData;
       properties.forEach((properties) => {
-        type DataObj = StatusDataObject | ShippedDataObject | VendorDataObject;
+        type DataObj = StatusDataObject;
         const value = data[properties];
         const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
           if (hasKey(sort, tab)) {

@@ -353,6 +353,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             overline="Timelines"
             category={settings.summary}
           />
+          <ShippedCard
+            data={statisticsData.shippedData.summary}
+            months={statisticsData.shippedData.months}
+            overline="Shipped"
+            summary
+          />
           <TableCard
             data={statisticsData.durationData[settings.summary].summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
@@ -394,8 +400,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
-          {statisticsData.shippedData[settings.shipped].map((data) => {
-            return <ShippedCard key={data.name} data={data} />;
+          {statisticsData.shippedData.breakdown[settings.shipped].map((data) => {
+            return <ShippedCard key={data.name} data={data} months={statisticsData.shippedData.months} />;
           })}
         </div>
       ),

@@ -76,9 +76,22 @@ const initialState: StatisticsState = {
       vendor: [],
     },
     shippedData: {
-      profile: [],
-      designer: [],
-      vendor: [],
+      summary: {
+        name: "Shipped sets by GB month",
+        total: 0,
+        shipped: 0,
+        unshipped: 0,
+        timeline: {
+          shipped: [],
+          unshipped: [],
+        },
+      },
+      months: [],
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
     },
     durationData: {
       icDate: {

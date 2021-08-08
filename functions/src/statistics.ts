@@ -16,6 +16,7 @@ import {
   ChartData,
   DurationDataObject,
   VendorDataObject,
+  ShippedDataObject,
 } from "./slices/statistics/types";
 import {
   getSetMonthRange,
@@ -24,6 +25,7 @@ import {
   hasKey,
   countInArray,
   alphabeticalSortPropCurried,
+  objectKeys,
 } from "./slices/common/functions";
 
 const bucket = admin.storage().bucket();
@@ -92,125 +94,121 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     },
   };
   const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
-  Object.keys(timelinesData).forEach((cat) => {
-    if (hasKey(timelinesData, cat)) {
-      const catSets = cat === "gbLaunch" ? gbSets : sets;
-      timelinesData[cat].summary.count.total = catSets.length;
-      timelinesData[cat].summary.breakdown.total = catSets.length;
+  objectKeys(timelinesData).forEach((cat) => {
+    const catSets = cat === "gbLaunch" ? gbSets : sets;
+    timelinesData[cat].summary.count.total = catSets.length;
+    timelinesData[cat].summary.breakdown.total = catSets.length;
 
-      const months = getSetMonthRange(catSets, cat, "MMM yy");
+    const months = getSetMonthRange(catSets, cat, "MMM yy");
 
-      timelinesData[cat].months = months;
+    timelinesData[cat].months = months;
 
-      timelinesData[cat].summary.count.timeline.series = [
-        months.map((month) => {
-          return catSets.filter((set) => {
-            const setProp = set[cat];
-            const setMonth =
-              is<string>(setProp) && !setProp.includes("Q")
-                ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-                : null;
-            return setMonth && setMonth === month;
-          }).length;
-        }),
-      ];
+    timelinesData[cat].summary.count.timeline.series = [
+      months.map((month) => {
+        return catSets.filter((set) => {
+          const setProp = set[cat];
+          const setMonth =
+            is<string>(setProp) && !setProp.includes("Q")
+              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+              : null;
+          return setMonth && setMonth === month;
+        }).length;
+      }),
+    ];
 
-      const profileNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
-      const designerNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.designer).flat(1)));
-      const vendorNames = alphabeticalSort(
-        uniqueArray(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
-      );
-      const lists = {
-        profile: profileNames,
-        designer: designerNames,
-        vendor: vendorNames,
-      };
+    const profileNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      uniqueArray(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    );
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
 
-      timelinesData[cat].allProfiles = profileNames;
+    timelinesData[cat].allProfiles = profileNames;
 
-      timelinesData[cat].summary.breakdown.timeline.series = profileNames.map((profile, index) => ({
-        data: months.map((month) => {
-          const length = catSets.filter((set) => {
-            const setProp = set[cat];
-            const setMonth =
-              is<string>(setProp) && !setProp.includes("Q")
-                ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-                : null;
-            return setMonth && setMonth === month && set.profile === profile;
-          }).length;
-          return length > 0 ? { meta: profile, value: length } : 0;
-        }),
-        className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-        index: index,
-      }));
+    timelinesData[cat].summary.breakdown.timeline.series = profileNames.map((profile, index) => ({
+      data: months.map((month) => {
+        const length = catSets.filter((set) => {
+          const setProp = set[cat];
+          const setMonth =
+            is<string>(setProp) && !setProp.includes("Q")
+              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
+              : null;
+          return setMonth && setMonth === month && set.profile === profile;
+        }).length;
+        return length > 0 ? { meta: profile, value: length } : 0;
+      }),
+      className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+      index: index,
+    }));
 
-      Object.keys(timelinesData[cat].breakdown).forEach((property) => {
-        if (hasKey(timelinesData[cat].breakdown, property)) {
-          const data: TimelineDataObject[] = [];
-          lists[property].forEach((name) => {
-            const filteredSets = catSets.filter((set) => {
-              let bool = false;
-              if (property === "vendor") {
-                bool = set.vendors && set.vendors.some((vendor) => vendor.name === name) ? true : false;
-              } else if (property === "designer") {
-                bool = set.designer.includes(name);
-              } else {
-                bool = set[property] === name;
-              }
-              return bool;
-            });
-            const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
+    objectKeys(timelinesData[cat].breakdown).forEach((property) => {
+      const data: TimelineDataObject[] = [];
+      lists[property].forEach((name) => {
+        const filteredSets = catSets.filter((set) => {
+          let bool = false;
+          if (property === "vendor") {
+            bool = set.vendors && set.vendors.some((vendor) => vendor.name === name) ? true : false;
+          } else if (property === "designer") {
+            bool = set.designer.includes(name);
+          } else {
+            bool = set[property] === name;
+          }
+          return bool;
+        });
+        const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
 
-            let timelineData: ChartData;
-            if (property === "vendor" || property === "designer") {
-              timelineData = profiles.map((profile) => {
-                const index = profileNames.indexOf(profile);
-                return {
-                  data: months.map((month) => {
-                    const monthSets = filteredSets.filter((set) => {
-                      const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
-                      return date && date === month;
-                    });
-                    const num = monthSets.filter((set) => set.profile === profile).length;
-                    return num > 0
-                      ? {
-                          meta: profile,
-                          value: num,
-                        }
-                      : 0;
-                  }),
-                  className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-                  index: index,
-                };
-              });
-            } else {
-              timelineData = [
-                months.map((month) => {
-                  const monthSets = filteredSets.filter((set) => {
-                    const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
-                    return date && date === month;
-                  });
-                  return monthSets.length;
-                }),
-              ];
-            }
-
-            data.push({
-              name: name,
-              total: filteredSets.length,
-              timeline: {
-                profiles: profiles,
-                series: timelineData,
-              },
-            });
+        let timelineData: ChartData;
+        if (property === "vendor" || property === "designer") {
+          timelineData = profiles.map((profile) => {
+            const index = profileNames.indexOf(profile);
+            return {
+              data: months.map((month) => {
+                const monthSets = filteredSets.filter((set) => {
+                  const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
+                  return date && date === month;
+                });
+                const num = monthSets.filter((set) => set.profile === profile).length;
+                return num > 0
+                  ? {
+                      meta: profile,
+                      value: num,
+                    }
+                  : 0;
+              }),
+              className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
+              index: index,
+            };
           });
-          data.sort(
-            (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
-          );
-          timelinesData[cat].breakdown[property] = data;
+        } else {
+          timelineData = [
+            months.map((month) => {
+              const monthSets = filteredSets.filter((set) => {
+                const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
+                return date && date === month;
+              });
+              return monthSets.length;
+            }),
+          ];
         }
+
+        data.push({
+          name: name,
+          total: filteredSets.length,
+          timeline: {
+            profiles: profiles,
+            series: timelineData,
+          },
+        });
       });
-    }
+      data.sort(
+        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      );
+      timelinesData[cat].breakdown[property] = data;
+    });
   });
   return Promise.resolve(timelinesData);
 };
@@ -231,111 +229,122 @@ const createStatusData = (sets: StatisticsSetType[]) => {
     designer: designerNames,
     vendor: vendorNames,
   };
-  Object.keys(statusData).forEach((prop) => {
-    if (hasKey(statusData, prop)) {
-      lists[prop].forEach((name) => {
-        const icSets = sets.filter((set) => {
-          const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && isIC;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && isIC;
-          } else {
-            return set[prop] === name && isIC;
-          }
-        });
-        const preGbSets = sets.filter((set) => {
-          let startDate;
-          if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
-          }
-          const isPreGb = startDate && startDate > today;
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && isPreGb;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && isPreGb;
-          } else {
-            return set[prop] === name && isPreGb;
-          }
-        });
-        const liveGbSets = sets.filter((set) => {
-          let startDate;
-          if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
-            startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
-          }
-          const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
-            hour: 23,
-            minute: 59,
-            second: 59,
-            millisecond: 999,
-          });
-          const isLiveGb = startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && isLiveGb;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && isLiveGb;
-          } else {
-            return set[prop] === name && isLiveGb;
-          }
-        });
-        const postGbSets = sets.filter((set) => {
-          const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
-            hour: 23,
-            minute: 59,
-            second: 59,
-            millisecond: 999,
-          });
-          const isPostGb = endDate <= yesterday;
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && isPostGb;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && isPostGb;
-          } else {
-            return set[prop] === name && isPostGb;
-          }
-        });
-        statusData[prop].push({
-          name: name,
-          ic: icSets.length,
-          preGb: preGbSets.length,
-          liveGb: liveGbSets.length,
-          postGb: postGbSets.length,
-          total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
-        });
+  objectKeys(statusData).forEach((prop) => {
+    lists[prop].forEach((name) => {
+      const icSets = sets.filter((set) => {
+        const isIC = !set.gbLaunch || set.gbLaunch.includes("Q");
+        if (prop === "vendor") {
+          return set.vendors &&
+            set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isIC;
+            }) !== -1
+            ? true
+            : false;
+        } else if (prop === "designer") {
+          return set.designer.includes(name) && isIC;
+        } else {
+          return set[prop] === name && isIC;
+        }
       });
-      statusData[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
-      );
-    }
+      const preGbSets = sets.filter((set) => {
+        let startDate;
+        if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+          startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
+        }
+        const isPreGb = startDate && startDate > today;
+        if (prop === "vendor") {
+          return set.vendors &&
+            set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isPreGb;
+            }) !== -1
+            ? true
+            : false;
+        } else if (prop === "designer") {
+          return set.designer.includes(name) && isPreGb;
+        } else {
+          return set[prop] === name && isPreGb;
+        }
+      });
+      const liveGbSets = sets.filter((set) => {
+        let startDate;
+        if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+          startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
+        }
+        const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        });
+        const isLiveGb = startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
+        if (prop === "vendor") {
+          return set.vendors &&
+            set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isLiveGb;
+            }) !== -1
+            ? true
+            : false;
+        } else if (prop === "designer") {
+          return set.designer.includes(name) && isLiveGb;
+        } else {
+          return set[prop] === name && isLiveGb;
+        }
+      });
+      const postGbSets = sets.filter((set) => {
+        const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        });
+        const isPostGb = endDate <= yesterday;
+        if (prop === "vendor") {
+          return set.vendors &&
+            set.vendors.findIndex((vendor) => {
+              return vendor.name === name && isPostGb;
+            }) !== -1
+            ? true
+            : false;
+        } else if (prop === "designer") {
+          return set.designer.includes(name) && isPostGb;
+        } else {
+          return set[prop] === name && isPostGb;
+        }
+      });
+      statusData[prop].push({
+        name: name,
+        ic: icSets.length,
+        preGb: preGbSets.length,
+        liveGb: liveGbSets.length,
+        postGb: postGbSets.length,
+        total: icSets.length + preGbSets.length + liveGbSets.length + postGbSets.length,
+      });
+    });
+    statusData[prop].sort(
+      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+    );
   });
   return Promise.resolve(statusData);
 };
 
 const createShippedData = (sets: StatisticsSetType[]) => {
   const shippedData: ShippedData = {
-    profile: [],
-    designer: [],
-    vendor: [],
+    summary: {
+      name: "Shipped sets by GB month",
+      total: 0,
+      shipped: 0,
+      unshipped: 0,
+      timeline: {
+        shipped: [],
+        unshipped: [],
+      },
+    },
+    months: [],
+    breakdown: {
+      profile: [],
+      designer: [],
+      vendor: [],
+    },
   };
   const pastSets = sets.filter((set) => {
     const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
@@ -347,6 +356,9 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     return endDate <= yesterday;
   });
   const months = getSetMonthRange(pastSets, "gbEnd", "MMM yy");
+
+  shippedData.months = months;
+
   const profileNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.profile)));
   const designerNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.designer).flat(1)));
   const vendorNames = alphabeticalSort(
@@ -357,66 +369,55 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     designer: designerNames,
     vendor: vendorNames,
   };
-  Object.keys(shippedData).forEach((prop) => {
-    if (hasKey(shippedData, prop)) {
-      lists[prop].forEach((name) => {
-        const shippedSets = pastSets.filter((set) => {
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && set.shipped === true;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && set.shipped === true;
-          } else {
-            return set[prop] === name && set.shipped === true;
-          }
-        });
-        const unshippedSets = pastSets.filter((set) => {
-          if (prop === "vendor") {
-            return set.vendors &&
-              set.vendors.findIndex((vendor) => {
-                return vendor.name === name && set.shipped !== true;
-              }) !== -1
-              ? true
-              : false;
-          } else if (prop === "designer") {
-            return set.designer.includes(name) && set.shipped !== true;
-          } else {
-            return set[prop] === name && set.shipped !== true;
-          }
-        });
-        const timelineData = months.map((month) => {
-          const shipped = shippedSets.filter((set) => {
-            const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
-            return setEnd && setEnd === month;
-          });
-          const unshipped = unshippedSets.filter((set) => {
-            const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
-            return setEnd && setEnd === month;
-          });
-          return {
-            shipped: { meta: "Shipped", value: shipped.length },
-            unshipped: { meta: "Unshipped", value: unshipped.length },
-          };
-        });
-        shippedData[prop].push({
-          name: name,
-          shipped: shippedSets.length,
-          unshipped: unshippedSets.length,
-          total: shippedSets.length + unshippedSets.length,
-          timeline: {
-            months: months,
-            series: timelineData,
-          },
-        });
+
+  const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject => {
+    const shippedSets = sets.filter((set) => set.shipped);
+    const unshippedSets = sets.filter((set) => !set.shipped);
+    const shipped = months.map((month) => {
+      const filteredSets = shippedSets.filter((set) => {
+        const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+        return setEnd && setEnd === month;
       });
-      shippedData[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      return { meta: "Shipped", value: filteredSets.length };
+    });
+    const unshipped = months.map((month) => {
+      const filteredSets = unshippedSets.filter((set) => {
+        const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+        return setEnd && setEnd === month;
+      });
+      return { meta: "Unshipped", value: filteredSets.length };
+    });
+    return {
+      name: name,
+      total: sets.length,
+      shipped: shippedSets.length,
+      unshipped: unshippedSets.length,
+      timeline: {
+        shipped,
+        unshipped,
+      },
+    };
+  };
+
+  shippedData.summary = createShippedDataObject(pastSets, "Shipped sets by GB month");
+
+  objectKeys(shippedData.breakdown).forEach((prop) => {
+    shippedData.breakdown[prop] = lists[prop].map((name) => {
+      const propSets = pastSets.filter(
+        (set) =>
+          (prop === "vendor" &&
+            set.vendors &&
+            set.vendors.findIndex((vendor) => {
+              return vendor.name === name;
+            }) !== -1) ||
+          (prop === "designer" && set.designer.includes(name)) ||
+          (prop !== "vendor" && prop !== "designer" && set[prop] === name)
       );
-    }
+      return createShippedDataObject(propSets, name);
+    });
+    shippedData.breakdown[prop].sort(
+      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+    );
   });
   return Promise.resolve(shippedData);
 };
@@ -504,36 +505,32 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
       durationData[cat].summary = createDurationDataObject(summaryData, title, propSets.length);
 
-      Object.keys(durationData[cat].breakdown).forEach((property) => {
-        if (hasKey(durationData[cat].breakdown, property)) {
-          durationData[cat].breakdown[property] = lists[property].map((name) => {
-            const filteredSets = propSets.filter((set) => {
-              return (
-                (property === "vendor" &&
-                  set.vendors &&
-                  set.vendors.findIndex((vendor) => {
-                    return vendor.name === name;
-                  }) !== -1) ||
-                (property === "designer" && set.designer.includes(name)) ||
-                (property !== "vendor" && property !== "designer" && set[property] === name)
-              );
-            });
-            const data = filteredSets.map((set) => {
-              const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-              const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-              const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-              return math.round(length[cat === "icDate" ? "months" : "days"], 2);
-            });
-            return createDurationDataObject(data, name, filteredSets.length);
+      objectKeys(durationData[cat].breakdown).forEach((property) => {
+        durationData[cat].breakdown[property] = lists[property].map((name) => {
+          const filteredSets = propSets.filter((set) => {
+            return (
+              (property === "vendor" &&
+                set.vendors &&
+                set.vendors.findIndex((vendor) => {
+                  return vendor.name === name;
+                }) !== -1) ||
+              (property === "designer" && set.designer.includes(name)) ||
+              (property !== "vendor" && property !== "designer" && set[property] === name)
+            );
           });
-          Object.keys(durationData[cat].breakdown).forEach((prop) => {
-            if (hasKey(durationData[cat].breakdown, prop)) {
-              durationData[cat].breakdown[prop].sort(
-                (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
-              );
-            }
+          const data = filteredSets.map((set) => {
+            const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+            const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
+            const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+            return math.round(length[cat === "icDate" ? "months" : "days"], 2);
           });
-        }
+          return createDurationDataObject(data, name, filteredSets.length);
+        });
+        objectKeys(durationData[cat].breakdown).forEach((prop) => {
+          durationData[cat].breakdown[prop].sort(
+            (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+          );
+        });
       });
     }
   });
@@ -600,25 +597,23 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
 
   vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length);
 
-  Object.keys(vendorsData.breakdown).forEach((prop) => {
-    if (hasKey(vendorsData.breakdown, prop)) {
-      vendorsData.breakdown[prop] = lists[prop].map((name) => {
-        let propSets = [];
-        if (prop === "designer") {
-          propSets = vendorSets.filter((set) => set.designer.includes(name));
-        } else if (prop === "vendor") {
-          propSets = vendorSets.filter((set) => set.vendors && set.vendors.map((vendor) => vendor.name).includes(name));
-        } else {
-          propSets = vendorSets.filter((set) => set[prop] === name);
-        }
-        const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
-        return createVendorsDataObject(lengthArray, name, propSets.length);
-      });
+  objectKeys(vendorsData.breakdown).forEach((prop) => {
+    vendorsData.breakdown[prop] = lists[prop].map((name) => {
+      let propSets = [];
+      if (prop === "designer") {
+        propSets = vendorSets.filter((set) => set.designer.includes(name));
+      } else if (prop === "vendor") {
+        propSets = vendorSets.filter((set) => set.vendors && set.vendors.map((vendor) => vendor.name).includes(name));
+      } else {
+        propSets = vendorSets.filter((set) => set[prop] === name);
+      }
+      const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+      return createVendorsDataObject(lengthArray, name, propSets.length);
+    });
 
-      vendorsData.breakdown[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
-      );
-    }
+    vendorsData.breakdown[prop].sort(
+      (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
+    );
   });
   return Promise.resolve(vendorsData);
 };

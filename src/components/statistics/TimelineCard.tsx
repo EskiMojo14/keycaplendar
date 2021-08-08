@@ -46,8 +46,11 @@ const listener = { draw: (e: any) => customPoint(e) };
 
 type ShippedCardProps = {
   data: ShippedDataObject;
+  months: string[];
+  summary?: boolean;
   defaultType?: "bar" | "line";
   overline?: React.ReactNode;
+  note?: React.ReactNode;
 };
 
 const chartOptions = (monthLabel: string) => {
@@ -129,13 +132,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        className={device === "desktop" ? "ct-double-octave" : "ct-major-twelfth"}
+        className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [
-            props.data.timeline.series.map((item) => item.shipped),
-            props.data.timeline.series.map((item) => item.unshipped),
-          ],
-          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+          series: [props.data.timeline.shipped, props.data.timeline.unshipped],
+          labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Bar"}
         options={chartOptions("Month (GB end)")}
@@ -145,13 +145,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        className={device === "desktop" ? "ct-double-octave" : "ct-major-twelfth"}
+        className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [
-            props.data.timeline.series.map((item) => item.shipped),
-            props.data.timeline.series.map((item) => item.unshipped),
-          ],
-          labels: props.data.timeline.months.map((label) => label.split(" ").join("\n")),
+          series: [props.data.timeline.shipped, props.data.timeline.unshipped],
+          labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
         listener={listener}
@@ -160,7 +157,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
       />
     ) : null;
   return (
-    <Card className="timeline-card half-span">
+    <Card className={classNames("timeline-card", { "half-span": !props.summary, "full-span": props.summary })}>
       <div className="title-container">
         <div className="text-container">
           {props.overline ? (
@@ -231,6 +228,11 @@ export const ShippedCard = (props: ShippedCardProps) => {
             </DataTableContent>
           </DataTable>
         </div>
+        {props.note ? (
+          <Typography use="caption" tag="p" className="note">
+            {props.note}
+          </Typography>
+        ) : null}
       </div>
     </Card>
   );
