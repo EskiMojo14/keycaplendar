@@ -146,7 +146,7 @@ export const TableCard = (props: TableCardProps) => {
                   setGraphType("bar");
                 }}
               />,
-              "Stacked bar chart"
+              "Bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
@@ -156,7 +156,7 @@ export const TableCard = (props: TableCardProps) => {
                   setGraphType("line");
                 }}
               />,
-              "Multiline chart"
+              "Line chart"
             )}
           </SegmentedButton>
         </div>
