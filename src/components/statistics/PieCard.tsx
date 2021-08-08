@@ -1,6 +1,7 @@
 import React from "react";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
+import { pluralise } from "@s/common/functions";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import {
@@ -32,7 +33,7 @@ export const StatusCard = (props: StatusCardProps) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
+        {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
       </Typography>
       <div className="pie-container">
         <div className="table-container">

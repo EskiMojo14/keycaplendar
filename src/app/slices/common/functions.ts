@@ -42,6 +42,7 @@ export const arrayEveryType = <T>(arr: any[], callback: (item: any) => boolean):
 export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
 
 /** Returns an array of object keys to iterate on.
+ *
  * Only use for objects you're certain won't gain more keys in runtime.
  */
 
@@ -217,7 +218,9 @@ export const normalise = (str: string, includeSpace = true) => {
 };
 
 /**
- * Uses `replaceChars` constant and replaces specified character with specified replacement. Used for exceptions such as `βeta` to `Beta`.
+ * Uses `replaceChars` constant and replaces specified character with specified replacement.
+ *
+ * Used for exceptions such as `βeta` to `Beta`.
  * @param str String to be iterated upon.
  * @returns `str` with specified characters replaced.
  */
@@ -237,6 +240,48 @@ export const replaceFunction = (str: string) => {
  */
 
 export const formatFileName = (str: string) => camelise(normalise(replaceFunction(str)));
+
+/**
+ * Interweaves multiple arrays into a single array.
+ * @param arrays Arrays to be combined
+ * @returns An array with all items combined in alternating order.
+ *
+ * found https://stackoverflow.com/a/57748845
+ */
+export const braidArrays = <T>(...arrays: T[][]) => {
+  const braided: T[] = [];
+  for (let i = 0; i < Math.max(...arrays.map((a) => a.length)); i++) {
+    arrays.forEach((array) => {
+      if (array[i] !== undefined) braided.push(array[i]);
+    });
+  }
+  return braided;
+};
+
+/**
+ * Tagged template literal to pluralise based on a value
+ *
+ * Values are given as a tuplet `[number, single]` or optionally `[number, single, plural]`.
+ *
+ * Plural is `single` appended with `s` if not provided.
+ * @example
+ * pluralise`I have ${cows} ${[cows, "cow"]}, ${sheep} ${[sheep, "sheep", "sheep"]}, and ${geese} ${[geese, "goose", "geese"]}`
+ */
+
+export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) => {
+  const plurals = expressions.map((value) => {
+    if (is<[number, string] | [number, string, string]>(value)) {
+      const [val, single] = value;
+      let [, , plural] = value;
+      if (!plural) {
+        plural = single + "s";
+      }
+      return val === 1 ? single : plural;
+    }
+    return value;
+  });
+  return braidArrays([...strings], plurals).join("");
+};
 
 /**
  * Counts occurrences of specified value within provided array.

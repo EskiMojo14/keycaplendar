@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
-import { batchStorageDelete } from "@s/common/functions";
+import { batchStorageDelete, pluralise } from "@s/common/functions";
 import { setLoading } from "@s/images";
 import { listAll } from "@s/images/functions";
 import { ImageType } from "@s/images/types";
@@ -50,9 +50,9 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   };
   return (
     <Dialog open={props.open} onClose={props.close} className="delete-image-dialog">
-      <DialogTitle>{`Delete image${props.images.length === 1 ? "" : "s"}`}</DialogTitle>
+      <DialogTitle>{pluralise`Delete ${[props.images.length, "image"]}`}</DialogTitle>
       <DialogContent>
-        {`The following image${props.images.length === 1 ? "" : "s"} will be deleted:`}
+        {pluralise`The following ${[props.images.length, "image"]} will be deleted:`}
         <div className="chips-container">
           <ChipSet>
             {props.images.map((image) => (

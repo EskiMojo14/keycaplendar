@@ -6,7 +6,14 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { addOrRemove, alphabeticalSortPropCurried, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
+import {
+  addOrRemove,
+  alphabeticalSortPropCurried,
+  arrayEveryType,
+  hasKey,
+  iconObject,
+  pluralise,
+} from "@s/common/functions";
 import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -193,7 +200,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {`${chartData.total} set${chartData.total === 1 ? "" : "s"}`}
+            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -472,7 +479,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
+            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">

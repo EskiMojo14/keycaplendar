@@ -5,6 +5,7 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import { is } from "typescript-is";
+import { pluralise } from "@s/common/functions";
 import { ChartData } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -67,7 +68,7 @@ export const TableCard = (props: TableCardProps) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
+        {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
       </Typography>
       <div className="content-container">
         <div className="chart-container">
