@@ -282,7 +282,7 @@
 
 .ct-chart {
   .ct-grid {
-    stroke: var(--divider-color);
+    stroke: var(--theme-divider);
     stroke-dasharray: 4px;
   }
   .ct-axis-title {
@@ -337,7 +337,7 @@
 }
 
 .rmwc-avatar {
-  background-color: var(--divider-color);
+  background-color: var(--theme-divider);
 }
 
 .rmwc-badge.material-icons {
@@ -586,13 +586,13 @@ svg.material-icons,
 
 @keyframes placeholder {
   from {
-    background-color: var(--lighter-color);
+    background-color: var(--theme-lighter-divider);
   }
   50% {
-    background-color: var(--divider-color);
+    background-color: var(--theme-divider);
   }
   to {
-    background-color: var(--lighter-color);
+    background-color: var(--theme-lighter-divider);
   }
 }
 

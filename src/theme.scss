@@ -141,14 +141,17 @@ $graph-colors-dark: (
     text-medium: rgba(map-get($theme, on-surface), 0.6),
     text-disabled: rgba(map-get($theme, on-surface), 0.38),
   );
-  $variables: map-merge($theme, $text-colors);
-  --meta-color: #{if(
-      $dark,
-      darken(overlay-elevation(map-get($variables, surface), 4), 10%),
-      darken(map-get($variables, primary), 10%)
-    )};
-  --divider-color: #{rgba(map-get($variables, on-surface), 0.12)};
-  --lighter-color: #{rgba(map-get($variables, on-surface), 0.06)};
+  $dynamic-colors: (
+    meta: if($dark, darken(overlay-elevation(map-get($theme, surface), 4), 10%), darken(map-get($theme, primary), 10%)),
+    divider: rgba(map-get($theme, on-surface), 0.12),
+    lighter-divider: rgba(map-get($theme, on-surface), 0.06),
+    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 6%),
+  );
+  $variables: map-merge($theme, map-merge($text-colors, $dynamic-colors));
+  @each $variable, $value in $variables {
+    --theme-#{$variable}: #{$value};
+  }
   body {
     background-color: map-get($variables, background);
   }
@@ -1075,6 +1078,32 @@ $graph-colors-dark: (
   .pie-card {
     .pie-chart-container {
       &.status .ct-chart {
+        .ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-2);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-2);
+          }
+        }
+        .ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-1);
+          }
+        }
         .ct-series.ct-series-c {
           .ct-point,
           .ct-line,
@@ -1116,7 +1145,6 @@ $graph-colors-dark: (
   }
   .timeline-card {
     .timeline-chart-container {
-      &.shipped .ct-chart,
       &.single.primary .ct-chart {
         .ct-series.ct-series-a {
           .ct-point,
@@ -1149,10 +1177,47 @@ $graph-colors-dark: (
           }
         }
       }
+      &.shipped .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, primary);
+          }
+        }
+        .ct-series.ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, grey-1);
+          }
+        }
+      }
     }
     .indicator {
       &.shipped {
         background-color: map-get($variables, primary);
+      }
+      &.unshipped,
+      &.pre-gb {
+        background-color: map-get($variables, grey-1);
+      }
+      &.ic {
+        background-color: map-get($variables, grey-2);
       }
     }
   }

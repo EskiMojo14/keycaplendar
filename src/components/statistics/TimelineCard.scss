@@ -50,32 +50,7 @@
               @include rtl.reflexive-position(left, 0);
               top: 0;
               bottom: 0;
-              &.not-shipped,
-              &.pre-gb {
-                background-color: var(--divider-color);
-              }
-              &.ic {
-                background-color: var(--lighter-color);
-              }
             }
-          }
-        }
-      }
-    }
-    .timeline-chart-container {
-      &.shipped .ct-chart {
-        .ct-series {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-stroked-point,
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
           }
         }
       }

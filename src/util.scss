@@ -1,14 +1,14 @@
 @mixin divider-border($direction: all, $width: 1px, $style: solid) {
   @if ($direction == all) {
-    border: $width $style var(--divider-color);
+    border: $width $style var(--theme-divider);
   } @else {
-    border-#{$direction}: $width $style var(--divider-color);
+    border-#{$direction}: $width $style var(--theme-divider);
   }
 }
 @mixin half-divider-border($direction: all, $width: 1px, $style: solid) {
   @if ($direction == all) {
-    border: $width $style var(--lighter-color);
+    border: $width $style var(--theme-lighter-divider);
   } @else {
-    border-#{$direction}: $width $style var(--lighter-color);
+    border-#{$direction}: $width $style var(--theme-lighter-divider);
   }
 }

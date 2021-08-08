@@ -16,36 +16,6 @@
   .pie-container {
     display: flex;
     flex-direction: column;
-    .pie-chart-container {
-      &.status .ct-chart {
-        .ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--lighter-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--lighter-color);
-          }
-        }
-        .ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: var(--divider-color);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: var(--divider-color);
-          }
-        }
-      }
-    }
     .table-container {
       flex-grow: 1;
       .mdc-data-table {
@@ -63,10 +33,10 @@
               bottom: 0;
               &.not-shipped,
               &.pre-gb {
-                background-color: var(--divider-color);
+                background-color: var(--theme-divider);
               }
               &.ic {
-                background-color: var(--lighter-color);
+                background-color: var(--theme-lighter-divider);
               }
             }
           }
