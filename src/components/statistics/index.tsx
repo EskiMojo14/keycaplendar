@@ -355,6 +355,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           />
           <ShippedCard
             data={statisticsData.shippedData.summary}
+            breakdownData={statisticsData.shippedData.breakdown.profile}
             months={statisticsData.shippedData.months}
             overline="Shipped"
             summary

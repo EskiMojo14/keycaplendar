@@ -6,7 +6,7 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { addOrRemove, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
+import { addOrRemove, alphabeticalSortPropCurried, arrayEveryType, hasKey, iconObject } from "@s/common/functions";
 import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
@@ -43,15 +43,6 @@ const customPoint = (data: any) => {
 };
 
 const listener = { draw: (e: any) => customPoint(e) };
-
-type ShippedCardProps = {
-  data: ShippedDataObject;
-  months: string[];
-  summary?: boolean;
-  defaultType?: "bar" | "line";
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-};
 
 const chartOptions = (monthLabel: string) => {
   return {
@@ -126,15 +117,30 @@ const responsiveOptions = [
   ],
 ];
 
+type ShippedCardProps = {
+  data: ShippedDataObject;
+  breakdownData?: ShippedDataObject[];
+  months: string[];
+  summary?: boolean;
+  defaultType?: "bar" | "line";
+  overline?: React.ReactNode;
+  note?: React.ReactNode;
+};
+
 export const ShippedCard = (props: ShippedCardProps) => {
   const device = useAppSelector(selectDevice);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const chartData =
+    selectedIndex >= 0 && props.summary && props.breakdownData
+      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : props.data;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
         className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [props.data.timeline.shipped, props.data.timeline.unshipped],
+          series: [chartData.timeline.shipped, chartData.timeline.unshipped],
           labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Bar"}
@@ -147,7 +153,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
       <ChartistGraph
         className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [props.data.timeline.shipped, props.data.timeline.unshipped],
+          series: [chartData.timeline.shipped, chartData.timeline.unshipped],
           labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
@@ -156,8 +162,26 @@ export const ShippedCard = (props: ShippedCardProps) => {
         responsiveOptions={responsiveOptions}
       />
     ) : null;
+  const selectChips =
+    props.summary && props.breakdownData ? (
+      <div className="timeline-chips-container">
+        <ChipSet choice>
+          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              selected={index === selectedIndex}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+              className={`focus-chip focus-chip-index-${index}`}
+            />
+          ))}
+        </ChipSet>
+      </div>
+    ) : null;
   return (
-    <Card className={classNames("timeline-card", { "half-span": !props.summary, "full-span": props.summary })}>
+    <Card className="timeline-card full-span">
       <div className="title-container">
         <div className="text-container">
           {props.overline ? (
@@ -169,7 +193,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {`${props.data.total} set${props.data.total === 1 ? "" : "s"}`}
+            {`${chartData.total} set${chartData.total === 1 ? "" : "s"}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -216,18 +240,19 @@ export const ShippedCard = (props: ShippedCardProps) => {
                   <DataTableCell>
                     <div className="indicator shipped"></div>Shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.shipped}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.shipped}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator not-shipped"></div>Not shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.unshipped}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.unshipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
         </div>
+        {selectChips}
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}
@@ -394,6 +419,46 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         )}
       </>
     ) : null;
+  const focusChips =
+    props.focusable && props.allProfiles ? (
+      <div className="timeline-chips-container focus-chips">
+        <ChipSet choice>
+          {props.allProfiles.map((profile, index) => {
+            if (props.data.timeline.profiles.includes(profile) || props.data.timeline.profiles.length === 0) {
+              return (
+                <Chip
+                  key={profile}
+                  icon={
+                    focused.length && !focused.includes(index)
+                      ? iconObject(
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                            <g>
+                              <rect fill="none" height="24" width="24" />
+                            </g>
+                            <g>
+                              <g>
+                                <circle cx="12" cy="12" opacity=".3" r="8" />
+                                <path d="M12,2C6.47,2,2,6.47,2,12c0,5.53,4.47,10,10,10s10-4.47,10-10C22,6.47,17.53,2,12,2z M12,20c-4.42,0-8-3.58-8-8 c0-4.42,3.58-8,8-8s8,3.58,8,8C20,16.42,16.42,20,12,20z" />
+                              </g>
+                            </g>
+                          </svg>
+                        )
+                      : "circle"
+                  }
+                  label={profile}
+                  selected={focused.includes(index)}
+                  onInteraction={() => {
+                    setFocus(index);
+                  }}
+                  className={`focus-chip focus-chip-index-${index}`}
+                />
+              );
+            }
+            return null;
+          })}
+        </ChipSet>
+      </div>
+    ) : null;
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
@@ -451,45 +516,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           {barChart}
           {lineChart}
         </div>
-        {props.focusable && props.allProfiles ? (
-          <div className="timeline-chips-container focus-chips">
-            <ChipSet choice>
-              {props.allProfiles.map((profile, index) => {
-                if (props.data.timeline.profiles.includes(profile) || props.data.timeline.profiles.length === 0) {
-                  return (
-                    <Chip
-                      key={profile}
-                      icon={
-                        focused.length && !focused.includes(index)
-                          ? iconObject(
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                                <g>
-                                  <rect fill="none" height="24" width="24" />
-                                </g>
-                                <g>
-                                  <g>
-                                    <circle cx="12" cy="12" opacity=".3" r="8" />
-                                    <path d="M12,2C6.47,2,2,6.47,2,12c0,5.53,4.47,10,10,10s10-4.47,10-10C22,6.47,17.53,2,12,2z M12,20c-4.42,0-8-3.58-8-8 c0-4.42,3.58-8,8-8s8,3.58,8,8C20,16.42,16.42,20,12,20z" />
-                                  </g>
-                                </g>
-                              </svg>
-                            )
-                          : "circle"
-                      }
-                      label={profile}
-                      selected={focused.includes(index)}
-                      onInteraction={() => {
-                        setFocus(index);
-                      }}
-                      className={`focus-chip focus-chip-index-${index}`}
-                    />
-                  );
-                }
-                return null;
-              })}
-            </ChipSet>
-          </div>
-        ) : null}
+        {focusChips}
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}
