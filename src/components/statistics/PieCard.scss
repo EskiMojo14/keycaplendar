@@ -74,6 +74,14 @@
       }
     }
   }
+  .pie-chips-container {
+    display: flex;
+    padding-top: 8px;
+    margin: -8px;
+    .mdc-chip-set {
+      flex-grow: 1;
+    }
+  }
   &.sideways {
     .pie-container {
       flex-direction: row;

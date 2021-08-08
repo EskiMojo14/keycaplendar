@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { IPieChartOptions } from "chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { pluralise } from "@s/common/functions";
+import { alphabeticalSortPropCurried, pluralise } from "@s/common/functions";
 import { StatusDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import {
   DataTable,
@@ -24,6 +25,7 @@ const hideZero = (num: number) => num || " ";
 
 type StatusCardProps = {
   data: StatusDataObject;
+  breakdownData?: StatusDataObject[];
   summary?: boolean;
   overline?: React.ReactNode;
   note?: React.ReactNode;
@@ -31,11 +33,33 @@ type StatusCardProps = {
 
 export const StatusCard = (props: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const chartData =
+    selectedIndex >= 0 && props.summary && props.breakdownData
+      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : props.data;
   const chartOptions: IPieChartOptions = {
     showLabel: false,
     plugins: [chartistTooltip({ metaIsHTML: true })],
   };
   const sideways = props.summary && device === "desktop";
+  const selectChips =
+    props.summary && props.breakdownData ? (
+      <div className="pie-chips-container">
+        <ChipSet choice>
+          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              selected={index === selectedIndex}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+            />
+          ))}
+        </ChipSet>
+      </div>
+    ) : null;
   return (
     <Card
       className={classNames("pie-card", {
@@ -52,7 +76,7 @@ export const StatusCard = (props: StatusCardProps) => {
         {props.data.name}
       </Typography>
       <Typography use="subtitle2" tag="p">
-        {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+        {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
       </Typography>
       <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
         <div className="pie-chart-container status">
@@ -60,12 +84,12 @@ export const StatusCard = (props: StatusCardProps) => {
             className={sideways ? "ct-square" : "ct-octave"}
             data={{
               series: [
-                { meta: "IC", value: props.data.ic },
-                { meta: "Pre GB", value: props.data.preGb },
-                { meta: "Live GB", value: props.data.liveGb },
-                { meta: "Post GB", value: props.data.postGb },
+                { meta: "IC", value: chartData.ic },
+                { meta: "Pre GB", value: chartData.preGb },
+                { meta: "Live GB", value: chartData.liveGb },
+                { meta: "Post GB", value: chartData.postGb },
               ],
-              labels: [props.data.ic, props.data.preGb, props.data.liveGb, props.data.postGb].map(hideZero),
+              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb].map(hideZero),
             }}
             type="Pie"
             options={chartOptions}
@@ -85,31 +109,32 @@ export const StatusCard = (props: StatusCardProps) => {
                   <DataTableCell>
                     <div className="indicator ic"></div>IC
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.ic}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.ic}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator pre-gb"></div>Pre GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.preGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.preGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator live-gb"></div>Live GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.liveGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.liveGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator post-gb"></div>Post GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{props.data.postGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.postGb}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
         </div>
       </div>
+      {selectChips}
       {props.note ? (
         <Typography use="caption" tag="p" className="note">
           {props.note}

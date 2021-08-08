@@ -181,7 +181,6 @@ export const ShippedCard = (props: ShippedCardProps) => {
               onInteraction={() => {
                 setSelectedIndex(index === selectedIndex ? -1 : index);
               }}
-              className={`focus-chip focus-chip-index-${index}`}
             />
           ))}
         </ChipSet>

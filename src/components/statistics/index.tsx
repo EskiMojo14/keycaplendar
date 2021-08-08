@@ -353,7 +353,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             overline="Timelines"
             category={settings.summary}
           />
-          <StatusCard data={statisticsData.status.summary} overline="Status" summary />
+          <StatusCard
+            data={statisticsData.status.summary}
+            breakdownData={statisticsData.status.breakdown.profile}
+            overline="Status"
+            summary
+          />
           <ShippedCard
             data={statisticsData.shipped.summary}
             breakdownData={statisticsData.shipped.breakdown.profile}
