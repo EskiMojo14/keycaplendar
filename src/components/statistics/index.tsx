@@ -424,6 +424,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               <TableCard
                 key={data.name}
                 data={data}
+                category={settings.durationCat}
                 unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
               />
             );
