@@ -218,7 +218,7 @@ export const checkTheme = (state = store.getState()) => {
   html.classList.add(theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
-    meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--meta-color"));
+    meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--theme-meta"));
   }
 };
 
