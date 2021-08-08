@@ -304,11 +304,13 @@
     &.pie-card,
     &.table-card,
     &.timeline-card {
-      .mdc-typography--headline5 {
-        margin-bottom: 8px + $diff;
-      }
-      .mdc-typography--subtitle2 {
-        margin-bottom: 16px + $diff;
+      .title-container {
+        .mdc-typography--headline5 {
+          margin-bottom: 8px + $diff;
+        }
+        .mdc-typography--subtitle2 {
+          margin-bottom: 16px + $diff;
+        }
       }
     }
   }

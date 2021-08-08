@@ -67,17 +67,19 @@ export const StatusCard = (props: StatusCardProps) => {
         sideways,
       })}
     >
-      {props.overline ? (
-        <Typography use="overline" tag="h3">
-          {props.overline}
+      <div className="title-container">
+        {props.overline ? (
+          <Typography use="overline" tag="h3">
+            {props.overline}
+          </Typography>
+        ) : null}
+        <Typography use="headline5" tag="h1">
+          {props.data.name}
         </Typography>
-      ) : null}
-      <Typography use="headline5" tag="h1">
-        {props.data.name}
-      </Typography>
-      <Typography use="subtitle2" tag="p">
-        {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
-      </Typography>
+        <Typography use="subtitle2" tag="p">
+          {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
+        </Typography>
+      </div>
       <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
         <div className="pie-chart-container status">
           <ChartistGraph
