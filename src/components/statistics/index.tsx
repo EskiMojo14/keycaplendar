@@ -339,11 +339,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TimelinesCard
             months={statisticsData.timelines[settings.summary].months}
             data={statisticsData.timelines[settings.summary].summary.count}
+            breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
             defaultType="line"
             singleTheme="secondary"
             overline="Timelines"
             note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
+            summary
           />
           <TimelinesCard
             months={statisticsData.timelines[settings.summary].months}
@@ -352,6 +354,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             focusable
             overline="Timelines"
             category={settings.summary}
+            summary
           />
           <StatusCard
             data={statisticsData.status.summary}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Chartist from "chartist";
+import Chartist, { IBarChartOptions, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
@@ -51,7 +51,7 @@ const customPoint = (data: any) => {
 
 const listener = { draw: (e: any) => customPoint(e) };
 
-const chartOptions = (monthLabel: string) => {
+const chartOptions = (monthLabel: string): ILineChartOptions & IBarChartOptions => {
   return {
     showArea: true,
     stackBars: true,
@@ -91,7 +91,7 @@ const chartOptions = (monthLabel: string) => {
   };
 };
 
-const responsiveOptions = [
+const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
   [
     "(min-width: 960px) and (max-width: 1600px)",
     {
@@ -270,19 +270,26 @@ export const ShippedCard = (props: ShippedCardProps) => {
 };
 
 type TimelinesCardProps = {
-  allProfiles?: string[];
+  data: TimelineDataObject;
   months: string[];
   singleTheme?: "primary" | "secondary";
   defaultType?: "bar" | "line";
+  summary?: boolean;
   category?: string;
-  data: TimelineDataObject;
   focusable?: boolean;
+  allProfiles?: string[];
+  breakdownData?: TimelineDataObject[];
   overline?: React.ReactNode;
   note?: React.ReactNode;
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const chartData =
+    selectedIndex >= 0 && props.summary && props.breakdownData
+      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : props.data;
   const [focused, setFocused] = useState<number[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const setFocus = (index: number) => {
@@ -293,14 +300,14 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     let allIndexes: number[] = [];
     if (
       arrayEveryType<{ data: ChartSeriesItem[]; className?: string; index: number }>(
-        props.data.timeline.series,
+        chartData.timeline.series,
         (series: ChartData) => hasKey(series, "index")
       ) &&
-      props.data.timeline.series.length !== props.allProfiles?.length
+      chartData.timeline.series.length !== props.allProfiles?.length
     ) {
-      allIndexes = props.data.timeline.series.map((series) => series.index);
+      allIndexes = chartData.timeline.series.map((series) => series.index);
     } else {
-      allIndexes = Array(props.data.timeline.series.length)
+      allIndexes = Array(chartData.timeline.series.length)
         .fill("")
         .map((v, i) => i);
     }
@@ -314,13 +321,13 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     onlyFocused &&
     props.focusable &&
     props.allProfiles &&
-    arrayEveryType<{ data: ChartSeriesItem[]; className?: string }>(props.data.timeline.series, (series) =>
+    arrayEveryType<{ data: ChartSeriesItem[]; className?: string }>(chartData.timeline.series, (series) =>
       hasKey(series, "data")
     ) &&
     focused.length > 0 &&
-    focused.length !== props.data.timeline.series.length
-      ? props.data.timeline.series.filter((series) => focused.includes(series.index || -1))
-      : props.data.timeline.series;
+    focused.length !== chartData.timeline.series.length
+      ? chartData.timeline.series.filter((series) => focused.includes(series.index || -1))
+      : chartData.timeline.series;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
@@ -348,6 +355,23 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         responsiveOptions={responsiveOptions}
       />
     ) : null;
+  const selectChips =
+    props.summary && props.breakdownData ? (
+      <div className="timeline-chips-container">
+        <ChipSet choice>
+          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+            <Chip
+              key={obj.name}
+              label={obj.name}
+              selected={index === selectedIndex}
+              onInteraction={() => {
+                setSelectedIndex(index === selectedIndex ? -1 : index);
+              }}
+            />
+          ))}
+        </ChipSet>
+      </div>
+    ) : null;
   const focusButtons =
     props.focusable && props.allProfiles ? (
       <>
@@ -365,7 +389,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                 </svg>
               </div>
             )}
-            disabled={focused.length === props.data.timeline.series.length}
+            disabled={focused.length === chartData.timeline.series.length}
             onClick={focusAll}
           />,
           "Focus all series"
@@ -430,7 +454,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       <div className="timeline-chips-container focus-chips">
         <ChipSet choice>
           {props.allProfiles.map((profile, index) => {
-            if (props.data.timeline.profiles.includes(profile) || props.data.timeline.profiles.length === 0) {
+            if (chartData.timeline.profiles.includes(profile) || chartData.timeline.profiles.length === 0) {
               return (
                 <Chip
                   key={profile}
@@ -478,7 +502,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -522,6 +546,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           {barChart}
           {lineChart}
         </div>
+        {selectChips}
         {focusChips}
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
