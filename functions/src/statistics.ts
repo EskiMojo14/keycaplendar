@@ -119,7 +119,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
     timelinesData[cat].summary.count.timeline.series = [
       months.map((month) => {
-        return catSets.filter((set) => {
+        const length = catSets.filter((set) => {
           const setProp = set[cat];
           const setMonth =
             is<string>(setProp) && !setProp.includes("Q")
@@ -127,6 +127,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               : null;
           return setMonth && setMonth === month;
         }).length;
+        return length;
       }),
     ];
 
@@ -153,10 +154,11 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
               : null;
           return setMonth && setMonth === month && set.profile === profile;
         }).length;
-        return length > 0 ? { meta: profile, value: length } : 0;
+        return length;
       }),
       className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
       index: index,
+      name: profile,
     }));
 
     objectKeys(timelinesData[cat].breakdown).forEach((property) => {
@@ -176,15 +178,11 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
                   return date && date === month;
                 });
                 const num = monthSets.filter((set) => set.profile === profile).length;
-                return num > 0
-                  ? {
-                      meta: profile,
-                      value: num,
-                    }
-                  : 0;
+                return num;
               }),
               className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
               index: index,
+              name: profile,
             };
           });
         } else {
@@ -341,20 +339,26 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject => {
     const shippedSets = sets.filter((set) => set.shipped);
     const unshippedSets = sets.filter((set) => !set.shipped);
-    const shipped = months.map((month) => {
-      const filteredSets = shippedSets.filter((set) => {
-        const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
-        return setEnd && setEnd === month;
-      });
-      return { meta: "Shipped", value: filteredSets.length };
-    });
-    const unshipped = months.map((month) => {
-      const filteredSets = unshippedSets.filter((set) => {
-        const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
-        return setEnd && setEnd === month;
-      });
-      return { meta: "Unshipped", value: filteredSets.length };
-    });
+    const shipped = {
+      data: months.map((month) => {
+        const filteredSets = shippedSets.filter((set) => {
+          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          return setEnd && setEnd === month;
+        });
+        return filteredSets.length;
+      }),
+      name: "Shipped",
+    };
+    const unshipped = {
+      data: months.map((month) => {
+        const filteredSets = unshippedSets.filter((set) => {
+          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          return setEnd && setEnd === month;
+        });
+        return filteredSets.length;
+      }),
+      name: "Unshipped",
+    };
     return {
       name: name,
       total: sets.length,
@@ -437,7 +441,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         const labels = [
           ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
         ] as number[];
-        const count = labels.map((label) => countInArray(math.round(data), label));
+        const count = labels.map((label) => ({
+          value: countInArray(math.round(data), label),
+          meta: `${label} ${cat === "icDate" ? "months" : "days"}`,
+        }));
         const range = math.max(data) - math.min(data);
         const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
         return {

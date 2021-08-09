@@ -9,13 +9,15 @@ export type Sorts = "total" | "alphabetical";
 export type StatsTab = typeof statsTabs[number];
 
 export type ChartDatumObject = {
-  meta: string;
+  meta?: string;
   value: number;
 };
 
 export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
 
-export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string; index?: number }[];
+export type ChartData =
+  | ChartSeriesItem[][]
+  | { data: ChartSeriesItem[]; className?: string; index?: number; name?: string }[];
 
 export type StatisticsType = {
   summary: Categories;
@@ -75,8 +77,8 @@ export type ShippedDataObject = {
   shipped: number;
   unshipped: number;
   timeline: {
-    shipped: ChartSeriesItem[];
-    unshipped: ChartSeriesItem[];
+    shipped: ChartData[number];
+    unshipped: ChartData[number];
   };
 };
 

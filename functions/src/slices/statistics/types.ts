@@ -16,13 +16,15 @@ export type Categories = "icDate" | "gbLaunch";
 export type Properties = "profile" | "designer" | "vendor";
 
 export type ChartDatumObject = {
-  meta: string;
+  meta?: string;
   value: number;
 };
 
 export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
 
-export type ChartData = ChartSeriesItem[][] | { data: ChartSeriesItem[]; className?: string; index?: number }[];
+export type ChartData =
+  | ChartSeriesItem[][]
+  | { data: ChartSeriesItem[]; className?: string; index?: number; name?: string }[];
 
 export type TimelineDataObject = {
   name: string;
@@ -63,8 +65,8 @@ export type ShippedDataObject = {
   shipped: number;
   unshipped: number;
   timeline: {
-    shipped: ChartSeriesItem[];
-    unshipped: ChartSeriesItem[];
+    shipped: ChartData[number];
+    unshipped: ChartData[number];
   };
 };
 
