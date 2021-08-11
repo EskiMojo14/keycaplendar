@@ -101,7 +101,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
     imageURL: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   const [focused, setFocused] = useState("");
 
@@ -134,7 +135,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
       imageUploadProgress: 0,
       imageURL: "",
     });
-    setLoading(false);
+    setUploadingImage(false);
+    setUploadingDoc(false);
     setFocused("");
   };
 
@@ -299,7 +301,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const uploadImage = () => {
     if (imageInfo.image instanceof Blob) {
-      setLoading(true);
+      setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
       const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
@@ -312,7 +314,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress = snapshot.bytesTransferred / snapshot.totalBytes;
           setImageInfo((imageInfo) => {
             return { ...imageInfo, imageUploadProgress: progress };
           });
@@ -320,7 +322,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         (error) => {
           // Handle unsuccessful uploads
           queue.notify({ title: "Failed to upload image: " + error });
-          setLoading(false);
+          setUploadingImage(false);
         },
         () => {
           // Handle successful uploads on complete
@@ -332,12 +334,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
               setImageInfo((imageInfo) => {
                 return { ...imageInfo, imageURL: downloadURL };
               });
-              setLoading(false);
+              setUploadingImage(false);
               createEntry(downloadURL);
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
-              setLoading(false);
+              setUploadingImage(false);
             });
         }
       );
@@ -353,7 +355,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
     !!imageInfo.image;
 
   const createEntry = (url = imageInfo.imageURL) => {
-    if (formFilled) {
+    if (formFilled && !uploadingImage && !uploadingDoc) {
+      setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
         .add({
@@ -376,10 +379,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
+          setUploadingDoc(false);
           getData();
           closeModal();
         })
         .catch((error) => {
+          setUploadingDoc(false);
           console.error("Error adding document: ", error);
           queue.notify({ title: "Error adding document: " + error });
         });
@@ -501,13 +506,19 @@ export const ModalCreate = (props: ModalCreateProps) => {
         trueWrapper={(children) => (
           <DrawerHeader>
             {children}
-            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+            />
           </DrawerHeader>
         )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
-            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+            />
           </FullScreenDialogAppBar>
         )}
       >
@@ -533,11 +544,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled) {
+              if (formFilled && !uploadingImage && !uploadingDoc) {
                 uploadImage();
               }
             }}
-            disabled={!formFilled}
+            disabled={!formFilled || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
@@ -973,7 +984,8 @@ export const ModalEdit = (props: ModalEditProps) => {
     newImage: false,
   });
 
-  const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   const [focused, setFocused] = useState("");
 
@@ -1057,7 +1069,8 @@ export const ModalEdit = (props: ModalEditProps) => {
       imageURL: "",
       newImage: false,
     });
-    setLoading(false);
+    setUploadingImage(false);
+    setUploadingDoc(false);
     setFocused("");
   };
 
@@ -1222,7 +1235,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const uploadImage = () => {
     if (imageInfo.image instanceof Blob) {
-      setLoading(true);
+      setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
       const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
@@ -1235,7 +1248,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress = snapshot.bytesTransferred / snapshot.totalBytes;
           setImageInfo((imageInfo) => {
             return { ...imageInfo, imageUploadProgress: progress };
           });
@@ -1243,7 +1256,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         (error) => {
           // Handle unsuccessful uploads
           queue.notify({ title: "Failed to upload image: " + error });
-          setLoading(false);
+          setUploadingImage(false);
         },
         () => {
           // Handle successful uploads on complete
@@ -1255,7 +1268,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               setImageInfo((imageInfo) => {
                 return { ...imageInfo, imageURL: downloadURL };
               });
-              setLoading(false);
+              setUploadingImage(false);
               editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = props.set.image.match(fileNameRegex);
@@ -1275,7 +1288,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
-              setLoading(false);
+              setUploadingImage(false);
             });
         }
       );
@@ -1291,7 +1304,8 @@ export const ModalEdit = (props: ModalEditProps) => {
     ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
 
   const editEntry = (imageUrl = imageInfo.imageURL) => {
-    if (formFilled) {
+    if (formFilled && !uploadingImage && !uploadingDoc) {
+      setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
         .doc(id as KeysetId)
@@ -1313,11 +1327,13 @@ export const ModalEdit = (props: ModalEditProps) => {
           latestEditor: user.id,
         })
         .then(() => {
+          setUploadingDoc(false);
           queue.notify({ title: "Entry edited successfully." });
           closeModal();
           getData();
         })
         .catch((error) => {
+          setUploadingDoc(false);
           queue.notify({ title: "Error editing document: " + error });
         });
     }
@@ -1432,13 +1448,19 @@ export const ModalEdit = (props: ModalEditProps) => {
         trueWrapper={(children) => (
           <DrawerHeader>
             {children}
-            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+            />
           </DrawerHeader>
         )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
-            <LinearProgress closed={!loading} progress={imageInfo.imageUploadProgress / 100} />
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+            />
           </FullScreenDialogAppBar>
         )}
       >
@@ -1464,7 +1486,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled) {
+              if (formFilled && !uploadingImage && !uploadingDoc) {
                 if (imageInfo.newImage) {
                   uploadImage();
                 } else {
@@ -1472,7 +1494,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 }
               }
             }}
-            disabled={!formFilled}
+            disabled={!formFilled || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
