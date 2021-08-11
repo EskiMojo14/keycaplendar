@@ -64,16 +64,16 @@ export const ImageUpload = (props: ImageUploadProps) => {
 
   const getImageFromURL = (url: string) => {
     setLoading(true);
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-
-    xhr.responseType = "blob";
-
-    xhr.onload = () => {
-      props.setImage(xhr.response);
-    };
-
-    xhr.send();
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        setLoading(false);
+        props.setImage(blob);
+      })
+      .catch((err) => {
+        setLoading(false);
+        queue.notify({ title: "Failed to fetch image: " + err });
+      });
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
