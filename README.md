@@ -12,7 +12,7 @@ API documentation is available on [Stoplight](https://keycaplendar.stoplight.io/
 
 ## Codebase
 
-Site code is stored in `/src`, and is built by running `npm run build` in the root directory. It compiles into `/public`.
+Site code is stored in `/src`, and is built by running `npm run build` in the root directory. It compiles into `/build`.
 
 Firebase Functions code is stored in `/functions/src`, and is built by running `npm run build` within the `/functions` directory. It compiles into `/functions/lib`.
 
