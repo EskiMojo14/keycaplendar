@@ -106,7 +106,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
           condition={!useDrawer}
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <Button label="Save" disabled={!name} outlined onClick={savePreset} />
+          <Button label="Save" disabled={!name} outlined={useDrawer} onClick={savePreset} />
         </ConditionalWrapper>
       </BoolWrapper>
       <div className="form-container">
