@@ -73,4 +73,39 @@ declare module "chartist-plugin-axistitle" {
   const chartistPluginAxisTitle = (opts: AxisTitleOptionsParam) => {};
   export default chartistPluginAxisTitle;
 }
-declare module "chartist-plugin-tooltips-updated";
+declare module "chartist-plugin-tooltips-updated" {
+  export type TooltipOptions<Meta = string | number, Value = string | number> = {
+    /** Accepts '£', '$', '€', etc.
+     *
+     * e.g. 4000 => €4,000
+     */
+    currency?: string;
+
+    currencyFormatCallback?: (value: Value, options: TooltipOptions) => string;
+
+    /** Build custom tooltip from meta and value */
+    tooltipFnc?: (meta: Meta, value: Value) => string;
+
+    /** Transform tooltip text */
+    transformTooltipTextFnc?: (value: Value) => string;
+
+    /** Add class(es) to tooltip wrapper */
+    class?: string;
+
+    /** Tooltips do not follow mouse movement -- they are anchored to the point / bar. */
+    anchorToPoint?: boolean;
+
+    /** Append tooltips to body instead of chart container */
+    appendToBody?: boolean;
+
+    /** Parse the meta value as HTML instead of plain text */
+    metaIsHTML?: boolean;
+
+    /** Class to use as selector if custom points drawn */
+    pointClass?: string;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  const chartistTooltip = (opts?: TooltipOptions) => {};
+  export default chartistTooltip;
+}

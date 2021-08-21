@@ -86,7 +86,7 @@ const chartOptions = (monthLabel: string): ILineChartOptions & IBarChartOptions 
           flipTitle: true,
         },
       }),
-      chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
+      chartistTooltip({ pointClass: "ct-stroked-point" }),
     ],
   };
 };

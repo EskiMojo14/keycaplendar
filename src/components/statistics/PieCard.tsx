@@ -40,7 +40,7 @@ export const StatusCard = (props: StatusCardProps) => {
     donut: true,
     donutWidth: "50%",
     showLabel: false,
-    plugins: [chartistTooltip({ metaIsHTML: true })],
+    plugins: [chartistTooltip()],
   };
   const sideways = props.summary && device === "desktop";
   const selectChips =
