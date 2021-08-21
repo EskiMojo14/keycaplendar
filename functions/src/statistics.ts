@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
+import { IChartistData } from "chartist";
 import { create, all, MathJsStatic } from "mathjs";
 import {
   StatisticsSetType,
@@ -13,7 +14,6 @@ import {
   ShippedData,
   DurationData,
   VendorData,
-  ChartData,
   DurationDataObject,
   VendorDataObject,
   ShippedDataObject,
@@ -167,7 +167,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
         const filteredSets = filterSets(catSets, property, name);
         const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
 
-        let timelineData: ChartData;
+        let timelineData: IChartistData["series"];
         if (property === "vendor" || property === "designer") {
           timelineData = profiles.map((profile) => {
             const index = profileNames.indexOf(profile);
