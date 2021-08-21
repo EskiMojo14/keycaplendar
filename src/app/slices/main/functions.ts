@@ -15,7 +15,7 @@ import {
   normalise,
   objectKeys,
   replaceFunction,
-  uniqueArray,
+  removeDuplicates,
 } from "@s/common/functions";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
@@ -218,23 +218,25 @@ const generateLists = (state = store.getState()) => {
   const urlWhitelist = selectURLWhitelist(state);
 
   const allVendors = alphabeticalSort(
-    uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
+    removeDuplicates(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
   );
 
   const allVendorRegions = alphabeticalSort(
-    uniqueArray([
+    removeDuplicates([
       ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat(),
       ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2),
     ])
   );
 
   const allRegions = alphabeticalSort(
-    uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2))
+    removeDuplicates(
+      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2)
+    )
   );
 
-  const allDesigners = alphabeticalSort(uniqueArray(sets.map((set) => (set.designer ? set.designer : [])).flat()));
+  const allDesigners = alphabeticalSort(removeDuplicates(sets.map((set) => (set.designer ? set.designer : [])).flat()));
 
-  const allProfiles = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
+  const allProfiles = alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)));
 
   // create default preset
 
@@ -422,7 +424,7 @@ const createGroups = (state = store.getState()) => {
       return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter(Boolean);
     }
   };
-  const groups = uniqueArray(createGroups(sets));
+  const groups = removeDuplicates(createGroups(sets));
 
   groups.sort((a, b) => {
     if (arrayIncludes(dateSorts, sort)) {
@@ -511,7 +513,7 @@ const createGroups = (state = store.getState()) => {
   dispatch(setSetGroups(setGroups));
 
   if (sortHiddenCheck[sort].includes(page)) {
-    const allGroupedSets = uniqueArray(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
+    const allGroupedSets = removeDuplicates(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
 
     const diff = sets.length - allGroupedSets.length;
 

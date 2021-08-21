@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Chartist, { IBarChartOptions, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
+import Chartist, { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
@@ -14,7 +14,7 @@ import {
   iconObject,
   pluralise,
 } from "@s/common/functions";
-import { ChartData, ChartSeriesItem, ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
@@ -86,7 +86,7 @@ const chartOptions = (monthLabel: string): ILineChartOptions & IBarChartOptions 
           flipTitle: true,
         },
       }),
-      chartistTooltip({ metaIsHTML: true, pointClass: "ct-stroked-point" }),
+      chartistTooltip({ pointClass: "ct-stroked-point" }),
     ],
   };
 };
@@ -147,7 +147,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
       <ChartistGraph
         className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped],
+          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
           labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Bar"}
@@ -160,7 +160,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
       <ChartistGraph
         className={device === "desktop" || props.summary ? "ct-double-octave" : "ct-major-twelfth"}
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped],
+          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
           labels: props.months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
@@ -300,9 +300,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const focusAll = () => {
     let allIndexes: number[] = [];
     if (
-      arrayEveryType<{ data: ChartSeriesItem[]; className?: string; index: number }>(
+      arrayEveryType<{ index: number }>(
         chartData.timeline.series,
-        (series: ChartData) => hasKey(series, "index")
+        (series) => typeof series === "object" && hasKey(series, "index")
       ) &&
       chartData.timeline.series.length !== props.allProfiles?.length
     ) {
@@ -322,12 +322,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     onlyFocused &&
     props.focusable &&
     props.allProfiles &&
-    arrayEveryType<{ data: ChartSeriesItem[]; className?: string }>(chartData.timeline.series, (series) =>
-      hasKey(series, "data")
-    ) &&
+    arrayEveryType<{ data: any; index: number }>(chartData.timeline.series, (series) => hasKey(series, "data")) &&
     focused.length > 0 &&
     focused.length !== chartData.timeline.series.length
-      ? chartData.timeline.series.filter((series) => focused.includes(series.index || -1))
+      ? chartData.timeline.series.filter((series) => focused.includes(series.index))
       : chartData.timeline.series;
   const barChart =
     graphType === "bar" ? (

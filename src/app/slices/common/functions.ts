@@ -17,7 +17,7 @@ const storageRef = storage.ref();
  * @returns Whether `obj` has the specified `key`.
  */
 
-export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
+export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.
@@ -35,7 +35,10 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
  * @returns If all items meet the callback requirement.
  */
 
-export const arrayEveryType = <T>(arr: any[], callback: (item: any) => boolean): arr is T[] => arr.every(callback);
+export const arrayEveryType = <T>(
+  arr: any[],
+  callback: (item: any, index: number, array: any[]) => boolean
+): arr is T[] => arr.every(callback);
 
 /** Merge object and modify specified keys. */
 
@@ -54,8 +57,7 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
  * @returns `array` with only unique values.
  */
 
-export const uniqueArray = <T extends string | number>(arr: T[]): T[] =>
-  arr.filter((item, index) => arr.indexOf(item) === index);
+export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array.
@@ -368,7 +370,7 @@ export const useBoolStates = (func: (bool: boolean) => void) => {
  */
 
 export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
-  const setMonths = uniqueArray(
+  const setMonths = removeDuplicates(
     sets.map((set) => {
       const val = set[prop];
       return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";

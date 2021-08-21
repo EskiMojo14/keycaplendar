@@ -4,7 +4,7 @@ import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
-import { alphabeticalSortProp, uniqueArray } from "@s/common/functions";
+import { alphabeticalSortProp, removeDuplicates } from "@s/common/functions";
 import { getSetById } from "@s/main/functions";
 import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
@@ -76,7 +76,7 @@ export const processActions = (actions: PublicActionType[]) => {
 
 export const generateSets = (state = store.getState()) => {
   const actions = selectProcessedActions(state);
-  const ids = uniqueArray(actions.map((action) => action.documentId));
+  const ids = removeDuplicates(actions.map((action) => action.documentId));
   const recentSets: RecentSet[] = ids.map((id) => {
     const filteredActions = alphabeticalSortProp(
       actions.filter((action) => action.documentId === id),

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { uniqueArray } from "@s/common/functions";
+import { removeDuplicates } from "@s/common/functions";
 import { Preset } from "./constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 
@@ -142,7 +142,7 @@ export const mainSlice = createSlice({
       state.whitelist = Object.assign(action.payload, { edited: Object.keys(action.payload) });
     },
     mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
-      const edited = uniqueArray([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
+      const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
       state.whitelist = Object.assign(state.whitelist, action.payload, { edited });
     },
     setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {

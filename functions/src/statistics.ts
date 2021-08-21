@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
+import { IChartistData } from "chartist";
 import { create, all, MathJsStatic } from "mathjs";
 import {
   StatisticsSetType,
@@ -13,7 +14,6 @@ import {
   ShippedData,
   DurationData,
   VendorData,
-  ChartData,
   DurationDataObject,
   VendorDataObject,
   ShippedDataObject,
@@ -23,7 +23,7 @@ import {
 import {
   getSetMonthRange,
   alphabeticalSort,
-  uniqueArray,
+  removeDuplicates,
   hasKey,
   countInArray,
   alphabeticalSortPropCurried,
@@ -131,10 +131,10 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       }),
     ];
 
-    const profileNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.profile)));
-    const designerNames = alphabeticalSort(uniqueArray(catSets.map((set) => set.designer).flat(1)));
+    const profileNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.designer).flat(1)));
     const vendorNames = alphabeticalSort(
-      uniqueArray(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+      removeDuplicates(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
     const lists = {
       profile: profileNames,
@@ -165,9 +165,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       const data: TimelineDataObject[] = [];
       lists[property].forEach((name) => {
         const filteredSets = filterSets(catSets, property, name);
-        const profiles = alphabeticalSort(uniqueArray(filteredSets.map((set) => set.profile)));
+        const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
 
-        let timelineData: ChartData;
+        let timelineData: IChartistData["series"];
         if (property === "vendor" || property === "designer") {
           timelineData = profiles.map((profile) => {
             const index = profileNames.indexOf(profile);
@@ -231,10 +231,10 @@ const createStatusData = (sets: StatisticsSetType[]) => {
       vendor: [],
     },
   };
-  const profileNames = alphabeticalSort(uniqueArray(sets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(uniqueArray(sets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)));
+  const designerNames = alphabeticalSort(removeDuplicates(sets.map((set) => set.designer).flat(1)));
   const vendorNames = alphabeticalSort(
-    uniqueArray(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
   );
   const lists = {
     profile: profileNames,
@@ -325,10 +325,10 @@ const createShippedData = (sets: StatisticsSetType[]) => {
 
   shippedData.months = months;
 
-  const profileNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(uniqueArray(pastSets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(removeDuplicates(pastSets.map((set) => set.profile)));
+  const designerNames = alphabeticalSort(removeDuplicates(pastSets.map((set) => set.designer).flat(1)));
   const vendorNames = alphabeticalSort(
-    uniqueArray(pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(pastSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
   );
   const lists = {
     profile: profileNames,
@@ -426,10 +426,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
     const propSets: StatisticsSetType[] =
       cat === "gbLaunch" ? dateSets.filter((set) => set.gbEnd.length === 10) : dateSets;
     if (hasKey(durationData, cat)) {
-      const profileNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.profile)));
-      const designerNames = alphabeticalSort(uniqueArray(propSets.map((set) => set.designer).flat(1)));
+      const profileNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.profile)));
+      const designerNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.designer).flat(1)));
       const vendorNames = alphabeticalSort(
-        uniqueArray(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+        removeDuplicates(propSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
       );
       const lists = {
         profile: profileNames,
@@ -521,10 +521,10 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
   });
   const vendorSets = pastSets.filter((set) => set.vendors);
 
-  const profileNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.profile)));
-  const designerNames = alphabeticalSort(uniqueArray(vendorSets.map((set) => set.designer).flat(1)));
+  const profileNames = alphabeticalSort(removeDuplicates(vendorSets.map((set) => set.profile)));
+  const designerNames = alphabeticalSort(removeDuplicates(vendorSets.map((set) => set.designer).flat(1)));
   const vendorNames = alphabeticalSort(
-    uniqueArray(vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    removeDuplicates(vendorSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
   );
   const lists = {
     profile: profileNames,
