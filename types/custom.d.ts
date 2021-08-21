@@ -1,5 +1,6 @@
 declare module "*.svg" {
-  export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
+  import { ComponentType, SVGProps } from "react";
+  export const ReactComponent: ComponentType<SVGProps<SVGSVGElement>>;
   const src: string;
   export default src;
 }
@@ -11,7 +12,7 @@ declare module "csstype" {
 }
 
 declare module "react-lazy-load" {
-  import { FC } from "react";
+  import { ComponentType, PropsWithChildren } from "react";
 
   interface LazyLoadProps {
     className?: string;
@@ -31,21 +32,22 @@ declare module "react-lazy-load" {
     onContentVisible?: () => void;
   }
 
-  export const LazyLoad: FC<LazyLoadProps>;
+  export const LazyLoad: ComponentType<PropsWithChildren<LazyLoadProps>>;
 
   export default LazyLoad;
 }
 
 declare module "react-twemoji" {
-  import { FC } from "react";
+  import { ComponentType, PropsWithChildren } from "react";
+  import { ParseObject } from "twemoji";
 
   type TwemojiProps = {
     noWrapper?: boolean;
-    options?: Record<string, any>;
+    options?: Partial<ParseObject>;
     tag?: string;
   };
 
-  export const Twemoji: FC<TwemojiProps>;
+  export const Twemoji: ComponentType<PropsWithChildren<TwemojiProps>>;
 
   export default Twemoji;
 }
