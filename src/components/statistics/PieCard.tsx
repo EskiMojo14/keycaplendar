@@ -21,8 +21,6 @@ import {
 } from "@rmwc/data-table";
 import "./PieCard.scss";
 
-const hideZero = (num: number) => num || " ";
-
 type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
@@ -93,7 +91,7 @@ export const StatusCard = (props: StatusCardProps) => {
                 { meta: "Live GB", value: chartData.liveGb },
                 { meta: "Post GB", value: chartData.postGb },
               ],
-              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb].map(hideZero),
+              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb],
             }}
             type="Pie"
             options={chartOptions}

@@ -1,3 +1,4 @@
+import { IChartistData } from "chartist";
 import { statsTabs } from "./constants";
 
 export type Categories = "icDate" | "gbLaunch";
@@ -7,17 +8,6 @@ export type Properties = "profile" | "designer" | "vendor";
 export type Sorts = "total" | "alphabetical";
 
 export type StatsTab = typeof statsTabs[number];
-
-export type ChartDatumObject = {
-  meta?: string;
-  value: number;
-};
-
-export type ChartSeriesItem = ChartDatumObject | number | null | undefined;
-
-export type ChartData =
-  | ChartSeriesItem[][]
-  | { data: ChartSeriesItem[]; className?: string; index?: number; name?: string }[];
 
 export type StatisticsType = {
   summary: Categories;
@@ -43,7 +33,7 @@ export type TimelineDataObject = {
   total: number;
   timeline: {
     profiles: string[];
-    series: ChartData;
+    series: IChartistData["series"];
   };
 };
 
@@ -77,8 +67,8 @@ export type ShippedDataObject = {
   shipped: number;
   unshipped: number;
   timeline: {
-    shipped: ChartData[number];
-    unshipped: ChartData[number];
+    shipped: IChartistData["series"][number];
+    unshipped: IChartistData["series"][number];
   };
 };
 
@@ -89,7 +79,7 @@ export type ShippedData = {
 };
 
 export type DurationDataObject = {
-  chartData: { labels: (string | number)[]; series: ChartData };
+  chartData: IChartistData;
   mean: number;
   median: number;
   mode: number[];
@@ -108,7 +98,7 @@ export type DurationData = Record<
 >;
 
 export type VendorDataObject = {
-  chartData: { labels: (string | number)[]; series: ChartData };
+  chartData: IChartistData;
   mean: number;
   median: number;
   mode: number[];

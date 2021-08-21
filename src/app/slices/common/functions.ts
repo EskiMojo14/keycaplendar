@@ -17,7 +17,7 @@ const storageRef = storage.ref();
  * @returns Whether `obj` has the specified `key`.
  */
 
-export const hasKey = <O>(obj: O, key: keyof any): key is keyof O => key in obj;
+export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.

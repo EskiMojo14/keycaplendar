@@ -1,5 +1,4 @@
 declare module "*.svg" {
-  import React = require("react");
   export const ReactComponent: React.FC<React.SVGProps<SVGSVGElement>>;
   const src: string;
   export default src;
@@ -11,12 +10,10 @@ declare module "csstype" {
   }
 }
 
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 declare module "react-lazy-load" {
-  import { FC, ReactNode } from "react";
+  import { FC } from "react";
 
-  interface Props {
+  interface LazyLoadProps {
     className?: string;
     height?: number | string;
     width?: number | string;
@@ -30,31 +27,60 @@ declare module "react-lazy-load" {
     offsetTop?: number;
     offsetVertical?: number;
     threshold?: number;
-    children?: ReactNode;
     throttle?: number | boolean;
     onContentVisible?: () => void;
   }
 
-  const LazyLoad: FC<Props> = (props) => {};
+  export const LazyLoad: FC<LazyLoadProps>;
 
   export default LazyLoad;
 }
 
 declare module "react-twemoji" {
-  import { FC, ReactNode } from "react";
+  import { FC } from "react";
 
-  type Props = {
-    children?: ReactNode;
+  type TwemojiProps = {
     noWrapper?: boolean;
-    options?: Record<string, unknown>;
+    options?: Record<string, any>;
     tag?: string;
   };
 
-  const Twemoji: FC<Props> = (props) => {};
+  export const Twemoji: FC<TwemojiProps>;
 
   export default Twemoji;
 }
 
+declare module "react-chartist" {
+  import { ComponentType } from "react";
+  import {
+    IChartOptions,
+    IBarChartOptions,
+    ILineChartOptions,
+    IPieChartOptions,
+    IResponsiveOptionTuple,
+    IChartistData,
+  } from "chartist";
+
+  type ChartProps<ChartType extends string, Options extends IChartOptions> = {
+    type: ChartType;
+    data: IChartistData;
+
+    options?: Options;
+    responsiveOptions?: Array<IResponsiveOptionTuple<Options>>;
+    listener?: Record<string, (...args: any[]) => any>;
+
+    className?: string;
+    style?: React.CSSProperties;
+  };
+
+  type PieChartProps = ChartProps<"Pie", IPieChartOptions>;
+  type BarChartProps = ChartProps<"Bar", IBarChartOptions>;
+  type LineChartProps = ChartProps<"Line", ILineChartOptions>;
+
+  type GraphProps = PieChartProps | BarChartProps | LineChartProps;
+  export const ChartistGraph: ComponentType<GraphProps>;
+  export default ChartistGraph;
+}
+
 declare module "chartist-plugin-axistitle";
 declare module "chartist-plugin-tooltips-updated";
-declare module "react-chartist";
