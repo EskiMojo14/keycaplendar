@@ -14,7 +14,7 @@ type AuditState = {
   length: number;
 };
 
-const initialState: AuditState = {
+export const initialState: AuditState = {
   loading: false,
   //actions
   allActions: [],

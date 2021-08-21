@@ -9,7 +9,7 @@ type UpdatesState = {
   urlEntry: string;
 };
 
-const initialState: UpdatesState = {
+export const initialState: UpdatesState = {
   loading: false,
 
   entries: [],

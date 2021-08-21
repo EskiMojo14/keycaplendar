@@ -13,7 +13,7 @@ type UserState = {
   userPresets: PresetType[];
 };
 
-const initialState: UserState = {
+export const initialState: UserState = {
   user: {
     email: "",
     name: "",

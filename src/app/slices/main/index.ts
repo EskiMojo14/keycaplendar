@@ -36,7 +36,7 @@ type MainState = {
   linkedFavorites: { array: string[]; displayName: string };
 };
 
-const initialState: MainState = {
+export const initialState: MainState = {
   // state
   transition: false,
   loading: false,

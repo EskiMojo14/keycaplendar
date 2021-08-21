@@ -10,7 +10,7 @@ type StatisticsState = {
   sort: StatisticsSortType;
 };
 
-const initialState: StatisticsState = {
+export const initialState: StatisticsState = {
   tab: "summary",
   loading: false,
   data: {
