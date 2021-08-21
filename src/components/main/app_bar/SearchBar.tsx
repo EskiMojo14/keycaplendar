@@ -369,7 +369,10 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
                 icon={{
                   icon: "arrow_back",
                   tabIndex: 0,
-                  onClick: () => props.close(),
+                  onClick: () => {
+                    props.close();
+                    clearInput();
+                  },
                 }}
                 trailingIcon={
                   <IconButton
