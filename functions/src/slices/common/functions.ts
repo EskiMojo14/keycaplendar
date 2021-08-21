@@ -34,7 +34,7 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
  * @returns `array` with only unique values.
  */
 
-export const uniqueArray = <T>(array: T[]): T[] => array.filter((v, i, a) => a.indexOf(v) === i);
+export const removeDuplicates = <T>(array: T[]): T[] => array.filter((v, i, a) => a.indexOf(v) === i);
 
 /**
  * Counts occurrences of specified value within provided array.
@@ -151,7 +151,7 @@ export const getSetMonthRange = (
   prop: DateSortKeys,
   format: string
 ): string[] => {
-  const setMonths = uniqueArray(
+  const setMonths = removeDuplicates(
     sets.map((set) => {
       const val = set[prop];
       return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";

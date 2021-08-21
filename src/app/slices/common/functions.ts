@@ -57,7 +57,7 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
  * @returns `array` with only unique values.
  */
 
-export const uniqueArray = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
+export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array.
@@ -370,7 +370,7 @@ export const useBoolStates = (func: (bool: boolean) => void) => {
  */
 
 export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
-  const setMonths = uniqueArray(
+  const setMonths = removeDuplicates(
     sets.map((set) => {
       const val = set[prop];
       return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
