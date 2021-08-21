@@ -35,7 +35,10 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
  * @returns If all items meet the callback requirement.
  */
 
-export const arrayEveryType = <T>(arr: any[], callback: (item: any) => boolean): arr is T[] => arr.every(callback);
+export const arrayEveryType = <T>(
+  arr: any[],
+  callback: (item: any, index: number, array: any[]) => boolean
+): arr is T[] => arr.every(callback);
 
 /** Merge object and modify specified keys. */
 
@@ -54,8 +57,7 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
  * @returns `array` with only unique values.
  */
 
-export const uniqueArray = <T extends string | number>(arr: T[]): T[] =>
-  arr.filter((item, index) => arr.indexOf(item) === index);
+export const uniqueArray = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array.
