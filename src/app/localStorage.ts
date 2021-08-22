@@ -4,7 +4,7 @@ import { initialState as common } from "@s/common";
 import { initialState as guides } from "@s/guides";
 import { initialState as history } from "@s/history";
 import { initialState as images } from "@s/images";
-import { initialState as main } from "@s/main";
+import { initialState as main, MainState } from "@s/main";
 import { initialState as settings } from "@s/settings";
 import { initialState as statistics } from "@s/statistics";
 import { initialState as updates } from "@s/updates";
@@ -26,7 +26,11 @@ export const storeInitialState = {
 };
 
 export const hydrateState = (state: any) => {
-  return { ...storeInitialState, ...state };
+  const hydrateMainSlice = (partialMain: Partial<MainState>): MainState => ({
+    ...main,
+    ...partialMain,
+  });
+  return { ...storeInitialState, ...state, main: hydrateMainSlice(state.main) };
 };
 
 export const loadState = () => {
@@ -43,8 +47,13 @@ export const loadState = () => {
 
 export const sanitiseState = (state: RootState) => {
   const { main, settings, user } = state;
+  const sanitiseMainSlice = (mainSlice: MainState) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { transition, loading, urlSet, search, urlWhitelist, linkedFavorites, ...filteredMainSlice } = mainSlice;
+    return filteredMainSlice;
+  };
   return {
-    main,
+    main: sanitiseMainSlice(main),
     settings,
     user,
   };
