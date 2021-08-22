@@ -14,12 +14,12 @@ const { dispatch } = store;
 
 export const acceptCookies = () => {
   dispatch(setCookies(true));
-  setCookie("accepted", "true", 356);
+  setStorage("accepted", true);
 };
 
 export const clearCookies = () => {
   dispatch(setCookies(false));
-  setCookie("accepted", "false", -1);
+  localStorage.removeItem("accepted");
 };
 
 export const setCookie = (cname: string, cvalue: string, exdays: number, state = store.getState()) => {
@@ -51,14 +51,15 @@ export const getStorage = (name: string) => {
 };
 
 export const checkStorage = () => {
-  const accepted = getCookie("accepted");
-  if (accepted && accepted === "true") {
+  const acceptedCookie = getCookie("accepted");
+  const accepted = getStorage("accepted");
+  if (acceptedCookie === "true" || accepted) {
     dispatch(setCookies(true));
 
     const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
       const cookie = getCookie(key);
       const storage = getStorage(key);
-      if (cookie || storage !== null) {
+      if (cookie || (storage !== null && key !== "accepted")) {
         if (cookie !== "true" && cookie !== "false") {
           setTimeout(() => {
             setFunction(cookie || storage, false);
@@ -69,7 +70,11 @@ export const checkStorage = () => {
           const cookieBool = cookie === "true";
           setTimeout(() => {
             setFunction(cookieBool ?? storage, false);
-            localStorage.removeItem(key);
+            if (key === "accepted") {
+              setStorage("accepted", true, store.getState());
+            } else {
+              localStorage.removeItem(key);
+            }
             setCookie(key, cookie, -1);
           }, 0);
         }
@@ -274,4 +279,5 @@ export const settingFns: Record<string, (val: any, write: boolean) => void> = {
   toTimeTheme: setToTimeTheme,
   density: setDensity,
   presetId: console.log,
+  accepted: console.log,
 };
