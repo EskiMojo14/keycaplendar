@@ -34,7 +34,18 @@ export const store = configureStore({
     }),
 });
 
-store.subscribe(debounce(() => saveState(store.getState()), 1000));
+let currentValue: string;
+
+store.subscribe(
+  debounce(() => {
+    const previousValue = currentValue;
+    const { main, settings, user } = store.getState();
+    currentValue = JSON.stringify({ main, settings, user });
+    if (previousValue !== currentValue) {
+      saveState(store.getState());
+    }
+  }, 1000)
+);
 
 export type RootState = ReturnType<typeof store.getState>;
 
