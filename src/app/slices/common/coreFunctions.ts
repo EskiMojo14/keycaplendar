@@ -18,6 +18,8 @@ import {
   setURLSet,
   setLinkedFavorites,
   setURLWhitelist,
+  selectDefaultPreset,
+  setCurrentPreset,
 } from "@s/main";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
@@ -60,7 +62,7 @@ export const checkDevice = () => {
   window.addEventListener("resize", calculate);
 };
 
-export const getURLQuery = () => {
+export const getURLQuery = (state = store.getState()) => {
   const params = new URLSearchParams(window.location.search);
   const path = window.location.pathname.substring(1);
   if (path || params.has("page")) {
@@ -128,9 +130,11 @@ export const getURLQuery = () => {
         }
       }
     }
-    if (index === array.length - 1) {
+    if (index === array.length - 1 && Object.keys(whitelistObj).length > 0) {
+      const defaultPreset = selectDefaultPreset(state);
       dispatch(setURLWhitelist(whitelistObj));
-      setWhitelistMerge(whitelistObj, false);
+      dispatch(setCurrentPreset(defaultPreset));
+      setWhitelistMerge({ ...defaultPreset.whitelist, ...whitelistObj }, false);
     }
   });
   if (params.has("keysetId")) {
