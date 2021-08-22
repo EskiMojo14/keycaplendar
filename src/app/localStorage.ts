@@ -1,5 +1,6 @@
 import { RootState } from "~/app/store";
 import { initialState as main, MainState } from "@s/main";
+import { selectCookies } from "@s/settings";
 
 export const hydrateState = (state: any) => {
   const hydrateMainSlice = (partialMain: Partial<MainState>): MainState => ({
@@ -17,6 +18,7 @@ export const loadState = () => {
     }
     return hydrateState(JSON.parse(serializedState));
   } catch (err) {
+    console.log(err);
     return undefined;
   }
 };
@@ -38,7 +40,10 @@ export const sanitiseState = (state: RootState) => {
 export const saveState = (state: RootState) => {
   try {
     const serializedState = JSON.stringify(sanitiseState(state));
-    localStorage.setItem("state", serializedState);
+    const accepted = selectCookies(state);
+    if (accepted) {
+      localStorage.setItem("state", serializedState);
+    }
   } catch (err) {
     throw new Error("Can't save changes in local storage");
   }
