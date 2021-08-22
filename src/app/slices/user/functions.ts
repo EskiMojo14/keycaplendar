@@ -8,9 +8,8 @@ import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";
 import { addOrRemove, hasKey } from "@s/common/functions";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
-import { whitelistParams } from "@s/main/constants";
-import { filterData, selectPreset, updatePreset } from "@s/main/functions";
-import { getStorage, setSyncSettings, settingFns } from "@s/settings/functions";
+import { filterData, updatePreset } from "@s/main/functions";
+import { setSyncSettings, settingFns } from "@s/settings/functions";
 import {
   selectBought,
   selectFavorites,
@@ -70,16 +69,6 @@ export const getUserPreferences = (id: string) => {
             if (filterPresets) {
               const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
               dispatch(setUserPresets(updatedPresets));
-              const storedPreset = getStorage("presetId");
-              const {
-                main: { urlWhitelist },
-              } = store.getState();
-              const params = new URLSearchParams(window.location.search);
-              const noUrlParams =
-                !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
-              if (storedPreset && storedPreset !== "default" && noUrlParams) {
-                selectPreset(storedPreset, false);
-              }
             }
 
             if (is<boolean>(syncSettings)) {

@@ -7,9 +7,7 @@ import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich 
 import { ViewType } from "./types";
 import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/common/functions";
-import { whitelistParams } from "@s/main/constants";
-import { selectLoading, selectURLWhitelist, setTransition } from "@s/main";
-import { selectPreset } from "@s/main/functions";
+import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 
 const { dispatch } = store;
@@ -62,59 +60,35 @@ export const getStorage = (name: string) => {
   return value ? JSON.parse(value) : value;
 };
 
-export const checkStorage = (state = store.getState()) => {
+export const checkStorage = () => {
   const accepted = getCookie("accepted");
-  const { settings } = state;
-  const urlWhitelist = selectURLWhitelist(state);
   if (accepted && accepted === "true") {
     dispatch(setCookies(true));
 
     const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
       const cookie = getCookie(key);
-      if (cookie) {
+      const storage = getStorage(key);
+      if (cookie || storage !== null) {
         if (cookie !== "true" && cookie !== "false") {
           setTimeout(() => {
-            setFunction(cookie, false);
-            setStorage(key, cookie);
+            setFunction(cookie || storage, false);
+            localStorage.removeItem(key);
             setCookie(key, cookie, -1);
           }, 0);
         } else {
           const cookieBool = cookie === "true";
           setTimeout(() => {
-            setFunction(cookieBool, false);
-            setStorage(key, cookieBool);
+            setFunction(cookieBool ?? storage, false);
+            localStorage.removeItem(key);
             setCookie(key, cookie, -1);
           }, 0);
         }
       }
     };
 
-    const fetchAndSet = (key: string, setFunction: (val: any, write: boolean) => void) => {
-      const val = getStorage(key);
-      if (val && hasKey(settings, key)) {
-        const currentSetting = settings[key];
-        if (val !== currentSetting) {
-          setTimeout(() => {
-            setFunction(val, false);
-          }, 0);
-        }
-      }
-    };
-
-    Object.keys(settingFns).forEach((setting) => {
-      if (hasKey(settingFns, setting)) {
-        const func = settingFns[setting];
-        fetchAndSet(setting, func);
-        convertCookie(setting, func);
-      }
+    Object.entries(settingFns).forEach(([setting, func]) => {
+      convertCookie(setting, func);
     });
-
-    const storedPreset = getStorage("presetId");
-    const params = new URLSearchParams(window.location.search);
-    const noUrlParams = !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
-    if (storedPreset && storedPreset !== "default" && noUrlParams) {
-      selectPreset(storedPreset, false);
-    }
   }
 };
 
@@ -134,7 +108,6 @@ export const setView = (view: ViewType, write = true, state = store.getState()) 
     dispatch(setSettings({ view: view }));
   }
   if (write) {
-    setStorage("view", view);
     syncSetting("view", view);
   }
 };
@@ -211,11 +184,9 @@ const isDarkTheme = (state = store.getState()) => {
 
 export const checkTheme = (state = store.getState()) => {
   const { settings } = state;
-  const themeBool = isDarkTheme();
-  const theme = settings.lichTheme ? "lich" : themeBool === true ? settings.darkTheme : settings.lightTheme;
+  const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
   const html = document.documentElement;
-  html.setAttribute("class", "");
-  html.classList.add(theme);
+  html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
     meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--theme-meta"));
@@ -238,7 +209,6 @@ export const setApplyTheme = (applyTheme: string, write = true) => {
     setTimeout(timed.clear, 1000 * 10);
   }
   if (write) {
-    setStorage("applyTheme", applyTheme);
     syncSetting("applyTheme", applyTheme);
   }
 };
@@ -247,7 +217,6 @@ export const setLightTheme = (theme: string, write = true) => {
   dispatch(setSettings({ lightTheme: theme }));
   setTimeout(checkTheme, 1);
   if (write) {
-    setStorage("lightTheme", theme);
     syncSetting("lightTheme", theme);
   }
 };
@@ -256,7 +225,6 @@ export const setDarkTheme = (theme: string, write = true) => {
   dispatch(setSettings({ darkTheme: theme }));
   setTimeout(checkTheme, 1);
   if (write) {
-    setStorage("darkTheme", theme);
     syncSetting("darkTheme", theme);
   }
 };
@@ -265,7 +233,6 @@ export const setManualTheme = (bool: boolean, write = true) => {
   dispatch(setSettings({ manualTheme: bool }));
   setTimeout(checkTheme, 1);
   if (write) {
-    setStorage("manualTheme", bool);
     syncSetting("manualTheme", bool);
   }
 };
@@ -274,7 +241,6 @@ export const setFromTimeTheme = (time: string, write = true) => {
   dispatch(setSettings({ fromTimeTheme: time }));
   setTimeout(checkTheme, 1);
   if (write) {
-    setStorage("fromTimeTheme", time);
     syncSetting("fromTimeTheme", time);
   }
 };
@@ -283,7 +249,6 @@ export const setToTimeTheme = (time: string, write = true) => {
   dispatch(setSettings({ toTimeTheme: time }));
   setTimeout(checkTheme, 1);
   if (write) {
-    setStorage("toTimeTheme", time);
     syncSetting("toTimeTheme", time);
   }
 };
@@ -297,7 +262,6 @@ export const setBottomNav = (value: boolean, write = true) => {
   document.documentElement.scrollTop = 0;
   dispatch(setSettings({ bottomNav: value }));
   if (write) {
-    setStorage("bottomNav", value);
     syncSetting("bottomNav", value);
   }
 };
@@ -305,7 +269,6 @@ export const setBottomNav = (value: boolean, write = true) => {
 export const setDensity = (density: string, write = true) => {
   dispatch(setSettings({ density: density }));
   if (write) {
-    setStorage("density", density);
     syncSetting("density", density);
   }
 };
@@ -320,4 +283,5 @@ export const settingFns: Record<string, (val: any, write: boolean) => void> = {
   fromTimeTheme: setFromTimeTheme,
   toTimeTheme: setToTimeTheme,
   density: setDensity,
+  presetId: console.log,
 };

@@ -19,7 +19,6 @@ import {
 } from "@s/common/functions";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
-import { setStorage } from "@s/settings/functions";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
   allSorts,
@@ -675,7 +674,7 @@ export const findPreset = (prop: keyof PresetType, val: string, state = store.ge
   return allPresets[index];
 };
 
-export const selectPreset = (id: string, write = true, state = store.getState()) => {
+export const selectPreset = (id: string, state = store.getState()) => {
   const defaultPreset = selectDefaultPreset(state);
   if (id === "default") {
     dispatch(setCurrentPreset(defaultPreset));
@@ -686,9 +685,6 @@ export const selectPreset = (id: string, write = true, state = store.getState())
       dispatch(setCurrentPreset(preset));
       setWhitelistMerge(preset.whitelist);
     }
-  }
-  if (write) {
-    setStorage("presetId", id);
   }
 };
 
