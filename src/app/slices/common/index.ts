@@ -1,15 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { Page } from "./types";
+import { Page, ThemeMap } from "./types";
 
-type CommonState = {
+export type CommonState = {
   device: "mobile" | "tablet" | "desktop";
   page: Page;
+  theme: string;
+  themeMaps: Record<string, ThemeMap>;
 };
 
 export const initialState: CommonState = {
   device: "tablet",
   page: "images",
+  theme: "light",
+  themeMaps: {},
 };
 
 export const commonSlice = createSlice({
@@ -22,13 +26,23 @@ export const commonSlice = createSlice({
     setAppPage: (state, action: PayloadAction<Page>) => {
       state.page = action.payload;
     },
+    setTheme: (state, action: PayloadAction<string>) => {
+      state.theme = action.payload;
+    },
+    setThemeMaps: (state, action: PayloadAction<Record<string, ThemeMap>>) => {
+      state.themeMaps = action.payload;
+    },
   },
 });
 
-export const { setDevice, setAppPage } = commonSlice.actions;
+export const { setDevice, setTheme, setAppPage, setThemeMaps } = commonSlice.actions;
 
 export const selectDevice = (state: RootState) => state.common.device;
 
 export const selectPage = (state: RootState) => state.common.page;
+
+export const selectTheme = (state: RootState) => state.common.theme;
+
+export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export default commonSlice.reducer;

@@ -38,7 +38,7 @@ export type DatePickerProps = Overwrite<
   Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "pattern">,
   {
     value: string;
-    wrapperProps?: Omit<MenuSurfaceProps & MenuHTMLProps, "open" | "focusOnOpen" | "anchorCorner">;
+    wrapperProps?: Omit<MenuSurfaceProps & MenuHTMLProps, "open" | "anchorCorner">;
     pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
     onPickerChange?: (val: string) => void;
     month?: boolean;
@@ -84,7 +84,6 @@ export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, .
       <MenuSurface
         {...wrapperProps}
         open={open}
-        focusOnOpen={false}
         className={bemClasses("wrapper", { open }, [wrapperProps?.className || ""])}
         anchorCorner="bottomLeft"
       >

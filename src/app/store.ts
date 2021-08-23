@@ -39,8 +39,8 @@ let currentValue: string;
 store.subscribe(
   debounce(() => {
     const previousValue = currentValue;
-    const { main, settings, user } = store.getState();
-    currentValue = JSON.stringify({ main, settings, user });
+    const { common, main, settings, user } = store.getState();
+    currentValue = JSON.stringify({ common, main, settings, user });
     if (previousValue !== currentValue) {
       saveState(store.getState());
     }

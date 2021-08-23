@@ -1,13 +1,18 @@
 import { RootState } from "~/app/store";
+import { initialState as common, CommonState } from "@s/common";
 import { initialState as main, MainState } from "@s/main";
 import { selectCookies } from "@s/settings";
 
 export const hydrateState = (state: any) => {
+  const hydrateCommonSlice = (partialCommon: Partial<CommonState>): CommonState => ({
+    ...common,
+    ...partialCommon,
+  });
   const hydrateMainSlice = (partialMain: Partial<MainState>): MainState => ({
     ...main,
     ...partialMain,
   });
-  return { ...state, main: hydrateMainSlice(state.main) };
+  return { ...state, common: hydrateCommonSlice(state.common), main: hydrateMainSlice(state.main) };
 };
 
 export const loadState = () => {
@@ -24,13 +29,18 @@ export const loadState = () => {
 };
 
 export const sanitiseState = (state: RootState) => {
-  const { main, settings, user } = state;
+  const { common, main, settings, user } = state;
+  const sanitiseCommonSlice = (commonSlice: CommonState) => {
+    const { theme, themeMaps } = commonSlice;
+    return { theme, themeMaps };
+  };
   const sanitiseMainSlice = (mainSlice: MainState) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { transition, loading, urlSet, search, urlWhitelist, linkedFavorites, ...filteredMainSlice } = mainSlice;
     return filteredMainSlice;
   };
   return {
+    common: sanitiseCommonSlice(common),
     main: sanitiseMainSlice(main),
     settings,
     user,

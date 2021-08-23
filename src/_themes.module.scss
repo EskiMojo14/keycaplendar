@@ -1,0 +1,108 @@
+@use "@material/theme/color-palette" as palette;
+
+$themes-map: (
+  light: (
+    dark: false,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: palette.$grey-200,
+    error: #b00020,
+    on-error: white,
+    surface: white,
+    on-surface: black,
+  ),
+  sepia: (
+    dark: false,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #cac6ad,
+    error: #b00020,
+    on-error: white,
+    surface: #e2dfd6,
+    on-surface: #3d3d38,
+  ),
+  ocean: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #1b2936,
+    error: #cf6679,
+    on-error: black,
+    surface: #1b2936,
+    on-surface: white,
+  ),
+  grey: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #202125,
+    error: #cf6679,
+    on-error: black,
+    surface: #202125,
+    on-surface: white,
+  ),
+  deep-ocean: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #1a2328,
+    error: #cf6679,
+    on-error: black,
+    surface: #1a2328,
+    on-surface: white,
+  ),
+  deep: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #17161c,
+    error: #cf6679,
+    on-error: black,
+    surface: #17161c,
+    on-surface: white,
+  ),
+  dark: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: black,
+    on-secondary: black,
+    background: #121212,
+    error: #cf6679,
+    on-error: black,
+    surface: #121212,
+    on-surface: white,
+  ),
+  lich: (
+    dark: false,
+    primary: #514163,
+    secondary: #efc06e,
+    on-primary: #efc06e,
+    on-secondary: #403845,
+    background: #decde7,
+    error: #b00020,
+    on-error: white,
+    surface: lighten(#decde7, 5%),
+    on-surface: black,
+  ),
+);
+
+:export {
+  @each $theme-name, $theme in $themes-map {
+    @each $theme-prop, $theme-prop-val in $theme {
+      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+    }
+  }
+}

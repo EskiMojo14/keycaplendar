@@ -5,6 +5,7 @@ import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
 import { ViewType } from "./types";
+import { setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/common/functions";
 import { selectLoading, setTransition } from "@s/main";
@@ -180,6 +181,7 @@ const isDarkTheme = (state = store.getState()) => {
 export const checkTheme = (state = store.getState()) => {
   const { settings } = state;
   const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
+  dispatch(setTheme(theme));
   const html = document.documentElement;
   html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");

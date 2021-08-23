@@ -10,6 +10,8 @@
 
 @use "typography-variables";
 
+@use "themes.module" as themes;
+
 @use "@material/typography" with (
   $font-family: typography-variables.$body-font,
   $styles-headline1: typography-variables.$headline1,
@@ -597,121 +599,8 @@ svg.material-icons,
   }
 }
 
-.light {
-  $theme: (
-    primary: palette.$teal-500,
-    secondary: palette.$deep-orange-200,
-    on-primary: black,
-    on-secondary: black,
-    background: palette.$grey-200,
-    error: #b00020,
-    on-error: white,
-    surface: white,
-    on-surface: black,
-  );
-  @include theme.theme($theme);
-}
-
-.sepia {
-  $theme: (
-    primary: palette.$teal-500,
-    secondary: palette.$deep-orange-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #cac6ad,
-    error: #b00020,
-    on-error: white,
-    surface: #e2dfd6,
-    on-surface: #3d3d38,
-  );
-  @include theme.theme($theme);
-}
-
-.ocean {
-  $theme: (
-    primary: palette.$teal-200,
-    secondary: palette.$light-green-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #1b2936,
-    error: #cf6679,
-    on-error: black,
-    surface: #1b2936,
-    on-surface: white,
-  );
-  @include theme.theme($theme, true);
-}
-
-.grey {
-  $theme: (
-    primary: palette.$teal-200,
-    secondary: palette.$deep-orange-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #202125,
-    error: #cf6679,
-    on-error: black,
-    surface: #202125,
-    on-surface: white,
-  );
-  @include theme.theme($theme, true);
-}
-
-.deep-ocean {
-  $theme: (
-    primary: palette.$teal-200,
-    secondary: palette.$light-green-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #1a2328,
-    error: #cf6679,
-    on-error: black,
-    surface: #1a2328,
-    on-surface: white,
-  );
-  @include theme.theme($theme, true);
-}
-
-.deep {
-  $theme: (
-    primary: palette.$teal-200,
-    secondary: palette.$deep-orange-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #17161c,
-    error: #cf6679,
-    on-error: black,
-    surface: #17161c,
-    on-surface: white,
-  );
-  @include theme.theme($theme, true);
-}
-
-.dark {
-  $theme: (
-    primary: palette.$teal-200,
-    secondary: palette.$deep-orange-200,
-    on-primary: black,
-    on-secondary: black,
-    background: #121212,
-    error: #cf6679,
-    on-error: black,
-    surface: #121212,
-    on-surface: white,
-  );
-  @include theme.theme($theme, true);
-}
-
-.lich {
-  $theme: (
-    primary: #514163,
-    secondary: #efc06e,
-    on-primary: #efc06e,
-    on-secondary: #403845,
-    background: #decde7,
-    error: #b00020,
-    surface: lighten(#decde7, 5%),
-    on-surface: black,
-  );
-  @include theme.theme($theme);
+@each $theme-name, $theme in themes.$themes-map {
+  .#{"" + $theme-name} {
+    @include theme.theme($theme, map-get($theme, dark));
+  }
 }

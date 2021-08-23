@@ -2,10 +2,10 @@ import { is } from "typescript-is";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setAppPage, setDevice } from ".";
+import { setAppPage, setDevice, setThemeMaps } from ".";
 import { mainPages, pageTitle, urlPages } from "./constants";
-import { arrayIncludes } from "./functions";
-import { Page } from "./types";
+import { arrayIncludes, camelise, hasKey } from "./functions";
+import { Page, ThemeMap } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -28,8 +28,41 @@ import { setStatisticsTab } from "@s/statistics/functions";
 import { StatsTab } from "@s/statistics/types";
 import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
+import themesMap from "~/_themes.module.scss";
 
 const { dispatch } = store;
+
+export const saveTheme = () => {
+  const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
+    const [theme, prop] = key.split("|");
+
+    const blankTheme: ThemeMap = {
+      dark: false,
+      background: "",
+      error: "",
+      onError: "",
+      onPrimary: "",
+      onSecondary: "",
+      onSurface: "",
+      primary: "",
+      secondary: "",
+    };
+
+    const copy = { ...prev };
+
+    if (prev[theme] === undefined) {
+      copy[theme] = blankTheme;
+    }
+
+    const value = val === "true" || val === "false" ? val === "true" : val;
+    const camelProp = camelise(prop, "-");
+    if (hasKey(copy, theme) && hasKey(blankTheme, camelProp)) {
+      copy[theme] = { ...copy[theme], [camelProp]: value };
+    }
+    return copy;
+  }, {});
+  dispatch(setThemeMaps(interpolatedThemeMap));
+};
 
 export const checkDevice = () => {
   let i = 0;
