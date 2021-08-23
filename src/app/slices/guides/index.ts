@@ -12,7 +12,7 @@ type UpdatesState = {
   filteredTag: string;
 };
 
-const initialState: UpdatesState = {
+export const initialState: UpdatesState = {
   loading: false,
 
   entries: [],

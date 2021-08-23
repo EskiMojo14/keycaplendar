@@ -1,6 +1,6 @@
 export class Interval {
   intervalId;
-  constructor(callback: () => void, time: number) {
+  constructor(callback: (...args: any[]) => any, time: number) {
     this.intervalId = setInterval(callback, time);
   }
   clear() {

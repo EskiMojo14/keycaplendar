@@ -4,7 +4,7 @@ import { removeDuplicates } from "@s/common/functions";
 import { Preset } from "./constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 
-type MainState = {
+export type MainState = {
   transition: boolean;
   loading: boolean;
   content: boolean;
@@ -36,7 +36,7 @@ type MainState = {
   linkedFavorites: { array: string[]; displayName: string };
 };
 
-const initialState: MainState = {
+export const initialState: MainState = {
   // state
   transition: false,
   loading: false,

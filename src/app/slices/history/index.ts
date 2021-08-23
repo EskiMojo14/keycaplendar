@@ -10,7 +10,7 @@ type HistoryState = {
   recentSets: RecentSet[];
 };
 
-const initialState: HistoryState = {
+export const initialState: HistoryState = {
   tab: "recent",
   loading: false,
 

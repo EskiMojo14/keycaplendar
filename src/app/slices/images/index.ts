@@ -20,7 +20,7 @@ type ImagesState = {
   detailMetadata: Record<string, unknown>;
 };
 
-const initialState: ImagesState = {
+export const initialState: ImagesState = {
   loading: false,
   // folders
   currentFolder: "thumbs",

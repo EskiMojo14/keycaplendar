@@ -19,7 +19,7 @@ type SettingsState = {
   shareNameLoading: boolean;
 };
 
-const initialState: SettingsState = {
+export const initialState: SettingsState = {
   view: "card",
   bottomNav: false,
   applyTheme: "manual",

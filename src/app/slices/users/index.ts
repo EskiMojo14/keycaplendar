@@ -19,7 +19,7 @@ type UserState = {
   lastIndex: number;
 };
 
-const initialState: UserState = {
+export const initialState: UserState = {
   view: "table",
   loading: false,
   sort: "editor",

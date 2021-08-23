@@ -7,7 +7,7 @@ type CommonState = {
   page: Page;
 };
 
-const initialState: CommonState = {
+export const initialState: CommonState = {
   device: "tablet",
   page: "images",
 };
