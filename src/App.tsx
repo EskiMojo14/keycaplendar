@@ -13,6 +13,7 @@ import { selectCookies, selectSettings } from "@s/settings";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "@s/settings/functions";
 import { getUserPreferences } from "@s/user/functions";
 import { queue } from "~/app/snackbarQueue";
+import { Portal } from "@rmwc/base";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "@c/Content";
 import { Login } from "@c/pages/Login";
@@ -101,6 +102,7 @@ export const App = () => {
             <Content className={transitionClass} />
             <SnackbarQueue messages={queue.messages} />
             <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
+            <Portal />
           </div>
         </Route>
         <Route component={NotFound} />

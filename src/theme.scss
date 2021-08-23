@@ -412,7 +412,7 @@ $graph-colors-dark: (
       @include ripple.states(map-get($variables, on-surface));
     }
 
-    .mdc-menu {
+    .mdc-menu-surface {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
     }
 
@@ -557,7 +557,7 @@ $graph-colors-dark: (
     }
   }
 
-  .mdc-menu {
+  .mdc-menu-surface {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
   }
 
@@ -1261,7 +1261,7 @@ $graph-colors-dark: (
     &-scrim {
       background-color: rgba(map-get($variables, on-surface), 0.32);
     }
-    .mdc-menu {
+    .mdc-menu-surface {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
     }
     .mdc-card {

@@ -1,0 +1,29 @@
+.date-picker {
+  &__field {
+    .mdc-text-field__icon {
+      &--trailing {
+        .mdc-icon-button {
+          height: 36px;
+          width: 36px;
+          padding: (40px - 24px - 4px) / 2;
+        }
+      }
+    }
+  }
+  &__wrapper {
+    &.mdc-menu-surface {
+      width: 100%;
+    }
+    &.mdc-dialog {
+    }
+  }
+  .mdc-drawer &,
+  .full-screen-dialog & {
+    &__field + .date-picker__wrapper.mdc-menu-surface {
+      margin-top: -16px;
+    }
+    &__field + .mdc-text-field-helper-line + .date-picker__wrapper.mdc-menu-surface {
+      margin-top: -35px;
+    }
+  }
+}

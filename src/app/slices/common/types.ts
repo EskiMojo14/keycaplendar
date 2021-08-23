@@ -10,10 +10,7 @@ export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 /** Overwrite keys with a new object. */
 
-export type Overwrite<T1, T2> = {
-  [P in Exclude<keyof T1, keyof T2>]: T1[P];
-} &
-  T2;
+export type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
 
 /** Create a union of all keys in object T which have values of V type. */
 

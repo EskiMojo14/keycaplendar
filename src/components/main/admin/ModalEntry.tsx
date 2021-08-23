@@ -9,6 +9,7 @@ import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
 import {
   arrayMove,
@@ -33,8 +34,8 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { queue } from "~/app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
+import { DatePicker } from "@c/util/pickers/DatePicker";
 import { Autocomplete } from "@c/util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
@@ -253,6 +254,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
+  const handleDatePickerChange = (name: keyof typeof fields, value: string) => {
+    setFields((fields) => {
+      return { ...fields, [name]: value };
+    });
+  };
+
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
@@ -403,26 +410,23 @@ export const ModalCreate = (props: ModalCreateProps) => {
         Month
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+              <path d="M4 5.01h16V8H4z" opacity=".3" />
+            </svg>
+          )}
           outlined
           label="GB month"
-          pattern="^\d{4}-\d{1,2}$"
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
           onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onPickerChange={(val) => handleDatePickerChange("gbLaunch", val)}
+          month
         />
       </div>
       <CardActions>
@@ -437,28 +441,24 @@ export const ModalCreate = (props: ModalCreateProps) => {
         Date
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+              <path d="M4 5.01h16V8H4z" opacity=".3" />
+            </svg>
+          )}
           outlined
           label="GB launch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onPickerChange={(val) => handleDatePickerChange("gbLaunch", val)}
         />
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -471,13 +471,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
           }}
           outlined
           label="GB end"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
           value={fields.gbEnd}
           name="gbEnd"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
           onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onPickerChange={(val) => handleDatePickerChange("gbEnd", val)}
         />
       </div>
       <CardActions>
@@ -637,27 +635,24 @@ export const ModalCreate = (props: ModalCreateProps) => {
               listSplit
             />
           </MenuSurfaceAnchor>
-          <TextField
+          <DatePicker
             autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
+            icon={iconObject(
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            )}
             outlined
             label="IC date"
             required
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
             value={fields.icDate}
             name="icDate"
             helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            pickerProps={{ disableFuture: true }}
+            onPickerChange={(val) => handleDatePickerChange("icDate", val)}
           />
           <TextField
             autoComplete="off"
