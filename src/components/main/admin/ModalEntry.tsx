@@ -254,7 +254,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleDatePickerChange = (name: keyof typeof fields, value: string) => {
+  const handleNamedChange = (name: keyof typeof fields, value: string) => {
     setFields((fields) => {
       return { ...fields, [name]: value };
     });
@@ -424,8 +424,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-          onChange={handleChange}
-          onPickerChange={(val) => handleDatePickerChange("gbLaunch", val)}
+          onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
         />
       </div>
@@ -455,8 +454,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-          onChange={handleChange}
-          onPickerChange={(val) => handleDatePickerChange("gbLaunch", val)}
+          onChange={(val) => handleNamedChange("gbLaunch", val)}
         />
         <DatePicker
           autoComplete="off"
@@ -474,8 +472,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           value={fields.gbEnd}
           name="gbEnd"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-          onChange={handleChange}
-          onPickerChange={(val) => handleDatePickerChange("gbEnd", val)}
+          onChange={(val) => handleNamedChange("gbEnd", val)}
         />
       </div>
       <CardActions>
@@ -650,9 +647,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
             value={fields.icDate}
             name="icDate"
             helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={handleChange}
+            onChange={(val) => handleNamedChange("icDate", val)}
             pickerProps={{ disableFuture: true }}
-            onPickerChange={(val) => handleDatePickerChange("icDate", val)}
           />
           <TextField
             autoComplete="off"

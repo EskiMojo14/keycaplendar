@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { DateTime } from "luxon";
+import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import BEMHelper from "@s/common/bemHelper";
@@ -20,7 +21,7 @@ const formatDate = (string: string, month?: boolean) => {
   const chars = digits.split("");
   return chars
     .reduce((r, v, index) => (index === 4 || (index === 6 && !month) ? `${r}-${v}` : `${r}${v}`), "")
-    .substr(0, month ? 10 : 7);
+    .substr(0, !month ? 10 : 7);
 };
 
 const formatDateWithAppend = (string: string, month?: boolean) => {
@@ -38,32 +39,37 @@ export type DatePickerProps = Overwrite<
   Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "pattern">,
   {
     value: string;
+    onChange: (val: string) => void;
     wrapperProps?: Omit<MenuSurfaceProps & MenuHTMLProps, "open" | "anchorCorner">;
     pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
-    onPickerChange?: (val: string) => void;
     month?: boolean;
   }
 >;
 
 const bemClasses = new BEMHelper("date-picker");
 
-export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, ...props }: DatePickerProps) => {
+export const DatePicker = ({ pickerProps, wrapperProps, onChange, month, ...props }: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
   const useInline = device === "desktop";
 
   const datePattern = month ? "^\\d{4}-\\d{1,2}$" : "^\\d{4}-\\d{1,2}-\\d{1,2}$";
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
+  const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
 
   const minDate = pickerProps?.minDate || "2000-01-01";
   const maxDate = pickerProps?.disableFuture
     ? DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd")
-    : pickerProps?.maxDate;
+    : pickerProps?.maxDate
+    ? pickerProps.maxDate
+    : DateTime.now()
+        .plus({ years: 2 })
+        .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
+
+  const rifm = useRifm({ value: props.value, onChange: onChange, format: formatDateWithAppend });
 
   const handleDatePickerChange: KeyboardDatePickerProps["onChange"] = (date, value) => {
     const finalValue = (month ? date?.toFormat("yyyy-MM") : date?.toISODate()) || value || "";
-    if (onPickerChange) {
-      onPickerChange(finalValue);
-    }
+    onChange(finalValue);
   };
 
   const [open, setOpen] = useState(false);
@@ -78,6 +84,8 @@ export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, .
         className={bemClasses("field")}
         pattern={datePattern}
         {...props}
+        value={rifm.value}
+        onChange={rifm.onChange}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
       />
@@ -93,6 +101,7 @@ export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, .
           variant="static"
           orientation="portrait"
           views={views}
+          openTo={openTo}
           minDate={minDate}
           maxDate={maxDate}
           {...pickerProps}
@@ -103,6 +112,8 @@ export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, .
     <>
       <TextField
         {...props}
+        value={rifm.value}
+        onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
         pattern={datePattern}
         trailingIcon={withTooltip(
@@ -133,6 +144,7 @@ export const DatePicker = ({ pickerProps, wrapperProps, onPickerChange, month, .
           variant="static"
           orientation={device === "tablet" ? "landscape" : "portrait"}
           views={views}
+          openTo={openTo}
           minDate={minDate}
           maxDate={maxDate}
           {...pickerProps}
