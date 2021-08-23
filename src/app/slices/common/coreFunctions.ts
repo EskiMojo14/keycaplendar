@@ -101,9 +101,13 @@ export const getURLQuery = (state = store.getState()) => {
       }
     } else {
       dispatch(setAppPage("calendar"));
+      dispatch(setMainSort(pageSort.calendar));
+      dispatch(setMainSortOrder(pageSortOrder.calendar));
     }
   } else {
     dispatch(setAppPage("calendar"));
+    dispatch(setMainSort(pageSort.calendar));
+    dispatch(setMainSortOrder(pageSortOrder.calendar));
   }
   const whitelistObj: Partial<WhitelistType> = {};
   whitelistParams.forEach((param, index, array) => {
