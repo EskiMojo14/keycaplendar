@@ -3,7 +3,7 @@ import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
 import { setAppPage, setDevice, setThemeMaps } from ".";
-import { mainPages, pageTitle, urlPages } from "./constants";
+import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes, camelise, hasKey } from "./functions";
 import { Page, ThemeMap } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
@@ -35,18 +35,6 @@ const { dispatch } = store;
 export const saveTheme = () => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
     const [theme, prop] = key.split("|");
-
-    const blankTheme: ThemeMap = {
-      dark: false,
-      background: "",
-      error: "",
-      onError: "",
-      onPrimary: "",
-      onSecondary: "",
-      onSurface: "",
-      primary: "",
-      secondary: "",
-    };
 
     const copy = { ...prev };
 

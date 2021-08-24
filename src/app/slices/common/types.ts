@@ -31,6 +31,7 @@ export type MainPage = typeof mainPages[number];
 export type ThemeMap = {
   dark: boolean;
   background: string;
+  surface: string;
   error: string;
   onError: string;
   onPrimary: string;
