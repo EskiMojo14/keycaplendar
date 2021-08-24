@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { Page, ThemeMap } from "./types";
 
@@ -44,5 +44,10 @@ export const selectPage = (state: RootState) => state.common.page;
 export const selectTheme = (state: RootState) => state.common.theme;
 
 export const selectThemesMap = (state: RootState) => state.common.themeMaps;
+
+export const selectCurrentThemeMap = createSelector(
+  [selectTheme, selectThemesMap],
+  (theme, themesMap) => themesMap[theme]
+);
 
 export default commonSlice.reducer;

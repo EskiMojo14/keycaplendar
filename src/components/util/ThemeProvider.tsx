@@ -1,15 +1,12 @@
 import React from "react";
 import { createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { useAppSelector } from "~/app/hooks";
-import { selectTheme, selectThemesMap } from "@s/common";
+import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
-import { hasKey } from "@s/common/functions";
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const themeName = useAppSelector(selectTheme);
-  const themesMap = useAppSelector(selectThemesMap);
-  const currentThemeMap = hasKey(themesMap, themeName) ? themesMap[themeName] : blankTheme;
-  const theme = hasKey(themesMap, themeName)
+  const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
+  const theme = currentThemeMap.primary
     ? createTheme({
         palette: {
           type: currentThemeMap.dark ? "dark" : "light",
