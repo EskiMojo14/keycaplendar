@@ -1,3 +1,5 @@
+@use "normalize.css/normalize";
+
 @use "chartist/dist/scss/chartist";
 @use "chartist-plugin-tooltips-updated/dist/chartist-plugin-tooltip";
 @use "react-mde/lib/styles/scss/react-mde-all";
@@ -78,6 +80,12 @@
 @use "@material/top-app-bar/_index" as top-app-bar;
 
 @include typography.core-styles();
+
+code {
+  font-family: "Roboto Mono", monospace;
+  white-space: nowrap;
+  background-color: rgba(black, 0.25);
+}
 
 .multiline {
   white-space: pre-line;

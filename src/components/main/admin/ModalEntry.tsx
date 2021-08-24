@@ -358,6 +358,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
     !!fields.colorway &&
     !!fields.designer &&
     !!fields.icDate &&
+    fields.icDate.length === 10 &&
+    DateTime.fromISO(fields.icDate).isValid &&
+    fields.icDate <= DateTime.now().toISODate() &&
     !!fields.details &&
     !!imageInfo.image;
 
@@ -608,16 +611,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
               outlined
               label="Designer"
               required
-              pattern="(\w+)[^\s](,\s*.+)*"
               value={fields.designer.join(", ")}
               name="designer"
               helpText={{
-                persistent: false,
-                validationMsg: true,
-                children:
-                  fields.designer[0] && fields.designer[0].includes(" ")
-                    ? "Separate multiple designers with a comma and a space."
-                    : "",
+                persistent: true,
+                children: (
+                  <>
+                    Separate multiple designers with <code className="multiline">, </code>.
+                  </>
+                ),
               }}
               onChange={handleChange}
               onFocus={handleFocus}
@@ -1298,6 +1300,9 @@ export const ModalEdit = (props: ModalEditProps) => {
     !!fields.colorway &&
     !!fields.designer &&
     !!fields.icDate &&
+    fields.icDate.length === 10 &&
+    DateTime.fromISO(fields.icDate).isValid &&
+    fields.icDate <= DateTime.now().toISODate() &&
     !!fields.details &&
     ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
 
@@ -1554,16 +1559,15 @@ export const ModalEdit = (props: ModalEditProps) => {
               outlined
               label="Designer"
               required
-              pattern="(\w+)[^\s](,\s*.+)*"
               value={fields.designer.join(", ")}
               name="designer"
               helpText={{
-                persistent: false,
-                validationMsg: true,
-                children:
-                  fields.designer[0] && fields.designer[0].includes(" ")
-                    ? "Separate multiple designers with a comma and a space."
-                    : "",
+                persistent: true,
+                children: (
+                  <>
+                    Separate multiple designers with <code className="multiline">, </code>.
+                  </>
+                ),
               }}
               onChange={handleChange}
               onFocus={handleFocus}

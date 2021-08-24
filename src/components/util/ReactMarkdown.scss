@@ -24,11 +24,6 @@
     @include rtl.reflexive-box(padding, left, 12px);
     margin: 8px 0;
   }
-  code {
-    font-family: "Roboto Mono", monospace;
-    white-space: nowrap;
-    background-color: rgba(black, 0.1);
-  }
   img {
     max-width: 100%;
   }

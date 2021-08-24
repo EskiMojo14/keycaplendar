@@ -67,7 +67,12 @@ export const DatePicker = ({
 
   const [touched, setTouched] = useState(false);
 
-  const errorMessage = touched && value ? DateTime.fromISO(value).invalidExplanation : null;
+  const errorMessage = value
+    ? pickerProps?.disableFuture && value > DateTime.now().toISODate()
+      ? "Date is in the future"
+      : DateTime.fromISO(value).invalidExplanation
+    : null;
+  const invalid = touched && (!(value.length === (month ? 7 : 10)) || errorMessage);
 
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
   const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
@@ -124,7 +129,7 @@ export const DatePicker = ({
           setTouched(true);
         }}
         onBlur={() => setOpen(false)}
-        invalid={errorMessage || (!value && touched)}
+        invalid={invalid}
         helpText={{
           persistent: true,
           validationMsg: true,
@@ -164,7 +169,7 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
         inputMode="numeric"
-        invalid={errorMessage || (!value && touched)}
+        invalid={invalid}
         onFocus={() => {
           setTouched(true);
         }}
