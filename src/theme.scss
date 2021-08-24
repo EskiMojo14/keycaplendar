@@ -676,7 +676,7 @@ $overlay-values: (
 
   .mdc-dialog {
     .MuiPickersToolbar-toolbar,
-    .date-picker__bottom-bar::before {
+    .picker__bottom-bar::before {
       background-color: if(
         $dark,
         darken(overlay-elevation(map-get($variables, surface), 24), 10%),

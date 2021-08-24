@@ -1,6 +1,6 @@
 @use "@material/rtl/_index" as rtl;
 
-.date-picker {
+.picker {
   &__field {
     .mdc-text-field__icon {
       &--trailing {
@@ -15,7 +15,7 @@
   &__wrapper {
     &.mdc-menu-surface {
       width: 100%;
-      .date-picker__buttons {
+      .picker__buttons {
         padding: 8px;
       }
     }
@@ -40,10 +40,10 @@
   }
   .mdc-drawer &,
   .full-screen-dialog & {
-    &__field + .date-picker__wrapper.mdc-menu-surface {
+    &__field + .picker__wrapper.mdc-menu-surface {
       margin-top: -16px;
     }
-    &__field + .mdc-text-field-helper-line + .date-picker__wrapper.mdc-menu-surface {
+    &__field + .mdc-text-field-helper-line + .picker__wrapper.mdc-menu-surface {
       margin-top: -35px;
     }
   }

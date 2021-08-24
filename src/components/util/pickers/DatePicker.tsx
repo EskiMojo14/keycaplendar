@@ -14,7 +14,7 @@ import { TextField, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { KeyboardDatePicker, KeyboardDatePickerProps } from "@material-ui/pickers";
 import ConditionalWrapper from "@c/util/ConditionalWrapper";
 import { withTooltip } from "@c/util/HOCs";
-import "./DatePicker.scss";
+import "./pickers.scss";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
 
@@ -52,7 +52,7 @@ export type DatePickerProps = Overwrite<
   }
 >;
 
-const bemClasses = new BEMHelper("date-picker");
+const bemClasses = new BEMHelper("picker");
 
 export const DatePicker = ({
   pickerProps,
