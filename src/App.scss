@@ -521,6 +521,37 @@ svg.material-icons,
   }
 }
 
+.MuiPickersStaticWrapper-staticWrapperRoot {
+  background-color: transparent;
+  .MuiPickersCalendarHeader-iconButton:not(:hover) {
+    background-color: transparent;
+  }
+}
+
+$mui-typography-map: (
+  h1: headline1,
+  h2: headline2,
+  h3: headline3,
+  h4: headline4,
+  h5: headline5,
+  h6: headline6,
+  subtitle1: subtitle1,
+  subtitle2: subtitle2,
+  body1: body1,
+  body2: body2,
+  button: button,
+  caption: caption,
+  overline: overline,
+);
+
+.mdc-typography .MuiTypography {
+  @each $style, $val in $mui-typography-map {
+    &-#{$style} {
+      @include typography.typography($val);
+    }
+  }
+}
+
 .sales-image,
 .sales-image img,
 .details-image,
