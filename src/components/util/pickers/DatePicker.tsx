@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
@@ -62,6 +62,7 @@ export const DatePicker = ({
   const device = useAppSelector(selectDevice);
   const useInline = device === "desktop";
   const orientation = useAppSelector(selectOrientation);
+  const landscape = orientation === "landscape";
 
   const datePattern = month ? "^\\d{4}-\\d{1,2}$" : "^\\d{4}-\\d{1,2}-\\d{1,2}$";
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
@@ -78,21 +79,33 @@ export const DatePicker = ({
 
   const rifm = useRifm({ value: props.value, onChange: onChange, format: formatDateWithAppend });
 
+  const [open, setOpen] = useState(false);
+
+  const [dialogVal, setDialogVal] = useState(props.value);
+  useEffect(() => {
+    if (dialogVal !== props.value) {
+      setDialogVal(props.value);
+    }
+  }, [props.value]);
+
+  const confirmVal = useInline ? onChange : setDialogVal;
+
   const handleDatePickerChange: KeyboardDatePickerProps["onChange"] = (date, value) => {
     const finalValue = (month ? date?.toFormat("yyyy-MM") : date?.toISODate()) || value || "";
-    onChange(finalValue);
+    confirmVal(finalValue);
   };
   const setNow = () => {
-    onChange(DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
+    confirmVal(DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
   };
-
-  const [open, setOpen] = useState(false);
 
   const closeDialog = () => {
     setOpen(false);
   };
 
-  const landscape = orientation === "landscape";
+  const confirmDialog = () => {
+    onChange(dialogVal || DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
+    closeDialog();
+  };
 
   return useInline ? (
     <MenuSurfaceAnchor className={bemClasses()}>
@@ -160,7 +173,7 @@ export const DatePicker = ({
         renderToPortal
       >
         <KeyboardDatePicker
-          value={props.value || DateTime.now().toISODate()}
+          value={dialogVal || DateTime.now().toISODate()}
           onChange={handleDatePickerChange}
           variant="static"
           orientation={orientation}
@@ -184,7 +197,7 @@ export const DatePicker = ({
               />
             ) : null}
             <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
-            <DialogButton label="Confirm" />
+            <DialogButton label="Confirm" onClick={confirmDialog} />
           </DialogActions>
         </ConditionalWrapper>
       </Dialog>
