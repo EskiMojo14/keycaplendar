@@ -6,14 +6,15 @@ import { selectDevice } from "@s/common";
 import BEMHelper from "@s/common/bemHelper";
 import { iconObject } from "@s/common/functions";
 import { Overwrite } from "@s/common/types";
-import { Dialog } from "@rmwc/dialog";
+import { Dialog, DialogActions, DialogButton } from "@rmwc/dialog";
+import { Button } from "@rmwc/button";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurface, MenuSurfaceAnchor, MenuSurfaceProps, MenuHTMLProps } from "@rmwc/menu";
 import { TextField, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { KeyboardDatePicker, KeyboardDatePickerProps } from "@material-ui/pickers";
+import ConditionalWrapper from "@c/util/ConditionalWrapper";
 import { withTooltip } from "@c/util/HOCs";
 import "./DatePicker.scss";
-import { Button } from "@rmwc/button";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
 
@@ -90,6 +91,8 @@ export const DatePicker = ({
     setOpen(false);
   };
 
+  const landscape = device === "tablet";
+
   return useInline ? (
     <MenuSurfaceAnchor className={bemClasses()}>
       <TextField
@@ -159,13 +162,30 @@ export const DatePicker = ({
           value={props.value || DateTime.now().toISODate()}
           onChange={handleDatePickerChange}
           variant="static"
-          orientation={device === "tablet" ? "landscape" : "portrait"}
+          orientation={landscape ? "landscape" : "portrait"}
           views={views}
           openTo={openTo}
           minDate={minDate}
           maxDate={maxDate}
           {...pickerProps}
         />
+        <ConditionalWrapper
+          condition={landscape}
+          wrapper={(children) => <div className={bemClasses("bottom-bar")}>{children}</div>}
+        >
+          <DialogActions>
+            {showNowButton ? (
+              <Button
+                className={bemClasses("show-now-button")}
+                label={month ? "This month" : "Today"}
+                type="button"
+                onClick={setNow}
+              />
+            ) : null}
+            <DialogButton label="Cancel" />
+            <DialogButton label="Confirm" />
+          </DialogActions>
+        </ConditionalWrapper>
       </Dialog>
     </>
   );

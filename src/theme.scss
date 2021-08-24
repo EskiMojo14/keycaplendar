@@ -674,6 +674,17 @@ $overlay-values: (
 
   // MUI
 
+  .mdc-dialog {
+    .MuiPickersToolbar-toolbar,
+    .date-picker__bottom-bar::before {
+      background-color: if(
+        $dark,
+        darken(overlay-elevation(map-get($variables, surface), 24), 10%),
+        map-get($variables, primary)
+      );
+    }
+  }
+
   .mdc-drawer {
     .mdc-menu-surface {
       .MuiPickersToolbar-toolbar {
@@ -839,9 +850,7 @@ $overlay-values: (
     @include dialog.scrim-color(map-get($variables, on-surface), 0.32);
     @include dialog.title-ink-color(map-get($variables, text-high));
     @include dialog.content-ink-color(map-get($variables, text-medium));
-    .primary {
-      color: map-get($variables, text-high);
-    }
+    color: map-get($variables, text-high);
     .mdc-chip {
       @include chips.fill-color-accessible(
         mix(

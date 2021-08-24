@@ -1,3 +1,5 @@
+@use "@material/rtl/_index" as rtl;
+
 .date-picker {
   &__field {
     .mdc-text-field__icon {
@@ -19,6 +21,21 @@
     }
     &.mdc-dialog {
     }
+  }
+  &__bottom-bar {
+    display: flex;
+    &::before {
+      content: "";
+      max-width: 150px + 32px;
+      flex: 1;
+    }
+    .mdc-dialog__actions {
+      min-width: 310px + 16px;
+      max-width: 325px + 16px;
+    }
+  }
+  &__show-now-button {
+    @include rtl.reflexive-box(margin, right, auto);
   }
   .mdc-drawer &,
   .full-screen-dialog & {
