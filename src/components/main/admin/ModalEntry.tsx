@@ -426,6 +426,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
+          showNowButton
         />
       </div>
       <CardActions>
@@ -455,6 +456,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
+          showNowButton
         />
         <DatePicker
           autoComplete="off"
@@ -473,6 +475,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           name="gbEnd"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
           onChange={(val) => handleNamedChange("gbEnd", val)}
+          showNowButton
         />
       </div>
       <CardActions>
@@ -649,6 +652,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             onChange={(val) => handleNamedChange("icDate", val)}
             pickerProps={{ disableFuture: true }}
+            showNowButton
           />
           <TextField
             autoComplete="off"

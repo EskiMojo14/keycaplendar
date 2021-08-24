@@ -13,6 +13,9 @@
   &__wrapper {
     &.mdc-menu-surface {
       width: 100%;
+      .date-picker__buttons {
+        padding: 8px;
+      }
     }
     &.mdc-dialog {
     }

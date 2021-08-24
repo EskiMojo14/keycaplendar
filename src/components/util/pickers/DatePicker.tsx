@@ -13,6 +13,7 @@ import { TextField, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { KeyboardDatePicker, KeyboardDatePickerProps } from "@material-ui/pickers";
 import { withTooltip } from "@c/util/HOCs";
 import "./DatePicker.scss";
+import { Button } from "@rmwc/button";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");
 
@@ -43,12 +44,20 @@ export type DatePickerProps = Overwrite<
     wrapperProps?: Omit<MenuSurfaceProps & MenuHTMLProps, "open" | "anchorCorner">;
     pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
     month?: boolean;
+    showNowButton?: boolean;
   }
 >;
 
 const bemClasses = new BEMHelper("date-picker");
 
-export const DatePicker = ({ pickerProps, wrapperProps, onChange, month, ...props }: DatePickerProps) => {
+export const DatePicker = ({
+  pickerProps,
+  wrapperProps,
+  onChange,
+  month,
+  showNowButton,
+  ...props
+}: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
   const useInline = device === "desktop";
 
@@ -70,6 +79,9 @@ export const DatePicker = ({ pickerProps, wrapperProps, onChange, month, ...prop
   const handleDatePickerChange: KeyboardDatePickerProps["onChange"] = (date, value) => {
     const finalValue = (month ? date?.toFormat("yyyy-MM") : date?.toISODate()) || value || "";
     onChange(finalValue);
+  };
+  const setNow = () => {
+    onChange(DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
   };
 
   const [open, setOpen] = useState(false);
@@ -106,6 +118,11 @@ export const DatePicker = ({ pickerProps, wrapperProps, onChange, month, ...prop
           maxDate={maxDate}
           {...pickerProps}
         />
+        {showNowButton ? (
+          <div className={bemClasses("buttons")}>
+            <Button label={month ? "This month" : "Today"} type="button" onClick={setNow} />
+          </div>
+        ) : null}
       </MenuSurface>
     </MenuSurfaceAnchor>
   ) : (
