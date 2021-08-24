@@ -4,7 +4,7 @@ import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bemHelper";
-import { iconObject } from "@s/common/functions";
+import { capitalise, iconObject } from "@s/common/functions";
 import { Common, Overwrite } from "@s/common/types";
 import { Dialog, DialogActions, DialogButton, DialogProps } from "@rmwc/dialog";
 import { Button } from "@rmwc/button";
@@ -26,13 +26,10 @@ const formatDate = (string: string, month?: boolean) => {
     .substr(0, !month ? 10 : 7);
 };
 
-const formatDateWithAppend = (string: string, month?: boolean) => {
-  const res = formatDate(string);
-
-  if (string.endsWith("-")) {
-    if (res.length === 4 || (res.length === 7 && !month)) {
-      return `${res}-`;
-    }
+const formatDateWithAppend = (month?: boolean) => (string: string) => {
+  const res = formatDate(string, month);
+  if (res.length === 4 || (res.length === 7 && !month)) {
+    return `${res}-`;
   }
   return res;
 };
@@ -57,6 +54,7 @@ const bemClasses = new BEMHelper("picker");
 export const DatePicker = ({
   pickerProps,
   wrapperProps,
+  value,
   onChange,
   month,
   showNowButton,
@@ -67,7 +65,10 @@ export const DatePicker = ({
   const orientation = useAppSelector(selectOrientation);
   const landscape = orientation === "landscape";
 
-  const datePattern = month ? "^\\d{4}-\\d{1,2}$" : "^\\d{4}-\\d{1,2}-\\d{1,2}$";
+  const [touched, setTouched] = useState(false);
+
+  const errorMessage = touched && value ? DateTime.fromISO(value).invalidExplanation : null;
+
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
   const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
 
@@ -80,16 +81,16 @@ export const DatePicker = ({
         .plus({ years: 2 })
         .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
 
-  const rifm = useRifm({ value: props.value, onChange: onChange, format: formatDateWithAppend });
+  const rifm = useRifm({ value: value, onChange: onChange, format: formatDateWithAppend(month) });
 
   const [open, setOpen] = useState(false);
 
-  const [dialogVal, setDialogVal] = useState(props.value);
+  const [dialogVal, setDialogVal] = useState(value);
   useEffect(() => {
-    if (dialogVal !== props.value) {
-      setDialogVal(props.value);
+    if (dialogVal !== value) {
+      setDialogVal(value);
     }
-  }, [props.value]);
+  }, [value]);
 
   const confirmVal = useInline ? onChange : setDialogVal;
 
@@ -115,16 +116,19 @@ export const DatePicker = ({
       <TextField
         {...props}
         className={bemClasses("field")}
-        pattern={props.pattern || datePattern}
         inputMode="numeric"
         value={rifm.value}
         onChange={rifm.onChange}
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true);
+          setTouched(true);
+        }}
         onBlur={() => setOpen(false)}
+        invalid={errorMessage || (!value && touched)}
         helpText={{
           persistent: true,
           validationMsg: true,
-          children: `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          children: errorMessage && value ? capitalise(errorMessage) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
           ...(props.helpText || {}),
         }}
       />
@@ -135,7 +139,7 @@ export const DatePicker = ({
         anchorCorner="bottomLeft"
       >
         <KeyboardDatePicker
-          value={props.value || DateTime.now().toISODate()}
+          value={value || DateTime.now().toISODate()}
           onChange={handleDatePickerChange}
           variant="static"
           orientation="portrait"
@@ -159,12 +163,15 @@ export const DatePicker = ({
         value={rifm.value}
         onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
-        pattern={props.pattern || datePattern}
         inputMode="numeric"
+        invalid={errorMessage || (!value && touched)}
+        onFocus={() => {
+          setTouched(true);
+        }}
         helpText={{
           persistent: true,
           validationMsg: true,
-          children: `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          children: errorMessage && value ? capitalise(errorMessage) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
           ...(props.helpText || {}),
         }}
         trailingIcon={withTooltip(
