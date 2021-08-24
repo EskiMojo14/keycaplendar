@@ -113,9 +113,10 @@ export const DatePicker = ({
   return useInline ? (
     <MenuSurfaceAnchor className={bemClasses()}>
       <TextField
+        {...props}
         className={bemClasses("field")}
         pattern={datePattern}
-        {...props}
+        inputMode="numeric"
         value={rifm.value}
         onChange={rifm.onChange}
         onFocus={() => setOpen(true)}
@@ -153,6 +154,7 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
         pattern={datePattern}
+        inputMode="numeric"
         trailingIcon={withTooltip(
           <IconButton
             icon={iconObject(
