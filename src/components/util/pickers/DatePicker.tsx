@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
+import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bemHelper";
 import { iconObject } from "@s/common/functions";
 import { Overwrite } from "@s/common/types";
@@ -61,6 +61,7 @@ export const DatePicker = ({
 }: DatePickerProps) => {
   const device = useAppSelector(selectDevice);
   const useInline = device === "desktop";
+  const orientation = useAppSelector(selectOrientation);
 
   const datePattern = month ? "^\\d{4}-\\d{1,2}$" : "^\\d{4}-\\d{1,2}-\\d{1,2}$";
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
@@ -91,7 +92,7 @@ export const DatePicker = ({
     setOpen(false);
   };
 
-  const landscape = device === "tablet";
+  const landscape = orientation === "landscape";
 
   return useInline ? (
     <MenuSurfaceAnchor className={bemClasses()}>
@@ -162,7 +163,7 @@ export const DatePicker = ({
           value={props.value || DateTime.now().toISODate()}
           onChange={handleDatePickerChange}
           variant="static"
-          orientation={landscape ? "landscape" : "portrait"}
+          orientation={orientation}
           views={views}
           openTo={openTo}
           minDate={minDate}
@@ -182,7 +183,7 @@ export const DatePicker = ({
                 onClick={setNow}
               />
             ) : null}
-            <DialogButton label="Cancel" />
+            <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
             <DialogButton label="Confirm" />
           </DialogActions>
         </ConditionalWrapper>

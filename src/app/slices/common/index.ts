@@ -4,6 +4,7 @@ import { Page, ThemeMap } from "./types";
 
 export type CommonState = {
   device: "mobile" | "tablet" | "desktop";
+  orientation: "portrait" | "landscape";
   page: Page;
   theme: string;
   themeMaps: Record<string, ThemeMap>;
@@ -11,6 +12,7 @@ export type CommonState = {
 
 export const initialState: CommonState = {
   device: "tablet",
+  orientation: "landscape",
   page: "images",
   theme: "light",
   themeMaps: {},
@@ -22,6 +24,9 @@ export const commonSlice = createSlice({
   reducers: {
     setDevice: (state, action: PayloadAction<"mobile" | "tablet" | "desktop">) => {
       state.device = action.payload;
+    },
+    setOrientation: (state, action: PayloadAction<"portrait" | "landscape">) => {
+      state.orientation = action.payload;
     },
     setAppPage: (state, action: PayloadAction<Page>) => {
       state.page = action.payload;
@@ -35,9 +40,11 @@ export const commonSlice = createSlice({
   },
 });
 
-export const { setDevice, setTheme, setAppPage, setThemeMaps } = commonSlice.actions;
+export const { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps } = commonSlice.actions;
 
 export const selectDevice = (state: RootState) => state.common.device;
+
+export const selectOrientation = (state: RootState) => state.common.orientation;
 
 export const selectPage = (state: RootState) => state.common.page;
 

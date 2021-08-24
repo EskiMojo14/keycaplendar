@@ -1,8 +1,9 @@
 import { is } from "typescript-is";
+import debounce from "lodash.debounce";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setAppPage, setDevice, setThemeMaps } from ".";
+import { setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import { arrayIncludes, camelise, hasKey } from "./functions";
 import { Page, ThemeMap } from "./types";
@@ -56,6 +57,7 @@ export const checkDevice = () => {
   let i = 0;
   let lastWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   let lastDevice = "tablet";
+  let lastOrientation = "landscape";
   const calculate = () => {
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if (vw !== lastWidth || i === 0) {
@@ -78,9 +80,14 @@ export const checkDevice = () => {
       lastWidth = vw;
       i++;
     }
+    const orientation = window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape";
+    if (lastOrientation !== orientation) {
+      dispatch(setOrientation(orientation));
+      lastOrientation = orientation;
+    }
   };
   calculate();
-  window.addEventListener("resize", calculate);
+  window.addEventListener("resize", debounce(calculate, 1000));
 };
 
 export const getURLQuery = (state = store.getState()) => {
