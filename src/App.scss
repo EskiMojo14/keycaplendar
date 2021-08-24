@@ -241,13 +241,6 @@
 
 // MUI
 
-.MuiPickersStaticWrapper-staticWrapperRoot {
-  background-color: transparent;
-  .MuiPickersCalendarHeader-iconButton:not(:hover) {
-    background-color: transparent;
-  }
-}
-
 $mui-typography-map: (
   h1: headline1,
   h2: headline2,
@@ -269,6 +262,13 @@ $mui-typography-map: (
     &-#{$style} {
       @include typography.typography($val);
     }
+  }
+}
+
+.MuiPickersStaticWrapper-staticWrapperRoot {
+  background-color: transparent;
+  .MuiPickersCalendarHeader-iconButton:not(:hover) {
+    background-color: transparent;
   }
 }
 

@@ -1,5 +1,7 @@
 @use "sass:color";
 
+@use "graph-colors.module" as graph-colors;
+
 @use "@material/button/_index" as button;
 @use "@material/card/_index" as card;
 @use "@material/checkbox/_index" as checkbox;
@@ -53,88 +55,6 @@ $overlay-values: (
   @return lighten($color, map-get($overlay-values, $elevation));
 }
 
-$graph-colors: (
-  palette.$red-500,
-  palette.$deep-orange-500,
-  palette.$orange-500,
-  palette.$amber-500,
-  palette.$yellow-500,
-  palette.$lime-500,
-  palette.$light-green-500,
-  palette.$green-500,
-  palette.$teal-500,
-  palette.$cyan-500,
-  palette.$light-blue-500,
-  palette.$blue-500,
-  palette.$indigo-500,
-  palette.$deep-purple-500,
-  palette.$purple-500,
-  palette.$pink-500,
-  palette.$blue-grey-500,
-  palette.$grey-500,
-  palette.$brown-500,
-  palette.$red-300,
-  palette.$deep-orange-300,
-  palette.$orange-300,
-  palette.$amber-300,
-  palette.$yellow-300,
-  palette.$lime-300,
-  palette.$light-green-300,
-  palette.$green-300,
-  palette.$teal-300,
-  palette.$cyan-300,
-  palette.$light-blue-300,
-  palette.$blue-300,
-  palette.$indigo-300,
-  palette.$deep-purple-300,
-  palette.$purple-300,
-  palette.$pink-300,
-  palette.$blue-grey-300,
-  palette.$grey-300,
-  palette.$brown-300
-);
-
-$graph-colors-dark: (
-  palette.$red-300,
-  palette.$deep-orange-300,
-  palette.$orange-300,
-  palette.$amber-300,
-  palette.$yellow-300,
-  palette.$lime-300,
-  palette.$light-green-300,
-  palette.$green-300,
-  palette.$teal-300,
-  palette.$cyan-300,
-  palette.$light-blue-300,
-  palette.$blue-300,
-  palette.$indigo-300,
-  palette.$deep-purple-300,
-  palette.$purple-300,
-  palette.$pink-300,
-  palette.$blue-grey-300,
-  palette.$grey-300,
-  palette.$brown-300,
-  palette.$red-200,
-  palette.$deep-orange-200,
-  palette.$orange-200,
-  palette.$amber-200,
-  palette.$yellow-200,
-  palette.$lime-200,
-  palette.$light-green-200,
-  palette.$green-200,
-  palette.$teal-200,
-  palette.$cyan-200,
-  palette.$light-blue-200,
-  palette.$blue-200,
-  palette.$indigo-200,
-  palette.$deep-purple-200,
-  palette.$purple-200,
-  palette.$pink-200,
-  palette.$blue-grey-200,
-  palette.$grey-200,
-  palette.$brown-200
-);
-
 @mixin theme($theme, $dark: false) {
   $text-colors: (
     text-high: rgba(map-get($theme, on-surface), 0.87),
@@ -162,6 +82,598 @@ $graph-colors-dark: (
   a {
     color: map-get($variables, primary);
   }
+
+  .autocomplete-mobile {
+    background-color: map-get($variables, background);
+  }
+
+  .banner-text {
+    color: map-get($variables, text-medium);
+  }
+
+  .empty-container,
+  .login-container,
+  .message-container {
+    .title {
+      color: map-get($variables, text-high);
+    }
+    .subtitle {
+      color: map-get($variables, text-medium);
+    }
+  }
+
+  .footer {
+    color: map-get($variables, text-medium);
+    .bold {
+      color: map-get($variables, text-high);
+    }
+  }
+
+  .full-screen-dialog {
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
+    &__app-bar {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, primary));
+    }
+    &-scrim {
+      background-color: rgba(map-get($variables, on-surface), 0.32);
+    }
+    .mdc-menu-surface {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+    }
+    .mdc-card {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
+      @if ($dark) {
+        transition-property: box-shadow, background-color;
+      }
+      &.dragged {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
+      }
+    }
+    .mdc-chip {
+      @include chips.fill-color-accessible(
+        mix(
+          map-get($variables, on-surface),
+          if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
+          12%
+        )
+      );
+      @include chips.selected-ink-color(map-get($variables, primary));
+      &[disabled] {
+        @include chips.ink-color(map-get($variables, text-disabled));
+      }
+    }
+    .mdc-typography--overline,
+    .mdc-typography--caption {
+      color: map-get($variables, text-medium);
+    }
+    .mdc-typography--headline4,
+    .mdc-typography--headline5,
+    .preview,
+    .mdc-typography--body2,
+    .mdc-form-field {
+      color: map-get($variables, text-high);
+    }
+  }
+  .image-upload {
+    &-title {
+      color: map-get($variables, text-medium);
+    }
+    .image-display {
+      fill: map-get($variables, text-medium);
+      &::before {
+        background-color: map-get($variables, on-surface);
+      }
+      &.over {
+        border-color: map-get($variables, primary);
+      }
+      .caption {
+        color: map-get($variables, text-medium);
+      }
+    }
+  }
+
+  .sales-container {
+    .sales-image-icon {
+      fill: map-get($variables, text-medium);
+    }
+  }
+
+  .list .content-grid {
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+  }
+
+  .subheader,
+  .drag-handle {
+    color: map-get($variables, text-medium);
+  }
+
+  .main.extended-app-bar .outer-container:first-child .subheader {
+    color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6));
+  }
+
+  .drawer-open .main.extended-app-bar,
+  .drawer-open.main.extended-app-bar {
+    .outer-container:first-child .subheader {
+      color: map-get($variables, text-medium);
+    }
+  }
+
+  .main::before {
+    background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+  }
+
+  .legal,
+  .guide {
+    color: map-get($variables, text-high);
+    .mdc-typography--button {
+      color: map-get($variables, primary);
+      &.delete {
+        color: map-get($variables, error);
+      }
+    }
+    .secondary {
+      color: map-get($variables, text-medium);
+      .bold {
+        color: map-get($variables, text-high);
+      }
+    }
+    &-container::before {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
+    }
+  }
+
+  .user {
+    .mdc-card__action--icon.disabled {
+      color: map-get($variables, text-disabled);
+    }
+  }
+
+  .log,
+  .changelog {
+    .mdc-icon-button {
+      color: map-get($variables, text-medium);
+      @include ripple.states(map-get($variables, on-surface));
+    }
+    .before,
+    .after {
+      color: map-get($variables, text-disabled);
+      a {
+        color: rgba(map-get($variables, primary), 0.38);
+      }
+      .highlight {
+        color: map-get($variables, text-high);
+        a {
+          color: map-get($variables, primary);
+        }
+      }
+    }
+  }
+
+  .set-changelog {
+    .mdc-card__media-content {
+      color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    }
+  }
+
+  .update-entry {
+    color: map-get($variables, text-high);
+    .linked-indicator {
+      color: map-get($variables, text-medium);
+    }
+    &.pinned {
+      a,
+      .pin-indicator,
+      .linked-indicator {
+        color: map-get($variables, secondary);
+      }
+    }
+    &.linked {
+      @if ($dark) {
+        background-color: overlay-elevation(map-get($variables, surface), 3);
+      }
+    }
+  }
+
+  .entries {
+    &-drawer.mdc-drawer {
+      @include drawer.surface-fill-color(transparent);
+      .mdc-chip {
+        @include chips.fill-color-accessible(
+          mix(map-get($variables, on-surface), map-get($variables, background), 12%)
+        );
+        @include chips.selected-ink-color(map-get($variables, primary));
+      }
+    }
+    &-list {
+      &-container {
+        background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+        .mdc-chip {
+          @include chips.fill-color-accessible(
+            mix(
+              map-get($variables, on-surface),
+              if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)),
+              12%
+            )
+          );
+          @include chips.selected-ink-color(map-get($variables, primary));
+        }
+      }
+      .mdc-list {
+        &-group {
+          &__subheader {
+            color: map-get($variables, text-medium);
+          }
+        }
+      }
+    }
+  }
+
+  .sponsors {
+    .cannonkeys {
+      fill: if($dark, white, #060d44);
+    }
+    .prototypist {
+      fill: if($dark, white, #3f6b6b);
+    }
+    .deskhero {
+      color: map-get($variables, on-surface);
+    }
+  }
+
+  .segmented-button {
+    &.segmented-button--toggle .segmented-button__segment {
+      @include button.ink-color(map-get($variables, text-medium));
+      @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
+      @include ripple.states-selected(
+        map-get($variables, primary),
+        false,
+        feature-targeting.all(),
+        ".mdc-button__ripple"
+      );
+      @include ripple.states-selected(
+        map-get($variables, text-disabled),
+        false,
+        feature-targeting.all(),
+        "&:disabled .mdc-button__ripple"
+      );
+      &--selected {
+        @include button.ink-color(map-get($variables, primary));
+        @include button.outline-color(map-get($variables, primary));
+      }
+      &:disabled,
+      &--selected:disabled {
+        @include button.ink-color(map-get($variables, text-disabled));
+        @include button.outline-color(map-get($variables, text-disabled));
+      }
+    }
+  }
+
+  @if ($dark != true) {
+    &:not([dir="rtl"])
+      .mdc-top-app-bar
+      .segmented-button
+      .mdc-button:first-child:not(.segmented-button__segment--selected) {
+      border-left-color: rgba(map-get($variables, on-primary), 0.38);
+    }
+    &:not([dir="rtl"])
+      .mdc-top-app-bar
+      .segmented-button
+      .mdc-button:last-child:not(.segmented-button__segment--selected) {
+      border-right-color: rgba(map-get($variables, on-primary), 0.38);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .settings-container {
+      background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
+    }
+  }
+
+  // external
+
+  .markdown {
+    .mdc-typography {
+      &--headline5,
+      &--headline6,
+      &--subtitle1,
+      &--subtitle2,
+      &--body2 {
+        color: map-get($variables, text-high);
+      }
+      &--overline,
+      &--caption {
+        color: map-get($variables, text-medium);
+      }
+    }
+  }
+
+  .react-mde.markdown-editor {
+    .markdown-editor {
+      &__toolbar {
+        .mdc-icon-button {
+          color: map-get($variables, text-medium);
+          @include ripple.states(map-get($variables, on-surface));
+        }
+      }
+      &__textarea {
+        color: map-get($variables, text-high);
+        caret-color: map-get($variables, primary);
+        border-color: rgba(map-get($variables, on-surface), 0.38);
+        &--hovered {
+          border-color: rgba(map-get($variables, on-surface), 0.87);
+        }
+        &--focused {
+          border-color: map-get($variables, primary);
+        }
+        &--invalid:not(.markdown-editor__textarea--focused) {
+          border-color: map-get($variables, error);
+        }
+      }
+    }
+  }
+
+  // chartist
+
+  .ct-chart {
+    .ct-label,
+    .ct-axis-title {
+      fill: map-get($variables, text-medium);
+      color: map-get($variables, text-medium);
+    }
+  }
+
+  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
+  @each $letter in $letters {
+    $color: if(
+      $dark,
+      nth(graph-colors.$graph-colors-dark, index($letters, $letter)),
+      nth(graph-colors.$graph-colors, index($letters, $letter))
+    );
+    .ct-series-#{$letter} {
+      .ct-point,
+      .ct-line,
+      .ct-bar,
+      .ct-slice-donut {
+        stroke: $color;
+      }
+      .ct-slice-pie,
+      .ct-donut-solid,
+      .ct-area,
+      .ct-stroked-point {
+        fill: $color;
+      }
+    }
+  }
+
+  .focus-chips .mdc-chip.focus-chip {
+    &.mdc-chip--selected {
+      &,
+      &:hover {
+        color: map-get($variables, text-high);
+      }
+      font-weight: bold;
+    }
+  }
+
+  @for $index from 0 to 40 {
+    $color: if(
+      $dark,
+      nth(graph-colors.$graph-colors-dark, ($index % length(graph-colors.$graph-colors-dark) + 1)),
+      nth(graph-colors.$graph-colors, ($index % length(graph-colors.$graph-colors-dark) + 1))
+    );
+    .ct-series-index-#{$index} {
+      .ct-point,
+      .ct-line,
+      .ct-bar,
+      .ct-slice-donut {
+        stroke: $color;
+      }
+      .ct-slice-pie,
+      .ct-donut-solid,
+      .ct-area,
+      .ct-stroked-point {
+        fill: $color;
+      }
+    }
+    .focus-chips .focus-chip-index-#{$index} {
+      @include chips.leading-icon-color($color, 1);
+      @include ripple.states($color);
+      @include chips.selected-ink-color($color);
+    }
+    .focused {
+      &:not(.series-index-#{$index}) {
+        .ct-series-index-#{$index} {
+          pointer-events: none;
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: rgba($color, 0.1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: rgba($color, 0.1);
+          }
+          .ct-stroked-point {
+            pointer-events: none !important;
+          }
+        }
+      }
+    }
+  }
+
+  .table-card {
+    .ct-series-a {
+      .ct-point,
+      .ct-line,
+      .ct-bar,
+      .ct-slice-donut {
+        stroke: map-get($variables, secondary);
+      }
+      .ct-slice-pie,
+      .ct-donut-solid,
+      .ct-area,
+      .ct-stroked-point {
+        fill: map-get($variables, secondary);
+      }
+    }
+  }
+  .pie-card {
+    .pie-chart-container {
+      &.status .ct-chart {
+        .ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-2);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-2);
+          }
+        }
+        .ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area {
+            fill: map-get($variables, grey-1);
+          }
+        }
+        .ct-series.ct-series-c {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, secondary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, secondary);
+          }
+        }
+        .ct-series.ct-series-d {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, primary);
+          }
+        }
+      }
+    }
+    .indicator {
+      &.post-gb {
+        background-color: map-get($variables, primary);
+      }
+      &.live-gb {
+        background-color: map-get($variables, secondary);
+      }
+    }
+  }
+  .timeline-card {
+    .timeline-chart-container {
+      &.single.primary .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, primary);
+          }
+        }
+      }
+      &.single.secondary .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, secondary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, secondary);
+          }
+        }
+      }
+      &.shipped .ct-chart {
+        .ct-series.ct-series-a {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, primary);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, primary);
+          }
+        }
+        .ct-series.ct-series-b {
+          .ct-point,
+          .ct-line,
+          .ct-bar,
+          .ct-slice-donut {
+            stroke: map-get($variables, grey-1);
+          }
+          .ct-slice-pie,
+          .ct-donut-solid,
+          .ct-area,
+          .ct-stroked-point {
+            fill: map-get($variables, grey-1);
+          }
+        }
+      }
+    }
+    .indicator {
+      &.shipped {
+        background-color: map-get($variables, primary);
+      }
+      &.unshipped,
+      &.pre-gb {
+        background-color: map-get($variables, grey-1);
+      }
+      &.ic {
+        background-color: map-get($variables, grey-2);
+      }
+    }
+  }
+
+  .chartist-tooltip {
+    background-color: map-get($variables, text-high);
+    color: map-get($variables, surface);
+  }
+
+  // MDC
+
   .mdc-button {
     @include button.ink-color(map-get($variables, primary));
     @include ripple.states(map-get($variables, primary), false, feature-targeting.all(), ".mdc-button__ripple");
@@ -284,6 +796,25 @@ $graph-colors-dark: (
     @include chips.selected-ink-color(map-get($variables, primary));
     &[disabled] {
       @include chips.ink-color(map-get($variables, text-disabled));
+    }
+  }
+
+  .mdc-data-table {
+    color: map-get($variables, text-high);
+    &__cell {
+      color: map-get($variables, text-high);
+    }
+    &__header-cell {
+      color: map-get($variables, text-high);
+      &.sorted::before {
+        color: map-get($variables, text-medium);
+      }
+      &.profile-title {
+        @include ripple.states(map-get($variables, on-surface));
+      }
+    }
+    &__row:hover:not(.mdc-data-table__row--selected):not(.mdc-data-table__row--activated) {
+      background-color: rgba(map-get($variables, on-surface), 0.04);
     }
   }
 
@@ -895,6 +1426,12 @@ $graph-colors-dark: (
     }
   }
 
+  // RMWC
+
+  .rmwc-avatar {
+    color: map-get($variables, text-disabled);
+  }
+
   .rmwc-badge {
     color: map-get($variables, on-error);
     background-color: map-get($variables, error);
@@ -910,29 +1447,6 @@ $graph-colors-dark: (
 
   .rmwc-circular-progress {
     color: map-get($variables, primary);
-  }
-
-  .mdc-data-table {
-    color: map-get($variables, text-high);
-    &__cell {
-      color: map-get($variables, text-high);
-    }
-    &__header-cell {
-      color: map-get($variables, text-high);
-      &.sorted::before {
-        color: map-get($variables, text-medium);
-      }
-      &.profile-title {
-        @include ripple.states(map-get($variables, on-surface));
-      }
-    }
-    &__row:hover:not(.mdc-data-table__row--selected):not(.mdc-data-table__row--activated) {
-      background-color: rgba(map-get($variables, on-surface), 0.04);
-    }
-  }
-
-  .rmwc-avatar {
-    color: map-get($variables, text-disabled);
   }
 
   .rmwc-tooltip {
@@ -971,586 +1485,6 @@ $graph-colors-dark: (
       &-inner {
         border-bottom-color: map-get($variables, surface);
       }
-    }
-  }
-  .ct-chart {
-    .ct-label,
-    .ct-axis-title {
-      fill: map-get($variables, text-medium);
-      color: map-get($variables, text-medium);
-    }
-  }
-
-  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
-  @each $letter in $letters {
-    $color: if($dark, nth($graph-colors-dark, index($letters, $letter)), nth($graph-colors, index($letters, $letter)));
-    .ct-series-#{$letter} {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: $color;
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: $color;
-      }
-    }
-  }
-
-  .focus-chips .mdc-chip.focus-chip {
-    &.mdc-chip--selected {
-      &,
-      &:hover {
-        color: map-get($variables, text-high);
-      }
-      font-weight: bold;
-    }
-  }
-
-  @for $index from 0 to 40 {
-    $color: if(
-      $dark,
-      nth($graph-colors-dark, ($index % length($graph-colors-dark) + 1)),
-      nth($graph-colors, ($index % length($graph-colors-dark) + 1))
-    );
-    .ct-series-index-#{$index} {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: $color;
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: $color;
-      }
-    }
-    .focus-chips .focus-chip-index-#{$index} {
-      @include chips.leading-icon-color($color, 1);
-      @include ripple.states($color);
-      @include chips.selected-ink-color($color);
-    }
-    .focused {
-      &:not(.series-index-#{$index}) {
-        .ct-series-index-#{$index} {
-          pointer-events: none;
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: rgba($color, 0.1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: rgba($color, 0.1);
-          }
-          .ct-stroked-point {
-            pointer-events: none !important;
-          }
-        }
-      }
-    }
-  }
-
-  .table-card {
-    .ct-series-a {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: map-get($variables, secondary);
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: map-get($variables, secondary);
-      }
-    }
-  }
-  .pie-card {
-    .pie-chart-container {
-      &.status .ct-chart {
-        .ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-2);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: map-get($variables, grey-2);
-          }
-        }
-        .ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: map-get($variables, grey-1);
-          }
-        }
-        .ct-series.ct-series-c {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, secondary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, secondary);
-          }
-        }
-        .ct-series.ct-series-d {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-      }
-    }
-    .indicator {
-      &.post-gb {
-        background-color: map-get($variables, primary);
-      }
-      &.live-gb {
-        background-color: map-get($variables, secondary);
-      }
-    }
-  }
-  .timeline-card {
-    .timeline-chart-container {
-      &.single.primary .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-      }
-      &.single.secondary .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, secondary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, secondary);
-          }
-        }
-      }
-      &.shipped .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-        .ct-series.ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, grey-1);
-          }
-        }
-      }
-    }
-    .indicator {
-      &.shipped {
-        background-color: map-get($variables, primary);
-      }
-      &.unshipped,
-      &.pre-gb {
-        background-color: map-get($variables, grey-1);
-      }
-      &.ic {
-        background-color: map-get($variables, grey-2);
-      }
-    }
-  }
-
-  .chartist-tooltip {
-    background-color: map-get($variables, text-high);
-    color: map-get($variables, surface);
-  }
-
-  .autocomplete-mobile {
-    background-color: map-get($variables, background);
-  }
-
-  .banner-text {
-    color: map-get($variables, text-medium);
-  }
-
-  .empty-container,
-  .login-container,
-  .message-container {
-    .title {
-      color: map-get($variables, text-high);
-    }
-    .subtitle {
-      color: map-get($variables, text-medium);
-    }
-  }
-
-  .footer {
-    color: map-get($variables, text-medium);
-    .bold {
-      color: map-get($variables, text-high);
-    }
-  }
-
-  .full-screen-dialog {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
-    &__app-bar {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, primary));
-    }
-    &-scrim {
-      background-color: rgba(map-get($variables, on-surface), 0.32);
-    }
-    .mdc-menu-surface {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
-    }
-    .mdc-card {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 16), map-get($variables, surface));
-      @if ($dark) {
-        transition-property: box-shadow, background-color;
-      }
-      &.dragged {
-        background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
-      }
-    }
-    .mdc-chip {
-      @include chips.fill-color-accessible(
-        mix(
-          map-get($variables, on-surface),
-          if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface)),
-          12%
-        )
-      );
-      @include chips.selected-ink-color(map-get($variables, primary));
-      &[disabled] {
-        @include chips.ink-color(map-get($variables, text-disabled));
-      }
-    }
-    .mdc-typography--overline,
-    .mdc-typography--caption {
-      color: map-get($variables, text-medium);
-    }
-    .mdc-typography--headline4,
-    .mdc-typography--headline5,
-    .preview,
-    .mdc-typography--body2,
-    .mdc-form-field {
-      color: map-get($variables, text-high);
-    }
-  }
-  .image-upload {
-    &-title {
-      color: map-get($variables, text-medium);
-    }
-    .image-display {
-      fill: map-get($variables, text-medium);
-      &::before {
-        background-color: map-get($variables, on-surface);
-      }
-      &.over {
-        border-color: map-get($variables, primary);
-      }
-      .caption {
-        color: map-get($variables, text-medium);
-      }
-    }
-  }
-
-  .sales-container {
-    .sales-image-icon {
-      fill: map-get($variables, text-medium);
-    }
-  }
-
-  .list .content-grid {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
-  }
-
-  .subheader,
-  .drag-handle {
-    color: map-get($variables, text-medium);
-  }
-
-  .main.extended-app-bar .outer-container:first-child .subheader {
-    color: if($dark, map-get($variables, text-medium), rgba(map-get($variables, on-primary), 0.6));
-  }
-
-  .drawer-open .main.extended-app-bar,
-  .drawer-open.main.extended-app-bar {
-    .outer-container:first-child .subheader {
-      color: map-get($variables, text-medium);
-    }
-  }
-
-  .main::before {
-    background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
-  }
-
-  .legal,
-  .guide {
-    color: map-get($variables, text-high);
-    .mdc-typography--button {
-      color: map-get($variables, primary);
-      &.delete {
-        color: map-get($variables, error);
-      }
-    }
-    .secondary {
-      color: map-get($variables, text-medium);
-      .bold {
-        color: map-get($variables, text-high);
-      }
-    }
-    &-container::before {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 4), map-get($variables, primary));
-    }
-  }
-
-  .user {
-    .mdc-card__action--icon.disabled {
-      color: map-get($variables, text-disabled);
-    }
-  }
-
-  .log,
-  .changelog {
-    .mdc-icon-button {
-      color: map-get($variables, text-medium);
-      @include ripple.states(map-get($variables, on-surface));
-    }
-    .before,
-    .after {
-      color: map-get($variables, text-disabled);
-      a {
-        color: rgba(map-get($variables, primary), 0.38);
-      }
-      .highlight {
-        color: map-get($variables, text-high);
-        a {
-          color: map-get($variables, primary);
-        }
-      }
-    }
-  }
-
-  .set-changelog {
-    .mdc-card__media-content {
-      color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
-    }
-  }
-
-  .update-entry {
-    color: map-get($variables, text-high);
-    .linked-indicator {
-      color: map-get($variables, text-medium);
-    }
-    &.pinned {
-      a,
-      .pin-indicator,
-      .linked-indicator {
-        color: map-get($variables, secondary);
-      }
-    }
-    &.linked {
-      @if ($dark) {
-        background-color: overlay-elevation(map-get($variables, surface), 3);
-      }
-    }
-  }
-
-  .entries {
-    &-drawer.mdc-drawer {
-      @include drawer.surface-fill-color(transparent);
-      .mdc-chip {
-        @include chips.fill-color-accessible(
-          mix(map-get($variables, on-surface), map-get($variables, background), 12%)
-        );
-        @include chips.selected-ink-color(map-get($variables, primary));
-      }
-    }
-    &-list {
-      &-container {
-        background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
-        .mdc-chip {
-          @include chips.fill-color-accessible(
-            mix(
-              map-get($variables, on-surface),
-              if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface)),
-              12%
-            )
-          );
-          @include chips.selected-ink-color(map-get($variables, primary));
-        }
-      }
-      .mdc-list {
-        &-group {
-          &__subheader {
-            color: map-get($variables, text-medium);
-          }
-        }
-      }
-    }
-  }
-
-  .sponsors {
-    .cannonkeys {
-      fill: if($dark, white, #060d44);
-    }
-    .prototypist {
-      fill: if($dark, white, #3f6b6b);
-    }
-    .deskhero {
-      color: map-get($variables, on-surface);
-    }
-  }
-
-  .segmented-button {
-    &.segmented-button--toggle .segmented-button__segment {
-      @include button.ink-color(map-get($variables, text-medium));
-      @include ripple.states(map-get($variables, on-surface), false, feature-targeting.all(), ".mdc-button__ripple");
-      @include ripple.states-selected(
-        map-get($variables, primary),
-        false,
-        feature-targeting.all(),
-        ".mdc-button__ripple"
-      );
-      @include ripple.states-selected(
-        map-get($variables, text-disabled),
-        false,
-        feature-targeting.all(),
-        "&:disabled .mdc-button__ripple"
-      );
-      &--selected {
-        @include button.ink-color(map-get($variables, primary));
-        @include button.outline-color(map-get($variables, primary));
-      }
-      &:disabled,
-      &--selected:disabled {
-        @include button.ink-color(map-get($variables, text-disabled));
-        @include button.outline-color(map-get($variables, text-disabled));
-      }
-    }
-  }
-
-  @if ($dark != true) {
-    &:not([dir="rtl"])
-      .mdc-top-app-bar
-      .segmented-button
-      .mdc-button:first-child:not(.segmented-button__segment--selected) {
-      border-left-color: rgba(map-get($variables, on-primary), 0.38);
-    }
-    &:not([dir="rtl"])
-      .mdc-top-app-bar
-      .segmented-button
-      .mdc-button:last-child:not(.segmented-button__segment--selected) {
-      border-right-color: rgba(map-get($variables, on-primary), 0.38);
-    }
-  }
-
-  .markdown {
-    .mdc-typography {
-      &--headline5,
-      &--headline6,
-      &--subtitle1,
-      &--subtitle2,
-      &--body2 {
-        color: map-get($variables, text-high);
-      }
-      &--overline,
-      &--caption {
-        color: map-get($variables, text-medium);
-      }
-    }
-  }
-
-  .react-mde.markdown-editor {
-    .markdown-editor {
-      &__toolbar {
-        .mdc-icon-button {
-          color: map-get($variables, text-medium);
-          @include ripple.states(map-get($variables, on-surface));
-        }
-      }
-      &__textarea {
-        color: map-get($variables, text-high);
-        caret-color: map-get($variables, primary);
-        border-color: rgba(map-get($variables, on-surface), 0.38);
-        &--hovered {
-          border-color: rgba(map-get($variables, on-surface), 0.87);
-        }
-        &--focused {
-          border-color: map-get($variables, primary);
-        }
-        &--invalid:not(.markdown-editor__textarea--focused) {
-          border-color: map-get($variables, error);
-        }
-      }
-    }
-  }
-
-  @media (max-width: 479px) {
-    .settings-container {
-      background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     }
   }
 }
