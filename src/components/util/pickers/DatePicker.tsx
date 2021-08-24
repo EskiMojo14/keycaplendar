@@ -121,6 +121,12 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
+        helpText={{
+          persistent: true,
+          validationMsg: true,
+          children: `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          ...(props.helpText || {}),
+        }}
       />
       <MenuSurface
         {...wrapperProps}
@@ -155,6 +161,12 @@ export const DatePicker = ({
         className={bemClasses("field", "", props.className)}
         pattern={datePattern}
         inputMode="numeric"
+        helpText={{
+          persistent: true,
+          validationMsg: true,
+          children: `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          ...(props.helpText || {}),
+        }}
         trailingIcon={withTooltip(
           <IconButton
             icon={iconObject(

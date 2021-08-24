@@ -423,7 +423,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB month"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
           showNowButton
@@ -454,7 +453,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
+          helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton
         />
@@ -473,7 +472,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB end"
           value={fields.gbEnd}
           name="gbEnd"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
           onChange={(val) => handleNamedChange("gbEnd", val)}
           showNowButton
         />
@@ -649,7 +647,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
             required
             value={fields.icDate}
             name="icDate"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             onChange={(val) => handleNamedChange("icDate", val)}
             pickerProps={{ disableFuture: true }}
             showNowButton
@@ -716,7 +713,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
                           pattern="^\d{4}-\d{1,2}-\d{1,2}$"
                           value={vendor.endDate}
                           name={"endDate" + index}
-                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
                           onChange={handleChangeVendor}
                         />
                       ) : null;
@@ -1367,7 +1363,6 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB month"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
           showNowButton
@@ -1400,7 +1395,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
+          helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton
         />
@@ -1419,7 +1414,6 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB end"
           value={fields.gbEnd}
           name="gbEnd"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
           onChange={(val) => handleNamedChange("gbEnd", val)}
           showNowButton
         />
@@ -1600,7 +1594,6 @@ export const ModalEdit = (props: ModalEditProps) => {
             required
             value={fields.icDate}
             name="icDate"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             onChange={(val) => handleNamedChange("icDate", val)}
             showNowButton
           />
@@ -1666,7 +1659,6 @@ export const ModalEdit = (props: ModalEditProps) => {
                           pattern="^\d{4}-\d{1,2}-\d{1,2}$"
                           value={vendor.endDate}
                           name={"endDate" + index}
-                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
                           onChange={handleChangeVendor}
                         />
                       ) : null;

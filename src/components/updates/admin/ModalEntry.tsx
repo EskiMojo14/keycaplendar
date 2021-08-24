@@ -152,7 +152,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
             value={date}
             onChange={(val) => handleNamedChange("date", val)}
             required
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             showNowButton
           />
           <TextField
@@ -322,7 +321,6 @@ export const ModalEdit = (props: ModalEditProps) => {
             value={date}
             onChange={(val) => handleNamedChange("date", val)}
             required
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
             showNowButton
           />
           <TextField
