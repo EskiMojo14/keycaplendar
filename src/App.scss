@@ -83,9 +83,196 @@
   white-space: pre-line;
 }
 
+.banner {
+  height: 54px;
+  display: flex;
+  justify-content: stretch;
+  @include util.divider-border(bottom);
+  &-text {
+    @include typography.typography(body2);
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    @include rtl.reflexive-box(padding, left, 16px);
+  }
+  &-button {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 16px;
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
+.sales-image,
+.sales-image img,
+.details-image,
+.image-details .image,
+.image-display,
+.mdc-list-item__graphic.image {
+  @include shape.radius(shape.resolve-percentage-radius(16px, medium));
+}
+
+.rtl-flip {
+  @include rtl.rtl {
+    transform: scaleX(-1);
+    animation: none;
+    opacity: 1;
+  }
+}
+
+:focus {
+  outline: none;
+}
+
+:root {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.scroll-lock {
+  overflow: hidden;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fade-in-scale {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes placeholder {
+  from {
+    background-color: var(--theme-lighter-divider);
+  }
+  50% {
+    background-color: var(--theme-divider);
+  }
+  to {
+    background-color: var(--theme-lighter-divider);
+  }
+}
+
+@each $theme-name, $theme in themes.$themes-map {
+  .#{"" + $theme-name} {
+    @include theme.theme($theme, map-get($theme, dark));
+  }
+}
+
+// external
+
 .mdl-button.firebaseui-idp-button {
   font-family: typography-variables.$body-font;
 }
+
+.react-mde.markdown-editor {
+  @include shape.radius(small);
+  .markdown-editor {
+    &__textarea {
+      @include typography.typography(subtitle1, $exclude-props: (line-height));
+      @include shape.radius(small);
+    }
+  }
+}
+
+// chartist
+
+.ct-chart {
+  .ct-grid {
+    stroke: var(--theme-divider);
+    stroke-dasharray: 4px;
+  }
+  .ct-axis-title {
+    @include typography.typography(caption);
+  }
+  .ct-stroked-point {
+    pointer-events: all !important;
+    stroke: transparent;
+    stroke-width: 24px;
+  }
+}
+
+.chartist-tooltip {
+  @include typography.typography(caption);
+  @include shape.radius(shape.resolve-percentage-radius(2rem, small));
+  animation: animation.standard(rmwcToolTipOut, 0.075s);
+  text-align: left;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.33rem 1rem;
+  min-height: 2rem;
+  min-width: 0;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  &::before {
+    content: none !important;
+  }
+  &.tooltip-show {
+    animation: animation.standard(rmwcToolTipIn, 0.15s);
+  }
+  &-meta {
+    font-weight: bold;
+    &::after {
+      content: ": ";
+    }
+  }
+}
+
+// MUI
+
+.MuiPickersStaticWrapper-staticWrapperRoot {
+  background-color: transparent;
+  .MuiPickersCalendarHeader-iconButton:not(:hover) {
+    background-color: transparent;
+  }
+}
+
+$mui-typography-map: (
+  h1: headline1,
+  h2: headline2,
+  h3: headline3,
+  h4: headline4,
+  h5: headline5,
+  h6: headline6,
+  subtitle1: subtitle1,
+  subtitle2: subtitle2,
+  body1: body1,
+  body2: body2,
+  button: button,
+  caption: caption,
+  overline: overline,
+);
+
+.mdc-typography .MuiTypography {
+  @each $style, $val in $mui-typography-map {
+    &-#{$style} {
+      @include typography.typography($val);
+    }
+  }
+}
+
+// MDC
 
 .mdc-drawer {
   @include util.divider-border(right);
@@ -282,124 +469,8 @@
   user-select: none;
 }
 
-.ct-chart {
-  .ct-grid {
-    stroke: var(--theme-divider);
-    stroke-dasharray: 4px;
-  }
-  .ct-axis-title {
-    @include typography.typography(caption);
-  }
-  .ct-stroked-point {
-    pointer-events: all !important;
-    stroke: transparent;
-    stroke-width: 24px;
-  }
-}
-
-.chartist-tooltip {
-  @include typography.typography(caption);
-  @include shape.radius(shape.resolve-percentage-radius(2rem, small));
-  animation: animation.standard(rmwcToolTipOut, 0.075s);
-  text-align: left;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 0.33rem 1rem;
-  min-height: 2rem;
-  min-width: 0;
-  box-sizing: border-box;
-  white-space: pre-wrap;
-  &::before {
-    content: none !important;
-  }
-  &.tooltip-show {
-    animation: animation.standard(rmwcToolTipIn, 0.15s);
-  }
-  &-meta {
-    font-weight: bold;
-    &::after {
-      content: ": ";
-    }
-  }
-}
-
 .mdc-ripple-upgraded::before {
   transition-duration: 100ms !important;
-}
-
-.rmwc-data-table__head-cell--sorted .rmwc-data-table__sort-icon {
-  transform: rotate(0);
-}
-
-.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta,
-.mdc-select--activated .mdc-select__dropdown-icon,
-.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending .rmwc-data-table__sort-icon,
-.rmwc-data-table__sort-icon {
-  transform: rotate(180deg);
-}
-
-.rmwc-avatar {
-  background-color: var(--theme-divider);
-}
-
-.rmwc-badge.material-icons {
-  text-transform: none;
-  font-size: 18px;
-  line-height: 18px;
-  width: 26px;
-  height: 26px;
-  padding: 4px;
-  &.rmwc-badge--align-start,
-  &.rmwc-badge--align-end {
-    top: -13px;
-  }
-  &.rmwc-badge--align-start,
-  [dir="rtl"] &.rmwc-badge--align-end {
-    left: -13px;
-    right: auto;
-  }
-  &.rmwc-badge--align-end,
-  [dir="rtl"] &.rmwc-badge--align-start {
-    right: -13px;
-    left: auto;
-  }
-}
-
-.rmwc-icon--url[disabled],
-.rmwc-icon--component[disabled],
-[disabled] > .rmwc-icon--url,
-[disabled] > .rmwc-icon--component {
-  opacity: 1;
-}
-
-.banner {
-  height: 54px;
-  display: flex;
-  justify-content: stretch;
-  @include util.divider-border(bottom);
-  &-text {
-    @include typography.typography(body2);
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    @include rtl.reflexive-box(padding, left, 16px);
-  }
-  &-button {
-    display: flex;
-    justify-content: flex-end;
-    padding: 8px 16px;
-    a {
-      text-decoration: none;
-    }
-  }
-}
-
-.rmwc-tooltip {
-  @include typography.typography(caption);
-  &-inner {
-    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
-  }
 }
 
 .mdc-slider {
@@ -521,117 +592,56 @@ svg.material-icons,
   }
 }
 
-.MuiPickersStaticWrapper-staticWrapperRoot {
-  background-color: transparent;
-  .MuiPickersCalendarHeader-iconButton:not(:hover) {
-    background-color: transparent;
+// RMWC
+
+.rmwc-data-table__head-cell--sorted .rmwc-data-table__sort-icon {
+  transform: rotate(0);
+}
+
+.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta,
+.mdc-select--activated .mdc-select__dropdown-icon,
+.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending .rmwc-data-table__sort-icon,
+.rmwc-data-table__sort-icon {
+  transform: rotate(180deg);
+}
+
+.rmwc-avatar {
+  background-color: var(--theme-divider);
+}
+
+.rmwc-badge.material-icons {
+  text-transform: none;
+  font-size: 18px;
+  line-height: 18px;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  &.rmwc-badge--align-start,
+  &.rmwc-badge--align-end {
+    top: -13px;
+  }
+  &.rmwc-badge--align-start,
+  [dir="rtl"] &.rmwc-badge--align-end {
+    left: -13px;
+    right: auto;
+  }
+  &.rmwc-badge--align-end,
+  [dir="rtl"] &.rmwc-badge--align-start {
+    right: -13px;
+    left: auto;
   }
 }
 
-$mui-typography-map: (
-  h1: headline1,
-  h2: headline2,
-  h3: headline3,
-  h4: headline4,
-  h5: headline5,
-  h6: headline6,
-  subtitle1: subtitle1,
-  subtitle2: subtitle2,
-  body1: body1,
-  body2: body2,
-  button: button,
-  caption: caption,
-  overline: overline,
-);
-
-.mdc-typography .MuiTypography {
-  @each $style, $val in $mui-typography-map {
-    &-#{$style} {
-      @include typography.typography($val);
-    }
-  }
+.rmwc-icon--url[disabled],
+.rmwc-icon--component[disabled],
+[disabled] > .rmwc-icon--url,
+[disabled] > .rmwc-icon--component {
+  opacity: 1;
 }
 
-.sales-image,
-.sales-image img,
-.details-image,
-.image-details .image,
-.image-display,
-.mdc-list-item__graphic.image {
-  @include shape.radius(shape.resolve-percentage-radius(16px, medium));
-}
-
-.react-mde.markdown-editor {
-  @include shape.radius(small);
-  .markdown-editor {
-    &__textarea {
-      @include typography.typography(subtitle1, $exclude-props: (line-height));
-      @include shape.radius(small);
-    }
-  }
-}
-
-.rtl-flip {
-  @include rtl.rtl {
-    transform: scaleX(-1);
-    animation: none;
-    opacity: 1;
-  }
-}
-
-:focus {
-  outline: none;
-}
-
-:root {
-  -webkit-tap-highlight-color: transparent;
-}
-
-.scroll-lock {
-  overflow: hidden;
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-@keyframes fade-in-scale {
-  from {
-    transform: scale(0.92);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes placeholder {
-  from {
-    background-color: var(--theme-lighter-divider);
-  }
-  50% {
-    background-color: var(--theme-divider);
-  }
-  to {
-    background-color: var(--theme-lighter-divider);
-  }
-}
-
-@each $theme-name, $theme in themes.$themes-map {
-  .#{"" + $theme-name} {
-    @include theme.theme($theme, map-get($theme, dark));
+.rmwc-tooltip {
+  @include typography.typography(caption);
+  &-inner {
+    @include shape.radius(shape.resolve-percentage-radius(2rem, small));
   }
 }
