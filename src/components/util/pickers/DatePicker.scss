@@ -19,8 +19,9 @@
         padding: 8px;
       }
     }
-    &.mdc-dialog {
-    }
+  }
+  .MuiPickersBasePicker-pickerView {
+    padding-bottom: 8px;
   }
   &__bottom-bar {
     display: flex;

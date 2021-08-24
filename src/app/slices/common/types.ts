@@ -12,6 +12,15 @@ export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 export type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
 
+/** Creates a type of keys from A and B where key and type are the same. */
+
+export type Common<A, B> = Pick<
+  A,
+  {
+    [K in keyof A & keyof B]: A[K] extends B[K] ? (B[K] extends A[K] ? K : never) : never;
+  }[keyof A & keyof B]
+>;
+
 /** Create a union of all keys in object T which have values of V type. */
 
 export type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T];

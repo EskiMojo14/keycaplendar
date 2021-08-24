@@ -1175,11 +1175,17 @@ export const ModalEdit = (props: ModalEditProps) => {
       setSalesInfo((salesInfo) => {
         return { ...salesInfo, thirdParty: checked };
       });
-    } else {
+    } else if (hasKey(fields, name)) {
       setFields((fields) => {
         return { ...fields, [name]: value };
       });
     }
+  };
+
+  const handleNamedChange = (name: keyof typeof fields, value: string) => {
+    setFields((fields) => {
+      return { ...fields, [name]: value };
+    });
   };
 
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1346,7 +1352,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         Month
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1359,11 +1365,12 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB month"
-          pattern="^\d{4}-\d{1,2}$"
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-          onChange={handleChange}
+          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          month
+          showNowButton
         />
       </div>
       <CardActions>
@@ -1378,7 +1385,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         Date
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1391,13 +1398,13 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB launch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
           value={fields.gbLaunch}
           name="gbLaunch"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-          onChange={handleChange}
+          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          showNowButton
         />
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1410,11 +1417,11 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB end"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
           value={fields.gbEnd}
           name="gbEnd"
           helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-          onChange={handleChange}
+          onChange={(val) => handleNamedChange("gbEnd", val)}
+          showNowButton
         />
       </div>
       <CardActions>
@@ -1577,7 +1584,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               listSplit
             />
           </MenuSurfaceAnchor>
-          <TextField
+          <DatePicker
             autoComplete="off"
             icon={{
               icon: (
@@ -1591,11 +1598,11 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined
             label="IC date"
             required
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
             value={fields.icDate}
             name="icDate"
             helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={handleChange}
+            onChange={(val) => handleNamedChange("icDate", val)}
+            showNowButton
           />
           <TextField
             autoComplete="off"

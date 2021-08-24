@@ -5,8 +5,8 @@ import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bemHelper";
 import { iconObject } from "@s/common/functions";
-import { Overwrite } from "@s/common/types";
-import { Dialog, DialogActions, DialogButton } from "@rmwc/dialog";
+import { Common, Overwrite } from "@s/common/types";
+import { Dialog, DialogActions, DialogButton, DialogProps } from "@rmwc/dialog";
 import { Button } from "@rmwc/button";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurface, MenuSurfaceAnchor, MenuSurfaceProps, MenuHTMLProps } from "@rmwc/menu";
@@ -42,7 +42,10 @@ export type DatePickerProps = Overwrite<
   {
     value: string;
     onChange: (val: string) => void;
-    wrapperProps?: Omit<MenuSurfaceProps & MenuHTMLProps, "open" | "anchorCorner">;
+    wrapperProps?: Omit<
+      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & React.HTMLProps<HTMLElement>>,
+      "open" | "anchorCorner" | "renderToPortal"
+    >;
     pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
     month?: boolean;
     showNowButton?: boolean;
@@ -167,6 +170,7 @@ export const DatePicker = ({
         )}
       />
       <Dialog
+        {...wrapperProps}
         open={open}
         onClose={closeDialog}
         className={bemClasses("wrapper", { open }, [wrapperProps?.className || ""])}
