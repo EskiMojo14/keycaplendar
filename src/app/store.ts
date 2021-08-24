@@ -30,7 +30,8 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: { ignoredPaths: ["statistics.data"] },
+      serializableCheck: { ignoredPaths: ["statistics.data", "images.images"] },
+      immutableCheck: false,
     }),
 });
 
