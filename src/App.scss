@@ -265,10 +265,15 @@ $mui-typography-map: (
   }
 }
 
-.MuiPickersStaticWrapper-staticWrapperRoot {
-  background-color: transparent;
-  .MuiPickersCalendarHeader-iconButton:not(:hover) {
+body {
+  .MuiPickersStaticWrapper-staticWrapperRoot {
     background-color: transparent;
+    .MuiPickersCalendarHeader-iconButton:not(:hover) {
+      background-color: transparent;
+    }
+    .MuiPickersBasePicker-pickerView {
+      align-self: center;
+    }
   }
 }
 

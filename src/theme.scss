@@ -672,6 +672,20 @@ $overlay-values: (
     color: map-get($variables, surface);
   }
 
+  // MUI
+
+  .mdc-drawer {
+    .mdc-menu-surface {
+      .MuiPickersToolbar-toolbar {
+        background-color: if(
+          $dark,
+          darken(overlay-elevation(map-get($variables, surface), 24), 10%),
+          map-get($variables, primary)
+        );
+      }
+    }
+  }
+
   // MDC
 
   .mdc-button {
@@ -1090,6 +1104,7 @@ $overlay-values: (
 
   .mdc-menu-surface {
     background-color: if($dark, overlay-elevation(map-get($variables, surface), 8), map-get($variables, surface));
+    color: map-get($variables, on-surface);
   }
 
   @media (max-width: 840px) {
