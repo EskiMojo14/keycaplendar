@@ -453,6 +453,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q[1-4]{1} \d{4}$"
           helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton
@@ -1395,6 +1396,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
+          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q[1-4]{1} \d{4}$"
           helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton

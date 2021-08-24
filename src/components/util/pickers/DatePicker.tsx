@@ -38,7 +38,7 @@ const formatDateWithAppend = (string: string, month?: boolean) => {
 };
 
 export type DatePickerProps = Overwrite<
-  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "pattern">,
+  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur">,
   {
     value: string;
     onChange: (val: string) => void;
@@ -115,7 +115,7 @@ export const DatePicker = ({
       <TextField
         {...props}
         className={bemClasses("field")}
-        pattern={datePattern}
+        pattern={props.pattern || datePattern}
         inputMode="numeric"
         value={rifm.value}
         onChange={rifm.onChange}
@@ -159,7 +159,7 @@ export const DatePicker = ({
         value={rifm.value}
         onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
-        pattern={datePattern}
+        pattern={props.pattern || datePattern}
         inputMode="numeric"
         helpText={{
           persistent: true,
