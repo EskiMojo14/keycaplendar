@@ -47,7 +47,7 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectCurrentThemeMap = createSelector(
   [selectTheme, selectThemesMap],
-  (theme, themesMap) => themesMap[theme]
+  (theme, themesMap) => themesMap[theme] as ThemeMap | undefined
 );
 
 export default commonSlice.reducer;
