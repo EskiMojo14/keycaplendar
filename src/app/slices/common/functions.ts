@@ -470,3 +470,19 @@ export const batchStorageDelete = (array: string[] = []) => {
     })
   );
 };
+
+/** Checks current locale and returns true if locale uses 24 hour time.
+ * https://stackoverflow.com/a/60437579
+ * @param [langCode] Language code.
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation.
+ * @returns If locale uses 24 hour time.
+ */
+
+export const localeUses24HourTime = (langCode?: string) =>
+  !!(
+    new Intl.DateTimeFormat(langCode, {
+      hour: "numeric",
+    })
+      .formatToParts(new Date(2020, 0, 1, 13))
+      .find((part) => part.type === "hour")?.value.length === 2
+  );
