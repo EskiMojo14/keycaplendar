@@ -300,9 +300,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const focusAll = () => {
     let allIndexes: number[] = [];
     if (
-      arrayEveryType<{ index: number }>(
+      arrayEveryType(
         chartData.timeline.series,
-        (series) => typeof series === "object" && hasKey(series, "index")
+        (series): series is { index: number } => typeof series === "object" && hasKey(series, "index")
       ) &&
       chartData.timeline.series.length !== props.allProfiles?.length
     ) {
@@ -322,7 +322,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
     onlyFocused &&
     props.focusable &&
     props.allProfiles &&
-    arrayEveryType<{ data: any; index: number }>(chartData.timeline.series, (series) => hasKey(series, "data")) &&
+    arrayEveryType(
+      chartData.timeline.series,
+      (series): series is { data: any; index: number } => hasKey(series, "data") && hasKey(series, "index")
+    ) &&
     focused.length > 0 &&
     focused.length !== chartData.timeline.series.length
       ? chartData.timeline.series.filter((series) => focused.includes(series.index))

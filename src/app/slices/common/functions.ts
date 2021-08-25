@@ -31,14 +31,14 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
  * @param arr Array of items to be checked
- * @param callback Callback which takes each item and checks its type, returning `true` if the type matches.
+ * @param callback Type predicate which takes each item and checks its type, returning `true` if the type matches.
  * @returns If all items meet the callback requirement.
  */
 
 export const arrayEveryType = <T>(
   arr: any[],
-  callback: (item: any, index: number, array: any[]) => boolean
-): arr is T[] => arr.every(callback);
+  predicate: (item: any, index: number, array: any[]) => item is T
+): arr is T[] => arr.every(predicate);
 
 /** Merge object and modify specified keys. */
 

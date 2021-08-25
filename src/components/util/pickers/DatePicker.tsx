@@ -34,6 +34,23 @@ const formatDateWithAppend = (month?: boolean) => (string: string) => {
   return res;
 };
 
+/** Returns an error message if invalid, otherwise returns false. */
+
+export const invalidDate = (date: string, month = false, required = false, disableFuture = false): string | false => {
+  const luxonExplanation = DateTime.fromISO(date).invalidExplanation;
+  if (!date && required) {
+    return "Field is required.";
+  } else if (date && disableFuture && date > DateTime.now().toISODate()) {
+    return "Date is in the future";
+  } else if (date && luxonExplanation) {
+    return luxonExplanation;
+  } else if (required && !(date.length === (month ? 7 : 10))) {
+    // valid ISO but not the format we want
+    return `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`;
+  }
+  return false;
+};
+
 export type DatePickerProps = Overwrite<
   Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur">,
   {
@@ -66,13 +83,7 @@ export const DatePicker = ({
   const landscape = orientation === "landscape";
 
   const [touched, setTouched] = useState(false);
-
-  const errorMessage = value
-    ? pickerProps?.disableFuture && value > DateTime.now().toISODate()
-      ? "Date is in the future"
-      : DateTime.fromISO(value).invalidExplanation
-    : null;
-  const invalid = touched && (!(value.length === (month ? 7 : 10)) || errorMessage);
+  const invalid = touched ? invalidDate(value, month, props.required, pickerProps?.disableFuture) : false;
 
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
   const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
@@ -126,14 +137,18 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         onFocus={() => {
           setOpen(true);
-          setTouched(true);
+          if (!touched) {
+            setTouched(true);
+          }
         }}
-        onBlur={() => setOpen(false)}
-        invalid={invalid}
+        onBlur={() => {
+          setOpen(false);
+        }}
+        invalid={!!invalid}
         helpText={{
           persistent: true,
           validationMsg: true,
-          children: errorMessage && value ? capitalise(errorMessage) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          children: invalid ? capitalise(invalid) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
           ...(props.helpText || {}),
         }}
       />
@@ -169,14 +184,16 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         className={bemClasses("field", "", props.className)}
         inputMode="numeric"
-        invalid={invalid}
         onFocus={() => {
-          setTouched(true);
+          if (!touched) {
+            setTouched(true);
+          }
         }}
+        invalid={!!invalid}
         helpText={{
           persistent: true,
           validationMsg: true,
-          children: errorMessage && value ? capitalise(errorMessage) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
+          children: invalid && value ? capitalise(invalid) : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}`,
           ...(props.helpText || {}),
         }}
         trailingIcon={withTooltip(

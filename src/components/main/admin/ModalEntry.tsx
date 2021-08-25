@@ -12,6 +12,7 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
 import {
+  arrayEveryType,
   arrayMove,
   batchStorageDelete,
   formatFileName,
@@ -35,7 +36,7 @@ import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./ImageUpload";
-import { DatePicker } from "@c/util/pickers/DatePicker";
+import { DatePicker, invalidDate } from "@c/util/pickers/DatePicker";
 import { Autocomplete } from "@c/util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
@@ -59,6 +60,18 @@ const getVendorStyle = (provided: DraggableProvided) => {
     return style;
   }
 };
+
+const validLink = "https?:\\/\\/.+";
+
+export const validVendor = (obj: Record<string, any>): obj is VendorType =>
+  obj.name &&
+  obj.region &&
+  hasKey(obj, "storeLink") &&
+  (!obj.storeLink || new RegExp(validLink).test(obj.storeLink)) &&
+  (!obj.endDate || !invalidDate(obj.endDate, false));
+
+export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
+  hasKey(obj, "img") && (!obj.img || new RegExp(validLink).test(obj.img)) && hasKey(obj, "thirdParty");
 
 type ModalCreateProps = {
   close: () => void;
@@ -271,6 +284,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number, value: string) => {
+    const newVendors = [...vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, name)) {
+      vendor[name] = value;
+      setVendors(newVendors);
+    }
+  };
+
   const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -353,19 +375,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const formFilled =
+  const valid =
     !!fields.profile &&
     !!fields.colorway &&
     !!fields.designer &&
-    !!fields.icDate &&
-    fields.icDate.length === 10 &&
-    DateTime.fromISO(fields.icDate).isValid &&
-    fields.icDate <= DateTime.now().toISODate() &&
-    !!fields.details &&
-    !!imageInfo.image;
+    !invalidDate(fields.icDate, false, true, true) &&
+    new RegExp(validLink).test(fields.details) &&
+    !!imageInfo.image &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth) &&
+    !invalidDate(fields.gbEnd) &&
+    arrayEveryType(vendors, validVendor) &&
+    validSalesInfo(salesInfo);
 
   const createEntry = (url = imageInfo.imageURL) => {
-    if (formFilled && !uploadingImage && !uploadingDoc) {
+    if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
@@ -544,11 +567,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled && !uploadingImage && !uploadingDoc) {
+              if (valid && !uploadingImage && !uploadingDoc) {
                 uploadImage();
               }
             }}
-            disabled={!formFilled || uploadingImage || uploadingDoc}
+            disabled={!valid || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
@@ -660,7 +683,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined
             label="Details"
             required
-            pattern="https?:\/\/.+"
+            pattern={validLink}
             value={fields.details}
             name="details"
             helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
@@ -698,8 +721,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                   {vendors.map((vendor, index) => {
                     const endDateField =
-                      vendor.endDate || vendor.endDate === "" ? (
-                        <TextField
+                      typeof vendor.endDate === "string" ? (
+                        <DatePicker
                           autoComplete="off"
                           icon={{
                             icon: (
@@ -713,10 +736,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
                           outlined
                           label="End date"
                           required
-                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
                           value={vendor.endDate}
                           name={"endDate" + index}
-                          onChange={handleChangeVendor}
+                          onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
                         />
                       ) : null;
                     return (
@@ -841,7 +863,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                                 icon="link"
                                 outlined
                                 label="Store link"
-                                pattern="https?:\/\/.+"
+                                pattern={validLink}
                                 value={vendor.storeLink}
                                 name={"storeLink" + index}
                                 onChange={handleChangeVendor}
@@ -909,7 +931,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 icon="link"
                 outlined
                 label="URL"
-                pattern="https?:\/\/.+"
+                pattern={validLink}
                 value={salesInfo.img}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
@@ -1198,6 +1220,15 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number, value: string) => {
+    const newVendors = [...vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, name)) {
+      vendor[name] = value;
+      setVendors(newVendors);
+    }
+  };
+
   const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -1295,19 +1326,21 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const formFilled =
+  const valid =
     !!fields.profile &&
     !!fields.colorway &&
     !!fields.designer &&
-    !!fields.icDate &&
-    fields.icDate.length === 10 &&
-    DateTime.fromISO(fields.icDate).isValid &&
-    fields.icDate <= DateTime.now().toISODate() &&
-    !!fields.details &&
+    !invalidDate(fields.icDate, false, true, true) &&
+    new RegExp(validLink).test(fields.details) &&
+    !!imageInfo.image &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth) &&
+    !invalidDate(fields.gbEnd) &&
+    arrayEveryType(vendors, validVendor) &&
+    validSalesInfo(salesInfo) &&
     ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
 
   const editEntry = (imageUrl = imageInfo.imageURL) => {
-    if (formFilled && !uploadingImage && !uploadingDoc) {
+    if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
@@ -1489,7 +1522,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled && !uploadingImage && !uploadingDoc) {
+              if (valid && !uploadingImage && !uploadingDoc) {
                 if (imageInfo.newImage) {
                   uploadImage();
                 } else {
@@ -1497,7 +1530,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 }
               }
             }}
-            disabled={!formFilled || uploadingImage || uploadingDoc}
+            disabled={!valid || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
@@ -1609,7 +1642,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined
             label="Details"
             required
-            pattern="https?:\/\/.+"
+            pattern={validLink}
             value={fields.details}
             name="details"
             helpText={{
@@ -1647,8 +1680,8 @@ export const ModalEdit = (props: ModalEditProps) => {
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                   {vendors.map((vendor, index) => {
                     const endDateField =
-                      vendor.endDate || vendor.endDate === "" ? (
-                        <TextField
+                      typeof vendor.endDate === "string" ? (
+                        <DatePicker
                           autoComplete="off"
                           icon={{
                             icon: (
@@ -1662,10 +1695,9 @@ export const ModalEdit = (props: ModalEditProps) => {
                           outlined
                           label="End date"
                           required
-                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-                          value={vendor.endDate}
+                          value={vendor.endDate || ""}
                           name={"endDate" + index}
-                          onChange={handleChangeVendor}
+                          onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
                         />
                       ) : null;
                     return (
@@ -1789,7 +1821,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                                 icon="link"
                                 outlined
                                 label="Store link"
-                                pattern="https?:\/\/.+"
+                                pattern={validLink}
                                 value={vendor.storeLink}
                                 name={"storeLink" + index}
                                 onChange={handleChangeVendor}
@@ -1853,7 +1885,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 icon="link"
                 outlined
                 label="URL"
-                pattern="https?:\/\/.+"
+                pattern={validLink}
                 value={salesInfo.img}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
