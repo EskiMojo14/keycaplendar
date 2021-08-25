@@ -6,6 +6,7 @@ import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
+import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import {
   addOrRemove,
   alphabeticalSortPropCurried,
@@ -13,8 +14,7 @@ import {
   hasKey,
   iconObject,
   pluralise,
-} from "@s/common/functions";
-import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+} from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";

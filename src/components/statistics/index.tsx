@@ -5,12 +5,12 @@ import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { capitalise, hasKey, iconObject, useBoolStates } from "@s/common/functions";
 import { selectBottomNav } from "@s/settings";
+import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
 import { StatisticsType } from "@s/statistics/types";
-import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
+import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import {

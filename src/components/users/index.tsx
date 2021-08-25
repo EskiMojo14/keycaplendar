@@ -5,7 +5,6 @@ import { queue } from "~/app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { iconObject, useBoolStates } from "@s/common/functions";
 import { selectBottomNav } from "@s/settings";
 import {
   selectFirstIndex,
@@ -24,6 +23,7 @@ import {
 import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
 import { UserType } from "@s/users/types";
+import { iconObject, useBoolStates } from "@s/util/functions";
 import {
   DataTable,
   DataTableContent,

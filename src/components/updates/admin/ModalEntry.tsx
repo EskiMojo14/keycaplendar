@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
+import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { ordinal } from "@s/common/functions";
 import { UpdateId } from "@s/firebase/types";
 import { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
-import { queue } from "~/app/snackbarQueue";
+import { ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";

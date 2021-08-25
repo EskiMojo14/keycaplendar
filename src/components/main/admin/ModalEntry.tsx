@@ -11,6 +11,10 @@ import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
+import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
+import { getData } from "@s/main/functions";
+import { SetType, VendorType } from "@s/main/types";
+import { selectUser } from "@s/user";
 import {
   arrayEveryType,
   arrayMove,
@@ -19,11 +23,7 @@ import {
   getStorageFolders,
   hasKey,
   iconObject,
-} from "@s/common/functions";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
-import { getData } from "@s/main/functions";
-import { SetType, VendorType } from "@s/main/types";
-import { selectUser } from "@s/user";
+} from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";

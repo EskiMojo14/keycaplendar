@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
-import { checkDevice, getGlobals, getURLQuery, saveTheme } from "@s/common/coreFunctions";
+import { checkDevice, getGlobals, getURLQuery, saveTheme } from "@s/common/functions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
 import { testSets } from "@s/main/functions";
 import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user";

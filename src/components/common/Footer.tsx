@@ -1,5 +1,5 @@
 import React from "react";
-import { iconObject } from "@s/common/functions";
+import { iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/HOCs";

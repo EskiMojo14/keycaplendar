@@ -7,7 +7,7 @@ import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich 
 import { ViewType } from "./types";
 import { setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
-import { hasKey } from "@s/common/functions";
+import { hasKey } from "@s/util/functions";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 

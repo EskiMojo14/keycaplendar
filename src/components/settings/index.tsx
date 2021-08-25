@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { useBoolStates } from "@s/common/functions";
 import {
   selectBottomNav,
   selectSettings,
@@ -29,6 +28,7 @@ import {
 import { selectShareName, selectUser, setUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { debouncedSyncShareName } from "@s/user/functions";
+import { useBoolStates } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";

@@ -6,6 +6,9 @@ import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
+import { typedFirestore } from "@s/firebase/firestore";
+import { UserId } from "@s/firebase/types";
+import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
@@ -16,10 +19,7 @@ import {
   objectKeys,
   replaceFunction,
   removeDuplicates,
-} from "@s/common/functions";
-import { typedFirestore } from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
-import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
+} from "@s/util/functions";
 import {
   allSorts,
   arraySorts,

@@ -4,8 +4,8 @@ import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
-import { alphabeticalSortProp, removeDuplicates } from "@s/common/functions";
 import { getSetById } from "@s/main/functions";
+import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 

@@ -13,8 +13,8 @@ import {
 } from ".";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
-import { alphabeticalSortProp } from "@s/common/functions";
 import { typedFirestore } from "@s/firebase/firestore";
+import { alphabeticalSortProp } from "@s/util/functions";
 
 const { dispatch } = store;
 

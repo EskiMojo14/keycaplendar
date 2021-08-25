@@ -5,7 +5,6 @@ import firebase from "@s/firebase";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/common/functions";
 import {
   selectCheckedImages,
   selectCurrentFolder,
@@ -25,6 +24,7 @@ import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/fu
 import { ImageType } from "@s/images/types";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
+import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/util/functions";
 import { queue } from "~/app/snackbarQueue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
