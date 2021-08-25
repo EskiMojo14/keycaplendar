@@ -218,7 +218,7 @@ export const DatePicker = ({
   return (
     <ConditionalWrapper
       condition={useInline}
-      wrapper={(children) => <MenuSurfaceAnchor className={bemClasses()}>{children}</MenuSurfaceAnchor>}
+      wrapper={(children) => <MenuSurfaceAnchor className={bemClasses("anchor")}>{children}</MenuSurfaceAnchor>}
     >
       <TextField
         {...props}
@@ -226,7 +226,7 @@ export const DatePicker = ({
         onChange={rifm.onChange}
         className={bemClasses("field")}
         inputMode="numeric"
-        pattern={`^\\d{4}-\\d{1,2}-\\d{1,2}$${allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""}`}
+        pattern={`^\\d{4}-\\d{1,2}${!month ? "-\\d{1,2}" : ""}$${allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""}`}
         onFocus={() => {
           if (touched) {
             setTouched(false);

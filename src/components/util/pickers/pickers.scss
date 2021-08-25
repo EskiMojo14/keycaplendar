@@ -45,7 +45,7 @@
     }
     &__field + .mdc-text-field-helper-line {
       & + .picker__modal.mdc-menu-surface {
-        margin-top: -35px;
+        margin-top: -19px + -16px;
       }
     }
   }
