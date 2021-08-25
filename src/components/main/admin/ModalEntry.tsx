@@ -382,7 +382,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     !invalidDate(fields.icDate, false, true, true) &&
     new RegExp(validLink).test(fields.details) &&
     !!imageInfo.image &&
-    !invalidDate(fields.gbLaunch, fields.gbMonth) &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
     !invalidDate(fields.gbEnd) &&
     arrayEveryType(vendors, validVendor) &&
     validSalesInfo(salesInfo);
@@ -452,6 +452,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
           showNowButton
+          allowQuarter
         />
       </div>
       <CardActions>
@@ -479,10 +480,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q[1-4]{1} \d{4}$"
-          helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton
+          allowQuarter
         />
         <DatePicker
           autoComplete="off"
@@ -739,6 +739,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                           value={vendor.endDate}
                           name={"endDate" + index}
                           onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
+                          showNowButton
                         />
                       ) : null;
                     return (
@@ -1333,7 +1334,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     !invalidDate(fields.icDate, false, true, true) &&
     new RegExp(validLink).test(fields.details) &&
     !!imageInfo.image &&
-    !invalidDate(fields.gbLaunch, fields.gbMonth) &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
     !invalidDate(fields.gbEnd) &&
     arrayEveryType(vendors, validVendor) &&
     validSalesInfo(salesInfo) &&
@@ -1404,6 +1405,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           name="gbLaunch"
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           month
+          allowQuarter
           showNowButton
         />
       </div>
@@ -1434,10 +1436,9 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q[1-4]{1} \d{4}$"
-          helpText={{ children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
           onChange={(val) => handleNamedChange("gbLaunch", val)}
           showNowButton
+          allowQuarter
         />
         <DatePicker
           autoComplete="off"
@@ -1698,6 +1699,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                           value={vendor.endDate || ""}
                           name={"endDate" + index}
                           onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
+                          showNowButton
                         />
                       ) : null;
                     return (

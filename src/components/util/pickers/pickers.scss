@@ -12,7 +12,7 @@
       }
     }
   }
-  &__wrapper {
+  &__modal {
     &.mdc-menu-surface {
       width: 100%;
       .picker__buttons {
@@ -40,11 +40,13 @@
   }
   .mdc-drawer &,
   .full-screen-dialog & {
-    &__field + .picker__wrapper.mdc-menu-surface {
+    &__field + .picker__modal.mdc-menu-surface {
       margin-top: -16px;
     }
-    &__field + .mdc-text-field-helper-line + .picker__wrapper.mdc-menu-surface {
-      margin-top: -35px;
+    &__field + .mdc-text-field-helper-line {
+      & + .picker__modal.mdc-menu-surface {
+        margin-top: -35px;
+      }
     }
   }
 }
