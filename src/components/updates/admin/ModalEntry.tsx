@@ -57,7 +57,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChange = (name: string, value: string) => {
+  const handleNamedChange = (name: string) => (value: string) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "body") {
@@ -150,7 +150,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             label="Date"
             name="date"
             value={date}
-            onChange={(val) => handleNamedChange("date", val)}
+            onChange={handleNamedChange("date")}
             required
             showNowButton
           />
@@ -167,7 +167,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleNamedChange("body", string)} required />
+            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
           </div>
         </div>
         <div className="preview">
@@ -225,7 +225,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleNamedChange = (name: string, value: string) => {
+  const handleNamedChange = (name: string) => (value: string) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "body") {
@@ -319,7 +319,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             label="Date"
             name="date"
             value={date}
-            onChange={(val) => handleNamedChange("date", val)}
+            onChange={handleNamedChange("date")}
             required
             showNowButton
           />
@@ -336,7 +336,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleNamedChange("body", string)} required />
+            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
           </div>
         </div>
         <div className="preview">

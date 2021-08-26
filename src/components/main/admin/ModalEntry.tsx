@@ -267,7 +267,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChange = (name: keyof typeof fields, value: string) => {
+  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
     setFields((fields) => {
       return { ...fields, [name]: value };
     });
@@ -284,7 +284,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number, value: string) => {
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
     const newVendors = [...vendors];
     const vendor = vendors[index];
     if (hasKey(vendor, name)) {
@@ -449,7 +449,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB month"
           value={fields.gbLaunch}
           name="gbLaunch"
-          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          onChange={handleNamedChange("gbLaunch")}
           month
           showNowButton
           allowQuarter
@@ -480,7 +480,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          onChange={handleNamedChange("gbLaunch")}
           showNowButton
           allowQuarter
         />
@@ -500,7 +500,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           value={fields.gbEnd}
           fallbackValue={fields.gbLaunch}
           name="gbEnd"
-          onChange={(val) => handleNamedChange("gbEnd", val)}
+          onChange={handleNamedChange("gbEnd")}
           showNowButton
         />
       </div>
@@ -674,7 +674,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             required
             value={fields.icDate}
             name="icDate"
-            onChange={(val) => handleNamedChange("icDate", val)}
+            onChange={handleNamedChange("icDate")}
             pickerProps={{ disableFuture: true }}
             showNowButton
           />
@@ -739,7 +739,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                           required
                           value={vendor.endDate}
                           name={"endDate" + index}
-                          onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
+                          onChange={handleNamedChangeVendor("endDate", index)}
                           showNowButton
                         />
                       ) : null;
@@ -1205,7 +1205,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleNamedChange = (name: keyof typeof fields, value: string) => {
+  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
     setFields((fields) => {
       return { ...fields, [name]: value };
     });
@@ -1222,7 +1222,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number, value: string) => {
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
     const newVendors = [...vendors];
     const vendor = vendors[index];
     if (hasKey(vendor, name)) {
@@ -1403,7 +1403,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB month"
           value={fields.gbLaunch}
           name="gbLaunch"
-          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          onChange={handleNamedChange("gbLaunch")}
           month
           allowQuarter
           showNowButton
@@ -1436,7 +1436,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           label="GB launch"
           value={fields.gbLaunch}
           name="gbLaunch"
-          onChange={(val) => handleNamedChange("gbLaunch", val)}
+          onChange={handleNamedChange("gbLaunch")}
           showNowButton
           allowQuarter
         />
@@ -1456,7 +1456,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           value={fields.gbEnd}
           fallbackValue={fields.gbLaunch}
           name="gbEnd"
-          onChange={(val) => handleNamedChange("gbEnd", val)}
+          onChange={handleNamedChange("gbEnd")}
           showNowButton
         />
       </div>
@@ -1635,7 +1635,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             required
             value={fields.icDate}
             name="icDate"
-            onChange={(val) => handleNamedChange("icDate", val)}
+            onChange={handleNamedChange("icDate")}
             showNowButton
           />
           <TextField
@@ -1699,7 +1699,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                           required
                           value={vendor.endDate || ""}
                           name={"endDate" + index}
-                          onChange={(val) => handleNamedChangeVendor("endDate", index, val)}
+                          onChange={handleNamedChangeVendor("endDate", index)}
                           showNowButton
                         />
                       ) : null;
