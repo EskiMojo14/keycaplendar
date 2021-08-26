@@ -183,7 +183,14 @@ export const AppBar = (props: AppBarProps) => {
   return (
     <>
       {searchBar}
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": indent })}>
+      <TopAppBar
+        fixed
+        className={classNames({
+          "bottom-app-bar": bottomNav,
+          "bottom-app-bar--indent": indent,
+          "search-open": searchOpen && device !== "desktop" && !bottomNav,
+        })}
+      >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />

@@ -84,6 +84,9 @@
   }
   &.extended-app-bar::before {
     height: 256px - top-app-bar.$row-height;
+    .mdc-top-app-bar.search-open ~ .content-container & {
+      height: 0;
+    }
   }
   .statistics &.extended-app-bar::before,
   .history &.extended-app-bar::before {

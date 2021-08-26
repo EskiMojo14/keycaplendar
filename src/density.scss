@@ -262,10 +262,16 @@
     .mdc-linear-progress {
       top: top-app-bar.$row-height + $diff - 4px;
     }
+    &.search-open {
+      & ~ .content-container .main.extended-app-bar::before {
+        height: 0;
+      }
+    }
   }
   .main.extended-app-bar::before {
     height: 256px - (top-app-bar.$row-height + $diff);
   }
+
   .drawer-open .main.extended-app-bar::before,
   .drawer-open.main.extended-app-bar::before {
     height: 0;
@@ -422,6 +428,11 @@
       }
       &--fixed-adjust {
         padding-top: top-app-bar.$mobile-row-height + $diff;
+      }
+      &.search-open {
+        & ~ .content-container .main.extended-app-bar::before {
+          height: 0;
+        }
       }
     }
     .main.extended-app-bar::before {
