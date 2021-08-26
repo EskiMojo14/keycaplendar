@@ -498,6 +498,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           outlined
           label="GB end"
           value={fields.gbEnd}
+          fallbackValue={fields.gbLaunch}
           name="gbEnd"
           onChange={(val) => handleNamedChange("gbEnd", val)}
           showNowButton
@@ -1333,12 +1334,11 @@ export const ModalEdit = (props: ModalEditProps) => {
     !!fields.designer &&
     !invalidDate(fields.icDate, false, true, true) &&
     new RegExp(validLink).test(fields.details) &&
-    !!imageInfo.image &&
+    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL) &&
     !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
     !invalidDate(fields.gbEnd) &&
     arrayEveryType(vendors, validVendor) &&
-    validSalesInfo(salesInfo) &&
-    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
+    validSalesInfo(salesInfo);
 
   const editEntry = (imageUrl = imageInfo.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
@@ -1454,6 +1454,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           outlined
           label="GB end"
           value={fields.gbEnd}
+          fallbackValue={fields.gbLaunch}
           name="gbEnd"
           onChange={(val) => handleNamedChange("gbEnd", val)}
           showNowButton

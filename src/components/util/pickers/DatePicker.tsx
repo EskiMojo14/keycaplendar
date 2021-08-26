@@ -70,6 +70,7 @@ export type DatePickerProps = Overwrite<
   Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "helpText">,
   {
     value: string;
+    fallbackValue?: string;
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
@@ -89,6 +90,7 @@ export const DatePicker = ({
   pickerProps,
   modalProps,
   value,
+  fallbackValue,
   onChange,
   month,
   allowQuarter,
@@ -103,7 +105,7 @@ export const DatePicker = ({
   const [touched, setTouched] = useState(false);
   const invalid = touched ? invalidDate(value, month, props.required, allowQuarter, pickerProps?.disableFuture) : false;
 
-  console.log(invalid);
+  const validFallback = invalidDate(fallbackValue || "") ? "" : fallbackValue;
 
   const views: KeyboardDatePickerProps["views"] = month ? ["year", "month"] : undefined;
   const openTo: KeyboardDatePickerProps["openTo"] = month ? "month" : "date";
@@ -129,9 +131,9 @@ export const DatePicker = ({
   const [dialogVal, setDialogVal] = useState(value);
   useEffect(() => {
     if (dialogVal !== value) {
-      setDialogVal(value);
+      setDialogVal(value || validFallback || DateTime.now().toISODate());
     }
-  }, [value]);
+  }, [value, fallbackValue]);
 
   const confirmVal = useInline ? onChange : setDialogVal;
 
@@ -148,7 +150,7 @@ export const DatePicker = ({
   };
 
   const confirmDialog = () => {
-    onChange(dialogVal || DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
+    onChange(dialogVal || validFallback || DateTime.now().toFormat(month ? "yyyy-MM" : "yyyy-MM-dd"));
     closeDialog();
   };
 
@@ -160,7 +162,7 @@ export const DatePicker = ({
       anchorCorner="bottomLeft"
     >
       <KeyboardDatePicker
-        value={value || DateTime.now().toISODate()}
+        value={value || validFallback || DateTime.now().toISODate()}
         onChange={handleDatePickerChange}
         variant="static"
         orientation="portrait"
@@ -185,7 +187,7 @@ export const DatePicker = ({
       renderToPortal
     >
       <KeyboardDatePicker
-        value={dialogVal || DateTime.now().toISODate()}
+        value={dialogVal || validFallback || DateTime.now().toISODate()}
         onChange={handleDatePickerChange}
         variant="static"
         orientation={orientation}
