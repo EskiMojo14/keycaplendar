@@ -13,13 +13,11 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { DatePicker } from "@c/util/pickers/DatePicker";
+import { DatePicker, invalidDate } from "@c/util/pickers/DatePicker";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/ReactMarkdown";
 import "./ModalEntry.scss";
-
-const isoDate = /(\d{4})-(\d{2})-(\d{2})/;
 
 type ModalCreateProps = {
   open: boolean;
@@ -65,14 +63,14 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const formattedDate = isoDate.test(date)
+  const formattedDate = !invalidDate(date, false, true)
     ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
     : date;
 
-  const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
+  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
-    if (formFilled) {
+    if (valid) {
       typedFirestore
         .collection("updates")
         .add({
@@ -136,7 +134,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           condition={!useDrawer}
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
@@ -233,14 +231,14 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const formattedDate = isoDate.test(date)
+  const formattedDate = !invalidDate(date, false, true)
     ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
     : date;
 
-  const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
+  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
-    if (formFilled) {
+    if (valid) {
       typedFirestore
         .collection("updates")
         .doc(entry.id as UpdateId)
@@ -305,7 +303,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           condition={!useDrawer}
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
