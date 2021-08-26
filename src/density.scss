@@ -397,8 +397,8 @@
     .switch-container {
       height: 48px + $diff;
     }
-    &.theme-card .theme-form-field--flex .mdc-typography--body2 {
-      line-height: 56px + $diff;
+    &.theme-card .theme-form-field.has-help-text .mdc-typography--body2 {
+      height: 56px + $diff;
     }
     .theme-list.mdc-list {
       @include shape.radius(

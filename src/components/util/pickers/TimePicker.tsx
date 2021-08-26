@@ -231,7 +231,7 @@ export const TimePicker = ({
                   )}
                   onClick={() => setOpen(true)}
                 />,
-                "Date picker"
+                "Time picker"
               )
         }
       />

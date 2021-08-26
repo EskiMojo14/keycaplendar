@@ -247,7 +247,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
   const themeOptions =
     applyTheme === "system" ? null : applyTheme === "timed" ? (
       <div className="theme-form-field--flex">
-        <FormField className="theme-form-field">
+        <FormField className="theme-form-field has-help-text">
           <Typography use="body2">From</Typography>
           <div>
             <TimePicker
@@ -260,7 +260,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
             />
           </div>
         </FormField>
-        <FormField className="theme-form-field">
+        <FormField className="theme-form-field has-help-text">
           <Typography use="body2">To</Typography>
           <div>
             <TimePicker
