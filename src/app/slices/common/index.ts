@@ -8,6 +8,7 @@ export type CommonState = {
   page: Page;
   theme: string;
   themeMaps: Record<string, ThemeMap>;
+  graphColors: Record<string, string[]>;
 };
 
 export const initialState: CommonState = {
@@ -16,6 +17,7 @@ export const initialState: CommonState = {
   page: "images",
   theme: "light",
   themeMaps: {},
+  graphColors: {},
 };
 
 export const commonSlice = createSlice({
@@ -37,10 +39,13 @@ export const commonSlice = createSlice({
     setThemeMaps: (state, action: PayloadAction<Record<string, ThemeMap>>) => {
       state.themeMaps = action.payload;
     },
+    setGraphColors: (state, action: PayloadAction<Record<string, string[]>>) => {
+      state.graphColors = action.payload;
+    },
   },
 });
 
-export const { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps } = commonSlice.actions;
+export const { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps, setGraphColors } = commonSlice.actions;
 
 export const selectDevice = (state: RootState) => state.common.device;
 
@@ -55,6 +60,13 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 export const selectCurrentThemeMap = createSelector(
   [selectTheme, selectThemesMap],
   (theme, themesMap) => themesMap[theme] as ThemeMap | undefined
+);
+
+export const selectGraphColors = (state: RootState) => state.common.graphColors;
+
+export const selectCurrentGraphColors = createSelector(
+  [selectGraphColors, selectCurrentThemeMap],
+  (graphColors, themeMap) => graphColors[themeMap?.dark ? "dark" : "light"] as string[] | undefined
 );
 
 export default commonSlice.reducer;

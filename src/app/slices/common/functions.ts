@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
+import { setAppPage, setDevice, setGraphColors, setOrientation, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import { Page, ThemeMap } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
@@ -30,6 +30,7 @@ import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
+import graphMap from "~/_graph-colors.module.scss";
 
 const { dispatch } = store;
 
@@ -51,6 +52,21 @@ export const saveTheme = () => {
     return copy;
   }, {});
   dispatch(setThemeMaps(interpolatedThemeMap));
+  const interpolatedGraphColors = Object.entries(graphMap).reduce<Record<string, string[]>>((obj, [key, val]) => {
+    const [theme, indexString] = key.split("|");
+
+    // SCSS lists start at 1
+    const index = parseInt(indexString) - 1;
+
+    if (obj[theme] === undefined) {
+      obj[theme] = [];
+    }
+    if (hasKey(obj, theme)) {
+      obj[theme][index] = val;
+    }
+    return obj;
+  }, {});
+  dispatch(setGraphColors(interpolatedGraphColors));
 };
 
 export const checkDevice = () => {
