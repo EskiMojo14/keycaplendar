@@ -74,6 +74,9 @@
             }
             .mdc-text-field {
               min-width: 160px;
+              &.picker__field.picker__field--inline {
+                min-width: 310px;
+              }
             }
             input[type="time"]::-webkit-calendar-picker-indicator {
               background: none;

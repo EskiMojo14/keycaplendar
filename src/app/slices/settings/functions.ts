@@ -171,9 +171,9 @@ const isDarkTheme = (state = store.getState()) => {
 
   const currentDay = DateTime.now();
   const fromArray = settings.fromTimeTheme.split(":");
-  const fromTime = currentDay.set({ hour: parseInt(fromArray[0]), minute: parseInt(fromArray[1]) });
+  const fromTime = currentDay.set({ hour: parseInt(fromArray[0] || "0"), minute: parseInt(fromArray[1] || "0") });
   const toArray = settings.toTimeTheme.split(":");
-  const toTime = currentDay.set({ hour: parseInt(toArray[0]), minute: parseInt(toArray[1]) });
+  const toTime = currentDay.set({ hour: parseInt(toArray[0] || "0"), minute: parseInt(toArray[1] || "0") });
   const timedBool = settings.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
   return manualBool || systemBool || timedBool;
 };
