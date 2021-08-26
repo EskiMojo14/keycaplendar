@@ -1,11 +1,11 @@
 import React from "react";
 import { queue } from "~/app/snackbarQueue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { iconObject } from "@s/common/functions";
 import { selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
+import { iconObject } from "@s/util/functions";
 import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";

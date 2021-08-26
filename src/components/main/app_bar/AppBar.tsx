@@ -3,12 +3,12 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { iconObject, useBoolStates } from "@s/common/functions";
 import { selectLoading, selectSearch, selectLinkedFavorites } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import { selectBottomNav, selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
 import { selectUser } from "@s/user";
+import { iconObject, useBoolStates } from "@s/util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import {
@@ -183,7 +183,14 @@ export const AppBar = (props: AppBarProps) => {
   return (
     <>
       {searchBar}
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": indent })}>
+      <TopAppBar
+        fixed
+        className={classNames({
+          "bottom-app-bar": bottomNav,
+          "bottom-app-bar--indent": indent,
+          "search-open": searchOpen && device !== "desktop" && !bottomNav,
+        })}
+      >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />

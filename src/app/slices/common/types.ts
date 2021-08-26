@@ -10,10 +10,16 @@ export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
 /** Overwrite keys with a new object. */
 
-export type Overwrite<T1, T2> = {
-  [P in Exclude<keyof T1, keyof T2>]: T1[P];
-} &
-  T2;
+export type Overwrite<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
+
+/** Creates a type of keys from A and B where key and type are the same. */
+
+export type Common<A, B> = Pick<
+  A,
+  {
+    [K in keyof A & keyof B]: A[K] extends B[K] ? (B[K] extends A[K] ? K : never) : never;
+  }[keyof A & keyof B]
+>;
 
 /** Create a union of all keys in object T which have values of V type. */
 
@@ -30,3 +36,16 @@ export type Page = typeof allPages[number];
 /** Possible main page names */
 
 export type MainPage = typeof mainPages[number];
+
+export type ThemeMap = {
+  dark: boolean;
+  background: string;
+  surface: string;
+  error: string;
+  onError: string;
+  onPrimary: string;
+  onSecondary: string;
+  onSurface: string;
+  primary: string;
+  secondary: string;
+};

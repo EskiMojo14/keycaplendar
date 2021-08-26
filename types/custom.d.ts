@@ -3,3 +3,7 @@ declare module "csstype" {
     "--animation-delay": number;
   }
 }
+declare module "*.module.scss" {
+  const content: Record<string, string>;
+  export default content;
+}

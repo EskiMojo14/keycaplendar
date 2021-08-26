@@ -9,19 +9,21 @@ import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
 import { selectDevice } from "@s/common";
+import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
+import { getData } from "@s/main/functions";
+import { SetType, VendorType } from "@s/main/types";
+import { selectUser } from "@s/user";
 import {
+  arrayEveryType,
   arrayMove,
   batchStorageDelete,
   formatFileName,
   getStorageFolders,
   hasKey,
   iconObject,
-} from "@s/common/functions";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
-import { getData } from "@s/main/functions";
-import { SetType, VendorType } from "@s/main/types";
-import { selectUser } from "@s/user";
+} from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -33,8 +35,8 @@ import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { queue } from "~/app/snackbarQueue";
 import { ImageUpload } from "./ImageUpload";
+import { DatePicker, invalidDate } from "@c/util/pickers/DatePicker";
 import { Autocomplete } from "@c/util/Autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
@@ -58,6 +60,18 @@ const getVendorStyle = (provided: DraggableProvided) => {
     return style;
   }
 };
+
+const validLink = "https?:\\/\\/.+";
+
+export const validVendor = (obj: Record<string, any>): obj is VendorType =>
+  obj.name &&
+  obj.region &&
+  hasKey(obj, "storeLink") &&
+  (!obj.storeLink || new RegExp(validLink).test(obj.storeLink)) &&
+  (!obj.endDate || !invalidDate(obj.endDate, false));
+
+export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
+  hasKey(obj, "img") && (!obj.img || new RegExp(validLink).test(obj.img)) && hasKey(obj, "thirdParty");
 
 type ModalCreateProps = {
   close: () => void;
@@ -253,6 +267,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
+  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
+    setFields((fields) => {
+      return { ...fields, [name]: value };
+    });
+  };
+
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
@@ -260,6 +280,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
+      setVendors(newVendors);
+    }
+  };
+
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
+    const newVendors = [...vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, name)) {
+      vendor[name] = value;
       setVendors(newVendors);
     }
   };
@@ -346,16 +375,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const formFilled =
+  const valid =
     !!fields.profile &&
     !!fields.colorway &&
     !!fields.designer &&
-    !!fields.icDate &&
-    !!fields.details &&
-    !!imageInfo.image;
+    !invalidDate(fields.icDate, false, true, true) &&
+    new RegExp(validLink).test(fields.details) &&
+    !!imageInfo.image &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
+    !invalidDate(fields.gbEnd) &&
+    arrayEveryType(vendors, validVendor) &&
+    validSalesInfo(salesInfo);
 
   const createEntry = (url = imageInfo.imageURL) => {
-    if (formFilled && !uploadingImage && !uploadingDoc) {
+    if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
@@ -403,26 +436,23 @@ export const ModalCreate = (props: ModalCreateProps) => {
         Month
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+              <path d="M4 5.01h16V8H4z" opacity=".3" />
+            </svg>
+          )}
           outlined
           label="GB month"
-          pattern="^\d{4}-\d{1,2}$"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onChange={handleNamedChange("gbLaunch")}
+          month
+          showNowButton
+          allowQuarter
         />
       </div>
       <CardActions>
@@ -437,28 +467,24 @@ export const ModalCreate = (props: ModalCreateProps) => {
         Date
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+              <path d="M4 5.01h16V8H4z" opacity=".3" />
+            </svg>
+          )}
           outlined
           label="GB launch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onChange={handleNamedChange("gbLaunch")}
+          showNowButton
+          allowQuarter
         />
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -471,13 +497,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
           }}
           outlined
           label="GB end"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
           value={fields.gbEnd}
+          fallbackValue={fields.gbLaunch}
           name="gbEnd"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onChange={handleNamedChange("gbEnd")}
+          showNowButton
         />
       </div>
       <CardActions>
@@ -544,11 +568,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled && !uploadingImage && !uploadingDoc) {
+              if (valid && !uploadingImage && !uploadingDoc) {
                 uploadImage();
               }
             }}
-            disabled={!formFilled || uploadingImage || uploadingDoc}
+            disabled={!valid || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
@@ -611,16 +635,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
               outlined
               label="Designer"
               required
-              pattern="(\w+)[^\s](,\s*.+)*"
               value={fields.designer.join(", ")}
               name="designer"
               helpText={{
-                persistent: false,
-                validationMsg: true,
-                children:
-                  fields.designer[0] && fields.designer[0].includes(" ")
-                    ? "Separate multiple designers with a comma and a space."
-                    : "",
+                persistent: true,
+                children: (
+                  <>
+                    Separate multiple designers with <code className="multiline">, </code>.
+                  </>
+                ),
               }}
               onChange={handleChange}
               onFocus={handleFocus}
@@ -637,27 +660,23 @@ export const ModalCreate = (props: ModalCreateProps) => {
               listSplit
             />
           </MenuSurfaceAnchor>
-          <TextField
+          <DatePicker
             autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
+            icon={iconObject(
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
+                <path d="M4 5.01h16V8H4z" opacity=".3" />
+              </svg>
+            )}
             outlined
             label="IC date"
             required
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
             value={fields.icDate}
             name="icDate"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            onChange={handleNamedChange("icDate")}
+            pickerProps={{ disableFuture: true }}
+            showNowButton
           />
           <TextField
             autoComplete="off"
@@ -665,7 +684,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined
             label="Details"
             required
-            pattern="https?:\/\/.+"
+            pattern={validLink}
             value={fields.details}
             name="details"
             helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
@@ -703,8 +722,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                   {vendors.map((vendor, index) => {
                     const endDateField =
-                      vendor.endDate || vendor.endDate === "" ? (
-                        <TextField
+                      typeof vendor.endDate === "string" ? (
+                        <DatePicker
                           autoComplete="off"
                           icon={{
                             icon: (
@@ -718,11 +737,10 @@ export const ModalCreate = (props: ModalCreateProps) => {
                           outlined
                           label="End date"
                           required
-                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
                           value={vendor.endDate}
                           name={"endDate" + index}
-                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                          onChange={handleChangeVendor}
+                          onChange={handleNamedChangeVendor("endDate", index)}
+                          showNowButton
                         />
                       ) : null;
                     return (
@@ -847,7 +865,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                                 icon="link"
                                 outlined
                                 label="Store link"
-                                pattern="https?:\/\/.+"
+                                pattern={validLink}
                                 value={vendor.storeLink}
                                 name={"storeLink" + index}
                                 onChange={handleChangeVendor}
@@ -915,7 +933,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 icon="link"
                 outlined
                 label="URL"
-                pattern="https?:\/\/.+"
+                pattern={validLink}
                 value={salesInfo.img}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
@@ -1180,11 +1198,17 @@ export const ModalEdit = (props: ModalEditProps) => {
       setSalesInfo((salesInfo) => {
         return { ...salesInfo, thirdParty: checked };
       });
-    } else {
+    } else if (hasKey(fields, name)) {
       setFields((fields) => {
         return { ...fields, [name]: value };
       });
     }
+  };
+
+  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
+    setFields((fields) => {
+      return { ...fields, [name]: value };
+    });
   };
 
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1194,6 +1218,15 @@ export const ModalEdit = (props: ModalEditProps) => {
     const vendor = vendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
+      setVendors(newVendors);
+    }
+  };
+
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
+    const newVendors = [...vendors];
+    const vendor = vendors[index];
+    if (hasKey(vendor, name)) {
+      vendor[name] = value;
       setVendors(newVendors);
     }
   };
@@ -1295,16 +1328,20 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const formFilled =
+  const valid =
     !!fields.profile &&
     !!fields.colorway &&
     !!fields.designer &&
-    !!fields.icDate &&
-    !!fields.details &&
-    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL);
+    !invalidDate(fields.icDate, false, true, true) &&
+    new RegExp(validLink).test(fields.details) &&
+    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL) &&
+    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
+    !invalidDate(fields.gbEnd) &&
+    arrayEveryType(vendors, validVendor) &&
+    validSalesInfo(salesInfo);
 
   const editEntry = (imageUrl = imageInfo.imageURL) => {
-    if (formFilled && !uploadingImage && !uploadingDoc) {
+    if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
@@ -1351,7 +1388,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         Month
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1364,11 +1401,12 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB month"
-          pattern="^\d{4}-\d{1,2}$"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM" }}
-          onChange={handleChange}
+          onChange={handleNamedChange("gbLaunch")}
+          month
+          allowQuarter
+          showNowButton
         />
       </div>
       <CardActions>
@@ -1383,7 +1421,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         Date
       </Typography>
       <div className="date-form">
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1396,13 +1434,13 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB launch"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$|^Q\d{1} \d{4}$"
           value={fields.gbLaunch}
           name="gbLaunch"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD or Q1-4 YYYY" }}
-          onChange={handleChange}
+          onChange={handleNamedChange("gbLaunch")}
+          showNowButton
+          allowQuarter
         />
-        <TextField
+        <DatePicker
           autoComplete="off"
           icon={{
             icon: (
@@ -1415,11 +1453,11 @@ export const ModalEdit = (props: ModalEditProps) => {
           }}
           outlined
           label="GB end"
-          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
           value={fields.gbEnd}
+          fallbackValue={fields.gbLaunch}
           name="gbEnd"
-          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-          onChange={handleChange}
+          onChange={handleNamedChange("gbEnd")}
+          showNowButton
         />
       </div>
       <CardActions>
@@ -1486,7 +1524,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined={useDrawer}
             label="Save"
             onClick={() => {
-              if (formFilled && !uploadingImage && !uploadingDoc) {
+              if (valid && !uploadingImage && !uploadingDoc) {
                 if (imageInfo.newImage) {
                   uploadImage();
                 } else {
@@ -1494,7 +1532,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 }
               }
             }}
-            disabled={!formFilled || uploadingImage || uploadingDoc}
+            disabled={!valid || uploadingImage || uploadingDoc}
           />
         </ConditionalWrapper>
       </BoolWrapper>
@@ -1556,16 +1594,15 @@ export const ModalEdit = (props: ModalEditProps) => {
               outlined
               label="Designer"
               required
-              pattern="(\w+)[^\s](,\s*.+)*"
               value={fields.designer.join(", ")}
               name="designer"
               helpText={{
-                persistent: false,
-                validationMsg: true,
-                children:
-                  fields.designer[0] && fields.designer[0].includes(" ")
-                    ? "Separate multiple designers with a comma and a space."
-                    : "",
+                persistent: true,
+                children: (
+                  <>
+                    Separate multiple designers with <code className="multiline">, </code>.
+                  </>
+                ),
               }}
               onChange={handleChange}
               onFocus={handleFocus}
@@ -1582,7 +1619,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               listSplit
             />
           </MenuSurfaceAnchor>
-          <TextField
+          <DatePicker
             autoComplete="off"
             icon={{
               icon: (
@@ -1596,11 +1633,10 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined
             label="IC date"
             required
-            pattern="^\d{4}-\d{1,2}-\d{1,2}$"
             value={fields.icDate}
             name="icDate"
-            helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-            onChange={handleChange}
+            onChange={handleNamedChange("icDate")}
+            showNowButton
           />
           <TextField
             autoComplete="off"
@@ -1608,7 +1644,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             outlined
             label="Details"
             required
-            pattern="https?:\/\/.+"
+            pattern={validLink}
             value={fields.details}
             name="details"
             helpText={{
@@ -1646,8 +1682,8 @@ export const ModalEdit = (props: ModalEditProps) => {
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
                   {vendors.map((vendor, index) => {
                     const endDateField =
-                      vendor.endDate || vendor.endDate === "" ? (
-                        <TextField
+                      typeof vendor.endDate === "string" ? (
+                        <DatePicker
                           autoComplete="off"
                           icon={{
                             icon: (
@@ -1661,11 +1697,10 @@ export const ModalEdit = (props: ModalEditProps) => {
                           outlined
                           label="End date"
                           required
-                          pattern="^\d{4}-\d{1,2}-\d{1,2}$"
-                          value={vendor.endDate}
+                          value={vendor.endDate || ""}
                           name={"endDate" + index}
-                          helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                          onChange={handleChangeVendor}
+                          onChange={handleNamedChangeVendor("endDate", index)}
+                          showNowButton
                         />
                       ) : null;
                     return (
@@ -1789,7 +1824,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                                 icon="link"
                                 outlined
                                 label="Store link"
-                                pattern="https?:\/\/.+"
+                                pattern={validLink}
                                 value={vendor.storeLink}
                                 name={"storeLink" + index}
                                 onChange={handleChangeVendor}
@@ -1853,7 +1888,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 icon="link"
                 outlined
                 label="URL"
-                pattern="https?:\/\/.+"
+                pattern={validLink}
                 value={salesInfo.img}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}

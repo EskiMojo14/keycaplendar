@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
-import { checkDevice, getGlobals, getURLQuery } from "@s/common/coreFunctions";
+import { checkDevice, getGlobals, getURLQuery, saveTheme } from "@s/common/functions";
 import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
 import { testSets } from "@s/main/functions";
 import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "@s/user";
@@ -13,6 +13,7 @@ import { selectCookies, selectSettings } from "@s/settings";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "@s/settings/functions";
 import { getUserPreferences } from "@s/user/functions";
 import { queue } from "~/app/snackbarQueue";
+import { Portal } from "@rmwc/base";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "@c/Content";
 import { Login } from "@c/pages/Login";
@@ -35,6 +36,7 @@ export const App = () => {
   const defaultPreset = useAppSelector(selectDefaultPreset);
 
   useEffect(() => {
+    saveTheme();
     checkDevice();
     getURLQuery();
     checkStorage();
@@ -101,6 +103,7 @@ export const App = () => {
             <Content className={transitionClass} />
             <SnackbarQueue messages={queue.messages} />
             <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
+            <Portal />
           </div>
         </Route>
         <Route component={NotFound} />

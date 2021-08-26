@@ -1,0 +1,108 @@
+@use "@material/theme/color-palette" as palette;
+
+$themes-map: (
+  light: (
+    dark: false,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: palette.$grey-200,
+    error: #b00020,
+    on-error: #fff,
+    surface: #fff,
+    on-surface: #000,
+  ),
+  sepia: (
+    dark: false,
+    primary: palette.$teal-500,
+    secondary: palette.$deep-orange-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #cac6ad,
+    error: #b00020,
+    on-error: #fff,
+    surface: #e2dfd6,
+    on-surface: #3d3d38,
+  ),
+  ocean: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #1b2936,
+    error: #cf6679,
+    on-error: #000,
+    surface: #1b2936,
+    on-surface: #fff,
+  ),
+  grey: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #202125,
+    error: #cf6679,
+    on-error: #000,
+    surface: #202125,
+    on-surface: #fff,
+  ),
+  deep-ocean: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$light-green-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #1a2328,
+    error: #cf6679,
+    on-error: #000,
+    surface: #1a2328,
+    on-surface: #fff,
+  ),
+  deep: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #17161c,
+    error: #cf6679,
+    on-error: #000,
+    surface: #17161c,
+    on-surface: #fff,
+  ),
+  dark: (
+    dark: true,
+    primary: palette.$teal-200,
+    secondary: palette.$deep-orange-200,
+    on-primary: #000,
+    on-secondary: #000,
+    background: #121212,
+    error: #cf6679,
+    on-error: #000,
+    surface: #121212,
+    on-surface: #fff,
+  ),
+  lich: (
+    dark: false,
+    primary: #514163,
+    secondary: #efc06e,
+    on-primary: #efc06e,
+    on-secondary: #403845,
+    background: #decde7,
+    error: #b00020,
+    on-error: #fff,
+    surface: lighten(#decde7, 5%),
+    on-surface: #000,
+  ),
+);
+
+:export {
+  @each $theme-name, $theme in $themes-map {
+    @each $theme-prop, $theme-prop-val in $theme {
+      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+    }
+  }
+}

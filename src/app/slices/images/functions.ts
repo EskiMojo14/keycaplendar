@@ -1,8 +1,8 @@
 import firebase from "@s/firebase";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/common/functions";
 import { selectAllSets } from "@s/main";
+import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/util/functions";
 import {
   appendImages,
   selectCurrentFolder,

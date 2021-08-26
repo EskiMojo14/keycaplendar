@@ -1,0 +1,56 @@
+@use "@material/rtl/_index" as rtl;
+
+.picker {
+  &__field {
+    min-width: 310px;
+    .mdc-text-field__icon {
+      &--trailing {
+        .mdc-icon-button {
+          height: 36px;
+          width: 36px;
+          padding: (40px - 24px - 4px) / 2;
+        }
+      }
+    }
+  }
+  &__modal {
+    &.mdc-menu-surface {
+      width: 100%;
+      .picker__buttons {
+        padding: 8px;
+      }
+    }
+  }
+  .MuiPickersBasePicker-pickerView {
+    padding-bottom: 8px;
+  }
+  &__bottom-bar {
+    display: flex;
+    &::before {
+      content: "";
+      max-width: 150px + 32px;
+      flex: 1;
+    }
+    .mdc-dialog__actions {
+      min-width: 310px + 16px;
+      max-width: 325px + 16px;
+    }
+  }
+  &__show-now-button {
+    @include rtl.reflexive-box(margin, right, auto);
+  }
+  &__field + .mdc-text-field-helper-line + .picker__modal.mdc-menu-surface {
+    margin-top: -19px;
+  }
+  .mdc-drawer &,
+  .full-screen-dialog & {
+    &__field + .picker__modal.mdc-menu-surface {
+      margin-top: -16px;
+    }
+    &__field + .mdc-text-field-helper-line {
+      & + .picker__modal.mdc-menu-surface {
+        margin-top: -19px + -16px;
+      }
+    }
+  }
+}

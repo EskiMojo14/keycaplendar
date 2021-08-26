@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
+import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { iconObject, ordinal } from "@s/common/functions";
 import { UpdateId } from "@s/firebase/types";
 import { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
-import { queue } from "~/app/snackbarQueue";
+import { ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
-import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import { DatePicker, invalidDate } from "@c/util/pickers/DatePicker";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/ConditionalWrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/FullScreenDialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/ReactMarkdown";
-import { withTooltip } from "@c/util/HOCs";
 import "./ModalEntry.scss";
-
-const isoDate = /(\d{4})-(\d{2})-(\d{2})/;
 
 type ModalCreateProps = {
   open: boolean;
@@ -58,25 +55,22 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleEditorChange = (name: string, value: string) => {
-    if (name === "body") {
+  const handleNamedChange = (name: string) => (value: string) => {
+    if (name === "date") {
+      setDate(value);
+    } else if (name === "body") {
       setBody(value);
     }
   };
 
-  const dateToday = () => {
-    const today = DateTime.now().toFormat("yyyy-MM-dd");
-    setDate(today);
-  };
-
-  const formattedDate = isoDate.test(date)
+  const formattedDate = !invalidDate(date, false, true)
     ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
     : date;
 
-  const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
+  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
-    if (formFilled) {
+    if (valid) {
       typedFirestore
         .collection("updates")
         .add({
@@ -140,7 +134,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           condition={!useDrawer}
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
@@ -149,35 +143,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
         falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="form">
-          <div className="double-field">
-            <TextField outlined disabled label="Name" value={name} className="half-field" readOnly required />
-            <div className="half-field">
-              <TextField
-                outlined
-                label="Date"
-                name="date"
-                value={date}
-                onChange={handleChange}
-                required
-                helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                trailingIcon={withTooltip(
-                  <IconButton
-                    icon={iconObject(
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                          <path d="M0 0h24v24H0V0z" fill="none" />
-                          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zm-7 4H7v5h5v-5z" />
-                          <path d="M5 5h14v2H5z" opacity=".3" />
-                        </svg>
-                      </div>
-                    )}
-                    onClick={dateToday}
-                  />,
-                  "Today"
-                )}
-              />
-            </div>
-          </div>
+          <DatePicker
+            outlined
+            label="Date"
+            name="date"
+            value={date}
+            onChange={handleNamedChange("date")}
+            required
+            showNowButton
+          />
           <TextField
             outlined
             autoComplete="off"
@@ -191,7 +165,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
           </div>
         </div>
         <div className="preview">
@@ -249,25 +223,22 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleEditorChange = (name: string, value: string) => {
-    if (name === "body") {
+  const handleNamedChange = (name: string) => (value: string) => {
+    if (name === "date") {
+      setDate(value);
+    } else if (name === "body") {
       setBody(value);
     }
   };
 
-  const dateToday = () => {
-    const today = DateTime.now().toFormat("yyyy-MM-dd");
-    setDate(today);
-  };
-
-  const formattedDate = isoDate.test(date)
+  const formattedDate = !invalidDate(date, false, true)
     ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
     : date;
 
-  const formFilled = !!name && !!date && isoDate.test(date) && !!title && !!body;
+  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
-    if (formFilled) {
+    if (valid) {
       typedFirestore
         .collection("updates")
         .doc(entry.id as UpdateId)
@@ -332,7 +303,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           condition={!useDrawer}
           wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
@@ -341,35 +312,15 @@ export const ModalEdit = (props: ModalEditProps) => {
         falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
       >
         <div className="form">
-          <div className="double-field">
-            <TextField outlined disabled label="Name" value={name} className="half-field" readOnly required />
-            <div className="half-field">
-              <TextField
-                outlined
-                label="Date"
-                name="date"
-                value={date}
-                onChange={handleChange}
-                required
-                helpText={{ persistent: true, validationMsg: true, children: "Format: YYYY-MM-DD" }}
-                trailingIcon={withTooltip(
-                  <IconButton
-                    icon={iconObject(
-                      <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                          <path d="M0 0h24v24H0V0z" fill="none" />
-                          <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zm-7 4H7v5h5v-5z" />
-                          <path d="M5 5h14v2H5z" opacity=".3" />
-                        </svg>
-                      </div>
-                    )}
-                    onClick={dateToday}
-                  />,
-                  "Today"
-                )}
-              />
-            </div>
-          </div>
+          <DatePicker
+            outlined
+            label="Date"
+            name="date"
+            value={date}
+            onChange={handleNamedChange("date")}
+            required
+            showNowButton
+          />
           <TextField
             outlined
             autoComplete="off"
@@ -383,7 +334,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
           </div>
         </div>
         <div className="preview">

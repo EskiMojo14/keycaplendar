@@ -5,8 +5,8 @@ import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { auditProperties } from "@s/audit/constants";
 import { ActionType } from "@s/audit/types";
-import { alphabeticalSortProp, hasKey, ordinal } from "@s/common/functions";
 import { KeysetDoc } from "@s/firebase/types";
+import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import {
   CollapsibleList,

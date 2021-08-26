@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
+import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
-import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/common/functions";
 import {
   selectAllProfiles,
   selectAllRegions,
@@ -19,7 +19,7 @@ import { selectPreset, setWhitelist } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
-import { queue } from "~/app/snackbarQueue";
+import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";

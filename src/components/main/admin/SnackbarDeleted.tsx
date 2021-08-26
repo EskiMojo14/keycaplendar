@@ -3,10 +3,10 @@ import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
 import { KeysetId } from "@s/firebase/types";
-import { batchStorageDelete, getStorageFolders } from "@s/common/functions";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
+import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {

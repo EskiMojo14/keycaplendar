@@ -5,8 +5,8 @@ import classNames from "classnames";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
-import { iconObject, pluralise } from "@s/common/functions";
 import { SetType } from "@s/main/types";
+import { iconObject, pluralise } from "@s/util/functions";
 import {
   ImageListItem,
   ImageListImageAspectContainer,

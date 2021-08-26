@@ -6,10 +6,11 @@ import { queue } from "~/app/snackbarQueue";
 import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";
-import { addOrRemove, hasKey } from "@s/common/functions";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { filterData, updatePreset } from "@s/main/functions";
+import { setShareNameLoading } from "@s/settings";
 import { setSyncSettings, settingFns } from "@s/settings/functions";
+import { addOrRemove, hasKey } from "@s/util/functions";
 import {
   selectBought,
   selectFavorites,
@@ -22,7 +23,6 @@ import {
   setShareName,
   setUserPresets,
 } from ".";
-import { setShareNameLoading } from "@s/settings";
 
 const { dispatch } = store;
 

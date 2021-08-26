@@ -57,6 +57,13 @@
               padding: 0;
               flex-grow: 1;
             }
+            &.has-help-text {
+              .mdc-typography--body2 {
+                height: 56px;
+                display: flex;
+                align-items: center;
+              }
+            }
             &--flex {
               display: flex;
               flex-direction: column;
@@ -73,7 +80,11 @@
               }
             }
             .mdc-text-field {
+              @include rtl.reflexive-box(margin, left, 16px);
               min-width: 160px;
+              &.picker__field.picker__field--inline {
+                min-width: 310px;
+              }
             }
             input[type="time"]::-webkit-calendar-picker-indicator {
               background: none;

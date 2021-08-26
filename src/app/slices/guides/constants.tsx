@@ -1,7 +1,7 @@
 import React from "react";
 import { Visibility } from "./types";
-import { iconObject } from "@s/common/functions";
 import { formattedUserRoles, userRoleIcons, userRoles } from "@s/users/constants";
+import { iconObject } from "@s/util/functions";
 import { IconPropT } from "@rmwc/types";
 
 export const visibilityVals = ["all", ...userRoles] as const;

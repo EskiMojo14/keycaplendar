@@ -1,7 +1,7 @@
 import React from "react";
 import { UserRoles } from "./types";
 import { IconPropT } from "@rmwc/types";
-import { iconObject } from "@s/common/functions";
+import { iconObject } from "@s/util/functions";
 
 export const userRoles = ["designer", "editor", "admin"] as const;
 

@@ -3,6 +3,7 @@ import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
+import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -14,7 +15,6 @@ import {
   selectSort,
 } from ".";
 import { Properties, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
-import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/common/functions";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
