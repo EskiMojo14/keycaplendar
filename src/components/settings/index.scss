@@ -57,6 +57,9 @@
               padding: 0;
               flex-grow: 1;
             }
+            .field-container {
+              @include rtl.reflexive-box(margin, left, 16px);
+            }
             &.has-help-text {
               .mdc-typography--body2 {
                 height: 56px;
@@ -80,7 +83,6 @@
               }
             }
             .mdc-text-field {
-              @include rtl.reflexive-box(margin, left, 16px);
               min-width: 160px;
               &.picker__field.picker__field--inline {
                 min-width: 310px;

@@ -249,7 +249,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
       <div className="theme-form-field--flex">
         <FormField className="theme-form-field has-help-text">
           <Typography use="body2">From</Typography>
-          <div>
+          <div className="field-container">
             <TimePicker
               outlined
               icon="history"
@@ -262,7 +262,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         </FormField>
         <FormField className="theme-form-field has-help-text">
           <Typography use="body2">To</Typography>
-          <div>
+          <div className="field-container">
             <TimePicker
               outlined
               icon="update"
