@@ -21,17 +21,13 @@ export type TimelinesDataObject = {
   name: string;
   total: number;
   profiles: string[];
-  months: ({
-    [key: string]: number | string;
-  } & {
-    month: string;
-    summary: number;
-  })[];
+  months: Record<string, number>[];
 };
 
 export type TimelinesData = Record<
   Categories,
   {
+    months: string[];
     summary: TimelinesDataObject;
     breakdown: Overwrite<Record<Properties, TimelinesDataObject>, { profile: { name: string; total: number } }>;
   }

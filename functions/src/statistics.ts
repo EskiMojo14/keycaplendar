@@ -39,6 +39,21 @@ const categories: Categories[] = ["icDate", "gbLaunch"];
 
 const monthFormat = "MMM yy";
 
+const sanitiseBarData = (data: Record<string, number>[]) =>
+  data.map((datum, index) => ({ ...datum, index })).filter((datum) => Object.keys(datum).length > 1);
+
+const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) => {
+  return months.map((month, monthIndex) => {
+    const blankObject = {
+      month: months[monthIndex],
+      index: monthIndex,
+      ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
+    };
+    const foundObject = data.find(({ index }) => index === monthIndex);
+    return foundObject ? { ...blankObject, ...foundObject } : blankObject;
+  });
+};
+
 const filterCatSetsByMonth = (
   sets: StatisticsSetType[],
   prop: Categories,
@@ -70,6 +85,7 @@ const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string
 const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
     icDate: {
+      months: [],
       summary: {
         name: "",
         total: 0,
@@ -96,6 +112,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       },
     },
     gbLaunch: {
+      months: [],
       summary: {
         name: "",
         total: 0,
@@ -128,6 +145,8 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
     const months = getSetMonthRange(catSets, cat, monthFormat);
 
+    timelinesData[cat].months = months;
+
     const profileNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.profile)));
     const designerNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.designer).flat(1)));
     const vendorNames = alphabeticalSort(
@@ -139,14 +158,18 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       vendor: vendorNames,
     };
 
-    const profileMonths: TimelinesDataObject["months"] = months.map((month) => {
+    const profileMonths = months.map((month) => {
       const monthSets = filterCatSetsByMonth(catSets, cat, month);
-      return profileNames.reduce(
-        (obj, profile) => ({ ...obj, [profile]: filterPropSets(monthSets, "profile", profile) }),
-        {
-          month,
-          summary: monthSets.length,
-        }
+      return profileNames.reduce<TimelinesDataObject["months"][number]>(
+        (obj, profile) => {
+          const profileSets = filterPropSets(monthSets, "profile", profile);
+          return profileSets.length > 0 ? { ...obj, [profile]: profileSets.length } : obj;
+        },
+        monthSets.length > 0
+          ? {
+              summary: monthSets.length,
+            }
+          : {}
       );
     });
 
@@ -154,7 +177,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       name: "Summary",
       total: catSets.length,
       profiles: profileNames,
-      months: profileMonths,
+      months: sanitiseBarData(profileMonths),
     };
 
     timelinesData[cat].breakdown = objectKeys(timelinesData[cat].breakdown).reduce((obj, property) => {
@@ -171,27 +194,25 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
             };
           } else {
             const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
-            const monthsData: TimelinesDataObject["months"] = months.map((month) => {
+            const monthsData = months.map((month) => {
               const monthSets = filterCatSetsByMonth(filteredSets, cat, month);
-              return profiles.reduce(
+              return profiles.reduce<TimelinesDataObject["months"][number]>(
                 (obj, profile) => {
-                  const profileSets = filterPropSets(filteredSets, "profile", profile);
-                  return {
-                    ...obj,
-                    [profile]: profileSets.length,
-                  };
+                  const profileSets = filterPropSets(monthSets, "profile", profile);
+                  return profileSets.length > 0 ? { ...obj, [profile]: profileSets.length } : obj;
                 },
-                {
-                  month: month,
-                  summary: monthSets.length,
-                }
+                monthSets.length > 0
+                  ? {
+                      summary: monthSets.length,
+                    }
+                  : {}
               );
             });
             return {
               name,
               total: filteredSets.length,
               profiles,
-              months: monthsData,
+              months: sanitiseBarData(monthsData),
             };
           }
         }),
@@ -565,9 +586,9 @@ const runtimeOpts: functions.RuntimeOptions = {
 
 export const createStatistics = functions
   .runWith(runtimeOpts)
-  .pubsub.schedule("every 12 hours")
-  .onRun(async (context) => {
-    // .https.onCall(async (data, contextverylongnameevenlongerpls) => {
+  // .pubsub.schedule("every 12 hours")
+  // .onRun(async (context) => {
+  .https.onCall(async (data, contextverylongnameevenlongerpls) => {
     const snapshot = await typedFirestore.collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
@@ -614,6 +635,6 @@ export const createStatistics = functions
       timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);
-    const file = bucket.file("statisticsData.json");
+    const file = bucket.file("statisticsDataTest.json");
     return file.save(jsonString, { contentType: "application/json" });
   });
