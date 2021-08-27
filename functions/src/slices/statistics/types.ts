@@ -1,4 +1,5 @@
 import { IChartistData } from "chartist";
+import { Overwrite } from "../common/types";
 import { VendorType } from "../main/types";
 
 export type StatisticsSetType = {
@@ -16,22 +17,23 @@ export type Categories = "icDate" | "gbLaunch";
 
 export type Properties = "profile" | "designer" | "vendor";
 
-export type TimelineDataObject = {
+export type TimelinesDataObject = {
   name: string;
   total: number;
-  timeline: {
-    profiles: string[];
-    series: IChartistData["series"];
-  };
+  profiles: string[];
+  months: ({
+    [key: string]: number | string;
+  } & {
+    month: string;
+    summary: number;
+  })[];
 };
 
 export type TimelinesData = Record<
   Categories,
   {
-    summary: { count: TimelineDataObject; breakdown: TimelineDataObject };
-    breakdown: Record<Properties, TimelineDataObject[]>;
-    allProfiles: string[];
-    months: string[];
+    summary: TimelinesDataObject;
+    breakdown: Overwrite<Record<Properties, TimelinesDataObject>, { profile: { name: string; total: number } }>;
   }
 >;
 

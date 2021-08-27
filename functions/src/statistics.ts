@@ -3,13 +3,12 @@ import * as admin from "firebase-admin";
 import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
-import { IChartistData } from "chartist";
 import { create, all, MathJsStatic } from "mathjs";
 import {
   StatisticsSetType,
   Categories,
   TimelinesData,
-  TimelineDataObject,
+  TimelinesDataObject,
   StatusData,
   ShippedData,
   DurationData,
@@ -38,7 +37,25 @@ const today = DateTime.utc();
 const yesterday = today.minus({ days: 1 });
 const categories: Categories[] = ["icDate", "gbLaunch"];
 
-const filterSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
+const monthFormat = "MMM yy";
+
+const filterCatSetsByMonth = (
+  sets: StatisticsSetType[],
+  prop: Categories,
+  month: string,
+  format = monthFormat
+): StatisticsSetType[] => {
+  return sets.filter((set) => {
+    const setProp = set[prop];
+    const setMonth =
+      is<string>(setProp) && !setProp.includes("Q")
+        ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat(format)
+        : null;
+    return setMonth && setMonth === month;
+  });
+};
+
+const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
   sets.filter(
     (set) =>
       (prop === "vendor" &&
@@ -54,82 +71,62 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
     icDate: {
       summary: {
-        count: {
-          name: "ICs per month",
-          total: 0,
-          timeline: {
-            profiles: [],
-            series: [],
-          },
-        },
-        breakdown: {
-          name: "ICs per month by profile",
-          total: 0,
-          timeline: {
-            profiles: [],
-            series: [],
-          },
-        },
+        name: "",
+        total: 0,
+        profiles: [],
+        months: [],
       },
-      months: [],
-      allProfiles: [],
       breakdown: {
-        profile: [],
-        designer: [],
-        vendor: [],
+        profile: {
+          name: "",
+          total: 0,
+        },
+        designer: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
+        vendor: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
       },
     },
     gbLaunch: {
       summary: {
-        count: {
-          name: "GBs per month",
-          total: 0,
-          timeline: {
-            profiles: [],
-            series: [],
-          },
-        },
-        breakdown: {
-          name: "GBs per month by profile",
-          total: 0,
-          timeline: {
-            profiles: [],
-            series: [],
-          },
-        },
+        name: "",
+        total: 0,
+        profiles: [],
+        months: [],
       },
-      months: [],
-      allProfiles: [],
       breakdown: {
-        profile: [],
-        designer: [],
-        vendor: [],
+        profile: {
+          name: "",
+          total: 0,
+        },
+        designer: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
+        vendor: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
       },
     },
   };
   const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
   objectKeys(timelinesData).forEach((cat) => {
     const catSets = cat === "gbLaunch" ? gbSets : sets;
-    timelinesData[cat].summary.count.total = catSets.length;
-    timelinesData[cat].summary.breakdown.total = catSets.length;
 
-    const months = getSetMonthRange(catSets, cat, "MMM yy");
-
-    timelinesData[cat].months = months;
-
-    timelinesData[cat].summary.count.timeline.series = [
-      months.map((month) => {
-        const length = catSets.filter((set) => {
-          const setProp = set[cat];
-          const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
-              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-              : null;
-          return setMonth && setMonth === month;
-        }).length;
-        return length;
-      }),
-    ];
+    const months = getSetMonthRange(catSets, cat, monthFormat);
 
     const profileNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.profile)));
     const designerNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.designer).flat(1)));
@@ -142,75 +139,64 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       vendor: vendorNames,
     };
 
-    timelinesData[cat].allProfiles = profileNames;
-
-    timelinesData[cat].summary.breakdown.timeline.series = profileNames.map((profile, index) => ({
-      data: months.map((month) => {
-        const length = catSets.filter((set) => {
-          const setProp = set[cat];
-          const setMonth =
-            is<string>(setProp) && !setProp.includes("Q")
-              ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat("MMM yy")
-              : null;
-          return setMonth && setMonth === month && set.profile === profile;
-        }).length;
-        return length;
-      }),
-      className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-      index: index,
-      name: profile,
-    }));
-
-    objectKeys(timelinesData[cat].breakdown).forEach((property) => {
-      const data: TimelineDataObject[] = [];
-      lists[property].forEach((name) => {
-        const filteredSets = filterSets(catSets, property, name);
-        const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
-
-        let timelineData: IChartistData["series"];
-        if (property === "vendor" || property === "designer") {
-          timelineData = profiles.map((profile) => {
-            const index = profileNames.indexOf(profile);
-            return {
-              data: months.map((month) => {
-                const monthSets = filteredSets.filter((set) => {
-                  const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
-                  return date && date === month;
-                });
-                const num = monthSets.filter((set) => set.profile === profile).length;
-                return num;
-              }),
-              className: `ct-series-${String.fromCharCode(97 + (index % 26))} ct-series-index-${index}`,
-              index: index,
-              name: profile,
-            };
-          });
-        } else {
-          timelineData = [
-            months.map((month) => {
-              const monthSets = filteredSets.filter((set) => {
-                const date = set[cat] ? DateTime.fromISO(set[cat], { zone: "utc" }).toFormat("MMM yy") : null;
-                return date && date === month;
-              });
-              return monthSets.length;
-            }),
-          ];
+    const profileMonths: TimelinesDataObject["months"] = months.map((month) => {
+      const monthSets = filterCatSetsByMonth(catSets, cat, month);
+      return profileNames.reduce(
+        (obj, profile) => ({ ...obj, [profile]: filterPropSets(monthSets, "profile", profile) }),
+        {
+          month,
+          summary: monthSets.length,
         }
-
-        data.push({
-          name: name,
-          total: filteredSets.length,
-          timeline: {
-            profiles: profiles,
-            series: timelineData,
-          },
-        });
-      });
-      data.sort(
-        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
-      timelinesData[cat].breakdown[property] = data;
     });
+
+    timelinesData[cat].summary = {
+      name: "Summary",
+      total: catSets.length,
+      profiles: profileNames,
+      months: profileMonths,
+    };
+
+    timelinesData[cat].breakdown = objectKeys(timelinesData[cat].breakdown).reduce((obj, property) => {
+      const list = lists[property];
+
+      return {
+        ...obj,
+        [property]: list.map((name) => {
+          const filteredSets = filterPropSets(catSets, property, name);
+          if (property === "profile") {
+            return {
+              name,
+              total: filteredSets.length,
+            };
+          } else {
+            const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
+            const monthsData: TimelinesDataObject["months"] = months.map((month) => {
+              const monthSets = filterCatSetsByMonth(filteredSets, cat, month);
+              return profiles.reduce(
+                (obj, profile) => {
+                  const profileSets = filterPropSets(filteredSets, "profile", profile);
+                  return {
+                    ...obj,
+                    [profile]: profileSets.length,
+                  };
+                },
+                {
+                  month: month,
+                  summary: monthSets.length,
+                }
+              );
+            });
+            return {
+              name,
+              total: filteredSets.length,
+              profiles,
+              months: monthsData,
+            };
+          }
+        }),
+      };
+    }, timelinesData[cat].breakdown);
   });
   return Promise.resolve(timelinesData);
 };
@@ -285,7 +271,9 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   statusData.summary = createStatusDataObject(sets, "Current keyset status");
 
   objectKeys(statusData.breakdown).forEach((prop) => {
-    statusData.breakdown[prop] = lists[prop].map((name) => createStatusDataObject(filterSets(sets, prop, name), name));
+    statusData.breakdown[prop] = lists[prop].map((name) =>
+      createStatusDataObject(filterPropSets(sets, prop, name), name)
+    );
     statusData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
     );
@@ -321,7 +309,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     });
     return endDate <= yesterday;
   });
-  const months = getSetMonthRange(pastSets, "gbEnd", "MMM yy");
+  const months = getSetMonthRange(pastSets, "gbEnd", monthFormat);
 
   shippedData.months = months;
 
@@ -342,7 +330,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     const shipped = {
       data: months.map((month) => {
         const filteredSets = shippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat(monthFormat) : null;
           return setEnd && setEnd === month;
         });
         return filteredSets.length;
@@ -352,7 +340,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     const unshipped = {
       data: months.map((month) => {
         const filteredSets = unshippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat("MMM yy") : null;
+          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat(monthFormat) : null;
           return setEnd && setEnd === month;
         });
         return filteredSets.length;
@@ -375,7 +363,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
 
   objectKeys(shippedData.breakdown).forEach((prop) => {
     shippedData.breakdown[prop] = lists[prop].map((name) =>
-      createShippedDataObject(filterSets(pastSets, prop, name), name)
+      createShippedDataObject(filterPropSets(pastSets, prop, name), name)
     );
     shippedData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
@@ -472,7 +460,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
       objectKeys(durationData[cat].breakdown).forEach((property) => {
         durationData[cat].breakdown[property] = lists[property].map((name) => {
-          const filteredSets = filterSets(propSets, property, name);
+          const filteredSets = filterPropSets(propSets, property, name);
           const data = filteredSets.map((set) => {
             const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
             const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
@@ -554,7 +542,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
 
   objectKeys(vendorsData.breakdown).forEach((prop) => {
     vendorsData.breakdown[prop] = lists[prop].map((name) => {
-      const propSets = filterSets(vendorSets, prop, name);
+      const propSets = filterPropSets(vendorSets, prop, name);
       const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
       return createVendorsDataObject(lengthArray, name, propSets.length);
     });
