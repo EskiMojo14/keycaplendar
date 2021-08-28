@@ -3,8 +3,8 @@ import * as functions from "firebase-functions";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { nanoid } from "nanoid";
 
-export const generateAliases = functions.https.onCall((data, context) => {
-  return typedFirestore
+export const generateAliases = functions.https.onCall((data, context) =>
+  typedFirestore
     .collection("keysets")
     .get()
     .then((querySnapshot) => {
@@ -18,9 +18,7 @@ export const generateAliases = functions.https.onCall((data, context) => {
             .doc(doc.id)
             .set({ alias: nanoid(10) }, { merge: true });
           setPromise
-            .then(() => {
-              return console.log("Generated alias for id:" + doc.id);
-            })
+            .then(() => console.log("Generated alias for id:" + doc.id))
             .catch((error) => {
               console.log("Failed to generate alias:" + error);
             });
@@ -31,5 +29,5 @@ export const generateAliases = functions.https.onCall((data, context) => {
     })
     .catch((error) => {
       console.log("Failed to generate alias:" + error);
-    });
-});
+    })
+);

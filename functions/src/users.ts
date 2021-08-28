@@ -79,18 +79,14 @@ export const listUsers = functions.https.onCall(async (data, context) => {
         .auth()
         .listUsers(data.length, nextPageToken)
         .then((result) => processResult(result))
-        .catch((error) => {
-          return { error: "Error listing users: " + error };
-        });
+        .catch((error) => ({ error: "Error listing users: " + error }));
       return result;
     } else {
       const result = await admin
         .auth()
         .listUsers(data.length)
         .then((result) => processResult(result))
-        .catch((error) => {
-          return { error: "Error listing users: " + error };
-        });
+        .catch((error) => ({ error: "Error listing users: " + error }));
       return result;
     }
   };
@@ -123,9 +119,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
       console.log(currentUser.displayName + " successfully deleted account of " + user.displayName + ".");
       return null;
     })
-    .catch((error) => {
-      return { error: "Error deleting user: " + error };
-    });
+    .catch((error) => ({ error: "Error deleting user: " + error }));
 
   typedFirestore
     .collection("users")
@@ -168,9 +162,7 @@ export const setRoles = functions.https.onCall(async (data, context) => {
       );
       return null;
     })
-    .catch((error) => {
-      return { error: "Error setting roles: " + error };
-    });
+    .catch((error) => ({ error: "Error setting roles: " + error }));
   const newUser = await admin.auth().getUserByEmail(data.email);
   return newUser.customClaims;
 });

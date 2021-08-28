@@ -158,9 +158,8 @@ export const getSetMonthRange = (
     })
   ).filter(Boolean);
   alphabeticalSort(setMonths);
-  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {
-    return dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
-  };
+  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) =>
+    dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
   const length =
     monthDiff(
       DateTime.fromISO(setMonths[0], { zone: "utc" }),
@@ -190,8 +189,5 @@ export const getSetMonthRange = (
 export const handle = <T>(
   promise: Promise<T>,
   defaultError: any = "rejected"
-): Promise<[T, undefined] | [undefined, any]> => {
-  return promise
-    .then((data) => [data, undefined] as [T, undefined])
-    .catch((error) => [undefined, error || defaultError]);
-};
+): Promise<[T, undefined] | [undefined, any]> =>
+  promise.then((data) => [data, undefined] as [T, undefined]).catch((error) => [undefined, error || defaultError]);

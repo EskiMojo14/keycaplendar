@@ -113,19 +113,17 @@ export const createThumbsAuto = functions
       const streams = [cardUploadStream, listUploadStream, imageListUploadStream, thumbsUploadStream];
 
       const allPromises = Promise.all(
-        streams.map((stream) => {
-          return new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject));
-        })
+        streams.map((stream) => new Promise((resolve, reject) => stream.on("finish", resolve).on("error", reject)))
       );
 
       allPromises
-        .then(() => {
+        .then(() =>
           // delete original if all thumbnails created
-          return bucket.deleteFiles({
+          bucket.deleteFiles({
             maxResults: 1,
             prefix: filePath,
-          });
-        })
+          })
+        )
         .catch((error) => {
           console.log("Failed to create thumbnail for " + fileName + ": " + error);
         });

@@ -147,6 +147,10 @@
     "promise/catch-or-return": 2,
     // Warn against nested then() or catch() statements
     "promise/no-nesting": 1,
-    "require-jsdoc": 0
+    "require-jsdoc": 0,
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ]
   }
 }

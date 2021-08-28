@@ -28,6 +28,7 @@ export type TimelinesData = Record<
   Categories,
   {
     months: string[];
+    allProfiles: string[];
     summary: TimelinesDataObject;
     breakdown: Overwrite<Record<Properties, TimelinesDataObject>, { profile: { name: string; total: number } }>;
   }
@@ -65,10 +66,7 @@ export type ShippedDataObject = {
   total: number;
   shipped: number;
   unshipped: number;
-  timeline: {
-    shipped: IChartistData["series"][number];
-    unshipped: IChartistData["series"][number];
-  };
+  months: { month?: string; index?: number; shipped?: number; unshipped?: number }[];
 };
 
 export type ShippedData = {

@@ -44,8 +44,8 @@ const monthFormat = "MMM yy";
 const sanitiseBarData = (data: Record<string, number>[]) =>
   data.map((datum, index) => ({ ...datum, index })).filter((datum) => Object.keys(datum).length > 1);
 
-const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) => {
-  return months.map((month, monthIndex) => {
+const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) =>
+  months.map((month, monthIndex) => {
     const blankObject = {
       month: months[monthIndex],
       index: monthIndex,
@@ -54,7 +54,6 @@ const hydrateTimelinesData = (data: Record<string, number>[], months: string[], 
     const foundObject = data.find(({ index }) => index === monthIndex);
     return { ...blankObject, ...(foundObject || {}) };
   });
-};
 
 const sunburstChildHasChildren = (
   child: StatusDataObjectSunburstChild
@@ -87,8 +86,8 @@ const sanitiseStatusData = (data: StatusDataObject[]) =>
 const hydrateStatusData = (
   data: StatusDataObject[],
   ids = ["IC", "Pre GB", "Live GB", "Post GB"]
-): StatusDataObject[] => {
-  return data.map(({ sunburst, pie, ...datum }) => {
+): StatusDataObject[] =>
+  data.map(({ sunburst, pie, ...datum }) => {
     const defaultSunburst = [pie.ic, pie.preGb, pie.liveGb, pie.postGb].map((val, index) => ({ id: ids[index], val }));
     if (sunburst) {
       return {
@@ -112,15 +111,41 @@ const hydrateStatusData = (
       sunburst: defaultSunburst,
     };
   });
-};
+
+const sanitiseShippedData = (data: ShippedDataObject[]): ShippedDataObject[] =>
+  data.map(({ months, ...datum }) => ({
+    ...datum,
+    months: months
+      .map((month, index) =>
+        Object.entries({ ...month, index })
+          .filter(([key, value]) => key === "index" || (value && value > 0))
+          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+      )
+      .filter((month) => Object.keys(month).length > 1),
+  }));
+
+const hydrateShippedData = (data: ShippedDataObject[], months: string[]): ShippedDataObject[] =>
+  data.map(({ months: monthData, ...datum }) => ({
+    ...datum,
+    months: months.map((month, monthIndex) => {
+      const blankObject = {
+        month: months[monthIndex],
+        index: monthIndex,
+        shipped: 0,
+        unshipped: 0,
+      };
+      const foundObject = monthData.find(({ index }) => index === monthIndex);
+      return { ...blankObject, ...(foundObject || {}) };
+    }),
+  }));
 
 const filterCatSetsByMonth = (
   sets: StatisticsSetType[],
-  prop: Categories,
+  prop: "icDate" | "gbLaunch" | "gbEnd",
   month: string,
   format = monthFormat
-): StatisticsSetType[] => {
-  return sets.filter((set) => {
+): StatisticsSetType[] =>
+  sets.filter((set) => {
     const setProp = set[prop];
     const setMonth =
       is<string>(setProp) && !setProp.includes("Q")
@@ -128,16 +153,11 @@ const filterCatSetsByMonth = (
         : null;
     return setMonth && setMonth === month;
   });
-};
 
 const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
   sets.filter(
     (set) =>
-      (prop === "vendor" &&
-        set.vendors &&
-        set.vendors.findIndex((vendor) => {
-          return vendor.name === val;
-        }) !== -1) ||
+      (prop === "vendor" && set.vendors && set.vendors.findIndex((vendor) => vendor.name === val) !== -1) ||
       (prop === "designer" && set.designer.includes(val)) ||
       (prop !== "vendor" && prop !== "designer" && set[prop] === val)
   );
@@ -146,6 +166,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData = {
     icDate: {
       months: [],
+      allProfiles: [],
       summary: {
         name: "",
         total: 0,
@@ -173,6 +194,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     },
     gbLaunch: {
       months: [],
+      allProfiles: [],
       summary: {
         name: "",
         total: 0,
@@ -212,6 +234,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     const vendorNames = alphabeticalSort(
       removeDuplicates(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
     );
+
+    timelinesData[cat].allProfiles = profileNames;
+
     const lists = {
       profile: profileNames,
       designer: designerNames,
@@ -405,10 +430,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
       total: 0,
       shipped: 0,
       unshipped: 0,
-      timeline: {
-        shipped: [],
-        unshipped: [],
-      },
+      months: [],
     },
     months: [],
     breakdown: {
@@ -444,43 +466,25 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject => {
     const shippedSets = sets.filter((set) => set.shipped);
     const unshippedSets = sets.filter((set) => !set.shipped);
-    const shipped = {
-      data: months.map((month) => {
-        const filteredSets = shippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat(monthFormat) : null;
-          return setEnd && setEnd === month;
-        });
-        return filteredSets.length;
-      }),
-      name: "Shipped",
-    };
-    const unshipped = {
-      data: months.map((month) => {
-        const filteredSets = unshippedSets.filter((set) => {
-          const setEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).toFormat(monthFormat) : null;
-          return setEnd && setEnd === month;
-        });
-        return filteredSets.length;
-      }),
-      name: "Unshipped",
-    };
+    const data = months.map((month) => {
+      const filteredShippedSets = filterCatSetsByMonth(shippedSets, "gbEnd", month);
+      const filteredUnshippedSets = filterCatSetsByMonth(unshippedSets, "gbEnd", month);
+      return { unshipped: filteredUnshippedSets.length, shipped: filteredShippedSets.length };
+    });
     return {
       name: name,
       total: sets.length,
       shipped: shippedSets.length,
       unshipped: unshippedSets.length,
-      timeline: {
-        shipped,
-        unshipped,
-      },
+      months: data,
     };
   };
 
-  shippedData.summary = createShippedDataObject(pastSets, "Shipped sets by GB month");
+  shippedData.summary = sanitiseShippedData([createShippedDataObject(pastSets, "Shipped sets by GB month")])[0];
 
   objectKeys(shippedData.breakdown).forEach((prop) => {
-    shippedData.breakdown[prop] = lists[prop].map((name) =>
-      createShippedDataObject(filterPropSets(pastSets, prop, name), name)
+    shippedData.breakdown[prop] = sanitiseShippedData(
+      lists[prop].map((name) => createShippedDataObject(filterPropSets(pastSets, prop, name), name))
     );
     shippedData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
