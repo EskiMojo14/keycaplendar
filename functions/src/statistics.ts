@@ -13,8 +13,7 @@ import {
   ShippedData,
   DurationData,
   VendorData,
-  DurationDataObject,
-  VendorDataObject,
+  CountDataObject,
   ShippedDataObject,
   Properties,
   StatusDataObjectSunburstChild,
@@ -29,6 +28,7 @@ import {
   countInArray,
   alphabeticalSortPropCurried,
   objectKeys,
+  objectEntries,
 } from "./slices/common/functions";
 
 const bucket = admin.storage().bucket();
@@ -42,7 +42,9 @@ const categories: Categories[] = ["icDate", "gbLaunch"];
 const monthFormat = "MMM yy";
 
 const sanitiseBarData = (data: Record<string, number>[]) =>
-  data.map((datum, index) => ({ ...datum, index })).filter((datum) => Object.keys(datum).length > 1);
+  data
+    .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
+    .filter((datum, i, array) => Object.keys(datum).length > (array.length > 1 ? 1 : 0));
 
 const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) =>
   months.map((month, monthIndex) => {
@@ -51,8 +53,9 @@ const hydrateTimelinesData = (data: Record<string, number>[], months: string[], 
       index: monthIndex,
       ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
     };
-    const foundObject = data.find(({ index }) => index === monthIndex);
-    return { ...blankObject, ...(foundObject || {}) };
+    const { index = 0, ...foundObject } =
+      data.find(({ index }) => index === monthIndex) || data.length === 1 ? data[0] : {};
+    return { ...blankObject, ...foundObject };
   });
 
 const sunburstChildHasChildren = (
@@ -60,10 +63,13 @@ const sunburstChildHasChildren = (
 ): child is StatusDataObjectSunburstChildWithChild => "children" in child;
 
 const sanitiseStatusData = (data: StatusDataObject[]) =>
-  data.map(({ sunburst, ...datum }) => {
+  data.map(({ sunburst, pie, ...datum }) => {
+    const filteredPie = objectEntries(pie)
+      .filter(([key, val]) => val && val > 0)
+      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as StatusDataObject["pie"]);
     const filteredSunburst = sunburst
       ? sunburst
-          .map((child, index) => ({ ...child, index }))
+          .map((child, index, array) => (array.length > 1 ? { ...child, index } : child))
           .filter((child) => (sunburstChildHasChildren(child) ? true : child.val > 0))
           .map((child) =>
             sunburstChildHasChildren(child)
@@ -73,33 +79,47 @@ const sanitiseStatusData = (data: StatusDataObject[]) =>
                 }
               : child
           )
-          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length > 0 : true))
+          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length === 1 : true))
       : undefined;
     return filteredSunburst
       ? {
           ...datum,
+          pie: filteredPie,
           sunburst: filteredSunburst,
         }
-      : datum;
+      : {
+          ...datum,
+          pie: filteredPie,
+        };
   });
 
 const hydrateStatusData = (
   data: StatusDataObject[],
   ids = ["IC", "Pre GB", "Live GB", "Post GB"]
 ): StatusDataObject[] =>
-  data.map(({ sunburst, pie, ...datum }) => {
-    const defaultSunburst = [pie.ic, pie.preGb, pie.liveGb, pie.postGb].map((val, index) => ({ id: ids[index], val }));
+  data.map(({ sunburst, pie: { ic, preGb, liveGb, postGb }, ...datum }) => {
+    const hydratedPie = { ic: ic || 0, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
+    const defaultSunburst = [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map(
+      (val, index) => ({
+        id: ids[index],
+        val,
+      })
+    );
     if (sunburst) {
       return {
         ...datum,
-        pie,
+        pie: hydratedPie,
         sunburst: Array(4)
           .fill("")
           .map((_e, arrayIndex) => {
-            const foundObject = sunburst.find(({ index }) => index && index === arrayIndex);
+            const { index = 0, ...foundObject } =
+              sunburst.find(({ index }) => index && index === arrayIndex) ||
+              (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
+                ? sunburst[0]
+                : {};
             return {
               ...defaultSunburst[arrayIndex],
-              ...(foundObject || {}),
+              ...foundObject,
               id: ids[arrayIndex],
             };
           }),
@@ -107,25 +127,35 @@ const hydrateStatusData = (
     }
     return {
       ...datum,
-      pie,
+      pie: hydratedPie,
       sunburst: defaultSunburst,
     };
   });
 
 const sanitiseShippedData = (data: ShippedDataObject[]): ShippedDataObject[] =>
-  data.map(({ months, ...datum }) => ({
+  data.map(({ months, shipped, unshipped, ...datum }) => ({
     ...datum,
+    shipped: shipped || undefined,
+    unshipped: unshipped || undefined,
     months: months
-      .map((month, index) =>
-        Object.entries({ ...month, index })
+      .map((month, index, array) =>
+        Object.entries(array.length > 1 ? { ...month, index } : month)
           .filter(([key, value]) => key === "index" || (value && value > 0))
           .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
       )
       .filter((month) => Object.keys(month).length > 1),
   }));
 
-const hydrateShippedData = (data: ShippedDataObject[], months: string[]): ShippedDataObject[] =>
-  data.map(({ months: monthData, ...datum }) => ({
+const hydrateShippedData = (data: ShippedDataObject[], months: string[]): ShippedDataObject[] => {
+  const blankObject: ShippedDataObject = {
+    name: "",
+    total: 0,
+    shipped: 0,
+    unshipped: 0,
+    months: [],
+  };
+  return data.map(({ months: monthData, ...datum }) => ({
+    ...blankObject,
     ...datum,
     months: months.map((month, monthIndex) => {
       const blankObject = {
@@ -134,10 +164,69 @@ const hydrateShippedData = (data: ShippedDataObject[], months: string[]): Shippe
         shipped: 0,
         unshipped: 0,
       };
-      const foundObject = monthData.find(({ index }) => index === monthIndex);
-      return { ...blankObject, ...(foundObject || {}) };
+      const { index = 0, ...foundObject } =
+        monthData.find(({ index }) => index === monthIndex) ||
+        (monthData.length === 1 && !hasKey(monthData[0], "index"))
+          ? monthData[0]
+          : {};
+      return { ...blankObject, ...foundObject };
     }),
   }));
+};
+
+const sanitiseCountData = (data: CountDataObject[], idIsIndex = false): CountDataObject[] =>
+  data.map(({ data, name, total, mode, range, ...datum }) => {
+    const filteredDatum = objectEntries(datum)
+      .filter(([key, val]) => typeof val === "number" && val > 0)
+      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as typeof datum);
+    const filteredData = data
+      // uses any because compiler doesn't like this for some reason
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((datum: any, index: any, array: any[]) => (array.length > 1 && !idIsIndex ? { ...datum, index } : datum))
+      .filter(({ count }) => count > 0)
+      .filter((datum) => Object.keys(datum).length > 2);
+    return {
+      ...filteredDatum,
+      name,
+      total,
+      data: filteredData,
+      range,
+      mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
+    };
+  });
+
+const hydrateCountData = (data: CountDataObject[], idIsIndex = false): CountDataObject[] => {
+  const blankObject: CountDataObject = {
+    name: "",
+    total: 0,
+    mean: 0,
+    median: 0,
+    mode: [0],
+    range: "",
+    standardDev: 0,
+    data: [],
+  };
+  return data.map(({ data, ...datum }) => {
+    const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0)) + 1;
+    return {
+      ...blankObject,
+      ...datum,
+      data: Array(dataLength)
+        .fill("")
+        .map((_e, arrayIndex) => {
+          const { index = 0, ...foundObject } =
+            data.find((datum) => datum[idIsIndex ? "id" : "index"] === arrayIndex) ||
+            (data.length === 1 && !hasKey(data[0], "index"))
+              ? data[0]
+              : { count: 0 };
+          return {
+            id: arrayIndex,
+            count: foundObject.count,
+          };
+        }),
+    };
+  });
+};
 
 const filterCatSetsByMonth = (
   sets: StatisticsSetType[],
@@ -377,7 +466,12 @@ const createStatusData = (sets: StatisticsSetType[]) => {
     const baseObj = {
       name: name,
       total: sets.length,
-      pie: { ic: icSets.length, preGb: preGbSets.length, liveGb: liveGbSets.length, postGb: postGbSets.length },
+      pie: {
+        ic: icSets.length || undefined,
+        preGb: preGbSets.length || undefined,
+        liveGb: liveGbSets.length || undefined,
+        postGb: postGbSets.length || undefined,
+      },
     };
 
     if (prop && list) {
@@ -497,14 +591,14 @@ const createDurationData = (sets: StatisticsSetType[]) => {
   const durationData: DurationData = {
     icDate: {
       summary: {
-        chartData: { labels: [], series: [] },
+        name: "IC duration (months)",
+        total: 0,
         mean: 0,
         median: 0,
         mode: [],
-        name: "IC duration (months)",
         range: "",
         standardDev: 0,
-        total: 0,
+        data: [],
       },
       breakdown: {
         profile: [],
@@ -514,14 +608,14 @@ const createDurationData = (sets: StatisticsSetType[]) => {
     },
     gbLaunch: {
       summary: {
-        chartData: { labels: [], series: [] },
+        name: "GB duration (days)",
+        total: 0,
         mean: 0,
         median: 0,
         mode: [],
-        name: "GB duration (days)",
         range: "",
         standardDev: 0,
-        total: 0,
+        data: [],
       },
       breakdown: {
         profile: [],
@@ -546,14 +640,8 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         vendor: vendorNames,
       };
 
-      const createDurationDataObject = (data: number[], name: string, total: number): DurationDataObject => {
-        const labels = [
-          ...math.range(math.round(math.min(data)), math.round(math.max(data)), 1, true).toArray(),
-        ] as number[];
-        const count = labels.map((label) => ({
-          value: countInArray(math.round(data), label),
-          meta: `${label} ${cat === "icDate" ? "months" : "days"}`,
-        }));
+      const createDurationDataObject = (data: number[], name: string, total: number): CountDataObject => {
+        const labels = [...math.range(0, math.round(math.max(data)), 1, true).toArray()] as number[];
         const range = math.max(data) - math.min(data);
         const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
         return {
@@ -564,7 +652,10 @@ const createDurationData = (sets: StatisticsSetType[]) => {
           mode: math.mode(data),
           range: rangeDisplay,
           standardDev: math.round(math.std(data), 2),
-          chartData: { labels, series: [count] },
+          data: labels.map((label) => ({
+            count: countInArray(math.round(data), label),
+            id: label,
+          })),
         };
       };
 
@@ -577,19 +668,25 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 
       const title = cat === "icDate" ? "IC duration (months)" : "GB duration (days)";
 
-      durationData[cat].summary = createDurationDataObject(summaryData, title, propSets.length);
+      durationData[cat].summary = sanitiseCountData(
+        [createDurationDataObject(summaryData, title, propSets.length)],
+        true
+      )[0];
 
       objectKeys(durationData[cat].breakdown).forEach((property) => {
-        durationData[cat].breakdown[property] = lists[property].map((name) => {
-          const filteredSets = filterPropSets(propSets, property, name);
-          const data = filteredSets.map((set) => {
-            const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
-            const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
-            const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
-            return math.round(length[cat === "icDate" ? "months" : "days"], 2);
-          });
-          return createDurationDataObject(data, name, filteredSets.length);
-        });
+        durationData[cat].breakdown[property] = sanitiseCountData(
+          lists[property].map((name) => {
+            const filteredSets = filterPropSets(propSets, property, name);
+            const data = filteredSets.map((set) => {
+              const startDate = DateTime.fromISO(set[cat], { zone: "utc" });
+              const endDate = DateTime.fromISO(set[cat === "gbLaunch" ? "gbEnd" : "gbLaunch"], { zone: "utc" });
+              const length = endDate.diff(startDate, cat === "icDate" ? "months" : "days");
+              return math.round(length[cat === "icDate" ? "months" : "days"], 2);
+            });
+            return createDurationDataObject(data, name, filteredSets.length);
+          }),
+          true
+        );
         objectKeys(durationData[cat].breakdown).forEach((prop) => {
           durationData[cat].breakdown[prop].sort(
             (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
@@ -604,14 +701,14 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 const createVendorsData = (sets: StatisticsSetType[]) => {
   const vendorsData: VendorData = {
     summary: {
-      chartData: { labels: [], series: [] },
+      name: "Vendors per set",
+      total: 0,
       mean: 0,
       median: 0,
       mode: [],
-      name: "Vendors per set",
       range: "",
       standardDev: 0,
-      total: 0,
+      data: [],
     },
     breakdown: {
       profile: [],
@@ -641,9 +738,8 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  const createVendorsDataObject = (data: number[], name: string, total: number): VendorDataObject => {
+  const createVendorsDataObject = (data: number[], name: string, total: number): CountDataObject => {
     const labels = [...math.range(0, math.max(data), 1, true).toArray()] as number[];
-    const count = labels.map((_val, index) => countInArray(data, index));
     const range = math.max(data) - math.min(data);
     const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
     return {
@@ -654,19 +750,25 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
       mode: math.mode(data),
       range: rangeDisplay,
       standardDev: math.round(math.std(data), 2),
-      chartData: { labels, series: [count] },
+      data: labels.map((label, index) => ({ count: countInArray(data, index), id: label })),
     };
   };
   const summaryLengthArray = vendorSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
 
-  vendorsData.summary = createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length);
+  vendorsData.summary = sanitiseCountData(
+    [createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length)],
+    true
+  )[0];
 
   objectKeys(vendorsData.breakdown).forEach((prop) => {
-    vendorsData.breakdown[prop] = lists[prop].map((name) => {
-      const propSets = filterPropSets(vendorSets, prop, name);
-      const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
-      return createVendorsDataObject(lengthArray, name, propSets.length);
-    });
+    vendorsData.breakdown[prop] = sanitiseCountData(
+      lists[prop].map((name) => {
+        const propSets = filterPropSets(vendorSets, prop, name);
+        const lengthArray = propSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
+        return createVendorsDataObject(lengthArray, name, propSets.length);
+      }),
+      true
+    );
 
     vendorsData.breakdown[prop].sort(
       (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)

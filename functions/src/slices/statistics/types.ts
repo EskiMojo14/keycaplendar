@@ -1,4 +1,3 @@
-import { IChartistData } from "chartist";
 import { Overwrite } from "../common/types";
 import { VendorType } from "../main/types";
 
@@ -48,10 +47,10 @@ export type StatusDataObject = {
   name: string;
   total: number;
   pie: {
-    ic: number;
-    preGb: number;
-    liveGb: number;
-    postGb: number;
+    ic?: number;
+    preGb?: number;
+    liveGb?: number;
+    postGb?: number;
   };
   sunburst?: StatusDataObjectSunburstChild[];
 };
@@ -64,8 +63,8 @@ export type StatusData = {
 export type ShippedDataObject = {
   name: string;
   total: number;
-  shipped: number;
-  unshipped: number;
+  shipped?: number;
+  unshipped?: number;
   months: { month?: string; index?: number; shipped?: number; unshipped?: number }[];
 };
 
@@ -75,37 +74,26 @@ export type ShippedData = {
   breakdown: Record<Properties, ShippedDataObject[]>;
 };
 
-export type DurationDataObject = {
-  chartData: IChartistData;
-  mean: number;
-  median: number;
-  mode: number[];
+export type CountDataObject = {
   name: string;
-  range: string;
-  standardDev: number;
   total: number;
+  mean?: number;
+  median?: number;
+  mode?: number[];
+  range?: string;
+  standardDev?: number;
+  data: { id: number; count: number; index?: number }[];
 };
 
 export type DurationData = Record<
   Categories,
   {
-    summary: DurationDataObject;
-    breakdown: Record<Properties, DurationDataObject[]>;
+    summary: CountDataObject;
+    breakdown: Record<Properties, CountDataObject[]>;
   }
 >;
 
-export type VendorDataObject = {
-  chartData: IChartistData;
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
-
 export type VendorData = {
-  summary: VendorDataObject;
-  breakdown: Record<Properties, VendorDataObject[]>;
+  summary: CountDataObject;
+  breakdown: Record<Properties, CountDataObject[]>;
 };

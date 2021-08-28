@@ -29,6 +29,13 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
 export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] => Object.keys(obj);
 
 /**
+ * Returns an array of object entries to iterate on.
+ * Only use for objects you're certain won't gain more entries in runtime.
+ */
+
+export const objectEntries = <T extends Record<string, any>>(obj: T): [keyof T, T[keyof T]][] => Object.entries(obj);
+
+/**
  * Remove all duplicate values within an array.
  * @param array Array of values.
  * @returns `array` with only unique values.
