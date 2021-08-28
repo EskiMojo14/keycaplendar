@@ -33,13 +33,26 @@ export type TimelinesData = Record<
   }
 >;
 
+export type StatusDataObjectSunburstDatum = { id: string; index?: number; val: number };
+
+export type StatusDataObjectSunburstChildWithChild = {
+  id?: string;
+  index?: number;
+  children: (StatusDataObjectSunburstDatum | StatusDataObjectSunburstChild)[];
+};
+
+export type StatusDataObjectSunburstChild = StatusDataObjectSunburstChildWithChild | StatusDataObjectSunburstDatum;
+
 export type StatusDataObject = {
   name: string;
   total: number;
-  ic: number;
-  liveGb: number;
-  postGb: number;
-  preGb: number;
+  pie: {
+    ic: number;
+    preGb: number;
+    liveGb: number;
+    postGb: number;
+  };
+  sunburst?: StatusDataObjectSunburstChild[];
 };
 
 export type StatusData = {
