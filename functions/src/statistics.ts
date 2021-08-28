@@ -5,20 +5,20 @@ import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import {
-  StatisticsSetType,
   Categories,
-  TimelinesData,
-  TimelinesDataObject,
-  StatusData,
-  ShippedData,
-  DurationData,
-  VendorData,
   CountDataObject,
-  ShippedDataObject,
+  DurationData,
   Properties,
+  ShippedData,
+  ShippedDataObject,
+  StatisticsSetType,
+  StatusData,
+  StatusDataObject,
   StatusDataObjectSunburstChild,
   StatusDataObjectSunburstChildWithChild,
-  StatusDataObject,
+  TimelinesData,
+  TimelinesDataObject,
+  VendorData,
 } from "./slices/statistics/types";
 import {
   getSetMonthRange,
@@ -58,15 +58,15 @@ const hydrateTimelinesData = (data: Record<string, number>[], months: string[], 
     return { ...blankObject, ...foundObject };
   });
 
-const sunburstChildHasChildren = (
-  child: StatusDataObjectSunburstChild
-): child is StatusDataObjectSunburstChildWithChild => "children" in child;
+const sunburstChildHasChildren = <Optimised extends true | false = false>(
+  child: StatusDataObjectSunburstChild<Optimised>
+): child is StatusDataObjectSunburstChildWithChild<Optimised> => "children" in child;
 
-const sanitiseStatusData = (data: StatusDataObject[]) =>
-  data.map(({ sunburst, pie, ...datum }) => {
+const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<true>[] =>
+  data.map(({ sunburst, pie = {}, ...datum }) => {
     const filteredPie = objectEntries(pie)
       .filter(([key, val]) => val && val > 0)
-      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as StatusDataObject["pie"]);
+      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as StatusDataObject<true>["pie"]);
     const filteredSunburst = sunburst
       ? sunburst
           .map((child, index, array) => (array.length > 1 ? { ...child, index } : child))
@@ -94,11 +94,12 @@ const sanitiseStatusData = (data: StatusDataObject[]) =>
   });
 
 const hydrateStatusData = (
-  data: StatusDataObject[],
+  data: StatusDataObject<true>[],
   ids = ["IC", "Pre GB", "Live GB", "Post GB"]
 ): StatusDataObject[] =>
-  data.map(({ sunburst, pie: { ic, preGb, liveGb, postGb }, ...datum }) => {
-    const hydratedPie = { ic: ic || 0, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
+  data.map(({ sunburst, pie, ...datum }) => {
+    const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
+    const hydratedPie = { ic: ic, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
     const defaultSunburst = [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map(
       (val, index) => ({
         id: ids[index],
@@ -132,7 +133,7 @@ const hydrateStatusData = (
     };
   });
 
-const sanitiseShippedData = (data: ShippedDataObject[]): ShippedDataObject[] =>
+const sanitiseShippedData = (data: ShippedDataObject<true>[]): ShippedDataObject<true>[] =>
   data.map(({ months, shipped, unshipped, ...datum }) => ({
     ...datum,
     shipped: shipped || undefined,
@@ -146,7 +147,7 @@ const sanitiseShippedData = (data: ShippedDataObject[]): ShippedDataObject[] =>
       .filter((month) => Object.keys(month).length > 1),
   }));
 
-const hydrateShippedData = (data: ShippedDataObject[], months: string[]): ShippedDataObject[] => {
+const hydrateShippedData = (data: ShippedDataObject<true>[], months: string[]): ShippedDataObject[] => {
   const blankObject: ShippedDataObject = {
     name: "",
     total: 0,
@@ -174,7 +175,7 @@ const hydrateShippedData = (data: ShippedDataObject[], months: string[]): Shippe
   }));
 };
 
-const sanitiseCountData = (data: CountDataObject[], idIsIndex = false): CountDataObject[] =>
+const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject<true>[] =>
   data.map(({ data, name, total, mode, range, ...datum }) => {
     const filteredDatum = objectEntries(datum)
       .filter(([key, val]) => typeof val === "number" && val > 0)
@@ -195,7 +196,7 @@ const sanitiseCountData = (data: CountDataObject[], idIsIndex = false): CountDat
     };
   });
 
-const hydrateCountData = (data: CountDataObject[], idIsIndex = false): CountDataObject[] => {
+const hydrateCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject[] => {
   const blankObject: CountDataObject = {
     name: "",
     total: 0,
@@ -252,7 +253,7 @@ const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string
   );
 
 const createTimelinesData = (sets: StatisticsSetType[]) => {
-  const timelinesData: TimelinesData = {
+  const timelinesData: TimelinesData<true> = {
     icDate: {
       months: [],
       allProfiles: [],
@@ -334,7 +335,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 
     const profileMonths = months.map((month) => {
       const monthSets = filterCatSetsByMonth(catSets, cat, month);
-      return profileNames.reduce<TimelinesDataObject["months"][number]>(
+      return profileNames.reduce<TimelinesDataObject<true>["months"][number]>(
         (obj, profile) => {
           const profileSets = filterPropSets(monthSets, "profile", profile);
           return profileSets.length > 0 ? { ...obj, [profile]: profileSets.length } : obj;
@@ -368,7 +369,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
           const profiles = alphabeticalSort(removeDuplicates(filteredSets.map((set) => set.profile)));
           const monthsData = months.map((month) => {
             const monthSets = filterCatSetsByMonth(filteredSets, cat, month);
-            return profiles.reduce<TimelinesDataObject["months"][number]>(
+            return profiles.reduce<TimelinesDataObject<true>["months"][number]>(
               (obj, profile) => {
                 const profileSets = filterPropSets(monthSets, "profile", profile);
                 return profileSets.length > 0 ? { ...obj, [profile]: profileSets.length } : obj;
@@ -403,7 +404,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
 };
 
 const createStatusData = (sets: StatisticsSetType[]) => {
-  const statusData: StatusData = {
+  const statusData: StatusData<true> = {
     summary: {
       name: "Current keyset status",
       total: 0,
@@ -431,7 +432,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
     name: string,
     prop?: Properties,
     list?: string[]
-  ): StatusDataObject => {
+  ): StatusDataObject<true> => {
     const icSets = sets.filter((set: StatisticsSetType) => !set.gbLaunch || set.gbLaunch.includes("Q"));
     const preGbSets = sets.filter((set) => {
       let startDate;
@@ -476,7 +477,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
 
     if (prop && list) {
       const sunburstSets = [icSets, preGbSets, liveGbSets, postGbSets];
-      const sunburst: StatusDataObjectSunburstChild[] = sunburstSets.map((sets) => {
+      const sunburst: StatusDataObjectSunburstChild<true>[] = sunburstSets.map((sets) => {
         const childSets = list.map((val) => {
           const filteredSets = filterPropSets(sets, prop, val);
           return {
@@ -518,7 +519,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
 };
 
 const createShippedData = (sets: StatisticsSetType[]) => {
-  const shippedData: ShippedData = {
+  const shippedData: ShippedData<true> = {
     summary: {
       name: "Shipped sets by GB month",
       total: 0,
@@ -557,7 +558,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject => {
+  const createShippedDataObject = (sets: StatisticsSetType[], name: string): ShippedDataObject<true> => {
     const shippedSets = sets.filter((set) => set.shipped);
     const unshippedSets = sets.filter((set) => !set.shipped);
     const data = months.map((month) => {
@@ -588,7 +589,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
 };
 
 const createDurationData = (sets: StatisticsSetType[]) => {
-  const durationData: DurationData = {
+  const durationData: DurationData<true> = {
     icDate: {
       summary: {
         name: "IC duration (months)",
@@ -640,7 +641,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         vendor: vendorNames,
       };
 
-      const createDurationDataObject = (data: number[], name: string, total: number): CountDataObject => {
+      const createDurationDataObject = (data: number[], name: string, total: number): CountDataObject<true> => {
         const labels = [...math.range(0, math.round(math.max(data)), 1, true).toArray()] as number[];
         const range = math.max(data) - math.min(data);
         const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
@@ -699,7 +700,7 @@ const createDurationData = (sets: StatisticsSetType[]) => {
 };
 
 const createVendorsData = (sets: StatisticsSetType[]) => {
-  const vendorsData: VendorData = {
+  const vendorsData: VendorData<true> = {
     summary: {
       name: "Vendors per set",
       total: 0,
@@ -738,7 +739,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
 
-  const createVendorsDataObject = (data: number[], name: string, total: number): CountDataObject => {
+  const createVendorsDataObject = (data: number[], name: string, total: number): CountDataObject<true> => {
     const labels = [...math.range(0, math.max(data), 1, true).toArray()] as number[];
     const range = math.max(data) - math.min(data);
     const rangeDisplay = `${math.min(data)} - ${math.max(data)} (${range})`;
