@@ -9,8 +9,7 @@ type DialogSalesProps = {
   set: SetType;
 };
 
-export const DialogSales = (props: DialogSalesProps) => {
-  return (
+export const DialogSales = (props: DialogSalesProps) => (
     <Dialog className="sales-dialog" open={props.open} onClose={props.close}>
       <DialogTitle>{`Sales - ${props.set.profile} ${props.set.colorway}`}</DialogTitle>
       <DialogContent>
@@ -31,6 +30,5 @@ export const DialogSales = (props: DialogSalesProps) => {
       </DialogActions>
     </Dialog>
   );
-};
 
 export default DialogSales;

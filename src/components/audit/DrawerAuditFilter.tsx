@@ -111,9 +111,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
             enhanced={{ fixed: true }}
             options={[
               { label: "All", value: "all" },
-              ...users.map((user) => {
-                return { label: user, value: user };
-              }),
+              ...users.map((user) => ({ label: user, value: user })),
             ]}
             value={filterUser}
             className="user-select"

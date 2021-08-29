@@ -62,8 +62,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
       <div className="filter-chips">
         <ChipSet id="filter-chip-set" choice>
           <div className="padding-fix" />
-          {allTags.map((value) => {
-            return (
+          {allTags.map((value) => (
               <Chip
                 label={value}
                 key={value}
@@ -72,8 +71,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                   setFilter(value);
                 }}
               />
-            );
-          })}
+            ))}
         </ChipSet>
       </div>
     </div>
@@ -113,8 +111,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>
-                  {filteredEntries.map((entry) => {
-                    return (
+                  {filteredEntries.map((entry) => (
                       <ListItem
                         key={entry.id}
                         onClick={() => {
@@ -143,8 +140,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                           ) : null}
                         </ListItemText>
                       </ListItem>
-                    );
-                  })}
+                    ))}
                 </ListGroup>
                 <ListDivider />
               </React.Fragment>

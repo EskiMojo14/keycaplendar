@@ -331,8 +331,7 @@ export const ContentImages = (props: ContentImagesProps) => {
                       />
                     </div>
                     <ImageList style={{ margin: -2 }} withTextProtection>
-                      {obj.array.map((image) => {
-                        return (
+                      {obj.array.map((image) => (
                           <Ripple key={image.fullPath}>
                             <ImageListItem className={classNames({ selected: image === detailImage })}>
                               <div className="container">
@@ -365,8 +364,7 @@ export const ContentImages = (props: ContentImagesProps) => {
                               </div>
                             </ImageListItem>
                           </Ripple>
-                        );
-                      })}
+                        ))}
                     </ImageList>
                   </div>
                 ) : null

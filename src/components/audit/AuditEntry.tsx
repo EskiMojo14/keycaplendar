@@ -351,8 +351,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                   );
                 } else if (property === "vendors" && docData.vendors) {
                   const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
-                  return docData.vendors.map((vendor, index) => {
-                    return (
+                  return docData.vendors.map((vendor, index) => (
                       <DataTableRow key={vendor.name + index}>
                         <DataTableCell>{property + index}</DataTableCell>
                         <DataTableCell className={props.action.action === "created" ? "after" : "before"}>
@@ -382,8 +381,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
                           ) : null}
                         </DataTableCell>
                       </DataTableRow>
-                    );
-                  });
+                    ));
                 } else if (urlProps.includes(property) && is<string>(prop)) {
                   return (
                     <DataTableRow key={property + index}>

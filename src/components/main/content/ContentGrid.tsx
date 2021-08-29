@@ -59,8 +59,7 @@ export const ContentGrid = (props: ContentGridProps) => {
   };
   return (
     <div className="content-grid">
-      {setGroups.map((group) => {
-        return (
+      {setGroups.map((group) => (
           <div className="outer-container" key={group.title}>
             <div className="subheader">
               <Typography use="caption">
@@ -69,8 +68,7 @@ export const ContentGrid = (props: ContentGridProps) => {
             </div>
             {createGroup(group.sets)}
           </div>
-        );
-      })}
+        ))}
     </div>
   );
 };

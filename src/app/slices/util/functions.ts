@@ -182,9 +182,7 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>, K extend
  * @returns String truncated with ... at the end.
  */
 
-export const truncate = (str: string, num: number) => {
-  return str.length <= num ? str : str.slice(0, num) + "...";
-};
+export const truncate = (str: string, num: number) => str.length <= num ? str : str.slice(0, num) + "...";
 
 /**
  * Capitalise a string's first character.
@@ -201,8 +199,7 @@ export const capitalise = (str: string) => str.charAt(0).toUpperCase() + str.sli
  * @returns `str` converted to camelCase.
  */
 
-export const camelise = (str: string, chr = " ") => {
-  return str
+export const camelise = (str: string, chr = " ") => str
     .split(chr)
     .map((word, index) => {
       if (index === 0) {
@@ -212,7 +209,6 @@ export const camelise = (str: string, chr = " ") => {
       }
     })
     .join("");
-};
 
 /**
  * Removes abnormal characters. Useful for file names or search.
@@ -322,13 +318,11 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
-  return {
+export const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
     strategy: "component",
     icon: jsx,
     ...config,
-  };
-};
+  });
 
 /**
  * Adds scroll-lock class to body, to prevent scrolling while modal is open.
@@ -384,9 +378,7 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
     })
   ).filter(Boolean);
   alphabeticalSort(setMonths);
-  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {
-    return dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
-  };
+  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
   const length =
     monthDiff(
       DateTime.fromISO(setMonths[0], { zone: "utc" }),
@@ -447,9 +439,7 @@ export const ordinal = (n: number, { th = "th", rd = "rd", nd = "nd", st = "st" 
 
 export const getStorageFolders = async () => {
   const topLevel = await storageRef.listAll();
-  const folders = topLevel.prefixes.map((folderRef) => {
-    return folderRef.fullPath;
-  });
+  const folders = topLevel.prefixes.map((folderRef) => folderRef.fullPath);
   return folders;
 };
 
@@ -459,16 +449,15 @@ export const getStorageFolders = async () => {
  * @returns Promise from deletions (uses `Promise.all()`).
  */
 
-export const batchStorageDelete = (array: string[] = []) => {
-  return Promise.all(
+export const batchStorageDelete = (array: string[] = []) => Promise.all(
     array.map((path) => {
       const ref = storageRef.child(path);
       return ref
         .getMetadata()
-        .then(() => {
+        .then(() => 
           // file exists
-          return ref.delete();
-        })
+           ref.delete()
+        )
         .catch((error) => {
           // file doesn't exist
           console.log(error);
@@ -476,7 +465,6 @@ export const batchStorageDelete = (array: string[] = []) => {
         });
     })
   );
-};
 
 /** Checks current locale and returns true if locale uses 24 hour time.
  * https://stackoverflow.com/a/60437579

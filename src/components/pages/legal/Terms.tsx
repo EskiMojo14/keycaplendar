@@ -12,8 +12,7 @@ import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import "./Legal.scss";
 
-export const TermsOfService = () => {
-  return (
+export const TermsOfService = () => (
     <>
       <TopAppBar fixed>
         <TopAppBarRow>
@@ -124,6 +123,5 @@ export const TermsOfService = () => {
       </div>
     </>
   );
-};
 
 export default TermsOfService;

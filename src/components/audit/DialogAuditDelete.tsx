@@ -9,8 +9,7 @@ type DialogAuditDeleteProps = {
   open: boolean;
 };
 
-export const DialogAuditDelete = (props: DialogAuditDeleteProps) => {
-  return (
+export const DialogAuditDelete = (props: DialogAuditDeleteProps) => (
     <Dialog open={props.open}>
       <DialogTitle>Delete Action</DialogTitle>
       <DialogContent>
@@ -32,4 +31,3 @@ export const DialogAuditDelete = (props: DialogAuditDeleteProps) => {
       </DialogActions>
     </Dialog>
   );
-};

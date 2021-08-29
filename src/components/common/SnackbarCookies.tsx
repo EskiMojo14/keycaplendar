@@ -7,8 +7,7 @@ type SnackbarCookiesProps = {
   clear: () => void;
 };
 
-export const SnackbarCookies = (props: SnackbarCookiesProps) => {
-  return (
+export const SnackbarCookies = (props: SnackbarCookiesProps) => (
     <Snackbar
       open={props.open}
       onClose={props.accept}
@@ -17,6 +16,5 @@ export const SnackbarCookies = (props: SnackbarCookiesProps) => {
       timeout={200000}
     />
   );
-};
 
 export default SnackbarCookies;

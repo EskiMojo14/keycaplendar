@@ -7,8 +7,7 @@ import { Footer } from "@c/common/Footer";
 import "./NotFound.scss";
 import image from "@m/404.svg";
 
-export const NotFound = () => {
-  return (
+export const NotFound = () => (
     <div className="not-found-page-container">
       <TopAppBar prominent>
         <TopAppBarRow>
@@ -32,4 +31,3 @@ export const NotFound = () => {
       <Footer />
     </div>
   );
-};

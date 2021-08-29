@@ -122,9 +122,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   useEffect(() => {
     if (!user.isEditor && user.isDesigner) {
-      setFields((fields) => {
-        return { ...fields, designer: [user.nickname] };
-      });
+      setFields((fields) => ({ ...fields, designer: [user.nickname] }));
     }
   }, [props.open]);
 
@@ -155,9 +153,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const setImage = (image: Blob | File | null) => {
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: image };
-    });
+    setImageInfo((imageInfo) => ({ ...imageInfo, image: image }));
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -169,21 +165,15 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const toggleDate = () => {
-    setFields((fields) => {
-      return { ...fields, gbMonth: !fields.gbMonth };
-    });
+    setFields((fields) => ({ ...fields, gbMonth: !fields.gbMonth }));
   };
 
   const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      setFields((fields) => {
-        return { ...fields, [prop]: [value] };
-      });
+      setFields((fields) => ({ ...fields, [prop]: [value] }));
       setFocused("");
     } else {
-      setFields((fields) => {
-        return { ...fields, [prop]: value };
-      });
+      setFields((fields) => ({ ...fields, [prop]: value }));
       setFocused("");
     }
   };
@@ -195,16 +185,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
         if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array };
-          });
+          setFields((fields) => ({ ...fields, [prop]: array }));
           setFocused("");
         } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array.join(", ") };
-          });
+          setFields((fields) => ({ ...fields, [prop]: array.join(", ") }));
           setFocused("");
         }
       }
@@ -245,32 +231,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const value = e.target.value;
     const checked = e.target.checked;
     if (name === "designer") {
-      setFields((fields) => {
-        return { ...fields, [name]: value.split(", ") };
-      });
+      setFields((fields) => ({ ...fields, [name]: value.split(", ") }));
     } else if (name === "shipped") {
-      setFields((fields) => {
-        return { ...fields, [name]: checked };
-      });
+      setFields((fields) => ({ ...fields, [name]: checked }));
     } else if (name === "salesImg") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, img: value };
-      });
+      setSalesInfo((salesInfo) => ({ ...salesInfo, img: value }));
     } else if (name === "salesThirdParty") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, thirdParty: checked };
-      });
+      setSalesInfo((salesInfo) => ({ ...salesInfo, thirdParty: checked }));
     } else {
-      setFields((fields) => {
-        return { ...fields, [name]: value };
-      });
+      setFields((fields) => ({ ...fields, [name]: value }));
     }
   };
 
   const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
-    setFields((fields) => {
-      return { ...fields, [name]: value };
-    });
+    setFields((fields) => ({ ...fields, [name]: value }));
   };
 
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -344,9 +318,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          setImageInfo((imageInfo) => {
-            return { ...imageInfo, imageUploadProgress: progress };
-          });
+          setImageInfo((imageInfo) => ({ ...imageInfo, imageUploadProgress: progress }));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -360,9 +332,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
-              setImageInfo((imageInfo) => {
-                return { ...imageInfo, imageURL: downloadURL };
-              });
+              setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: downloadURL }));
               setUploadingImage(false);
               createEntry(downloadURL);
             })
@@ -425,9 +395,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    setSalesInfo((salesInfo) => {
-      return { ...salesInfo, salesImageLoaded: val };
-    });
+    setSalesInfo((salesInfo) => ({ ...salesInfo, salesImageLoaded: val }));
   };
   const useDrawer = device !== "mobile";
   const dateCard = fields.gbMonth ? (
@@ -1047,9 +1015,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       gbEnd: set.gbEnd,
       shipped: set.shipped ? set.shipped : false,
     });
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, imageURL: set.image };
-    });
+    setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: set.image }));
     setVendors(
       set.vendors
         ? set.vendors.map((vendor) => {
@@ -1060,9 +1026,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           })
         : []
     );
-    setSalesInfo((salesInfo) => {
-      return set.sales ? { ...salesInfo, ...set.sales } : { img: "", thirdParty: false, salesImageLoaded: false };
-    });
+    setSalesInfo((salesInfo) => set.sales ? { ...salesInfo, ...set.sales } : { img: "", thirdParty: false, salesImageLoaded: false });
   };
 
   const closeModal = () => {
@@ -1093,9 +1057,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const setImage = (image: File | Blob | null) => {
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: image, newImage: true };
-    });
+    setImageInfo((imageInfo) => ({ ...imageInfo, image: image, newImage: true }));
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -1107,21 +1069,15 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const toggleDate = () => {
-    setFields((fields) => {
-      return { ...fields, gbMonth: !fields.gbMonth };
-    });
+    setFields((fields) => ({ ...fields, gbMonth: !fields.gbMonth }));
   };
 
   const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      setFields((fields) => {
-        return { ...fields, [prop]: [value] };
-      });
+      setFields((fields) => ({ ...fields, [prop]: [value] }));
       setFocused("");
     } else {
-      setFields((fields) => {
-        return { ...fields, [prop]: value };
-      });
+      setFields((fields) => ({ ...fields, [prop]: value }));
       setFocused("");
     }
   };
@@ -1133,16 +1089,12 @@ export const ModalEdit = (props: ModalEditProps) => {
         if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array };
-          });
+          setFields((fields) => ({ ...fields, [prop]: array }));
           setFocused("");
         } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array.join(", ") };
-          });
+          setFields((fields) => ({ ...fields, [prop]: array.join(", ") }));
           setFocused("");
         }
       }
@@ -1183,32 +1135,20 @@ export const ModalEdit = (props: ModalEditProps) => {
     const value = e.target.value;
     const checked = e.target.checked;
     if (name === "designer") {
-      setFields((fields) => {
-        return { ...fields, [name]: value.split(", ") };
-      });
+      setFields((fields) => ({ ...fields, [name]: value.split(", ") }));
     } else if (name === "shipped") {
-      setFields((fields) => {
-        return { ...fields, [name]: checked };
-      });
+      setFields((fields) => ({ ...fields, [name]: checked }));
     } else if (name === "salesImg") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, img: value };
-      });
+      setSalesInfo((salesInfo) => ({ ...salesInfo, img: value }));
     } else if (name === "salesThirdParty") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, thirdParty: checked };
-      });
+      setSalesInfo((salesInfo) => ({ ...salesInfo, thirdParty: checked }));
     } else if (hasKey(fields, name)) {
-      setFields((fields) => {
-        return { ...fields, [name]: value };
-      });
+      setFields((fields) => ({ ...fields, [name]: value }));
     }
   };
 
   const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
-    setFields((fields) => {
-      return { ...fields, [name]: value };
-    });
+    setFields((fields) => ({ ...fields, [name]: value }));
   };
 
   const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1282,9 +1222,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          setImageInfo((imageInfo) => {
-            return { ...imageInfo, imageUploadProgress: progress };
-          });
+          setImageInfo((imageInfo) => ({ ...imageInfo, imageUploadProgress: progress }));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -1298,9 +1236,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
-              setImageInfo((imageInfo) => {
-                return { ...imageInfo, imageURL: downloadURL };
-              });
+              setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: downloadURL }));
               setUploadingImage(false);
               editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
@@ -1377,9 +1313,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    setSalesInfo((salesInfo) => {
-      return { ...salesInfo, salesImageLoaded: val };
-    });
+    setSalesInfo((salesInfo) => ({ ...salesInfo, salesImageLoaded: val }));
   };
   const useDrawer = device !== "mobile";
   const dateCard = fields.gbMonth ? (

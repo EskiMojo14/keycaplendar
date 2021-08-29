@@ -389,8 +389,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
       <div className="search-chips">
         <ChipSet id="search-chip-set" choice>
           <div className="padding-fix" />
-          {chips.map((value, index) => {
-            return (
+          {chips.map((value, index) => (
               <Chip
                 icon="search"
                 label={value}
@@ -403,8 +402,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
                   }
                 }}
               />
-            );
-          })}
+            ))}
         </ChipSet>
       </div>
     </div>

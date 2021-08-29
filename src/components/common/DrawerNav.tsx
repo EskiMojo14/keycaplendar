@@ -126,8 +126,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
         }
         className="group-collapsible"
       >
-        {userPages.map((page) => {
-          return (
+        {userPages.map((page) => (
             <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
               <ListItemGraphic
                 icon={
@@ -139,8 +138,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
               {pageTitle[page]}
               {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
             </ListItem>
-          );
-        })}
+          ))}
       </CollapsibleList>
     </>
   ) : null;
@@ -189,14 +187,12 @@ export const DrawerNav = (props: DrawerNavProps) => {
         }
         className="group-collapsible"
       >
-        {adminPages.map((page) => {
-          return (
+        {adminPages.map((page) => (
             <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
               <ListItemGraphic icon={pageIcons[page]} />
               {pageTitle[page]}
             </ListItem>
-          );
-        })}
+          ))}
       </CollapsibleList>
     </>
   ) : null;
@@ -225,14 +221,12 @@ export const DrawerNav = (props: DrawerNavProps) => {
       </DrawerHeader>
       <DrawerContent>
         <List>
-          {standardPages.map((page) => {
-            return (
+          {standardPages.map((page) => (
               <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
                 <ListItemGraphic icon={pageIcons[page]} />
                 {pageTitle[page]}
               </ListItem>
-            );
-          })}
+            ))}
           <ListDivider />
           <ListItem onClick={() => setPage("statistics")} activated={appPage === "statistics"}>
             <ListItemGraphic icon={pageIcons.statistics} />

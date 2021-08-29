@@ -22,13 +22,11 @@ export const MenuSort = (props: MenuSortProps) => {
   const sortOrder = useAppSelector(selectSortOrder);
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
-      {allSorts.map((key) => {
-        return arrayIncludes(sortBlacklist[key], page) ? null : (
+      {allSorts.map((key) => arrayIncludes(sortBlacklist[key], page) ? null : (
           <MenuItem selected={sort === key} onClick={() => setSort(key)} key={key}>
             {sortNames[key]}
           </MenuItem>
-        );
-      })}
+        ))}
       <ListDivider />
       {sortOrders.map((item) => (
         <MenuItem selected={sortOrder === item} onClick={() => setSortOrder(item)} key={item}>

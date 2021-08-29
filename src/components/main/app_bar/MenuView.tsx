@@ -14,13 +14,11 @@ export const MenuView = (props: MenuViewProps) => {
   const view = useAppSelector(selectView);
   return (
     <Menu anchorCorner="bottomLeft" open={props.open} onClose={props.onClose}>
-      {allViews.map((key) => {
-        return (
+      {allViews.map((key) => (
           <MenuItem key={key} selected={view === key} onClick={() => setView(key)}>
             {viewNames[key]}
           </MenuItem>
-        );
-      })}
+        ))}
     </Menu>
   );
 };

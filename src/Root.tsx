@@ -14,8 +14,7 @@ class LocalizedUtils extends LuxonUtils {
   }
 }
 
-export const Root = () => {
-  return (
+export const Root = () => (
     <Provider store={store}>
       <MuiPickersUtilsProvider utils={LocalizedUtils}>
         <ThemeProvider>
@@ -26,4 +25,3 @@ export const Root = () => {
       </MuiPickersUtilsProvider>
     </Provider>
   );
-};

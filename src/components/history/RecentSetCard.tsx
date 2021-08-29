@@ -48,9 +48,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         hidden: false,
       };
       const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, bought, hidden) : falsePages;
-      const keysetPages = objectKeys(pageBools).filter((key) => {
-        return pageBools[key];
-      });
+      const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       setPages(keysetPages);
     }
   }, [props.recentSet.currentSet]);

@@ -502,12 +502,10 @@ const createGroups = (state = store.getState()) => {
     return filteredSets;
   };
 
-  const setGroups: SetGroup[] = groups.map((group) => {
-    return {
+  const setGroups: SetGroup[] = groups.map((group) => ({
       title: group,
       sets: filterSets(sets, group, sort),
-    };
-  });
+    }));
 
   dispatch(setSetGroups(setGroups));
 

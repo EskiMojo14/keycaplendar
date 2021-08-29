@@ -211,8 +211,7 @@ export const UserCard = (props: UserCardProps) => {
       <CardActions>
         <CardActionButtons>
           <SegmentedButton toggle>
-            {roles.map((role) => {
-              return (
+            {roles.map((role) => (
                 <SegmentedButtonSegment
                   key={role}
                   label={role}
@@ -226,8 +225,7 @@ export const UserCard = (props: UserCardProps) => {
                     role !== "designer"
                   }
                 />
-              );
-            })}
+              ))}
           </SegmentedButton>
         </CardActionButtons>
         <CardActionIcons>{saveButton}</CardActionIcons>

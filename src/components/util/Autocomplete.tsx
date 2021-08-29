@@ -21,9 +21,7 @@ export const Autocomplete = (props: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const lastItem = splitQuery[splitQuery.length - 1];
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(useQuery.toLowerCase());
-  });
+  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   const firstFour = matchingItems.slice(0, 4);
   return (
     <Menu
@@ -41,8 +39,7 @@ export const Autocomplete = (props: AutocompleteProps) => {
     >
       {useQuery.length >= minChars
         ? open
-          ? matchingItems.map((item) => {
-              return (
+          ? matchingItems.map((item) => (
                 <MenuItem key={item}>
                   {useQuery.length > 0
                     ? reactStringReplace(item, useQuery, (match, i) => (
@@ -52,10 +49,8 @@ export const Autocomplete = (props: AutocompleteProps) => {
                       ))
                     : item}
                 </MenuItem>
-              );
-            })
-          : firstFour.map((item) => {
-              return (
+              ))
+          : firstFour.map((item) => (
                 <MenuItem key={item}>
                   {useQuery.length > 0
                     ? reactStringReplace(item, useQuery, (match, i) => (
@@ -65,8 +60,7 @@ export const Autocomplete = (props: AutocompleteProps) => {
                       ))
                     : item}
                 </MenuItem>
-              );
-            })
+              ))
         : null}
     </Menu>
   );
@@ -79,15 +73,12 @@ export const AutocompleteMobile = (props: AutocompleteProps) => {
   const splitQuery = query.split(", ");
   const lastItem = splitQuery[splitQuery.length - 1];
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => {
-    return item.toLowerCase().includes(useQuery.toLowerCase());
-  });
+  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   return (
     <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
       <List>
         {useQuery.length >= minChars
-          ? matchingItems.map((item) => {
-              return (
+          ? matchingItems.map((item) => (
                 <ListItem key={item} onClick={() => select(prop, item)}>
                   {useQuery.length > 0
                     ? reactStringReplace(item, useQuery, (match, i) => (
@@ -97,8 +88,7 @@ export const AutocompleteMobile = (props: AutocompleteProps) => {
                       ))
                     : item}
                 </ListItem>
-              );
-            })
+              ))
           : null}
       </List>
     </div>

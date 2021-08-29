@@ -12,8 +12,7 @@ import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
 import "./Legal.scss";
 
-export const PrivacyPolicy = () => {
-  return (
+export const PrivacyPolicy = () => (
     <>
       <TopAppBar fixed>
         <TopAppBarRow>
@@ -238,6 +237,5 @@ export const PrivacyPolicy = () => {
       </div>
     </>
   );
-};
 
 export default PrivacyPolicy;
