@@ -99,10 +99,67 @@ $themes-map: (
   ),
 );
 
+// 1 - card, switch
+// 2 - contained button
+// 3 - refresh indicator
+// 4 - app bar
+// 6 - FAB, snackbar
+// 8 - menu, side sheet
+// 16 - nav drawer, modal side sheet
+// 24 - dialog
+$overlay-values: (
+  0: 0%,
+  1: 5%,
+  2: 7%,
+  3: 8%,
+  4: 9%,
+  6: 11%,
+  8: 12%,
+  12: 14%,
+  16: 15%,
+  24: 16%,
+);
+
+@function overlay-elevation($color, $elevation: 0) {
+  @return lighten($color, map-get($overlay-values, $elevation));
+}
+
 :export {
   @each $theme-name, $theme in $themes-map {
     @each $theme-prop, $theme-prop-val in $theme {
       #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+    }
+
+    $text-colors: (
+      text-high: rgba(map-get($theme, on-surface), 0.87),
+      text-medium: rgba(map-get($theme, on-surface), 0.6),
+      text-disabled: rgba(map-get($theme, on-surface), 0.38),
+    );
+    @each $theme-prop, $theme-prop-val in $text-colors {
+      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+    }
+
+    $dynamic-colors: (
+      meta:
+        if(
+          map-get($theme, dark),
+          darken(overlay-elevation(map-get($theme, surface), 4), 10%),
+          darken(map-get($theme, primary), 10%)
+        ),
+      divider: rgba(map-get($theme, on-surface), 0.12),
+      lighter-divider: rgba(map-get($theme, on-surface), 0.06),
+      grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+      grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 6%),
+    );
+    @each $theme-prop, $theme-prop-val in $dynamic-colors {
+      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+    }
+
+    @each $overlay-elevation, $overlay-percent in $overlay-values {
+      #{$theme-name + "|elevated-surface" + $overlay-elevation}: overlay-elevation(
+        map-get($theme, surface),
+        $overlay-elevation
+      );
     }
   }
 }

@@ -95,7 +95,7 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         liveGb: number;
         postGb: number;
       };
-      sunburst: StatusDataObjectSunburstChild[];
+      sunburst: StatusDataObjectSunburstChild;
     };
 
 export type StatusData<Optimised extends true | false = false> = {

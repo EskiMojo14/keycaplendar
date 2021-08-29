@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { StatusDataObject } from "@s/statistics/types";
+import { selectCurrentThemeMap, selectDevice } from "@s/common";
+import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
@@ -16,6 +16,7 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { ResponsiveSunburst } from "@nivo/sunburst";
 import "./PieCard.scss";
 
 type StatusCardProps = {
@@ -28,6 +29,8 @@ type StatusCardProps = {
 
 export const StatusCard = (props: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
+  const currentTheme = useAppSelector(selectCurrentThemeMap);
+
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
     selectedIndex >= 0 && props.summary && props.breakdownData
@@ -72,6 +75,21 @@ export const StatusCard = (props: StatusCardProps) => {
         </Typography>
       </div>
       <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
+        <div className="pie-chart-container">
+          <ResponsiveSunburst<StatusDataObjectSunburstChild>
+            data={chartData.sunburst}
+            colors={
+              currentTheme
+                ? [currentTheme.grey2, currentTheme.grey1, currentTheme.secondary, currentTheme.primary]
+                : undefined
+            }
+            value="val"
+            borderColor={currentTheme?.elevatedSurface1}
+            borderWidth={4}
+            cornerRadius={4}
+            valueFormat=">-,"
+          />
+        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>

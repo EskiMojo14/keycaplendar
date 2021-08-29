@@ -16,6 +16,16 @@
   .pie-container {
     display: flex;
     flex-direction: column;
+    .pie-chart-container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      > div {
+        min-height: 256px;
+        max-height: 256px;
+      }
+    }
     .table-container {
       flex-grow: 1;
       .mdc-data-table {
@@ -60,6 +70,7 @@
         flex: 1 0 25%;
         display: flex;
         justify-content: center;
+        max-width: 25%;
       }
       .table-container {
         @include rtl.reflexive-box(margin, left, 16px);

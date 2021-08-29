@@ -10,10 +10,10 @@ import { Page, ThemeMap } from "./types";
  */
 
 const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
-    strategy: "component",
-    icon: jsx,
-    ...config,
-  });
+  strategy: "component",
+  icon: jsx,
+  ...config,
+});
 
 /** Character replacements to be used in `replaceFunction`. */
 
@@ -249,4 +249,25 @@ export const blankTheme: ThemeMap = {
   onSurface: "",
   primary: "",
   secondary: "",
+
+  textHigh: "",
+  textMedium: "",
+  textDisabled: "",
+
+  meta: "",
+  divider: "",
+  lighterDivider: "",
+  grey1: "",
+  grey2: "",
+
+  elevatedSurface0: "",
+  elevatedSurface1: "",
+  elevatedSurface2: "",
+  elevatedSurface3: "",
+  elevatedSurface4: "",
+  elevatedSurface6: "",
+  elevatedSurface8: "",
+  elevatedSurface12: "",
+  elevatedSurface16: "",
+  elevatedSurface24: "",
 };

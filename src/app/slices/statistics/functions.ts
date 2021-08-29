@@ -171,30 +171,34 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
     data.map(({ sunburst, pie, ...datum }) => {
       const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
       const hydratedPie = { ic: ic, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
-      const defaultSunburst = [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map(
-        (val, index) => ({
+      const defaultSunburst = {
+        id: "Status",
+        children: [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map((val, index) => ({
           id: ids[index],
           val,
-        })
-      );
+        })),
+      };
       if (sunburst) {
         return {
           ...datum,
           pie: hydratedPie,
-          sunburst: Array(4)
-            .fill("")
-            .map((_e, arrayIndex) => {
-              const { index = 0, ...foundObject } =
-                sunburst.find(({ index }) => index && index === arrayIndex) ||
-                (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
-                  ? sunburst[0]
-                  : {};
-              return {
-                ...defaultSunburst[arrayIndex],
-                ...foundObject,
-                id: ids[arrayIndex],
-              };
-            }),
+          sunburst: {
+            id: "status",
+            children: Array(4)
+              .fill("")
+              .map((_e, arrayIndex) => {
+                const { index = 0, ...foundObject } =
+                  sunburst.find(({ index }) => index && index === arrayIndex) ||
+                  (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
+                    ? sunburst[0]
+                    : {};
+                return {
+                  ...defaultSunburst.children[arrayIndex],
+                  ...foundObject,
+                  id: ids[arrayIndex],
+                };
+              }),
+          },
         };
       }
       return {

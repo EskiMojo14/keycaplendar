@@ -39,6 +39,7 @@ export type MainPage = typeof mainPages[number];
 
 export type ThemeMap = {
   dark: boolean;
+
   background: string;
   surface: string;
   error: string;
@@ -48,4 +49,33 @@ export type ThemeMap = {
   onSurface: string;
   primary: string;
   secondary: string;
+
+  textHigh: string;
+  textMedium: string;
+  textDisabled: string;
+
+  meta: string;
+  divider: string;
+  lighterDivider: string;
+  grey1: string;
+  grey2: string;
+
+  elevatedSurface0: string;
+  /** card, switch */
+  elevatedSurface1: string;
+  /** contained button */
+  elevatedSurface2: string;
+  /** refresh indicator */
+  elevatedSurface3: string;
+  /** app bar */
+  elevatedSurface4: string;
+  /** FAB, snackbar */
+  elevatedSurface6: string;
+  /** menu, side sheet */
+  elevatedSurface8: string;
+  elevatedSurface12: string;
+  /** nav drawer, modal side sheet */
+  elevatedSurface16: string;
+  /** dialog */
+  elevatedSurface24: string;
 };

@@ -51,7 +51,10 @@ export const initialState: StatisticsState = {
         name: "Current keyset status",
         total: 0,
         pie: { ic: 0, preGb: 0, liveGb: 0, postGb: 0 },
-        sunburst: [],
+        sunburst: {
+          id: "Status",
+          val: 0,
+        },
       },
       breakdown: {
         profile: [],
