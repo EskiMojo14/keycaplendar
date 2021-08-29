@@ -3,7 +3,7 @@ import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/util/functions";
+import { alphabeticalSortPropCurried, hasKey, mergeObject, objectEntries, ordinal } from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -14,8 +14,23 @@ import {
   selectData,
   selectSort,
 } from ".";
-import { Properties, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
 import { categories, properties } from "./constants";
+import {
+  Categories,
+  CountDataObject,
+  DurationData,
+  Properties,
+  ShippedData,
+  ShippedDataObject,
+  StatisticsData,
+  StatisticsSortType,
+  StatisticsType,
+  StatsTab,
+  StatusData,
+  StatusDataObject,
+  TimelinesData,
+  VendorData,
+} from "./types";
 
 const storage = firebase.storage();
 
@@ -47,7 +62,7 @@ export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: Stat
 };
 
 export const getData = async () => {
-  const fileRef = storage.ref("statisticsData.json");
+  const fileRef = storage.ref("statisticsDataTest.json");
   dispatch(setLoading(true));
   fileRef
     .getDownloadURL()
@@ -60,8 +75,7 @@ export const getData = async () => {
             const timestampOrdinal = ordinal(luxonTimetamp.day);
             const formattedTimestamp = luxonTimetamp.toFormat(`HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`);
             queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
-            dispatch(setStatisticsData(statisticsData));
-            dispatch(setLoading(false));
+            hydrateData(statisticsData);
           });
         })
         .catch((error) => {
@@ -75,6 +89,209 @@ export const getData = async () => {
       dispatch(setLoading(false));
       queue.notify({ title: "Failed to create statistics data: " + error });
     });
+};
+
+const hydrateData = ({ timelines, status, shipped, duration, vendors }: StatisticsData<true>) => {
+  const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) =>
+    months.map((month, monthIndex) => {
+      const blankObject = {
+        month: months[monthIndex],
+        index: monthIndex,
+        ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
+      };
+      const { index = 0, ...foundObject } =
+        data.find(({ index }) => index === monthIndex) || data.length === 1 ? data[0] : {};
+      return { ...blankObject, ...foundObject };
+    });
+
+  const hydratedTimelinesData = objectEntries(timelines).reduce(
+    (
+      obj,
+      [
+        category,
+        {
+          months,
+          allProfiles,
+          summary: { months: summaryMonths, name, total, profiles },
+        },
+      ]
+    ): TimelinesData => ({
+      ...obj,
+      [category]: {
+        allProfiles,
+        months,
+        summary: {
+          name,
+          total,
+          profiles,
+          months: hydrateTimelinesData(summaryMonths, months, profiles),
+        },
+      },
+    }),
+    {} as TimelinesData
+  );
+
+  const hydrateStatusData = (
+    data: StatusDataObject<true>[],
+    ids = ["IC", "Pre GB", "Live GB", "Post GB"]
+  ): StatusDataObject[] =>
+    data.map(({ sunburst, pie, ...datum }) => {
+      const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
+      const hydratedPie = { ic: ic, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
+      const defaultSunburst = [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map(
+        (val, index) => ({
+          id: ids[index],
+          val,
+        })
+      );
+      if (sunburst) {
+        return {
+          ...datum,
+          pie: hydratedPie,
+          sunburst: Array(4)
+            .fill("")
+            .map((_e, arrayIndex) => {
+              const { index = 0, ...foundObject } =
+                sunburst.find(({ index }) => index && index === arrayIndex) ||
+                (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
+                  ? sunburst[0]
+                  : {};
+              return {
+                ...defaultSunburst[arrayIndex],
+                ...foundObject,
+                id: ids[arrayIndex],
+              };
+            }),
+        };
+      }
+      return {
+        ...datum,
+        pie: hydratedPie,
+        sunburst: defaultSunburst,
+      };
+    });
+
+  const hydratedStatusData: StatusData = {
+    summary: hydrateStatusData([status.summary])[0],
+    breakdown: objectEntries(status.breakdown).reduce(
+      (obj, [prop, array]) => ({
+        ...obj,
+        [prop]: hydrateStatusData(array),
+      }),
+      {} as StatusData["breakdown"]
+    ),
+  };
+
+  const hydrateShippedData = (data: ShippedDataObject<true>[], months: string[]): ShippedDataObject[] => {
+    const blankObject: ShippedDataObject = {
+      name: "",
+      total: 0,
+      shipped: 0,
+      unshipped: 0,
+      months: [],
+    };
+    return data.map(({ months: monthData, ...datum }) => ({
+      ...blankObject,
+      ...datum,
+      months: months.map((month, monthIndex) => {
+        const blankObject = {
+          month: months[monthIndex],
+          index: monthIndex,
+          shipped: 0,
+          unshipped: 0,
+        };
+        const { index = 0, ...foundObject } =
+          monthData.find(({ index }) => index === monthIndex) ||
+          (monthData.length === 1 && !hasKey(monthData[0], "index"))
+            ? monthData[0]
+            : {};
+        return { ...blankObject, ...foundObject };
+      }),
+    }));
+  };
+
+  const hydratedShippedData: ShippedData = {
+    summary: hydrateShippedData([shipped.summary], shipped.months)[0],
+    months: shipped.months,
+    breakdown: objectEntries(shipped.breakdown).reduce(
+      (obj, [prop, array]) => ({
+        ...obj,
+        [prop]: hydrateShippedData(array, shipped.months),
+      }),
+      {} as ShippedData["breakdown"]
+    ),
+  };
+
+  const hydrateCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject[] => {
+    const blankObject: CountDataObject = {
+      name: "",
+      total: 0,
+      mean: 0,
+      median: 0,
+      mode: [0],
+      range: "",
+      standardDev: 0,
+      data: [],
+    };
+    return data.map(({ data, ...datum }) => {
+      const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0)) + 1;
+      return {
+        ...blankObject,
+        ...datum,
+        data: Array(dataLength)
+          .fill("")
+          .map((_e, arrayIndex) => {
+            const { index = 0, ...foundObject } =
+              data.find((datum) => datum[idIsIndex ? "id" : "index"] === arrayIndex) ||
+              (data.length === 1 && !hasKey(data[0], "index"))
+                ? data[0]
+                : { count: 0 };
+            return {
+              id: arrayIndex,
+              count: foundObject.count,
+            };
+          }),
+      };
+    });
+  };
+
+  const hydratedDurationData: DurationData = objectEntries(duration).reduce(
+    (obj, [category, { summary, breakdown }]): DurationData => ({
+      ...obj,
+      [category]: {
+        summary: hydrateCountData([summary])[0],
+        breakdown: objectEntries(breakdown).reduce(
+          (obj, [prop, array]) => ({
+            ...obj,
+            [prop]: hydrateCountData(array, true),
+          }),
+          {} as DurationData[Categories]["breakdown"]
+        ),
+      },
+    }),
+    {} as DurationData
+  );
+
+  const hydratedVendorData: VendorData = {
+    summary: hydrateCountData([vendors.summary], true)[0],
+    breakdown: objectEntries(vendors.breakdown).reduce(
+      (obj, [prop, array]) => ({
+        ...obj,
+        [prop]: hydrateCountData(array, true),
+      }),
+      {} as VendorData["breakdown"]
+    ),
+  };
+
+  const hydratedData: StatisticsData = {
+    timelines: hydratedTimelinesData,
+    status: hydratedStatusData,
+    shipped: hydratedShippedData,
+    duration: hydratedDurationData,
+    vendors: hydratedVendorData,
+  };
+  dispatch(setStatisticsData(hydratedData));
+  dispatch(setLoading(false));
 };
 
 export const sortData = (state = store.getState()) => {
@@ -109,15 +326,14 @@ export const sortData = (state = store.getState()) => {
       const data = cloneDeep(stateData) as StatisticsData["timelines"];
       categories.forEach((category) => {
         properties.forEach((property) => {
-          const value = data[category].breakdown[property];
-          const sortedValue = value.slice().sort((a, b) => {
+          const array = data[category].breakdown[property];
+          const sortedArray = array.slice().sort((a, b) => {
             const key = sort[tab] === "alphabetical" ? "name" : "total";
             return (
               alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
               alphabeticalSortPropCurried("name")(a, b)
             );
           });
-          data[category].breakdown[property] = sortedValue;
         });
       });
       setData(data);

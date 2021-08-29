@@ -46,18 +46,6 @@ const sanitiseBarData = (data: Record<string, number>[]) =>
     .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
     .filter((datum, i, array) => Object.keys(datum).length > (array.length > 1 ? 1 : 0));
 
-const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) =>
-  months.map((month, monthIndex) => {
-    const blankObject = {
-      month: months[monthIndex],
-      index: monthIndex,
-      ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
-    };
-    const { index = 0, ...foundObject } =
-      data.find(({ index }) => index === monthIndex) || data.length === 1 ? data[0] : {};
-    return { ...blankObject, ...foundObject };
-  });
-
 const sunburstChildHasChildren = <Optimised extends true | false = false>(
   child: StatusDataObjectSunburstChild<Optimised>
 ): child is StatusDataObjectSunburstChildWithChild<Optimised> => "children" in child;
@@ -93,46 +81,6 @@ const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<tr
         };
   });
 
-const hydrateStatusData = (
-  data: StatusDataObject<true>[],
-  ids = ["IC", "Pre GB", "Live GB", "Post GB"]
-): StatusDataObject[] =>
-  data.map(({ sunburst, pie, ...datum }) => {
-    const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
-    const hydratedPie = { ic: ic, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
-    const defaultSunburst = [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map(
-      (val, index) => ({
-        id: ids[index],
-        val,
-      })
-    );
-    if (sunburst) {
-      return {
-        ...datum,
-        pie: hydratedPie,
-        sunburst: Array(4)
-          .fill("")
-          .map((_e, arrayIndex) => {
-            const { index = 0, ...foundObject } =
-              sunburst.find(({ index }) => index && index === arrayIndex) ||
-              (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
-                ? sunburst[0]
-                : {};
-            return {
-              ...defaultSunburst[arrayIndex],
-              ...foundObject,
-              id: ids[arrayIndex],
-            };
-          }),
-      };
-    }
-    return {
-      ...datum,
-      pie: hydratedPie,
-      sunburst: defaultSunburst,
-    };
-  });
-
 const sanitiseShippedData = (data: ShippedDataObject<true>[]): ShippedDataObject<true>[] =>
   data.map(({ months, shipped, unshipped, ...datum }) => ({
     ...datum,
@@ -146,34 +94,6 @@ const sanitiseShippedData = (data: ShippedDataObject<true>[]): ShippedDataObject
       )
       .filter((month) => Object.keys(month).length > 1),
   }));
-
-const hydrateShippedData = (data: ShippedDataObject<true>[], months: string[]): ShippedDataObject[] => {
-  const blankObject: ShippedDataObject = {
-    name: "",
-    total: 0,
-    shipped: 0,
-    unshipped: 0,
-    months: [],
-  };
-  return data.map(({ months: monthData, ...datum }) => ({
-    ...blankObject,
-    ...datum,
-    months: months.map((month, monthIndex) => {
-      const blankObject = {
-        month: months[monthIndex],
-        index: monthIndex,
-        shipped: 0,
-        unshipped: 0,
-      };
-      const { index = 0, ...foundObject } =
-        monthData.find(({ index }) => index === monthIndex) ||
-        (monthData.length === 1 && !hasKey(monthData[0], "index"))
-          ? monthData[0]
-          : {};
-      return { ...blankObject, ...foundObject };
-    }),
-  }));
-};
 
 const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject<true>[] =>
   data.map(({ data, name, total, mode, range, ...datum }) => {
@@ -195,39 +115,6 @@ const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): Co
       mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
     };
   });
-
-const hydrateCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject[] => {
-  const blankObject: CountDataObject = {
-    name: "",
-    total: 0,
-    mean: 0,
-    median: 0,
-    mode: [0],
-    range: "",
-    standardDev: 0,
-    data: [],
-  };
-  return data.map(({ data, ...datum }) => {
-    const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0)) + 1;
-    return {
-      ...blankObject,
-      ...datum,
-      data: Array(dataLength)
-        .fill("")
-        .map((_e, arrayIndex) => {
-          const { index = 0, ...foundObject } =
-            data.find((datum) => datum[idIsIndex ? "id" : "index"] === arrayIndex) ||
-            (data.length === 1 && !hasKey(data[0], "index"))
-              ? data[0]
-              : { count: 0 };
-          return {
-            id: arrayIndex,
-            count: foundObject.count,
-          };
-        }),
-    };
-  });
-};
 
 const filterCatSetsByMonth = (
   sets: StatisticsSetType[],
@@ -264,22 +151,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
         months: [],
       },
       breakdown: {
-        profile: {
-          name: "",
-          total: 0,
-        },
-        designer: {
-          name: "",
-          total: 0,
-          profiles: [],
-          months: [],
-        },
-        vendor: {
-          name: "",
-          total: 0,
-          profiles: [],
-          months: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     },
     gbLaunch: {
@@ -292,22 +166,9 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
         months: [],
       },
       breakdown: {
-        profile: {
-          name: "",
-          total: 0,
-        },
-        designer: {
-          name: "",
-          total: 0,
-          profiles: [],
-          months: [],
-        },
-        vendor: {
-          name: "",
-          total: 0,
-          profiles: [],
-          months: [],
-        },
+        profile: [],
+        designer: [],
+        vendor: [],
       },
     },
   };

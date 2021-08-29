@@ -16,57 +16,59 @@ export const initialState: StatisticsState = {
   data: {
     timelines: {
       icDate: {
-        summary: {
-          count: {
-            name: "ICs per month",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-          breakdown: {
-            name: "ICs per month by profile",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-        },
         months: [],
         allProfiles: [],
+        summary: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
         breakdown: {
-          profile: [],
-          designer: [],
-          vendor: [],
+          profile: {
+            name: "",
+            total: 0,
+          },
+          designer: {
+            name: "",
+            total: 0,
+            profiles: [],
+            months: [],
+          },
+          vendor: {
+            name: "",
+            total: 0,
+            profiles: [],
+            months: [],
+          },
         },
       },
       gbLaunch: {
-        summary: {
-          count: {
-            name: "GBs per month",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-          breakdown: {
-            name: "GBs per month by profile",
-            total: 0,
-            timeline: {
-              profiles: [],
-              series: [],
-            },
-          },
-        },
         months: [],
         allProfiles: [],
+        summary: {
+          name: "",
+          total: 0,
+          profiles: [],
+          months: [],
+        },
         breakdown: {
-          profile: [],
-          designer: [],
-          vendor: [],
+          profile: {
+            name: "",
+            total: 0,
+          },
+          designer: {
+            name: "",
+            total: 0,
+            profiles: [],
+            months: [],
+          },
+          vendor: {
+            name: "",
+            total: 0,
+            profiles: [],
+            months: [],
+          },
         },
       },
     },
@@ -74,10 +76,8 @@ export const initialState: StatisticsState = {
       summary: {
         name: "Current keyset status",
         total: 0,
-        ic: 0,
-        preGb: 0,
-        liveGb: 0,
-        postGb: 0,
+        pie: { ic: 0, preGb: 0, liveGb: 0, postGb: 0 },
+        sunburst: [],
       },
       breakdown: {
         profile: [],
@@ -91,10 +91,7 @@ export const initialState: StatisticsState = {
         total: 0,
         shipped: 0,
         unshipped: 0,
-        timeline: {
-          shipped: [],
-          unshipped: [],
-        },
+        months: [],
       },
       months: [],
       breakdown: {
@@ -106,14 +103,14 @@ export const initialState: StatisticsState = {
     duration: {
       icDate: {
         summary: {
-          chartData: { labels: [], series: [] },
+          name: "IC duration (months)",
+          total: 0,
           mean: 0,
           median: 0,
           mode: [],
-          name: "IC duration (months)",
           range: "",
           standardDev: 0,
-          total: 0,
+          data: [],
         },
         breakdown: {
           profile: [],
@@ -123,14 +120,14 @@ export const initialState: StatisticsState = {
       },
       gbLaunch: {
         summary: {
-          chartData: { labels: [], series: [] },
+          name: "GB duration (days)",
+          total: 0,
           mean: 0,
           median: 0,
           mode: [],
-          name: "GB duration (days)",
           range: "",
           standardDev: 0,
-          total: 0,
+          data: [],
         },
         breakdown: {
           profile: [],
@@ -141,14 +138,14 @@ export const initialState: StatisticsState = {
     },
     vendors: {
       summary: {
-        chartData: { labels: [], series: [] },
+        name: "Vendors per set",
+        total: 0,
         mean: 0,
         median: 0,
         mode: [],
-        name: "Vendors per set",
         range: "",
         standardDev: 0,
-        total: 0,
+        data: [],
       },
       breakdown: {
         profile: [],

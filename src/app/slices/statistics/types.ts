@@ -1,4 +1,4 @@
-import { IChartistData } from "chartist";
+import { Overwrite } from "@s/common/types";
 import { statsTabs } from "./constants";
 
 export type Categories = "icDate" | "gbLaunch";
@@ -28,95 +28,144 @@ export type StatisticsSortType = {
   vendors: Sorts;
 };
 
-export type TimelineDataObject = {
+export type TimelinesDataObject<Optimised extends true | false = false> = {
   name: string;
   total: number;
-  timeline: {
-    profiles: string[];
-    series: IChartistData["series"];
-  };
+  profiles: string[];
+  months: Record<string, Optimised extends true ? number : string | number>[];
 };
 
-export type TimelinesData = Record<
+export type TimelinesData<Optimised extends true | false = false> = Record<
   Categories,
   {
-    summary: { count: TimelineDataObject; breakdown: TimelineDataObject };
-    breakdown: Record<Properties, TimelineDataObject[]>;
-    allProfiles: string[];
     months: string[];
+    allProfiles: string[];
+    summary: TimelinesDataObject<Optimised>;
+    breakdown: Overwrite<
+      Record<Properties, TimelinesDataObject<Optimised>[]>,
+      { profile: { name: string; total: number }[] }
+    >;
   }
 >;
 
-export type StatusDataObject = {
-  name: string;
-  total: number;
-  ic: number;
-  liveGb: number;
-  postGb: number;
-  preGb: number;
+export type StatusDataObjectSunburstDatum<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      id: string;
+      index?: number;
+      val: number;
+    }
+  : {
+      id: string;
+      val: number;
+    };
+
+export type StatusDataObjectSunburstChildWithChild<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      id?: string;
+      index?: number;
+      children: (StatusDataObjectSunburstDatum<Optimised> | StatusDataObjectSunburstChild<Optimised>)[];
+    }
+  : {
+      id: string;
+      children: (StatusDataObjectSunburstDatum<Optimised> | StatusDataObjectSunburstChild<Optimised>)[];
+    };
+
+export type StatusDataObjectSunburstChild<Optimised extends true | false = false> =
+  | StatusDataObjectSunburstChildWithChild<Optimised>
+  | StatusDataObjectSunburstDatum<Optimised>;
+
+export type StatusDataObject<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      name: string;
+      total: number;
+      pie?: {
+        ic?: number;
+        preGb?: number;
+        liveGb?: number;
+        postGb?: number;
+      };
+      sunburst?: StatusDataObjectSunburstChild<true>[];
+    }
+  : {
+      name: string;
+      total: number;
+      pie: {
+        ic: number;
+        preGb: number;
+        liveGb: number;
+        postGb: number;
+      };
+      sunburst: StatusDataObjectSunburstChild[];
+    };
+
+export type StatusData<Optimised extends true | false = false> = {
+  summary: StatusDataObject<Optimised>;
+  breakdown: Record<Properties, StatusDataObject<Optimised>[]>;
 };
 
-export type StatusData = {
-  summary: StatusDataObject;
-  breakdown: Record<Properties, StatusDataObject[]>;
-};
+export type ShippedDataObject<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      name: string;
+      total: number;
+      shipped?: number;
+      unshipped?: number;
+      months: { month?: string; index?: number; shipped?: number; unshipped?: number }[];
+    }
+  : {
+      name: string;
+      total: number;
+      shipped: number;
+      unshipped: number;
+      months: { month?: string; shipped: number; unshipped: number }[];
+    };
 
-export type ShippedDataObject = {
-  name: string;
-  total: number;
-  shipped: number;
-  unshipped: number;
-  timeline: {
-    shipped: IChartistData["series"][number];
-    unshipped: IChartistData["series"][number];
-  };
-};
-
-export type ShippedData = {
-  summary: ShippedDataObject;
+export type ShippedData<Optimised extends true | false = false> = {
+  summary: ShippedDataObject<Optimised>;
   months: string[];
-  breakdown: Record<Properties, ShippedDataObject[]>;
+  breakdown: Record<Properties, ShippedDataObject<Optimised>[]>;
 };
 
-export type DurationDataObject = {
-  chartData: IChartistData;
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
-};
+export type CountDataObject<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      name: string;
+      total: number;
+      mean?: number;
+      median?: number;
+      mode?: number[];
+      range?: string;
+      standardDev?: number;
+      data: { id: number; count: number; index?: number }[];
+    }
+  : {
+      name: string;
+      total: number;
+      mean: number;
+      median: number;
+      mode: number[];
+      range: string;
+      standardDev: number;
+      data: { id: number; count: number }[];
+    };
 
-export type DurationData = Record<
+export type DurationData<Optimised extends true | false = false> = Record<
   Categories,
   {
-    summary: DurationDataObject;
-    breakdown: Record<Properties, DurationDataObject[]>;
+    summary: CountDataObject<Optimised>;
+    breakdown: Record<Properties, CountDataObject<Optimised>[]>;
   }
 >;
 
-export type VendorDataObject = {
-  chartData: IChartistData;
-  mean: number;
-  median: number;
-  mode: number[];
-  name: string;
-  range: string;
-  standardDev: number;
-  total: number;
+export type VendorData<Optimised extends true | false = false> = {
+  summary: CountDataObject<Optimised>;
+  breakdown: Record<Properties, CountDataObject<Optimised>[]>;
 };
 
-export type VendorData = {
-  summary: VendorDataObject;
-  breakdown: Record<Properties, VendorDataObject[]>;
+export type StatisticsData<Optimised extends true | false = false> = {
+  timelines: TimelinesData<Optimised>;
+  status: StatusData<Optimised>;
+  shipped: ShippedData<Optimised>;
+  duration: DurationData<Optimised>;
+  vendors: VendorData<Optimised>;
 };
 
-export type StatisticsData = {
-  timelines: TimelinesData;
-  status: StatusData;
-  shipped: ShippedData;
-  duration: DurationData;
-  vendors: VendorData;
-};
+export type OptimisedStatisticsData = StatisticsData<true>;
