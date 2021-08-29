@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Chartist, { ILineChartOptions } from "chartist";
-import ChartistGraph from "react-chartist";
-import chartistPluginAxisTitle from "chartist-plugin-axistitle";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
-import { is } from "typescript-is";
-import { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import { Categories, CountDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
@@ -23,31 +18,12 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import "./TableCard.scss";
 
-const customPoint = (data: any) => {
-  if (data.type === "point") {
-    const circle = new Chartist.Svg(
-      "circle",
-      {
-        cx: [data.x],
-        cy: [data.y],
-        r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
-      },
-      "ct-stroked-point"
-    );
-    data.element.replace(circle);
-  }
-};
-
-const listener = { draw: (e: any) => customPoint(e) };
-
 type TableCardProps = {
-  data: DurationDataObject | VendorDataObject;
+  data: CountDataObject;
   unit: string;
   category?: Categories;
   defaultType?: "bar" | "line";
-  breakdownData?: DurationDataObject[] | VendorDataObject[];
+  breakdownData?: CountDataObject[];
   overline?: React.ReactNode;
   note?: React.ReactNode;
   summary?: boolean;
@@ -61,68 +37,6 @@ export const TableCard = (props: TableCardProps) => {
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
-  const chartOptions: ILineChartOptions = {
-    showArea: true,
-    chartPadding: {
-      top: 16,
-      right: 0,
-      bottom: 16,
-      left: 16,
-    },
-    axisX: {
-      labelInterpolationFnc: (value: number, index: number) => is<Array<any>>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
-          ? index % (chartData.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
-            ? value
-            : null
-          : value,
-    },
-    axisY: {
-      onlyInteger: true,
-    },
-    plugins: [
-      chartistPluginAxisTitle({
-        axisX: {
-          axisTitle: props.unit.split(" ")[0],
-          axisClass: "ct-axis-title",
-          offset: {
-            x: 0,
-            y: 40,
-          },
-          textAnchor: "middle",
-        },
-        axisY: {
-          axisTitle: "Count",
-          axisClass: "ct-axis-title",
-          offset: {
-            x: 0,
-            y: 24,
-          },
-          flipTitle: true,
-        },
-      }),
-      chartistTooltip({ pointClass: "ct-stroked-point" }),
-    ],
-  };
-  const barChart =
-    graphType === "bar" ? (
-      <ChartistGraph
-        type="Bar"
-        className="ct-double-octave"
-        data={{ ...chartData.chartData }}
-        options={chartOptions}
-        listener={listener}
-      />
-    ) : null;
-  const lineChart =
-    graphType === "line" ? (
-      <ChartistGraph
-        type="Line"
-        className="ct-double-octave"
-        data={{ ...chartData.chartData }}
-        options={chartOptions}
-        listener={listener}
-      />
-    ) : null;
   const selectChips =
     props.summary && props.breakdownData ? (
       <div className="table-chips-container">
@@ -182,10 +96,6 @@ export const TableCard = (props: TableCardProps) => {
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container">
-          {barChart}
-          {lineChart}
-        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>

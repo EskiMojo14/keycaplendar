@@ -20,6 +20,15 @@ const storageRef = storage.ref();
 export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any): key is keyof O => key in obj;
 
 /**
+ * Use function to check type and inform typescript you've done so.
+ * @param item Item to check
+ * @param predicate Function to check item. Should return true if item is desired type.
+ * @returns If item is desired type, and asserts so.
+ */
+
+export const typeGuard = <T>(item: any, predicate: (item: any) => boolean): item is T => predicate(item);
+
+/**
  * Checks if item is included in array, and asserts that the types are the same.
  * @param arr Array of items
  * @param item Item to be checked
@@ -182,7 +191,7 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>, K extend
  * @returns String truncated with ... at the end.
  */
 
-export const truncate = (str: string, num: number) => str.length <= num ? str : str.slice(0, num) + "...";
+export const truncate = (str: string, num: number) => (str.length <= num ? str : str.slice(0, num) + "...");
 
 /**
  * Capitalise a string's first character.
@@ -199,7 +208,8 @@ export const capitalise = (str: string) => str.charAt(0).toUpperCase() + str.sli
  * @returns `str` converted to camelCase.
  */
 
-export const camelise = (str: string, chr = " ") => str
+export const camelise = (str: string, chr = " ") =>
+  str
     .split(chr)
     .map((word, index) => {
       if (index === 0) {
@@ -319,10 +329,10 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  */
 
 export const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
-    strategy: "component",
-    icon: jsx,
-    ...config,
-  });
+  strategy: "component",
+  icon: jsx,
+  ...config,
+});
 
 /**
  * Adds scroll-lock class to body, to prevent scrolling while modal is open.
@@ -378,7 +388,8 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
     })
   ).filter(Boolean);
   alphabeticalSort(setMonths);
-  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
+  const monthDiff = (dateFrom: DateTime, dateTo: DateTime) =>
+    dateTo.month - dateFrom.month + 12 * (dateTo.year - dateFrom.year);
   const length =
     monthDiff(
       DateTime.fromISO(setMonths[0], { zone: "utc" }),
@@ -449,14 +460,15 @@ export const getStorageFolders = async () => {
  * @returns Promise from deletions (uses `Promise.all()`).
  */
 
-export const batchStorageDelete = (array: string[] = []) => Promise.all(
+export const batchStorageDelete = (array: string[] = []) =>
+  Promise.all(
     array.map((path) => {
       const ref = storageRef.child(path);
       return ref
         .getMetadata()
-        .then(() => 
+        .then(() =>
           // file exists
-           ref.delete()
+          ref.delete()
         )
         .catch((error) => {
           // file doesn't exist

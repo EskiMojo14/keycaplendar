@@ -3,7 +3,7 @@ import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
-import { alphabeticalSortPropCurried, hasKey, mergeObject, objectEntries, ordinal } from "@s/util/functions";
+import { alphabeticalSortPropCurried, hasKey, mergeObject, objectEntries, ordinal, typeGuard } from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -29,6 +29,7 @@ import {
   StatusData,
   StatusDataObject,
   TimelinesData,
+  TimelinesDataObject,
   VendorData,
 } from "./types";
 
@@ -92,7 +93,7 @@ export const getData = async () => {
 };
 
 const hydrateData = ({ timelines, status, shipped, duration, vendors }: StatisticsData<true>) => {
-  const hydrateTimelinesData = (data: Record<string, number>[], months: string[], profiles: string[]) =>
+  const hydrateTimelinesData = (data: Record<string, string | number>[], months: string[], profiles: string[]) =>
     months.map((month, monthIndex) => {
       const blankObject = {
         month: months[monthIndex],
@@ -113,6 +114,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           months,
           allProfiles,
           summary: { months: summaryMonths, name, total, profiles },
+          breakdown,
         },
       ]
     ): TimelinesData => ({
@@ -126,6 +128,37 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           profiles,
           months: hydrateTimelinesData(summaryMonths, months, profiles),
         },
+        breakdown: objectEntries(breakdown).reduce(
+          (obj, [prop, array]) => ({
+            ...obj,
+            [prop]: array.map(
+              (
+                dataObj:
+                  | TimelinesDataObject<true>
+                  | {
+                      name: string;
+                      total: number;
+                    }
+              ) => {
+                if (typeGuard<TimelinesDataObject>(dataObj, (dataObj) => hasKey(dataObj, "profiles"))) {
+                  const { months: dataMonths, name, total, profiles } = dataObj;
+                  return {
+                    name,
+                    total,
+                    profiles,
+                    months: hydrateTimelinesData(dataMonths, months, profiles),
+                  };
+                } else {
+                  return {
+                    ...dataObj,
+                    profiles: dataObj.name,
+                  };
+                }
+              }
+            ),
+          }),
+          {} as typeof breakdown
+        ),
       },
     }),
     {} as TimelinesData
@@ -234,7 +267,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       data: [],
     };
     return data.map(({ data, ...datum }) => {
-      const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0)) + 1;
+      const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0), 0) + 1;
       return {
         ...blankObject,
         ...datum,

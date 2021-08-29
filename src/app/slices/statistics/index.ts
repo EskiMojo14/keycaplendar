@@ -25,22 +25,9 @@ export const initialState: StatisticsState = {
           months: [],
         },
         breakdown: {
-          profile: {
-            name: "",
-            total: 0,
-          },
-          designer: {
-            name: "",
-            total: 0,
-            profiles: [],
-            months: [],
-          },
-          vendor: {
-            name: "",
-            total: 0,
-            profiles: [],
-            months: [],
-          },
+          profile: [],
+          designer: [],
+          vendor: [],
         },
       },
       gbLaunch: {
@@ -53,22 +40,9 @@ export const initialState: StatisticsState = {
           months: [],
         },
         breakdown: {
-          profile: {
-            name: "",
-            total: 0,
-          },
-          designer: {
-            name: "",
-            total: 0,
-            profiles: [],
-            months: [],
-          },
-          vendor: {
-            name: "",
-            total: 0,
-            profiles: [],
-            months: [],
-          },
+          profile: [],
+          designer: [],
+          vendor: [],
         },
       },
     },

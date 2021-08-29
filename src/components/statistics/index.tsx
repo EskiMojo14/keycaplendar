@@ -5,12 +5,13 @@ import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
 import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
-import { StatisticsType } from "@s/statistics/types";
-import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
+import { StatisticsType, TimelinesDataObject } from "@s/statistics/types";
+import { capitalise, hasKey, iconObject, typeGuard, useBoolStates } from "@s/util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import {
@@ -52,7 +53,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
   const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
 
   useEffect(() => {
-    if (statisticsData.timelines.icDate.summary.count.total === 0) {
+    if (statisticsData.timelines.icDate.summary.months.length === 0) {
       getData();
     }
   }, []);
@@ -334,8 +335,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
           <TimelinesCard
-            months={statisticsData.timelines[settings.summary].months}
-            data={statisticsData.timelines[settings.summary].summary.count}
+            data={statisticsData.timelines[settings.summary].summary}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
             category={settings.summary}
             defaultType="line"
@@ -346,9 +346,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             summary
           />
           <TimelinesCard
-            months={statisticsData.timelines[settings.summary].months}
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
-            data={statisticsData.timelines[settings.summary].summary.breakdown}
+            data={statisticsData.timelines[settings.summary].summary}
             focusable
             overline="Timelines"
             category={settings.summary}
@@ -363,7 +362,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <ShippedCard
             data={statisticsData.shipped.summary}
             breakdownData={statisticsData.shipped.breakdown.profile}
-            months={statisticsData.shipped.months}
             overline="Shipped"
             summary
           />
@@ -387,17 +385,29 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       ),
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => (
-            <TimelinesCard
-              key={data.name}
-              data={data}
-              focusable={!(settings.timelinesGroup === "profile")}
-              category={settings.timelinesCat}
-              singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
-              allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
-              months={statisticsData.timelines[settings.timelinesCat].months}
-            />
-          ))}
+          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data: any) =>
+            typeGuard<{ name: string; total: number; profiles?: string[] }>(
+              data,
+              () => settings.timelinesGroup === "profile"
+            ) ? (
+              <TimelinesCard
+                key={data.name}
+                data={data}
+                chartData={statisticsData.timelines[settings.timelinesCat].summary.months}
+                category={settings.timelinesCat}
+                singleTheme="primary"
+                profile
+              />
+            ) : typeGuard<TimelinesDataObject>(data, () => !(settings.timelinesGroup === "profile")) ? (
+              <TimelinesCard
+                key={data.name}
+                data={data}
+                focusable
+                category={settings.timelinesCat}
+                allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+              />
+            ) : null
+          )}
         </div>
       ),
       status: (
@@ -410,7 +420,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
           {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />
+            <ShippedCard key={data.name} data={data} />
           ))}
         </div>
       ),
@@ -437,6 +447,15 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     return hasKey(tabs, tab) && tabs[tab] ? tabs[tab] : <div key={key} />;
   };
 
+  const createStatistics = () => {
+    const cloudFn = firebase.functions().httpsCallable("createStatistics", { timeout: 540000 });
+    cloudFn()
+      .then(() => {
+        firebase.storage().ref("statisticsDataTest.json").getDownloadURL();
+      })
+      .catch(console.log);
+  };
+
   return (
     <>
       <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
@@ -444,7 +463,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={props.openNav} />
-            <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
+            <TopAppBarTitle onClick={createStatistics}>
+              {device !== "mobile" ? pageTitle.statistics : null}
+            </TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
         </TopAppBarRow>

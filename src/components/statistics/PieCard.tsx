@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import classNames from "classnames";
-import ChartistGraph from "react-chartist";
-import { IPieChartOptions } from "chartist";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { StatusDataObject } from "@s/statistics/types";
@@ -36,12 +33,6 @@ export const StatusCard = (props: StatusCardProps) => {
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
-  const chartOptions: IPieChartOptions = {
-    donut: true,
-    donutWidth: "50%",
-    showLabel: false,
-    plugins: [chartistTooltip()],
-  };
   const sideways = props.summary && device === "desktop";
   const selectChips =
     props.summary && props.breakdownData ? (
@@ -81,22 +72,6 @@ export const StatusCard = (props: StatusCardProps) => {
         </Typography>
       </div>
       <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
-        <div className="pie-chart-container status">
-          <ChartistGraph
-            className={sideways ? "ct-square" : "ct-octave"}
-            data={{
-              series: [
-                { meta: "IC", value: chartData.ic },
-                { meta: "Pre GB", value: chartData.preGb },
-                { meta: "Live GB", value: chartData.liveGb },
-                { meta: "Post GB", value: chartData.postGb },
-              ],
-              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb],
-            }}
-            type="Pie"
-            options={chartOptions}
-          />
-        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>
@@ -111,25 +86,25 @@ export const StatusCard = (props: StatusCardProps) => {
                   <DataTableCell>
                     <div className="indicator ic"></div>IC
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.ic}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.pie.ic}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator pre-gb"></div>Pre GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.preGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.pie.preGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator live-gb"></div>Live GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.liveGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.pie.liveGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator post-gb"></div>Post GB
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.postGb}</DataTableCell>
+                  <DataTableCell isNumeric>{chartData.pie.postGb}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
