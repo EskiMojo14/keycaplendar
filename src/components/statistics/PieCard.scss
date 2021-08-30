@@ -40,13 +40,6 @@
               @include rtl.reflexive-position(left, 0);
               top: 0;
               bottom: 0;
-              &.not-shipped,
-              &.pre-gb {
-                background-color: var(--theme-divider);
-              }
-              &.ic {
-                background-color: var(--theme-lighter-divider);
-              }
             }
           }
         }

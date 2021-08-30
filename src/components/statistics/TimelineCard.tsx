@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { Overwrite } from "@s/common/types";
+import { Overwrite, ThemeMap } from "@s/common/types";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
 import { addOrRemove, alphabeticalSortPropCurried, hasKey, iconObject, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
@@ -137,10 +137,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
 
 export type CommonTimelinesCardProps = {
   data: TimelinesDataObject;
-  singleTheme?: "primary" | "secondary";
+  singleTheme?: keyof ThemeMap;
   defaultType?: "bar" | "line";
   category?: string;
-  focusable?: boolean;
+  filterable?: boolean;
   allProfiles?: string[];
   summary?: false;
   profile?: false;
@@ -173,27 +173,25 @@ export const TimelinesCard = <
 >(
   props: Props
 ) => {
-  const [onlyFocused, setOnlyFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [props.category]);
   const chartData: TimelinesDataObject | { name: string; total: number; profiles?: string[] } =
     props.summary && props.breakdownData && selectedIndex >= 0
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
-  const [focused, setFocused] = useState<number[]>([]);
+  const [filtered, setFiltered] = useState<string[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
-  const setFocus = (index: number) => {
-    const newFocused = addOrRemove(focused, index);
-    setFocused(newFocused);
+  const setFilter = (profile: string) => {
+    const newFiltered = addOrRemove(filtered, profile);
+    setFiltered(newFiltered);
   };
-  const focusAll = () => {
-    const allIndexes: number[] = [];
-    setFocused(allIndexes);
+  const filterAll = () => {
+    setFiltered(props.allProfiles || []);
   };
-  const clearFocus = () => {
-    setFocused([]);
+  const clearFilter = () => {
+    setFiltered([]);
   };
-  useEffect(clearFocus, [props.category]);
+  useEffect(filterAll, [props.category, props.allProfiles]);
   const selectChips =
     props.summary && props.breakdownData ? (
       <div className="timeline-chips-container">
@@ -211,8 +209,8 @@ export const TimelinesCard = <
         </ChipSet>
       </div>
     ) : null;
-  const focusButtons =
-    props.focusable && props.allProfiles ? (
+  const filterButtons =
+    props.filterable && props.allProfiles ? (
       <>
         {withTooltip(
           <IconButton
@@ -228,10 +226,10 @@ export const TimelinesCard = <
                 </svg>
               </div>
             )}
-            //disabled={focused.length === chartData.timeline.series.length}
-            //onClick={focusAll}
+            disabled={filtered.length === chartData.profiles?.length}
+            onClick={filterAll}
           />,
-          "Focus all series"
+          "Filter all series"
         )}
         {withTooltip(
           <IconButton
@@ -247,79 +245,28 @@ export const TimelinesCard = <
                 </svg>
               </div>
             )}
-            //disabled={focused.length === 0}
-            //onClick={clearFocus}
+            disabled={filtered.length === 0}
+            onClick={clearFilter}
           />,
-          "Clear focus"
-        )}
-        {withTooltip(
-          <IconButton
-            className="primary-on"
-            icon={iconObject(
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px">
-                <g>
-                  <path d="M0,0H24m0,24H0" fill="none" />
-                  <path d="M9.28418,6,7.30438,4H18.95a.99777.99777,0,0,1,.79,1.61c-1.37195,1.75909-3.52557,4.53436-4.76782,6.1361l-1.40943-1.42382L17,6ZM22,21.5l-8-8.08167v-.04107l-1.58966-1.6059-.01813.02283L8.37476,7.73572,8.212,7.53027,4.75763,4.04059c-.01019.00293-.01849.009-.02857.01227L2.4,1.7,1.1,3,6.34009,8.29358C8.14319,10.6106,10,13,10,13v6a1.003,1.003,0,0,0,1,1h2a1.003,1.003,0,0,0,1-1V16.03162L20.7,22.8Z" />
-                  <path d="M0,0H24V24H0Z" fill="none" />
-                </g>
-                <polygon points="13.563 10.322 17 6 9.284 6 13.563 10.322" opacity="0.3" />
-              </svg>
-            )}
-            onIcon={iconObject(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                enableBackground="new 0 0 24 24"
-                height="24px"
-                viewBox="0 0 24 24"
-                width="24px"
-              >
-                <g>
-                  <path d="M0,0h24 M24,24H0" fill="none" />
-                  <path d="M7,6h10l-5.01,6.3L7,6z M4.25,5.61C6.27,8.2,10,13,10,13v6c0,0.55,0.45,1,1,1h2c0.55,0,1-0.45,1-1v-6 c0,0,3.72-4.8,5.74-7.39C20.25,4.95,19.78,4,18.95,4H5.04C4.21,4,3.74,4.95,4.25,5.61z" />
-                  <path d="M0,0h24v24H0V0z" fill="none" />
-                </g>
-                <polygon opacity=".3" points="7,6 17,6 11.99,12.3" />
-              </svg>
-            )}
-            checked={onlyFocused}
-            onClick={() => setOnlyFocused((prev) => !prev)}
-          />,
-          "Filter to focused items"
+          "Clear filter"
         )}
       </>
     ) : null;
-  const focusChips =
-    props.focusable && props.allProfiles && hasKey(chartData, "profiles") ? (
-      <div className="timeline-chips-container focus-chips">
-        <ChipSet choice>
-          {props.allProfiles.map((profile, index) => {
+  const filterChips =
+    props.filterable && props.allProfiles && hasKey(chartData, "profiles") ? (
+      <div className="timeline-chips-container">
+        <ChipSet filter>
+          {props.allProfiles.map((profile) => {
             if (chartData.profiles?.includes(profile) || chartData.profiles?.length === 0) {
               return (
                 <Chip
                   key={profile}
-                  icon={
-                    focused.length && !focused.includes(index)
-                      ? iconObject(
-                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                            <g>
-                              <rect fill="none" height="24" width="24" />
-                            </g>
-                            <g>
-                              <g>
-                                <circle cx="12" cy="12" opacity=".3" r="8" />
-                                <path d="M12,2C6.47,2,2,6.47,2,12c0,5.53,4.47,10,10,10s10-4.47,10-10C22,6.47,17.53,2,12,2z M12,20c-4.42,0-8-3.58-8-8 c0-4.42,3.58-8,8-8s8,3.58,8,8C20,16.42,16.42,20,12,20z" />
-                              </g>
-                            </g>
-                          </svg>
-                        )
-                      : "circle"
-                  }
                   label={profile}
-                  selected={focused.includes(index)}
+                  checkmark
+                  selected={filtered.includes(profile)}
                   onInteraction={() => {
-                    setFocus(index);
+                    setFilter(profile);
                   }}
-                  className={`focus-chip focus-chip-index-${index}`}
                 />
               );
             }
@@ -345,7 +292,7 @@ export const TimelinesCard = <
           </Typography>
         </div>
         <div className="button-container">
-          {focusButtons}
+          {filterButtons}
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
@@ -376,14 +323,14 @@ export const TimelinesCard = <
             "timeline-chart-container timelines",
             {
               single: props.singleTheme,
-              focused: focused.length > 0,
+              filtered: filtered.length > 0,
             },
             typeof props.singleTheme === "string" ? props.singleTheme : "",
-            focused.map((index) => `series-index-${index}`)
+            filtered.map((index) => `series-index-${index}`)
           )}
         ></div>
         {selectChips}
-        {focusChips}
+        {filterChips}
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}

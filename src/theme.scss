@@ -373,6 +373,37 @@ $overlay-values: (
     }
   }
 
+  .pie-card {
+    .indicator {
+      &.ic {
+        background-color: map-get($variables, grey-2);
+      }
+      &.pre-gb {
+        background-color: map-get($variables, grey-1);
+      }
+      &.live-gb {
+        background-color: map-get($variables, secondary);
+      }
+      &.post-gb {
+        background-color: map-get($variables, primary);
+      }
+    }
+  }
+  .timeline-card {
+    .indicator {
+      &.shipped {
+        background-color: map-get($variables, primary);
+      }
+      &.not-shipped,
+      &.pre-gb {
+        background-color: map-get($variables, grey-1);
+      }
+      &.ic {
+        background-color: map-get($variables, grey-2);
+      }
+    }
+  }
+
   // external
 
   .markdown {
@@ -414,266 +445,6 @@ $overlay-values: (
         }
       }
     }
-  }
-
-  // chartist
-
-  .ct-chart {
-    .ct-label,
-    .ct-axis-title {
-      fill: map-get($variables, text-medium);
-      color: map-get($variables, text-medium);
-    }
-  }
-
-  $letters: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z);
-  @each $letter in $letters {
-    $color: if(
-      $dark,
-      nth(graph-colors.$graph-colors-dark, index($letters, $letter)),
-      nth(graph-colors.$graph-colors, index($letters, $letter))
-    );
-    .ct-series-#{$letter} {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: $color;
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: $color;
-      }
-    }
-  }
-
-  .focus-chips .mdc-chip.focus-chip {
-    &.mdc-chip--selected {
-      &,
-      &:hover {
-        color: map-get($variables, text-high);
-      }
-      font-weight: bold;
-    }
-  }
-
-  @for $index from 0 to 40 {
-    $color: if(
-      $dark,
-      nth(graph-colors.$graph-colors-dark, ($index % length(graph-colors.$graph-colors-dark) + 1)),
-      nth(graph-colors.$graph-colors, ($index % length(graph-colors.$graph-colors-dark) + 1))
-    );
-    .ct-series-index-#{$index} {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: $color;
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: $color;
-      }
-    }
-    .focus-chips .focus-chip-index-#{$index} {
-      @include chips.leading-icon-color($color, 1);
-      @include ripple.states($color);
-      @include chips.selected-ink-color($color);
-    }
-    .focused {
-      &:not(.series-index-#{$index}) {
-        .ct-series-index-#{$index} {
-          pointer-events: none;
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: rgba($color, 0.1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: rgba($color, 0.1);
-          }
-          .ct-stroked-point {
-            pointer-events: none !important;
-          }
-        }
-      }
-    }
-  }
-
-  .table-card {
-    .ct-series-a {
-      .ct-point,
-      .ct-line,
-      .ct-bar,
-      .ct-slice-donut {
-        stroke: map-get($variables, secondary);
-      }
-      .ct-slice-pie,
-      .ct-donut-solid,
-      .ct-area,
-      .ct-stroked-point {
-        fill: map-get($variables, secondary);
-      }
-    }
-  }
-  .pie-card {
-    .pie-chart-container {
-      &.status .ct-chart {
-        .ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-2);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: map-get($variables, grey-2);
-          }
-        }
-        .ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area {
-            fill: map-get($variables, grey-1);
-          }
-        }
-        .ct-series.ct-series-c {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, secondary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, secondary);
-          }
-        }
-        .ct-series.ct-series-d {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-      }
-    }
-    .indicator {
-      &.post-gb {
-        background-color: map-get($variables, primary);
-      }
-      &.live-gb {
-        background-color: map-get($variables, secondary);
-      }
-    }
-  }
-  .timeline-card {
-    .timeline-chart-container {
-      &.single.primary .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-      }
-      &.single.secondary .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, secondary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, secondary);
-          }
-        }
-      }
-      &.shipped .ct-chart {
-        .ct-series.ct-series-a {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, primary);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, primary);
-          }
-        }
-        .ct-series.ct-series-b {
-          .ct-point,
-          .ct-line,
-          .ct-bar,
-          .ct-slice-donut {
-            stroke: map-get($variables, grey-1);
-          }
-          .ct-slice-pie,
-          .ct-donut-solid,
-          .ct-area,
-          .ct-stroked-point {
-            fill: map-get($variables, grey-1);
-          }
-        }
-      }
-    }
-    .indicator {
-      &.shipped {
-        background-color: map-get($variables, primary);
-      }
-      &.unshipped,
-      &.pre-gb {
-        background-color: map-get($variables, grey-1);
-      }
-      &.ic {
-        background-color: map-get($variables, grey-2);
-      }
-    }
-  }
-
-  .chartist-tooltip {
-    background-color: map-get($variables, text-high);
-    color: map-get($variables, surface);
   }
 
   // MUI

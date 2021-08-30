@@ -348,7 +348,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TimelinesCard
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
             data={statisticsData.timelines[settings.summary].summary}
-            focusable
+            filterable
             overline="Timelines"
             category={settings.summary}
             summary
@@ -402,7 +402,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               <TimelinesCard
                 key={data.name}
                 data={data}
-                focusable
+                filterable
                 category={settings.timelinesCat}
                 allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
               />
