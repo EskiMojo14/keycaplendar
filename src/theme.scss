@@ -387,6 +387,9 @@ $overlay-values: (
       &.post-gb {
         background-color: map-get($variables, primary);
       }
+      &.post-gb-shipped {
+        background-color: map-get($variables, primary-dark);
+      }
     }
   }
   .timeline-card {

@@ -84,7 +84,13 @@ export const StatusCard = (props: StatusCardProps) => {
             data={chartData.sunburst}
             colors={
               currentTheme
-                ? [currentTheme.grey2, currentTheme.grey1, currentTheme.secondary, currentTheme.primary]
+                ? [
+                    currentTheme.grey2,
+                    currentTheme.grey1,
+                    currentTheme.secondary,
+                    currentTheme.primary,
+                    currentTheme.primaryDark,
+                  ]
                 : undefined
             }
             value="val"
@@ -131,6 +137,12 @@ export const StatusCard = (props: StatusCardProps) => {
                     <div className="indicator post-gb"></div>Post GB
                   </DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.postGb}</DataTableCell>
+                </DataTableRow>
+                <DataTableRow>
+                  <DataTableCell>
+                    <div className="indicator post-gb-shipped"></div>Shipped
+                  </DataTableCell>
+                  <DataTableCell isNumeric>{chartData.pie.postGbShipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>

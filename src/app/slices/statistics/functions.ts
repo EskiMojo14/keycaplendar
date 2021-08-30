@@ -175,14 +175,14 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
 
   const hydrateStatusData = (
     data: StatusDataObject<true>[],
-    ids = ["IC", "Pre GB", "Live GB", "Post GB"]
+    ids = ["IC", "Pre GB", "Live GB", "Post GB", "Shipped"]
   ): StatusDataObject[] =>
     data.map(({ sunburst, pie, ...datum }) => {
-      const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
-      const hydratedPie = { ic: ic, preGb: preGb, liveGb: liveGb, postGb: postGb };
+      const { ic = 0, preGb = 0, liveGb = 0, postGb = 0, postGbShipped = 0 } = pie || {};
+      const hydratedPie = { ic, preGb, liveGb, postGb, postGbShipped };
       const defaultSunburst = {
         id: datum.name,
-        children: [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map((val, index) => ({
+        children: [ic, preGb, liveGb, postGb, postGbShipped].map((val, index) => ({
           id: ids[index],
           val,
         })),
@@ -193,7 +193,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           pie: hydratedPie,
           sunburst: {
             id: datum.name,
-            children: Array(4)
+            children: Array(5)
               .fill("")
               .map((_e, arrayIndex) => {
                 const object = sunburst.find(({ index }) => typeof index === "number" && index === arrayIndex);

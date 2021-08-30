@@ -323,6 +323,8 @@ const createStatusData = (sets: StatisticsSetType[]) => {
       });
       return endDate <= yesterday;
     });
+    const postGbUnshipped = postGbSets.filter((set) => !set.shipped);
+    const postGbShipped = postGbSets.filter((set) => set.shipped);
 
     const baseObj = {
       name: name,
@@ -331,12 +333,13 @@ const createStatusData = (sets: StatisticsSetType[]) => {
         ic: icSets.length || undefined,
         preGb: preGbSets.length || undefined,
         liveGb: liveGbSets.length || undefined,
-        postGb: postGbSets.length || undefined,
+        postGb: postGbUnshipped.length || undefined,
+        postGbShipped: postGbShipped.length || undefined,
       },
     };
 
     if (prop && list) {
-      const sunburstSets = [icSets, preGbSets, liveGbSets, postGbSets];
+      const sunburstSets = [icSets, preGbSets, liveGbSets, postGbUnshipped, postGbShipped];
       const sunburst: StatusDataObjectSunburstChild<true>[] = sunburstSets.map((statusSets) => {
         const children = list.map((val) => {
           const filteredSets = filterPropSets(statusSets, prop, val);

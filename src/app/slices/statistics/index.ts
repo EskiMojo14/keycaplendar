@@ -19,7 +19,7 @@ export const initialState: StatisticsState = {
         months: [],
         allProfiles: [],
         summary: {
-          name: "",
+          name: "ICs per month",
           total: 0,
           profiles: [],
           months: [],
@@ -34,7 +34,7 @@ export const initialState: StatisticsState = {
         months: [],
         allProfiles: [],
         summary: {
-          name: "",
+          name: "GBs per month",
           total: 0,
           profiles: [],
           months: [],
@@ -50,7 +50,7 @@ export const initialState: StatisticsState = {
       summary: {
         name: "Current keyset status",
         total: 0,
-        pie: { ic: 0, preGb: 0, liveGb: 0, postGb: 0 },
+        pie: { ic: 0, preGb: 0, liveGb: 0, postGb: 0, postGbShipped: 0 },
         sunburst: {
           id: "Status",
           val: 0,

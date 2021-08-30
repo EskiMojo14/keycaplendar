@@ -71,6 +71,7 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         preGb?: number;
         liveGb?: number;
         postGb?: number;
+        postGbShipped?: number;
       };
       sunburst?: StatusDataObjectSunburstChild<true>[];
     }
@@ -82,6 +83,7 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         preGb: number;
         liveGb: number;
         postGb: number;
+        postGbShipped: number;
       };
       sunburst: StatusDataObjectSunburstChild;
     };

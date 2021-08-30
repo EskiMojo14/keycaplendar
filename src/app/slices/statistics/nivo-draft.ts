@@ -1,32 +1,35 @@
 import { Overwrite } from "@s/common/types";
-import { statsTabs } from "./constants";
 
 export type Categories = "icDate" | "gbLaunch";
 
 export type Properties = "profile" | "designer" | "vendor";
 
-export type Sorts = "total" | "alphabetical";
-
-export type StatsTab = typeof statsTabs[number];
-
-export type StatisticsType = {
-  summary: Categories;
-  timelinesCat: Categories;
-  timelinesGroup: Properties;
-  status: Properties;
-  shipped: Properties;
-  durationCat: Categories;
-  durationGroup: Properties;
-  vendors: Properties;
-};
-
-export type StatisticsSortType = {
-  timelines: Sorts;
-  status: Sorts;
-  shipped: Sorts;
-  duration: Sorts | "duration";
-  vendors: Sorts;
-};
+export const barDataToLineData = <Datum extends Record<string, any>>(
+  datumArray: Datum[],
+  id: string,
+  xKey: keyof Datum | ((datum: Datum) => string | number) = "id",
+  yKeys: (keyof Datum | ((datum: Datum) => string | number))[] = ["value" as keyof Datum]
+): {
+  id: string | number;
+  data: {
+    x: number | string | Date;
+    y: number | string | Date;
+  }[];
+} => ({
+  id,
+  data: yKeys
+    .map((yKey) =>
+      datumArray.map((datum) => {
+        const x = typeof xKey === "function" ? xKey(datum) : datum[xKey];
+        const y = typeof yKey === "function" ? yKey(datum) : datum[yKey];
+        return {
+          x,
+          y,
+        };
+      })
+    )
+    .flat(1),
+});
 
 export type TimelinesDataObject<Optimised extends true | false = false> = {
   name: string;
@@ -35,15 +38,46 @@ export type TimelinesDataObject<Optimised extends true | false = false> = {
   months: Record<string, Optimised extends true ? number : string | number>[];
 };
 
+const exampleTimelineDataObject: TimelinesDataObject = {
+  name: "Summary",
+  total: 493,
+  profiles: ["ePBT ABS", "GMK"],
+  months: [{ month: "Nov 20", GMK: 200, "ePBT ABS": 0 }],
+};
+
+const timelineBarProps = {
+  data: exampleTimelineDataObject.months,
+  indexBy: "month",
+  keys: exampleTimelineDataObject.profiles,
+};
+
+const profileBreakdownProps = exampleTimelineDataObject.profiles.map((profile) => ({
+  data: exampleTimelineDataObject.months,
+  indexBy: "month",
+  keys: [profile],
+}));
+
+const exampleBreakdownObject: TimelinesDataObject = {
+  name: "biip",
+  total: 15,
+  profiles: ["ePBT", "GMK", "KAT", "MT3 PBT"],
+  months: [{ month: "Feb 21", ePBT: 1, GMK: 1 }],
+};
+
+const seriesForLineGraphMap = exampleTimelineDataObject.profiles.map((profile) =>
+  barDataToLineData(exampleTimelineDataObject.months, profile, "month", ["profile"])
+);
+
 export type TimelinesData<Optimised extends true | false = false> = Record<
   Categories,
   {
     months: string[];
     allProfiles: string[];
     summary: TimelinesDataObject<Optimised>;
-    breakdown: Optimised extends true
-      ? Overwrite<Record<Properties, TimelinesDataObject<Optimised>[]>, { profile: { name: string; total: number }[] }>
-      : Record<Properties, TimelinesDataObject<Optimised>[]>;
+    breakdown: Overwrite<
+      Record<Properties, TimelinesDataObject<Optimised>>,
+      { profile: { name: string; total: number } }
+    >;
   }
 >;
 
@@ -82,7 +116,6 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         preGb?: number;
         liveGb?: number;
         postGb?: number;
-        postGbShipped?: number;
       };
       sunburst?: StatusDataObjectSunburstChild<true>[];
     }
@@ -94,10 +127,23 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         preGb: number;
         liveGb: number;
         postGb: number;
-        postGbShipped: number;
       };
-      sunburst: StatusDataObjectSunburstChild;
+      sunburst: StatusDataObjectSunburstChild[];
     };
+
+const exampleStatusDataObjectSunburst: StatusDataObject = {
+  name: "All",
+  total: 799,
+  pie: { ic: 306, preGb: 23, liveGb: 26, postGb: 444 },
+  sunburst: [
+    {
+      id: "IC",
+      children: [{ id: "GMK", val: 175 }],
+    },
+  ],
+};
+
+const sunburstProps = { data: exampleStatusDataObjectSunburst, value: "val" };
 
 export type StatusData<Optimised extends true | false = false> = {
   summary: StatusDataObject<Optimised>;
@@ -117,8 +163,21 @@ export type ShippedDataObject<Optimised extends true | false = false> = Optimise
       total: number;
       shipped: number;
       unshipped: number;
-      months: { month: string; shipped: number; unshipped: number }[];
+      months: { month?: string; shipped: number; unshipped: number }[];
     };
+
+const exampleShippedDataObject: ShippedDataObject = {
+  name: "GMK",
+  total: 248,
+  shipped: 99,
+  unshipped: 149,
+  months: [{ shipped: 5, unshipped: 1 }],
+};
+
+const shippedDataForLine = [
+  barDataToLineData(exampleShippedDataObject.months, exampleShippedDataObject.name, "month", ["shipped"]),
+  barDataToLineData(exampleShippedDataObject.months, exampleShippedDataObject.name, "month", ["unshipped"]),
+];
 
 export type ShippedData<Optimised extends true | false = false> = {
   summary: ShippedDataObject<Optimised>;
@@ -148,6 +207,21 @@ export type CountDataObject<Optimised extends true | false = false> = Optimised 
       data: { id: number; count: number }[];
     };
 
+const exampleDurationDataObject: CountDataObject = {
+  name: "GMK",
+  total: 263,
+  mean: 30.16,
+  median: 30,
+  mode: [31],
+  range: "13 - 60 (47)",
+  standardDev: 5.39,
+  data: [{ id: 31, count: 60 }],
+};
+
+const durationDataForLine = barDataToLineData(exampleDurationDataObject.data, exampleDurationDataObject.name, "id", [
+  "count",
+]);
+
 export type DurationData<Optimised extends true | false = false> = Record<
   Categories,
   {
@@ -155,6 +229,21 @@ export type DurationData<Optimised extends true | false = false> = Record<
     breakdown: Record<Properties, CountDataObject<Optimised>[]>;
   }
 >;
+
+const exampleVendorDataObject: CountDataObject = {
+  name: "GMK",
+  total: 248,
+  mean: 5.59,
+  median: 5,
+  mode: [5],
+  range: "1 - 11 (10)",
+  standardDev: 2.24,
+  data: [{ id: 5, count: 60 }],
+};
+
+const vendorDataForLine = barDataToLineData(exampleVendorDataObject.data, exampleVendorDataObject.name, "id", [
+  "count",
+]);
 
 export type VendorData<Optimised extends true | false = false> = {
   summary: CountDataObject<Optimised>;

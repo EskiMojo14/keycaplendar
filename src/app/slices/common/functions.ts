@@ -44,8 +44,16 @@ export const getTextColour = (bgColor: string, themeMap: ThemeMap, defaultColor 
   switch (bgColor) {
     case themeMap.primary:
       return themeMap.onPrimary;
+    case themeMap.primaryLight:
+      return themeMap.onPrimaryLight;
+    case themeMap.primaryDark:
+      return themeMap.onPrimaryDark;
     case themeMap.secondary:
       return themeMap.onSecondary;
+    case themeMap.secondaryLight:
+      return themeMap.onSecondaryLight;
+    case themeMap.secondaryDark:
+      return themeMap.onSecondaryDark;
     case themeMap.error:
       return themeMap.onError;
     default:
