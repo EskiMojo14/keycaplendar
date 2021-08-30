@@ -96,7 +96,7 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
         postGb: number;
         postGbShipped: number;
       };
-      sunburst: StatusDataObjectSunburstChild;
+      sunburst: StatusDataObjectSunburstChildWithChild;
     };
 
 export type StatusData<Optimised extends true | false = false> = {

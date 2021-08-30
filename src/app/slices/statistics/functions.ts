@@ -94,7 +94,7 @@ export const getData = async () => {
     });
 };
 
-const sunburstChildHasChildren = <Optimised extends true | false = false>(
+export const sunburstChildHasChildren = <Optimised extends true | false = false>(
   child: StatusDataObjectSunburstChild<Optimised>
 ): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 

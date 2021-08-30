@@ -16,6 +16,17 @@
     margin-top: 0;
     margin-bottom: 16px;
   }
+  .title-container {
+    display: flex;
+    align-items: flex-start;
+    .text-container {
+      flex-grow: 1;
+    }
+    .button-container {
+      display: flex;
+      align-items: center;
+    }
+  }
   .pie-container {
     display: flex;
     flex-direction: column;
@@ -45,6 +56,15 @@
               @include rtl.reflexive-position(left, 0);
               top: 0;
               bottom: 0;
+            }
+          }
+          .mdc-data-table__cell,
+          .mdc-data-table__header-cell {
+            &--checkbox {
+              width: 16px + 48px;
+            }
+            .mdc-icon-button {
+              @include rtl.reflexive-box(margin, left, -4px);
             }
           }
         }

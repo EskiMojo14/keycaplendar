@@ -53,7 +53,7 @@ export const initialState: StatisticsState = {
         pie: { ic: 0, preGb: 0, liveGb: 0, postGb: 0, postGbShipped: 0 },
         sunburst: {
           id: "Status",
-          val: 0,
+          children: [],
         },
       },
       breakdown: {

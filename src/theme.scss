@@ -373,22 +373,40 @@ $overlay-values: (
     }
   }
 
+  $status-colors: (
+    ic: map-get($variables, grey-2),
+    pre-gb: map-get($variables, grey-1),
+    live-gb: map-get($variables, secondary),
+    post-gb: map-get($variables, primary),
+    post-gb-shipped: map-get($variables, primary-dark),
+  );
+
   .pie-card {
-    .indicator {
-      &.ic {
-        background-color: map-get($variables, grey-2);
-      }
-      &.pre-gb {
-        background-color: map-get($variables, grey-1);
-      }
-      &.live-gb {
-        background-color: map-get($variables, secondary);
-      }
-      &.post-gb {
-        background-color: map-get($variables, primary);
-      }
-      &.post-gb-shipped {
-        background-color: map-get($variables, primary-dark);
+    @each $status, $color in $status-colors {
+      .mdc-data-table__row.#{$status} {
+        .indicator {
+          background-color: $color;
+        }
+        .mdc-checkbox {
+          @include checkbox.container-colors(map-get($variables, text-medium), transparent, $color, rgba($color, 0.3));
+          @include checkbox.disabled-container-colors(
+            rgba(map-get($variables, on-surface), 0.26),
+            transparent,
+            rgba(map-get($variables, on-surface), 0.26),
+            rgba(map-get($variables, on-surface), 0.078)
+          );
+          @include checkbox.ink-color(map-get($variables, on-surface));
+          @include checkbox.disabled-ink-color(map-get($variables, on-surface));
+          @include ripple.states(
+            map-get($variables, on-surface),
+            false,
+            feature-targeting.all(),
+            ".mdc-checkbox__ripple"
+          );
+          &.mdc-checkbox--selected {
+            @include ripple.states($color, false, feature-targeting.all(), ".mdc-checkbox__ripple");
+          }
+        }
       }
     }
   }
@@ -574,9 +592,7 @@ $overlay-values: (
       color: map-get($variables, text-high);
     }
     .live-indicator,
-    .ship-indicator {
-      color: map-get($variables, text-medium);
-    }
+    .ship-indicator,
     .mdc-typography--overline,
     .mdc-typography--subtitle2,
     .mdc-typography--caption {

@@ -1,12 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
 import { getTextColour } from "@s/common/functions";
+import { sunburstChildHasChildren } from "@s/statistics/functions";
 import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
+import { alphabeticalSortPropCurried, arrayIncludes, hasKey, objectKeys, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
+import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
+import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import {
   DataTable,
@@ -17,9 +20,24 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
-import { ResponsiveSunburst } from "@nivo/sunburst";
+import { ResponsiveSunburst, ComputedDatum, DatumId, SunburstCustomLayerProps } from "@nivo/sunburst";
+import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./PieCard.scss";
+
+const statuses = ["IC", "Live GB", "Pre GB", "Post GB", "Shipped"] as const;
+
+const flatten = (data: StatusDataObjectSunburstChild[]): StatusDataObjectSunburstChild[] =>
+  data.reduce((acc, item) => {
+    if (sunburstChildHasChildren(item)) {
+      return [...acc, item, ...flatten(item.children)];
+    }
+
+    return [...acc, item];
+  }, [] as StatusDataObjectSunburstChild[]);
+
+const findObject = (data: StatusDataObjectSunburstChild[], name: DatumId) =>
+  data.find((searchedName) => searchedName.id === name);
 
 type StatusCardProps = {
   data: StatusDataObject;
@@ -29,9 +47,42 @@ type StatusCardProps = {
   note?: React.ReactNode;
 };
 
+const CentredLabel = <RawDatum,>({ nodes, centerX, centerY }: SunburstCustomLayerProps<RawDatum>) => {
+  const category = nodes.find((node) => node && arrayIncludes(statuses, node.id));
+  return !category && nodes[0] ? (
+    <text
+      x={centerX}
+      y={centerY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      className="mdc-typography--headline5"
+      style={{ fill: "currentColor" }}
+    >
+      {`${nodes[0]?.id}`.split(" - ")[0]}
+    </text>
+  ) : null;
+};
+
 export const StatusCard = (props: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
+
+  const statusColors = currentTheme
+    ? {
+        IC: currentTheme.grey2,
+        "Pre GB": currentTheme.grey1,
+        "Live GB": currentTheme.secondary,
+        "Post GB": currentTheme.primary,
+        Shipped: currentTheme.primaryDark,
+      }
+    : {};
+  const getStatusColor = <RawDatum,>(node: Omit<ComputedDatum<RawDatum>, "color" | "fill">) => {
+    const category = [...node.path].find((pathItem) => arrayIncludes(objectKeys(statusColors), pathItem)) || "";
+    if (hasKey(statusColors, category)) {
+      return statusColors[category] || "#000";
+    }
+    return "#000";
+  };
 
   const nivoTheme = useContext(NivoThemeContext);
 
@@ -40,6 +91,8 @@ export const StatusCard = (props: StatusCardProps) => {
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
+  const [data, setData] = useState(chartData.sunburst);
+  useEffect(() => setData(chartData.sunburst), [chartData.sunburst]);
   const sideways = props.summary && device === "desktop";
   const selectChips =
     props.summary && props.breakdownData ? (
@@ -58,6 +111,16 @@ export const StatusCard = (props: StatusCardProps) => {
         </ChipSet>
       </div>
     ) : null;
+  const toggleSeries = (string: typeof statuses[number]) => {
+    if (string === data.id) {
+      setData(chartData.sunburst);
+    } else {
+      const foundObject = chartData.sunburst.children.find((datum) => datum.id === string);
+      if (foundObject && sunburstChildHasChildren(foundObject)) {
+        setData(foundObject);
+      }
+    }
+  };
   return (
     <Card
       className={classNames("pie-card", {
@@ -66,34 +129,27 @@ export const StatusCard = (props: StatusCardProps) => {
       })}
     >
       <div className="title-container">
-        {props.overline ? (
-          <Typography use="overline" tag="h3">
-            {props.overline}
+        <div className="text-container">
+          {props.overline ? (
+            <Typography use="overline" tag="h3">
+              {props.overline}
+            </Typography>
+          ) : null}
+          <Typography use="headline5" tag="h1">
+            {props.data.name}
           </Typography>
-        ) : null}
-        <Typography use="headline5" tag="h1">
-          {props.data.name}
-        </Typography>
-        <Typography use="subtitle2" tag="p">
-          {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
-        </Typography>
+          <Typography use="subtitle2" tag="p">
+            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
+          </Typography>
+        </div>
       </div>
       <div className="pie-container">
         <div className="pie-chart-container">
           <ResponsiveSunburst<StatusDataObjectSunburstChild>
-            data={chartData.sunburst}
-            colors={
-              currentTheme
-                ? [
-                    currentTheme.grey2,
-                    currentTheme.grey1,
-                    currentTheme.secondary,
-                    currentTheme.primary,
-                    currentTheme.primaryDark,
-                  ]
-                : undefined
-            }
+            data={data}
             value="val"
+            colors={getStatusColor}
+            inheritColorFromParent={false}
             margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
             theme={nivoTheme}
             borderColor={currentTheme?.elevatedSurface1}
@@ -102,6 +158,15 @@ export const StatusCard = (props: StatusCardProps) => {
             enableArcLabels
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+            layers={["arcs", "arcLabels", CentredLabel]}
+            onClick={(clickedData) => {
+              if (sunburstChildHasChildren(data)) {
+                const foundObject = findObject(flatten(data.children), clickedData.id);
+                if (foundObject && sunburstChildHasChildren(foundObject)) {
+                  setData(foundObject);
+                }
+              }
+            }}
           />
         </div>
         <div className="table-container">
@@ -109,39 +174,59 @@ export const StatusCard = (props: StatusCardProps) => {
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>
+                  <DataTableHeadCell hasFormControl>
+                    {withTooltip(
+                      <IconButton
+                        icon="restart_alt"
+                        disabled={data === chartData.sunburst}
+                        onClick={() => setData(chartData.sunburst)}
+                      />,
+                      "Clear selection"
+                    )}
+                  </DataTableHeadCell>
                   <DataTableHeadCell>Status</DataTableHeadCell>
                   <DataTableHeadCell isNumeric>Sets</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
-                <DataTableRow>
-                  <DataTableCell>
-                    <div className="indicator ic"></div>IC
+                <DataTableRow className="ic">
+                  <DataTableCell hasFormControl>
+                    <div className="indicator"></div>
+                    <Checkbox checked={data.id === "IC"} onClick={() => toggleSeries("IC")} />
                   </DataTableCell>
+                  <DataTableCell>IC</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.ic}</DataTableCell>
                 </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell>
-                    <div className="indicator pre-gb"></div>Pre GB
+                <DataTableRow className="pre-gb">
+                  <DataTableCell hasFormControl>
+                    <div className="indicator"></div>
+                    <Checkbox checked={data.id === "Pre GB"} onClick={() => toggleSeries("Pre GB")} />
                   </DataTableCell>
+                  <DataTableCell>Pre GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.preGb}</DataTableCell>
                 </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell>
-                    <div className="indicator live-gb"></div>Live GB
+                <DataTableRow className="live-gb">
+                  <DataTableCell hasFormControl>
+                    <div className="indicator"></div>
+                    <Checkbox checked={data.id === "Live GB"} onClick={() => toggleSeries("Live GB")} />
                   </DataTableCell>
+                  <DataTableCell>Live GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.liveGb}</DataTableCell>
                 </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell>
-                    <div className="indicator post-gb"></div>Post GB
+                <DataTableRow className="post-gb">
+                  <DataTableCell hasFormControl>
+                    <div className="indicator"></div>
+                    <Checkbox checked={data.id === "Post GB"} onClick={() => toggleSeries("Post GB")} />
                   </DataTableCell>
+                  <DataTableCell>Post GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.postGb}</DataTableCell>
                 </DataTableRow>
-                <DataTableRow>
-                  <DataTableCell>
-                    <div className="indicator post-gb-shipped"></div>Shipped
+                <DataTableRow className="post-gb-shipped">
+                  <DataTableCell hasFormControl>
+                    <div className="indicator"></div>
+                    <Checkbox checked={data.id === "Shipped"} onClick={() => toggleSeries("Shipped")} />
                   </DataTableCell>
+                  <DataTableCell>Shipped</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.postGbShipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
