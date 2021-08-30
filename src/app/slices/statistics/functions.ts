@@ -448,3 +448,21 @@ export const barDataToLineData = <Datum extends Record<string, any>>(
     )
     .flat(1),
 });
+
+/** Takes a set of breakpoint tuples and returns a filter function.
+ * @param {number[][]} breakpoints Breakpoints
+ * @returns Filter function to pass to `.filter()`
+ * @example
+ * array.filter(filterLabels([[24, 3, !props.summary],[16, 2]]))
+ */
+
+export const filterLabels = <T extends string | number>(
+  breakpoints: ([minLength: number, divisor: number] | [minLength: number, divisor: number, condition: boolean])[]
+) => (label: T, index: number, array: T[]): boolean => {
+  for (const breakpoint of breakpoints.sort((aTuple, bTuple) => bTuple[0] - aTuple[0])) {
+    if (array.length >= breakpoint[0] && (breakpoint[2] === undefined || breakpoint[2])) {
+      return index % breakpoint[1] === 0;
+    }
+  }
+  return true;
+};

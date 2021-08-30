@@ -23,6 +23,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TableCard.scss";
+import { filterLabels } from "@s/statistics/functions";
 
 type TableCardProps = {
   data: CountDataObject;
@@ -66,8 +67,11 @@ export const TableCard = (props: TableCardProps) => {
     ) : null;
   const labels = chartData.data
     .map((datum) => datum.id)
-    .filter((value, index, array) =>
-      array.length >= 16 ? (index % (array.length >= 24 && !props.summary ? 3 : 2) === 0 ? true : false) : true
+    .filter(
+      filterLabels([
+        [24, 3, !props.summary],
+        [16, 2],
+      ])
     );
   const barChart =
     graphType === "bar" ? (
