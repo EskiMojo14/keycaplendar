@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
@@ -17,8 +17,8 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { ResponsiveSunburst } from "@nivo/sunburst";
+import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./PieCard.scss";
-
 type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
@@ -30,6 +30,8 @@ type StatusCardProps = {
 export const StatusCard = (props: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
+
+  const nivoTheme = useContext(NivoThemeContext);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
@@ -85,6 +87,7 @@ export const StatusCard = (props: StatusCardProps) => {
             }
             value="val"
             margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
+            theme={nivoTheme}
             borderColor={currentTheme?.elevatedSurface1}
             borderWidth={2}
             cornerRadius={4}

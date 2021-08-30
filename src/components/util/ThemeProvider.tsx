@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
@@ -31,4 +32,48 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       })
     : createTheme();
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+};
+
+export const NivoThemeContext = createContext<Theme>({});
+
+export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
+  const [theme, setTheme] = useState<Theme>({});
+  useEffect(() => {
+    setTheme({
+      background: "transparent",
+      textColor: currentThemeMap.textHigh,
+      fontFamily: "inherit",
+      axis: {
+        ticks: {
+          line: {
+            stroke: currentThemeMap.divider,
+          },
+        },
+        domain: {
+          line: {
+            stroke: currentThemeMap.divider,
+          },
+        },
+      },
+      grid: {
+        line: {
+          stroke: currentThemeMap.divider,
+        },
+      },
+      tooltip: {
+        container: {
+          fontFamily: "inherit",
+          backgroundColor: currentThemeMap.textHigh,
+          color: currentThemeMap.surface,
+          boxShadow: "none",
+          borderRadius: 4,
+        },
+        chip: {
+          borderRadius: "50%",
+        },
+      },
+    });
+  }, [currentThemeMap]);
+  return <NivoThemeContext.Provider value={theme}>{children}</NivoThemeContext.Provider>;
 };

@@ -6,7 +6,7 @@ import LuxonUtils from "@date-io/luxon";
 import { DateTime } from "luxon";
 import App from "./App";
 import store from "~/app/store";
-import { ThemeProvider } from "@c/util/ThemeProvider";
+import { NivoThemeProvider, ThemeProvider } from "@c/util/ThemeProvider";
 
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {
@@ -15,13 +15,15 @@ class LocalizedUtils extends LuxonUtils {
 }
 
 export const Root = () => (
-    <Provider store={store}>
-      <MuiPickersUtilsProvider utils={LocalizedUtils}>
-        <ThemeProvider>
+  <Provider store={store}>
+    <MuiPickersUtilsProvider utils={LocalizedUtils}>
+      <ThemeProvider>
+        <NivoThemeProvider>
           <RMWCProvider tooltip={{ enterDelay: 500, align: "bottom" }}>
             <App />
           </RMWCProvider>
-        </ThemeProvider>
-      </MuiPickersUtilsProvider>
-    </Provider>
-  );
+        </NivoThemeProvider>
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
+  </Provider>
+);
