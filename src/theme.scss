@@ -65,8 +65,8 @@ $overlay-values: (
     meta: if($dark, darken(overlay-elevation(map-get($theme, surface), 4), 10%), darken(map-get($theme, primary), 10%)),
     divider: rgba(map-get($theme, on-surface), 0.12),
     lighter-divider: rgba(map-get($theme, on-surface), 0.06),
-    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
-    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 6%),
+    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%),
+    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
   );
   $variables: map-merge($theme, map-merge($text-colors, $dynamic-colors));
   @each $variable, $value in $variables {

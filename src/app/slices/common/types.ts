@@ -41,14 +41,22 @@ export type ThemeMap = {
   dark: boolean;
 
   background: string;
-  surface: string;
+  primary: string;
+  onPrimary: string;
+  primaryDark: string;
+  onPrimaryDark: string;
+  primaryLight: string;
+  onPrimaryLight: string;
+  secondary: string;
+  onSecondary: string;
+  secondaryDark: string;
+  onSecondaryDark: string;
+  secondaryLight: string;
+  onSecondaryLight: string;
   error: string;
   onError: string;
-  onPrimary: string;
-  onSecondary: string;
+  surface: string;
   onSurface: string;
-  primary: string;
-  secondary: string;
 
   textHigh: string;
   textMedium: string;

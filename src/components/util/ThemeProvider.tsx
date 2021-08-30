@@ -11,8 +11,18 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     ? createTheme({
         palette: {
           type: currentThemeMap.dark ? "dark" : "light",
-          primary: { main: currentThemeMap.primary, contrastText: currentThemeMap.onPrimary },
-          secondary: { main: currentThemeMap.secondary, contrastText: currentThemeMap.onSecondary },
+          primary: {
+            light: currentThemeMap.primaryLight,
+            main: currentThemeMap.primary,
+            dark: currentThemeMap.primaryDark,
+            contrastText: currentThemeMap.onPrimary,
+          },
+          secondary: {
+            light: currentThemeMap.secondaryLight,
+            main: currentThemeMap.secondary,
+            dark: currentThemeMap.secondaryDark,
+            contrastText: currentThemeMap.onSecondary,
+          },
           error: { main: currentThemeMap.error, contrastText: currentThemeMap.onError },
           text: {
             primary: alpha(currentThemeMap.onSurface, 0.87),
