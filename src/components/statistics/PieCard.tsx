@@ -89,6 +89,19 @@ export const StatusCard = (props: StatusCardProps) => {
             borderWidth={2}
             cornerRadius={4}
             valueFormat=">-,"
+            enableArcLabels
+            arcLabelsSkipAngle={10}
+            arcLabelsTextColor={({ color }) => {
+              if (currentTheme) {
+                if (color === currentTheme.secondary) {
+                  return currentTheme.onSecondary;
+                } else if (color === currentTheme.primary) {
+                  return currentTheme.onPrimary;
+                }
+                return currentTheme.textHigh;
+              }
+              return "#000";
+            }}
           />
         </div>
         <div className="table-container">
