@@ -28,7 +28,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard } from "./PieCard";
 import { TableCard } from "./TableCard";
-import { ShippedCard, TimelinesCard } from "./TimelineCard";
+import { ShippedCard, SummaryTimelinesCardProps, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
 
@@ -334,19 +334,24 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
-          <TimelinesCard
+          <TimelinesCard<SummaryTimelinesCardProps>
             data={statisticsData.timelines[settings.summary].summary}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
+            months={statisticsData.timelines[settings.summary].months}
+            chartKeys={["summary"]}
             category={settings.summary}
-            defaultType="line"
+            selectable
+            //defaultType="line"
             singleTheme="secondary"
             overline="Timelines"
             note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
             summary
           />
-          <TimelinesCard
+          <TimelinesCard<SummaryTimelinesCardProps>
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
+            chartKeys={statisticsData.timelines[settings.summary].allProfiles}
+            months={statisticsData.timelines[settings.summary].months}
             data={statisticsData.timelines[settings.summary].summary}
             filterable
             overline="Timelines"
@@ -388,22 +393,21 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
           {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data: any) =>
-            typeGuard<{ name: string; total: number; profiles?: string[] }>(
-              data,
-              () => settings.timelinesGroup === "profile"
-            ) ? (
+            settings.timelinesGroup === "profile" ? (
               <TimelinesCard
                 key={data.name}
                 data={data}
-                chartData={statisticsData.timelines[settings.timelinesCat].summary.months}
+                chartKeys={[data.name]}
+                months={statisticsData.timelines[settings.timelinesCat].months}
                 category={settings.timelinesCat}
                 singleTheme="primary"
-                profile
               />
             ) : typeGuard<TimelinesDataObject>(data, () => !(settings.timelinesGroup === "profile")) ? (
               <TimelinesCard
                 key={data.name}
                 data={data}
+                chartKeys={statisticsData.timelines[settings.timelinesCat].allProfiles}
+                months={statisticsData.timelines[settings.timelinesCat].months}
                 filterable
                 category={settings.timelinesCat}
                 allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
@@ -484,7 +488,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             delay: "0s",
           }}
-          slideCount={statsTabs.length}
+          slideCount={3}
           index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
           slideRenderer={slideRenderer}

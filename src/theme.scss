@@ -404,6 +404,25 @@ $overlay-values: (
     }
   }
 
+  .focus-chips .mdc-chip.focus-chip {
+    &.mdc-chip--selected {
+      &,
+      &:hover {
+        color: map-get($variables, text-high);
+      }
+      font-weight: bold;
+    }
+  }
+
+  @for $index from 1 to length(graph-colors.$graph-colors-dark) {
+    $color: if($dark, nth(graph-colors.$graph-colors-dark, $index), nth(graph-colors.$graph-colors, $index));
+    .focus-chips .focus-chip-index-#{$index} {
+      @include chips.leading-icon-color($color, 1);
+      @include ripple.states($color);
+      @include chips.selected-ink-color($color);
+    }
+  }
+
   // external
 
   .markdown {

@@ -41,10 +41,9 @@ export type TimelinesData<Optimised extends true | false = false> = Record<
     months: string[];
     allProfiles: string[];
     summary: TimelinesDataObject<Optimised>;
-    breakdown: Overwrite<
-      Record<Properties, TimelinesDataObject<Optimised>[]>,
-      { profile: { name: string; total: number }[] }
-    >;
+    breakdown: Optimised extends true
+      ? Overwrite<Record<Properties, TimelinesDataObject<Optimised>[]>, { profile: { name: string; total: number }[] }>
+      : Record<Properties, TimelinesDataObject<Optimised>[]>;
   }
 >;
 

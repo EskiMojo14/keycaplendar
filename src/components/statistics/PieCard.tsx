@@ -90,7 +90,6 @@ export const StatusCard = (props: StatusCardProps) => {
             theme={nivoTheme}
             borderColor={currentTheme?.elevatedSurface1}
             borderWidth={2}
-            cornerRadius={4}
             valueFormat=">-,"
             enableArcLabels
             arcLabelsSkipAngle={10}

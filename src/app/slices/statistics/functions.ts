@@ -106,8 +106,9 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
         index: monthIndex,
         ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
       };
+      const object = data.find(({ index }) => index === monthIndex);
       const { index = 0, ...foundObject } =
-        data.find(({ index }) => index === monthIndex) || data.length === 1 ? data[0] : {};
+        typeof object?.index === "number" ? object : data.length === 1 ? data[0] : {};
       return { ...blankObject, ...foundObject };
     });
 
@@ -158,6 +159,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
                   return {
                     ...dataObj,
                     profiles: dataObj.name,
+                    months: hydrateTimelinesData(summaryMonths, months, profiles),
                   };
                 }
               }
@@ -204,7 +206,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
                   ? {
                       ...foundObject,
                       children: foundObject.children.map(
-                        ({ index, id, ...child }) =>
+                        ({ id, ...child }) =>
                           ({ ...child, id: `${ids[arrayIndex]} - ${id}` } as StatusDataObjectSunburstChild)
                       ),
                       id: ids[arrayIndex],
@@ -395,6 +397,9 @@ export const sortData = (state = store.getState()) => {
               alphabeticalSortPropCurried("name")(a, b)
             );
           });
+          data[category].breakdown[
+            property
+          ] = sortedArray as StatisticsData["timelines"][Categories]["breakdown"][Properties];
         });
       });
       setData(data);

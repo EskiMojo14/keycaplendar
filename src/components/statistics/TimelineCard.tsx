@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-import classNames from "classnames";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { Overwrite, ThemeMap } from "@s/common/types";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
 import { addOrRemove, alphabeticalSortPropCurried, hasKey, iconObject, pluralise } from "@s/util/functions";
@@ -18,9 +15,14 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { ResponsiveBar } from "@nivo/bar";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
+import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TimelineCard.scss";
+import { useAppSelector } from "~/app/hooks";
+import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
+import { filterLabels } from "@s/statistics/functions";
 
 type ShippedCardProps = {
   data: ShippedDataObject;
@@ -32,7 +34,6 @@ type ShippedCardProps = {
 };
 
 export const ShippedCard = (props: ShippedCardProps) => {
-  const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const chartData =
@@ -137,11 +138,14 @@ export const ShippedCard = (props: ShippedCardProps) => {
 
 export type CommonTimelinesCardProps = {
   data: TimelinesDataObject;
+  chartKeys: string[];
   singleTheme?: Exclude<keyof ThemeMap, "dark">;
   defaultType?: "bar" | "line";
   category?: string;
+  selectable?: boolean;
   filterable?: boolean;
   allProfiles?: string[];
+  months: string[];
   summary?: false;
   profile?: false;
   breakdownData?: TimelinesDataObject[];
@@ -156,29 +160,23 @@ export type SummaryTimelinesCardProps = Overwrite<
     breakdownData?: { name: string; total: number; profiles?: string[] }[];
   }
 >;
-export type ProfileTimelinesCardProps = Overwrite<
-  CommonTimelinesCardProps,
-  {
-    profile: true;
-    data: { name: string; total: number; profiles?: string[] };
-    chartData: Record<string, string | number>[];
-  }
->;
 
 export const TimelinesCard = <
-  Props extends
-    | CommonTimelinesCardProps
-    | SummaryTimelinesCardProps
-    | ProfileTimelinesCardProps = CommonTimelinesCardProps
+  Props extends CommonTimelinesCardProps | SummaryTimelinesCardProps = CommonTimelinesCardProps
 >(
   props: Props
 ) => {
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  useEffect(() => setSelectedIndex(-1), [props.category]);
-  const chartData: TimelinesDataObject | { name: string; total: number; profiles?: string[] } =
-    props.summary && props.breakdownData && selectedIndex >= 0
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
+  const nivoTheme = useContext(NivoThemeContext);
+  const currentTheme = useAppSelector(selectCurrentThemeMap);
+  const graphColors = useAppSelector(selectCurrentGraphColors);
+
+  const [selectedProfile, setSelectedProfile] = useState("");
+  useEffect(() => setSelectedProfile(""), [props.category]);
+
+  const selectedData = props.selectable
+    ? props.breakdownData?.find(({ name }) => name === selectedProfile) || props.data
+    : props.data;
+
   const [filtered, setFiltered] = useState<string[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const setFilter = (profile: string) => {
@@ -193,16 +191,16 @@ export const TimelinesCard = <
   };
   useEffect(filterAll, [props.category, props.allProfiles]);
   const selectChips =
-    props.summary && props.breakdownData ? (
+    props.selectable && props.breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj) => (
             <Chip
               key={obj.name}
               label={obj.name}
-              selected={index === selectedIndex}
+              selected={obj.name === selectedProfile}
               onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
+                setSelectedProfile(obj.name === selectedProfile ? "" : obj.name);
               }}
             />
           ))}
@@ -226,7 +224,7 @@ export const TimelinesCard = <
                 </svg>
               </div>
             )}
-            disabled={filtered.length === chartData.profiles?.length}
+            disabled={filtered.length === props.data.profiles.length}
             onClick={filterAll}
           />,
           "Filter all series"
@@ -253,20 +251,37 @@ export const TimelinesCard = <
       </>
     ) : null;
   const filterChips =
-    props.filterable && props.allProfiles && hasKey(chartData, "profiles") ? (
-      <div className="timeline-chips-container">
-        <ChipSet filter>
-          {props.allProfiles.map((profile) => {
-            if (chartData.profiles?.includes(profile) || chartData.profiles?.length === 0) {
+    props.filterable && props.allProfiles && hasKey(props.data, "profiles") ? (
+      <div className="timeline-chips-container focus-chips">
+        <ChipSet choice>
+          {props.allProfiles.map((profile, index) => {
+            if (props.data.profiles.includes(profile) || props.data.profiles.length === 0) {
               return (
                 <Chip
                   key={profile}
                   label={profile}
-                  checkmark
+                  icon={
+                    filtered.length && !filtered.includes(profile)
+                      ? iconObject(
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
+                            <g>
+                              <rect fill="none" height="24" width="24" />
+                            </g>
+                            <g>
+                              <g>
+                                <circle cx="12" cy="12" opacity=".3" r="8" />
+                                <path d="M12,2C6.47,2,2,6.47,2,12c0,5.53,4.47,10,10,10s10-4.47,10-10C22,6.47,17.53,2,12,2z M12,20c-4.42,0-8-3.58-8-8 c0-4.42,3.58-8,8-8s8,3.58,8,8C20,16.42,16.42,20,12,20z" />
+                              </g>
+                            </g>
+                          </svg>
+                        )
+                      : "circle"
+                  }
                   selected={filtered.includes(profile)}
                   onInteraction={() => {
                     setFilter(profile);
                   }}
+                  className={`focus-chip focus-chip-index-${(index % (graphColors?.length || 0)) + 1}`}
                 />
               );
             }
@@ -274,6 +289,49 @@ export const TimelinesCard = <
           })}
         </ChipSet>
       </div>
+    ) : null;
+  const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
+  const allowedKeys =
+    props.selectable && selectedProfile
+      ? [selectedProfile]
+      : props.filterable && filtered.length
+      ? props.chartKeys.filter((key) => filtered.includes(key))
+      : props.chartKeys;
+  const filteredData = useMemo(
+    () =>
+      props.data.months.map((month) =>
+        Object.entries(month)
+          .filter(([key]) => key === "month" || allowedKeys.includes(key))
+          .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as Record<string, string | number>)
+      ),
+    [selectedProfile, filtered, props.selectable, props.filterable, props.data.months]
+  );
+  const barChart =
+    graphType === "bar" ? (
+      <ResponsiveBar
+        data={filteredData}
+        indexBy={"month"}
+        keys={props.chartKeys}
+        margin={{ top: 48, right: 64, bottom: 48, left: 64 }}
+        theme={nivoTheme}
+        colors={
+          currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
+        }
+        padding={0.33}
+        enableLabel={false}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 32,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+      />
     ) : null;
   return (
     <Card className="timeline-card full-span">
@@ -285,10 +343,10 @@ export const TimelinesCard = <
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {selectedData.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
+            {pluralise`${selectedData.total} ${[selectedData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -318,17 +376,7 @@ export const TimelinesCard = <
         </div>
       </div>
       <div className="timeline-container">
-        <div
-          className={classNames(
-            "timeline-chart-container timelines",
-            {
-              single: props.singleTheme,
-              filtered: filtered.length > 0,
-            },
-            typeof props.singleTheme === "string" ? props.singleTheme : "",
-            filtered.map((index) => `series-index-${index}`)
-          )}
-        ></div>
+        <div className="timeline-chart-container timelines">{barChart}</div>
         {selectChips}
         {filterChips}
         {props.note ? (

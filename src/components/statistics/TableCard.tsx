@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
@@ -65,14 +65,18 @@ export const TableCard = (props: TableCardProps) => {
         </ChipSet>
       </div>
     ) : null;
-  const labels = chartData.data
-    .map((datum) => datum.id)
-    .filter(
-      filterLabels([
-        [24, 3, !props.summary],
-        [16, 2],
-      ])
-    );
+  const labels = useMemo(
+    () =>
+      chartData.data
+        .map((datum) => datum.id)
+        .filter(
+          filterLabels([
+            [24, 3, !props.summary],
+            [16, 2],
+          ])
+        ),
+    [chartData.data]
+  );
   const barChart =
     graphType === "bar" ? (
       <ResponsiveBar
@@ -82,7 +86,6 @@ export const TableCard = (props: TableCardProps) => {
         theme={nivoTheme}
         colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
         padding={0.33}
-        borderRadius={4}
         labelSkipWidth={16}
         labelSkipHeight={1}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}

@@ -32,6 +32,19 @@
   .timeline-container {
     display: flex;
     flex-direction: column;
+    .timeline-chart-container {
+      max-width: 100%;
+      padding-top: 1 / 4 * 100%;
+      margin-bottom: 16px;
+      position: relative;
+      > div {
+        position: absolute;
+        top: 0;
+        > div {
+          height: 100%;
+        }
+      }
+    }
     .table-container {
       & + .timeline-chips-container {
         padding-top: 16px;
