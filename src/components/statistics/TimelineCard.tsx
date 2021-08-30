@@ -137,7 +137,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
 
 export type CommonTimelinesCardProps = {
   data: TimelinesDataObject;
-  singleTheme?: keyof ThemeMap;
+  singleTheme?: Exclude<keyof ThemeMap, "dark">;
   defaultType?: "bar" | "line";
   category?: string;
   filterable?: boolean;

@@ -371,6 +371,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             category={settings.summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
+            theme="secondary"
             summary
           />
           <TableCard
@@ -379,6 +380,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             unit="Vendors"
             overline="Vendors"
             note="Only includes sets that have completed GB."
+            theme="secondary"
             summary
           />
         </div>

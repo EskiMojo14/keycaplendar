@@ -49,10 +49,19 @@ export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) =
           line: {
             stroke: currentThemeMap.divider,
           },
+          text: {
+            fill: currentThemeMap.textMedium,
+          },
         },
         domain: {
           line: {
             stroke: currentThemeMap.divider,
+          },
+        },
+        legend: {
+          text: {
+            fontSize: 13,
+            textRendering: "optimizeLegibility",
           },
         },
       },
@@ -64,6 +73,7 @@ export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) =
       tooltip: {
         container: {
           fontFamily: "inherit",
+          textTransform: "capitalize",
           backgroundColor: currentThemeMap.textHigh,
           color: currentThemeMap.surface,
           boxShadow: "none",

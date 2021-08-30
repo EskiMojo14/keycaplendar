@@ -127,14 +127,14 @@ const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): Co
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((datum: any, index: any, array: any[]) => (array.length > 1 && !idIsIndex ? { ...datum, index } : datum))
       .filter(({ count }) => count > 0)
-      .filter((datum) => Object.keys(datum).length > 2);
+      .filter((datum) => Object.keys(datum).length > (idIsIndex ? 1 : 2));
     return {
       ...filteredDatum,
       name,
       total,
-      data: filteredData,
       range,
       mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
+      data: filteredData,
     };
   });
 

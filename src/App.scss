@@ -1,7 +1,4 @@
 @use "normalize.css/normalize";
-
-@use "chartist/dist/scss/chartist";
-@use "chartist-plugin-tooltips-updated/dist/chartist-plugin-tooltip";
 @use "react-mde/lib/styles/scss/react-mde-all";
 
 @use "@material/shape" with (
@@ -199,50 +196,6 @@ code {
     &__textarea {
       @include typography.typography(subtitle1, $exclude-props: (line-height));
       @include shape.radius(small);
-    }
-  }
-}
-
-// chartist
-
-.ct-chart {
-  .ct-grid {
-    stroke: var(--theme-divider);
-    stroke-dasharray: 4px;
-  }
-  .ct-axis-title {
-    @include typography.typography(caption);
-  }
-  .ct-stroked-point {
-    pointer-events: all !important;
-    stroke: transparent;
-    stroke-width: 24px;
-  }
-}
-
-.chartist-tooltip {
-  @include typography.typography(caption);
-  @include shape.radius(shape.resolve-percentage-radius(2rem, small));
-  animation: animation.standard(rmwcToolTipOut, 0.075s);
-  text-align: left;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 0.33rem 1rem;
-  min-height: 2rem;
-  min-width: 0;
-  box-sizing: border-box;
-  white-space: pre-wrap;
-  &::before {
-    content: none !important;
-  }
-  &.tooltip-show {
-    animation: animation.standard(rmwcToolTipIn, 0.15s);
-  }
-  &-meta {
-    font-weight: bold;
-    &::after {
-      content: ": ";
     }
   }
 }

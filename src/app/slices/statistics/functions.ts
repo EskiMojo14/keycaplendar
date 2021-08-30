@@ -272,7 +272,11 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
     ),
   };
 
-  const hydrateCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject[] => {
+  const hydrateCountData = (
+    data: CountDataObject<true>[],
+    idIsIndex = false,
+    excludeZero = false
+  ): CountDataObject[] => {
     const blankObject: CountDataObject = {
       name: "",
       total: 0,
@@ -284,23 +288,30 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       data: [],
     };
     return data.map(({ data, ...datum }) => {
-      const dataLength = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0), 0) + 1;
+      const maxId = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0), 0);
       return {
         ...blankObject,
         ...datum,
-        data: Array(dataLength)
+        data: Array(idIsIndex ? maxId : maxId + 1)
           .fill("")
           .map((_e, arrayIndex) => {
+            const object = data.find(
+              (datum) =>
+                typeof datum[idIsIndex ? "id" : "index"] === "number" &&
+                datum[idIsIndex ? "id" : "index"] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
+            );
             const { index = 0, ...foundObject } =
-              data.find((datum) => datum[idIsIndex ? "id" : "index"] === arrayIndex) ||
-              (data.length === 1 && !hasKey(data[0], "index"))
+              typeof object?.[idIsIndex ? "id" : "index"] === "number"
+                ? object
+                : data.length === 1 && data[0][idIsIndex ? "id" : "index"] === undefined
                 ? data[0]
-                : { count: 0 };
+                : { id: idIsIndex ? arrayIndex + 1 : arrayIndex, count: 0 };
             return {
-              id: arrayIndex,
+              id: foundObject.id,
               count: foundObject.count,
             };
-          }),
+          })
+          .slice(excludeZero ? 1 : 0),
       };
     });
   };
@@ -309,7 +320,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
     (obj, [category, { summary, breakdown }]): DurationData => ({
       ...obj,
       [category]: {
-        summary: hydrateCountData([summary])[0],
+        summary: hydrateCountData([summary], true)[0],
         breakdown: objectEntries(breakdown).reduce(
           (obj, [prop, array]) => ({
             ...obj,
@@ -410,3 +421,30 @@ export const sortData = (state = store.getState()) => {
     }
   }
 };
+
+export const barDataToLineData = <Datum extends Record<string, any>>(
+  datumArray: Datum[],
+  id: string,
+  xKey: keyof Datum | ((datum: Datum) => string | number) = "id",
+  yKeys: (keyof Datum | ((datum: Datum) => string | number))[] = ["value" as keyof Datum]
+): {
+  id: string | number;
+  data: {
+    x: number | string | Date;
+    y: number | string | Date;
+  }[];
+} => ({
+  id,
+  data: yKeys
+    .map((yKey) =>
+      datumArray.map((datum) => {
+        const x = typeof xKey === "function" ? xKey(datum) : datum[xKey];
+        const y = typeof yKey === "function" ? yKey(datum) : datum[yKey];
+        return {
+          x,
+          y,
+        };
+      })
+    )
+    .flat(1),
+});

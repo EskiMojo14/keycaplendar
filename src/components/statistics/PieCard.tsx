@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
 import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
+import { alphabeticalSortPropCurried, getTextColour, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
@@ -76,7 +76,7 @@ export const StatusCard = (props: StatusCardProps) => {
           {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
         </Typography>
       </div>
-      <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
+      <div className="pie-container">
         <div className="pie-chart-container">
           <ResponsiveSunburst<StatusDataObjectSunburstChild>
             data={chartData.sunburst}
@@ -94,17 +94,7 @@ export const StatusCard = (props: StatusCardProps) => {
             valueFormat=">-,"
             enableArcLabels
             arcLabelsSkipAngle={10}
-            arcLabelsTextColor={({ color }) => {
-              if (currentTheme) {
-                if (color === currentTheme.secondary) {
-                  return currentTheme.onSecondary;
-                } else if (color === currentTheme.primary) {
-                  return currentTheme.onPrimary;
-                }
-                return currentTheme.textHigh;
-              }
-              return "#000";
-            }}
+            arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
           />
         </div>
         <div className="table-container">

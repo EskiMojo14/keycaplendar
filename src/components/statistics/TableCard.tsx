@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import classNames from "classnames";
+import { useAppSelector } from "~/app/hooks";
+import { selectCurrentThemeMap } from "@s/common";
+import { ThemeMap } from "@s/common/types";
 import { Categories, CountDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
+import { alphabeticalSortPropCurried, getTextColour, pluralise } from "@s/util/functions";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -14,8 +17,11 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { BarTooltipProps, ResponsiveBar } from "@nivo/bar";
+import { BasicTooltip } from "@nivo/tooltip";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
+import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TableCard.scss";
 
 type TableCardProps = {
@@ -23,6 +29,7 @@ type TableCardProps = {
   unit: string;
   category?: Categories;
   defaultType?: "bar" | "line";
+  theme?: Exclude<keyof ThemeMap, "dark">;
   breakdownData?: CountDataObject[];
   overline?: React.ReactNode;
   note?: React.ReactNode;
@@ -30,13 +37,16 @@ type TableCardProps = {
 };
 
 export const TableCard = (props: TableCardProps) => {
+  const nivoTheme = useContext(NivoThemeContext);
+  const currentTheme = useAppSelector(selectCurrentThemeMap);
+
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [props.category]);
   const chartData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
+  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const selectChips =
     props.summary && props.breakdownData ? (
       <div className="table-chips-container">
@@ -53,6 +63,46 @@ export const TableCard = (props: TableCardProps) => {
           ))}
         </ChipSet>
       </div>
+    ) : null;
+  const labels = chartData.data
+    .map((datum) => datum.id)
+    .filter((value, index, array) =>
+      array.length >= 16 ? (index % (array.length >= 24 && !props.summary ? 3 : 2) === 0 ? true : false) : true
+    );
+  const barChart =
+    graphType === "bar" ? (
+      <ResponsiveBar
+        data={chartData.data}
+        keys={["count"]}
+        margin={{ top: 48, right: 64, bottom: 48, left: 64 }}
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        padding={0.33}
+        borderRadius={4}
+        labelSkipWidth={16}
+        labelSkipHeight={1}
+        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: props.unit,
+          legendOffset: 32,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+        tooltip={<RawDatum,>({ color, label, ...data }: BarTooltipProps<RawDatum>) => (
+          <BasicTooltip
+            id={`${props.unit} - ${label.split(" - ")[1]}`}
+            value={data.formattedValue}
+            enableChip={true}
+            color={color}
+          />
+        )}
+      />
     ) : null;
   return (
     <Card className={classNames("table-card", { "full-span": props.summary })}>
@@ -96,6 +146,7 @@ export const TableCard = (props: TableCardProps) => {
         </div>
       </div>
       <div className="content-container">
+        <div className="chart-container">{barChart}</div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>
