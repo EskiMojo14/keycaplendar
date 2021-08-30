@@ -194,11 +194,12 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
               .fill("")
               .map((_e, arrayIndex) => {
                 const object = sunburst.find(({ index }) => typeof index === "number" && index === arrayIndex);
-                const { index = 0, ...foundObject } = object?.index
-                  ? object
-                  : sunburst[0].index === undefined
-                  ? sunburst[0]
-                  : { id: "", children: [] };
+                const { index = 0, ...foundObject } =
+                  typeof object?.index === "number"
+                    ? object
+                    : sunburst[0].index === undefined
+                    ? sunburst[0]
+                    : { id: "", children: [] };
                 return sunburstChildHasChildren(foundObject)
                   ? {
                       ...foundObject,

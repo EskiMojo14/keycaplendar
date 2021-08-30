@@ -41,6 +41,29 @@ const categories: Categories[] = ["icDate", "gbLaunch"];
 
 const monthFormat = "MMM yy";
 
+const filterCatSetsByMonth = (
+  sets: StatisticsSetType[],
+  prop: "icDate" | "gbLaunch" | "gbEnd",
+  month: string,
+  format = monthFormat
+): StatisticsSetType[] =>
+  sets.filter((set) => {
+    const setProp = set[prop];
+    const setMonth =
+      is<string>(setProp) && !setProp.includes("Q")
+        ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat(format)
+        : null;
+    return setMonth && setMonth === month;
+  });
+
+const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
+  sets.filter(
+    (set) =>
+      (prop === "vendor" && set.vendors && set.vendors.findIndex((vendor) => vendor.name === val) !== -1) ||
+      (prop === "designer" && set.designer.includes(val)) ||
+      (prop !== "vendor" && prop !== "designer" && set[prop] === val)
+  );
+
 const sanitiseBarData = (data: Record<string, number>[]) =>
   data
     .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
@@ -48,7 +71,7 @@ const sanitiseBarData = (data: Record<string, number>[]) =>
 
 const sunburstChildHasChildren = <Optimised extends true | false = false>(
   child: StatusDataObjectSunburstChild<Optimised>
-): child is StatusDataObjectSunburstChildWithChild<Optimised> => "children" in child;
+): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 
 const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<true>[] =>
   data.map(({ sunburst, pie = {}, ...datum }) => {
@@ -58,7 +81,6 @@ const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<tr
     const filteredSunburst = sunburst
       ? sunburst
           .map((child, index, array) => (array.length > 1 ? { ...child, index } : child))
-          .filter((child) => (sunburstChildHasChildren(child) ? true : child.val > 0))
           .map((child) =>
             sunburstChildHasChildren(child)
               ? {
@@ -67,9 +89,9 @@ const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<tr
                 }
               : child
           )
-          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length === 1 : true))
+          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length > 0 : child.val > 0))
       : undefined;
-    return filteredSunburst
+    return sunburst
       ? {
           ...datum,
           pie: filteredPie,
@@ -115,29 +137,6 @@ const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): Co
       mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
     };
   });
-
-const filterCatSetsByMonth = (
-  sets: StatisticsSetType[],
-  prop: "icDate" | "gbLaunch" | "gbEnd",
-  month: string,
-  format = monthFormat
-): StatisticsSetType[] =>
-  sets.filter((set) => {
-    const setProp = set[prop];
-    const setMonth =
-      is<string>(setProp) && !setProp.includes("Q")
-        ? DateTime.fromISO(setProp, { zone: "utc" }).toFormat(format)
-        : null;
-    return setMonth && setMonth === month;
-  });
-
-const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string): StatisticsSetType[] =>
-  sets.filter(
-    (set) =>
-      (prop === "vendor" && set.vendors && set.vendors.findIndex((vendor) => vendor.name === val) !== -1) ||
-      (prop === "designer" && set.designer.includes(val)) ||
-      (prop !== "vendor" && prop !== "designer" && set[prop] === val)
-  );
 
 const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData<true> = {
@@ -289,20 +288,20 @@ const createStatusData = (sets: StatisticsSetType[]) => {
     vendor: vendorNames,
   };
   const createStatusDataObject = (
-    sets: StatisticsSetType[],
+    objSets: StatisticsSetType[],
     name: string,
     prop?: Properties,
     list?: string[]
   ): StatusDataObject<true> => {
-    const icSets = sets.filter((set: StatisticsSetType) => !set.gbLaunch || set.gbLaunch.includes("Q"));
-    const preGbSets = sets.filter((set) => {
+    const icSets = objSets.filter((set: StatisticsSetType) => !set.gbLaunch || set.gbLaunch.includes("Q"));
+    const preGbSets = objSets.filter((set) => {
       let startDate;
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
       }
       return startDate && startDate > today;
     });
-    const liveGbSets = sets.filter((set) => {
+    const liveGbSets = objSets.filter((set) => {
       let startDate;
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         startDate = DateTime.fromISO(set.gbLaunch, { zone: "utc" });
@@ -315,7 +314,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
       });
       return startDate && startDate <= today && (endDate >= yesterday || !set.gbEnd);
     });
-    const postGbSets = sets.filter((set) => {
+    const postGbSets = objSets.filter((set) => {
       const endDate = DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
         hour: 23,
         minute: 59,
@@ -327,7 +326,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
 
     const baseObj = {
       name: name,
-      total: sets.length,
+      total: objSets.length,
       pie: {
         ic: icSets.length || undefined,
         preGb: preGbSets.length || undefined,
@@ -338,16 +337,16 @@ const createStatusData = (sets: StatisticsSetType[]) => {
 
     if (prop && list) {
       const sunburstSets = [icSets, preGbSets, liveGbSets, postGbSets];
-      const sunburst: StatusDataObjectSunburstChild<true>[] = sunburstSets.map((sets) => {
-        const childSets = list.map((val) => {
-          const filteredSets = filterPropSets(sets, prop, val);
+      const sunburst: StatusDataObjectSunburstChild<true>[] = sunburstSets.map((statusSets) => {
+        const children = list.map((val) => {
+          const filteredSets = filterPropSets(statusSets, prop, val);
           return {
             id: val,
             val: filteredSets.length,
           };
         });
         return {
-          children: childSets,
+          children,
         };
       });
       return {
@@ -359,16 +358,16 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   };
 
   statusData.summary = sanitiseStatusData([
-    createStatusDataObject(sets, "Current keyset status", "profile", lists.profile),
+    createStatusDataObject(sets, "Current keyset status", "profile", profileNames),
   ])[0];
 
   objectKeys(statusData.breakdown).forEach((prop) => {
     const data =
       prop === "profile"
-        ? lists[prop].map((name) => createStatusDataObject(filterPropSets(sets, prop, name), name))
+        ? sanitiseStatusData(lists[prop].map((name) => createStatusDataObject(filterPropSets(sets, prop, name), name)))
         : sanitiseStatusData(
             lists[prop].map((name) =>
-              createStatusDataObject(filterPropSets(sets, prop, name), name, "profile", lists.profile)
+              createStatusDataObject(filterPropSets(sets, prop, name), name, "profile", profileNames)
             )
           );
     statusData.breakdown[prop] = data;
