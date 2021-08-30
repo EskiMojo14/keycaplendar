@@ -156,9 +156,10 @@ $overlay-values: (
     }
 
     @each $overlay-elevation, $overlay-percent in $overlay-values {
-      #{$theme-name + "|elevated-surface" + $overlay-elevation}: overlay-elevation(
-        map-get($theme, surface),
-        $overlay-elevation
+      #{$theme-name + "|elevated-surface" + $overlay-elevation}: if(
+        map-get($theme, dark),
+        overlay-elevation(map-get($theme, surface), $overlay-elevation),
+        map-get($theme, surface)
       );
     }
   }
