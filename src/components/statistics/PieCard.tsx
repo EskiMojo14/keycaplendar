@@ -85,7 +85,6 @@ export const StatusCard = (props: StatusCardProps) => {
             }
             value="val"
             margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
-            childColor={{ from: "color", modifiers: [["opacity", 0.5]] }}
             borderColor={currentTheme?.elevatedSurface1}
             borderWidth={2}
             cornerRadius={4}
