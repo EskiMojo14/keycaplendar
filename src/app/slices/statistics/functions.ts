@@ -28,6 +28,8 @@ import {
   StatsTab,
   StatusData,
   StatusDataObject,
+  StatusDataObjectSunburstChild,
+  StatusDataObjectSunburstChildWithChild,
   TimelinesData,
   TimelinesDataObject,
   VendorData,
@@ -91,6 +93,10 @@ export const getData = async () => {
       queue.notify({ title: "Failed to create statistics data: " + error });
     });
 };
+
+const sunburstChildHasChildren = <Optimised extends true | false = false>(
+  child: StatusDataObjectSunburstChild<Optimised>
+): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 
 const hydrateData = ({ timelines, status, shipped, duration, vendors }: StatisticsData<true>) => {
   const hydrateTimelinesData = (data: Record<string, string | number>[], months: string[], profiles: string[]) =>
@@ -170,9 +176,9 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
   ): StatusDataObject[] =>
     data.map(({ sunburst, pie, ...datum }) => {
       const { ic = 0, preGb = 0, liveGb = 0, postGb = 0 } = pie || {};
-      const hydratedPie = { ic: ic, preGb: preGb || 0, liveGb: liveGb || 0, postGb: postGb || 0 };
+      const hydratedPie = { ic: ic, preGb: preGb, liveGb: liveGb, postGb: postGb };
       const defaultSunburst = {
-        id: "Status",
+        id: datum.name,
         children: [hydratedPie.ic, hydratedPie.preGb, hydratedPie.liveGb, hydratedPie.postGb].map((val, index) => ({
           id: ids[index],
           val,
@@ -183,20 +189,26 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           ...datum,
           pie: hydratedPie,
           sunburst: {
-            id: "status",
+            id: datum.name,
             children: Array(4)
               .fill("")
               .map((_e, arrayIndex) => {
-                const { index = 0, ...foundObject } =
-                  sunburst.find(({ index }) => index && index === arrayIndex) ||
-                  (sunburst.length === 1 && !hasKey(sunburst[0], "index"))
-                    ? sunburst[0]
-                    : {};
-                return {
-                  ...defaultSunburst.children[arrayIndex],
-                  ...foundObject,
-                  id: ids[arrayIndex],
-                };
+                const object = sunburst.find(({ index }) => typeof index === "number" && index === arrayIndex);
+                const { index = 0, ...foundObject } = object?.index
+                  ? object
+                  : sunburst[0].index === undefined
+                  ? sunburst[0]
+                  : { id: "", children: [] };
+                return sunburstChildHasChildren(foundObject)
+                  ? {
+                      ...foundObject,
+                      children: foundObject.children.map(
+                        ({ index, id, ...child }) =>
+                          ({ ...child, id: `${ids[arrayIndex]} - ${id}` } as StatusDataObjectSunburstChild)
+                      ),
+                      id: ids[arrayIndex],
+                    }
+                  : { ...defaultSunburst.children[arrayIndex], ...foundObject, id: ids[arrayIndex] };
               }),
           },
         };

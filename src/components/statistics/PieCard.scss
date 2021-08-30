@@ -20,10 +20,9 @@
       height: 100%;
       display: flex;
       align-items: center;
-      padding: 16px;
       > div {
-        min-height: 256px;
-        max-height: 256px;
+        min-height: 256px + 16px;
+        max-height: 256px + 16px;
       }
     }
     .table-container {
