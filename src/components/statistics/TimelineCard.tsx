@@ -134,7 +134,9 @@ export const ShippedCard = (props: ShippedCardProps) => {
         </div>
       </div>
       <div className="timeline-container">
-        <div className="timeline-chart-container timelines">{barChart}</div>
+        <div className="timeline-chart-container-container">
+          <div className="timeline-chart-container timelines">{barChart}</div>
+        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>
@@ -394,7 +396,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         </div>
       </div>
       <div className="timeline-container">
-        <div className="timeline-chart-container timelines">{barChart}</div>
+        <div className="timeline-chart-container-container">
+          <div className="timeline-chart-container timelines">{barChart}</div>
+        </div>
         {selectChips}
         {filterChips}
         {props.note ? (

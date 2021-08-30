@@ -154,7 +154,9 @@ export const TableCard = (props: TableCardProps) => {
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container">{barChart}</div>
+        <div className="chart-container-container">
+          <div className="chart-container">{barChart}</div>
+        </div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>

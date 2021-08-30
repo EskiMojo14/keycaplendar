@@ -34,13 +34,20 @@
     display: flex;
     flex-direction: column;
     .chart-container {
-      max-width: 100%;
+      box-sizing: border-box;
+      min-width: 840px;
+      min-height: 210px;
       padding-top: 1 / 4 * 100%;
-      margin-bottom: 16px;
       position: relative;
       > div {
         position: absolute;
         top: 0;
+      }
+      &-container {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin-bottom: 16px;
       }
     }
     .table-container {
@@ -71,8 +78,9 @@
     }
   }
   &.full-span {
-    .chart-container .ct-chart {
-      min-width: 840px;
+    .chart-container {
+      min-width: 1280px;
+      min-height: 320px;
     }
   }
 }

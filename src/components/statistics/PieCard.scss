@@ -22,6 +22,7 @@
     .pie-chart-container {
       display: flex;
       align-items: center;
+      box-sizing: border-box;
       padding-top: 1 / 1 * 100%;
       position: relative;
       > div {
@@ -67,6 +68,8 @@
         display: flex;
         justify-content: center;
         padding-top: 1 / 4 * 100%;
+        min-height: 256px;
+        min-width: 256px;
       }
       .table-container {
         @include rtl.reflexive-box(margin, left, 16px);
