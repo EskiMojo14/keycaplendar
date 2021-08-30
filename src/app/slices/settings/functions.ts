@@ -6,7 +6,6 @@ import store from "~/app/store";
 import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
 import { ViewType } from "./types";
 import { setTheme } from "@s/common";
-import { Interval } from "@s/common/constructors";
 import { hasKey } from "@s/util/functions";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
@@ -192,7 +191,7 @@ export const checkTheme = (state = store.getState()) => {
 
 export const setApplyTheme = (applyTheme: string, write = true) => {
   dispatch(setSettings({ applyTheme: applyTheme }));
-  const timed = new Interval(checkTheme, 1000 * 60);
+  setInterval(checkTheme, 1000 * 60);
   if (applyTheme === "system") {
     setTimeout(checkTheme, 1);
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
@@ -201,9 +200,6 @@ export const setApplyTheme = (applyTheme: string, write = true) => {
     });
   } else {
     setTimeout(checkTheme, 1);
-  }
-  if (applyTheme !== "timed") {
-    setTimeout(timed.clear, 1000 * 10);
   }
   if (write) {
     syncSetting("applyTheme", applyTheme);

@@ -5,7 +5,6 @@ import firebase from "@s/firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "@s/common/constants";
 import { DateSortKeys, SetType } from "@s/main/types";
-import { ThemeMap } from "@s/common/types";
 
 const storage = firebase.storage();
 
@@ -494,21 +493,3 @@ export const localeUses24HourTime = (langCode?: string) =>
       .formatToParts(new Date(2020, 0, 1, 13))
       .find((part) => part.type === "hour")?.value.length === 2
   );
-
-/** Gets according text colour for given theme background colour.
- * @param bgColor Theme colour to put text on
- * @param themeMap Theme map to check against.
- */
-
-export const getTextColour = (bgColor: string, themeMap: ThemeMap) => {
-  switch (bgColor) {
-    case themeMap.primary:
-      return themeMap.onPrimary;
-    case themeMap.secondary:
-      return themeMap.onSecondary;
-    case themeMap.error:
-      return themeMap.onError;
-    default:
-      return themeMap.textHigh;
-  }
-};

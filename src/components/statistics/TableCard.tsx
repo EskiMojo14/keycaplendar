@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
+import { getTextColour } from "@s/common/functions";
 import { ThemeMap } from "@s/common/types";
+import { filterLabels } from "@s/statistics/functions";
 import { Categories, CountDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, getTextColour, pluralise } from "@s/util/functions";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -23,7 +25,6 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TableCard.scss";
-import { filterLabels } from "@s/statistics/functions";
 
 type TableCardProps = {
   data: CountDataObject;
@@ -82,12 +83,12 @@ export const TableCard = (props: TableCardProps) => {
       <ResponsiveBar
         data={chartData.data}
         keys={["count"]}
-        margin={{ top: 48, right: 64, bottom: 48, left: 64 }}
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
         colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
         padding={0.33}
         labelSkipWidth={16}
-        labelSkipHeight={1}
+        labelSkipHeight={16}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
         axisLeft={{
           legend: "Count",
@@ -97,7 +98,7 @@ export const TableCard = (props: TableCardProps) => {
         }}
         axisBottom={{
           legend: props.unit,
-          legendOffset: 32,
+          legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
         }}

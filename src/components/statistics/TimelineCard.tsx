@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { Overwrite, ThemeMap } from "@s/common/types";
+import { useAppSelector } from "~/app/hooks";
+import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
+import { getTextColour } from "@s/common/functions";
+import { ThemeMap } from "@s/common/types";
+import { filterLabels } from "@s/statistics/functions";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
 import { addOrRemove, alphabeticalSortPropCurried, hasKey, iconObject, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
@@ -20,12 +24,12 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TimelineCard.scss";
-import { useAppSelector } from "~/app/hooks";
-import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
-import { filterLabels } from "@s/statistics/functions";
 
 type ShippedCardProps = {
   data: ShippedDataObject;
+  months: string[];
+  category: string;
+  theme?: Exclude<keyof ThemeMap, "dark">;
   breakdownData?: ShippedDataObject[];
   summary?: boolean;
   defaultType?: "bar" | "line";
@@ -34,9 +38,13 @@ type ShippedCardProps = {
 };
 
 export const ShippedCard = (props: ShippedCardProps) => {
+  const nivoTheme = useContext(NivoThemeContext);
+  const currentTheme = useAppSelector(selectCurrentThemeMap);
+
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  useEffect(() => setSelectedIndex(-1), [props.category]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
-  const chartData =
+  const selectedData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
@@ -57,6 +65,33 @@ export const ShippedCard = (props: ShippedCardProps) => {
         </ChipSet>
       </div>
     ) : null;
+  const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
+  const barChart =
+    graphType === "bar" ? (
+      <ResponsiveBar
+        data={selectedData.months}
+        indexBy={"month"}
+        keys={["shipped", "unshipped"]}
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme[props.theme || "primary"], currentTheme.grey1] : undefined}
+        padding={0.33}
+        labelSkipHeight={16}
+        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+      />
+    ) : null;
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
@@ -70,7 +105,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
             {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
+            {pluralise`${selectedData.total} ${[selectedData.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -99,6 +134,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         </div>
       </div>
       <div className="timeline-container">
+        <div className="timeline-chart-container timelines">{barChart}</div>
         <div className="table-container">
           <DataTable className="rounded">
             <DataTableContent>
@@ -113,13 +149,13 @@ export const ShippedCard = (props: ShippedCardProps) => {
                   <DataTableCell>
                     <div className="indicator shipped"></div>Shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.shipped}</DataTableCell>
+                  <DataTableCell isNumeric>{selectedData.shipped}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>
                     <div className="indicator not-shipped"></div>Not shipped
                   </DataTableCell>
-                  <DataTableCell isNumeric>{chartData.unshipped}</DataTableCell>
+                  <DataTableCell isNumeric>{selectedData.unshipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
@@ -136,36 +172,23 @@ export const ShippedCard = (props: ShippedCardProps) => {
   );
 };
 
-export type CommonTimelinesCardProps = {
+export type TimelinesCardProps = {
   data: TimelinesDataObject;
   chartKeys: string[];
+  months: string[];
+  category: string;
   singleTheme?: Exclude<keyof ThemeMap, "dark">;
   defaultType?: "bar" | "line";
-  category?: string;
   selectable?: boolean;
   filterable?: boolean;
   allProfiles?: string[];
-  months: string[];
-  summary?: false;
-  profile?: false;
+  summary?: boolean;
   breakdownData?: TimelinesDataObject[];
   overline?: React.ReactNode;
   note?: React.ReactNode;
 };
 
-export type SummaryTimelinesCardProps = Overwrite<
-  CommonTimelinesCardProps,
-  {
-    summary: true;
-    breakdownData?: { name: string; total: number; profiles?: string[] }[];
-  }
->;
-
-export const TimelinesCard = <
-  Props extends CommonTimelinesCardProps | SummaryTimelinesCardProps = CommonTimelinesCardProps
->(
-  props: Props
-) => {
+export const TimelinesCard = (props: TimelinesCardProps) => {
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
   const graphColors = useAppSelector(selectCurrentGraphColors);
@@ -173,9 +196,10 @@ export const TimelinesCard = <
   const [selectedProfile, setSelectedProfile] = useState("");
   useEffect(() => setSelectedProfile(""), [props.category]);
 
-  const selectedData = props.selectable
-    ? props.breakdownData?.find(({ name }) => name === selectedProfile) || props.data
-    : props.data;
+  const selectedData =
+    props.selectable && props.breakdownData && selectedProfile
+      ? props.breakdownData.find(({ name }) => name === selectedProfile) || props.data
+      : props.data;
 
   const [filtered, setFiltered] = useState<string[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
@@ -297,28 +321,22 @@ export const TimelinesCard = <
       : props.filterable && filtered.length
       ? props.chartKeys.filter((key) => filtered.includes(key))
       : props.chartKeys;
-  const filteredData = useMemo(
-    () =>
-      props.data.months.map((month) =>
-        Object.entries(month)
-          .filter(([key]) => key === "month" || allowedKeys.includes(key))
-          .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as Record<string, string | number>)
-      ),
-    [selectedProfile, filtered, props.selectable, props.filterable, props.data.months]
-  );
   const barChart =
     graphType === "bar" ? (
       <ResponsiveBar
-        data={filteredData}
+        data={selectedData.months}
         indexBy={"month"}
-        keys={props.chartKeys}
-        margin={{ top: 48, right: 64, bottom: 48, left: 64 }}
+        keys={allowedKeys}
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
         colors={
           currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
         }
         padding={0.33}
-        enableLabel={false}
+        labelSkipHeight={16}
+        labelTextColor={
+          currentTheme ? ({ color }) => getTextColour(color, currentTheme, currentTheme.onSecondary) : undefined
+        }
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -327,7 +345,7 @@ export const TimelinesCard = <
         }}
         axisBottom={{
           legend: "Month",
-          legendOffset: 32,
+          legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
         }}

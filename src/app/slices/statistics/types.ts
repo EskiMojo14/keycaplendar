@@ -115,7 +115,7 @@ export type ShippedDataObject<Optimised extends true | false = false> = Optimise
       total: number;
       shipped: number;
       unshipped: number;
-      months: { month?: string; shipped: number; unshipped: number }[];
+      months: { month: string; shipped: number; unshipped: number }[];
     };
 
 export type ShippedData<Optimised extends true | false = false> = {

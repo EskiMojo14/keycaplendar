@@ -34,6 +34,25 @@ import graphMap from "~/_graph-colors.module.scss";
 
 const { dispatch } = store;
 
+/** Gets according text colour for given theme background colour.
+ * @param bgColor Theme colour to put text on
+ * @param themeMap Theme map to check against.
+ * @param [defaultColor=themeMap.textHigh] Default text colour to use if no match found.
+ */
+
+export const getTextColour = (bgColor: string, themeMap: ThemeMap, defaultColor = themeMap.textHigh) => {
+  switch (bgColor) {
+    case themeMap.primary:
+      return themeMap.onPrimary;
+    case themeMap.secondary:
+      return themeMap.onSecondary;
+    case themeMap.error:
+      return themeMap.onError;
+    default:
+      return defaultColor;
+  }
+};
+
 export const saveTheme = () => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
     const [theme, prop] = key.split("|");

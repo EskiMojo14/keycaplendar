@@ -28,7 +28,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard } from "./PieCard";
 import { TableCard } from "./TableCard";
-import { ShippedCard, SummaryTimelinesCardProps, TimelinesCard } from "./TimelineCard";
+import { ShippedCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
 
@@ -334,7 +334,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
-          <TimelinesCard<SummaryTimelinesCardProps>
+          <TimelinesCard
             data={statisticsData.timelines[settings.summary].summary}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
             months={statisticsData.timelines[settings.summary].months}
@@ -348,7 +348,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
             summary
           />
-          <TimelinesCard<SummaryTimelinesCardProps>
+          <TimelinesCard
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
             chartKeys={statisticsData.timelines[settings.summary].allProfiles}
             months={statisticsData.timelines[settings.summary].months}
@@ -366,7 +366,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           />
           <ShippedCard
             data={statisticsData.shipped.summary}
+            months={statisticsData.shipped.months}
             breakdownData={statisticsData.shipped.breakdown.profile}
+            category={settings.summary}
             overline="Shipped"
             summary
           />
@@ -426,7 +428,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
           {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard key={data.name} data={data} />
+            <ShippedCard
+              key={data.name}
+              data={data}
+              months={statisticsData.shipped.months}
+              category={settings.shipped}
+            />
           ))}
         </div>
       ),
@@ -488,7 +495,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             delay: "0s",
           }}
-          slideCount={3}
+          slideCount={statsTabs.length}
           index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
           slideRenderer={slideRenderer}

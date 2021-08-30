@@ -107,6 +107,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
         ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
       };
       const object = data.find(({ index }) => index === monthIndex);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { index = 0, ...foundObject } =
         typeof object?.index === "number" ? object : data.length === 1 ? data[0] : {};
       return { ...blankObject, ...foundObject };
@@ -196,6 +197,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
               .fill("")
               .map((_e, arrayIndex) => {
                 const object = sunburst.find(({ index }) => typeof index === "number" && index === arrayIndex);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { index = 0, ...foundObject } =
                   typeof object?.index === "number"
                     ? object
@@ -252,9 +254,12 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           shipped: 0,
           unshipped: 0,
         };
+        const object = monthData.find(({ index }) => index === monthIndex);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { index = 0, ...foundObject } =
-          monthData.find(({ index }) => index === monthIndex) ||
-          (monthData.length === 1 && !hasKey(monthData[0], "index"))
+          typeof object?.index === "number"
+            ? object
+            : monthData.length === 1 && monthData[0].index === undefined
             ? monthData[0]
             : {};
         return { ...blankObject, ...foundObject };
@@ -302,6 +307,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
                 typeof datum[idIsIndex ? "id" : "index"] === "number" &&
                 datum[idIsIndex ? "id" : "index"] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
             );
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { index = 0, ...foundObject } =
               typeof object?.[idIsIndex ? "id" : "index"] === "number"
                 ? object

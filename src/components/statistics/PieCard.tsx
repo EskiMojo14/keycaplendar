@@ -2,8 +2,9 @@ import React, { useState, useContext } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
+import { getTextColour } from "@s/common/functions";
 import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, getTextColour, pluralise } from "@s/util/functions";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
@@ -19,6 +20,7 @@ import {
 import { ResponsiveSunburst } from "@nivo/sunburst";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./PieCard.scss";
+
 type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
