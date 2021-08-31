@@ -80,6 +80,12 @@ export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) =
           stroke: currentThemeMap.divider,
         },
       },
+      crosshair: {
+        line: {
+          stroke: currentThemeMap.textMedium,
+          strokeOpacity: 1,
+        },
+      },
       tooltip: {
         container: {
           fontFamily: "inherit",

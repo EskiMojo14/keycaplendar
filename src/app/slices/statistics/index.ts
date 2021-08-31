@@ -23,6 +23,7 @@ export const initialState: StatisticsState = {
           total: 0,
           profiles: [],
           months: [],
+          monthsLine: [],
         },
         breakdown: {
           profile: [],
@@ -38,6 +39,7 @@ export const initialState: StatisticsState = {
           total: 0,
           profiles: [],
           months: [],
+          monthsLine: [],
         },
         breakdown: {
           profile: [],
@@ -69,6 +71,7 @@ export const initialState: StatisticsState = {
         shipped: 0,
         unshipped: 0,
         months: [],
+        monthsLine: [],
       },
       months: [],
       breakdown: {
@@ -88,6 +91,7 @@ export const initialState: StatisticsState = {
           range: "",
           standardDev: 0,
           data: [],
+          dataLine: [],
         },
         breakdown: {
           profile: [],
@@ -105,6 +109,7 @@ export const initialState: StatisticsState = {
           range: "",
           standardDev: 0,
           data: [],
+          dataLine: [],
         },
         breakdown: {
           profile: [],
@@ -123,6 +128,7 @@ export const initialState: StatisticsState = {
         range: "",
         standardDev: 0,
         data: [],
+        dataLine: [],
       },
       breakdown: {
         profile: [],

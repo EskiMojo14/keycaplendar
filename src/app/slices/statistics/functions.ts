@@ -102,7 +102,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
   const hydrateTimelinesData = (data: Record<string, string | number>[], months: string[], profiles: string[]) =>
     months.map((month, monthIndex) => {
       const blankObject = {
-        month: months[monthIndex],
+        month: month,
         index: monthIndex,
         ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
       };
@@ -243,13 +243,12 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       shipped: 0,
       unshipped: 0,
       months: [],
+      monthsLine: [],
     };
-    return data.map(({ months: monthData, ...datum }) => ({
-      ...blankObject,
-      ...datum,
-      months: months.map((month, monthIndex) => {
+    return data.map(({ months: monthData, ...datum }) => {
+      const monthsData = months.map((month, monthIndex) => {
         const blankObject = {
-          month: months[monthIndex],
+          month: month,
           index: monthIndex,
           shipped: 0,
           unshipped: 0,
@@ -263,8 +262,14 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
             ? monthData[0]
             : {};
         return { ...blankObject, ...foundObject };
-      }),
-    }));
+      });
+      return {
+        ...blankObject,
+        ...datum,
+        months: monthsData,
+        monthsLine: (["shipped", "unshipped"] as const).map((key) => barDataToLineData(monthData, "month", key)),
+      };
+    });
   };
 
   const hydratedShippedData: ShippedData = {
@@ -293,33 +298,36 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       range: "",
       standardDev: 0,
       data: [],
+      dataLine: [],
     };
     return data.map(({ data, ...datum }) => {
       const maxId = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0), 0);
+      const chartData = Array(idIsIndex ? maxId : maxId + 1)
+        .fill("")
+        .map((_e, arrayIndex) => {
+          const object = data.find(
+            (datum) =>
+              typeof datum[idIsIndex ? "id" : "index"] === "number" &&
+              datum[idIsIndex ? "id" : "index"] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
+          );
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { index = 0, ...foundObject } =
+            typeof object?.[idIsIndex ? "id" : "index"] === "number"
+              ? object
+              : data.length === 1 && data[0][idIsIndex ? "id" : "index"] === undefined
+              ? data[0]
+              : { id: idIsIndex ? arrayIndex + 1 : arrayIndex, count: 0 };
+          return {
+            id: foundObject.id,
+            count: foundObject.count,
+          };
+        })
+        .slice(excludeZero ? 1 : 0);
       return {
         ...blankObject,
         ...datum,
-        data: Array(idIsIndex ? maxId : maxId + 1)
-          .fill("")
-          .map((_e, arrayIndex) => {
-            const object = data.find(
-              (datum) =>
-                typeof datum[idIsIndex ? "id" : "index"] === "number" &&
-                datum[idIsIndex ? "id" : "index"] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
-            );
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { index = 0, ...foundObject } =
-              typeof object?.[idIsIndex ? "id" : "index"] === "number"
-                ? object
-                : data.length === 1 && data[0][idIsIndex ? "id" : "index"] === undefined
-                ? data[0]
-                : { id: idIsIndex ? arrayIndex + 1 : arrayIndex, count: 0 };
-            return {
-              id: foundObject.id,
-              count: foundObject.count,
-            };
-          })
-          .slice(excludeZero ? 1 : 0),
+        data: chartData,
+        dataLine: [barDataToLineData(chartData, datum.name, "id", "count")],
       };
     });
   };
@@ -437,28 +445,33 @@ export const barDataToLineData = <Datum extends Record<string, any>>(
   datumArray: Datum[],
   id: string,
   xKey: keyof Datum | ((datum: Datum) => string | number) = "id",
-  yKeys: (keyof Datum | ((datum: Datum) => string | number))[] = ["value" as keyof Datum]
+  yKey: (keyof Datum | ((datum: Datum) => string | number))[] | keyof Datum | ((datum: Datum) => string | number) = [
+    "value" as keyof Datum,
+  ]
 ): {
   id: string | number;
   data: {
     x: number | string | Date;
     y: number | string | Date;
   }[];
-} => ({
-  id,
-  data: yKeys
-    .map((yKey) =>
-      datumArray.map((datum) => {
-        const x = typeof xKey === "function" ? xKey(datum) : datum[xKey];
-        const y = typeof yKey === "function" ? yKey(datum) : datum[yKey];
-        return {
-          x,
-          y,
-        };
-      })
-    )
-    .flat(1),
-});
+} => {
+  const yKeys = yKey instanceof Array ? yKey : [yKey];
+  return {
+    id,
+    data: yKeys
+      .map((yKey) =>
+        datumArray.map((datum) => {
+          const x = typeof xKey === "function" ? xKey(datum) : datum[xKey];
+          const y = typeof yKey === "function" ? yKey(datum) : datum[yKey];
+          return {
+            x,
+            y,
+          };
+        })
+      )
+      .flat(1),
+  };
+};
 
 /** Takes a set of breakpoint tuples and returns a filter function.
  * @param {number[][]} breakpoints Breakpoints

@@ -19,6 +19,7 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { BarTooltipProps, ResponsiveBar } from "@nivo/bar";
+import { ResponsiveLine } from "@nivo/line";
 import { BasicTooltip } from "@nivo/tooltip";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
@@ -47,7 +48,7 @@ export const TableCard = (props: TableCardProps) => {
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
   const selectChips =
     props.summary && props.breakdownData ? (
       <div className="table-chips-container">
@@ -111,6 +112,38 @@ export const TableCard = (props: TableCardProps) => {
         )}
       />
     ) : null;
+  const lineChart =
+    graphType === "line" ? (
+      <ResponsiveLine
+        data={chartData.dataLine}
+        yScale={{ type: "linear", min: 0 }}
+        curve="cardinal"
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        enableArea
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        tooltip={({
+          point: {
+            data: { xFormatted, yFormatted },
+            color,
+          },
+        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: props.unit,
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+        useMesh
+        isInteractive
+      />
+    ) : null;
   return (
     <Card className="table-card full-span">
       <div className="title-container">
@@ -154,7 +187,10 @@ export const TableCard = (props: TableCardProps) => {
       </div>
       <div className="content-container">
         <div className="chart-container-container">
-          <div className="chart-container">{barChart}</div>
+          <div className="chart-container">
+            {barChart}
+            {lineChart}
+          </div>
         </div>
         <div className="table-container">
           <DataTable className="rounded">

@@ -1,3 +1,4 @@
+import { Serie as LineSeries } from "@nivo/line";
 import { Overwrite } from "@s/common/types";
 import { statsTabs } from "./constants";
 
@@ -28,12 +29,20 @@ export type StatisticsSortType = {
   vendors: Sorts;
 };
 
-export type TimelinesDataObject<Optimised extends true | false = false> = {
-  name: string;
-  total: number;
-  profiles: string[];
-  months: Record<string, Optimised extends true ? number : string | number>[];
-};
+export type TimelinesDataObject<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      name: string;
+      total: number;
+      profiles: string[];
+      months: Record<string, number>[];
+    }
+  : {
+      name: string;
+      total: number;
+      profiles: string[];
+      months: Record<string, string | number>[];
+      monthsLine: LineSeries[];
+    };
 
 export type TimelinesData<Optimised extends true | false = false> = Record<
   Categories,
@@ -118,6 +127,7 @@ export type ShippedDataObject<Optimised extends true | false = false> = Optimise
       shipped: number;
       unshipped: number;
       months: { month: string; shipped: number; unshipped: number }[];
+      monthsLine: LineSeries[];
     };
 
 export type ShippedData<Optimised extends true | false = false> = {
@@ -146,6 +156,7 @@ export type CountDataObject<Optimised extends true | false = false> = Optimised 
       range: string;
       standardDev: number;
       data: { id: number; count: number }[];
+      dataLine: LineSeries[];
     };
 
 export type DurationData<Optimised extends true | false = false> = Record<
