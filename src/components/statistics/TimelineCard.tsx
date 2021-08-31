@@ -74,7 +74,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         keys={["shipped", "unshipped"]}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"], currentTheme.grey1] : undefined}
+        colors={currentTheme ? [currentTheme[props.theme || "primary"], currentTheme.grey2] : undefined}
         padding={0.33}
         labelSkipHeight={16}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}

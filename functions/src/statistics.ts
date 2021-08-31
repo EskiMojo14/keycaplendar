@@ -144,7 +144,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       months: [],
       allProfiles: [],
       summary: {
-        name: "",
+        name: "ICs per month",
         total: 0,
         profiles: [],
         months: [],
@@ -159,7 +159,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       months: [],
       allProfiles: [],
       summary: {
-        name: "",
+        name: "GBs per month",
         total: 0,
         profiles: [],
         months: [],
@@ -209,7 +209,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     });
 
     timelinesData[cat].summary = {
-      name: "Summary",
+      name: `${cat === "icDate" ? "IC" : "GB"}s per month`,
       total: catSets.length,
       profiles: profileNames,
       months: sanitiseBarData(profileMonths),
