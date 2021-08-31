@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
@@ -121,6 +121,9 @@ export const StatusCard = (props: StatusCardProps) => {
       }
     }
   };
+  const noChildren = useMemo(() => !sunburstChildHasChildren(chartData.sunburst.children[0] || {}), [
+    chartData.sunburst.children,
+  ]);
   return (
     <Card
       className={classNames("pie-card", {
@@ -192,7 +195,7 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="ic">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "IC"} onClick={() => toggleSeries("IC")} />
+                    <Checkbox checked={data.id === "IC"} onClick={() => toggleSeries("IC")} disabled={noChildren} />
                   </DataTableCell>
                   <DataTableCell>IC</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.ic}</DataTableCell>
@@ -200,7 +203,11 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="pre-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "Pre GB"} onClick={() => toggleSeries("Pre GB")} />
+                    <Checkbox
+                      checked={data.id === "Pre GB"}
+                      onClick={() => toggleSeries("Pre GB")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>Pre GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.preGb}</DataTableCell>
@@ -208,7 +215,11 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="live-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "Live GB"} onClick={() => toggleSeries("Live GB")} />
+                    <Checkbox
+                      checked={data.id === "Live GB"}
+                      onClick={() => toggleSeries("Live GB")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>Live GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.liveGb}</DataTableCell>
@@ -216,7 +227,11 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="post-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "Post GB"} onClick={() => toggleSeries("Post GB")} />
+                    <Checkbox
+                      checked={data.id === "Post GB"}
+                      onClick={() => toggleSeries("Post GB")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>Post GB</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.postGb}</DataTableCell>
@@ -224,7 +239,11 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="post-gb-shipped">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "Shipped"} onClick={() => toggleSeries("Shipped")} />
+                    <Checkbox
+                      checked={data.id === "Shipped"}
+                      onClick={() => toggleSeries("Shipped")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>Shipped</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.postGbShipped}</DataTableCell>
