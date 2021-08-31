@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
@@ -113,7 +112,7 @@ export const TableCard = (props: TableCardProps) => {
       />
     ) : null;
   return (
-    <Card className={classNames("table-card", { "full-span": props.summary })}>
+    <Card className="table-card full-span">
       <div className="title-container">
         <div className="text-container">
           {props.overline ? (
