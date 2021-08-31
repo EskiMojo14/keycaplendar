@@ -28,7 +28,8 @@
 @use '@material/feature-targeting/_index' as feature-targeting;
 @use "@material/elevation/_index" as elevation;
 
-@use "@material/notched-outline/mixins" as notched-outline-mixins;
+@use "@material/notched-outline/_index" as notched-outline;
+@use "@material/theme/_index" as theme;
 
 // 1 - card, switch
 // 2 - contained button
@@ -965,7 +966,7 @@ $overlay-values: (
         @include select.dd-arrow-svg-bg_("#" + str_slice(ie_hex_str(map-get($variables, on-surface)), 4), 0.38);
       }
       &.mdc-select--outlined {
-        @include notched-outline-mixins.color(rgba(map-get($variables, on-surface), 0.16));
+        @include notched-outline.color(rgba(map-get($variables, on-surface), 0.16));
       }
     }
     .mdc-select__dropdown-icon {
