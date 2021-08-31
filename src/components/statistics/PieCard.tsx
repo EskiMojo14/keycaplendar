@@ -9,7 +9,6 @@ import { alphabeticalSortPropCurried, arrayIncludes, hasKey, objectKeys, plurali
 import { Card } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
-import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import {
   DataTable,
@@ -21,7 +20,6 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { ResponsiveSunburst, ComputedDatum, DatumId, SunburstCustomLayerProps } from "@nivo/sunburst";
-import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./PieCard.scss";
 
@@ -177,16 +175,7 @@ export const StatusCard = (props: StatusCardProps) => {
             <DataTableContent>
               <DataTableHead>
                 <DataTableRow>
-                  <DataTableHeadCell hasFormControl>
-                    {withTooltip(
-                      <IconButton
-                        icon="restart_alt"
-                        disabled={data === chartData.sunburst}
-                        onClick={() => setData(chartData.sunburst)}
-                      />,
-                      "Clear selection"
-                    )}
-                  </DataTableHeadCell>
+                  <DataTableHeadCell hasFormControl></DataTableHeadCell>
                   <DataTableHeadCell>Status</DataTableHeadCell>
                   <DataTableHeadCell isNumeric>Sets</DataTableHeadCell>
                 </DataTableRow>

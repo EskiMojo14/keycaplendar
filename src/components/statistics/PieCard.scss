@@ -63,9 +63,6 @@
             &--checkbox {
               width: 16px + 48px;
             }
-            .mdc-icon-button {
-              @include rtl.reflexive-box(margin, left, -4px);
-            }
           }
         }
       }
