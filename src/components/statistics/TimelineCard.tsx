@@ -44,6 +44,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [props.category]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const [stackedGraph, setStackedGraph] = useState(true);
   const selectedData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
@@ -72,6 +73,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         data={selectedData.months}
         indexBy={"month"}
         keys={["shipped", "unshipped"]}
+        groupMode={stackedGraph ? "stacked" : "grouped"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
         colors={currentTheme ? [currentTheme[props.theme || "primary"], currentTheme.grey2] : undefined}
@@ -109,10 +111,19 @@ export const ShippedCard = (props: ShippedCardProps) => {
           </Typography>
         </div>
         <div className="button-container">
+          {withTooltip(
+            <IconButton
+              icon={graphType === "line" ? "multiline_chart" : "bar_chart"}
+              onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
+              checked={stackedGraph}
+              onClick={() => setStackedGraph((bool) => !bool)}
+            />,
+            "Toggle stacked"
+          )}
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
-                icon="stacked_bar_chart"
+                icon={stackedGraph ? "stacked_bar_chart" : "bar_chart"}
                 selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
@@ -122,7 +133,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon="multiline_chart"
+                icon={stackedGraph ? "stacked_line_chart" : "multiline_chart"}
                 selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
@@ -205,6 +216,8 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
 
   const [filtered, setFiltered] = useState<string[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
+  const [stackedGraph, setStackedGraph] = useState(true);
+
   const setFilter = (profile: string) => {
     const newFiltered = addOrRemove(filtered, profile);
     setFiltered(newFiltered);
@@ -317,24 +330,30 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </div>
     ) : null;
   const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
-  const allowedKeys =
-    props.selectable && selectedProfile
-      ? [selectedProfile]
-      : props.filterable && filtered.length
-      ? props.chartKeys.filter((key) => filtered.includes(key))
-      : props.chartKeys;
+  const allowedKeys = useMemo(
+    () =>
+      props.selectable && selectedProfile
+        ? [selectedProfile]
+        : props.filterable && filtered.length
+        ? props.chartKeys.filter((key) => filtered.includes(key))
+        : props.chartKeys,
+    [props.selectable, selectedProfile, props.filterable, filtered, props.chartKeys]
+  );
+  const allowUnstacked = graphType === "line" || (allowedKeys.length <= 4 && !props.singleTheme);
   const barChart =
     graphType === "bar" ? (
       <ResponsiveBar
         data={selectedData.months}
         indexBy={"month"}
         keys={allowedKeys}
+        groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
         colors={
           currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
         }
         padding={0.33}
+        labelSkipWidth={16}
         labelSkipHeight={16}
         labelTextColor={
           currentTheme ? ({ color }) => getTextColour(color, currentTheme, currentTheme.onSecondary) : undefined
@@ -371,26 +390,40 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         </div>
         <div className="button-container">
           {filterButtons}
+          {!props.singleTheme
+            ? withTooltip(
+                <IconButton
+                  icon={graphType === "line" ? "multiline_chart" : "bar_chart"}
+                  onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
+                  checked={stackedGraph || !allowUnstacked}
+                  disabled={!allowUnstacked}
+                  onClick={() => setStackedGraph((bool) => !bool)}
+                />,
+                "Toggle stacked"
+              )
+            : null}
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
-                icon={props.singleTheme ? "bar_chart" : "stacked_bar_chart"}
+                icon={props.singleTheme || !(stackedGraph || !allowUnstacked) ? "bar_chart" : "stacked_bar_chart"}
                 selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
               />,
-              props.singleTheme ? "Bar chart" : "Stacked bar chart"
+              props.singleTheme || !(stackedGraph || !allowUnstacked) ? "Bar chart" : "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={props.singleTheme ? "show_chart" : "multiline_chart"}
+                icon={
+                  props.singleTheme || !(stackedGraph || !allowUnstacked) ? "multiline_chart" : "stacked_line_chart"
+                }
                 selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
               />,
-              props.singleTheme ? "Line chart" : "Multiline chart"
+              props.singleTheme || !(stackedGraph || !allowUnstacked) ? "Line chart" : "Stacked line chart"
             )}
           </SegmentedButton>
         </div>
