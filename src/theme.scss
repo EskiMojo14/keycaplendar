@@ -412,8 +412,8 @@ $overlay-values: (
     }
   }
   $timeline-series: (
-    shipped: map-get($variables, primary),
-    not-shipped: map-get($variables, grey-2),
+    shipped: map-get($variables, primary-dark),
+    not-shipped: map-get($variables, primary),
   );
   .timeline-card {
     @each $series, $color in $timeline-series {

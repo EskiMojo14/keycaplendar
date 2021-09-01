@@ -20,6 +20,8 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveLine } from "@nivo/line";
+import { BasicTooltip } from "@nivo/tooltip";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
@@ -29,7 +31,6 @@ type ShippedCardProps = {
   data: ShippedDataObject;
   months: string[];
   category: string;
-  theme?: Exclude<keyof ThemeMap, "dark">;
   breakdownData?: ShippedDataObject[];
   summary?: boolean;
   defaultType?: "bar" | "line";
@@ -76,7 +77,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         groupMode={stackedGraph ? "stacked" : "grouped"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"], currentTheme.grey2] : undefined}
+        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
         padding={0.33}
         labelSkipHeight={16}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
@@ -92,6 +93,39 @@ export const ShippedCard = (props: ShippedCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
+      />
+    ) : null;
+  const lineChart =
+    graphType === "line" ? (
+      <ResponsiveLine
+        data={selectedData.monthsLine}
+        yScale={{ type: "linear", min: 0, stacked: stackedGraph }}
+        curve="cardinal"
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        enableArea
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        tooltip={({
+          point: {
+            serieId,
+            data: { xFormatted, yFormatted },
+            color,
+          },
+        }) => <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+        useMesh
+        isInteractive
       />
     ) : null;
   return (
@@ -146,7 +180,10 @@ export const ShippedCard = (props: ShippedCardProps) => {
       </div>
       <div className="timeline-container">
         <div className="timeline-chart-container-container">
-          <div className="timeline-chart-container timelines">{barChart}</div>
+          <div className="timeline-chart-container timelines">
+            {barChart}
+            {lineChart}
+          </div>
         </div>
         <div className="table-container">
           <DataTable className="rounded">

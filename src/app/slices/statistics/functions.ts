@@ -267,7 +267,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
         ...blankObject,
         ...datum,
         months: monthsData,
-        monthsLine: (["shipped", "unshipped"] as const).map((key) => barDataToLineData(monthData, "month", key)),
+        monthsLine: (["shipped", "unshipped"] as const).map((key) => barDataToLineData(monthsData, key, "month", key)),
       };
     });
   };
