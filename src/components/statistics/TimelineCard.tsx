@@ -147,7 +147,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         <div className="button-container">
           {withTooltip(
             <IconButton
-              icon={graphType === "line" ? "multiline_chart" : "bar_chart"}
+              icon={graphType === "line" ? "show_chart" : "bar_chart"}
               onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
               checked={stackedGraph}
               onClick={() => setStackedGraph((bool) => !bool)}
@@ -167,13 +167,13 @@ export const ShippedCard = (props: ShippedCardProps) => {
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={stackedGraph ? "stacked_line_chart" : "multiline_chart"}
+                icon={stackedGraph ? "stacked_line_chart" : "show_chart"}
                 selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
               />,
-              "Multiline chart"
+              "Line chart"
             )}
           </SegmentedButton>
         </div>
@@ -430,7 +430,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           {!props.singleTheme
             ? withTooltip(
                 <IconButton
-                  icon={graphType === "line" ? "multiline_chart" : "bar_chart"}
+                  icon={graphType === "line" ? "show_chart" : "bar_chart"}
                   onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
                   checked={stackedGraph || !allowUnstacked}
                   disabled={!allowUnstacked}
@@ -452,9 +452,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={
-                  props.singleTheme || !(stackedGraph || !allowUnstacked) ? "multiline_chart" : "stacked_line_chart"
-                }
+                icon={props.singleTheme || !(stackedGraph || !allowUnstacked) ? "show_chart" : "stacked_line_chart"}
                 selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
