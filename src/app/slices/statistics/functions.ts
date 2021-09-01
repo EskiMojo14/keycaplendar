@@ -327,7 +327,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
         ...blankObject,
         ...datum,
         data: chartData,
-        dataLine: [barDataToLineData(chartData, datum.name, "id", "count")],
+        dataLine: [barDataToLineData(chartData, "Count series", "id", "count")],
       };
     });
   };
