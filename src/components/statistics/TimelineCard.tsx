@@ -431,7 +431,14 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             data: { xFormatted, yFormatted },
             color,
           },
-        }) => <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        }) => (
+          <BasicTooltip
+            id={serieId !== "Timeline series" ? `${serieId} - ${xFormatted}` : xFormatted}
+            value={yFormatted}
+            enableChip={true}
+            color={color}
+          />
+        )}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
