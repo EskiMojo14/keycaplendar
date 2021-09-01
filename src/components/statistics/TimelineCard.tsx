@@ -376,6 +376,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         : props.chartKeys,
     [props.selectable, selectedProfile, props.filterable, filtered, props.chartKeys]
   );
+  const lineData = useMemo(
+    () => selectedData.monthsLine.filter((series) => typeof series.id === "string" && allowedKeys.includes(series.id)),
+    [allowedKeys, selectedData.monthsLine]
+  );
   const allowUnstacked = graphType === "line" || (allowedKeys.length <= 4 && !props.singleTheme);
   const barChart =
     graphType === "bar" ? (
@@ -409,6 +413,41 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         }}
       />
     ) : null;
+  const lineChart =
+    graphType === "line" ? (
+      <ResponsiveLine
+        data={lineData.length === 1 ? lineData.map((series) => ({ ...series, id: "Timeline series" })) : lineData}
+        yScale={{ type: "linear", min: 0, stacked: stackedGraph }}
+        curve="cardinal"
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        enableArea
+        theme={nivoTheme}
+        colors={
+          currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
+        }
+        tooltip={({
+          point: {
+            serieId,
+            data: { xFormatted, yFormatted },
+            color,
+          },
+        }) => <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+        useMesh
+        isInteractive
+      />
+    ) : null;
   return (
     <Card className="timeline-card full-span">
       <div className="title-container">
@@ -419,7 +458,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {selectedData.name}
+            {props.data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${selectedData.total} ${[selectedData.total, "set"]}`}
@@ -465,7 +504,10 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </div>
       <div className="timeline-container">
         <div className="timeline-chart-container-container">
-          <div className="timeline-chart-container timelines">{barChart}</div>
+          <div className="timeline-chart-container timelines">
+            {barChart}
+            {lineChart}
+          </div>
         </div>
         {selectChips}
         {filterChips}

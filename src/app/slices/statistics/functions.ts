@@ -104,6 +104,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       const blankObject = {
         month: month,
         index: monthIndex,
+        summary: 0,
         ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
       };
       const object = data.find(({ index }) => index === monthIndex);
@@ -125,51 +126,65 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
           breakdown,
         },
       ]
-    ): TimelinesData => ({
-      ...obj,
-      [category]: {
-        allProfiles,
-        months,
-        summary: {
-          name,
-          total,
-          profiles,
-          months: hydrateTimelinesData(summaryMonths, months, profiles),
-        },
-        breakdown: objectEntries(breakdown).reduce(
-          (obj, [prop, array]) => ({
-            ...obj,
-            [prop]: array.map(
-              (
-                dataObj:
-                  | TimelinesDataObject<true>
-                  | {
-                      name: string;
-                      total: number;
-                    }
-              ) => {
-                if (typeGuard<TimelinesDataObject>(dataObj, (dataObj) => hasKey(dataObj, "profiles"))) {
-                  const { months: dataMonths, name, total, profiles } = dataObj;
-                  return {
-                    name,
-                    total,
-                    profiles,
-                    months: hydrateTimelinesData(dataMonths, months, profiles),
-                  };
-                } else {
-                  return {
-                    ...dataObj,
-                    profiles: dataObj.name,
-                    months: hydrateTimelinesData(summaryMonths, months, profiles),
-                  };
-                }
-              }
+    ): TimelinesData => {
+      const summaryMonthsData = hydrateTimelinesData(summaryMonths, months, profiles);
+      return {
+        ...obj,
+        [category]: {
+          allProfiles,
+          months,
+          summary: {
+            name,
+            total,
+            profiles,
+            months: summaryMonthsData,
+            monthsLine: ["summary", ...profiles].map((key) =>
+              barDataToLineData(summaryMonthsData, key, "month", key as keyof typeof summaryMonthsData[number])
             ),
-          }),
-          {} as typeof breakdown
-        ),
-      },
-    }),
+          },
+          breakdown: objectEntries(breakdown).reduce(
+            (obj, [prop, array]) => ({
+              ...obj,
+              [prop]: array.map(
+                (
+                  dataObj:
+                    | TimelinesDataObject<true>
+                    | {
+                        name: string;
+                        total: number;
+                      }
+                ) => {
+                  if (typeGuard<TimelinesDataObject>(dataObj, (dataObj) => hasKey(dataObj, "profiles"))) {
+                    const { months: dataMonths, name, total, profiles } = dataObj;
+                    const monthsData = hydrateTimelinesData(dataMonths, months, profiles);
+                    return {
+                      name,
+                      total,
+                      profiles,
+                      months: monthsData,
+                      monthsLine: profiles.map((key) =>
+                        barDataToLineData(monthsData, key, "month", key as keyof typeof monthsData[number])
+                      ),
+                    };
+                  } else {
+                    const monthsData = hydrateTimelinesData(summaryMonths, months, profiles);
+                    return {
+                      ...dataObj,
+                      profiles: dataObj.name,
+                      months: monthsData,
+                      monthsLine: profiles.map((key) =>
+                        barDataToLineData(monthsData, key, "month", key as keyof typeof monthsData[number])
+                      ),
+                    };
+                  }
+                }
+              ),
+            }),
+            {} as typeof breakdown
+          ),
+        },
+      };
+    },
     {} as TimelinesData
   );
 
