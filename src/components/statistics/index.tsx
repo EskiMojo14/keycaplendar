@@ -375,6 +375,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TableCard
             data={statisticsData.duration[settings.summary].summary}
             breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
+            tab="duration"
             category={settings.summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
@@ -384,8 +385,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <TableCard
             data={statisticsData.vendors.summary}
             breakdownData={statisticsData.vendors.breakdown.profile}
-            unit="Vendors"
+            tab="vendors"
             overline="Vendors"
+            unit="Vendors"
             note="Only includes sets that have completed GB."
             theme="secondary"
             summary
@@ -443,6 +445,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             <TableCard
               key={data.name}
               data={data}
+              tab="duration"
               category={settings.durationCat}
               unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
             />
@@ -452,7 +455,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       vendors: (
         <div className="stats-tab stats-grid vendors" key={key}>
           {statisticsData.vendors.breakdown[settings.vendors].map((data) => (
-            <TableCard key={data.name} data={data} unit="Vendors" />
+            <TableCard key={data.name} data={data} tab="vendors" unit="Vendors" />
           ))}
         </div>
       ),

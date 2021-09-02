@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { ThemeMap } from "@s/common/types";
+import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { Categories, CountDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
+import { NivoThemeContext } from "@c/util/ThemeProvider";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
@@ -23,12 +25,12 @@ import { ResponsiveLine } from "@nivo/line";
 import { BasicTooltip } from "@nivo/tooltip";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
-import { NivoThemeContext } from "@c/util/ThemeProvider";
 import "./TableCard.scss";
 
 type TableCardProps = {
   data: CountDataObject;
   unit: string;
+  tab: "duration" | "vendors";
   category?: Categories;
   defaultType?: "bar" | "line";
   theme?: Exclude<keyof ThemeMap, "dark">;
@@ -39,6 +41,15 @@ type TableCardProps = {
 };
 
 export const TableCard = (props: TableCardProps) => {
+  const dispatch = useAppDispatch();
+
+  const settings = useAppSelector(selectChartSettings);
+  const { type: graphType /*, stacked: stackedGraph */ } = settings[props.tab];
+  /*const setStackedGraph = (value: boolean) =>
+    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "stacked", value }));*/
+  const setGraphType = (value: "bar" | "line") =>
+    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "type", value }));
+
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
 
@@ -48,7 +59,6 @@ export const TableCard = (props: TableCardProps) => {
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
       : props.data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "line");
   const selectChips =
     props.summary && props.breakdownData ? (
       <div className="table-chips-container">

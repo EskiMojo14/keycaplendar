@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { StatsTab, StatisticsData, StatisticsType, StatisticsSortType } from "./types";
+import { StatsTab, StatisticsData, StatisticsType, StatisticsSortType, StatisticsChartSettingType } from "./types";
 
 type StatisticsState = {
   tab: StatsTab;
@@ -8,6 +8,7 @@ type StatisticsState = {
   data: StatisticsData;
   settings: StatisticsType;
   sort: StatisticsSortType;
+  chartSettings: StatisticsChartSettingType;
 };
 
 export const initialState: StatisticsState = {
@@ -154,6 +155,24 @@ export const initialState: StatisticsState = {
     duration: "total",
     vendors: "total",
   },
+  chartSettings: {
+    timelines: {
+      stacked: true,
+      type: "bar",
+    },
+    shipped: {
+      stacked: true,
+      type: "bar",
+    },
+    duration: {
+      stacked: true,
+      type: "line",
+    },
+    vendors: {
+      stacked: true,
+      type: "line",
+    },
+  },
 };
 
 export const statisticsSlice = createSlice({
@@ -183,6 +202,20 @@ export const statisticsSlice = createSlice({
       const { key, value } = action.payload;
       state.sort[key] = value;
     },
+    setStatisticsChartSetting: <
+      Tab extends keyof StatisticsChartSettingType,
+      Setting extends keyof StatisticsChartSettingType[Tab]
+    >(
+      state: StatisticsState,
+      action: PayloadAction<{
+        tab: Tab;
+        key: Setting;
+        value: StatisticsChartSettingType[Tab][Setting];
+      }>
+    ) => {
+      const { tab, key, value } = action.payload;
+      state.chartSettings[tab][key] = value;
+    },
   },
 });
 
@@ -192,6 +225,7 @@ export const {
   setStatisticsData,
   setStatisticsSetting,
   setStatisticsSort,
+  setStatisticsChartSetting,
 } = statisticsSlice.actions;
 
 export const selectTab = (state: RootState) => state.statistics.tab;
@@ -203,5 +237,7 @@ export const selectLoading = (state: RootState) => state.statistics.loading;
 export const selectSettings = (state: RootState) => state.statistics.settings;
 
 export const selectSort = (state: RootState) => state.statistics.sort;
+
+export const selectChartSettings = (state: RootState) => state.statistics.chartSettings;
 
 export default statisticsSlice.reducer;

@@ -29,6 +29,11 @@ export type StatisticsSortType = {
   vendors: Sorts;
 };
 
+export type StatisticsChartSettingType = Record<
+  Exclude<StatsTab, "status" | "summary">,
+  { stacked: boolean; type: "bar" | "line" }
+>;
+
 export type TimelinesDataObject<Optimised extends true | false = false> = Optimised extends true
   ? {
       name: string;

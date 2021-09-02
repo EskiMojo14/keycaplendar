@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { useAppSelector } from "~/app/hooks";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { ThemeMap } from "@s/common/types";
+import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
 import { addOrRemove, alphabeticalSortPropCurried, hasKey, iconObject, pluralise } from "@s/util/functions";
@@ -39,13 +40,22 @@ type ShippedCardProps = {
 };
 
 export const ShippedCard = (props: ShippedCardProps) => {
+  const dispatch = useAppDispatch();
+
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [props.category]);
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
-  const [stackedGraph, setStackedGraph] = useState(true);
+
+  const {
+    shipped: { type: graphType, stacked: stackedGraph },
+  } = useAppSelector(selectChartSettings);
+  const setStackedGraph = (value: boolean) =>
+    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "stacked", value }));
+  const setGraphType = (value: "bar" | "line") =>
+    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "type", value }));
+
   const selectedData =
     selectedIndex >= 0 && props.summary && props.breakdownData
       ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
@@ -150,7 +160,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
               icon={graphType === "line" ? "show_chart" : "bar_chart"}
               onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
               checked={stackedGraph}
-              onClick={() => setStackedGraph((bool) => !bool)}
+              onClick={() => setStackedGraph(!stackedGraph)}
             />,
             "Toggle stacked"
           )}
@@ -239,6 +249,7 @@ export type TimelinesCardProps = {
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {
+  const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
   const graphColors = useAppSelector(selectCurrentGraphColors);
@@ -252,8 +263,14 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       : props.data;
 
   const [filtered, setFiltered] = useState<string[]>([]);
-  const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
-  const [stackedGraph, setStackedGraph] = useState(true);
+
+  const {
+    timelines: { type: graphType, stacked: stackedGraph },
+  } = useAppSelector(selectChartSettings);
+  const setStackedGraph = (value: boolean) =>
+    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "stacked", value }));
+  const setGraphType = (value: "bar" | "line") =>
+    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "type", value }));
 
   const setFilter = (profile: string) => {
     const newFiltered = addOrRemove(filtered, profile);
@@ -480,7 +497,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
                   onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
                   checked={stackedGraph || !allowUnstacked}
                   disabled={!allowUnstacked}
-                  onClick={() => setStackedGraph((bool) => !bool)}
+                  onClick={() => setStackedGraph(!stackedGraph)}
                 />,
                 "Toggle stacked"
               )
