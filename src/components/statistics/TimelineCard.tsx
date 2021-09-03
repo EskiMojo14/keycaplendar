@@ -22,7 +22,7 @@ import {
 } from "@rmwc/data-table";
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
-import { BasicTooltip } from "@nivo/tooltip";
+import { PointTooltip, SliceTooltip } from "@c/statistics/NivoTooltip";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import { NivoThemeContext } from "@c/util/ThemeProvider";
@@ -31,15 +31,184 @@ import "./TimelineCard.scss";
 type ShippedCardProps = {
   data: ShippedDataObject;
   months: string[];
-  category: string;
-  breakdownData?: ShippedDataObject[];
-  summary?: boolean;
-  defaultType?: "bar" | "line";
   overline?: React.ReactNode;
   note?: React.ReactNode;
 };
 
 export const ShippedCard = (props: ShippedCardProps) => {
+  const dispatch = useAppDispatch();
+
+  const nivoTheme = useContext(NivoThemeContext);
+  const currentTheme = useAppSelector(selectCurrentThemeMap);
+
+  const {
+    shipped: { type: graphType, stacked: stackedGraph },
+  } = useAppSelector(selectChartSettings);
+  const setStackedGraph = (value: boolean) =>
+    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "stacked", value }));
+  const setGraphType = (value: "bar" | "line") =>
+    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "type", value }));
+
+  const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
+  const barChart =
+    graphType === "bar" ? (
+      <ResponsiveBar
+        data={props.data.months}
+        indexBy={"month"}
+        keys={["shipped", "unshipped"]}
+        groupMode={stackedGraph ? "stacked" : "grouped"}
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        padding={0.33}
+        labelSkipHeight={16}
+        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+      />
+    ) : null;
+  const lineChart =
+    graphType === "line" ? (
+      <ResponsiveLine
+        data={props.data.monthsLine}
+        yScale={{ type: "linear", min: 0, stacked: stackedGraph }}
+        curve="cardinal"
+        margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
+        enableArea
+        theme={nivoTheme}
+        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        tooltip={PointTooltip}
+        axisLeft={{
+          legend: "Count",
+          legendOffset: -40,
+          legendPosition: "middle",
+          tickValues: 5,
+        }}
+        axisBottom={{
+          legend: "Month",
+          legendOffset: 40,
+          legendPosition: "middle",
+          tickValues: labels,
+        }}
+        useMesh={!stackedGraph}
+        enableSlices={stackedGraph ? "x" : undefined}
+        sliceTooltip={SliceTooltip}
+        isInteractive
+      />
+    ) : null;
+  return (
+    <Card className="timeline-card full-span">
+      <div className="title-container">
+        <div className="text-container">
+          {props.overline ? (
+            <Typography use="overline" tag="h3">
+              {props.overline}
+            </Typography>
+          ) : null}
+          <Typography use="headline5" tag="h1">
+            {props.data.name}
+          </Typography>
+          <Typography use="subtitle2" tag="p">
+            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+          </Typography>
+        </div>
+        <div className="button-container">
+          {withTooltip(
+            <IconButton
+              icon={graphType === "line" ? "show_chart" : "bar_chart"}
+              onIcon={graphType === "line" ? "stacked_line_chart" : "stacked_bar_chart"}
+              checked={stackedGraph}
+              onClick={() => setStackedGraph(!stackedGraph)}
+            />,
+            "Toggle stacked"
+          )}
+          <SegmentedButton toggle>
+            {withTooltip(
+              <SegmentedButtonSegment
+                icon={stackedGraph ? "stacked_bar_chart" : "bar_chart"}
+                selected={graphType === "bar"}
+                onClick={() => {
+                  setGraphType("bar");
+                }}
+              />,
+              "Stacked bar chart"
+            )}
+            {withTooltip(
+              <SegmentedButtonSegment
+                icon={stackedGraph ? "stacked_line_chart" : "show_chart"}
+                selected={graphType === "line"}
+                onClick={() => {
+                  setGraphType("line");
+                }}
+              />,
+              "Line chart"
+            )}
+          </SegmentedButton>
+        </div>
+      </div>
+      <div className="timeline-container">
+        <div className="timeline-chart-container-container">
+          <div className="timeline-chart-container timelines">
+            {barChart}
+            {lineChart}
+          </div>
+        </div>
+        <div className="table-container">
+          <DataTable className="rounded">
+            <DataTableContent>
+              <DataTableHead>
+                <DataTableRow>
+                  <DataTableHeadCell>Status</DataTableHeadCell>
+                  <DataTableHeadCell isNumeric>Sets</DataTableHeadCell>
+                </DataTableRow>
+              </DataTableHead>
+              <DataTableBody>
+                <DataTableRow>
+                  <DataTableCell>
+                    <div className="indicator shipped"></div>Shipped
+                  </DataTableCell>
+                  <DataTableCell isNumeric>{props.data.shipped}</DataTableCell>
+                </DataTableRow>
+                <DataTableRow>
+                  <DataTableCell>
+                    <div className="indicator not-shipped"></div>Not shipped
+                  </DataTableCell>
+                  <DataTableCell isNumeric>{props.data.unshipped}</DataTableCell>
+                </DataTableRow>
+              </DataTableBody>
+            </DataTableContent>
+          </DataTable>
+        </div>
+        {props.note ? (
+          <Typography use="caption" tag="p" className="note">
+            {props.note}
+          </Typography>
+        ) : null}
+      </div>
+    </Card>
+  );
+};
+
+interface ShippedSummaryCardProps extends ShippedCardProps {
+  data: ShippedDataObject;
+  months: string[];
+  category: string;
+  breakdownData: ShippedDataObject[];
+  overline?: React.ReactNode;
+  note?: React.ReactNode;
+}
+
+export const ShippedSummaryCard = (props: ShippedSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const nivoTheme = useContext(NivoThemeContext);
@@ -57,26 +226,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
     dispatch(setStatisticsChartSetting({ tab: "shipped", key: "type", value }));
 
   const selectedData =
-    selectedIndex >= 0 && props.summary && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
-  const selectChips =
-    props.summary && props.breakdownData ? (
-      <div className="timeline-chips-container">
-        <ChipSet choice>
-          {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
-        </ChipSet>
-      </div>
-    ) : null;
+    selectedIndex >= 0 ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex] : props.data;
   const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
   const barChart =
     graphType === "bar" ? (
@@ -115,13 +265,7 @@ export const ShippedCard = (props: ShippedCardProps) => {
         enableArea
         theme={nivoTheme}
         colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
-        tooltip={({
-          point: {
-            serieId,
-            data: { xFormatted, yFormatted },
-            color,
-          },
-        }) => <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -134,7 +278,9 @@ export const ShippedCard = (props: ShippedCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh
+        useMesh={!stackedGraph}
+        enableSlices={stackedGraph ? "x" : undefined}
+        sliceTooltip={SliceTooltip}
         isInteractive
       />
     ) : null;
@@ -221,7 +367,20 @@ export const ShippedCard = (props: ShippedCardProps) => {
             </DataTableContent>
           </DataTable>
         </div>
-        {selectChips}
+        <div className="timeline-chips-container">
+          <ChipSet choice>
+            {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                selected={index === selectedIndex}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+              />
+            ))}
+          </ChipSet>
+        </div>
         {props.note ? (
           <Typography use="caption" tag="p" className="note">
             {props.note}
@@ -433,7 +592,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const lineChart =
     graphType === "line" ? (
       <ResponsiveLine
-        data={lineData.length === 1 ? lineData.map((series) => ({ ...series, id: "Timeline series" })) : lineData}
+        data={lineData.length === 1 ? lineData.map((series) => ({ ...series, id: "Count" })) : lineData}
         yScale={{ type: "linear", min: 0, stacked: stackedGraph }}
         curve="cardinal"
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
@@ -442,20 +601,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         colors={
           currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
         }
-        tooltip={({
-          point: {
-            serieId,
-            data: { xFormatted, yFormatted },
-            color,
-          },
-        }) => (
-          <BasicTooltip
-            id={serieId !== "Timeline series" ? `${serieId} - ${xFormatted}` : xFormatted}
-            value={yFormatted}
-            enableChip={true}
-            color={color}
-          />
-        )}
+        tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -468,7 +614,9 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh
+        useMesh={!stackedGraph}
+        enableSlices={stackedGraph ? "x" : undefined}
+        sliceTooltip={SliceTooltip}
         isInteractive
       />
     ) : null;

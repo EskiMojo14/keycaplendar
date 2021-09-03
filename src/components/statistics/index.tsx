@@ -28,7 +28,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard } from "./PieCard";
 import { TableCard } from "./TableCard";
-import { ShippedCard, TimelinesCard } from "./TimelineCard";
+import { ShippedCard, ShippedSummaryCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
 
@@ -364,13 +364,12 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             overline="Status"
             summary
           />
-          <ShippedCard
+          <ShippedSummaryCard
             data={statisticsData.shipped.summary}
             months={statisticsData.shipped.months}
             breakdownData={statisticsData.shipped.breakdown.profile}
             category={settings.summary}
             overline="Shipped"
-            summary
           />
           <TableCard
             data={statisticsData.duration[settings.summary].summary}
@@ -430,12 +429,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
           {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard
-              key={data.name}
-              data={data}
-              months={statisticsData.shipped.months}
-              category={settings.shipped}
-            />
+            <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />
           ))}
         </div>
       ),
