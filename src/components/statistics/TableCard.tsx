@@ -222,8 +222,8 @@ export const TableCard = (props: TableCardProps) => {
 };
 
 interface TableSummaryCardProps extends TableCardProps {
-  category?: Categories;
-  breakdownData?: CountDataObject[];
+  category: Categories;
+  breakdownData: CountDataObject[];
 }
 
 export const TableSummaryCard = (props: TableSummaryCardProps) => {

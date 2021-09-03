@@ -26,7 +26,7 @@ import {
 import { Footer } from "@c/common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
-import { StatusCard } from "./PieCard";
+import { StatusCard, StatusSummaryCard } from "./PieCard";
 import { TableCard, TableSummaryCard } from "./TableCard";
 import { ShippedCard, ShippedSummaryCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
@@ -358,11 +358,10 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             category={settings.summary}
             summary
           />
-          <StatusCard
+          <StatusSummaryCard
             data={statisticsData.status.summary}
             breakdownData={statisticsData.status.breakdown.profile}
             overline="Status"
-            summary
           />
           <ShippedSummaryCard
             data={statisticsData.shipped.summary}
@@ -384,6 +383,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             data={statisticsData.vendors.summary}
             breakdownData={statisticsData.vendors.breakdown.profile}
             tab="vendors"
+            category={settings.summary}
             overline="Vendors"
             unit="Vendors"
             note="Only includes sets that have completed GB."
