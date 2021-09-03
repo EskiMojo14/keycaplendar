@@ -27,7 +27,7 @@ import { Footer } from "@c/common/Footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard } from "./PieCard";
-import { TableCard } from "./TableCard";
+import { TableCard, TableSummaryCard } from "./TableCard";
 import { ShippedCard, ShippedSummaryCard, TimelinesCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
@@ -371,7 +371,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             category={settings.summary}
             overline="Shipped"
           />
-          <TableCard
+          <TableSummaryCard
             data={statisticsData.duration[settings.summary].summary}
             breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
             tab="duration"
@@ -379,9 +379,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
             overline="Duration"
             theme="secondary"
-            summary
           />
-          <TableCard
+          <TableSummaryCard
             data={statisticsData.vendors.summary}
             breakdownData={statisticsData.vendors.breakdown.profile}
             tab="vendors"
@@ -389,7 +388,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             unit="Vendors"
             note="Only includes sets that have completed GB."
             theme="secondary"
-            summary
           />
         </div>
       ),
@@ -440,7 +438,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               key={data.name}
               data={data}
               tab="duration"
-              category={settings.durationCat}
               unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
             />
           ))}
