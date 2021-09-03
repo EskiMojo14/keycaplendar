@@ -1,25 +1,17 @@
 import React from "react";
 import { useTheme } from "@nivo/core";
 import { PointTooltipProps, SliceTooltipProps } from "@nivo/line";
-import { TableTooltip, Chip } from "@nivo/tooltip";
+import { BasicTooltip, TableTooltip, Chip } from "@nivo/tooltip";
 
-export const PointTooltip = ({ point }: PointTooltipProps) => {
-  const theme = useTheme();
-  return (
-    <TableTooltip
-      rows={[
-        [
-          <Chip key="chip" color={point.serieColor} style={theme.tooltip.chip} />,
-          point.serieId,
-          point.data.xFormatted,
-          <span key="value" style={theme.tooltip.tableCellValue}>
-            {point.data.yFormatted}
-          </span>,
-        ],
-      ]}
-    />
-  );
-};
+export const PointTooltip = ({
+  point: {
+    serieId,
+    data: { xFormatted, yFormatted },
+    color,
+  },
+}: PointTooltipProps) => (
+  <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />
+);
 
 export const SliceTooltip = ({ slice, axis }: SliceTooltipProps) => {
   const theme = useTheme();
