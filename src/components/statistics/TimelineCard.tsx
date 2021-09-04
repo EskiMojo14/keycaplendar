@@ -100,8 +100,8 @@ export const ShippedCard = (props: ShippedCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh={!stackedGraph}
-        enableSlices={stackedGraph ? "x" : undefined}
+        useMesh={!stackedGraph || props.data.monthsLine.length <= 1}
+        enableSlices={stackedGraph && props.data.monthsLine.length > 1 ? "x" : undefined}
         sliceTooltip={SliceTooltip}
         isInteractive
       />
@@ -278,8 +278,8 @@ export const ShippedSummaryCard = (props: ShippedSummaryCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh={!stackedGraph}
-        enableSlices={stackedGraph ? "x" : undefined}
+        useMesh={!stackedGraph || selectedData.monthsLine.length <= 1}
+        enableSlices={stackedGraph && selectedData.monthsLine.length > 1 ? "x" : undefined}
         sliceTooltip={SliceTooltip}
         isInteractive
       />
@@ -614,8 +614,8 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh={!stackedGraph}
-        enableSlices={stackedGraph ? "x" : undefined}
+        useMesh={!stackedGraph || lineData.length <= 1}
+        enableSlices={stackedGraph && lineData.length > 1 ? "x" : undefined}
         sliceTooltip={SliceTooltip}
         isInteractive
       />
