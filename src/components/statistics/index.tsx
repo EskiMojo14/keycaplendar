@@ -28,7 +28,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton
 import { withTooltip } from "@c/util/HOCs";
 import { StatusCard, StatusSummaryCard } from "./PieCard";
 import { TableCard, TableSummaryCard } from "./TableCard";
-import { ShippedCard, ShippedSummaryCard, TimelinesCard } from "./TimelineCard";
+import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./TimelineCard";
 import { DialogStatistics } from "./DialogStatistics";
 import "./index.scss";
 
@@ -334,21 +334,20 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
-          <TimelinesCard
+          <TimelinesSummaryCard
             data={statisticsData.timelines[settings.summary].summary}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
             months={statisticsData.timelines[settings.summary].months}
             chartKeys={["summary"]}
             category={settings.summary}
             selectable
-            //defaultType="line"
+            defaultType="line"
             singleTheme="secondary"
             overline="Timelines"
             note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
-            summary
           />
-          <TimelinesCard
+          <TimelinesSummaryCard
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
             chartKeys={statisticsData.timelines[settings.summary].allProfiles}
             months={statisticsData.timelines[settings.summary].months}
@@ -356,7 +355,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             filterable
             overline="Timelines"
             category={settings.summary}
-            summary
           />
           <StatusSummaryCard
             data={statisticsData.status.summary}
