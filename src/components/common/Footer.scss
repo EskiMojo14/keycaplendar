@@ -31,7 +31,8 @@
       }
       .cannonkeys,
       .prototypist,
-      .deskhero {
+      .deskhero,
+      .latamkeys {
         height: 64px;
       }
       .deskhero {
@@ -44,6 +45,18 @@
         white-space: nowrap;
         .accent {
           color: #fc0d1c;
+        }
+      }
+      .latamkeys {
+        margin-left: 16px;
+        display: flex;
+        align-items: center;
+        &-img {
+          height: 100%;
+        }
+        &-text {
+          padding-left: 8px;
+          height: 50%;
         }
       }
     }

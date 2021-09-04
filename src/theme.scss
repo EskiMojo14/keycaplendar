@@ -319,6 +319,9 @@ $overlay-values: (
     .prototypist {
       fill: if($dark, white, #3f6b6b);
     }
+    .latamkeys-text {
+      fill: map-get($variables, on-surface);
+    }
     .deskhero {
       color: map-get($variables, on-surface);
     }
