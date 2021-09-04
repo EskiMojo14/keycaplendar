@@ -3,6 +3,7 @@ import { iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/HOCs";
+import latamkeysLogoImg from "@m/latamkeys_smol.png";
 import "./Footer.scss";
 
 export const Footer = () => {
@@ -213,6 +214,43 @@ export const Footer = () => {
       </g>
     </svg>
   );
+  const latamkeysLogo = (
+    <div className="latamkeys">
+      <img src={latamkeysLogoImg} className="latamkeys-img" />
+      <svg className="latamkeys-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 405.3 59.5">
+        <path d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z" transform="translate(-5.15 -44.5)" />
+        <path
+          d="M78.65,83.9h-26l-7.2,19.3H42l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24L65.75,49.4h-.2Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path d="M103.05,103.2v-55H82.65V45.3h44v2.9h-20.4v55Z" transform="translate(-5.15 -44.5)" />
+        <path
+          d="M156.65,83.9h-26l-7.2,19.3H120l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24l-11.9-31.6h-.2Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path
+          d="M227.45,103.2h-3.1V51.9h-.2l-22.3,51.2h-3l-22.3-51.2h-.2v51.3h-3V45.3h3.5l23.4,53.8h.2l23.3-53.8h3.6v57.9Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path
+          d="M237.65,103.2V45.3h3.2V77.6h.2l30.1-32.3h4.1l-23.8,25.5L278,103.2h-4.1l-24.7-30.1-8.3,8.9v21.2Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path
+          d="M317.25,103.2h-33.8V45.3h33.8v2.9h-30.6V72h29.1v2.9h-29.1v25.3h30.6Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path
+          d="M343.25,103.2V78l-21.1-32.7h3.7l18.8,29.4h.2l18.8-29.4h3.7l-21,32.7v25.2Z"
+          transform="translate(-5.15 -44.5)"
+        />
+        <path
+          d="M372.65,87.7c.5,7.9,7.9,13.4,17.9,13.4,9.8,0,16.7-5.6,16.7-13.1,0-6.1-4.1-9.6-13.8-12l-6.9-1.7C375.85,71.6,371,67.2,371,60c0-9,8.4-15.5,19-15.5,10.9,0,19.1,6.4,19.4,14.9h-3.2c-.4-6.9-7.2-12-16.3-12-8.7,0-15.7,5.2-15.7,12.5,0,5.8,4.3,9.1,13.6,11.4l6.5,1.6c11.2,2.8,16.2,7.1,16.2,14.8,0,9.6-8.1,16.3-20.2,16.3-11.9,0-20.4-6.7-20.9-16.3Z"
+          transform="translate(-5.15 -44.5)"
+        />
+      </svg>
+    </div>
+  );
   return (
     <div className="footer">
       <Typography use="body2" tag="div">
@@ -322,6 +360,9 @@ export const Footer = () => {
             <div className="deskhero">
               Desk<span className="accent">[H]</span>ero
             </div>
+          </a>
+          <a href="https://latamkeys.com/" target="_blank" rel="noopener noreferrer">
+            {latamkeysLogo}
           </a>
         </div>
       </div>
