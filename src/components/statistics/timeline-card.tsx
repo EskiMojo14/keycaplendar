@@ -433,7 +433,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   useEffect(filterAll, [props.category, props.allProfiles]);
 
   const filterButtons =
-    props.filterable && props.allProfiles ? (
+    props.filterable && props.allProfiles && graphType === "line" ? (
       <>
         {withTooltip(
           <IconButton
@@ -476,7 +476,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       </>
     ) : null;
   const filterChips =
-    props.filterable && props.allProfiles && hasKey(props.data, "profiles") ? (
+    props.filterable && props.allProfiles && graphType === "line" && hasKey(props.data, "profiles") ? (
       <div className="timeline-chips-container focus-chips">
         <ChipSet choice>
           {props.allProfiles.map((profile, index) => {
@@ -531,7 +531,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
       <ResponsiveBar
         data={props.data.months}
         indexBy={"month"}
-        keys={allowedKeys}
+        keys={props.chartKeys}
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
@@ -719,7 +719,7 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
       </div>
     ) : null;
   const filterButtons =
-    props.filterable && props.allProfiles ? (
+    props.filterable && props.allProfiles && graphType === "line" ? (
       <>
         {withTooltip(
           <IconButton
@@ -772,7 +772,7 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
                   key={profile}
                   label={profile}
                   icon={
-                    filtered.length && !filtered.includes(profile)
+                    filtered.length && !filtered.includes(profile) && graphType === "line"
                       ? iconObject(
                           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
                             <g>
@@ -788,7 +788,8 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
                         )
                       : "circle"
                   }
-                  selected={filtered.includes(profile)}
+                  disabled={graphType === "bar"}
+                  selected={filtered.includes(profile) && graphType === "line"}
                   onInteraction={() => {
                     setFilter(profile);
                   }}
@@ -806,7 +807,7 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
     () =>
       props.selectable && selectedProfile
         ? [selectedProfile]
-        : props.filterable && filtered.length
+        : props.filterable && filtered.length && graphType === "line"
         ? props.chartKeys.filter((key) => filtered.includes(key))
         : props.chartKeys,
     [props.selectable, selectedProfile, props.filterable, filtered, props.chartKeys]

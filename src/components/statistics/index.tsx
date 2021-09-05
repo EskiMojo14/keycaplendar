@@ -491,6 +491,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
           slideRenderer={slideRenderer}
+          overscanSlideBefore={1}
+          overscanSlideAfter={1}
         />
         <Footer />
       </div>

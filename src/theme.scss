@@ -427,6 +427,9 @@ $overlay-values: (
   }
 
   .focus-chips .mdc-chip.focus-chip {
+    &[disabled] {
+      color: map-get($variables, text-medium);
+    }
     &.mdc-chip--selected {
       &,
       &:hover {
