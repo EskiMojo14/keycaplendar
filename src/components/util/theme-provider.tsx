@@ -4,6 +4,7 @@ import { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
+import { getTextOpacity } from "@s/common/functions";
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
@@ -25,9 +26,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           },
           error: { main: currentThemeMap.error, contrastText: currentThemeMap.onError },
           text: {
-            primary: alpha(currentThemeMap.onSurface, 0.87),
-            secondary: alpha(currentThemeMap.onSurface, 0.6),
-            disabled: alpha(currentThemeMap.onSurface, 0.38),
+            primary: alpha(currentThemeMap.onSurface, getTextOpacity("high")),
+            secondary: alpha(currentThemeMap.onSurface, getTextOpacity("medium")),
+            disabled: alpha(currentThemeMap.onSurface, getTextOpacity("disabled")),
           },
           action: {
             active: currentThemeMap.onSurface,
@@ -92,7 +93,7 @@ export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) =
           textTransform: "capitalize",
           backgroundColor: currentThemeMap.textHigh,
           color: currentThemeMap.surface,
-          boxShadow: "none",
+          //boxShadow: "none",
           borderRadius: 4,
         },
         chip: {

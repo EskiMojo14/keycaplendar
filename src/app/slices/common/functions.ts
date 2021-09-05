@@ -1,5 +1,6 @@
 import { is } from "typescript-is";
 import debounce from "lodash.debounce";
+import { alpha } from "@material-ui/core/styles";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
@@ -38,6 +39,7 @@ const { dispatch } = store;
  * @param bgColor Theme colour to put text on
  * @param themeMap Theme map to check against.
  * @param [defaultColor=themeMap.textHigh] Default text colour to use if no match found.
+ * @returns Theme colour to use for text
  */
 
 export const getTextColour = (bgColor: string, themeMap: ThemeMap, defaultColor = themeMap.textHigh) => {
@@ -56,10 +58,42 @@ export const getTextColour = (bgColor: string, themeMap: ThemeMap, defaultColor 
       return themeMap.onSecondaryDark;
     case themeMap.error:
       return themeMap.onError;
+    case themeMap.surface:
+      return themeMap.onSurface;
     default:
       return defaultColor;
   }
 };
+
+/**
+ * Gets text opacity for specified emphasis.
+ * @param emphasis Emphasis to use (high, medium, disabled)
+ * @returns Opacity to use
+ */
+
+export const getTextOpacity = (emphasis: "high" | "medium" | "disabled") => {
+  const opacities = {
+    high: 0.87,
+    medium: 0.6,
+    disabled: 0.38,
+  };
+  return opacities[emphasis];
+};
+
+/** Gets according text colour with opacity for given theme background colour and emphasis.
+ * @param bgColor Theme colour to put text on
+ * @param themeMap Theme map to check against.
+ * @param emphasis Emphasis to use (high, medium, disabled)
+ * @param [defaultColor=themeMap.textHigh] Default text colour to use if no match found.
+ * @returns Theme colour to use for text (with opacity)
+ */
+
+export const getTextColourOpacity = (
+  bgColor: string,
+  themeMap: ThemeMap,
+  emphasis: "high" | "medium" | "disabled",
+  defaultColor = themeMap.textHigh
+) => alpha(getTextColour(bgColor, themeMap, defaultColor), getTextOpacity(emphasis));
 
 export const saveTheme = () => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
