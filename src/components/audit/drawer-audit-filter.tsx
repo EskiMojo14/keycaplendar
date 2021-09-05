@@ -10,7 +10,7 @@ import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/hocs";
-import "./DrawerAuditFilter.scss";
+import "./drawer-audit-filter.scss";
 
 type DrawerAuditFilterProps = {
   close: () => void;
