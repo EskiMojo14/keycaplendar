@@ -1,5 +1,5 @@
 import isEqual from "lodash.isequal";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import {
   selectAllActions,

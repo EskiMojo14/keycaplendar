@@ -2,7 +2,7 @@ import { is } from "typescript-is";
 import debounce from "lodash.debounce";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { setAppPage, setDevice, setGraphColors, setOrientation, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import { Page, ThemeMap } from "./types";

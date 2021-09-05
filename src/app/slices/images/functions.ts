@@ -1,6 +1,6 @@
 import firebase from "@s/firebase";
 import store from "~/app/store";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { selectAllSets } from "@s/main";
 import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/util/functions";
 import {

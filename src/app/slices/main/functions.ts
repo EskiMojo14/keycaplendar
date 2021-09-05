@@ -2,7 +2,7 @@ import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
@@ -503,9 +503,9 @@ const createGroups = (state = store.getState()) => {
   };
 
   const setGroups: SetGroup[] = groups.map((group) => ({
-      title: group,
-      sets: filterSets(sets, group, sort),
-    }));
+    title: group,
+    sets: filterSets(sets, group, sort),
+  }));
 
   dispatch(setSetGroups(setGroups));
 

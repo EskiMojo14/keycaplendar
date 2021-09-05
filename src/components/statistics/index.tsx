@@ -23,13 +23,13 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import { withTooltip } from "@c/util/HOCs";
-import { StatusCard, StatusSummaryCard } from "./PieCard";
-import { TableCard, TableSummaryCard } from "./TableCard";
-import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./TimelineCard";
-import { DialogStatistics } from "./DialogStatistics";
+import { Footer } from "@c/common/footer";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { withTooltip } from "@c/util/hocs";
+import { StatusCard, StatusSummaryCard } from "./pie-card";
+import { TableCard, TableSummaryCard } from "./table-card";
+import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
+import { DialogStatistics } from "./dialog-statistics";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);

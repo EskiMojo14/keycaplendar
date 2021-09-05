@@ -20,10 +20,10 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
-import { UpdateEntry } from "./UpdateEntry";
-import { ModalCreate, ModalEdit } from "@c/updates/admin/ModalEntry";
-import { DialogDelete } from "@c/updates/admin/DialogDelete";
+import { Footer } from "@c/common/footer";
+import { UpdateEntry } from "./update-entry";
+import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
+import { DialogDelete } from "@c/updates/admin/dialog-delete";
 import "./index.scss";
 
 type ContentUpdatesProps = {

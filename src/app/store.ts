@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import debounce from "lodash.debounce";
-import { loadState, saveState } from "~/app/localStorage";
+import { loadState, saveState } from "~/app/local-storage";
 import audit from "@s/audit";
 import common from "@s/common";
 import guides from "@s/guides";

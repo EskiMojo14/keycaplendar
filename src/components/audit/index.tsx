@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import classNames from "classnames";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
 import { getActions, filterActions } from "@s/audit/functions";
@@ -26,12 +26,12 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
-import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
-import { withTooltip } from "@c/util/HOCs";
-import { DrawerAuditFilter } from "./DrawerAuditFilter";
-import { DialogAuditDelete } from "./DialogAuditDelete";
-import { AuditEntry } from "./AuditEntry";
+import { Footer } from "@c/common/footer";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { withTooltip } from "@c/util/hocs";
+import { DrawerAuditFilter } from "./drawer-audit-filter";
+import { DialogAuditDelete } from "./dialog-audit-delete";
+import { AuditEntry } from "./audit-entry";
 import "./index.scss";
 
 type ContentAuditProps = {

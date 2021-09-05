@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { IconOptions } from "@rmwc/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import {
@@ -50,10 +50,10 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/Footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import { TimePicker } from "@c/util/pickers/TimePicker";
-import { DialogDelete } from "./DialogDelete";
+import { Footer } from "@c/common/footer";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { TimePicker } from "@c/util/pickers/time-picker";
+import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 
 type ContentSettingsProps = {
