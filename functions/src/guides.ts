@@ -1,6 +1,6 @@
 import * as firebaseAdmin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { alphabeticalSortProp } from "./slices/common/functions";
+import { alphabeticalSortProp } from "./slices/util/functions";
 import { GuideEntryType } from "./slices/guides/types";
 
 /**

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as jwt from "jsonwebtoken";
 import type * as typedAdminFirestore from "typed-admin-firestore";
-import { arrayIncludes } from "./slices/common/functions";
+import { arrayIncludes } from "./slices/util/functions";
 import { typedFirestore } from "./slices/firebase/firestore";
 import { KeysetDoc, KeysetId } from "./slices/firebase/types";
 import { dateSorts } from "./slices/main/constants";

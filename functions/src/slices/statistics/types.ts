@@ -1,4 +1,4 @@
-import { Overwrite } from "../common/types";
+import { Overwrite } from "../util/types";
 import { VendorType } from "../main/types";
 
 export type StatisticsSetType = {

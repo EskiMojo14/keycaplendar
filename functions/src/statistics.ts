@@ -33,7 +33,7 @@ import {
   objectKeys,
   objectEntries,
   iterateDays,
-} from "./slices/common/functions";
+} from "./slices/util/functions";
 import { pageConditions } from "./slices/main/functions";
 
 const bucket = admin.storage().bucket();

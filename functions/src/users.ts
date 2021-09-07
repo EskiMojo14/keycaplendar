@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { DateTime } from "luxon";
 import { UserId } from "./slices/firebase/types";
-import { handle } from "./slices/common/functions";
+import { handle } from "./slices/util/functions";
 
 /**
  * Returns custom claims for current user.

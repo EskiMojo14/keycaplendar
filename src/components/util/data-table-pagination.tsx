@@ -1,6 +1,6 @@
 import React from "react";
 import BEMHelper from "@s/common/bem-helper";
-import { HTMLProps } from "@s/common/types";
+import { HTMLProps } from "@s/util/types";
 import { Select, SelectProps } from "@rmwc/select";
 import { IconButton, IconButtonProps } from "@rmwc/icon-button";
 import "./data-table-pagination.scss";

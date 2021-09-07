@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { KeysetId } from "./slices/firebase/types";
 import { PublicActionType, ActionType, ActionSetType } from "./slices/audit/types";
-import { alphabeticalSortProp } from "./slices/common/functions";
+import { alphabeticalSortProp } from "./slices/util/functions";
 
 /**
  * Creates audit log entry upon keyset change. Additionally, deletes document if it's "empty".

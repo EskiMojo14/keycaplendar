@@ -1,6 +1,6 @@
-/** Sort params which are dates. */
+import { Overwrite } from "../util/types";
 
-import { Overwrite } from "../common/types";
+/** Sort params which are dates. */
 
 export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
 

@@ -1,4 +1,4 @@
-import type { Overwrite } from "../common/types";
+import type { Overwrite } from "../util/types";
 import type { GuideEntryType } from "../guides/types";
 import type { OldPresetType, PresetType, SetType } from "../main/types";
 import type { Settings } from "../settings/types";

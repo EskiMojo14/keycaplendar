@@ -1,5 +1,5 @@
 import { Serie as LineSeries } from "@nivo/line";
-import { Overwrite } from "@s/common/types";
+import { Overwrite } from "@s/util/types";
 import { statsTabs } from "./constants";
 
 export type Categories = "icDate" | "gbLaunch";
