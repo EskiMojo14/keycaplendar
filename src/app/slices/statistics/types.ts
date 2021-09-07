@@ -14,6 +14,8 @@ export type StatisticsType = {
   summary: Categories;
   timelinesCat: Categories;
   timelinesGroup: Properties;
+  calendarCat: Categories;
+  calendarGroup: Properties;
   status: Properties;
   shipped: Properties;
   durationCat: Categories;
@@ -23,6 +25,7 @@ export type StatisticsType = {
 
 export type StatisticsSortType = {
   timelines: Sorts;
+  calendar: Sorts;
   status: Sorts;
   shipped: Sorts;
   duration: Sorts | "duration";
@@ -30,7 +33,7 @@ export type StatisticsSortType = {
 };
 
 export type StatisticsChartSettingType = Record<
-  Exclude<StatsTab, "status" | "summary">,
+  Exclude<StatsTab, "summary" | "calendar" | "status">,
   { stacked: boolean; type: "bar" | "line" }
 >;
 
@@ -58,6 +61,32 @@ export type TimelinesData<Optimised extends true | false = false> = Record<
     breakdown: Optimised extends true
       ? Overwrite<Record<Properties, TimelinesDataObject<Optimised>[]>, { profile: { name: string; total: number }[] }>
       : Record<Properties, TimelinesDataObject<Optimised>[]>;
+  }
+>;
+
+export type CalendarDatum<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      index: number;
+      val: number;
+    }
+  : {
+      day: string;
+      value: number;
+    };
+
+export type CalendarDataObject<Optimised extends true | false = false> = {
+  name: string;
+  total: number;
+  data: CalendarDatum<Optimised>[];
+};
+
+export type CalendarData<Optimised extends true | false = false> = Record<
+  Categories,
+  {
+    summary: CalendarDataObject<Optimised>;
+    breakdown: Record<Properties, CalendarDataObject<Optimised>[]>;
+    start: string;
+    end: string;
   }
 >;
 
@@ -179,6 +208,7 @@ export type VendorData<Optimised extends true | false = false> = {
 
 export type StatisticsData<Optimised extends true | false = false> = {
   timelines: TimelinesData<Optimised>;
+  calendar: CalendarData<Optimised>;
   status: StatusData<Optimised>;
   shipped: ShippedData<Optimised>;
   duration: DurationData<Optimised>;

@@ -145,6 +145,8 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>, K extend
   hoist?: O[K]
 ): O[] => array.sort(alphabeticalSortPropCurried(prop, descending, hoist));
 
+/** Generates a range of DateTimes separated by day between an Interval. */
+
 export function* iterateDays(interval: Interval): Generator<DateTime, void, unknown> {
   let cursor = interval.start.startOf("day");
   while (cursor < interval.end) {

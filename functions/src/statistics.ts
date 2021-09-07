@@ -287,6 +287,12 @@ const createCalendarData = (sets: StatisticsSetType[]) => {
         [prop]: list.map((name) => createCalendarDataObject(filterPropSets(catSets, prop, name), name)),
       };
     }, {} as Record<Properties, CalendarDataObject<true>[]>);
+
+    objectKeys(calendarData[cat].breakdown).forEach((prop) => {
+      calendarData[cat].breakdown[prop].sort(
+        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+      );
+    });
   });
   return Promise.resolve(calendarData);
 };

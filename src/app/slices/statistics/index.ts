@@ -49,6 +49,36 @@ export const initialState: StatisticsState = {
         },
       },
     },
+    calendar: {
+      icDate: {
+        start: "",
+        end: "",
+        summary: {
+          name: "ICs per day",
+          total: 0,
+          data: [],
+        },
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
+        },
+      },
+      gbLaunch: {
+        start: "",
+        end: "",
+        summary: {
+          name: "Live GBs per day",
+          total: 0,
+          data: [],
+        },
+        breakdown: {
+          profile: [],
+          designer: [],
+          vendor: [],
+        },
+      },
+    },
     status: {
       summary: {
         name: "Current keyset status",
@@ -142,6 +172,8 @@ export const initialState: StatisticsState = {
     summary: "gbLaunch",
     timelinesCat: "gbLaunch",
     timelinesGroup: "profile",
+    calendarCat: "gbLaunch",
+    calendarGroup: "profile",
     status: "profile",
     shipped: "profile",
     durationCat: "gbLaunch",
@@ -150,6 +182,7 @@ export const initialState: StatisticsState = {
   },
   sort: {
     timelines: "total",
+    calendar: "total",
     status: "total",
     shipped: "total",
     duration: "total",

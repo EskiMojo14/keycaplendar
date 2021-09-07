@@ -1,6 +1,6 @@
 /** Tabs on the statistics page. */
 
-export const statsTabs = ["summary", "timelines", "status", "shipped", "duration", "vendors"] as const;
+export const statsTabs = ["summary", "timelines", "calendar", "status", "shipped", "duration", "vendors"] as const;
 
 /** All categories. */
 

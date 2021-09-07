@@ -1,5 +1,5 @@
 import React from "react";
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { is } from "typescript-is";
 import firebase from "@s/firebase";
 import { IconOptions, IconPropT } from "@rmwc/types";
@@ -400,6 +400,16 @@ export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: st
     .map((v, i) => DateTime.fromISO(setMonths[0], { zone: "utc" }).plus({ months: i }).toFormat(format));
   return allMonths;
 };
+
+/** Generates a range of DateTimes separated by day between an Interval. */
+
+export function* iterateDays(interval: Interval): Generator<DateTime, void, unknown> {
+  let cursor = interval.start.startOf("day");
+  while (cursor < interval.end) {
+    yield cursor;
+    cursor = cursor.plus({ days: 1 });
+  }
+}
 
 /**
  * Converts number of bytes to formatted string, e.g. `"2GB"`.

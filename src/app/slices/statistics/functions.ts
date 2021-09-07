@@ -1,9 +1,17 @@
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
-import { alphabeticalSortPropCurried, hasKey, mergeObject, objectEntries, ordinal, typeGuard } from "@s/util/functions";
+import {
+  alphabeticalSortPropCurried,
+  hasKey,
+  iterateDays,
+  mergeObject,
+  objectEntries,
+  ordinal,
+  typeGuard,
+} from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -16,6 +24,8 @@ import {
 } from ".";
 import { categories, properties } from "./constants";
 import {
+  CalendarData,
+  CalendarDataObject,
   Categories,
   CountDataObject,
   DurationData,
@@ -98,7 +108,7 @@ export const sunburstChildHasChildren = <Optimised extends true | false = false>
   child: StatusDataObjectSunburstChild<Optimised>
 ): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 
-const hydrateData = ({ timelines, status, shipped, duration, vendors }: StatisticsData<true>) => {
+const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }: StatisticsData<true>) => {
   const hydrateTimelinesData = (data: Record<string, string | number>[], months: string[], profiles: string[]) =>
     months.map((month, monthIndex) => {
       const blankObject = {
@@ -186,6 +196,40 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
       };
     },
     {} as TimelinesData
+  );
+
+  const hydrateCalendarData = ({
+    start,
+    end,
+    summary,
+    breakdown,
+  }: CalendarData<true>[Categories]): CalendarData<false>[Categories] => {
+    const interval = Interval.fromDateTimes(DateTime.fromISO(start), DateTime.fromISO(end));
+    const days = [...iterateDays(interval)].map((dateTime) => dateTime.toISODate());
+    const hydrateCalendarDataObject = ({ data, ...obj }: CalendarDataObject<true>): CalendarDataObject<false> => ({
+      ...obj,
+      data: data.map(({ index, val }) => ({
+        day: days[index],
+        value: val,
+      })),
+    });
+    return {
+      start,
+      end,
+      summary: hydrateCalendarDataObject(summary),
+      breakdown: objectEntries(breakdown).reduce(
+        (obj, [prop, array]) => ({ ...obj, [prop]: array.map((object) => hydrateCalendarDataObject(object)) }),
+        {} as Record<Properties, CalendarDataObject<false>[]>
+      ),
+    };
+  };
+
+  const hydratedCalendarData = objectEntries(calendar).reduce(
+    (obj, [cat, catData]) => ({
+      ...obj,
+      [cat]: hydrateCalendarData(catData),
+    }),
+    {} as CalendarData<false>
   );
 
   const hydrateStatusData = (
@@ -377,6 +421,7 @@ const hydrateData = ({ timelines, status, shipped, duration, vendors }: Statisti
 
   const hydratedData: StatisticsData = {
     timelines: hydratedTimelinesData,
+    calendar: hydratedCalendarData,
     status: hydratedStatusData,
     shipped: hydratedShippedData,
     duration: hydratedDurationData,
@@ -414,7 +459,7 @@ export const sortData = (state = store.getState()) => {
         });
       });
       setData(data);
-    } else if (tab === "timelines") {
+    } else if (tab === "timelines" || tab === "calendar") {
       const data = cloneDeep(stateData) as StatisticsData["timelines"];
       categories.forEach((category) => {
         properties.forEach((property) => {
@@ -433,9 +478,9 @@ export const sortData = (state = store.getState()) => {
       });
       setData(data);
     } else {
-      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines">[keyof Omit<
+      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines" | "calendar">[keyof Omit<
         StatisticsData,
-        "duration" | "timelines"
+        "duration" | "timelines" | "calendar"
       >];
       properties.forEach((properties) => {
         const value = data.breakdown[properties];

@@ -129,7 +129,6 @@ export const saveTheme = () => {
     }
     return { ...prev, [theme]: themeObj };
   }, {});
-  console.log(interpolatedThemeMap);
   dispatch(setThemeMaps(interpolatedThemeMap));
   const interpolatedGraphColors = Object.entries(graphMap).reduce<Record<string, string[]>>((obj, [key, val]) => {
     const [theme, indexString] = key.split("|");
