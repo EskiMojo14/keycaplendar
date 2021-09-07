@@ -2,9 +2,12 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { is } from "typescript-is";
 import { typedFirestore } from "./slices/firebase/firestore";
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import {
+  CalendarData,
+  CalendarDataObject,
+  CalendarDatum,
   Categories,
   CountDataObject,
   DurationData,
@@ -29,7 +32,9 @@ import {
   alphabeticalSortPropCurried,
   objectKeys,
   objectEntries,
+  iterateDays,
 } from "./slices/common/functions";
+import { pageConditions } from "./slices/main/functions";
 
 const bucket = admin.storage().bucket();
 
@@ -64,79 +69,14 @@ const filterPropSets = (sets: StatisticsSetType[], prop: Properties, val: string
       (prop !== "vendor" && prop !== "designer" && set[prop] === val)
   );
 
-const sanitiseBarData = (data: Record<string, number>[]) =>
-  data
-    .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
-    .filter((datum, i, array) => Object.keys(datum).length > (array.length > 1 ? 1 : 0));
-
 const sunburstChildHasChildren = <Optimised extends true | false = false>(
   child: StatusDataObjectSunburstChild<Optimised>
 ): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 
-const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<true>[] =>
-  data.map(({ sunburst, pie = {}, ...datum }) => {
-    const filteredPie = objectEntries(pie)
-      .filter(([key, val]) => val && val > 0)
-      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as StatusDataObject<true>["pie"]);
-    const filteredSunburst = sunburst
-      ? sunburst
-          .map((child, index, array) => (array.length > 1 ? { ...child, index } : child))
-          .map((child) =>
-            sunburstChildHasChildren(child)
-              ? {
-                  ...child,
-                  children: child.children.filter((child) => (sunburstChildHasChildren(child) ? true : child.val > 0)),
-                }
-              : child
-          )
-          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length > 0 : child.val > 0))
-      : undefined;
-    return sunburst
-      ? {
-          ...datum,
-          pie: filteredPie,
-          sunburst: filteredSunburst,
-        }
-      : {
-          ...datum,
-          pie: filteredPie,
-        };
-  });
-
-const sanitiseShippedData = (data: ShippedDataObject<true>[]): ShippedDataObject<true>[] =>
-  data.map(({ months, shipped, unshipped, ...datum }) => ({
-    ...datum,
-    shipped: shipped || undefined,
-    unshipped: unshipped || undefined,
-    months: months
-      .map((month, index, array) =>
-        Object.entries(array.length > 1 ? { ...month, index } : month)
-          .filter(([key, value]) => key === "index" || (value && value > 0))
-          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
-      )
-      .filter((month) => Object.keys(month).length > 1),
-  }));
-
-const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject<true>[] =>
-  data.map(({ data, name, total, mode, range, ...datum }) => {
-    const filteredDatum = objectEntries(datum)
-      .filter(([key, val]) => typeof val === "number" && val > 0)
-      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as typeof datum);
-    const filteredData = data
-      // uses any because compiler doesn't like this for some reason
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((datum: any, index: any, array: any[]) => (array.length > 1 && !idIsIndex ? { ...datum, index } : datum))
-      .filter(({ count }) => count > 0)
-      .filter((datum) => Object.keys(datum).length > (idIsIndex ? 1 : 2));
-    return {
-      ...filteredDatum,
-      name,
-      total,
-      range,
-      mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
-      data: filteredData,
-    };
-  });
+const sanitiseBarData = (data: Record<string, number>[]) =>
+  data
+    .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
+    .filter((datum, i, array) => Object.keys(datum).length > (array.length > 1 ? 1 : 0));
 
 const createTimelinesData = (sets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData<true> = {
@@ -209,7 +149,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
     });
 
     timelinesData[cat].summary = {
-      name: `${cat === "icDate" ? "IC" : "GB"}s per month`,
+      name: timelinesData[cat].summary.name,
       total: catSets.length,
       profiles: profileNames,
       months: sanitiseBarData(profileMonths),
@@ -262,6 +202,124 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   });
   return Promise.resolve(timelinesData);
 };
+
+const createCalendarData = (sets: StatisticsSetType[]) => {
+  const calendarData: CalendarData<true> = {
+    icDate: {
+      start: "",
+      end: "",
+      summary: {
+        name: "ICs per day",
+        total: 0,
+        data: [],
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
+    },
+    gbLaunch: {
+      start: "",
+      end: "",
+      summary: {
+        name: "Live GBs per day",
+        total: 0,
+        data: [],
+      },
+      breakdown: {
+        profile: [],
+        designer: [],
+        vendor: [],
+      },
+    },
+  };
+  const gbSets = sets.filter(
+    (set) => set.gbLaunch && set.gbLaunch.length === 10 && set.gbEnd && set.gbEnd.length === 10
+  );
+  objectKeys(calendarData).forEach((cat) => {
+    const catSets = cat === "gbLaunch" ? gbSets : sets;
+    calendarData[cat].summary.total = catSets.length;
+
+    const sortedDates = removeDuplicates(alphabeticalSort(catSets.map((set) => set[cat])));
+    const startDate = sortedDates[0];
+    const endDate = sortedDates[sortedDates.length - 1];
+    const interval = Interval.fromDateTimes(DateTime.fromISO(startDate), DateTime.fromISO(endDate));
+    const days = [...iterateDays(interval)].map((dateTime) => dateTime.toISODate());
+    calendarData[cat].start = startDate;
+    calendarData[cat].end = endDate;
+
+    const profileNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.profile)));
+    const designerNames = alphabeticalSort(removeDuplicates(catSets.map((set) => set.designer).flat(1)));
+    const vendorNames = alphabeticalSort(
+      removeDuplicates(catSets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat(1))
+    );
+
+    const lists = {
+      profile: profileNames,
+      designer: designerNames,
+      vendor: vendorNames,
+    };
+
+    const createCalendarDataObject = (sets: StatisticsSetType[], name: string): CalendarDataObject<true> => {
+      const dayData = days
+        .map<CalendarDatum<true>>((day, index) => {
+          const value = sets.filter((set) => (cat === "gbLaunch" ? pageConditions(set, day).live : set.icDate === day));
+          return {
+            index,
+            val: value.length,
+          };
+        })
+        .filter((datum) => datum.val > 0);
+      return {
+        name,
+        total: sets.length,
+        data: dayData,
+      };
+    };
+
+    calendarData[cat].summary = createCalendarDataObject(catSets, calendarData[cat].summary.name);
+
+    calendarData[cat].breakdown = objectKeys(calendarData[cat].breakdown).reduce((obj, prop) => {
+      const list = lists[prop];
+      return {
+        ...obj,
+        [prop]: list.map((name) => createCalendarDataObject(filterPropSets(catSets, prop, name), name)),
+      };
+    }, {} as Record<Properties, CalendarDataObject<true>[]>);
+  });
+  return Promise.resolve(calendarData);
+};
+
+const sanitiseStatusData = (data: StatusDataObject<true>[]): StatusDataObject<true>[] =>
+  data.map(({ sunburst, pie = {}, ...datum }) => {
+    const filteredPie = objectEntries(pie)
+      .filter(([key, val]) => val && val > 0)
+      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as StatusDataObject<true>["pie"]);
+    const filteredSunburst = sunburst
+      ? sunburst
+          .map((child, index, array) => (array.length > 1 ? { ...child, index } : child))
+          .map((child) =>
+            sunburstChildHasChildren(child)
+              ? {
+                  ...child,
+                  children: child.children.filter((child) => (sunburstChildHasChildren(child) ? true : child.val > 0)),
+                }
+              : child
+          )
+          .filter((child) => (sunburstChildHasChildren(child) ? child.children.length > 0 : child.val > 0))
+      : undefined;
+    return sunburst
+      ? {
+          ...datum,
+          pie: filteredPie,
+          sunburst: filteredSunburst,
+        }
+      : {
+          ...datum,
+          pie: filteredPie,
+        };
+  });
 
 const createStatusData = (sets: StatisticsSetType[]) => {
   const statusData: StatusData<true> = {
@@ -361,7 +419,7 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   };
 
   statusData.summary = sanitiseStatusData([
-    createStatusDataObject(sets, "Current keyset status", "profile", profileNames),
+    createStatusDataObject(sets, statusData.summary.name, "profile", profileNames),
   ])[0];
 
   objectKeys(statusData.breakdown).forEach((prop) => {
@@ -380,6 +438,20 @@ const createStatusData = (sets: StatisticsSetType[]) => {
   });
   return Promise.resolve(statusData);
 };
+
+const sanitiseShippedData = (data: ShippedDataObject<true>[]): ShippedDataObject<true>[] =>
+  data.map(({ months, shipped, unshipped, ...datum }) => ({
+    ...datum,
+    shipped: shipped || undefined,
+    unshipped: unshipped || undefined,
+    months: months
+      .map((month, index, array) =>
+        Object.entries(array.length > 1 ? { ...month, index } : month)
+          .filter(([key, value]) => key === "index" || (value && value > 0))
+          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+      )
+      .filter((month) => Object.keys(month).length > 1),
+  }));
 
 const createShippedData = (sets: StatisticsSetType[]) => {
   const shippedData: ShippedData<true> = {
@@ -438,7 +510,7 @@ const createShippedData = (sets: StatisticsSetType[]) => {
     };
   };
 
-  shippedData.summary = sanitiseShippedData([createShippedDataObject(pastSets, "Shipped sets by GB month")])[0];
+  shippedData.summary = sanitiseShippedData([createShippedDataObject(pastSets, shippedData.summary.name)])[0];
 
   objectKeys(shippedData.breakdown).forEach((prop) => {
     shippedData.breakdown[prop] = sanitiseShippedData(
@@ -450,6 +522,27 @@ const createShippedData = (sets: StatisticsSetType[]) => {
   });
   return Promise.resolve(shippedData);
 };
+
+const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): CountDataObject<true>[] =>
+  data.map(({ data, name, total, mode, range, ...datum }) => {
+    const filteredDatum = objectEntries(datum)
+      .filter(([key, val]) => typeof val === "number" && val > 0)
+      .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {} as typeof datum);
+    const filteredData = data
+      // uses any because compiler doesn't like this for some reason
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((datum: any, index: any, array: any[]) => (array.length > 1 && !idIsIndex ? { ...datum, index } : datum))
+      .filter(({ count }) => count > 0)
+      .filter((datum) => Object.keys(datum).length > (idIsIndex ? 1 : 2));
+    return {
+      ...filteredDatum,
+      name,
+      total,
+      range,
+      mode: (mode && mode.length > 1) || (mode && mode[0] > 0) ? mode : undefined,
+      data: filteredData,
+    };
+  });
 
 const createDurationData = (sets: StatisticsSetType[]) => {
   const durationData: DurationData<true> = {
@@ -530,10 +623,8 @@ const createDurationData = (sets: StatisticsSetType[]) => {
         return math.round(length[cat === "icDate" ? "months" : "days"], 2);
       });
 
-      const title = cat === "icDate" ? "IC duration (months)" : "GB duration (days)";
-
       durationData[cat].summary = sanitiseCountData(
-        [createDurationDataObject(summaryData, title, propSets.length)],
+        [createDurationDataObject(summaryData, durationData[cat].summary.name, propSets.length)],
         true
       )[0];
 
@@ -620,7 +711,7 @@ const createVendorsData = (sets: StatisticsSetType[]) => {
   const summaryLengthArray = vendorSets.map((set) => (set.vendors ? set.vendors.length : 0)).sort();
 
   vendorsData.summary = sanitiseCountData(
-    [createVendorsDataObject(summaryLengthArray, "Vendors per set", vendorSets.length)],
+    [createVendorsDataObject(summaryLengthArray, vendorsData.summary.name, vendorSets.length)],
     true
   )[0];
 
@@ -687,17 +778,19 @@ export const createStatistics = functions
         return true;
       }
     });
-    const timelinesData = createTimelinesData(limitedSets);
-    const statusData = createStatusData(limitedSets);
-    const shippedData = createShippedData(limitedSets);
-    const durationData = createDurationData(limitedSets);
-    const vendorsData = createVendorsData(limitedSets);
+    const timelinesData = await createTimelinesData(limitedSets);
+    const calendarData = await createCalendarData(limitedSets);
+    const statusData = await createStatusData(limitedSets);
+    const shippedData = await createShippedData(limitedSets);
+    const durationData = await createDurationData(limitedSets);
+    const vendorsData = await createVendorsData(limitedSets);
     const statisticsData = {
-      timelines: await timelinesData,
-      status: await statusData,
-      shipped: await shippedData,
-      duration: await durationData,
-      vendors: await vendorsData,
+      timelines: timelinesData,
+      calendar: calendarData,
+      status: statusData,
+      shipped: shippedData,
+      duration: durationData,
+      vendors: vendorsData,
       timestamp: DateTime.utc().toISO(),
     };
     const jsonString = JSON.stringify(statisticsData);

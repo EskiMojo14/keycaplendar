@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { is } from "typescript-is";
 import { DateSortKeys, SetType } from "../main/types";
 import { StatisticsSetType } from "../statistics/types";
@@ -144,6 +144,14 @@ export const alphabeticalSortProp = <O extends Record<string, unknown>, K extend
   descending = false,
   hoist?: O[K]
 ): O[] => array.sort(alphabeticalSortPropCurried(prop, descending, hoist));
+
+export function* iterateDays(interval: Interval): Generator<DateTime, void, unknown> {
+  let cursor = interval.start.startOf("day");
+  while (cursor < interval.end) {
+    yield cursor;
+    cursor = cursor.plus({ days: 1 });
+  }
+}
 
 /**
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).

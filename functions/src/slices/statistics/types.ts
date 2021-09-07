@@ -36,6 +36,32 @@ export type TimelinesData<Optimised extends true | false = false> = Record<
   }
 >;
 
+export type CalendarDatum<Optimised extends true | false = false> = Optimised extends true
+  ? {
+      index: number;
+      val: number;
+    }
+  : {
+      day: string;
+      value: number;
+    };
+
+export type CalendarDataObject<Optimised extends true | false = false> = {
+  name: string;
+  total: number;
+  data: CalendarDatum<Optimised>[];
+};
+
+export type CalendarData<Optimised extends true | false = false> = Record<
+  Categories,
+  {
+    summary: CalendarDataObject<Optimised>;
+    breakdown: Record<Properties, CalendarDataObject<Optimised>[]>;
+    start: string;
+    end: string;
+  }
+>;
+
 export type StatusDataObjectSunburstDatum<Optimised extends true | false = false> = Optimised extends true
   ? {
       id: string;
@@ -152,6 +178,7 @@ export type VendorData<Optimised extends true | false = false> = {
 
 export type StatisticsData<Optimised extends true | false = false> = {
   timelines: TimelinesData<Optimised>;
+  calendar: CalendarData<Optimised>;
   status: StatusData<Optimised>;
   shipped: ShippedData<Optimised>;
   duration: DurationData<Optimised>;
