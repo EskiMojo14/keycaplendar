@@ -68,22 +68,7 @@ export type ThemeMap = {
   grey1: string;
   grey2: string;
 
-  elevatedSurface0: string;
-  /** card, switch */
-  elevatedSurface1: string;
-  /** contained button */
-  elevatedSurface2: string;
-  /** refresh indicator */
-  elevatedSurface3: string;
-  /** app bar */
-  elevatedSurface4: string;
-  /** FAB, snackbar */
-  elevatedSurface6: string;
-  /** menu, side sheet */
-  elevatedSurface8: string;
-  elevatedSurface12: string;
-  /** nav drawer, modal side sheet */
-  elevatedSurface16: string;
-  /** dialog */
-  elevatedSurface24: string;
+  primaryGradient: string[];
+  secondaryGradient: string[];
+  elevatedSurface: string[];
 };

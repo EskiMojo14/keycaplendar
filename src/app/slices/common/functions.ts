@@ -1,4 +1,5 @@
 import { is } from "typescript-is";
+import cloneDeep from "lodash.clonedeep";
 import debounce from "lodash.debounce";
 import { alpha } from "@material-ui/core/styles";
 import { typedFirestore } from "@s/firebase/firestore";
@@ -96,22 +97,39 @@ export const getTextColourOpacity = (
 ) => alpha(getTextColour(bgColor, themeMap, defaultColor), getTextOpacity(emphasis));
 
 export const saveTheme = () => {
+  const arrayIndicateRegex = /\[(.*)#(.*)\]/;
   const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
     const [theme, prop] = key.split("|");
 
-    const copy = { ...prev };
+    let themeObj = cloneDeep(prev[theme]);
 
-    if (prev[theme] === undefined) {
-      copy[theme] = blankTheme;
+    if (themeObj === undefined) {
+      themeObj = blankTheme;
     }
 
-    const value = val === "true" || val === "false" ? val === "true" : val;
-    const camelProp = camelise(prop, "-");
-    if (hasKey(copy, theme) && hasKey(blankTheme, camelProp)) {
-      copy[theme] = { ...copy[theme], [camelProp]: value };
+    if (arrayIndicateRegex.test(prop)) {
+      const [, propName, indexString] = prop.match(arrayIndicateRegex) || [];
+      if (propName && indexString) {
+        const camelProp = camelise(propName, "-");
+        // SCSS lists start at 1
+        const index = parseInt(indexString) - 1;
+
+        if (hasKey(prev, theme) && hasKey(blankTheme, camelProp) && themeObj[camelProp] instanceof Array) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          themeObj[camelProp][index] = val;
+        }
+      }
+    } else {
+      const value = val === "true" || val === "false" ? val === "true" : val;
+      const camelProp = camelise(prop, "-");
+      if (hasKey(prev, theme) && hasKey(blankTheme, camelProp)) {
+        themeObj = { ...themeObj, [camelProp]: value };
+      }
     }
-    return copy;
+    return { ...prev, [theme]: themeObj };
   }, {});
+  console.log(interpolatedThemeMap);
   dispatch(setThemeMaps(interpolatedThemeMap));
   const interpolatedGraphColors = Object.entries(graphMap).reduce<Record<string, string[]>>((obj, [key, val]) => {
     const [theme, indexString] = key.split("|");

@@ -122,7 +122,7 @@ export const StatusCard = (props: StatusCardProps) => {
             inheritColorFromParent={false}
             margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
             theme={nivoTheme}
-            borderColor={currentTheme?.elevatedSurface1}
+            borderColor={currentTheme?.elevatedSurface[1]}
             borderWidth={2}
             valueFormat=">-,"
             enableArcLabels
@@ -314,7 +314,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
             inheritColorFromParent={false}
             margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
             theme={nivoTheme}
-            borderColor={currentTheme?.elevatedSurface1}
+            borderColor={currentTheme?.elevatedSurface[1]}
             borderWidth={2}
             valueFormat=">-,"
             enableArcLabels

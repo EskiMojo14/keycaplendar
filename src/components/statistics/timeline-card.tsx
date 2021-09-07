@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
-import { ThemeMap } from "@s/common/types";
+import { KeysMatching, ThemeMap } from "@s/common/types";
 import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
@@ -396,7 +396,7 @@ export type TimelinesCardProps = {
   chartKeys: string[];
   months: string[];
   category: string;
-  singleTheme?: Exclude<keyof ThemeMap, "dark">;
+  singleTheme?: KeysMatching<ThemeMap, string>;
   defaultType?: "bar" | "line";
   filterable?: boolean;
   allProfiles?: string[];

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
-import { ThemeMap } from "@s/common/types";
+import { KeysMatching, ThemeMap } from "@s/common/types";
 import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { Categories, CountDataObject } from "@s/statistics/types";
@@ -32,7 +32,7 @@ type TableCardProps = {
   unit: string;
   tab: "duration" | "vendors";
   defaultType?: "bar" | "line";
-  theme?: Exclude<keyof ThemeMap, "dark">;
+  theme?: KeysMatching<ThemeMap, string>;
   overline?: React.ReactNode;
   note?: React.ReactNode;
 };

@@ -188,6 +188,14 @@ $overlay-values: (
   @return lighten($color, map-get($overlay-values, $elevation));
 }
 
+@function generate-gradient($color, $steps: 10) {
+  $list: ();
+  @for $i from 1 through $steps {
+    $list: append($list, rgba($color, (1 / $steps) * $i));
+  }
+  @return $list;
+}
+
 :export {
   @each $theme-name, $theme in $themes-map {
     @each $theme-prop, $theme-prop-val in $theme {
@@ -214,13 +222,22 @@ $overlay-values: (
       lighter-divider: rgba(map-get($theme, on-surface), 0.06),
       grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%),
       grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+      primary-gradient: generate-gradient(map-get($theme, primary)),
+      secondary-gradient: generate-gradient(map-get($theme, secondary)),
     );
     @each $theme-prop, $theme-prop-val in $dynamic-colors {
-      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+      @if type-of($theme-prop-val) == "list" {
+        @for $i from 1 through length($theme-prop-val) {
+          $c: nth($theme-prop-val, $i);
+          #{$theme-name + "|[" + $theme-prop + "#" + $i + "]"}: $c;
+        }
+      } @else {
+        #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
+      }
     }
 
     @each $overlay-elevation, $overlay-percent in $overlay-values {
-      #{$theme-name + "|elevated-surface" + $overlay-elevation}: if(
+      #{$theme-name + "|[elevated-surface#" + ($overlay-elevation + 1) + "]"}: if(
         map-get($theme, dark),
         overlay-elevation(map-get($theme, surface), $overlay-elevation),
         map-get($theme, surface)

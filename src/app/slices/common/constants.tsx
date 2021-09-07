@@ -269,14 +269,7 @@ export const blankTheme: ThemeMap = {
   grey1: "",
   grey2: "",
 
-  elevatedSurface0: "",
-  elevatedSurface1: "",
-  elevatedSurface2: "",
-  elevatedSurface3: "",
-  elevatedSurface4: "",
-  elevatedSurface6: "",
-  elevatedSurface8: "",
-  elevatedSurface12: "",
-  elevatedSurface16: "",
-  elevatedSurface24: "",
+  primaryGradient: Array(10).fill(""),
+  secondaryGradient: Array(10).fill(""),
+  elevatedSurface: Array(25).fill(""),
 };
