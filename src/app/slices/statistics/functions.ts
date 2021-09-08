@@ -216,6 +216,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
     return {
       start,
       end,
+      years: Math.ceil(interval.toDuration("years").years),
       summary: hydrateCalendarDataObject(summary),
       breakdown: objectEntries(breakdown).reduce(
         (obj, [prop, array]) => ({ ...obj, [prop]: array.map((object) => hydrateCalendarDataObject(object)) }),

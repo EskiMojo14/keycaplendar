@@ -82,12 +82,20 @@ export type CalendarDataObject<Optimised extends true | false = false> = {
 
 export type CalendarData<Optimised extends true | false = false> = Record<
   Categories,
-  {
-    summary: CalendarDataObject<Optimised>;
-    breakdown: Record<Properties, CalendarDataObject<Optimised>[]>;
-    start: string;
-    end: string;
-  }
+  Optimised extends true
+    ? {
+        summary: CalendarDataObject<Optimised>;
+        breakdown: Record<Properties, CalendarDataObject<Optimised>[]>;
+        start: string;
+        end: string;
+      }
+    : {
+        summary: CalendarDataObject<Optimised>;
+        breakdown: Record<Properties, CalendarDataObject<Optimised>[]>;
+        start: string;
+        end: string;
+        years: number;
+      }
 >;
 
 export type StatusDataObjectSunburstDatum<Optimised extends true | false = false> = Optimised extends true

@@ -53,6 +53,7 @@ export const initialState: StatisticsState = {
       icDate: {
         start: "",
         end: "",
+        years: 0,
         summary: {
           name: "ICs per day",
           total: 0,
@@ -67,6 +68,7 @@ export const initialState: StatisticsState = {
       gbLaunch: {
         start: "",
         end: "",
+        years: 0,
         summary: {
           name: "Live GBs per day",
           total: 0,

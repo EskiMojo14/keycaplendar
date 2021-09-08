@@ -31,6 +31,7 @@ import { TableCard, TableSummaryCard } from "./table-card";
 import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
 import { DialogStatistics } from "./dialog-statistics";
 import "./index.scss";
+import { CalendarSummaryCard } from "@c/statistics/calendar-card";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -390,6 +391,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
           <TimelinesSummaryCard
+            overline="Timelines"
             data={statisticsData.timelines[settings.summary].summary}
             breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
             months={statisticsData.timelines[settings.summary].months}
@@ -398,46 +400,55 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             selectable
             defaultType="line"
             singleTheme="secondary"
-            overline="Timelines"
             note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
           />
           <TimelinesSummaryCard
+            overline="Timelines"
             allProfiles={statisticsData.timelines[settings.summary].allProfiles}
             chartKeys={statisticsData.timelines[settings.summary].allProfiles}
             months={statisticsData.timelines[settings.summary].months}
             data={statisticsData.timelines[settings.summary].summary}
             filterable
-            overline="Timelines"
             category={settings.summary}
           />
+          <CalendarSummaryCard
+            overline="Calendar"
+            data={statisticsData.calendar[settings.summary].summary}
+            breakdownData={statisticsData.calendar[settings.summary].breakdown.profile}
+            years={statisticsData.calendar[settings.summary].years}
+            start={statisticsData.calendar[settings.summary].start}
+            end={statisticsData.calendar[settings.summary].end}
+            category={settings.summary}
+            theme="secondary"
+          />
           <StatusSummaryCard
+            overline="Status"
             data={statisticsData.status.summary}
             breakdownData={statisticsData.status.breakdown.profile}
-            overline="Status"
           />
           <ShippedSummaryCard
+            overline="Shipped"
             data={statisticsData.shipped.summary}
             months={statisticsData.shipped.months}
             breakdownData={statisticsData.shipped.breakdown.profile}
             category={settings.summary}
-            overline="Shipped"
           />
           <TableSummaryCard
+            overline="Duration"
             data={statisticsData.duration[settings.summary].summary}
             breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
             tab="duration"
             category={settings.summary}
             unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
-            overline="Duration"
             theme="secondary"
           />
           <TableSummaryCard
+            overline="Vendors"
             data={statisticsData.vendors.summary}
             breakdownData={statisticsData.vendors.breakdown.profile}
             tab="vendors"
             category={settings.summary}
-            overline="Vendors"
             unit="Vendors"
             note="Only includes sets that have completed GB."
             theme="secondary"
@@ -546,8 +557,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           index={statsTabs.indexOf(statisticsTab)}
           onChangeIndex={handleChangeIndex}
           slideRenderer={slideRenderer}
-          overscanSlideBefore={1}
-          overscanSlideAfter={1}
+          overscanSlideBefore={0}
+          overscanSlideAfter={0}
         />
         <Footer />
       </div>

@@ -1,0 +1,69 @@
+@use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
+
+.stats-tab .mdc-card.table-card {
+  grid-column: span 2;
+  .mdc-typography--overline {
+    margin: 0;
+  }
+  .mdc-typography--headline5 {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+  .mdc-typography--subtitle2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .title-container {
+    display: flex;
+    align-items: flex-start;
+    .text-container {
+      flex-grow: 1;
+    }
+  }
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    .chart-container {
+      box-sizing: border-box;
+      padding-top: 1 / 4 * 100%;
+      position: relative;
+      > div {
+        position: absolute;
+        top: 0;
+        > div {
+          height: 100%;
+        }
+      }
+    }
+    .calendar-chips-container {
+      display: flex;
+      padding-top: 8px;
+      margin: -8px;
+      .mdc-chip-set {
+        flex-grow: 1;
+      }
+    }
+    .note {
+      margin: 8px 0 0;
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  .stats-tab .mdc-card.table-card {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 839px) {
+  .stats-tab .mdc-card.table-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 479px) {
+  .stats-tab .mdc-card.table-card {
+    grid-column: span 1;
+  }
+}
