@@ -207,6 +207,9 @@ export const initialState: StatisticsState = {
       stacked: true,
       type: "line",
     },
+    status: {
+      type: "sunburst",
+    },
   },
 };
 

@@ -32,10 +32,16 @@ export type StatisticsSortType = {
   vendors: Sorts;
 };
 
-export type StatisticsChartSettingType = Record<
-  Exclude<StatsTab, "summary" | "calendar" | "status">,
-  { stacked: boolean; type: "bar" | "line" }
->;
+export type BarLineTabs = "timelines" | "shipped" | "duration" | "vendors";
+
+export type SunburstPackingTabs = "status";
+
+export type StatisticsChartSettingType = {
+  [tab in BarLineTabs]: { stacked: boolean; type: "bar" | "line" };
+} &
+  {
+    [tab in SunburstPackingTabs]: { type: "sunburst" | "packing"; stacked?: boolean };
+  };
 
 export type TimelinesDataObject<Optimised extends true | false = false> = Optimised extends true
   ? {
