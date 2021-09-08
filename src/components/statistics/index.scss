@@ -23,7 +23,6 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
   .mdc-card {
     grid-column: span 1;
     padding: 16px;
-    overflow: hidden;
     margin-top: 16px;
     &:first-of-type {
       margin-top: 0;

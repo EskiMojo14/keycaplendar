@@ -9,9 +9,7 @@ export const PointTooltip = ({
     data: { xFormatted, yFormatted },
     color,
   },
-}: PointTooltipProps) => (
-  <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />
-);
+}: PointTooltipProps) => <BasicTooltip id={`${serieId} - ${xFormatted}`} value={yFormatted} enableChip color={color} />;
 
 export const SliceTooltip = ({ slice, axis }: SliceTooltipProps) => {
   const theme = useTheme();

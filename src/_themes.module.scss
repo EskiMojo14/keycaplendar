@@ -188,10 +188,10 @@ $overlay-values: (
   @return lighten($color, map-get($overlay-values, $elevation));
 }
 
-@function generate-gradient($color, $steps: 10) {
+@function generate-gradient($color, $color2: rgba($color, 0), $steps: 10) {
   $list: ();
   @for $i from 1 through $steps {
-    $list: append($list, rgba($color, (1 / $steps) * $i));
+    $list: append($list, mix($color, $color2, (100% / $steps) * $i));
   }
   @return $list;
 }

@@ -31,7 +31,7 @@ import { TableCard, TableSummaryCard } from "./table-card";
 import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
 import { DialogStatistics } from "./dialog-statistics";
 import "./index.scss";
-import { CalendarSummaryCard } from "@c/statistics/calendar-card";
+import CalendarCard, { CalendarSummaryCard } from "@c/statistics/calendar-card";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -420,7 +420,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             start={statisticsData.calendar[settings.summary].start}
             end={statisticsData.calendar[settings.summary].end}
             category={settings.summary}
-            theme="secondary"
+            unit={settings.summary === "gbLaunch" ? "GB" : "IC"}
           />
           <StatusSummaryCard
             overline="Status"
@@ -479,6 +479,20 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               />
             ) : null
           )}
+        </div>
+      ),
+      calendar: (
+        <div className="stats-tab stats-grid calendar" key={key}>
+          {statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup].map((data) => (
+            <CalendarCard
+              key={data.name}
+              data={data}
+              years={statisticsData.calendar[settings.calendarCat].years}
+              start={statisticsData.calendar[settings.calendarCat].start}
+              end={statisticsData.calendar[settings.calendarCat].end}
+              unit={settings.calendarCat === "gbLaunch" ? "GB" : "IC"}
+            />
+          ))}
         </div>
       ),
       status: (

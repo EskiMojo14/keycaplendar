@@ -1,7 +1,7 @@
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 
-.stats-tab .mdc-card.table-card {
+.stats-tab .mdc-card.calendar-card {
   grid-column: span 2;
   .mdc-typography--overline {
     margin: 0;
@@ -26,7 +26,7 @@
     flex-direction: column;
     .chart-container {
       box-sizing: border-box;
-      padding-top: 1 / 4 * 100%;
+      padding-top: calc(var(--years, 0) * (1 / 2 * 100%) / 3);
       position: relative;
       > div {
         position: absolute;
@@ -48,22 +48,27 @@
       margin: 8px 0 0;
     }
   }
+  &.full-span {
+    .content-container .chart-container {
+      padding-top: calc(var(--years, 0) * (1 / 4 * 100%) / 3);
+    }
+  }
 }
 
 @media (max-width: 1199px) {
-  .stats-tab .mdc-card.table-card {
+  .stats-tab .mdc-card.calendar-card {
     grid-column: span 3;
   }
 }
 
 @media (max-width: 839px) {
-  .stats-tab .mdc-card.table-card {
+  .stats-tab .mdc-card.calendar-card {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 479px) {
-  .stats-tab .mdc-card.table-card {
+  .stats-tab .mdc-card.calendar-card {
     grid-column: span 1;
   }
 }

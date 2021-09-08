@@ -90,7 +90,7 @@ export const TableCard = (props: TableCardProps) => {
           <BasicTooltip
             id={`${props.unit} - ${label.split(" - ")[1]}`}
             value={data.formattedValue}
-            enableChip={true}
+            enableChip
             color={color}
           />
         )}
@@ -111,7 +111,7 @@ export const TableCard = (props: TableCardProps) => {
             data: { xFormatted, yFormatted },
             color,
           },
-        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -293,7 +293,7 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
           <BasicTooltip
             id={`${props.unit} - ${label.split(" - ")[1]}`}
             value={data.formattedValue}
-            enableChip={true}
+            enableChip
             color={color}
           />
         )}
@@ -314,7 +314,7 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
             data: { xFormatted, yFormatted },
             color,
           },
-        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip={true} color={color} />}
+        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,

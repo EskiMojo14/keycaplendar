@@ -1,6 +1,6 @@
 declare module "csstype" {
   interface Properties {
-    "--animation-delay": number;
+    [varName: `--${string}`]: string | number;
   }
 }
 declare module "*.module.scss" {

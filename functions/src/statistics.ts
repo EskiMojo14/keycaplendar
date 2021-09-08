@@ -290,7 +290,7 @@ const createCalendarData = (sets: StatisticsSetType[]) => {
 
     objectKeys(calendarData[cat].breakdown).forEach((prop) => {
       calendarData[cat].breakdown[prop].sort(
-        (a, b) => alphabeticalSortPropCurried("total")(a, b) || alphabeticalSortPropCurried("name")(a, b)
+        (a, b) => alphabeticalSortPropCurried("total", true)(a, b) || alphabeticalSortPropCurried("name")(a, b)
       );
     });
   });
