@@ -103,7 +103,7 @@ export const saveTheme = () => {
 
     let themeObj = cloneDeep(prev[theme]);
 
-    if (themeObj === undefined) {
+    if (!themeObj) {
       themeObj = blankTheme;
     }
 
@@ -114,7 +114,7 @@ export const saveTheme = () => {
         // SCSS lists start at 1
         const index = parseInt(indexString) - 1;
 
-        if (hasKey(prev, theme) && hasKey(blankTheme, camelProp) && themeObj[camelProp] instanceof Array) {
+        if (hasKey(blankTheme, camelProp) && themeObj[camelProp] instanceof Array) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           themeObj[camelProp][index] = val;
@@ -123,7 +123,7 @@ export const saveTheme = () => {
     } else {
       const value = val === "true" || val === "false" ? val === "true" : val;
       const camelProp = camelise(prop, "-");
-      if (hasKey(prev, theme) && hasKey(blankTheme, camelProp)) {
+      if (hasKey(blankTheme, camelProp)) {
         themeObj = { ...themeObj, [camelProp]: value };
       }
     }

@@ -536,9 +536,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={
-          currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
-        }
+        colors={currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors || undefined}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
@@ -827,9 +825,7 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={
-          currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors ? graphColors : undefined
-        }
+        colors={currentTheme && props.singleTheme ? [currentTheme[props.singleTheme]] : graphColors || undefined}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
