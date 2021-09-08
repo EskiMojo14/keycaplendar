@@ -56,6 +56,7 @@ export const CalendarCard = (props: CalendarCardProps) => {
             monthBorderWidth={0}
             daySpacing={2}
             monthSpacing={6}
+            margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
             tooltip={({ day, value }) => (
               <BasicTooltip
                 id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
@@ -135,6 +136,7 @@ export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
             monthBorderWidth={0}
             daySpacing={2}
             monthSpacing={6}
+            margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
             tooltip={({ day, value }) => (
               <BasicTooltip
                 id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
