@@ -409,7 +409,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const graphColors = useAppSelector(selectCurrentGraphColors);
+  const { rainbow: graphColors } = useAppSelector(selectCurrentGraphColors);
 
   const [filtered, setFiltered] = useState<string[]>([]);
 
@@ -669,7 +669,7 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
   const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const graphColors = useAppSelector(selectCurrentGraphColors);
+  const { rainbow: graphColors } = useAppSelector(selectCurrentGraphColors);
 
   const [selectedProfile, setSelectedProfile] = useState("");
   useEffect(() => setSelectedProfile(""), [props.category]);

@@ -1,6 +1,6 @@
 import React from "react";
 import { IconOptions, IconPropT } from "@rmwc/types";
-import { Page, ThemeMap } from "./types";
+import { Page, ThemeMap, GraphColors } from "./types";
 
 /**
  * Converts JSX to RMWC icon object parameter.
@@ -272,4 +272,8 @@ export const blankTheme: ThemeMap = {
   primaryGradient: Array(10).fill(""),
   secondaryGradient: Array(10).fill(""),
   elevatedSurface: Array(25).fill(""),
+};
+
+export const blankGraphColors: GraphColors[keyof GraphColors] = {
+  rainbow: [],
 };

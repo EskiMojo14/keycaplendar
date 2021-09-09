@@ -6,8 +6,8 @@ import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
 import { setAppPage, setDevice, setGraphColors, setOrientation, setThemeMaps } from ".";
-import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
-import { Page, ThemeMap } from "./types";
+import { blankTheme, blankGraphColors, mainPages, pageTitle, urlPages } from "./constants";
+import { Page, ThemeMap, GraphColors } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -130,20 +130,30 @@ export const saveTheme = () => {
     return { ...prev, [theme]: themeObj };
   }, {});
   dispatch(setThemeMaps(interpolatedThemeMap));
-  const interpolatedGraphColors = Object.entries(graphMap).reduce<Record<string, string[]>>((obj, [key, val]) => {
-    const [theme, indexString] = key.split("|");
+  const interpolatedGraphColors = Object.entries(graphMap).reduce<GraphColors>(
+    (obj, [key, val]) => {
+      const [theme, prop] = key.split("|");
 
-    // SCSS lists start at 1
-    const index = parseInt(indexString) - 1;
-
-    if (obj[theme] === undefined) {
-      obj[theme] = [];
-    }
-    if (hasKey(obj, theme)) {
-      obj[theme][index] = val;
-    }
-    return obj;
-  }, {});
+      if (hasKey(obj, theme) && arrayIndicateRegex.test(prop)) {
+        const themeCopy = cloneDeep(obj[theme]);
+        const [, propName, indexString] = prop.match(arrayIndicateRegex) || [];
+        if (propName && indexString) {
+          const camelProp = camelise(propName, "-");
+          // SCSS lists start at 1
+          const index = parseInt(indexString) - 1;
+          if (hasKey(themeCopy, camelProp)) {
+            themeCopy[camelProp][index] = val;
+            return {
+              ...obj,
+              [theme]: themeCopy,
+            };
+          }
+        }
+      }
+      return obj;
+    },
+    { light: blankGraphColors, dark: blankGraphColors }
+  );
   dispatch(setGraphColors(interpolatedGraphColors));
 };
 

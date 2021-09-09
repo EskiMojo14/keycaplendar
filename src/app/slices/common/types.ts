@@ -43,3 +43,10 @@ export type ThemeMap = {
   secondaryGradient: string[];
   elevatedSurface: string[];
 };
+
+export type GraphColors = Record<
+  "light" | "dark",
+  {
+    rainbow: string[];
+  }
+>;

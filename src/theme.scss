@@ -31,6 +31,8 @@
 @use "@material/notched-outline/_index" as notched-outline;
 @use "@material/theme/_index" as theme;
 
+@use "util";
+
 // 1 - card, switch
 // 2 - contained button
 // 3 - refresh indicator
@@ -439,8 +441,10 @@ $overlay-values: (
     }
   }
 
-  @for $index from 1 to length(graph-colors.$graph-colors-dark) {
-    $color: if($dark, nth(graph-colors.$graph-colors-dark, $index), nth(graph-colors.$graph-colors, $index));
+  $rainbow-graph-colors: util.map-deep-get(graph-colors.$graph-colors, if($dark, "dark", "light"), "rainbow");
+
+  @for $index from 1 to length($rainbow-graph-colors) {
+    $color: nth($rainbow-graph-colors, $index);
     .focus-chips .focus-chip-index-#{$index} {
       @include chips.leading-icon-color($color, 1);
       @include ripple.states($color);

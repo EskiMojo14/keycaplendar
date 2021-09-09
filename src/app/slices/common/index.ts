@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { Page, ThemeMap } from "./types";
+import { Page, ThemeMap, GraphColors } from "./types";
 
 export type CommonState = {
   device: "mobile" | "tablet" | "desktop";
@@ -8,7 +8,7 @@ export type CommonState = {
   page: Page;
   theme: string;
   themeMaps: Record<string, ThemeMap>;
-  graphColors: Record<string, string[]>;
+  graphColors: GraphColors;
 };
 
 export const initialState: CommonState = {
@@ -17,7 +17,14 @@ export const initialState: CommonState = {
   page: "images",
   theme: "light",
   themeMaps: {},
-  graphColors: {},
+  graphColors: {
+    light: {
+      rainbow: [],
+    },
+    dark: {
+      rainbow: [],
+    },
+  },
 };
 
 export const commonSlice = createSlice({
@@ -39,7 +46,7 @@ export const commonSlice = createSlice({
     setThemeMaps: (state, action: PayloadAction<Record<string, ThemeMap>>) => {
       state.themeMaps = action.payload;
     },
-    setGraphColors: (state, action: PayloadAction<Record<string, string[]>>) => {
+    setGraphColors: (state, action: PayloadAction<GraphColors>) => {
       state.graphColors = action.payload;
     },
   },
@@ -66,7 +73,7 @@ export const selectGraphColors = (state: RootState) => state.common.graphColors;
 
 export const selectCurrentGraphColors = createSelector(
   [selectGraphColors, selectCurrentThemeMap],
-  (graphColors, themeMap) => graphColors[themeMap?.dark ? "dark" : "light"] as string[] | undefined
+  (graphColors, themeMap) => graphColors[themeMap?.dark ? "dark" : "light"]
 );
 
 export default commonSlice.reducer;

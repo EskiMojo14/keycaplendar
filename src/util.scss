@@ -12,3 +12,16 @@
     border-#{$direction}: $width $style var(--theme-lighter-divider);
   }
 }
+
+/// Map deep get
+/// @author Kitty Giraudel
+/// @access public
+/// @param {Map} $map - Map
+/// @param {Arglist} $keys - Key chain
+/// @return {*} - Desired value
+@function map-deep-get($map, $keys...) {
+  @each $key in $keys {
+    $map: map-get($map, $key);
+  }
+  @return $map;
+}
