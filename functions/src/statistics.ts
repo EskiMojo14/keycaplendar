@@ -78,7 +78,7 @@ const sanitiseBarData = (data: Record<string, number>[]) =>
     .map((datum, index, array) => (array.length > 1 ? { ...datum, index } : datum))
     .filter((datum, i, array) => Object.keys(datum).length > (array.length > 1 ? 1 : 0));
 
-const createTimelinesData = (sets: StatisticsSetType[]) => {
+const createTimelinesData = (icSets: StatisticsSetType[], gbSets: StatisticsSetType[]) => {
   const timelinesData: TimelinesData<true> = {
     icDate: {
       months: [],
@@ -111,9 +111,8 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
       },
     },
   };
-  const gbSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
   objectKeys(timelinesData).forEach((cat) => {
-    const catSets = cat === "gbLaunch" ? gbSets : sets;
+    const catSets = cat === "gbLaunch" ? gbSets : icSets;
 
     const months = getSetMonthRange(catSets, cat, monthFormat);
 
@@ -203,7 +202,7 @@ const createTimelinesData = (sets: StatisticsSetType[]) => {
   return Promise.resolve(timelinesData);
 };
 
-const createCalendarData = (sets: StatisticsSetType[]) => {
+const createCalendarData = (icSets: StatisticsSetType[], gbSets: StatisticsSetType[]) => {
   const calendarData: CalendarData<true> = {
     icDate: {
       start: "",
@@ -234,11 +233,11 @@ const createCalendarData = (sets: StatisticsSetType[]) => {
       },
     },
   };
-  const gbSets = sets.filter(
+  const filteredGbSets = gbSets.filter(
     (set) => set.gbLaunch && set.gbLaunch.length === 10 && set.gbEnd && set.gbEnd.length === 10
   );
   objectKeys(calendarData).forEach((cat) => {
-    const catSets = cat === "gbLaunch" ? gbSets : sets;
+    const catSets = cat === "gbLaunch" ? filteredGbSets : icSets;
     calendarData[cat].summary.total = catSets.length;
 
     const sortedDates = removeDuplicates(alphabeticalSort(catSets.map((set) => set[cat])));
@@ -550,7 +549,7 @@ const sanitiseCountData = (data: CountDataObject<true>[], idIsIndex = false): Co
     };
   });
 
-const createDurationData = (sets: StatisticsSetType[]) => {
+const createDurationData = (icSets: StatisticsSetType[], gbSets: StatisticsSetType[]) => {
   const durationData: DurationData<true> = {
     icDate: {
       summary: {
@@ -587,10 +586,11 @@ const createDurationData = (sets: StatisticsSetType[]) => {
       },
     },
   };
-  const dateSets = sets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
   categories.forEach((cat) => {
     const propSets: StatisticsSetType[] =
-      cat === "gbLaunch" ? dateSets.filter((set) => set.gbEnd.length === 10) : dateSets;
+      cat === "gbLaunch"
+        ? gbSets.filter((set) => set.gbEnd && set.gbEnd.length === 10)
+        : icSets.filter((set) => set.gbLaunch && set.gbLaunch.length === 10);
     if (hasKey(durationData, cat)) {
       const profileNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.profile)));
       const designerNames = alphabeticalSort(removeDuplicates(propSets.map((set) => set.designer).flat(1)));
@@ -775,21 +775,39 @@ export const createStatistics = functions
       })
       .filter((set) => Boolean(set.profile));
     sets.sort(alphabeticalSortPropCurried("colorway"));
-    const limitedSets = sets.filter((set) => {
+
+    const allSets = sets.filter((set) => {
       if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
         const year = parseInt(set.gbLaunch.slice(0, 4));
         const thisYear = DateTime.utc().year;
         return year >= thisYear - 2 && year <= thisYear + 1;
       } else {
-        return true;
+        const year = parseInt(set.icDate.slice(0, 4));
+        const thisYear = DateTime.utc().year;
+        return year >= thisYear - 2 && year <= thisYear + 1;
       }
     });
-    const timelinesData = await createTimelinesData(limitedSets);
-    const calendarData = await createCalendarData(limitedSets);
-    const statusData = await createStatusData(limitedSets);
-    const shippedData = await createShippedData(limitedSets);
-    const durationData = await createDurationData(limitedSets);
-    const vendorsData = await createVendorsData(limitedSets);
+    const icSets = sets.filter((set) => {
+      const year = parseInt(set.icDate.slice(0, 4));
+      const thisYear = DateTime.utc().year;
+      return year >= thisYear - 2 && year <= thisYear + 1;
+    });
+    const gbSets = sets.filter((set) => {
+      if (set.gbLaunch && !set.gbLaunch.includes("Q")) {
+        const year = parseInt(set.gbLaunch.slice(0, 4));
+        const thisYear = DateTime.utc().year;
+        return year >= thisYear - 2 && year <= thisYear + 1;
+      } else {
+        return false;
+      }
+    });
+
+    const timelinesData = await createTimelinesData(icSets, gbSets);
+    const calendarData = await createCalendarData(icSets, gbSets);
+    const statusData = await createStatusData(allSets);
+    const shippedData = await createShippedData(gbSets);
+    const durationData = await createDurationData(icSets, gbSets);
+    const vendorsData = await createVendorsData(gbSets);
     const statisticsData = {
       timelines: timelinesData,
       calendar: calendarData,
