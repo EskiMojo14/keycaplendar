@@ -36,12 +36,19 @@ export type BarLineTabs = "timelines" | "shipped" | "duration" | "vendors";
 
 export type SunburstPackingTabs = "status";
 
+export type CalendarTabs = "calendar";
+
 export type StatisticsChartSettingType = {
-  [tab in BarLineTabs]: { stacked: boolean; type: "bar" | "line" };
-} &
-  {
-    [tab in SunburstPackingTabs]: { type: "sunburst" | "packing"; stacked?: boolean };
+  barLine: {
+    [tab in BarLineTabs]: { stacked: boolean; type: "bar" | "line" };
   };
+  sunburstPacking: {
+    [tab in SunburstPackingTabs]: { type: "sunburst" | "packing" };
+  };
+  calendar: {
+    [tab in CalendarTabs]: { palette: "gradient" | "heatmap" };
+  };
+};
 
 export type TimelinesDataObject<Optimised extends true | false = false> = Optimised extends true
   ? {

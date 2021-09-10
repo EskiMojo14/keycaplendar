@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { ThemeMap } from "@s/common/types";
-import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
+import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { Categories, CountDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
@@ -42,11 +42,11 @@ export const TableCard = (props: TableCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings[props.tab];
+  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[props.tab];
   /*const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "stacked", value }));*/
+    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
@@ -231,11 +231,11 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings[props.tab];
+  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[props.tab];
   /*const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "stacked", value }));*/
+    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: props.tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);

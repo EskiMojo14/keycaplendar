@@ -20,9 +20,11 @@ export const initialState: CommonState = {
   graphColors: {
     light: {
       rainbow: [],
+      heatmap: [],
     },
     dark: {
       rainbow: [],
+      heatmap: [],
     },
   },
 };

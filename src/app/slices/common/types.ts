@@ -48,5 +48,6 @@ export type GraphColors = Record<
   "light" | "dark",
   {
     rainbow: string[];
+    heatmap: string[];
   }
 >;

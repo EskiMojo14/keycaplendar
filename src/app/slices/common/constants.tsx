@@ -276,4 +276,5 @@ export const blankTheme: ThemeMap = {
 
 export const blankGraphColors: GraphColors[keyof GraphColors] = {
   rainbow: [],
+  heatmap: [],
 };

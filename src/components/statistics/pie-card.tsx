@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
 import { getTextColour } from "@s/common/functions";
-import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
+import { selectChartSettings, setStatisticsSunburstPackingChartSetting } from "@s/statistics";
 import { sunburstChildHasChildren } from "@s/statistics/functions";
 import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
 import {
@@ -74,10 +74,12 @@ export const StatusCard = (props: StatusCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
-    status: { type: graphType },
+    sunburstPacking: {
+      status: { type: graphType },
+    },
   } = useAppSelector(selectChartSettings);
   const setGraphType = (value: "sunburst" | "packing") =>
-    dispatch(setStatisticsChartSetting({ tab: "status", key: "type", value }));
+    dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
 
   const currentTheme = useAppSelector(selectCurrentThemeMap);
 
@@ -326,10 +328,12 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
-    status: { type: graphType },
+    sunburstPacking: {
+      status: { type: graphType },
+    },
   } = useAppSelector(selectChartSettings);
   const setGraphType = (value: "sunburst" | "packing") =>
-    dispatch(setStatisticsChartSetting({ tab: "status", key: "type", value }));
+    dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
 
   const device = useAppSelector(selectDevice);
   const currentTheme = useAppSelector(selectCurrentThemeMap);

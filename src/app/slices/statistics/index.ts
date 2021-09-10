@@ -191,24 +191,33 @@ export const initialState: StatisticsState = {
     vendors: "total",
   },
   chartSettings: {
-    timelines: {
-      stacked: true,
-      type: "bar",
+    barLine: {
+      timelines: {
+        stacked: true,
+        type: "bar",
+      },
+      shipped: {
+        stacked: true,
+        type: "bar",
+      },
+      duration: {
+        stacked: true,
+        type: "line",
+      },
+      vendors: {
+        stacked: true,
+        type: "line",
+      },
     },
-    shipped: {
-      stacked: true,
-      type: "bar",
+    sunburstPacking: {
+      status: {
+        type: "sunburst",
+      },
     },
-    duration: {
-      stacked: true,
-      type: "line",
-    },
-    vendors: {
-      stacked: true,
-      type: "line",
-    },
-    status: {
-      type: "sunburst",
+    calendar: {
+      calendar: {
+        palette: "gradient",
+      },
     },
   },
 };
@@ -240,19 +249,47 @@ export const statisticsSlice = createSlice({
       const { key, value } = action.payload;
       state.sort[key] = value;
     },
-    setStatisticsChartSetting: <
-      Tab extends keyof StatisticsChartSettingType,
-      Setting extends keyof StatisticsChartSettingType[Tab]
+    setStatisticsBarLineChartSetting: <
+      Tab extends keyof StatisticsChartSettingType["barLine"],
+      Setting extends keyof StatisticsChartSettingType["barLine"][Tab]
     >(
       state: StatisticsState,
       action: PayloadAction<{
         tab: Tab;
         key: Setting;
-        value: StatisticsChartSettingType[Tab][Setting];
+        value: StatisticsChartSettingType["barLine"][Tab][Setting];
       }>
     ) => {
       const { tab, key, value } = action.payload;
-      state.chartSettings[tab][key] = value;
+      state.chartSettings.barLine[tab][key] = value;
+    },
+    setStatisticsSunburstPackingChartSetting: <
+      Tab extends keyof StatisticsChartSettingType["sunburstPacking"],
+      Setting extends keyof StatisticsChartSettingType["sunburstPacking"][Tab]
+    >(
+      state: StatisticsState,
+      action: PayloadAction<{
+        tab: Tab;
+        key: Setting;
+        value: StatisticsChartSettingType["sunburstPacking"][Tab][Setting];
+      }>
+    ) => {
+      const { tab, key, value } = action.payload;
+      state.chartSettings.sunburstPacking[tab][key] = value;
+    },
+    setStatisticsCalendarChartSetting: <
+      Tab extends keyof StatisticsChartSettingType["calendar"],
+      Setting extends keyof StatisticsChartSettingType["calendar"][Tab]
+    >(
+      state: StatisticsState,
+      action: PayloadAction<{
+        tab: Tab;
+        key: Setting;
+        value: StatisticsChartSettingType["calendar"][Tab][Setting];
+      }>
+    ) => {
+      const { tab, key, value } = action.payload;
+      state.chartSettings.calendar[tab][key] = value;
     },
   },
 });
@@ -263,7 +300,9 @@ export const {
   setStatisticsData,
   setStatisticsSetting,
   setStatisticsSort,
-  setStatisticsChartSetting,
+  setStatisticsBarLineChartSetting,
+  setStatisticsSunburstPackingChartSetting,
+  setStatisticsCalendarChartSetting,
 } = statisticsSlice.actions;
 
 export const selectTab = (state: RootState) => state.statistics.tab;

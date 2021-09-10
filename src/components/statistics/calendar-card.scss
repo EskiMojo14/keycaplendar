@@ -20,6 +20,10 @@
     .text-container {
       flex-grow: 1;
     }
+    .button-container {
+      display: flex;
+      align-items: center;
+    }
   }
   .content-container {
     display: flex;

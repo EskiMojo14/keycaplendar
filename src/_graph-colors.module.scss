@@ -42,6 +42,16 @@ $graph-colors: (
       palette.$grey-300,
       palette.$brown-300,
     ),
+    heatmap: (
+      palette.$teal-500,
+      palette.$green-500,
+      palette.$light-green-500,
+      palette.$lime-500,
+      palette.$yellow-500,
+      palette.$amber-500,
+      palette.$orange-500,
+      palette.$red-500,
+    ),
   ),
   dark: (
     rainbow: (
@@ -83,6 +93,16 @@ $graph-colors: (
       palette.$blue-grey-200,
       palette.$grey-200,
       palette.$brown-200,
+    ),
+    heatmap: (
+      palette.$teal-300,
+      palette.$green-300,
+      palette.$light-green-300,
+      palette.$lime-300,
+      palette.$yellow-300,
+      palette.$amber-300,
+      palette.$orange-300,
+      palette.$red-300,
     ),
   ),
 );

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { ThemeMap } from "@s/common/types";
-import { selectChartSettings, setStatisticsChartSetting } from "@s/statistics";
+import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
 import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
 import { addOrRemove, alphabeticalSortPropCurried, hasKey, iconObject, pluralise } from "@s/util/functions";
@@ -43,12 +43,14 @@ export const ShippedCard = (props: ShippedCardProps) => {
   const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const {
-    shipped: { type: graphType, stacked: stackedGraph },
+    barLine: {
+      shipped: { type: graphType, stacked: stackedGraph },
+    },
   } = useAppSelector(selectChartSettings);
   const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "stacked", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "shipped", key: "stacked", value }));
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "shipped", key: "type", value }));
 
   const labels = useMemo(() => props.months.filter(filterLabels([[36, 2]])), [props.months]);
   const barChart =
@@ -219,12 +221,14 @@ export const ShippedSummaryCard = (props: ShippedSummaryCardProps) => {
   useEffect(() => setSelectedIndex(-1), [props.category]);
 
   const {
-    shipped: { type: graphType, stacked: stackedGraph },
+    barLine: {
+      shipped: { type: graphType, stacked: stackedGraph },
+    },
   } = useAppSelector(selectChartSettings);
   const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "stacked", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "shipped", key: "stacked", value }));
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: "shipped", key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "shipped", key: "type", value }));
 
   const selectedData =
     selectedIndex >= 0 ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex] : props.data;
@@ -414,12 +418,14 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const [filtered, setFiltered] = useState<string[]>([]);
 
   const {
-    timelines: { type: graphType, stacked: stackedGraph },
+    barLine: {
+      timelines: { type: graphType, stacked: stackedGraph },
+    },
   } = useAppSelector(selectChartSettings);
   const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "stacked", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "timelines", key: "stacked", value }));
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "timelines", key: "type", value }));
 
   const setFilter = (profile: string) => {
     const newFiltered = addOrRemove(filtered, profile);
@@ -682,12 +688,14 @@ export const TimelinesSummaryCard = (props: TimelinesSummaryCardProps) => {
   const [filtered, setFiltered] = useState<string[]>([]);
 
   const {
-    timelines: { type: graphType, stacked: stackedGraph },
+    barLine: {
+      timelines: { type: graphType, stacked: stackedGraph },
+    },
   } = useAppSelector(selectChartSettings);
   const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "stacked", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "timelines", key: "stacked", value }));
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsChartSetting({ tab: "timelines", key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: "timelines", key: "type", value }));
 
   const setFilter = (profile: string) => {
     const newFiltered = addOrRemove(filtered, profile);
