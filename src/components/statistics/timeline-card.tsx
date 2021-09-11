@@ -111,7 +111,7 @@ export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedC
       />
     ) : null;
   return (
-    <Card {...props} className={classNames("timeline-card full-span", props.className)}>
+    <Card {...props} className={classNames("timeline-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (
@@ -295,7 +295,7 @@ export const ShippedSummaryCard = ({
       />
     ) : null;
   return (
-    <Card {...props} className={classNames("timeline-card full-span", props.className)}>
+    <Card {...props} className={classNames("timeline-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (
@@ -607,7 +607,7 @@ export const TimelinesCard = ({
       />
     ) : null;
   return (
-    <Card {...props} className={classNames("timeline-card full-span", props.className)}>
+    <Card {...props} className={classNames("timeline-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (
@@ -677,6 +677,8 @@ export const TimelinesCard = ({
     </Card>
   );
 };
+
+export const MemoisedTimelinesCard = React.memo(TimelinesCard);
 
 export interface TimelinesSummaryCardProps extends TimelinesCardProps {
   selectable?: boolean;
@@ -909,7 +911,7 @@ export const TimelinesSummaryCard = ({
       />
     ) : null;
   return (
-    <Card {...props} className={classNames("timeline-card full-span")}>
+    <Card {...props} className={classNames("timeline-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (
@@ -980,3 +982,9 @@ export const TimelinesSummaryCard = ({
     </Card>
   );
 };
+
+export const TimelineCardPlaceholder = ({ style }: { style: React.CSSProperties }) => (
+  <Card className="timeline-card placeholder" style={style}></Card>
+);
+
+export const MemoisedTimelineCardPlaceholder = React.memo(TimelineCardPlaceholder);

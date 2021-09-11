@@ -30,7 +30,7 @@
     flex-direction: column;
     .chart-container {
       box-sizing: border-box;
-      padding-top: calc(var(--years, 0) * (1 / 2 * 100%) / 3);
+      padding-top: 1 / 2 * 100%;
       position: relative;
       > div {
         position: absolute;
@@ -52,10 +52,11 @@
       margin: 8px 0 0;
     }
   }
-  &.full-span {
-    .content-container .chart-container {
-      padding-top: calc(var(--years, 0) * (1 / 4 * 100%) / 3);
-    }
+}
+
+.stats-tab .full-span .mdc-card.calendar-card {
+  .content-container .chart-container {
+    padding-top: 1 / 4 * 100%;
   }
 }
 

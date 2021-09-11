@@ -18,7 +18,6 @@ import "./calendar-card.scss";
 
 type CalendarCardProps = {
   data: CalendarDataObject;
-  years: number;
   start: string;
   end: string;
   unit: string;
@@ -27,7 +26,7 @@ type CalendarCardProps = {
   note?: React.ReactNode;
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const CalendarCard = ({ data, years, start, end, unit, theme, overline, note, ...props }: CalendarCardProps) => {
+export const CalendarCard = ({ data, start, end, unit, theme, overline, note, ...props }: CalendarCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -96,7 +95,7 @@ export const CalendarCard = ({ data, years, start, end, unit, theme, overline, n
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container" style={{ "--years": years }}>
+        <div className="chart-container">
           <ResponsiveCalendar
             data={data.data}
             from={start}
@@ -136,7 +135,6 @@ export const CalendarSummaryCard = ({
   data,
   category,
   breakdownData,
-  years,
   start,
   end,
   unit,
@@ -190,7 +188,7 @@ export const CalendarSummaryCard = ({
     </div>
   ) : null;
   return (
-    <Card {...props} className={classNames("calendar-card full-span", props.className)}>
+    <Card {...props} className={classNames("calendar-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (
@@ -235,7 +233,7 @@ export const CalendarSummaryCard = ({
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container" style={{ "--years": years }}>
+        <div className="chart-container">
           <ResponsiveCalendar
             data={chartData.data}
             from={start}
@@ -247,7 +245,7 @@ export const CalendarSummaryCard = ({
             monthBorderWidth={0}
             daySpacing={2}
             monthSpacing={6}
-            margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
+            margin={{ top: 16, right: 24, bottom: 16, left: 24 }}
             tooltip={({ day, value }) => (
               <BasicTooltip
                 id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}

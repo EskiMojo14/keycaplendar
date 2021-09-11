@@ -459,7 +459,7 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
     <Card
       {...props}
       className={classNames(
-        "pie-card full-span",
+        "pie-card",
         {
           sideways,
         },

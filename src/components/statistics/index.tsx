@@ -12,6 +12,7 @@ import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
 import { StatisticsType, TimelinesDataObject } from "@s/statistics/types";
 import { capitalise, hasKey, iconObject, typeGuard, useBoolStates } from "@s/util/functions";
+import { VirtuosoGrid } from "react-virtuoso";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import {
@@ -26,12 +27,12 @@ import {
 import { Footer } from "@c/common/footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import { CalendarCard, CalendarSummaryCard } from "./calendar-card";
 import { StatusCard, StatusSummaryCard } from "./pie-card";
 import { TableCard, TableSummaryCard } from "./table-card";
 import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
 import { DialogStatistics } from "./dialog-statistics";
 import "./index.scss";
-import CalendarCard, { CalendarSummaryCard } from "@c/statistics/calendar-card";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
 
@@ -390,141 +391,203 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>
-          <TimelinesSummaryCard
-            overline="Timelines"
-            data={statisticsData.timelines[settings.summary].summary}
-            breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
-            months={statisticsData.timelines[settings.summary].months}
-            chartKeys={["summary"]}
-            category={settings.summary}
-            selectable
-            singleTheme="secondary"
-            note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
+          <div className="stats-grid-item full-span">
+            <TimelinesSummaryCard
+              overline="Timelines"
+              data={statisticsData.timelines[settings.summary].summary}
+              breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
+              months={statisticsData.timelines[settings.summary].months}
+              chartKeys={["summary"]}
+              category={settings.summary}
+              selectable
+              singleTheme="secondary"
+              note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
-          />
-          <TimelinesSummaryCard
-            overline="Timelines"
-            allProfiles={statisticsData.timelines[settings.summary].allProfiles}
-            chartKeys={statisticsData.timelines[settings.summary].allProfiles}
-            months={statisticsData.timelines[settings.summary].months}
-            data={statisticsData.timelines[settings.summary].summary}
-            filterable
-            category={settings.summary}
-          />
-          <CalendarSummaryCard
-            overline="Calendar"
-            data={statisticsData.calendar[settings.summary].summary}
-            breakdownData={statisticsData.calendar[settings.summary].breakdown.profile}
-            years={statisticsData.calendar[settings.summary].years}
-            start={statisticsData.calendar[settings.summary].start}
-            end={statisticsData.calendar[settings.summary].end}
-            category={settings.summary}
-            unit={settings.summary === "gbLaunch" ? "GB" : "IC"}
-          />
-          <StatusSummaryCard
-            overline="Status"
-            data={statisticsData.status.summary}
-            breakdownData={statisticsData.status.breakdown.profile}
-          />
-          <ShippedSummaryCard
-            overline="Shipped"
-            data={statisticsData.shipped.summary}
-            months={statisticsData.shipped.months}
-            breakdownData={statisticsData.shipped.breakdown.profile}
-            category={settings.summary}
-          />
-          <TableSummaryCard
-            overline="Duration"
-            data={statisticsData.duration[settings.summary].summary}
-            breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
-            tab="duration"
-            category={settings.summary}
-            unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
-            theme="secondary"
-          />
-          <TableSummaryCard
-            overline="Vendors"
-            data={statisticsData.vendors.summary}
-            breakdownData={statisticsData.vendors.breakdown.profile}
-            tab="vendors"
-            category={settings.summary}
-            unit="Vendors"
-            note="Only includes sets that have completed GB."
-            theme="secondary"
-          />
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TimelinesSummaryCard
+              overline="Timelines"
+              allProfiles={statisticsData.timelines[settings.summary].allProfiles}
+              chartKeys={statisticsData.timelines[settings.summary].allProfiles}
+              months={statisticsData.timelines[settings.summary].months}
+              data={statisticsData.timelines[settings.summary].summary}
+              filterable
+              category={settings.summary}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <CalendarSummaryCard
+              overline="Calendar"
+              data={statisticsData.calendar[settings.summary].summary}
+              breakdownData={statisticsData.calendar[settings.summary].breakdown.profile}
+              start={statisticsData.calendar[settings.summary].start}
+              end={statisticsData.calendar[settings.summary].end}
+              category={settings.summary}
+              unit={settings.summary === "gbLaunch" ? "GB" : "IC"}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <StatusSummaryCard
+              overline="Status"
+              data={statisticsData.status.summary}
+              breakdownData={statisticsData.status.breakdown.profile}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <ShippedSummaryCard
+              overline="Shipped"
+              data={statisticsData.shipped.summary}
+              months={statisticsData.shipped.months}
+              breakdownData={statisticsData.shipped.breakdown.profile}
+              category={settings.summary}
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TableSummaryCard
+              overline="Duration"
+              data={statisticsData.duration[settings.summary].summary}
+              breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
+              tab="duration"
+              category={settings.summary}
+              unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
+              theme="secondary"
+            />
+          </div>
+          <div className="stats-grid-item full-span">
+            <TableSummaryCard
+              overline="Vendors"
+              data={statisticsData.vendors.summary}
+              breakdownData={statisticsData.vendors.breakdown.profile}
+              tab="vendors"
+              category={settings.summary}
+              unit="Vendors"
+              note="Only includes sets that have completed GB."
+              theme="secondary"
+            />
+          </div>
         </div>
       ),
       timelines: (
-        <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data: any) =>
-            settings.timelinesGroup === "profile" ? (
-              <TimelinesCard
-                key={data.name}
-                data={data}
-                chartKeys={[data.name]}
-                months={statisticsData.timelines[settings.timelinesCat].months}
-                category={settings.timelinesCat}
-                singleTheme="primary"
-              />
-            ) : typeGuard<TimelinesDataObject>(data, () => !(settings.timelinesGroup === "profile")) ? (
-              <TimelinesCard
-                key={data.name}
-                data={data}
-                chartKeys={statisticsData.timelines[settings.timelinesCat].allProfiles}
-                months={statisticsData.timelines[settings.timelinesCat].months}
-                filterable
-                category={settings.timelinesCat}
-                allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
-              />
-            ) : null
-          )}
+        <div className="stats-tab timelines" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item full-span"
+            itemContent={(index) => {
+              const data = statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup][index];
+              return settings.timelinesGroup === "profile" ? (
+                <TimelinesCard
+                  key={data.name}
+                  data={data}
+                  chartKeys={[data.name]}
+                  months={statisticsData.timelines[settings.timelinesCat].months}
+                  category={settings.timelinesCat}
+                  singleTheme="primary"
+                />
+              ) : typeGuard<TimelinesDataObject>(data, () => !(settings.timelinesGroup === "profile")) ? (
+                <TimelinesCard
+                  key={data.name}
+                  data={data}
+                  chartKeys={statisticsData.timelines[settings.timelinesCat].allProfiles}
+                  months={statisticsData.timelines[settings.timelinesCat].months}
+                  filterable
+                  category={settings.timelinesCat}
+                  allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+                />
+              ) : null;
+            }}
+            overscan={1000}
+          />
         </div>
       ),
       calendar: (
-        <div className="stats-tab stats-grid calendar" key={key}>
-          {statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup].map((data) => (
-            <CalendarCard
-              key={data.name}
-              data={data}
-              years={statisticsData.calendar[settings.calendarCat].years}
-              start={statisticsData.calendar[settings.calendarCat].start}
-              end={statisticsData.calendar[settings.calendarCat].end}
-              unit={settings.calendarCat === "gbLaunch" ? "GB" : "IC"}
-            />
-          ))}
+        <div className="stats-tab calendar" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item half-span"
+            itemContent={(index) => {
+              const data = statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup][index];
+              return (
+                <CalendarCard
+                  data={data}
+                  start={statisticsData.calendar[settings.calendarCat].start}
+                  end={statisticsData.calendar[settings.calendarCat].end}
+                  unit={settings.calendarCat === "gbLaunch" ? "GB" : "IC"}
+                />
+              );
+            }}
+            overscan={1000}
+          />
         </div>
       ),
       status: (
-        <div className="stats-tab stats-grid status" key={key}>
-          {statisticsData.status.breakdown[settings.status].map((data) => (
-            <StatusCard key={data.name} data={data} />
-          ))}
+        <div className="stats-tab status" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.status.breakdown[settings.status].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item"
+            itemContent={(index) => {
+              const data = statisticsData.status.breakdown[settings.status][index];
+              return <StatusCard data={data} />;
+            }}
+            overscan={1000}
+          />
         </div>
       ),
       shipped: (
-        <div className="stats-tab stats-grid shipped" key={key}>
-          {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />
-          ))}
+        <div className="stats-tab shipped" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.shipped.breakdown[settings.shipped].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item full-span"
+            itemContent={(index) => {
+              const data = statisticsData.shipped.breakdown[settings.shipped][index];
+              return <ShippedCard data={data} months={statisticsData.shipped.months} />;
+            }}
+            overscan={1000}
+          />
         </div>
       ),
       duration: (
-        <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => (
-            <TableCard
-              key={data.name}
-              data={data}
-              tab="duration"
-              unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
-            />
-          ))}
+        <div className="stats-tab duration" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item full-span"
+            itemContent={(index) => {
+              const data = statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup][index];
+              return (
+                <TableCard
+                  data={data}
+                  tab="duration"
+                  unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+                />
+              );
+            }}
+            overscan={1000}
+          />
         </div>
       ),
       vendors: (
-        <div className="stats-tab stats-grid vendors" key={key}>
-          {statisticsData.vendors.breakdown[settings.vendors].map((data) => (
-            <TableCard key={data.name} data={data} tab="vendors" unit="Vendors" />
-          ))}
+        <div className="stats-tab vendors" key={key}>
+          <VirtuosoGrid
+            useWindowScroll
+            totalCount={statisticsData.vendors.breakdown[settings.vendors].length}
+            listClassName="stats-grid"
+            itemClassName="stats-grid-item full-span"
+            itemContent={(index) => {
+              const data = statisticsData.vendors.breakdown[settings.vendors][index];
+              return <TableCard data={data} tab="vendors" unit="Vendors" />;
+            }}
+            overscan={1000}
+          />
         </div>
       ),
     };

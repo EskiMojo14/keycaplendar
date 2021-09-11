@@ -129,7 +129,7 @@ export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: 
       />
     ) : null;
   return (
-    <Card {...props} className={classNames("table-card full-span", props.className)}>
+    <Card {...props} className={classNames("table-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
           {overline ? (

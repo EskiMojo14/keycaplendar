@@ -15,7 +15,6 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
 }
 
 .stats-tab {
-  padding: 16px;
   margin: 0 auto;
   max-width: 2400px;
   width: 100%;
@@ -23,10 +22,6 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
   .mdc-card {
     grid-column: span 1;
     padding: 16px;
-    margin-top: 16px;
-    &:first-of-type {
-      margin-top: 0;
-    }
     &.count-graph,
     &.profile-graph {
       .mdc-typography--headline5 {
@@ -91,32 +86,34 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
       overflow: hidden;
     }
   }
-  &.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 16px;
-    .mdc-card {
-      margin: 0;
-      &.full-span {
-        grid-column: span 4;
-      }
-      &.half-span {
-        grid-column: span 2;
-      }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 8px;
+  &-item {
+    margin: 0;
+    padding: 8px;
+    &.full-span {
+      grid-column: span 4;
+    }
+    &.half-span {
+      grid-column: span 2;
     }
   }
 }
 
 @media (min-width: 2400px) {
-  .stats-tab.stats-grid {
+  .stats-grid {
     grid-template-columns: repeat(8, 1fr);
   }
 }
 
 @media (max-width: 1199px) {
-  .stats-tab.stats-grid {
+  .stats-grid {
     grid-template-columns: repeat(3, 1fr);
-    .mdc-card {
+    &-item {
       &.full-span {
         grid-column: span 3;
       }
@@ -128,9 +125,9 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
 }
 
 @media (max-width: 839px) {
-  .stats-tab.stats-grid {
+  .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    .mdc-card {
+    &-item {
       &.full-span,
       &.half-span {
         grid-column: span 2;
@@ -140,9 +137,9 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
 }
 
 @media (max-width: 479px) {
-  .stats-tab.stats-grid {
+  .stats-grid {
     grid-template-columns: repeat(1, 1fr);
-    .mdc-card {
+    &-item {
       &.full-span,
       &.half-span {
         grid-column: span 1;
