@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
+import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
@@ -32,27 +33,26 @@ type TableCardProps = {
   data: CountDataObject;
   unit: string;
   tab: "duration" | "vendors";
-  defaultType?: "bar" | "line";
   theme?: KeysMatching<ThemeMap, string>;
   overline?: React.ReactNode;
   note?: React.ReactNode;
-};
+} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const TableCard = (props: TableCardProps) => {
+export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: TableCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[props.tab];
+  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[tab];
   /*const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "stacked", value }));*/
+    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
   const labels = useMemo(
     () =>
-      props.data.data
+      data.data
         .map((datum) => datum.id)
         .filter(
           filterLabels([
@@ -60,16 +60,16 @@ export const TableCard = (props: TableCardProps) => {
             [16, 2],
           ])
         ),
-    [props.data.data]
+    [data.data]
   );
   const barChart =
     graphType === "bar" ? (
       <ResponsiveBar
-        data={props.data.data}
+        data={data.data}
         keys={["count"]}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
@@ -81,14 +81,14 @@ export const TableCard = (props: TableCardProps) => {
           tickValues: 5,
         }}
         axisBottom={{
-          legend: props.unit,
+          legend: unit,
           legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
         }}
         tooltip={<RawDatum,>({ color, label, ...data }: BarTooltipProps<RawDatum>) => (
           <BasicTooltip
-            id={`${props.unit} - ${label.split(" - ")[1]}`}
+            id={`${unit} - ${label.split(" - ")[1]}`}
             value={data.formattedValue}
             enableChip
             color={color}
@@ -99,19 +99,19 @@ export const TableCard = (props: TableCardProps) => {
   const lineChart =
     graphType === "line" ? (
       <ResponsiveLine
-        data={props.data.dataLine}
+        data={data.dataLine}
         yScale={{ type: "linear", min: 0 }}
         curve="cardinal"
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
         tooltip={({
           point: {
             data: { xFormatted, yFormatted },
             color,
           },
-        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
+        }) => <BasicTooltip id={`${unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -119,7 +119,7 @@ export const TableCard = (props: TableCardProps) => {
           tickValues: 5,
         }}
         axisBottom={{
-          legend: props.unit,
+          legend: unit,
           legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
@@ -129,19 +129,19 @@ export const TableCard = (props: TableCardProps) => {
       />
     ) : null;
   return (
-    <Card className="table-card full-span">
+    <Card {...props} className={classNames("table-card full-span", props.className)}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+            {pluralise`${data.total} ${[data.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -182,39 +182,39 @@ export const TableCard = (props: TableCardProps) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Average</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>{props.unit}</DataTableHeadCell>
+                  <DataTableHeadCell alignEnd>{unit}</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
                 <DataTableRow>
                   <DataTableCell>Mean</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.mean}</DataTableCell>
+                  <DataTableCell alignEnd>{data.mean}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Median</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.median}</DataTableCell>
+                  <DataTableCell alignEnd>{data.median}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Mode</DataTableCell>
                   <DataTableCell alignEnd>
-                    {props.data.mode.length === props.data.total ? "None" : props.data.mode.join(", ")}
+                    {data.mode.length === data.total ? "None" : data.mode.join(", ")}
                   </DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Range</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.range}</DataTableCell>
+                  <DataTableCell alignEnd>{data.range}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Standard deviation</DataTableCell>
-                  <DataTableCell alignEnd>{props.data.standardDev}</DataTableCell>
+                  <DataTableCell alignEnd>{data.standardDev}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
         </div>
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>
@@ -227,29 +227,39 @@ interface TableSummaryCardProps extends TableCardProps {
   breakdownData: CountDataObject[];
 }
 
-export const TableSummaryCard = (props: TableSummaryCardProps) => {
+export const TableSummaryCard = ({
+  data,
+  category,
+  breakdownData,
+  unit,
+  tab,
+  theme,
+  overline,
+  note,
+  ...props
+}: TableSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[props.tab];
+  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[tab];
   /*const setStackedGraph = (value: boolean) =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "stacked", value }));*/
+    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: props.tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  useEffect(() => setSelectedIndex(-1), [props.category]);
+  useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
-    selectedIndex >= 0 && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
-  const selectChips = props.breakdownData ? (
+    selectedIndex >= 0 && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
+  const selectChips = breakdownData ? (
     <div className="table-chips-container">
       <ChipSet choice>
-        {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+        {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
           <Chip
             key={obj.name}
             label={obj.name}
@@ -272,7 +282,7 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
         keys={["count"]}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
@@ -284,14 +294,14 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
           tickValues: 5,
         }}
         axisBottom={{
-          legend: props.unit,
+          legend: unit,
           legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
         }}
         tooltip={<RawDatum,>({ color, label, ...data }: BarTooltipProps<RawDatum>) => (
           <BasicTooltip
-            id={`${props.unit} - ${label.split(" - ")[1]}`}
+            id={`${unit} - ${label.split(" - ")[1]}`}
             value={data.formattedValue}
             enableChip
             color={color}
@@ -308,13 +318,13 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[props.theme || "primary"]] : undefined}
+        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
         tooltip={({
           point: {
             data: { xFormatted, yFormatted },
             color,
           },
-        }) => <BasicTooltip id={`${props.unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
+        }) => <BasicTooltip id={`${unit} - ${xFormatted}`} value={yFormatted} enableChip color={color} />}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -322,7 +332,7 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
           tickValues: 5,
         }}
         axisBottom={{
-          legend: props.unit,
+          legend: unit,
           legendOffset: 40,
           legendPosition: "middle",
           tickValues: labels,
@@ -332,16 +342,16 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
       />
     ) : null;
   return (
-    <Card className="table-card full-span">
+    <Card {...props} className={classNames("table-card full-span", props.className)}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -385,7 +395,7 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
               <DataTableHead>
                 <DataTableRow>
                   <DataTableHeadCell>Average</DataTableHeadCell>
-                  <DataTableHeadCell alignEnd>{props.unit}</DataTableHeadCell>
+                  <DataTableHeadCell alignEnd>{unit}</DataTableHeadCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>
@@ -416,9 +426,9 @@ export const TableSummaryCard = (props: TableSummaryCardProps) => {
           </DataTable>
         </div>
         {selectChips}
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>

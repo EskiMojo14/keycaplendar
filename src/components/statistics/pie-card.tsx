@@ -68,9 +68,9 @@ type StatusCardProps = {
   data: StatusDataObject;
   overline?: React.ReactNode;
   note?: React.ReactNode;
-};
+} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const StatusCard = (props: StatusCardProps) => {
+export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -105,25 +105,25 @@ export const StatusCard = (props: StatusCardProps) => {
 
   const nivoTheme = useContext(NivoThemeContext);
 
-  const [data, setData] = useState(props.data.sunburst);
-  useEffect(() => setData(props.data.sunburst), [props.data.sunburst]);
+  const [chartData, setChartData] = useState(data.sunburst);
+  useEffect(() => setChartData(data.sunburst), [data.sunburst]);
   const toggleSeries = (string: typeof statuses[number]) => {
-    if (string === data.id) {
-      setData(props.data.sunburst);
+    if (string === chartData.id) {
+      setChartData(data.sunburst);
     } else {
-      const foundObject = props.data.sunburst.children.find((datum) => datum.id === string);
+      const foundObject = data.sunburst.children.find((datum) => datum.id === string);
       if (foundObject && sunburstChildHasChildren(foundObject)) {
-        setData(foundObject);
+        setChartData(foundObject);
       }
     }
   };
-  const noChildren = useMemo(() => !sunburstChildHasChildren(props.data.sunburst.children[0] || {}), [
-    props.data.sunburst.children,
+  const noChildren = useMemo(() => !sunburstChildHasChildren(data.sunburst.children[0] || {}), [
+    data.sunburst.children,
   ]);
   const sunburstChart =
     graphType === "sunburst" ? (
       <ResponsiveSunburst<StatusDataObjectSunburstChild>
-        data={data}
+        data={chartData}
         value="val"
         colors={getStatusColor}
         inheritColorFromParent={false}
@@ -137,10 +137,10 @@ export const StatusCard = (props: StatusCardProps) => {
         arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
         layers={["arcs", "arcLabels", CentredLabel]}
         onClick={(clickedData) => {
-          if (sunburstChildHasChildren(data)) {
-            const foundObject = findObject(flatten(data.children), clickedData.id);
+          if (sunburstChildHasChildren(chartData)) {
+            const foundObject = findObject(flatten(chartData.children), clickedData.id);
             if (foundObject && sunburstChildHasChildren(foundObject)) {
-              setData(foundObject);
+              setChartData(foundObject);
             }
           }
         }}
@@ -149,7 +149,7 @@ export const StatusCard = (props: StatusCardProps) => {
   const packingChart =
     graphType === "packing" ? (
       <ResponsiveCirclePacking<StatusDataObjectSunburstChild>
-        data={data}
+        data={chartData}
         value="val"
         colors={getStatusColor}
         colorBy="id"
@@ -164,29 +164,29 @@ export const StatusCard = (props: StatusCardProps) => {
         labelsSkipRadius={32}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
         onClick={(clickedData) => {
-          if (sunburstChildHasChildren(data)) {
-            const foundObject = findObject(flatten(data.children), clickedData.id);
+          if (sunburstChildHasChildren(chartData)) {
+            const foundObject = findObject(flatten(chartData.children), clickedData.id);
             if (foundObject && sunburstChildHasChildren(foundObject)) {
-              setData(foundObject);
+              setChartData(foundObject);
             }
           }
         }}
       />
     ) : null;
   return (
-    <Card className="pie-card">
+    <Card {...props} className={classNames("pie-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+            {pluralise`${data.total} ${[data.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -253,67 +253,71 @@ export const StatusCard = (props: StatusCardProps) => {
                 <DataTableRow className="ic">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "IC"} onClick={() => toggleSeries("IC")} disabled={noChildren} />
+                    <Checkbox
+                      checked={chartData.id === "IC"}
+                      onClick={() => toggleSeries("IC")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>IC</DataTableCell>
-                  <DataTableCell isNumeric>{props.data.pie.ic}</DataTableCell>
+                  <DataTableCell isNumeric>{data.pie.ic}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow className="pre-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Pre GB"}
+                      checked={chartData.id === "Pre GB"}
                       onClick={() => toggleSeries("Pre GB")}
                       disabled={noChildren}
                     />
                   </DataTableCell>
                   <DataTableCell>Pre GB</DataTableCell>
-                  <DataTableCell isNumeric>{props.data.pie.preGb}</DataTableCell>
+                  <DataTableCell isNumeric>{data.pie.preGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow className="live-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Live GB"}
+                      checked={chartData.id === "Live GB"}
                       onClick={() => toggleSeries("Live GB")}
                       disabled={noChildren}
                     />
                   </DataTableCell>
                   <DataTableCell>Live GB</DataTableCell>
-                  <DataTableCell isNumeric>{props.data.pie.liveGb}</DataTableCell>
+                  <DataTableCell isNumeric>{data.pie.liveGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow className="post-gb">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Post GB"}
+                      checked={chartData.id === "Post GB"}
                       onClick={() => toggleSeries("Post GB")}
                       disabled={noChildren}
                     />
                   </DataTableCell>
                   <DataTableCell>Post GB</DataTableCell>
-                  <DataTableCell isNumeric>{props.data.pie.postGb}</DataTableCell>
+                  <DataTableCell isNumeric>{data.pie.postGb}</DataTableCell>
                 </DataTableRow>
                 <DataTableRow className="post-gb-shipped">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Shipped"}
+                      checked={chartData.id === "Shipped"}
                       onClick={() => toggleSeries("Shipped")}
                       disabled={noChildren}
                     />
                   </DataTableCell>
                   <DataTableCell>Shipped</DataTableCell>
-                  <DataTableCell isNumeric>{props.data.pie.postGbShipped}</DataTableCell>
+                  <DataTableCell isNumeric>{data.pie.postGbShipped}</DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>
           </DataTable>
         </div>
       </div>
-      {props.note ? (
+      {note ? (
         <Typography use="caption" tag="p" className="note">
-          {props.note}
+          {note}
         </Typography>
       ) : null}
     </Card>
@@ -324,7 +328,7 @@ interface StatusSummaryCardProps extends StatusCardProps {
   breakdownData: StatusDataObject[];
 }
 
-export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
+export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...props }: StatusSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -362,16 +366,16 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
-    selectedIndex >= 0 && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
-  const [data, setData] = useState(chartData.sunburst);
-  useEffect(() => setData(chartData.sunburst), [chartData.sunburst]);
+    selectedIndex >= 0 && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
+  const [filterData, setFilterData] = useState(chartData.sunburst);
+  useEffect(() => setFilterData(chartData.sunburst), [chartData.sunburst]);
   const sideways = device === "desktop";
-  const selectChips = props.breakdownData ? (
+  const selectChips = breakdownData ? (
     <div className="pie-chips-container">
       <ChipSet choice>
-        {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+        {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
           <Chip
             key={obj.name}
             label={obj.name}
@@ -385,12 +389,12 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
     </div>
   ) : null;
   const toggleSeries = (string: typeof statuses[number]) => {
-    if (string === data.id) {
-      setData(chartData.sunburst);
+    if (string === filterData.id) {
+      setFilterData(chartData.sunburst);
     } else {
       const foundObject = chartData.sunburst.children.find((datum) => datum.id === string);
       if (foundObject && sunburstChildHasChildren(foundObject)) {
-        setData(foundObject);
+        setFilterData(foundObject);
       }
     }
   };
@@ -401,7 +405,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
   const sunburstChart =
     graphType === "sunburst" ? (
       <ResponsiveSunburst<StatusDataObjectSunburstChild>
-        data={data}
+        data={filterData}
         value="val"
         colors={getStatusColor}
         inheritColorFromParent={false}
@@ -415,10 +419,10 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
         arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
         layers={["arcs", "arcLabels", CentredLabel]}
         onClick={(clickedData) => {
-          if (sunburstChildHasChildren(data)) {
-            const foundObject = findObject(flatten(data.children), clickedData.id);
+          if (sunburstChildHasChildren(filterData)) {
+            const foundObject = findObject(flatten(filterData.children), clickedData.id);
             if (foundObject && sunburstChildHasChildren(foundObject)) {
-              setData(foundObject);
+              setFilterData(foundObject);
             }
           }
         }}
@@ -427,7 +431,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
   const packingChart =
     graphType === "packing" ? (
       <ResponsiveCirclePacking<StatusDataObjectSunburstChild>
-        data={data}
+        data={filterData}
         value="val"
         colors={getStatusColor}
         colorBy="id"
@@ -442,10 +446,10 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
         labelsSkipRadius={32}
         labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
         onClick={(clickedData) => {
-          if (sunburstChildHasChildren(data)) {
-            const foundObject = findObject(flatten(data.children), clickedData.id);
+          if (sunburstChildHasChildren(filterData)) {
+            const foundObject = findObject(flatten(filterData.children), clickedData.id);
             if (foundObject && sunburstChildHasChildren(foundObject)) {
-              setData(foundObject);
+              setFilterData(foundObject);
             }
           }
         }}
@@ -453,19 +457,24 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
     ) : null;
   return (
     <Card
-      className={classNames("pie-card full-span", {
-        sideways,
-      })}
+      {...props}
+      className={classNames(
+        "pie-card full-span",
+        {
+          sideways,
+        },
+        props.className
+      )}
     >
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -535,7 +544,11 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
                 <DataTableRow className="ic">
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
-                    <Checkbox checked={data.id === "IC"} onClick={() => toggleSeries("IC")} disabled={noChildren} />
+                    <Checkbox
+                      checked={filterData.id === "IC"}
+                      onClick={() => toggleSeries("IC")}
+                      disabled={noChildren}
+                    />
                   </DataTableCell>
                   <DataTableCell>IC</DataTableCell>
                   <DataTableCell isNumeric>{chartData.pie.ic}</DataTableCell>
@@ -544,7 +557,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Pre GB"}
+                      checked={filterData.id === "Pre GB"}
                       onClick={() => toggleSeries("Pre GB")}
                       disabled={noChildren}
                     />
@@ -556,7 +569,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Live GB"}
+                      checked={filterData.id === "Live GB"}
                       onClick={() => toggleSeries("Live GB")}
                       disabled={noChildren}
                     />
@@ -568,7 +581,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Post GB"}
+                      checked={filterData.id === "Post GB"}
                       onClick={() => toggleSeries("Post GB")}
                       disabled={noChildren}
                     />
@@ -580,7 +593,7 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
                   <DataTableCell hasFormControl>
                     <div className="indicator"></div>
                     <Checkbox
-                      checked={data.id === "Shipped"}
+                      checked={filterData.id === "Shipped"}
                       onClick={() => toggleSeries("Shipped")}
                       disabled={noChildren}
                     />
@@ -594,9 +607,9 @@ export const StatusSummaryCard = (props: StatusSummaryCardProps) => {
         </div>
       </div>
       {selectChips}
-      {props.note ? (
+      {note ? (
         <Typography use="caption" tag="p" className="note">
-          {props.note}
+          {note}
         </Typography>
       ) : null}
     </Card>

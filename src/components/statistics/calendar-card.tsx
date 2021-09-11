@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
@@ -24,9 +25,9 @@ type CalendarCardProps = {
   theme?: "primary" | "secondary";
   overline?: React.ReactNode;
   note?: React.ReactNode;
-};
+} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const CalendarCard = (props: CalendarCardProps) => {
+export const CalendarCard = ({ data, years, start, end, unit, theme, overline, note, ...props }: CalendarCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -50,19 +51,19 @@ export const CalendarCard = (props: CalendarCardProps) => {
   };
 
   return (
-    <Card className="calendar-card">
+    <Card {...props} className={classNames("calendar-card", props.className)}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
-            {pluralise`${props.data.total} ${[props.data.total, "set"]}`}
+            {pluralise`${data.total} ${[data.total, "set"]}`}
           </Typography>
         </div>
         <div className="button-container">
@@ -95,13 +96,13 @@ export const CalendarCard = (props: CalendarCardProps) => {
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container" style={{ "--years": props.years }}>
+        <div className="chart-container" style={{ "--years": years }}>
           <ResponsiveCalendar
-            data={props.data.data}
-            from={props.start}
-            to={props.end}
+            data={data.data}
+            from={start}
+            to={end}
             theme={nivoTheme}
-            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${props.theme || "primary"}Gradient`]}
+            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${theme || "primary"}Gradient`]}
             emptyColor={currentTheme?.divider}
             dayBorderWidth={0}
             monthBorderWidth={0}
@@ -111,14 +112,14 @@ export const CalendarCard = (props: CalendarCardProps) => {
             tooltip={({ day, value }) => (
               <BasicTooltip
                 id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-                value={pluralise`${value} ${[parseInt(value), props.unit]}`}
+                value={pluralise`${value} ${[parseInt(value), unit]}`}
               />
             )}
           />
         </div>
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>
@@ -131,7 +132,19 @@ interface CalendarSummaryCardProps extends CalendarCardProps {
   breakdownData: CalendarDataObject[];
 }
 
-export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
+export const CalendarSummaryCard = ({
+  data,
+  category,
+  breakdownData,
+  years,
+  start,
+  end,
+  unit,
+  theme,
+  overline,
+  note,
+  ...props
+}: CalendarSummaryCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -155,15 +168,15 @@ export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
   };
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  useEffect(() => setSelectedIndex(-1), [props.category]);
+  useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
-    selectedIndex >= 0 && props.breakdownData
-      ? [...props.breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
-      : props.data;
-  const selectChips = props.breakdownData ? (
+    selectedIndex >= 0 && breakdownData
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      : data;
+  const selectChips = breakdownData ? (
     <div className="calendar-chips-container">
       <ChipSet choice>
-        {[...props.breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
+        {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
           <Chip
             key={obj.name}
             label={obj.name}
@@ -177,16 +190,16 @@ export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
     </div>
   ) : null;
   return (
-    <Card className="calendar-card full-span">
+    <Card {...props} className={classNames("calendar-card full-span", props.className)}>
       <div className="title-container">
         <div className="text-container">
-          {props.overline ? (
+          {overline ? (
             <Typography use="overline" tag="h3">
-              {props.overline}
+              {overline}
             </Typography>
           ) : null}
           <Typography use="headline5" tag="h1">
-            {props.data.name}
+            {data.name}
           </Typography>
           <Typography use="subtitle2" tag="p">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
@@ -222,13 +235,13 @@ export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
         </div>
       </div>
       <div className="content-container">
-        <div className="chart-container" style={{ "--years": props.years }}>
+        <div className="chart-container" style={{ "--years": years }}>
           <ResponsiveCalendar
             data={chartData.data}
-            from={props.start}
-            to={props.end}
+            from={start}
+            to={end}
             theme={nivoTheme}
-            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${props.theme || "primary"}Gradient`]}
+            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${theme || "primary"}Gradient`]}
             emptyColor={currentTheme?.divider}
             dayBorderWidth={0}
             monthBorderWidth={0}
@@ -238,15 +251,15 @@ export const CalendarSummaryCard = (props: CalendarSummaryCardProps) => {
             tooltip={({ day, value }) => (
               <BasicTooltip
                 id={DateTime.fromISO(day).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}
-                value={pluralise`${value} ${[parseInt(value), props.unit]}`}
+                value={pluralise`${value} ${[parseInt(value), unit]}`}
               />
             )}
           />
         </div>
         {selectChips}
-        {props.note ? (
+        {note ? (
           <Typography use="caption" tag="p" className="note">
-            {props.note}
+            {note}
           </Typography>
         ) : null}
       </div>
