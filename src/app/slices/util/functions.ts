@@ -94,6 +94,20 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
   return newArray;
 };
 
+/** Splits an array into chunks of the specified size.
+ * @param array Array to be split
+ * @param size How many elements should be in each chunk
+ * @returns Array split into chunks
+ * @example
+ * chunks([1,2,3,4,5,6], 2) // [[1,2], [3,4], [5,6]]
+ */
+
+export const chunks = <T>(array: T[], size: number): T[][] =>
+  Array(Math.ceil(array.length / size))
+    .fill(undefined)
+    .map((_, index) => index * size)
+    .map((begin) => array.slice(begin, begin + size));
+
 /**
  * Creates a function to pass to sort an array of items in alphabetical order.
  * @param descending Whether to sort the items in descending order. Defaults to false.
