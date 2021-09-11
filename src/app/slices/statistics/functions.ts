@@ -349,6 +349,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
     idIsIndex = false,
     excludeZero = false
   ): CountDataObject[] => {
+    const indexKey = idIsIndex ? "id" : "index";
     const blankObject: CountDataObject = {
       name: "",
       total: 0,
@@ -361,20 +362,19 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       dataLine: [],
     };
     return data.map(({ data, ...datum }) => {
-      const maxId = Math.max(...data.map((datum) => datum[idIsIndex ? "id" : "index"] || 0), 0);
+      const maxId = Math.max(...data.map((datum) => datum[indexKey] || 0), 0);
       const chartData = Array(idIsIndex ? maxId : maxId + 1)
         .fill("")
         .map((_e, arrayIndex) => {
           const object = data.find(
             (datum) =>
-              typeof datum[idIsIndex ? "id" : "index"] === "number" &&
-              datum[idIsIndex ? "id" : "index"] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
+              typeof datum[indexKey] === "number" && datum[indexKey] === (idIsIndex ? arrayIndex + 1 : arrayIndex)
           );
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { index = 0, ...foundObject } =
-            typeof object?.[idIsIndex ? "id" : "index"] === "number"
+            typeof object?.[indexKey] === "number"
               ? object
-              : data.length === 1 && data[0][idIsIndex ? "id" : "index"] === undefined
+              : data.length === 1 && data[0][indexKey] === undefined
               ? data[0]
               : { id: idIsIndex ? arrayIndex + 1 : arrayIndex, count: 0 };
           return {
@@ -443,9 +443,8 @@ export const sortData = (state = store.getState()) => {
       dispatch(setStatisticsData(mergeObject(statisticsData, { [tab]: data })));
       dispatch(setLoading(false));
     };
-    const stateData = statisticsData[tab];
     if (tab === "duration") {
-      const data = cloneDeep(stateData) as StatisticsData["duration"];
+      const data = cloneDeep(statisticsData[tab]);
       categories.forEach((category) => {
         properties.forEach((property) => {
           const value = data[category].breakdown[property];
@@ -461,7 +460,7 @@ export const sortData = (state = store.getState()) => {
       });
       setData(data);
     } else if (tab === "timelines" || tab === "calendar") {
-      const data = cloneDeep(stateData) as StatisticsData["timelines"];
+      const data = cloneDeep(statisticsData[tab]);
       categories.forEach((category) => {
         properties.forEach((property) => {
           const array = data[category].breakdown[property];
@@ -479,10 +478,7 @@ export const sortData = (state = store.getState()) => {
       });
       setData(data);
     } else {
-      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines" | "calendar">[keyof Omit<
-        StatisticsData,
-        "duration" | "timelines" | "calendar"
-      >];
+      const data = cloneDeep(statisticsData[tab]);
       properties.forEach((properties) => {
         const value = data.breakdown[properties];
         type DataObj = typeof data.breakdown[Properties][number];
