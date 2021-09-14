@@ -43,6 +43,13 @@ export const App = () => {
     checkTheme();
     getGlobals();
 
+    const checkThemeListener = (e: MediaQueryListEvent) => {
+      e.preventDefault();
+      checkTheme();
+    };
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", checkThemeListener);
+
     const authObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const getClaimsFn = firebase.functions().httpsCallable("getClaims");
@@ -87,7 +94,10 @@ export const App = () => {
         }
       }
     });
-    return authObserver;
+    return () => {
+      authObserver();
+      window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", checkThemeListener);
+    };
   }, []);
   const transitionClass = classNames({ "view-transition": transition });
   return (

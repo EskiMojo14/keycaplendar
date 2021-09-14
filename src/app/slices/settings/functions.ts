@@ -178,7 +178,13 @@ const isDarkTheme = (state = store.getState()) => {
   return manualBool || systemBool || timedBool;
 };
 
+let intervalCheckTheme: Interval;
+
 export const checkTheme = (state = store.getState()) => {
+  if (!intervalCheckTheme) {
+    intervalCheckTheme = new Interval(checkTheme, 1000 * 60);
+  }
+
   const { settings } = state;
   const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
   dispatch(setTheme(theme));
@@ -192,19 +198,7 @@ export const checkTheme = (state = store.getState()) => {
 
 export const setApplyTheme = (applyTheme: string, write = true) => {
   dispatch(setSettings({ applyTheme: applyTheme }));
-  const timed = new Interval(checkTheme, 1000 * 60);
-  if (applyTheme === "system") {
-    setTimeout(checkTheme, 1);
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-      e.preventDefault();
-      checkTheme();
-    });
-  } else {
-    setTimeout(checkTheme, 1);
-  }
-  if (applyTheme !== "timed") {
-    setTimeout(timed.clear, 1000 * 10);
-  }
+  setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("applyTheme", applyTheme);
   }
