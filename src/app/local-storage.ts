@@ -35,8 +35,18 @@ export const sanitiseState = (state: RootState) => {
     return { theme, themeMaps };
   };
   const sanitiseMainSlice = (mainSlice: MainState) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { transition, loading, urlSet, search, urlWhitelist, linkedFavorites, ...filteredMainSlice } = mainSlice;
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const {
+      transition,
+      loading,
+      urlSet,
+      search,
+      urlWhitelist,
+      linkedFavorites,
+      defaultPreset,
+      ...filteredMainSlice
+    } = mainSlice;
+    /* eslint-enable @typescript-eslint/no-unused-vars */
     return filteredMainSlice;
   };
   return {
