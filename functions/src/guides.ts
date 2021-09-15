@@ -1,5 +1,5 @@
+import * as firebaseAdmin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { alphabeticalSortProp } from "./slices/common/functions";
 import { GuideEntryType } from "./slices/guides/types";
 
@@ -17,7 +17,8 @@ export const getGuides = functions.https.onCall((data, context) => {
     editor = Boolean(isEditor);
     admin = Boolean(isAdmin);
   }
-  return typedFirestore
+  return firebaseAdmin
+    .firestore()
     .collection("guides")
     .get()
     .then((querySnapshot) => {

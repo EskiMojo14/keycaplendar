@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { UserId } from "./slices/firebase/types";
 import { DateTime } from "luxon";
 import { handle } from "./slices/common/functions";
@@ -127,7 +126,8 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
       return { error: "Error deleting user: " + error };
     });
 
-  typedFirestore
+  admin
+    .firestore()
     .collection("users")
     .doc(user.uid as UserId)
     .delete()
@@ -208,7 +208,8 @@ export const deleteOwnUser = functions.https.onCall(async (data, context) => {
         console.log("Error deleting user " + currentUser.displayName + ": " + error);
         return { error: "Error deleting user: " + error };
       });
-    const deleteFile = typedFirestore
+    const deleteFile = admin
+      .firestore()
       .collection("users")
       .doc(currentUser.uid as UserId)
       .delete()
@@ -234,7 +235,8 @@ export const getFavorites = functions.https.onCall(async (data, context) => {
   if (!data.id) {
     return Promise.reject(Error("No ID provided."));
   }
-  return typedFirestore
+  return admin
+    .firestore()
     .collection("users")
     .where("favoritesId", "==", data.id)
     .get()
