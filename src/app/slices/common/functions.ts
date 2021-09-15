@@ -1,5 +1,5 @@
 import { is } from "typescript-is";
-import debounce from "lodash.debounce";
+import throttle from "lodash.throttle";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbarQueue";
@@ -87,7 +87,7 @@ export const checkDevice = () => {
     }
   };
   calculate();
-  window.addEventListener("resize", debounce(calculate, 1000));
+  window.addEventListener("resize", throttle(calculate, 1000));
 };
 
 export const getURLQuery = (state = store.getState()) => {
