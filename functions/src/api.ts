@@ -15,12 +15,12 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
   const key = request.body.key;
   const secret = request.body.secret;
   if (!key || !secret) {
-    response.status(401).send({ error: "Unauthorized" });
+    response.status(401).json({ error: "Unauthorized" });
   }
   const usersRef = admin.firestore().collection("apiUsers");
   const snapshot = await usersRef.where("apiKey", "==", key).where("apiSecret", "==", secret).get();
   if (snapshot.empty) {
-    response.status(401).send({ error: "Unauthorized" });
+    response.status(401).json({ error: "Unauthorized" });
   }
   const ts = Math.round(new Date().getTime() / 1000);
   let user: {
@@ -40,7 +40,7 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
     user = { ...doc.data(), apiAccess: doc.data().apiAccess, email: doc.data().email };
   });
   if (user.apiAccess !== true) {
-    response.status(401).send({ error: "Unauthorized" });
+    response.status(401).json({ error: "Unauthorized" });
   }
   payload.email = user.email;
   payload.apiAccess = user.apiAccess;
@@ -49,7 +49,7 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
     algorithm: "HS256",
   });
 
-  response.status(200).send({ token: accessToken });
+  response.status(200).json({ token: accessToken });
 });
 
 /**
@@ -94,7 +94,7 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
         ...data,
       });
     });
-    response.status(200).send(JSON.stringify(keysets));
+    response.status(200).json(keysets);
   };
   const validDateFilter = (dateFilter: string | undefined): dateFilter is typeof dateSorts[number] => {
     return !!dateFilter && arrayIncludes(dateSorts, dateFilterQuery);
@@ -132,7 +132,7 @@ export const getKeysetsByPage = functions.https.onRequest(async (request, respon
   if (auth === false) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const page = request.query.page;
+  const page = request.path.split("/").slice(-1)[0];
   if (page && arrayIncludes(pages, page)) {
     try {
       const snapshot = await admin.firestore().collection("keysets").get();
@@ -146,13 +146,13 @@ export const getKeysetsByPage = functions.https.onRequest(async (request, respon
         });
       });
       const filteredKeysets = keysets.filter((set) => pageConditions(set)[page]);
-      response.status(200).send(JSON.stringify(filteredKeysets));
+      response.status(200).json(filteredKeysets);
     } catch (error) {
       console.log(error);
-      response.status(500).send({ error });
+      response.status(500).json({ error });
     }
   } else {
-    response.status(400).send({ error: "Invalid/no page provided." });
+    response.status(400).json({ error: "Invalid/no page provided." });
   }
 });
 
@@ -163,19 +163,19 @@ export const getKeysetsByPage = functions.https.onRequest(async (request, respon
 export const getKeysetById = functions.https.onRequest(async (request, response) => {
   const auth = verify(request);
   if (auth === false) {
-    response.status(401).send({ error: "Unauthorized" });
+    response.status(401).json({ error: "Unauthorized" });
   }
   const keysetsRef = admin.firestore().collection("keysets");
   if (request.query.id) {
     const docRef = keysetsRef.doc(request.query.id as KeysetId);
     const doc = await docRef.get();
     if (!doc.exists) {
-      response.status(404).send({ error: "No document with this ID." });
+      response.status(404).json({ error: "No document with this ID." });
     } else {
       const keyset = { id: doc.id, ...doc.data() };
-      response.status(200).send(JSON.stringify(keyset));
+      response.status(200).json(keyset);
     }
   } else {
-    response.status(400).send({ error: "No id provided." });
+    response.status(400).json({ error: "No id provided." });
   }
 });
