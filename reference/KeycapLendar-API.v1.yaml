@@ -159,8 +159,9 @@ paths:
     parameters: []
   '/getKeysetsByPage/{page}':
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: Get Keysets by Page
+      tags:
+        - query
       responses:
         '200':
           description: OK
