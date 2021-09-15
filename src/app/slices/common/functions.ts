@@ -1,6 +1,6 @@
 import { is } from "typescript-is";
 import cloneDeep from "lodash.clonedeep";
-import debounce from "lodash.debounce";
+import throttle from "lodash.throttle";
 import { alpha } from "@material-ui/core/styles";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
@@ -165,12 +165,12 @@ export const checkDevice = () => {
   const calculate = () => {
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if (vw !== lastWidth || i === 0) {
-      if (vw >= 840) {
+      if (vw >= 1240) {
         if (lastDevice !== "desktop") {
           dispatch(setDevice("desktop"));
           lastDevice = "desktop";
         }
-      } else if (vw < 840 && vw >= 480) {
+      } else if (vw < 1240 && vw >= 600) {
         if (lastDevice !== "tablet") {
           dispatch(setDevice("tablet"));
           lastDevice = "tablet";
@@ -191,7 +191,7 @@ export const checkDevice = () => {
     }
   };
   calculate();
-  window.addEventListener("resize", debounce(calculate, 1000));
+  window.addEventListener("resize", throttle(calculate, 1000));
 };
 
 export const getURLQuery = (state = store.getState()) => {

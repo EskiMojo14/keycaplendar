@@ -373,7 +373,7 @@ $overlay-values: (
     }
   }
 
-  @media (max-width: 479px) {
+  @media (max-width: 599px) {
     .settings-container {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 1), map-get($variables, surface));
     }
@@ -608,7 +608,7 @@ $overlay-values: (
     }
   }
   @if ($dark) {
-    @media (min-width: 840px) {
+    @media (min-width: 1240px) {
       transition-property: box-shadow, background-color;
       .card-container .mdc-card:hover {
         background-color: overlay-elevation(map-get($variables, surface), 4);
@@ -937,7 +937,7 @@ $overlay-values: (
     color: map-get($variables, on-surface);
   }
 
-  @media (max-width: 840px) {
+  @media (max-width: 1240px) {
     .mdc-menu.mdc-select__menu.mdc-menu-surface.mdc-menu-surface--fixed {
       background-color: if($dark, overlay-elevation(map-get($variables, surface), 24), map-get($variables, surface));
     }

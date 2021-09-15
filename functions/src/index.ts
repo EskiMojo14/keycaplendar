@@ -24,6 +24,8 @@ exports.apiAuth = api.apiAuth;
 
 exports.getAllKeysets = api.getAllKeysets;
 
+exports.getKeysetsByPage = api.getKeysetsByPage;
+
 exports.getKeysetById = api.getKeysetById;
 
 // audit

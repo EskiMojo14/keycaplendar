@@ -103,7 +103,7 @@
   }
 }
 
-@media (min-width: 840px) {
+@media (min-width: 1240px) {
   .card-container .mdc-card {
     .hover-button {
       position: absolute;
@@ -145,7 +145,7 @@
   }
 }
 
-@media (max-width: 479px) {
+@media (max-width: 599px) {
   .card-container .mdc-card {
     &__primary-action {
       flex-direction: row;

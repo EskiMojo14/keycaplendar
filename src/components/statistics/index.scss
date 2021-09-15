@@ -124,7 +124,7 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
   }
 }
 
-@media (max-width: 839px) {
+@media (max-width: 1239px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     &-item {
@@ -136,7 +136,7 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
   }
 }
 
-@media (max-width: 479px) {
+@media (max-width: 599px) {
   .stats-grid {
     grid-template-columns: repeat(1, 1fr);
     &-item {

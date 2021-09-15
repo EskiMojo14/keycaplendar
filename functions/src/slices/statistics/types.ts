@@ -2,6 +2,7 @@ import { Overwrite } from "../util/types";
 import { VendorType } from "../main/types";
 
 export type StatisticsSetType = {
+  id: string;
   colorway: string;
   designer: string[];
   gbEnd: string;

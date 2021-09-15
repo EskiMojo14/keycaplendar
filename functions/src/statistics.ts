@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { is } from "typescript-is";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { DateTime, Interval } from "luxon";
 import { create, all, MathJsStatic } from "mathjs";
 import {
@@ -752,7 +751,7 @@ export const createStatistics = functions
   // .pubsub.schedule("every 12 hours")
   // .onRun(async (context) => {
   .https.onCall(async (data, contextverylongnameevenlongerpls) => {
-    const snapshot = await typedFirestore.collection("keysets").get();
+    const snapshot = await admin.firestore().collection("keysets").get();
     const sets: StatisticsSetType[] = snapshot.docs
       .map((doc) => {
         const { profile, colorway, designer, icDate, gbEnd, shipped, vendors } = doc.data();
