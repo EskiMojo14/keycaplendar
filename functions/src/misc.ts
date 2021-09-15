@@ -1,10 +1,11 @@
 /* eslint-disable promise/no-nesting */
+import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { nanoid } from "nanoid";
 
 export const generateAliases = functions.https.onCall((data, context) => {
-  return typedFirestore
+  return admin
+    .firestore()
     .collection("keysets")
     .get()
     .then((querySnapshot) => {
@@ -13,7 +14,8 @@ export const generateAliases = functions.https.onCall((data, context) => {
         if (doc.data().alias) {
           promises.push(Promise.resolve());
         } else {
-          const setPromise = typedFirestore
+          const setPromise = admin
+            .firestore()
             .collection("keysets")
             .doc(doc.id)
             .set({ alias: nanoid(10) }, { merge: true });

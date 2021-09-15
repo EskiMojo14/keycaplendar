@@ -1,10 +1,11 @@
+import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as jwt from "jsonwebtoken";
-import type * as typedAdminFirestore from "typed-admin-firestore";
 import { arrayIncludes } from "./slices/common/functions";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { KeysetDoc, KeysetId } from "./slices/firebase/types";
-import { dateSorts } from "./slices/main/constants";
+import { dateSorts, pages } from "./slices/main/constants";
+import { pageConditions } from "./slices/main/functions";
+import { StatisticsSetType } from "./slices/statistics/types";
 
 /**
  * Takes a key and secret within a POST request, and returns a JWT token to be used in other API operations.
@@ -16,7 +17,7 @@ export const apiAuth = functions.https.onRequest(async (request, response) => {
   if (!key || !secret) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const usersRef = typedFirestore.collection("apiUsers");
+  const usersRef = admin.firestore().collection("apiUsers");
   const snapshot = await usersRef.where("apiKey", "==", key).where("apiSecret", "==", secret).get();
   if (snapshot.empty) {
     response.status(401).send({ error: "Unauthorized" });
@@ -82,16 +83,18 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
   if (auth === false) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const returnKeysets = async (ref: typedAdminFirestore.Query<KeysetId, KeysetDoc>) => {
+  const returnKeysets = async (ref: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>) => {
     const snapshot = await ref.get();
     const keysets: Record<string, unknown>[] = [];
     snapshot.forEach((doc) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { latestEditor, ...data } = doc.data();
       keysets.push({
         id: doc.id,
-        ...doc.data(),
+        ...data,
       });
     });
-    response.send(JSON.stringify(keysets));
+    response.status(200).send(JSON.stringify(keysets));
   };
   const validDateFilter = (dateFilter: string | undefined): dateFilter is typeof dateSorts[number] => {
     return !!dateFilter && arrayIncludes(dateSorts, dateFilterQuery);
@@ -100,7 +103,7 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
     const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/;
     return !!date && regex.test(date);
   };
-  const keysetsRef = typedFirestore.collection("keysets");
+  const keysetsRef = admin.firestore().collection("keysets");
   const dateFilterQuery = request.query.dateFilter as string | undefined;
   const beforeDateQuery = request.query.before as string | undefined;
   const afterDateQuery = request.query.date as string | undefined;
@@ -121,6 +124,39 @@ export const getAllKeysets = functions.https.onRequest(async (request, response)
 });
 
 /**
+ * Returns the keysets for the particular page. Requires the JWT token from `apiAuth` in the authorisation header.
+ */
+
+export const getKeysetsByPage = functions.https.onRequest(async (request, response) => {
+  const auth = verify(request);
+  if (auth === false) {
+    response.status(401).send({ error: "Unauthorized" });
+  }
+  const page = request.query.page;
+  if (page && arrayIncludes(pages, page)) {
+    try {
+      const snapshot = await admin.firestore().collection("keysets").get();
+      const keysets: StatisticsSetType[] = [];
+      snapshot.forEach((doc) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { latestEditor, ...data } = doc.data() as KeysetDoc;
+        keysets.push({
+          id: doc.id,
+          ...data,
+        });
+      });
+      const filteredKeysets = keysets.filter((set) => pageConditions(set)[page]);
+      response.status(200).send(JSON.stringify(filteredKeysets));
+    } catch (error) {
+      console.log(error);
+      response.status(500).send({ error });
+    }
+  } else {
+    response.status(400).send({ error: "Invalid/no page provided." });
+  }
+});
+
+/**
  * Returns the keyset with the included ID. Requires the JWT token from `apiAuth` in the authorisation header.
  */
 
@@ -129,17 +165,17 @@ export const getKeysetById = functions.https.onRequest(async (request, response)
   if (auth === false) {
     response.status(401).send({ error: "Unauthorized" });
   }
-  const keysetsRef = typedFirestore.collection("keysets");
+  const keysetsRef = admin.firestore().collection("keysets");
   if (request.query.id) {
     const docRef = keysetsRef.doc(request.query.id as KeysetId);
     const doc = await docRef.get();
     if (!doc.exists) {
-      response.send("No document with this ID.");
+      response.status(404).send({ error: "No document with this ID." });
     } else {
       const keyset = { id: doc.id, ...doc.data() };
-      response.send(JSON.stringify(keyset));
+      response.status(200).send(JSON.stringify(keyset));
     }
   } else {
-    response.send("No id provided.");
+    response.status(400).send({ error: "No id provided." });
   }
 });

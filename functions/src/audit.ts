@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import { typedFirestore } from "./slices/firebase/firestore";
 import { KeysetId } from "./slices/firebase/types";
 import { PublicActionType, ActionType, ActionSetType } from "./slices/audit/types";
 import { alphabeticalSortProp } from "./slices/common/functions";
@@ -17,7 +16,8 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
   const afterData = change.after.data();
   if (afterData && afterData.latestEditor) {
     const user = await admin.auth().getUser(afterData.latestEditor);
-    typedFirestore
+    admin
+      .firestore()
       .collection("changelog")
       .add({
         documentId: context.params.keysetId,
@@ -43,7 +43,8 @@ export const onKeysetUpdate = functions.firestore.document("keysets/{keysetId}")
   }
   if (afterData && !afterData.profile) {
     console.log("Document deleted");
-    typedFirestore
+    admin
+      .firestore()
       .collection("keysets")
       .doc(context.params.keysetId as KeysetId)
       .delete()
@@ -68,7 +69,8 @@ export const getPublicAudit = functions.https.onCall((data, context) => {
     delete newSet.latestEditor;
     return newSet;
   };
-  return typedFirestore
+  return admin
+    .firestore()
     .collection("changelog")
     .orderBy("timestamp", "desc")
     .limit(data.num)
