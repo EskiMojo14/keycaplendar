@@ -93,7 +93,7 @@ const chartOptions = (monthLabel: string): ILineChartOptions & IBarChartOptions 
 
 const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
   [
-    "(min-width: 960px) and (max-width: 1600px)",
+    "(min-width: 1240px) and (max-width: 1600px)",
     {
       axisX: {
         labelInterpolationFnc: (value: any, index: number) => {
@@ -103,17 +103,7 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     },
   ],
   [
-    "(min-width: 840px) and (max-width: 959px)",
-    {
-      axisX: {
-        labelInterpolationFnc: (value: any, index: number) => {
-          return index % 3 === 0 ? value : null;
-        },
-      },
-    },
-  ],
-  [
-    "(max-width: 849px)",
+    "(max-width: 1239px)",
     {
       axisX: {
         labelInterpolationFnc: (value: any, index: number) => {

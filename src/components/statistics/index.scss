@@ -128,7 +128,7 @@ $tabs: summary, timelines, status, shipped, duration, vendors;
   }
 }
 
-@media (max-width: 839px) {
+@media (max-width: 1239px) {
   .stats-tab.stats-grid {
     grid-template-columns: repeat(2, 1fr);
     .mdc-card {
@@ -140,7 +140,7 @@ $tabs: summary, timelines, status, shipped, duration, vendors;
   }
 }
 
-@media (max-width: 479px) {
+@media (max-width: 599px) {
   .stats-tab.stats-grid {
     grid-template-columns: repeat(1, 1fr);
     .mdc-card {

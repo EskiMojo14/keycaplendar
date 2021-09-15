@@ -61,12 +61,12 @@ export const checkDevice = () => {
   const calculate = () => {
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if (vw !== lastWidth || i === 0) {
-      if (vw >= 840) {
+      if (vw >= 1240) {
         if (lastDevice !== "desktop") {
           dispatch(setDevice("desktop"));
           lastDevice = "desktop";
         }
-      } else if (vw < 840 && vw >= 480) {
+      } else if (vw < 1240 && vw >= 600) {
         if (lastDevice !== "tablet") {
           dispatch(setDevice("tablet"));
           lastDevice = "tablet";

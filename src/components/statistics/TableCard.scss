@@ -77,13 +77,13 @@
   }
 }
 
-@media (max-width: 839px) {
+@media (max-width: 1239px) {
   .stats-tab .mdc-card.table-card {
     grid-column: span 2;
   }
 }
 
-@media (max-width: 479px) {
+@media (max-width: 599px) {
   .stats-tab .mdc-card.table-card {
     grid-column: span 1;
   }
