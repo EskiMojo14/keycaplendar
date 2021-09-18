@@ -1,4 +1,3 @@
-import React from "react";
 import { UserRoles } from "./types";
 import { IconPropT } from "@rmwc/types";
 import { iconObject } from "@s/util/functions";

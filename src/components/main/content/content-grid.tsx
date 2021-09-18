@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectSetGroups } from "@s/main";
 import { SetType } from "@s/main/types";

@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import { Page, ThemeMap, GraphColors } from "./types";
 
@@ -9,7 +9,7 @@ import { Page, ThemeMap, GraphColors } from "./types";
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
+const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
   strategy: "component",
   icon: jsx,
   ...config,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, HTMLProps } from "react";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
@@ -56,7 +56,7 @@ export type TimePickerProps = Overwrite<
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
-      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & React.HTMLProps<HTMLElement>>,
+      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & HTMLProps<HTMLElement>>,
       "open" | "anchorCorner" | "renderToPortal"
     >;
     pickerProps?: Omit<KeyboardTimePickerProps, "value" | "onChange" | "orientation" | "variant">;

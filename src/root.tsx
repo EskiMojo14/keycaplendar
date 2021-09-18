@@ -1,4 +1,3 @@
-import React from "react";
 import { Provider } from "react-redux";
 import { RMWCProvider } from "@rmwc/provider";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";

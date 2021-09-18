@@ -1,4 +1,3 @@
-import React from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarCookiesProps = {

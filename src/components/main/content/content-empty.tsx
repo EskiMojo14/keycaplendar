@@ -1,4 +1,3 @@
-import React from "react";
 import emptyImg from "@m/empty.svg";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";

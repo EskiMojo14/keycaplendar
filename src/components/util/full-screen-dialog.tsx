@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import BEMHelper from "@s/common/bem-helper";
 import { HTMLProps } from "@s/util/types";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";

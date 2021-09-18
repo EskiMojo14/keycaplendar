@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
 import firebase from "@s/firebase";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
@@ -55,13 +55,13 @@ export const UserCard = (props: UserCardProps) => {
     }
   }, [props.user]);
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
     setFocused(e.target.name);
   };
   const handleBlur = () => {
     setFocused("");
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
     setEdited(true);
   };

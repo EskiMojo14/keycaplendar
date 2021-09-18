@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent, DragEvent } from "react";
 import classNames from "classnames";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
@@ -50,7 +50,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     };
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     if (name === "imageLink") {
@@ -76,7 +76,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
       });
   };
 
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
     if (!imageFromURL) {
       e.preventDefault();
       e.stopPropagation();
@@ -84,7 +84,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     }
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
     if (!imageFromURL) {
       e.preventDefault();
       e.stopPropagation();
@@ -92,14 +92,14 @@ export const ImageUpload = (props: ImageUploadProps) => {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     if (!imageFromURL) {
       e.preventDefault();
       e.stopPropagation();
     }
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     if (!imageFromURL) {
       e.preventDefault();
       e.stopPropagation();
@@ -117,7 +117,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);

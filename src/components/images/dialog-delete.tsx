@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useAppDispatch } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { setLoading } from "@s/images";
@@ -21,7 +21,7 @@ type DialogDeleteProps = {
 export const DialogDelete = (props: DialogDeleteProps) => {
   const dispatch = useAppDispatch();
   const [deleteAllVersions, setDeleteAllVersions] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDeleteAllVersions(e.target.checked);
   };
   const createArray = (allVersions = deleteAllVersions) => {

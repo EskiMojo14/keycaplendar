@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
@@ -156,7 +156,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     setImageInfo((imageInfo) => ({ ...imageInfo, image: image }));
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
     setFocused(e.target.name);
   };
 
@@ -226,7 +226,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     const checked = e.target.checked;
@@ -247,7 +247,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     setFields((fields) => ({ ...fields, [name]: value }));
   };
 
-  const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -267,7 +267,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = newVendors[index];
@@ -1062,7 +1062,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     setImageInfo((imageInfo) => ({ ...imageInfo, image: image, newImage: true }));
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
     setFocused(e.target.name);
   };
 
@@ -1132,7 +1132,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     const checked = e.target.checked;
@@ -1153,7 +1153,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     setFields((fields) => ({ ...fields, [name]: value }));
   };
 
-  const handleChangeVendor = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -1173,7 +1173,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleChangeVendorEndDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const newVendors = [...vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = newVendors[index];

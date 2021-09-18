@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent } from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
 import { getActions } from "@s/audit/functions";
@@ -32,7 +32,7 @@ export const DrawerAuditFilter = (props: DrawerAuditFilterProps) => {
     device === "desktop"
       ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
       : null;
-  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
     dispatch(setLength(length));
     if (length >= 50 && length % 50 === 0 && length <= 250) {

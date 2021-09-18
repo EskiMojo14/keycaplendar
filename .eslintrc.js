@@ -17,6 +17,8 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "arrow-body-style": ["error", "as-needed"],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
   },
   settings: {
     react: {

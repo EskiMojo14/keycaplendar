@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
@@ -60,7 +60,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
   const timestamp = DateTime.fromISO(props.action.timestamp, { zone: "utc" });
   const formattedTimestamp = timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`);
 
-  const constructRows = (dataObj = data, properties = auditProperties): React.ReactNode => {
+  const constructRows = (dataObj = data, properties = auditProperties): ReactNode => {
     if (dataObj.data) {
       return objectKeys(dataObj.data)
         .sort(
@@ -71,7 +71,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
         .map((prop) => {
           if (dataObj.data) {
             const useData = dataObj.data[prop];
-            let contents: React.ReactNode;
+            let contents: ReactNode;
             if (is<string>(useData)) {
               const domain = useData.match(domainRegex);
               contents = (
@@ -163,7 +163,7 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
         if (dataObj.before && dataObj.after && hasKey(dataObj.before, prop) && hasKey(dataObj.after, prop)) {
           const beforeData = dataObj.before[prop];
           const afterData = dataObj.after[prop];
-          let contents: { before: React.ReactNode; after: React.ReactNode } = { before: null, after: null };
+          let contents: { before: ReactNode; after: ReactNode } = { before: null, after: null };
           if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);
             const afterDomain = afterData.match(domainRegex);

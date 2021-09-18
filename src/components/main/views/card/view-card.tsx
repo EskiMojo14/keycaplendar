@@ -1,4 +1,3 @@
-import React from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { SetType } from "@s/main/types";

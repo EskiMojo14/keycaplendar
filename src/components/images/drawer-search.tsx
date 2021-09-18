@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import reactStringReplace from "react-string-replace";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
@@ -37,7 +37,7 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
   const [search, setSearch] = useState("");
   const [regexSearch, setRegexSearch] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 

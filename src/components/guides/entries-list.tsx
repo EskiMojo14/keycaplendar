@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
@@ -101,7 +101,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
           const icon = visibilityIcons[visibility];
           if (filteredEntries.length > 0) {
             return (
-              <React.Fragment key={visibility}>
+              <Fragment key={visibility}>
                 <ListGroup>
                   <ListGroupSubheader>
                     {typeof icon === "object" ? (
@@ -141,7 +141,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                   ))}
                 </ListGroup>
                 <ListDivider />
-              </React.Fragment>
+              </Fragment>
             );
           }
           return null;

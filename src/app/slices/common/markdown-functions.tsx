@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import { TypographyT, Typography } from "@rmwc/typography";
 
 export const componentBuilder = (name: string, Component: FunctionComponent) =>

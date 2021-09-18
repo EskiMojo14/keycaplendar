@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
@@ -34,7 +34,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
     setIsNew(!props.preset.name);
   }, [props.preset.name]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     if (name === "name") {

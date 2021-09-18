@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import firebase from "@s/firebase";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -86,7 +86,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     if (name === "shareName") {
@@ -110,7 +110,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
         queue.notify({ title: "Error signing out: " + error });
       });
   };
-  const selectApplyTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectApplyTheme = (e: ChangeEvent<HTMLSelectElement>) => {
     setApplyTheme(e.target.value.toLowerCase());
   };
   const permissionIcon = user.isAdmin

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import firebase from "@s/firebase";
 import classNames from "classnames";
 import { queue } from "~/app/snackbar-queue";

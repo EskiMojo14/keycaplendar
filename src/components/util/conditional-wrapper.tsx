@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 
 /**
  * Takes a condition, a wrapper function and children, and wraps children in wrapper if condition is true.
@@ -11,7 +11,7 @@ export const ConditionalWrapper = ({
 }: {
   condition: boolean;
   wrapper: (children: JSX.Element) => JSX.Element;
-  children: React.ReactNode;
+  children: ReactNode;
 }): JSX.Element => condition ? wrapper(<>{children}</>) : <>{children}</>;
 
 /**
@@ -27,7 +27,7 @@ export const BoolWrapper = ({
   condition: boolean;
   trueWrapper: (children: JSX.Element) => JSX.Element;
   falseWrapper: (children: JSX.Element) => JSX.Element;
-  children: React.ReactNode;
+  children: ReactNode;
 }): JSX.Element => condition ? trueWrapper(<>{children}</>) : falseWrapper(<>{children}</>);
 
 export default ConditionalWrapper;

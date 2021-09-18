@@ -1,4 +1,3 @@
-import React from "react";
 import { iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";

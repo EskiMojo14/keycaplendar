@@ -1,4 +1,3 @@
-import React from "react";
 import { Command, MarkdownUtil, TextApi, TextState } from "react-mde";
 import { IconButton } from "@rmwc/icon-button";
 import { markdownIcons } from "./markdown-constants";
