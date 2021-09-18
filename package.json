@@ -74,7 +74,6 @@
     "react-twemoji": "^0.3.0",
     "remark-gfm": "^1.0.0",
     "rifm": "^0.12.0",
-    "typescript": "^4.2.3",
     "typescript-is": "^0.18.2",
     "websocket-extensions": "^0.1.4"
   },
@@ -117,8 +116,8 @@
     "@types/react-swipeable-views": "^0.13.0",
     "@types/react-swipeable-views-utils": "^0.13.2",
     "@types/twemoji": "^12.1.2",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
@@ -127,6 +126,7 @@
     "react-app-rewired": "^2.1.8",
     "ts-loader": "^8.3.0",
     "ttypescript": "^1.5.12",
-    "typed-firestore": "^1.1.0"
+    "typed-firestore": "^1.1.0",
+    "typescript": "^4.4.3"
   }
 }
