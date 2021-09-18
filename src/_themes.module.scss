@@ -1,6 +1,7 @@
 @use "@material/theme/color-palette" as palette;
+@use "util";
 
-$themes-map: (
+$themes-colors-map: (
   light: (
     dark: false,
     primary: palette.$teal-500,
@@ -196,36 +197,59 @@ $overlay-values: (
   @return $list;
 }
 
+@function create-elevation-list($theme) {
+  $list: ();
+  @for $i from 1 through 25 {
+    $list: append($list, "");
+  }
+  @each $overlay-elevation, $overlay-percent in $overlay-values {
+    $list: set-nth($list, $overlay-elevation + 1, overlay-elevation(map-get($theme, surface), $overlay-elevation));
+  }
+  @return $list;
+}
+
+@function create-theme-map($theme) {
+  $text-colors: (
+    text-high: rgba(map-get($theme, on-surface), 0.87),
+    text-medium: rgba(map-get($theme, on-surface), 0.6),
+    text-disabled: rgba(map-get($theme, on-surface), 0.38),
+  );
+
+  $dynamic-colors: (
+    meta:
+      if(
+        map-get($theme, dark),
+        darken(overlay-elevation(map-get($theme, surface), 4), 10%),
+        darken(map-get($theme, primary), 10%)
+      ),
+    divider: rgba(map-get($theme, on-surface), 0.12),
+    lighter-divider: rgba(map-get($theme, on-surface), 0.06),
+    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%),
+    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+    primary-gradient: generate-gradient(map-get($theme, primary)),
+    secondary-gradient: generate-gradient(map-get($theme, secondary)),
+    elevated-surface: create-elevation-list($theme),
+  );
+
+  @return util.map-collect($theme, $text-colors, $dynamic-colors);
+}
+
+$themes-map: ();
+
+@each $theme-name, $theme in $themes-colors-map {
+  $map: ();
+  $map: map-merge(
+    $map,
+    (
+      $theme-name: create-theme-map($theme),
+    )
+  );
+  $themes-map: map-merge($themes-map, $map);
+}
+
 :export {
   @each $theme-name, $theme in $themes-map {
     @each $theme-prop, $theme-prop-val in $theme {
-      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
-    }
-
-    $text-colors: (
-      text-high: rgba(map-get($theme, on-surface), 0.87),
-      text-medium: rgba(map-get($theme, on-surface), 0.6),
-      text-disabled: rgba(map-get($theme, on-surface), 0.38),
-    );
-    @each $theme-prop, $theme-prop-val in $text-colors {
-      #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
-    }
-
-    $dynamic-colors: (
-      meta:
-        if(
-          map-get($theme, dark),
-          darken(overlay-elevation(map-get($theme, surface), 4), 10%),
-          darken(map-get($theme, primary), 10%)
-        ),
-      divider: rgba(map-get($theme, on-surface), 0.12),
-      lighter-divider: rgba(map-get($theme, on-surface), 0.06),
-      grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%),
-      grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
-      primary-gradient: generate-gradient(map-get($theme, primary)),
-      secondary-gradient: generate-gradient(map-get($theme, secondary)),
-    );
-    @each $theme-prop, $theme-prop-val in $dynamic-colors {
       @if type-of($theme-prop-val) == "list" {
         @for $i from 1 through length($theme-prop-val) {
           $c: nth($theme-prop-val, $i);
@@ -234,14 +258,6 @@ $overlay-values: (
       } @else {
         #{$theme-name + "|" + $theme-prop}: $theme-prop-val;
       }
-    }
-
-    @each $overlay-elevation, $overlay-percent in $overlay-values {
-      #{$theme-name + "|[elevated-surface#" + ($overlay-elevation + 1) + "]"}: if(
-        map-get($theme, dark),
-        overlay-elevation(map-get($theme, surface), $overlay-elevation),
-        map-get($theme, surface)
-      );
     }
   }
 }
