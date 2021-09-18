@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, memo, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
@@ -33,9 +33,9 @@ import "./timeline-card.scss";
 type ShippedCardProps = {
   data: ShippedDataObject;
   months: string[];
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  overline?: ReactNode;
+  note?: ReactNode;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedCardProps) => {
   const dispatch = useAppDispatch();
@@ -409,9 +409,9 @@ export type TimelinesCardProps = {
   singleTheme?: KeysMatching<ThemeMap, string>;
   filterable?: boolean;
   allProfiles?: string[];
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  overline?: ReactNode;
+  note?: ReactNode;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const TimelinesCard = ({
   data,
@@ -678,7 +678,7 @@ export const TimelinesCard = ({
   );
 };
 
-export const MemoisedTimelinesCard = React.memo(TimelinesCard);
+export const MemoisedTimelinesCard = memo(TimelinesCard);
 
 export interface TimelinesSummaryCardProps extends TimelinesCardProps {
   selectable?: boolean;
@@ -983,8 +983,8 @@ export const TimelinesSummaryCard = ({
   );
 };
 
-export const TimelineCardPlaceholder = ({ style }: { style: React.CSSProperties }) => (
+export const TimelineCardPlaceholder = ({ style }: { style: CSSProperties }) => (
   <Card className="timeline-card placeholder" style={style}></Card>
 );
 
-export const MemoisedTimelineCardPlaceholder = React.memo(TimelineCardPlaceholder);
+export const MemoisedTimelineCardPlaceholder = memo(TimelineCardPlaceholder);

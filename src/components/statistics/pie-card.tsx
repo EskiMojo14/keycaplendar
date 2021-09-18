@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from "react";
+import { useState, useContext, useEffect, useMemo, ReactNode, HTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap, selectDevice } from "@s/common";
@@ -66,9 +66,9 @@ const CentredLabel = <RawDatum,>({ nodes, centerX, centerY }: SunburstCustomLaye
 
 type StatusCardProps = {
   data: StatusDataObject;
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  overline?: ReactNode;
+  note?: ReactNode;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) => {
   const dispatch = useAppDispatch();

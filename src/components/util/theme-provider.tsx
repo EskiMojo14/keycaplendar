@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, ReactNode } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";
@@ -6,7 +6,7 @@ import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
 import { getTextOpacity } from "@s/common/functions";
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
   const theme = currentThemeMap.primary
     ? createTheme({
@@ -47,7 +47,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const NivoThemeContext = createContext<Theme>({});
 
-export const NivoThemeProvider = ({ children }: { children: React.ReactNode }) => {
+export const NivoThemeProvider = ({ children }: { children: ReactNode }) => {
   const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
   const [theme, setTheme] = useState<Theme>({});
   useEffect(() => {

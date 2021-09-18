@@ -1,4 +1,3 @@
-import React from "react";
 import { SetType } from "@s/main/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import "./dialog-sales.scss";

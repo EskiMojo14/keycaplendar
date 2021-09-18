@@ -1,5 +1,5 @@
 declare module "react-chartist" {
-  import { ComponentType } from "react";
+  import { ComponentType, CSSProperties } from "react";
   import {
     IChartOptions,
     IBarChartOptions,
@@ -18,7 +18,7 @@ declare module "react-chartist" {
     listener?: Record<string, (...args: any[]) => any>;
 
     className?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
   };
 
   type PieChartProps = ChartProps<"Pie", IPieChartOptions>;

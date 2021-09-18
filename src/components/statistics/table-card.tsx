@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext, useMemo, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
@@ -34,9 +34,9 @@ type TableCardProps = {
   unit: string;
   tab: "duration" | "vendors";
   theme?: KeysMatching<ThemeMap, string>;
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  overline?: ReactNode;
+  note?: ReactNode;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: TableCardProps) => {
   const dispatch = useAppDispatch();

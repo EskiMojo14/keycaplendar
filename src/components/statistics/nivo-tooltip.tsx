@@ -1,4 +1,3 @@
-import React from "react";
 import { useTheme } from "@nivo/core";
 import { PointTooltipProps, SliceTooltipProps } from "@nivo/line";
 import { BasicTooltip, TableTooltip, Chip } from "@nivo/tooltip";

@@ -1,4 +1,3 @@
-import React from "react";
 import BEMHelper from "@s/common/bem-helper";
 import { HTMLProps } from "@s/util/types";
 import { Select, SelectProps } from "@rmwc/select";

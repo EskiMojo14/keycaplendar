@@ -1,3 +1,5 @@
+import { HTMLAttributes } from "react";
+
 /** Alias for `Record<string, T>`. */
 
 export type Obj<T = unknown> = Record<string, T>;
@@ -25,4 +27,4 @@ export type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never 
 
 /** Alias for standard HTML props. */
 
-export type HTMLProps = React.HTMLAttributes<HTMLElement>;
+export type HTMLProps = HTMLAttributes<HTMLElement>;

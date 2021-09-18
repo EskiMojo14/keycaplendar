@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
@@ -22,9 +22,9 @@ type CalendarCardProps = {
   end: string;
   unit: string;
   theme?: "primary" | "secondary";
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  overline?: ReactNode;
+  note?: ReactNode;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 export const CalendarCard = ({ data, start, end, unit, theme, overline, note, ...props }: CalendarCardProps) => {
   const dispatch = useAppDispatch();
