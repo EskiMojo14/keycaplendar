@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Chartist, { ILineChartOptions } from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
@@ -48,8 +48,8 @@ type TableCardProps = {
   category?: Categories;
   defaultType?: "bar" | "line";
   breakdownData?: DurationDataObject[] | VendorDataObject[];
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
+  overline?: ReactNode;
+  note?: ReactNode;
   summary?: boolean;
 };
 

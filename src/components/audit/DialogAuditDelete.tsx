@@ -1,4 +1,3 @@
-import React from "react";
 import { ActionType } from "@s/audit/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 

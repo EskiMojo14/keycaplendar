@@ -1,4 +1,4 @@
-import React from "react";
+import { MouseEvent } from "react";
 import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
@@ -10,7 +10,7 @@ type DialogDeleteFilterPresetProps = {
 };
 
 export const DialogDeleteFilterPreset = (props: DialogDeleteFilterPresetProps) => {
-  const deleteFn = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const deleteFn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (props.preset.global) {
       deleteGlobalPreset(props.preset);

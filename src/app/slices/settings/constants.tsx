@@ -1,4 +1,3 @@
-import React from "react";
 import { IconPropT } from "@rmwc/types";
 import { iconObject } from "@s/util/functions";
 import { ViewType } from "./types";

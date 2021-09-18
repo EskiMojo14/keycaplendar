@@ -1,4 +1,4 @@
-import React from "react";
+import { HTMLAttributes } from "react";
 import reactStringReplace from "react-string-replace";
 import classNames from "classnames";
 import BEMHelper from "@s/common/bemHelper";
@@ -6,7 +6,7 @@ import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import "./Autocomplete.scss";
 
-type AutocompleteProps = React.HTMLAttributes<HTMLElement> & {
+type AutocompleteProps = HTMLAttributes<HTMLElement> & {
   array: string[];
   minChars: number;
   open: boolean;

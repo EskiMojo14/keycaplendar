@@ -1,4 +1,3 @@
-import React from "react";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Visibility } from "./types";
 import { formattedUserRoles, userRoleIcons, userRoles } from "@s/users/constants";
 import { iconObject } from "@s/util/functions";

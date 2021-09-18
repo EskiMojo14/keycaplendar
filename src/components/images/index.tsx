@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
 import firebase from "@s/firebase";

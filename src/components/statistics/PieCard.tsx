@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ReactNode } from "react";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { IPieChartOptions } from "chartist";
@@ -25,8 +25,8 @@ type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
   summary?: boolean;
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
+  overline?: ReactNode;
+  note?: ReactNode;
 };
 
 export const StatusCard = (props: StatusCardProps) => {

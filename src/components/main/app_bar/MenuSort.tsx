@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
 import { selectSort, selectSortOrder } from "@s/main";

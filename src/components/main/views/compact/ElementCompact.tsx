@@ -1,4 +1,3 @@
-import React from "react";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";

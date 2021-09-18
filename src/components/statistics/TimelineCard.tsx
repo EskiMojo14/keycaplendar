@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import Chartist, { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
 import ChartistGraph from "react-chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
@@ -120,8 +120,8 @@ type ShippedCardProps = {
   months: string[];
   summary?: boolean;
   defaultType?: "bar" | "line";
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
+  overline?: ReactNode;
+  note?: ReactNode;
 };
 
 export const ShippedCard = (props: ShippedCardProps) => {
@@ -269,8 +269,8 @@ type TimelinesCardProps = {
   focusable?: boolean;
   allProfiles?: string[];
   breakdownData?: TimelineDataObject[];
-  overline?: React.ReactNode;
-  note?: React.ReactNode;
+  overline?: ReactNode;
+  note?: ReactNode;
 };
 
 export const TimelinesCard = (props: TimelinesCardProps) => {

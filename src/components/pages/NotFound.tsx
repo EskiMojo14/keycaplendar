@@ -1,11 +1,10 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
 import { Footer } from "@c/common/Footer";
-import "./NotFound.scss";
 import image from "@m/404.svg";
+import "./NotFound.scss";
 
 export const NotFound = () => {
   return (

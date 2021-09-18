@@ -1,4 +1,5 @@
 import { allPages, mainPages } from "./constants";
+import type { HTMLAttributes } from "react";
 
 /** Alias for `Record<string, T>`. */
 
@@ -27,7 +28,7 @@ export type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never 
 
 /** Alias for standard HTML props. */
 
-export type HTMLProps = React.HTMLAttributes<HTMLElement>;
+export type HTMLProps = HTMLAttributes<HTMLElement>;
 
 /** Possible page names */
 

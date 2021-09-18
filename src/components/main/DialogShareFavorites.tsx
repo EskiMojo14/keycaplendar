@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbarQueue";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
@@ -8,10 +9,9 @@ import { CircularProgress } from "@rmwc/circular-progress";
 import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
-import "./DialogShareFavorites.scss";
 import { Typography } from "@rmwc/typography";
 import { IconButton } from "@rmwc/icon-button";
-import { queue } from "~/app/snackbarQueue";
+import "./DialogShareFavorites.scss";
 
 type DialogShareFavoritesProps = {
   open: boolean;
@@ -30,7 +30,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const value = e.target.value;
     if (name === "shareName") {
@@ -59,7 +59,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
       });
   };
 
-  const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const checked = e.target.checked;
     if (name === "shareFavorites") {

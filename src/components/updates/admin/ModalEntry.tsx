@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
 import { queue } from "~/app/snackbarQueue";
@@ -42,7 +42,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setBody("");
     }
   }, [props.open]);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist();
     const name = e.target.name;
     const value = e.target.value;
@@ -210,7 +210,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       setBody("");
     }
   }, [props.open, entry]);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.persist();
     const name = e.target.name;
     const value = e.target.value;
