@@ -1,4 +1,14 @@
-import { useState, useEffect, useContext, useMemo, memo, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
+import {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  memo,
+  ReactNode,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  CSSProperties,
+} from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
