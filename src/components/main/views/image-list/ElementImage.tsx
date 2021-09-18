@@ -1,4 +1,3 @@
-import React from "react";
 import Twemoji from "react-twemoji";
 import LazyLoad from "react-lazy-load";
 import classNames from "classnames";

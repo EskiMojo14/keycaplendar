@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import classNames from "classnames";
 import BEMHelper from "@s/common/bemHelper";
 import { useAppSelector } from "~/app/hooks";
@@ -30,7 +30,7 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
     createSearchTerms();
   }, [props.search]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setExpanded(e.target.value.length !== 0);
     props.setSearch(e.target.value);
   };
@@ -187,7 +187,7 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
     }, 200);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     props.setSearch(e.target.value);
   };
   const handleFocus = () => {
@@ -310,7 +310,7 @@ export const SearchAppBar = (props: SearchAppBarProps) => {
     createSearchTerms();
   }, [props.search]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     props.setSearch(e.target.value);
   };
   const handleFocus = () => {

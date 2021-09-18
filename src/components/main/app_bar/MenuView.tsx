@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppSelector } from "~/app/hooks";
 import { selectView } from "@s/settings";
 import { allViews, viewNames } from "@s/settings/constants";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";

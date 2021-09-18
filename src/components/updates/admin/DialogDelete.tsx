@@ -1,4 +1,3 @@
-import React from "react";
 import { typedFirestore } from "@s/firebase/firestore";
 import { queue } from "~/app/snackbarQueue";
 import { UpdateId } from "@s/firebase/types";

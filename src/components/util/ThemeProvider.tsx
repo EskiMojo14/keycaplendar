@@ -1,10 +1,10 @@
-import React from "react";
+import { ReactNode } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
   const theme = currentThemeMap.primary
     ? createTheme({

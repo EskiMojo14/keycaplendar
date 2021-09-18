@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
@@ -19,7 +19,7 @@ import { ContentUpdates } from "@c/updates";
 import { ContentUsers } from "@c/users";
 import "./Content.scss";
 
-type ContentProps = React.HTMLAttributes<HTMLDivElement>;
+type ContentProps = HTMLAttributes<HTMLDivElement>;
 
 export const Content = (props: ContentProps) => {
   const { className, ...filteredProps } = props;

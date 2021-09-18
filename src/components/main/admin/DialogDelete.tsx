@@ -1,4 +1,4 @@
-import React from "react";
+import { MouseEvent } from "react";
 import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
@@ -17,7 +17,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const user = useAppSelector(selectUser);
-  const deleteEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     typedFirestore
       .collection("keysets")

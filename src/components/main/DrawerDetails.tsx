@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, ReactNode } from "react";
 import Twemoji from "react-twemoji";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -91,7 +91,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   let verb = "";
   let ic = "";
   let gb: string | null = "";
-  let shippedLine: React.ReactNode | null = "";
+  let shippedLine: ReactNode | null = "";
   const chips: string[] = [];
   const chipsContent = ["profile", "colorway", "designer", "vendors"];
   const sortedVendors = set.vendors ? alphabeticalSortProp([...set.vendors], "region") : [];

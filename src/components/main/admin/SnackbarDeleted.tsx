@@ -1,4 +1,4 @@
-import React from "react";
+import { MouseEvent } from "react";
 import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbarQueue";
@@ -17,7 +17,7 @@ type SnackbarDeletedProps = {
 
 export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const user = useAppSelector(selectUser);
-  const recreateEntry = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const { id, ...set } = props.set;
     typedFirestore

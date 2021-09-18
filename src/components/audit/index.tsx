@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { DateTime } from "luxon";
 import classNames from "classnames";
 import { queue } from "~/app/snackbarQueue";
@@ -90,7 +90,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
     }, 100);
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, prop: string) => {
+  const handleFilterChange = (e: ChangeEvent<HTMLInputElement>, prop: string) => {
     if (prop === "filterUser") {
       dispatch(setFilterUser(e.target.value));
       filterActions();

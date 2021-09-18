@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import firebase from "@s/firebase";
@@ -315,7 +315,7 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: React.ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
+export const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => {
   return {
     strategy: "component",
     icon: jsx,

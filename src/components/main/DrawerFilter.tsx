@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import isEqual from "lodash.isequal";
 import classNames from "classnames";
 import { is } from "typescript-is";
@@ -68,7 +68,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     setModified(!equal);
   }, [preset.whitelist, mainWhitelist]);
 
-  const selectPresetFn = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectPresetFn = (e: ChangeEvent<HTMLSelectElement>) => {
     selectPreset(e.target.value);
   };
 
