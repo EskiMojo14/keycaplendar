@@ -32,16 +32,6 @@
         @include rtl.reflexive-box(margin, left, 16px);
       }
     }
-    .link {
-      @include rtl.reflexive-box(margin, left, auto);
-      width: 48px;
-      height: 48px;
-      text-decoration: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      outline: none;
-    }
   }
   .mdc-list .mdc-list-item:last-child {
     border-bottom: none;

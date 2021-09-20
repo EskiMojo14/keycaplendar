@@ -38,6 +38,11 @@
     @include icon-button.density($density);
   }
   .mdc-list {
+    &-item__meta {
+      &.mdc-icon-button {
+        @include rtl.reflexive-property(margin, auto, -12px - $diff / 2);
+      }
+    }
     &:not(.mdc-list--two-line) {
       @include list.single-line-density($density);
     }
@@ -56,6 +61,8 @@
         );
         &__primary-text::before {
           height: 32px + $diff / 2;
+        }
+        &__meta {
         }
       }
     }

@@ -3,7 +3,7 @@ import LazyLoad from "react-lazy-load";
 import classNames from "classnames";
 import { queue } from "~/app/snackbarQueue";
 import { useAppSelector } from "~/app/hooks";
-import { selectPage } from "@s/common";
+import { selectDevice, selectPage } from "@s/common";
 import { SetType } from "@s/main/types";
 import { selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
@@ -39,13 +39,14 @@ type ElementCardProps = {
 };
 
 export const ElementCard = (props: ElementCardProps) => {
+  const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
   const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
 
-  const copyLink = () => {
+  const copyShareLink = () => {
     const arr = window.location.href.split("/");
     const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
     navigator.clipboard
@@ -57,6 +58,8 @@ export const ElementCard = (props: ElementCardProps) => {
         queue.notify({ title: "Error copying to clipboard" + error });
       });
   };
+
+  const useLink = device === "desktop";
 
   const liveIndicator =
     props.live && page !== "live"
@@ -95,11 +98,31 @@ export const ElementCard = (props: ElementCardProps) => {
       {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
     </Typography>
   ) : null;
-  const shareButton = user.email ? (
-    <CardActionButtons>
-      <CardActionButton label="Share" onClick={copyLink} />
-    </CardActionButtons>
+  const userButtons = user.email ? (
+    useLink ? (
+      <CardActionButtons>
+        <CardActionButton tag="a" label="Link" href={props.set.details} target="_blank" rel="noopener noreferrer" />
+      </CardActionButtons>
+    ) : (
+      <CardActionButtons>
+        <CardActionButton label="Share" onClick={copyShareLink} />
+      </CardActionButtons>
+    )
   ) : null;
+  const linkIcon =
+    !user.email && useLink
+      ? withTooltip(
+          <CardActionIcon
+            icon="open_in_new"
+            tag="a"
+            href={props.set.details}
+            target="_blank"
+            rel="noopener noreferrer"
+            label={"Link to " + props.title}
+          />,
+          "Link"
+        )
+      : null;
   const shareIcon = !user.email
     ? withTooltip(
         <CardActionIcon
@@ -114,10 +137,10 @@ export const ElementCard = (props: ElementCardProps) => {
               </svg>
             </div>
           )}
-          label={"Link to " + props.title}
-          onClick={copyLink}
+          label={"Copy link to " + props.title}
+          onClick={copyShareLink}
         />,
-        "Link"
+        "Share"
       )
     : null;
   const favoriteIcon = user.email
@@ -225,8 +248,9 @@ export const ElementCard = (props: ElementCardProps) => {
           </div>
         </CardPrimaryAction>
         <CardActions className={classNames({ "hover-button": !user.email })}>
-          {shareButton}
+          {userButtons}
           <CardActionIcons>
+            {linkIcon}
             {shareIcon}
             {favoriteIcon}
             {hiddenIcon}
