@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import { is } from "typescript-is";
 import firebase from "@s/firebase";
 import { queue } from "~/app/snackbarQueue";
@@ -104,8 +103,7 @@ export const paginateUsers = (state = store.getState()) => {
   dispatch(setIndices({ first: firstIndex, last: lastIndex }));
 };
 
-export const setRowsPerPage = (e: ChangeEvent<HTMLInputElement>) => {
-  const val = parseInt(e.target.value);
+export const setRowsPerPage = (val: number) => {
   dispatch(setRowsPerPageFn(val));
   dispatch(setPageFn(1));
   paginateUsers(store.getState());

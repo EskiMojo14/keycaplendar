@@ -1,12 +1,13 @@
+import { HTMLAttributes } from "react";
 import BEMHelper from "@s/common/bemHelper";
-import { HTMLProps } from "@s/common/types";
-import { Button, ButtonProps } from "@rmwc/button";
-import { TagT } from "@rmwc/types";
+import { Button, ButtonHTMLProps, ButtonProps } from "@rmwc/button";
 import "./SegmentedButton.scss";
 
 const bemClasses = new BEMHelper("segmented-button");
 
-type SegmentedButtonProps = HTMLProps & {
+type DivProps = HTMLAttributes<HTMLDivElement>;
+
+type SegmentedButtonProps = DivProps & {
   toggle?: boolean;
 };
 
@@ -19,10 +20,9 @@ export const SegmentedButton = (props: SegmentedButtonProps) => {
   );
 };
 
-type SegmentedButtonSegmentProps = HTMLProps &
-  ButtonProps & {
+type SegmentedButtonSegmentProps = ButtonProps &
+  ButtonHTMLProps & {
     selected?: boolean;
-    tag?: TagT;
   };
 
 export const SegmentedButtonSegment = (props: SegmentedButtonSegmentProps) => {

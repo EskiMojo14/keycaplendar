@@ -327,7 +327,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                             options={Array(3)
                               .fill(rows)
                               .map((number, index) => (number * (index + 1)).toString())}
-                            onChange={setRowsPerPage}
+                            onChange={(e) => setRowsPerPage(parseInt(e.currentTarget.value))}
                             enhanced
                           />
                         </DataTablePaginationRowsPerPage>

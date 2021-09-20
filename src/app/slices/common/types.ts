@@ -1,5 +1,4 @@
 import { allPages, mainPages } from "./constants";
-import type { HTMLAttributes } from "react";
 
 /** Alias for `Record<string, T>`. */
 
@@ -25,10 +24,6 @@ export type Common<A, B> = Pick<
 /** Create a union of all keys in object T which have values of V type. */
 
 export type KeysMatching<T, V> = { [K in keyof T]-?: T[K] extends V ? K : never }[keyof T];
-
-/** Alias for standard HTML props. */
-
-export type HTMLProps = HTMLAttributes<HTMLElement>;
 
 /** Possible page names */
 

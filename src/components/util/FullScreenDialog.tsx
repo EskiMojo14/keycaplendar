@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, HTMLAttributes } from "react";
 import BEMHelper from "@s/common/bemHelper";
-import { HTMLProps } from "@s/common/types";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import "./FullScreenDialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");
 
-type FullScreenDialogProps = HTMLProps & {
+type DivProps = HTMLAttributes<HTMLDivElement>;
+
+type FullScreenDialogProps = DivProps & {
   open: boolean;
   onClose: () => void;
 };
@@ -67,7 +68,7 @@ export const FullScreenDialog = (props: FullScreenDialogProps) => {
   );
 };
 
-export const FullScreenDialogAppBar = (props: HTMLProps) => {
+export const FullScreenDialogAppBar = (props: DivProps) => {
   return (
     <>
       <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: props.className })}>
@@ -78,7 +79,7 @@ export const FullScreenDialogAppBar = (props: HTMLProps) => {
   );
 };
 
-export const FullScreenDialogContent = (props: HTMLProps) => {
+export const FullScreenDialogContent = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "content", extra: props.className })}>
       {props.children}

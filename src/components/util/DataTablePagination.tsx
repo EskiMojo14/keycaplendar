@@ -1,12 +1,14 @@
+import { HTMLAttributes } from "react";
 import BEMHelper from "@s/common/bemHelper";
-import { HTMLProps } from "@s/common/types";
-import { Select, SelectProps } from "@rmwc/select";
-import { IconButton, IconButtonProps } from "@rmwc/icon-button";
+import { Select, SelectHTMLProps, SelectProps } from "@rmwc/select";
+import { IconButton, IconButtonHTMLProps, IconButtonProps } from "@rmwc/icon-button";
 import "./DataTablePagination.scss";
 
 const bemClasses = new BEMHelper("mdc-data-table");
 
-export const DataTablePagination = (props: HTMLProps) => {
+type DivProps = HTMLAttributes<HTMLDivElement>;
+
+export const DataTablePagination = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination", extra: props.className })}>
       {props.children}
@@ -14,7 +16,7 @@ export const DataTablePagination = (props: HTMLProps) => {
   );
 };
 
-export const DataTablePaginationTrailing = (props: HTMLProps) => {
+export const DataTablePaginationTrailing = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination-trailing", extra: props.className })}>
       {props.children}
@@ -22,7 +24,7 @@ export const DataTablePaginationTrailing = (props: HTMLProps) => {
   );
 };
 
-export const DataTablePaginationRowsPerPage = (props: HTMLProps) => {
+export const DataTablePaginationRowsPerPage = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination-rows-per-page", extra: props.className })}>
       {props.children}
@@ -30,7 +32,7 @@ export const DataTablePaginationRowsPerPage = (props: HTMLProps) => {
   );
 };
 
-export const DataTablePaginationRowsPerPageLabel = (props: HTMLProps) => {
+export const DataTablePaginationRowsPerPageLabel = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination-rows-per-page-label", extra: props.className })}>
       {props.children}
@@ -38,7 +40,7 @@ export const DataTablePaginationRowsPerPageLabel = (props: HTMLProps) => {
   );
 };
 
-type DataTablePaginationRowsPerPageSelectProps = HTMLProps & SelectProps;
+type DataTablePaginationRowsPerPageSelectProps = SelectProps & SelectHTMLProps;
 
 export const DataTablePaginationRowsPerPageSelect = (props: DataTablePaginationRowsPerPageSelectProps) => {
   return (
@@ -52,7 +54,7 @@ export const DataTablePaginationRowsPerPageSelect = (props: DataTablePaginationR
   );
 };
 
-export const DataTablePaginationNavigation = (props: HTMLProps) => {
+export const DataTablePaginationNavigation = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination-navigation", extra: props.className })}>
       {props.children}
@@ -60,7 +62,7 @@ export const DataTablePaginationNavigation = (props: HTMLProps) => {
   );
 };
 
-export const DataTablePaginationTotal = (props: HTMLProps) => {
+export const DataTablePaginationTotal = (props: DivProps) => {
   return (
     <div {...props} className={bemClasses({ element: "pagination-total", extra: props.className })}>
       {props.children}
@@ -68,7 +70,7 @@ export const DataTablePaginationTotal = (props: HTMLProps) => {
   );
 };
 
-type DataTablePaginationButtonProps = HTMLProps & IconButtonProps;
+type DataTablePaginationButtonProps = IconButtonProps & IconButtonHTMLProps;
 
 export const DataTablePaginationButton = (props: DataTablePaginationButtonProps) => {
   return (
