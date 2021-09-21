@@ -1,0 +1,5 @@
+@use "graph-colors.module" as graph-colors;
+@use "themes.module" as themes;
+
+$graph-colors: graph-colors.$graph-colors;
+$themes-map: themes.$themes-map;

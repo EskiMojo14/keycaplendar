@@ -31,5 +31,15 @@
   "exclude": [
     "node_modules",
     "build"
-  ]
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "paths": {
+        "gulp": [
+          "./node_modules/@types/gulp"
+        ]
+      }
+    }
+  }
 }
