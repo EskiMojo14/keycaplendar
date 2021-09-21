@@ -109,20 +109,19 @@ export const ElementCard = (props: ElementCardProps) => {
       </CardActionButtons>
     )
   ) : null;
-  const linkIcon =
-    !user.email && useLink
-      ? withTooltip(
-          <CardActionIcon
-            icon="open_in_new"
-            tag="a"
-            href={props.set.details}
-            target="_blank"
-            rel="noopener noreferrer"
-            label={"Link to " + props.title}
-          />,
-          "Link"
-        )
-      : null;
+  const linkIcon = !user.email
+    ? withTooltip(
+        <CardActionIcon
+          icon="open_in_new"
+          tag="a"
+          href={props.set.details}
+          target="_blank"
+          rel="noopener noreferrer"
+          label={"Link to " + props.title}
+        />,
+        "Link"
+      )
+    : null;
   const shareIcon = !user.email
     ? withTooltip(
         <CardActionIcon
