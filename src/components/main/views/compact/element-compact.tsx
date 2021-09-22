@@ -1,6 +1,6 @@
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { selectDevice, selectPage } from "@s/common";
 import { SetType } from "@s/main/types";
 import { iconObject } from "@s/util/functions";

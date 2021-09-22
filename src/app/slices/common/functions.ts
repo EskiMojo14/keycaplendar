@@ -1,13 +1,12 @@
 import { is } from "typescript-is";
-import cloneDeep from "lodash.clonedeep";
 import throttle from "lodash.throttle";
 import { alpha } from "@material-ui/core/styles";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
 import { setAppPage, setDevice, setGraphColors, setOrientation, setThemeMaps } from ".";
-import { blankTheme, blankGraphColors, mainPages, pageTitle, urlPages } from "./constants";
-import { Page, ThemeMap, GraphColors } from "./types";
+import { mainPages, pageTitle, urlPages } from "./constants";
+import { Page, ThemeMap } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -30,9 +29,8 @@ import { setStatisticsTab } from "@s/statistics/functions";
 import { StatsTab } from "@s/statistics/types";
 import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
-import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
-import themesMap from "~/_themes.module.scss";
-import graphMap from "~/_graph-colors.module.scss";
+import { arrayIncludes } from "@s/util/functions";
+import themeVariables from "~/theme-variables.json";
 
 const { dispatch } = store;
 
@@ -97,64 +95,8 @@ export const getTextColourOpacity = (
 ) => alpha(getTextColour(bgColor, themeMap, defaultColor), getTextOpacity(emphasis));
 
 export const saveTheme = () => {
-  const arrayIndicateRegex = /\[(.*)#(.*)\]/;
-  const interpolatedThemeMap = Object.entries(themesMap).reduce<Record<string, ThemeMap>>((prev, [key, val]) => {
-    const [theme, prop] = key.split("|");
-
-    let themeObj = cloneDeep(prev[theme]);
-
-    if (!themeObj) {
-      themeObj = blankTheme;
-    }
-
-    if (arrayIndicateRegex.test(prop)) {
-      const [, propName, indexString] = prop.match(arrayIndicateRegex) || [];
-      if (propName && indexString) {
-        const camelProp = camelise(propName, "-");
-        // SCSS lists start at 1
-        const index = parseInt(indexString) - 1;
-
-        if (hasKey(blankTheme, camelProp) && themeObj[camelProp] instanceof Array) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          themeObj[camelProp][index] = val;
-        }
-      }
-    } else {
-      const value = val === "true" || val === "false" ? val === "true" : val;
-      const camelProp = camelise(prop, "-");
-      if (hasKey(blankTheme, camelProp)) {
-        themeObj = { ...themeObj, [camelProp]: value };
-      }
-    }
-    return { ...prev, [theme]: themeObj };
-  }, {});
-  dispatch(setThemeMaps(interpolatedThemeMap));
-  const interpolatedGraphColors = Object.entries(graphMap).reduce<GraphColors>(
-    (obj, [key, val]) => {
-      const [theme, prop] = key.split("|");
-
-      if (hasKey(obj, theme) && arrayIndicateRegex.test(prop)) {
-        const themeCopy = cloneDeep(obj[theme]);
-        const [, propName, indexString] = prop.match(arrayIndicateRegex) || [];
-        if (propName && indexString) {
-          const camelProp = camelise(propName, "-");
-          // SCSS lists start at 1
-          const index = parseInt(indexString) - 1;
-          if (hasKey(themeCopy, camelProp)) {
-            themeCopy[camelProp][index] = val;
-            return {
-              ...obj,
-              [theme]: themeCopy,
-            };
-          }
-        }
-      }
-      return obj;
-    },
-    { light: blankGraphColors, dark: blankGraphColors }
-  );
-  dispatch(setGraphColors(interpolatedGraphColors));
+  dispatch(setThemeMaps(themeVariables.themesMap));
+  dispatch(setGraphColors(themeVariables.graphColors));
 };
 
 export const checkDevice = () => {
