@@ -1,5 +1,22 @@
 @use "graph-colors.module" as graph-colors;
-@use "themes.module" as themes;
+@use "themes.module" as theme;
 
-$graph-colors: graph-colors.$graph-colors;
-$themes-map: themes.$themes-map;
+@mixin map-to-props($name, $map) {
+  #{"" + $name} {
+    @each $prop, $value in $map {
+      @if type-of($value) == map {
+        @include map-to-props($prop, $value);
+      } @else if type-of($value) == list {
+        @for $i from 1 through length($value) {
+          $c: nth($value, $i);
+          #{"ARRAY-" + $prop + "-INDEX-" + $i}: $c;
+        }
+      } @else {
+        #{inspect($prop)}: #{inspect($value)};
+      }
+    }
+  }
+}
+
+@include map-to-props("graph-colors", graph-colors.$graph-colors);
+@include map-to-props("themes-map", theme.$themes-map);

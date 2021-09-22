@@ -106,14 +106,3 @@ $graph-colors: (
     ),
   ),
 );
-
-:export {
-  @each $theme, $lists in $graph-colors {
-    @each $name, $list in $lists {
-      @for $i from 1 through length($list) {
-        $c: nth($list, $i);
-        #{$theme + "|[" + $name + "#" + $i + "]"}: $c;
-      }
-    }
-  }
-}

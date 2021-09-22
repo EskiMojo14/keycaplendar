@@ -1,1 +1,1 @@
-export { default, task } from "./gulp";
+export { default, exportSCSS } from "./gulp";

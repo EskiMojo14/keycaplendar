@@ -38,6 +38,9 @@
       "paths": {
         "gulp": [
           "./node_modules/@types/gulp"
+        ],
+        "transform-css-to-js": [
+          "./types/transform-css-to-js"
         ]
       }
     }
