@@ -1,7 +1,7 @@
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
 import firebase from "@s/firebase";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import { getSetById } from "@s/main/functions";

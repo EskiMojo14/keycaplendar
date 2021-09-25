@@ -1,4 +1,4 @@
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UpdateId } from "@s/firebase/types";

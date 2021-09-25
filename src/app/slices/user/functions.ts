@@ -2,7 +2,7 @@ import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { is } from "typescript-is";
 import debounce from "lodash.debounce";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";

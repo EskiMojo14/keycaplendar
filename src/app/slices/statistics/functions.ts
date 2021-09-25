@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/util/functions";
 import {
   setStatisticsData,

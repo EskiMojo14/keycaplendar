@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import firebase from "@s/firebase";
 import classNames from "classnames";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
@@ -46,7 +46,7 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import {
   DataTablePagination,
   DataTablePaginationTrailing,
@@ -56,10 +56,10 @@ import {
   DataTablePaginationNavigation,
   DataTablePaginationTotal,
   DataTablePaginationButton,
-} from "@c/util/DataTablePagination";
-import { withTooltip } from "@c/util/HOCs";
-import { UserRow } from "./UserRow";
-import { UserCard } from "./UserCard";
+} from "@c/util/data-table-pagination";
+import { withTooltip } from "@c/util/hocs";
+import { UserRow } from "./user-row";
+import { UserCard } from "./user-card";
 import "./index.scss";
 
 const length = 1000;
