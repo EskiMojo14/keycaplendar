@@ -6,9 +6,9 @@ import { selectDevice } from "@s/common";
 import { Redirect } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import peach from "@m/peach.svg";
-import "./Login.scss";
+import "./login.scss";
 
 export const Login = () => {
   const device = useAppSelector(selectDevice);

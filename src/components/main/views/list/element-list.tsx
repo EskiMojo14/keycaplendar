@@ -8,7 +8,7 @@ import { iconObject, pluralise } from "@s/util/functions";
 import { ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./element-list.scss";
 
 type ElementListProps = {

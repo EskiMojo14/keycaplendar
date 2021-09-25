@@ -50,7 +50,7 @@ import {
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { TimePicker } from "@c/util/pickers/time-picker";
 import { DialogDelete } from "./dialog-delete";

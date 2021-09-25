@@ -20,7 +20,7 @@ import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./modal-detail.scss";
 
 type ModalCreateProps = {

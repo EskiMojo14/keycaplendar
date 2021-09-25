@@ -13,7 +13,7 @@ import { MenuSurface, MenuSurfaceAnchor, MenuSurfaceProps, MenuHTMLProps } from 
 import { TextField, TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { KeyboardTimePicker, KeyboardTimePickerProps } from "@material-ui/pickers";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./pickers.scss";
 
 const parseDigits = (string: string) => (string.match(/\d+/g) || []).join("");

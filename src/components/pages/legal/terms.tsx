@@ -9,7 +9,7 @@ import {
 } from "@rmwc/top-app-bar";
 import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
-import "./Legal.scss";
+import "./legal.scss";
 
 export const TermsOfService = () => {
   return (

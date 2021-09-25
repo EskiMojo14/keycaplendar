@@ -22,7 +22,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./drawer-details.scss";
 
 type DrawerDetailsProps = {

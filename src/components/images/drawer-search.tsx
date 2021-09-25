@@ -17,7 +17,7 @@ import {
   ListItemMeta,
 } from "@rmwc/list";
 import { TextField } from "@rmwc/textfield";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./drawer-search.scss";
 
 type DrawerSearchProps = {

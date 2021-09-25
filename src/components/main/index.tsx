@@ -11,7 +11,7 @@ import { closeModal, openModal } from "@s/util/functions";
 import { Fab } from "@rmwc/fab";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
 import { DrawerDetails } from "./drawer-details";
 import { DrawerFilter } from "./drawer-filter";

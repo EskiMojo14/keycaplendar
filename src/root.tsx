@@ -3,7 +3,7 @@ import { RMWCProvider } from "@rmwc/provider";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
 import { DateTime } from "luxon";
-import App from "./App";
+import App from "./app";
 import store from "~/app/store";
 import { ThemeProvider } from "@c/util/theme-provider";
 

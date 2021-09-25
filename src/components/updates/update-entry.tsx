@@ -10,7 +10,7 @@ import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIc
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./update-entry.scss";
 
 type UpdateEntryProps = {

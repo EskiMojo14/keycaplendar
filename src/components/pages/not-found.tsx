@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import image from "@m/404.svg";
 import "./not-found.scss";
 

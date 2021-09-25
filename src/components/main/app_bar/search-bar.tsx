@@ -8,7 +8,7 @@ import { IconButton } from "@rmwc/icon-button";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Autocomplete, AutocompleteMobile } from "@c/util/Autocomplete";
+import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");

@@ -46,7 +46,7 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import {
   DataTablePagination,
   DataTablePaginationTrailing,
@@ -57,7 +57,7 @@ import {
   DataTablePaginationTotal,
   DataTablePaginationButton,
 } from "@c/util/data-table-pagination";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import { UserRow } from "./user-row";
 import { UserCard } from "./user-card";
 import "./index.scss";

@@ -19,7 +19,7 @@ import {
   CardActionIcons,
   CardActionIcon,
 } from "@rmwc/card";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./element-card.scss";
 
 type ElementCardProps = {

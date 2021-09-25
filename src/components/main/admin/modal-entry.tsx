@@ -37,10 +37,10 @@ import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle
 import { Typography } from "@rmwc/typography";
 import { ImageUpload } from "./image-upload";
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
-import { Autocomplete } from "@c/util/Autocomplete";
+import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./modal-entry.scss";
 
 const getVendorStyle = (provided: DraggableProvided) => {

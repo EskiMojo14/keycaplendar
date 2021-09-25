@@ -50,10 +50,10 @@ import {
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import { DrawerDetails } from "./drawer-details";
 import { DrawerSearch } from "./drawer-search";
 import { DialogDelete } from "./dialog-delete";

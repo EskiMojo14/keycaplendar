@@ -1,9 +1,9 @@
 import { iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import latamkeysLogoImg from "@m/latamkeys_smol.png";
-import "./Footer.scss";
+import "./footer.scss";
 
 export const Footer = () => {
   const cannonkeysLogo = (

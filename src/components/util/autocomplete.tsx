@@ -4,7 +4,7 @@ import classNames from "classnames";
 import BEMHelper from "@s/common/bem-helper";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
-import "./Autocomplete.scss";
+import "./autocomplete.scss";
 
 type AutocompleteProps = HTMLAttributes<HTMLElement> & {
   array: string[];

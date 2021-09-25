@@ -19,7 +19,7 @@ import {
   TopAppBarTitle,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import { MenuView } from "./menu-view";
 import { MenuSort } from "./menu-sort";
 import { SearchBarPersistent, SearchBarModal, SearchAppBar } from "./search-bar";

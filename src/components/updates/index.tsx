@@ -20,7 +20,7 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { UpdateEntry } from "./update-entry";
 import { ModalCreate, ModalEdit } from "@c/updates/admin/modal-entry";
 import { DialogDelete } from "@c/updates/admin/dialog-delete";

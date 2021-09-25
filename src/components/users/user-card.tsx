@@ -26,7 +26,7 @@ import {
 } from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "@c/util/Autocomplete";
+import { Autocomplete } from "@c/util/autocomplete";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 
 type UserCardProps = {

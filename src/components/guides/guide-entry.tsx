@@ -9,7 +9,7 @@ import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIc
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./guide-entry.scss";
 
 type GuideEntryProps = {

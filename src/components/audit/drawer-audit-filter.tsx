@@ -9,7 +9,7 @@ import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./drawer-audit-filter.scss";
 
 type DrawerAuditFilterProps = {

@@ -13,7 +13,7 @@ import {
   ListItemMeta,
 } from "@rmwc/list";
 import { IconButton } from "@rmwc/icon-button";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./element-compact.scss";
 
 type ElementCompactProps = {

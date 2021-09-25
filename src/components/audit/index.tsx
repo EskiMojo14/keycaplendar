@@ -26,9 +26,9 @@ import {
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import { DrawerAuditFilter } from "./drawer-audit-filter";
 import { DialogAuditDelete } from "./dialog-audit-delete";
 import { AuditEntry } from "./audit-entry";

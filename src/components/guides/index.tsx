@@ -23,13 +23,13 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { GuideEntry } from "./guide-entry";
 import { EntriesList } from "./entries-list";
 import { ModalDetail } from "./modal-detail";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { DialogDelete } from "@c/guides/admin/dialog-delete";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
 

@@ -15,7 +15,7 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { Autocomplete } from "@c/util/Autocomplete";
+import { Autocomplete } from "@c/util/autocomplete";
 
 type UserRowProps = {
   delete: (user: UserType) => void;

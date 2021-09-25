@@ -22,9 +22,9 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/Footer";
+import { Footer } from "@c/common/footer";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import { StatusCard } from "./pie-card";
 import { TableCard } from "./table-card";
 import { ShippedCard, TimelinesCard } from "./timeline-card";

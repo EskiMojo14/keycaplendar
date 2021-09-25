@@ -29,7 +29,7 @@ import {
   DataTableCell,
 } from "@rmwc/data-table";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./timeline-card.scss";
 
 const customPoint = (data: any) => {

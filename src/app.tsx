@@ -15,11 +15,11 @@ import { getUserPreferences } from "@s/user/functions";
 import { queue } from "~/app/snackbar-queue";
 import { Portal } from "@rmwc/base";
 import { SnackbarQueue } from "@rmwc/snackbar";
-import { Content } from "@c/Content";
-import { Login } from "@c/pages/Login";
+import { Content } from "@c/content";
+import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
-import { PrivacyPolicy } from "@c/pages/legal/Privacy";
-import { TermsOfService } from "@c/pages/legal/Terms";
+import { PrivacyPolicy } from "@c/pages/legal/privacy";
+import { TermsOfService } from "@c/pages/legal/terms";
 import { SnackbarCookies } from "@c/common/snackbar-cookies";
 import "./App.scss";
 

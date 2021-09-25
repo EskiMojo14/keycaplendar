@@ -16,7 +16,7 @@ import {
 import { IconButton } from "@rmwc/icon-button";
 import { Ripple } from "@rmwc/ripple";
 import { Typography } from "@rmwc/typography";
-import { withTooltip } from "@c/util/HOCs";
+import { withTooltip } from "@c/util/hocs";
 import "./element-image.scss";
 
 type ElementImageProps = {
