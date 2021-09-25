@@ -21,7 +21,7 @@ import { NotFound } from "@c/pages/not-found";
 import { PrivacyPolicy } from "@c/pages/legal/privacy";
 import { TermsOfService } from "@c/pages/legal/terms";
 import { SnackbarCookies } from "@c/common/snackbar-cookies";
-import "./App.scss";
+import "./app.scss";
 
 export const App = () => {
   const dispatch = useAppDispatch();
