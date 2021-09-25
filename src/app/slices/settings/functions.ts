@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { typedFirestore } from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
 import { ViewType } from "./types";

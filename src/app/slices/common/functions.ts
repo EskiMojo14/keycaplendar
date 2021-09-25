@@ -2,7 +2,7 @@ import { is } from "typescript-is";
 import throttle from "lodash.throttle";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
 import { Page, ThemeMap } from "./types";

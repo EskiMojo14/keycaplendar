@@ -12,15 +12,15 @@ import { setUser, setUserPresets, setFavorites, setHidden, setShareName } from "
 import { selectCookies, selectSettings } from "@s/settings";
 import { checkStorage, acceptCookies, clearCookies, checkTheme } from "@s/settings/functions";
 import { getUserPreferences } from "@s/user/functions";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { Portal } from "@rmwc/base";
 import { SnackbarQueue } from "@rmwc/snackbar";
 import { Content } from "@c/Content";
 import { Login } from "@c/pages/Login";
-import { NotFound } from "@c/pages/NotFound";
+import { NotFound } from "@c/pages/not-found";
 import { PrivacyPolicy } from "@c/pages/legal/Privacy";
 import { TermsOfService } from "@c/pages/legal/Terms";
-import { SnackbarCookies } from "@c/common/SnackbarCookies";
+import { SnackbarCookies } from "@c/common/snackbar-cookies";
 import "./App.scss";
 
 export const App = () => {

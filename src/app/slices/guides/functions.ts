@@ -1,5 +1,5 @@
 import firebase from "@s/firebase";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { alphabeticalSort, alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { setAllTags, setEntries, setLoading } from ".";

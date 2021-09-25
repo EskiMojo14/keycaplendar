@@ -7,7 +7,7 @@ import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import { DrawerAppContent } from "@rmwc/drawer";
-import { DrawerNav } from "@c/common/DrawerNav";
+import { DrawerNav } from "@c/common/drawer-nav";
 import { ContentAudit } from "@c/audit";
 import { ContentGuides } from "@c/guides";
 import { ContentHistory } from "@c/history";

@@ -5,7 +5,7 @@ import LuxonUtils from "@date-io/luxon";
 import { DateTime } from "luxon";
 import App from "./App";
 import store from "~/app/store";
-import { ThemeProvider } from "@c/util/ThemeProvider";
+import { ThemeProvider } from "@c/util/theme-provider";
 
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {

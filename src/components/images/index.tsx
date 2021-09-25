@@ -25,7 +25,7 @@ import { ImageType } from "@s/images/types";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/util/functions";
-import { queue } from "~/app/snackbarQueue";
+import { queue } from "~/app/snackbar-queue";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { DrawerAppContent } from "@rmwc/drawer";
@@ -51,12 +51,12 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "@c/common/Footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
-import { ConditionalWrapper } from "@c/util/ConditionalWrapper";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/HOCs";
-import { DrawerDetails } from "./DrawerDetails";
-import { DrawerSearch } from "./DrawerSearch";
-import { DialogDelete } from "./DialogDelete";
+import { DrawerDetails } from "./drawer-details";
+import { DrawerSearch } from "./drawer-search";
+import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 
 const storage = firebase.storage();

@@ -23,12 +23,12 @@ import {
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import { Footer } from "@c/common/Footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/SegmentedButton";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/HOCs";
-import { StatusCard } from "./PieCard";
-import { TableCard } from "./TableCard";
-import { ShippedCard, TimelinesCard } from "./TimelineCard";
-import { DialogStatistics } from "./DialogStatistics";
+import { StatusCard } from "./pie-card";
+import { TableCard } from "./table-card";
+import { ShippedCard, TimelinesCard } from "./timeline-card";
+import { DialogStatistics } from "./dialog-statistics";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);

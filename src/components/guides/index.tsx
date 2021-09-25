@@ -24,11 +24,11 @@ import {
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Footer } from "@c/common/Footer";
-import { GuideEntry } from "./GuideEntry";
-import { EntriesList } from "./EntriesList";
-import { ModalDetail } from "./ModalDetail";
-import { ModalCreate, ModalEdit } from "@c/guides/admin/ModalEntry";
-import { DialogDelete } from "@c/guides/admin/DialogDelete";
+import { GuideEntry } from "./guide-entry";
+import { EntriesList } from "./entries-list";
+import { ModalDetail } from "./modal-detail";
+import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
+import { DialogDelete } from "@c/guides/admin/dialog-delete";
 import { withTooltip } from "@c/util/HOCs";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
