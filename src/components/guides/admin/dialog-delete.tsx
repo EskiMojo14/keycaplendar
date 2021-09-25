@@ -1,4 +1,3 @@
-
 import { queue } from "~/app/snackbar-queue";
 import { typedFirestore } from "@s/firebase/firestore";
 import { GuideId } from "@s/firebase/types";

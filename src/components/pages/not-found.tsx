@@ -3,8 +3,8 @@ import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc
 import { Typography } from "@rmwc/typography";
 import { Button } from "@rmwc/button";
 import { Footer } from "@c/common/footer";
-import "./not-found.scss";
 import image from "@m/404.svg";
+import "./not-found.scss";
 
 export const NotFound = () => (
   <div className="not-found-page-container">
