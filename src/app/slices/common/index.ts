@@ -1,4 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { camelise } from "@s/util/functions";
 import type { RootState } from "~/app/store";
 import { Page, ThemeMap, GraphColors } from "./types";
 
@@ -68,7 +69,7 @@ export const selectThemesMap = (state: RootState) => state.common.themeMaps;
 
 export const selectCurrentThemeMap = createSelector(
   [selectTheme, selectThemesMap],
-  (theme, themesMap) => themesMap[theme] as ThemeMap | undefined
+  (theme, themesMap) => themesMap[camelise(theme, "-")] as ThemeMap | undefined
 );
 
 export const selectGraphColors = (state: RootState) => state.common.graphColors;
