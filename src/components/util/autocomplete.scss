@@ -42,22 +42,20 @@
       display: inline;
     }
   }
-}
 
-.bottom-nav .autocomplete-mobile {
-  top: calc(-100vh + #{top-app-bar.$row-height});
-}
-
-@media (max-width: top-app-bar.$mobile-breakpoint) {
-  .autocomplete-mobile,
-  .bottom-nav .search-app-bar .autocomplete-mobile {
+  @media (max-width: top-app-bar.$mobile-breakpoint) {
     top: top-app-bar.$mobile-row-height;
     &--open {
       min-height: calc(100vh - #{top-app-bar.$mobile-row-height});
       max-height: calc(100vh - #{top-app-bar.$mobile-row-height});
     }
   }
-  .bottom-nav .autocomplete-mobile {
+}
+
+.bottom-nav .autocomplete-mobile {
+  top: calc(-100vh + #{top-app-bar.$row-height});
+
+  @media (max-width: top-app-bar.$mobile-breakpoint) {
     top: calc(-100vh + #{top-app-bar.$mobile-row-height});
   }
 }

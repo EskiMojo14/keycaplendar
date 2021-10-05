@@ -318,7 +318,10 @@ export const ContentImages = (props: ContentImagesProps) => {
             condition={device === "desktop"}
             wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
           >
-            <div className="image-grid">
+            <div
+              className="image-grid"
+              style={{ "--aspect-ratio": hasKey(aspectRatios, currentFolder) ? aspectRatios[currentFolder] : 1 }}
+            >
               {display.map((obj) =>
                 obj.array.length > 0 ? (
                   <div className="display-container" key={obj.title}>
@@ -337,13 +340,7 @@ export const ContentImages = (props: ContentImagesProps) => {
                             <ImageListItem className={classNames({ selected: image === detailImage })}>
                               <div className="container">
                                 <div className="item-container" onClick={() => openDetails(image)}>
-                                  <ImageListImageAspectContainer
-                                    style={{
-                                      paddingBottom: hasKey(aspectRatios, currentFolder)
-                                        ? "calc(100% /" + aspectRatios[currentFolder] + ")"
-                                        : undefined,
-                                    }}
-                                  >
+                                  <ImageListImageAspectContainer>
                                     <LazyLoad debounce={false} offsetVertical={480}>
                                       <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
                                     </LazyLoad>

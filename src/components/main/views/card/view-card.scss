@@ -2,54 +2,44 @@
   display: grid;
   grid-gap: 16px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-}
 
-@media (min-width: 1240px) and (max-width: 1499px) {
-  .group-container {
+  @media (min-width: 1240px) and (max-width: 1499px) {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-}
-
-@media (min-width: 840px) and (max-width: 1239px) {
-  .group-container {
+  @media (min-width: 840px) and (max-width: 1239px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-@media (min-width: 600px) and (max-width: 839px) {
-  .group-container {
+  @media (min-width: 600px) and (max-width: 839px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@media (max-width: 599px) {
-  .group-container {
+  @media (max-width: 599px) {
     grid-template-columns: repeat(1, minmax(0, 1fr));
     grid-gap: var(--mdc-layout-grid-gutter-mobile, 16px);
   }
-}
 
-// side sheet open
+  // side sheet open
 
-@media (min-width: 840px) and (max-width: 999px) {
-  .drawer-open .group-container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (min-width: 840px) and (max-width: 999px) {
+    .drawer-open & {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
-}
 
-@media (min-width: 1000px) and (max-width: 1139px) {
-  .drawer-open .group-container {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  @media (min-width: 1000px) and (max-width: 1139px) {
+    .drawer-open & {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
-}
 
-// nav drawer open
+  // nav drawer open
 
-@media (min-width: 1240px) and (max-width: 1699px) {
-  .nav.mdc-drawer--open + .mdc-drawer-app-content .group-container {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .nav.mdc-drawer--open + .mdc-drawer-app-content.drawer-open .group-container {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  @media (min-width: 1240px) and (max-width: 1699px) {
+    .nav.mdc-drawer--open + .mdc-drawer-app-content & {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .nav.mdc-drawer--open + .mdc-drawer-app-content.drawer-open & {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 }

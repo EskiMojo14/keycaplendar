@@ -18,6 +18,19 @@
       }
     }
   }
+
+  @media (min-width: 1240px) {
+    &:hover {
+      .live-indicator,
+      .ship-indicator {
+        animation: animation.standard(fade-out, 150ms) forwards;
+      }
+      .share-icon .mdc-icon-button {
+        animation: animation.standard(fade-in-scale, 150ms) forwards;
+      }
+    }
+  }
+
   .time-indicator {
     display: inline-flex;
     align-items: center;
@@ -50,18 +63,6 @@
     padding: 0 6px;
     .mdc-icon-button {
       animation: animation.standard(fade-out, 150ms) forwards;
-    }
-  }
-}
-
-@media (min-width: 1240px) {
-  .list .mdc-list .mdc-list-item:hover {
-    .live-indicator,
-    .ship-indicator {
-      animation: animation.standard(fade-out, 150ms) forwards;
-    }
-    .share-icon .mdc-icon-button {
-      animation: animation.standard(fade-in-scale, 150ms) forwards;
     }
   }
 }
