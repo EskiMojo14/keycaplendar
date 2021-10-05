@@ -328,9 +328,7 @@ body {
   }
   .content-container &.mdc-drawer--dismissible {
     height: calc(100% - #{top-app-bar.$row-height});
-  }
-  @media (max-width: top-app-bar.$mobile-breakpoint) {
-    .content-container &.mdc-drawer--dismissible {
+    @media (max-width: top-app-bar.$mobile-breakpoint) {
       height: calc(100% - #{top-app-bar.$mobile-row-height});
     }
   }
@@ -476,6 +474,11 @@ body {
       margin-left: -6px;
       border-width: 6px 6px 0;
     }
+
+    @media (min-width: 768px) {
+      padding: 0.33rem 0.5rem;
+      min-height: 1.5rem;
+    }
   }
   &--discrete.mdc-slider--active {
     .mdc-slider__pin {
@@ -484,12 +487,6 @@ body {
   }
 }
 
-@media (min-width: 768px) {
-  .mdc-slider__pin {
-    padding: 0.33rem 0.5rem;
-    min-height: 1.5rem;
-  }
-}
 .mdc-chip {
   &[disabled] {
     cursor: default;

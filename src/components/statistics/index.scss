@@ -102,16 +102,12 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
       grid-column: span 2;
     }
   }
-}
 
-@media (min-width: 2400px) {
-  .stats-grid {
+  @media (min-width: 2400px) {
     grid-template-columns: repeat(8, 1fr);
   }
-}
 
-@media (max-width: 1199px) {
-  .stats-grid {
+  @media (max-width: 1199px) {
     grid-template-columns: repeat(3, 1fr);
     &-item {
       &.full-span {
@@ -122,10 +118,8 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
       }
     }
   }
-}
 
-@media (max-width: 1239px) {
-  .stats-grid {
+  @media (max-width: 1239px) {
     grid-template-columns: repeat(2, 1fr);
     &-item {
       &.full-span,
@@ -134,10 +128,8 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
       }
     }
   }
-}
 
-@media (max-width: 599px) {
-  .stats-grid {
+  @media (max-width: 599px) {
     grid-template-columns: repeat(1, 1fr);
     &-item {
       &.full-span,

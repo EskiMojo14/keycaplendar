@@ -9,16 +9,13 @@
       box-sizing: border-box;
     }
   }
-}
+  .mdc-dialog__surface {
+    @media (min-width: 592px) {
+      max-width: calc(100vw - 32px);
+    }
 
-@media (min-width: 592px) {
-  .sales-dialog.mdc-dialog .mdc-dialog__surface {
-    max-width: calc(100vw - 32px);
-  }
-}
-
-@media (min-width: 752px) {
-  .sales-dialog.mdc-dialog .mdc-dialog__surface {
-    max-width: 720px;
+    @media (min-width: 752px) {
+      max-width: 720px;
+    }
   }
 }

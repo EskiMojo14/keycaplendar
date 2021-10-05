@@ -22,8 +22,20 @@
   display: none;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1240px) {
   .outer-container:nth-last-child(2) .view-list .mdc-list-divider {
+    display: none;
+  }
+}
+
+@media (min-width: 1800px) {
+  .outer-container:nth-last-child(3) .view-list .mdc-list-divider {
+    display: none;
+  }
+}
+
+@media (min-width: 2200px) {
+  .outer-container:nth-last-child(4) .view-list .mdc-list-divider {
     display: none;
   }
 }

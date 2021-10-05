@@ -13,6 +13,10 @@
   .image {
     height: 240px;
     width: 240px;
+    @media (max-width: top-app-bar.$mobile-breakpoint) {
+      height: 192px;
+      width: 192px;
+    }
   }
   .title {
     margin-top: 0;
@@ -26,14 +30,5 @@
   }
   .mdc-button {
     margin-top: 8px;
-  }
-}
-
-@media (max-width: top-app-bar.$mobile-breakpoint) {
-  .empty-container {
-    .image {
-      height: 192px;
-      width: 192px;
-    }
   }
 }

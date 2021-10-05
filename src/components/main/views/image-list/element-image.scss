@@ -134,52 +134,46 @@
       filter: grayscale(100%);
     }
   }
-}
 
-@media (min-width: 1240px) {
-  .outer-container .mdc-image-list__item:hover .container {
-    .link-icon {
-      animation: animation.standard(fade-in-scale, 150ms) forwards;
-      &-container::before {
-        opacity: 1;
+  @media (min-width: 1240px) {
+    &:hover .container {
+      .link-icon {
+        animation: animation.standard(fade-in-scale, 150ms) forwards;
+        &-container::before {
+          opacity: 1;
+        }
       }
     }
   }
-}
 
-@media (min-width: 940px) and (max-width: 1399px) {
-  .outer-container .mdc-image-list__item {
+  @media (min-width: 940px) and (max-width: 1399px) {
     width: calc((100% * 1 / 4) - 4px);
   }
-}
 
-@media (min-width: 600px) and (max-width: 939px) {
-  .outer-container .mdc-image-list__item {
+  @media (min-width: 600px) and (max-width: 939px) {
     width: calc((100% * 1 / 3) - 4px);
   }
-}
 
-@media (max-width: 599px) {
-  .outer-container .mdc-image-list__item {
+  @media (max-width: 599px) {
     width: calc((100% * 1 / 2) - 4px);
   }
-}
 
-// side sheet open
+  // side sheet open
 
-@media (min-width: 1240px) and (max-width: 1499px) {
-  .drawer-open .outer-container .mdc-image-list__item {
-    width: calc((100% * 1 / 4) - 4px);
+  @media (min-width: 1240px) and (max-width: 1499px) {
+    .drawer-open & {
+      width: calc((100% * 1 / 4) - 4px);
+    }
   }
-}
 
-// nav drawer open
+  // nav drawer open
 
-@media (min-width: 1240px) and (max-width: 1599px) {
-  .nav.mdc-drawer--open + .mdc-drawer-app-content .outer-container .mdc-image-list__item {
-    width: calc((100% * 1 / 3) - 4px);
-  }
-  .nav.mdc-drawer--open + .mdc-drawer-app-content.drawer-open .outer-container .mdc-image-list__item {
-    width: calc((100% * 1 / 2) - 4px);
+  @media (min-width: 1240px) and (max-width: 1599px) {
+    .nav.mdc-drawer--open + .mdc-drawer-app-content & {
+      width: calc((100% * 1 / 3) - 4px);
+    }
+    .nav.mdc-drawer--open + .mdc-drawer-app-content.drawer-open & {
+      width: calc((100% * 1 / 2) - 4px);
+    }
   }
 }

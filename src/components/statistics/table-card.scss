@@ -78,22 +78,16 @@
       min-height: 320px;
     }
   }
-}
 
-@media (max-width: 1199px) {
-  .stats-tab .mdc-card.table-card {
+  @media (max-width: 1199px) {
     grid-column: span 3;
   }
-}
 
-@media (max-width: 1239px) {
-  .stats-tab .mdc-card.table-card {
+  @media (max-width: 1239px) {
     grid-column: span 2;
   }
-}
 
-@media (max-width: 599px) {
-  .stats-tab .mdc-card.table-card {
+  @media (max-width: 599px) {
     grid-column: span 1;
   }
 }

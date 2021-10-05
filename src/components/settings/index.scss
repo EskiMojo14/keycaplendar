@@ -203,10 +203,8 @@
       }
     }
   }
-}
 
-@media (max-width: 599px) {
-  .settings-container {
+  @media (max-width: 599px) {
     padding: 0;
     .settings {
       &-group {

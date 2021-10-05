@@ -101,10 +101,8 @@
       }
     }
   }
-}
 
-@media (min-width: 1240px) {
-  .card-container .mdc-card {
+  @media (min-width: 1240px) {
     .hover-button {
       position: absolute;
       z-index: 3;
@@ -143,10 +141,8 @@
       }
     }
   }
-}
 
-@media (max-width: 599px) {
-  .card-container .mdc-card {
+  @media (max-width: 599px) {
     &__primary-action {
       flex-direction: row;
       align-items: center;
