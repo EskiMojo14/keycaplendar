@@ -19,6 +19,9 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
   max-width: 2400px;
   width: 100%;
   box-sizing: border-box;
+  &--padded {
+    padding: 16px;
+  }
   .mdc-card {
     grid-column: span 1;
     padding: 16px;
@@ -35,10 +38,6 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
     }
     .graph-container {
       max-width: 100%;
-      overflow: auto;
-      .ct-chart {
-        min-width: 680px;
-      }
     }
     &.profile-graph {
       display: flex;
@@ -80,10 +79,6 @@ $tabs: summary, timelines, calendar, status, shipped, duration, vendors;
           flex-grow: 1;
         }
       }
-    }
-    &.fullwidth {
-      padding: 0;
-      overflow: hidden;
     }
   }
 }

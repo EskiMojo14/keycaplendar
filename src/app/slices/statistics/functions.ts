@@ -1,6 +1,7 @@
 import { DateTime, Interval } from "luxon";
 import firebase from "@s/firebase";
 import cloneDeep from "lodash.clonedeep";
+import { Datum, Serie } from "@nivo/line";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
 import {
@@ -180,11 +181,16 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
                     const monthsData = hydrateTimelinesData(summaryMonths, months, profiles);
                     return {
                       ...dataObj,
-                      profiles: dataObj.name,
+                      profiles: [dataObj.name],
                       months: monthsData,
-                      monthsLine: profiles.map((key) =>
-                        barDataToLineData(monthsData, key, "month", key as keyof typeof monthsData[number])
-                      ),
+                      monthsLine: [
+                        barDataToLineData(
+                          monthsData,
+                          dataObj.name,
+                          "month",
+                          dataObj.name as keyof typeof monthsData[number]
+                        ),
+                      ],
                     };
                   }
                 }
@@ -547,3 +553,35 @@ export const filterLabels = <T extends string | number>(
   }
   return true;
 };
+
+/**
+ * Gets the maximum Y value from a set of line data, so charts can line up.
+ * @param stacked Whether the chart is stacked
+ * @param seriesArray Series data to use
+ * @returns Maximum Y value.
+ */
+
+export const getMaxYValFromLineData = (stacked: boolean, ...seriesArray: Serie[][]) =>
+  stacked
+    ? Math.max(
+        ...seriesArray.map((seriesSet) =>
+          Math.max(
+            ...Object.values(
+              seriesSet
+                .reduce<Datum[]>((prev, series) => prev.concat(series.data), [])
+                .reduce<Record<string, number>>(
+                  (prev, { x, y }) => ({ ...prev, [`${x}`]: (prev[`${x}`] || 0) + parseInt(`${y ?? 0}`) }),
+                  {}
+                )
+            )
+          )
+        )
+      )
+    : Math.max(
+        ...seriesArray.map((seriesSet) =>
+          seriesSet.reduce<number>(
+            (prev, series) => Math.max(prev, ...series.data.map(({ y }) => parseInt(`${y ?? 0}`))),
+            0
+          )
+        )
+      );

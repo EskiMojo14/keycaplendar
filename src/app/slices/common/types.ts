@@ -1,3 +1,4 @@
+import { KeysMatching } from "@s/util/types";
 import { allPages, mainPages } from "./constants";
 
 /** Possible page names */
@@ -43,6 +44,8 @@ export type ThemeMap = {
   secondaryGradient: string[];
   elevatedSurface: string[];
 };
+
+export type ThemeColorName = KeysMatching<ThemeMap, string>;
 
 export type GraphColors = Record<
   "light" | "dark",

@@ -1,10 +1,24 @@
+@use "~/util";
 @use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 
 .timeline-card {
+  .halves-container {
+    display: flex;
+    .half-container {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      &:first-child {
+        @include rtl.reflexive-property(padding, 0, 16px);
+      }
+      &:last-child {
+        @include rtl.reflexive-property(padding, 16px, 0);
+      }
+    }
+  }
   .title-container {
     display: flex;
-    align-items: flex-start;
     .text-container {
       flex-grow: 1;
       .mdc-typography--overline {
@@ -34,7 +48,7 @@
     flex-direction: column;
     .timeline-chart-container {
       box-sizing: border-box;
-      padding-top: 1 / 4 * 100%;
+      padding-top: 1 / 2 * 100%;
       position: relative;
       > div {
         position: absolute;
@@ -42,8 +56,6 @@
         > div {
           height: 100%;
         }
-      }
-      &-container {
       }
     }
     .table-container {
@@ -80,12 +92,5 @@
     .note {
       margin: 8px 0 0;
     }
-  }
-}
-
-.timeline-card.full-span {
-  .timeline-chart-container {
-    min-width: 1280px;
-    min-height: 320px;
   }
 }

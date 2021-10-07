@@ -10,8 +10,8 @@ import { selectBottomNav } from "@s/settings";
 import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
-import { StatisticsType, TimelinesDataObject } from "@s/statistics/types";
-import { capitalise, hasKey, iconObject, typeGuard, useBoolStates } from "@s/util/functions";
+import { StatisticsType } from "@s/statistics/types";
+import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
 import { VirtuosoGrid } from "react-virtuoso";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -399,7 +399,6 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
               months={statisticsData.timelines[settings.summary].months}
               chartKeys={["summary"]}
               category={settings.summary}
-              selectable
               singleTheme="secondary"
               note="Based on the data included in KeycapLendar. Earlier data will be less representative, as not all sets are
             included. KeycapLendar began tracking GBs in June 2019, and began tracking ICs in December 2019."
@@ -408,11 +407,9 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
           <div className="stats-grid-item full-span">
             <TimelinesSummaryCard
               overline="Timelines"
-              allProfiles={statisticsData.timelines[settings.summary].allProfiles}
               chartKeys={statisticsData.timelines[settings.summary].allProfiles}
               months={statisticsData.timelines[settings.summary].months}
               data={statisticsData.timelines[settings.summary].summary}
-              filterable
               category={settings.summary}
             />
           </div>
@@ -469,37 +466,19 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
         </div>
       ),
       timelines: (
-        <div className="stats-tab timelines" key={key}>
-          <VirtuosoGrid
-            useWindowScroll
-            totalCount={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].length}
-            listClassName="stats-grid"
-            itemClassName="stats-grid-item full-span"
-            itemContent={(index) => {
-              const data = statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup][index];
-              return settings.timelinesGroup === "profile" ? (
-                <TimelinesCard
-                  key={data.name}
-                  data={data}
-                  chartKeys={[data.name]}
-                  months={statisticsData.timelines[settings.timelinesCat].months}
-                  category={settings.timelinesCat}
-                  singleTheme="primary"
-                />
-              ) : typeGuard<TimelinesDataObject>(data, () => !(settings.timelinesGroup === "profile")) ? (
-                <TimelinesCard
-                  key={data.name}
-                  data={data}
-                  chartKeys={statisticsData.timelines[settings.timelinesCat].allProfiles}
-                  months={statisticsData.timelines[settings.timelinesCat].months}
-                  filterable
-                  category={settings.timelinesCat}
-                  allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
-                />
-              ) : null;
-            }}
-            overscan={1000}
-          />
+        <div className="stats-tab stats-tab--padded timelines" key={key}>
+          {settings.timelinesGroup === "profile" ? (
+            <TimelinesCard
+              data={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup]}
+              months={statisticsData.timelines[settings.timelinesCat].months}
+              singleTheme="primary"
+            />
+          ) : (
+            <TimelinesCard
+              data={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup]}
+              months={statisticsData.timelines[settings.timelinesCat].months}
+            />
+          )}
         </div>
       ),
       calendar: (
