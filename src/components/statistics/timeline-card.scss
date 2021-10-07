@@ -15,6 +15,9 @@
       &:last-child {
         @include rtl.reflexive-property(padding, 16px, 0);
       }
+      .timeline-container .timeline-chart-container {
+        padding-top: 1 / 2 * 100%;
+      }
     }
   }
   .title-container {
@@ -48,7 +51,7 @@
     flex-direction: column;
     .timeline-chart-container {
       box-sizing: border-box;
-      padding-top: 1 / 2 * 100%;
+      padding-top: 1 / 4 * 100%;
       position: relative;
       > div {
         position: absolute;
