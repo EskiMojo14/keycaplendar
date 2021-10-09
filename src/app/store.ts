@@ -53,3 +53,11 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
+
+declare global {
+  interface Window {
+    store: typeof store;
+  }
+}
+
+window.store = store;
