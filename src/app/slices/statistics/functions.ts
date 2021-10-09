@@ -121,7 +121,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       const object = data.find(({ index }) => index === monthIndex);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { index = 0, ...foundObject } =
-        typeof object?.index === "number" ? object : data.length === 1 ? data[0] : {};
+        typeof object?.index === "number" ? object : data.length === 1 && !hasKey(data[0], "index") ? data[0] : {};
       return { ...blankObject, ...foundObject };
     });
 
