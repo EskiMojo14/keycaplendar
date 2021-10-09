@@ -39,6 +39,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-butto
 import { withTooltip } from "@c/util/hocs";
 import { NivoThemeContext } from "@c/util/theme-provider";
 import "./timeline-card.scss";
+import { alpha } from "@material-ui/core";
 
 type ShippedCardProps = {
   data: ShippedDataObject;
@@ -415,6 +416,7 @@ export type TimelinesCardProps = {
   data: TimelinesDataObject[];
   months: string[];
   singleTheme?: ThemeColorName;
+  allProfiles?: string[];
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const blankTimelinesDataObject: TimelinesDataObject = {
@@ -425,7 +427,7 @@ const blankTimelinesDataObject: TimelinesDataObject = {
   monthsLine: [],
 };
 
-export const TimelinesCard = ({ data, months, singleTheme, ...props }: TimelinesCardProps) => {
+export const TimelinesCard = ({ data, months, singleTheme, allProfiles, ...props }: TimelinesCardProps) => {
   const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
   const currentTheme = useAppSelector(selectCurrentThemeMap);
@@ -447,6 +449,11 @@ export const TimelinesCard = ({ data, months, singleTheme, ...props }: Timelines
     setSelectedA(data[0]?.name || "");
     setSelectedB(data[1]?.name || "");
   }, [data]);
+
+  const getProfileColour = (profile: string, index = 0) =>
+    (allProfiles?.indexOf(profile) ?? -1) >= 0
+      ? alpha(graphColors[(allProfiles?.indexOf(profile) || 0) % graphColors.length], 1)
+      : alpha(graphColors[index % graphColors.length], 1);
 
   const {
     barLine: {
@@ -485,7 +492,7 @@ export const TimelinesCard = ({ data, months, singleTheme, ...props }: Timelines
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme && theme ? [currentTheme[theme]] : graphColors || undefined}
+        colors={currentTheme && theme ? [currentTheme[theme]] : (d) => getProfileColour(`${d.id}`, d.index)}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
@@ -515,7 +522,7 @@ export const TimelinesCard = ({ data, months, singleTheme, ...props }: Timelines
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme && theme ? [currentTheme[theme]] : graphColors ? graphColors : undefined}
+        colors={currentTheme && theme ? [currentTheme[theme]] : (d) => getProfileColour(`${d.id}`, d.index)}
         tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
@@ -529,8 +536,8 @@ export const TimelinesCard = ({ data, months, singleTheme, ...props }: Timelines
           legendPosition: "middle",
           tickValues: labels,
         }}
-        useMesh={!stackedGraph || data.monthsLine.length <= 1}
-        enableSlices={stackedGraph && data.monthsLine.length > 1 ? "x" : undefined}
+        useMesh={!stackedGraph || !!theme}
+        enableSlices={stackedGraph && !theme ? "x" : undefined}
         sliceTooltip={SliceTooltip}
         isInteractive
       />

@@ -477,6 +477,7 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             <TimelinesCard
               data={statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup]}
               months={statisticsData.timelines[settings.timelinesCat].months}
+              allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
             />
           )}
         </div>

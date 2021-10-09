@@ -194,7 +194,7 @@ export const initialState: StatisticsState = {
     barLine: {
       timelines: {
         stacked: true,
-        type: "bar",
+        type: "line",
       },
       shipped: {
         stacked: true,
