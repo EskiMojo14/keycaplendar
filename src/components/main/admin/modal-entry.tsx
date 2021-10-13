@@ -1,4 +1,4 @@
-import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
+import { useEffect, useState, FocusEvent, ChangeEvent, useReducer } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
@@ -71,7 +71,7 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   (!obj.endDate || !invalidDate(obj.endDate, false));
 
 export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
-  hasKey(obj, "img") && (!obj.img || new RegExp(validLink).test(obj.img)) && hasKey(obj, "thirdParty");
+  hasKey(obj, "salesImg") && (!obj.img || new RegExp(validLink).test(obj.salesImg)) && hasKey(obj, "salesThirdParty");
 
 type ModalCreateProps = {
   close: () => void;
@@ -88,7 +88,25 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const allVendors = useAppSelector(selectAllVendors);
   const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
-  const [fields, setFields] = useState({
+  const initialState: {
+    profile: string;
+    colorway: string;
+    designer: string[];
+    icDate: string;
+    details: string;
+    notes: string;
+    gbMonth: boolean;
+    gbLaunch: string;
+    gbEnd: string;
+    shipped: boolean;
+    vendors: VendorType[];
+    salesImg: string;
+    salesThirdParty: boolean;
+    salesImageLoaded: boolean;
+    image: Blob | File | null;
+    imageUploadProgress: number;
+    imageURL: string;
+  } = {
     profile: "",
     colorway: "",
     designer: [""],
@@ -99,20 +117,42 @@ export const ModalCreate = (props: ModalCreateProps) => {
     gbLaunch: "",
     gbEnd: "",
     shipped: false,
-  });
-
-  const [vendors, setVendors] = useState<VendorType[]>([]);
-
-  const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
-
-  const [imageInfo, setImageInfo] = useState<{
-    image: Blob | File | null;
-    imageUploadProgress: number;
-    imageURL: string;
-  }>({
+    vendors: [],
+    salesImg: "",
+    salesThirdParty: false,
+    salesImageLoaded: false,
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
+  };
+
+  const [state, dispatch] = useReducer(
+    <T extends typeof initialState, K extends keyof T>(
+      state: T,
+      action: { type: "key"; key: K; payload: T[K] } | { type: "reset" }
+    ) => {
+      switch (action.type) {
+        case "key":
+          return {
+            ...state,
+            [action.key]: action.payload,
+          };
+        case "reset":
+          return initialState;
+        default:
+          return state;
+      }
+    },
+    initialState
+  );
+
+  const dispatchKey = <T extends typeof initialState, K extends keyof T>(
+    key: K,
+    payload: T[K]
+  ): { type: "key"; key: K; payload: T[K] } => ({
+    type: "key",
+    key,
+    payload,
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -122,42 +162,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   useEffect(() => {
     if (!user.isEditor && user.isDesigner) {
-      setFields((fields) => {
-        return { ...fields, designer: [user.nickname] };
-      });
+      dispatch(dispatchKey("designer", [user.nickname]));
     }
   }, [props.open]);
 
   const closeModal = () => {
     props.close();
-    setFields({
-      profile: "",
-      colorway: "",
-      designer: [""],
-      icDate: "",
-      details: "",
-      notes: "",
-      gbMonth: true,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-    });
-    setVendors([]);
-    setSalesInfo({ img: "", thirdParty: false, salesImageLoaded: false });
-    setImageInfo({
-      image: null,
-      imageUploadProgress: 0,
-      imageURL: "",
-    });
+    dispatch({ type: "reset" });
     setUploadingImage(false);
     setUploadingDoc(false);
     setFocused("");
   };
 
   const setImage = (image: Blob | File | null) => {
-    setImageInfo((imageInfo) => {
-      return { ...imageInfo, image: image };
-    });
+    dispatch(dispatchKey("image", image));
   };
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -169,42 +187,31 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const toggleDate = () => {
-    setFields((fields) => {
-      return { ...fields, gbMonth: !fields.gbMonth };
-    });
+    dispatch(dispatchKey("gbMonth", !state.gbMonth));
   };
 
   const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      setFields((fields) => {
-        return { ...fields, [prop]: [value] };
-      });
-      setFocused("");
-    } else {
-      setFields((fields) => {
-        return { ...fields, [prop]: value };
-      });
-      setFocused("");
+      dispatch(dispatchKey(prop, [value]));
+    } else if (hasKey(state, prop)) {
+      dispatch(dispatchKey(prop, value));
     }
+    setFocused("");
   };
 
   const selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(fields, prop)) {
-      const original = fields[prop];
+    if (hasKey(state, prop)) {
+      const original = state[prop];
       if (original) {
         if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array };
-          });
+          dispatch(dispatchKey(prop, array));
           setFocused("");
         } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          setFields((fields) => {
-            return { ...fields, [prop]: array.join(", ") };
-          });
+          dispatch(dispatchKey(prop, array.join(", ")));
           setFocused("");
         }
       }
@@ -214,11 +221,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
       setFocused("");
     }
   };
@@ -226,7 +233,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       const original = vendor[property];
@@ -234,7 +241,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         const array = original.split(", ");
         array[array.length - 1] = value;
         vendor[property] = array.join(", ");
-        setVendors(newVendors);
+        dispatch(dispatchKey("vendors", newVendors));
         setFocused("");
       }
     }
@@ -245,56 +252,40 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const value = e.target.value;
     const checked = e.target.checked;
     if (name === "designer") {
-      setFields((fields) => {
-        return { ...fields, [name]: value.split(", ") };
-      });
-    } else if (name === "shipped") {
-      setFields((fields) => {
-        return { ...fields, [name]: checked };
-      });
-    } else if (name === "salesImg") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, img: value };
-      });
-    } else if (name === "salesThirdParty") {
-      setSalesInfo((salesInfo) => {
-        return { ...salesInfo, thirdParty: checked };
-      });
-    } else {
-      setFields((fields) => {
-        return { ...fields, [name]: value };
-      });
+      dispatch(dispatchKey(name, value.split(", ")));
+    } else if (name === "shipped" || name === "salesThirdParty") {
+      dispatch(dispatchKey(name, checked));
+    } else if (hasKey(state, name)) {
+      dispatch(dispatchKey(name, value));
     }
   };
 
-  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
-    setFields((fields) => {
-      return { ...fields, [name]: value };
-    });
+  const handleNamedChange = (name: keyof typeof state) => (value: string) => {
+    dispatch(dispatchKey(name, value));
   };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = vendors[index];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
-    const newVendors = [...vendors];
-    const vendor = vendors[index];
+    const newVendors = [...state.vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, name)) {
       vendor[name] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = newVendors[index];
     if (e.target.checked) {
@@ -302,7 +293,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     } else {
       delete vendor.endDate;
     }
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const addVendor = () => {
@@ -312,41 +303,39 @@ export const ModalCreate = (props: ModalCreateProps) => {
       region: "",
       storeLink: "",
     };
-    setVendors((vendors) => [...vendors, emptyVendor]);
+    dispatch(dispatchKey("vendors", [...state.vendors, emptyVendor]));
   };
 
   const removeVendor = (index: number) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     newVendors.splice(index, 1);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     arrayMove(newVendors, result.source.index, result.destination.index);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const uploadImage = () => {
-    if (imageInfo.image instanceof Blob) {
+    if (state.image instanceof Blob) {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
+      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
         "yyyyMMddHHmmss"
       )}`;
       const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(imageInfo.image);
+      const uploadTask = imageRef.put(state.image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          setImageInfo((imageInfo) => {
-            return { ...imageInfo, imageUploadProgress: progress };
-          });
+          dispatch(dispatchKey("imageUploadProgress", progress));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -360,9 +349,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
-              setImageInfo((imageInfo) => {
-                return { ...imageInfo, imageURL: downloadURL };
-              });
+              dispatch(dispatchKey("imageURL", downloadURL));
               setUploadingImage(false);
               createEntry(downloadURL);
             })
@@ -376,37 +363,37 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const valid =
-    !!fields.profile &&
-    !!fields.colorway &&
-    !!fields.designer &&
-    !invalidDate(fields.icDate, false, true, true) &&
-    new RegExp(validLink).test(fields.details) &&
-    !!imageInfo.image &&
-    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
-    !invalidDate(fields.gbEnd) &&
-    arrayEveryType(vendors, validVendor) &&
-    validSalesInfo(salesInfo);
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    !!state.image &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
 
-  const createEntry = (url = imageInfo.imageURL) => {
+  const createEntry = (url = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
         .add({
           alias: nanoid(10),
-          profile: fields.profile,
-          colorway: fields.colorway,
-          designer: fields.designer,
-          icDate: fields.icDate,
-          details: fields.details,
-          notes: fields.notes,
-          sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
-          shipped: fields.shipped,
+          profile: state.profile,
+          colorway: state.colorway,
+          designer: state.designer,
+          icDate: state.icDate,
+          details: state.details,
+          notes: state.notes,
+          sales: { img: state.img, thirdParty: state.thirdParty },
+          shipped: state.shipped,
           image: url,
-          gbMonth: fields.gbMonth,
-          gbLaunch: fields.gbLaunch,
-          gbEnd: fields.gbEnd,
-          vendors: vendors,
+          gbMonth: state.gbMonth,
+          gbLaunch: state.gbLaunch,
+          gbEnd: state.gbEnd,
+          vendors: state.vendors,
           latestEditor: user.id,
         })
         .then((docRef) => {
@@ -425,12 +412,10 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    setSalesInfo((salesInfo) => {
-      return { ...salesInfo, salesImageLoaded: val };
-    });
+    dispatch(dispatchKey("salesImageLoaded", val));
   };
   const useDrawer = device !== "mobile";
-  const dateCard = fields.gbMonth ? (
+  const dateCard = state.gbMonth ? (
     <Card outlined className="date-container">
       <Typography use="caption" tag="h3" className="date-title">
         Month
@@ -447,7 +432,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           )}
           outlined
           label="GB month"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           month
@@ -478,7 +463,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           )}
           outlined
           label="GB launch"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           showNowButton
@@ -497,8 +482,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
           }}
           outlined
           label="GB end"
-          value={fields.gbEnd}
-          fallbackValue={fields.gbLaunch}
+          value={state.gbEnd}
+          fallbackValue={state.gbLaunch}
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
           showNowButton
@@ -532,7 +517,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             {children}
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </DrawerHeader>
         )}
@@ -541,7 +526,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <TopAppBarRow>{children}</TopAppBarRow>
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </FullScreenDialogAppBar>
         )}
@@ -598,7 +583,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                   outlined
                   required
                   label="Profile"
-                  value={fields.profile}
+                  value={state.profile}
                   name="profile"
                   onChange={handleChange}
                   onFocus={handleFocus}
@@ -607,7 +592,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 <Autocomplete
                   open={focused === "profile"}
                   array={allProfiles}
-                  query={fields.profile}
+                  query={state.profile}
                   prop="profile"
                   select={selectValue}
                   minChars={1}
@@ -621,7 +606,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 outlined
                 required
                 label="Colorway"
-                value={fields.colorway}
+                value={state.colorway}
                 name="colorway"
                 onChange={handleChange}
                 onFocus={handleFocus}
@@ -635,7 +620,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
               outlined
               label="Designer"
               required
-              value={fields.designer.join(", ")}
+              value={state.designer.join(", ")}
               name="designer"
               helpText={{
                 persistent: true,
@@ -653,7 +638,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Autocomplete
               open={focused === "designer"}
               array={allDesigners}
-              query={fields.designer.join(", ")}
+              query={state.designer.join(", ")}
               prop="designer"
               select={selectValueAppend}
               minChars={2}
@@ -672,7 +657,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             outlined
             label="IC date"
             required
-            value={fields.icDate}
+            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
             pickerProps={{ disableFuture: true }}
@@ -685,7 +670,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             label="Details"
             required
             pattern={validLink}
-            value={fields.details}
+            value={state.details}
             name="details"
             helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
             onChange={handleChange}
@@ -698,19 +683,19 @@ export const ModalCreate = (props: ModalCreateProps) => {
             autoComplete="off"
             outlined
             label="Notes"
-            value={fields.notes}
+            value={state.notes}
             name="notes"
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload image={imageInfo.image} setImage={setImage} desktop={device === "desktop"} />
+          <ImageUpload image={state.image} setImage={setImage} desktop={device === "desktop"} />
           {dateCard}
           <Checkbox
             label="Shipped"
             id="create-shipped"
             name="shipped"
-            checked={fields.shipped}
+            checked={state.shipped}
             onChange={handleChange}
           />
           <Typography use="caption" tag="h3" className="subheader">
@@ -720,7 +705,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Droppable droppableId="vendors-create">
               {(provided) => (
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
-                  {vendors.map((vendor, index) => {
+                  {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
@@ -904,7 +889,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Typography use="caption" tag="h3" className="sales-title">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: salesInfo.salesImageLoaded })}>
+            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
               <div className="sales-image-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                   <path d="M0 0h24v24H0V0z" fill="none" />
@@ -917,7 +902,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 </svg>
               </div>
               <img
-                src={salesInfo.img}
+                src={state.salesImg}
                 alt=""
                 onLoad={() => {
                   setSalesImageLoaded(true);
@@ -934,7 +919,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 outlined
                 label="URL"
                 pattern={validLink}
-                value={salesInfo.img}
+                value={state.salesImg}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                 onChange={handleChange}
@@ -947,7 +932,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 name="salesThirdParty"
                 id={"CreateSalesThirdParty"}
                 onChange={handleChange}
-                checked={salesInfo.thirdParty}
+                checked={state.salesThirdParty}
               />
             </div>
           </Card>
