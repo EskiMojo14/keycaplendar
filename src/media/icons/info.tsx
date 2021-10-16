@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const SvgInfo = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" height={24} width={24} {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -6,4 +8,5 @@ const SvgInfo = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default SvgInfo;
+const MemoSvgInfo = memo(SvgInfo);
+export default MemoSvgInfo;

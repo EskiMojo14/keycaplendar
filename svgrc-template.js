@@ -1,3 +1,29 @@
+const memoImportAST = {
+  type: "ImportDeclaration",
+  specifiers: [
+    {
+      type: "ImportSpecifier",
+      imported: {
+        type: "Identifier",
+        name: "memo",
+      },
+      local: {
+        type: "Identifier",
+        name: "memo",
+      },
+    },
+  ],
+  source: { type: "StringLiteral", value: "react" },
+};
+
+const memoCallAST = {
+  type: "CallExpression",
+  callee: {
+    type: "Identifier",
+    name: "memo",
+  },
+};
+
 function template({ template }, opts, { imports, interfaces, componentName, props, jsx, exports }) {
   const plugins = ["jsx"];
   if (opts.typescript) {
@@ -9,7 +35,21 @@ function template({ template }, opts, { imports, interfaces, componentName, prop
   // Filter out React import, since we use automatic jsx runtime
   imports = (imports || []).filter(({ source }) => (source ? source.value : "").toLowerCase() !== "react");
 
-  const templatedComponent = templatingEngine.ast`${imports}
+  exports = (exports || []).map((exportAST) =>
+    exportAST.type === "VariableDeclaration"
+      ? {
+          ...exportAST,
+          declarations: exportAST.declarations.map((declaration) => {
+            if (declaration.init.callee.object.name === "React" && declaration.init.callee.property.name === "memo") {
+              return { ...declaration, init: { ...declaration.init, ...memoCallAST } };
+            }
+            return declaration;
+          }),
+        }
+      : exportAST
+  );
+
+  const templatedComponent = templatingEngine.ast`${[...imports, memoImportAST]}
 
 const ${componentName} = (${props}) =>
   ${jsx}

@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const SvgFavorites = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" height={24} width={24} {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -10,4 +12,5 @@ const SvgFavorites = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default SvgFavorites;
+const MemoSvgFavorites = memo(SvgFavorites);
+export default MemoSvgFavorites;
