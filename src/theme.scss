@@ -155,7 +155,7 @@ $overlay-values: (
       color: map-get($theme, text-medium);
     }
     .image-display {
-      color: map-get($variables, text-medium);
+      color: map-get($theme, text-medium);
       &.over {
         border-color: map-get($theme, primary);
       }
