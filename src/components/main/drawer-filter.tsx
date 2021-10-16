@@ -30,6 +30,16 @@ import { Select } from "@rmwc/select";
 import { Typography } from "@rmwc/typography";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import {
+  Favorite,
+  FilterEdit,
+  FilterVariantPlus,
+  FilterVariantRemove,
+  Person,
+  Public,
+  PublicAdd,
+  ShoppingBasket,
+} from "@i";
 import "./drawer-filter.scss";
 
 type DrawerFilterProps = {
@@ -213,19 +223,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     <div className="preset-buttons">
       <Button
         label="New"
-        icon={iconObject(
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            version="1.1"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path fill="none" d="M0,0h24v24H0V0z" />
-            <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
-          </svg>
-        )}
+        icon={iconObject(<FilterVariantPlus />)}
         outlined
         onClick={() => {
           newPreset();
@@ -233,30 +231,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       />
       <Button
         label="New"
-        icon={iconObject(
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            version="1.1"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path fill="none" d="M0,0h24v24H0V0z" />
-            <path
-              opacity=".3"
-              d="M11,18v1.9c-3.9-0.5-7-3.9-7-7.9c0-0.6,0.1-1.2,0.2-1.8L9,15v1C9,17.1,9.9,18,11,18z M15,13v3h0
-	c0.9-1.2,2.3-2,4-2c0.2,0,0.5,0,0.7,0.1c0.2-0.7,0.3-1.4,0.3-2.1c0-3.3-2.1-6.2-5-7.4V5c0,1.1-0.9,2-2,2h-2v2c0,0.5-0.5,1-1,1H8v2h6
-	C14.5,12,15,12.5,15,13z"
-            />
-            <path
-              d="M14,19c0-1.1,0.4-2.2,1-3h0v-3c0-0.5-0.5-1-1-1H8v-2h2c0.5,0,1-0.5,1-1V7h2c1.1,0,2-0.9,2-2V4.6c2.9,1.2,5,4.1,5,7.4
-	c0,0.7-0.1,1.4-0.3,2.1c0.7,0.1,1.3,0.3,1.9,0.7C21.9,13.9,22,13,22,12c0-5.5-4.5-10-10-10S2,6.5,2,12s4.5,10,10,10
-	c1,0,1.9-0.1,2.8-0.4C14.3,20.8,14,20,14,19z M11,19.9c-3.9-0.5-7-3.9-7-7.9c0-0.6,0.1-1.2,0.2-1.8L9,15v1c0,1.1,0.9,2,2,2V19.9z
-	 M22,20h-2v2h-2v-2h-2v-2h2v-2h2v2h2V20z"
-            />
-          </svg>
-        )}
+        icon={iconObject(<PublicAdd />)}
         outlined
         onClick={() => {
           newPreset(true);
@@ -267,19 +242,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     <div className="preset-button">
       <Button
         label="New"
-        icon={iconObject(
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            version="1.1"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path fill="none" d="M0,0h24v24H0V0z" />
-            <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M18 15V18H15V20H18V23H20V20H23V18H20V15H18Z" />
-          </svg>
-        )}
+        icon={iconObject(<FilterVariantPlus />)}
         outlined
         onClick={() => {
           newPreset();
@@ -294,23 +257,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       <div className="preset-buttons">
         <Button
           label="Save"
-          icon={iconObject(
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlnsXlink="http://www.w3.org/1999/xlink"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path fill="none" d="M0,0h24v24H0V0z" />
-              <path
-                d="M21,8H3V6h18V8z M18,11H6v2h12V11z M14,17.116V16h-4v2h3.115L14,17.116z M21.04,13.13c0.14,0,0.27,0.06,0.38,0.17l1.28,1.28
-	c0.22,0.21,0.22,0.56,0,0.77l-1,1l-2.05-2.05l1-1C20.76,13.19,20.9,13.13,21.04,13.13 M19.07,14.88l2.05,2.05L15.06,23H13v-2.06
-	L19.07,14.88"
-              />
-            </svg>
-          )}
+          icon={iconObject(<FilterEdit />)}
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
@@ -320,19 +267,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
         />
         <Button
           label="Delete"
-          icon={iconObject(
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlnsXlink="http://www.w3.org/1999/xlink"
-              version="1.1"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path fill="none" d="M0,0h24v24H0V0z" />
-              <path d="M21 8H3V6H21V8M13.81 16H10V18H13.09C13.21 17.28 13.46 16.61 13.81 16M18 11H6V13H18V11M21.12 15.46L19 17.59L16.88 15.46L15.47 16.88L17.59 19L15.47 21.12L16.88 22.54L19 20.41L21.12 22.54L22.54 21.12L20.41 19L22.54 16.88L21.12 15.46Z" />
-            </svg>
-          )}
+          icon={iconObject(<FilterVariantRemove />)}
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
@@ -387,32 +322,14 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
           <ChipSet choice>
             <Chip
               label="Favorites"
-              icon={iconObject(
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path
-                    d="M16.5 5c-1.54 0-3.04.99-3.56 2.36h-1.87C10.54 5.99 9.04 5 7.5 5 5.5 5 4 6.5 4 8.5c0 2.89 3.14 5.74 7.9 10.05l.1.1.1-.1C16.86 14.24 20 11.39 20 8.5c0-2-1.5-3.5-3.5-3.5z"
-                    opacity=".3"
-                  />
-                  <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
-                </svg>
-              )}
+              icon={iconObject(<Favorite />)}
               selected={mainWhitelist.favorites || page === "favorites"}
               onInteraction={() => handleChange("favorites", "favorites")}
               disabled={page === "favorites"}
             />
             <Chip
               label="Bought"
-              icon={iconObject(
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path
-                    d="M3.31 11l2.2 8.01L18.5 19l2.2-8H3.31zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
-                    opacity=".3"
-                  />
-                  <path d="M22 9h-4.79l-4.38-6.56c-.19-.28-.51-.42-.83-.42s-.64.14-.83.43L6.79 9H2c-.55 0-1 .45-1 1 0 .09.01.18.04.27l2.54 9.27c.23.84 1 1.46 1.92 1.46h13c.92 0 1.69-.62 1.93-1.46l2.54-9.27L23 10c0-.55-.45-1-1-1zM12 4.8L14.8 9H9.2L12 4.8zM18.5 19l-12.99.01L3.31 11H20.7l-2.2 8zM12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-              )}
+              icon={iconObject(<ShoppingBasket />)}
               selected={mainWhitelist.bought || page === "bought"}
               onInteraction={() => handleChange("bought", "bought")}
               disabled={page === "bought"}
@@ -452,25 +369,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
             outlined
             icon={
               userPresets.length > 0
-                ? userPresets.map((preset) => preset.id).includes(preset.id)
-                  ? iconObject(
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
-                        <circle cx="12" cy="8" opacity=".3" r="2" />
-                        <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
-                      </svg>
-                    )
-                  : iconObject(
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                        <path d="M0 0h24v24H0V0z" fill="none" />
-                        <path
-                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                          opacity=".3"
-                        />
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                      </svg>
-                    )
+                ? userPresets.findIndex((userPreset) => userPreset.id === preset.id) >= 0
+                  ? iconObject(<Person />)
+                  : iconObject(<Public />)
                 : null
             }
             enhanced={{ fixed: true }}
@@ -482,19 +383,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                       label: (
                         <>
                           <Icon
-                            icon={iconObject(
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path
-                                  d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                  opacity=".3"
-                                />
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                              </svg>,
-                              {
-                                size: "xsmall",
-                              }
-                            )}
+                            icon={iconObject(<Public />, {
+                              size: "xsmall",
+                            })}
                           />
                           Global
                         </>
@@ -512,17 +403,9 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                       label: (
                         <>
                           <Icon
-                            icon={iconObject(
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity=".3" />
-                                <circle cx="12" cy="8" opacity=".3" r="2" />
-                                <path d="M12 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.8 1.29 6 2H6zm6-6c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z" />
-                              </svg>,
-                              {
-                                size: "xsmall",
-                              }
-                            )}
+                            icon={iconObject(<Person />, {
+                              size: "xsmall",
+                            })}
                           />
                           User
                         </>

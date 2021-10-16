@@ -41,6 +41,7 @@ import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
+import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import "./modal-entry.scss";
 
 const getVendorStyle = (provided: DraggableProvided) => {
@@ -426,13 +427,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={iconObject(
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-              <path d="M4 5.01h16V8H4z" opacity=".3" />
-            </svg>
-          )}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB month"
           value={state.gbLaunch}
@@ -457,13 +452,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={iconObject(
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-              <path d="M4 5.01h16V8H4z" opacity=".3" />
-            </svg>
-          )}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB launch"
           value={state.gbLaunch}
@@ -474,15 +463,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         />
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB end"
           value={state.gbEnd}
@@ -650,13 +631,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
-            icon={iconObject(
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            )}
+            icon={iconObject(<CalendarToday />)}
             outlined
             label="IC date"
             required
@@ -713,15 +688,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
-                          icon={{
-                            icon: (
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                <path d="M4 5.01h16V8H4z" opacity=".3" />
-                              </svg>
-                            ),
-                          }}
+                          icon={iconObject(<CalendarToday />)}
                           outlined
                           label="End date"
                           required
@@ -748,20 +715,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(
-                                    <div>
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M8 9h8v10H8z" opacity=".3" />
-                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                      </svg>
-                                    </div>
-                                  )}
+                                  icon={iconObject(<Delete />, {}, true)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
@@ -777,20 +731,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Store />)}
                                   required
                                   outlined
                                   label="Name"
@@ -812,23 +753,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                          opacity=".3"
-                                        />
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Public />)}
                                   required
                                   outlined
                                   label="Region"
@@ -894,15 +819,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             </Typography>
             <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
               <div className="sales-image-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                  <path
-                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                    opacity=".3"
-                  />
-                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                </svg>
+                <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
                 src={state.salesImg}
@@ -1378,15 +1295,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB month"
           value={state.gbLaunch}
@@ -1411,15 +1320,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB launch"
           value={state.gbLaunch}
@@ -1430,15 +1331,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         />
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB end"
           value={state.gbEnd}
@@ -1609,15 +1502,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
+            icon={iconObject(<CalendarToday />)}
             outlined
             label="IC date"
             required
@@ -1673,15 +1558,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
-                          icon={{
-                            icon: (
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                <path d="M4 5.01h16V8H4z" opacity=".3" />
-                              </svg>
-                            ),
-                          }}
+                          icon={iconObject(<CalendarToday />)}
                           outlined
                           label="End date"
                           required
@@ -1708,20 +1585,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(
-                                    <div>
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M8 9h8v10H8z" opacity=".3" />
-                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                      </svg>
-                                    </div>
-                                  )}
+                                  icon={iconObject(<Delete />, {}, true)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
@@ -1737,20 +1601,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Store />)}
                                   required
                                   outlined
                                   label="Name"
@@ -1772,23 +1623,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                          opacity=".3"
-                                        />
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Public />)}
                                   required
                                   outlined
                                   label="Region"
@@ -1849,15 +1684,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             </Typography>
             <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
               <div className="sales-image-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                  <path
-                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                    opacity=".3"
-                  />
-                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                </svg>
+                <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
                 src={state.salesImg}
