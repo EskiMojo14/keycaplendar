@@ -163,10 +163,7 @@ $overlay-values: (
       color: map-get($variables, text-medium);
     }
     .image-display {
-      fill: map-get($variables, text-medium);
-      &::before {
-        background-color: map-get($variables, on-surface);
-      }
+      color: map-get($variables, text-medium);
       &.over {
         border-color: map-get($variables, primary);
       }

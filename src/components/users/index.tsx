@@ -60,6 +60,7 @@ import {
 import { withTooltip } from "@c/util/hocs";
 import { UserRow } from "./user-row";
 import { UserCard } from "./user-card";
+import { ViewArray, ViewList } from "@i";
 import "./index.scss";
 
 const length = 1000;
@@ -173,23 +174,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
         {withTooltip(
           <TopAppBarActionItem
             onClick={openViewMenu}
-            icon={iconObject(
-              <div>
-                {view === "card" ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path d="M4 5h3v13H4zm14 0h3v13h-3zM8 18h9V5H8v13zm2-11h5v9h-5V7z" />
-                    <path d="M10 7h5v9h-5z" opacity=".3" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                    <path d="M0 0h24v24H0V0z" fill="none" opacity=".87" />
-                    <path d="M5 11h2v2H5zm0 4h2v2H5zm0-8h2v2H5zm4 0h9v2H9zm0 8h9v2H9zm0-4h9v2H9z" opacity=".3" />
-                    <path d="M3 5v14h17V5H3zm4 12H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm11 8H9v-2h9v2zm0-4H9v-2h9v2zm0-4H9V7h9v2z" />
-                  </svg>
-                )}
-              </div>
-            )}
+            icon={iconObject(view === "card" ? <ViewArray /> : <ViewList />)}
           />,
           "View"
         )}

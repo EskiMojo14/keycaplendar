@@ -1,0 +1,20 @@
+diff --git a/node_modules/@svgr/cli/lib/util.js b/node_modules/@svgr/cli/lib/util.js
+index 4b00d3a..577e6c7 100644
+--- a/node_modules/@svgr/cli/lib/util.js
++++ b/node_modules/@svgr/cli/lib/util.js
+@@ -96,11 +96,7 @@ function formatExportName(name) {
+     return `Svg${name}`;
+   }
+ 
+-  if (/[-]/g.test(name)) {
+-    return (0, _camelcase.default)(name, {
+-      pascalCase: true
+-    });
+-  }
+-
+-  return name;
++  return (0, _camelcase.default)(name, {
++    pascalCase: true
++  });
+ }
+\ No newline at end of file
