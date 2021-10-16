@@ -77,8 +77,8 @@ export const DrawerSearch = (props: DrawerSearchProps) => {
             <IconButton
               checked={regexSearch}
               onClick={toggleRegex}
-              onIcon={iconObject(<Regex />, {}, true)}
-              icon={iconObject(<RegexOff />, {}, true)}
+              onIcon={iconObject(<Regex />)}
+              icon={iconObject(<RegexOff />)}
             />,
             (regexSearch ? "Disable" : "Enable") + " regex search"
           )}

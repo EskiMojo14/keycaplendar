@@ -715,7 +715,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(<Delete />, {}, true)}
+                                  icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
@@ -1585,7 +1585,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(<Delete />, {}, true)}
+                                  icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}

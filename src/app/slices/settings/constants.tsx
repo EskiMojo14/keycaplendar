@@ -19,8 +19,8 @@ export const viewNames: Record<ViewType, string> = {
 /** Corresponding icon for specified view, to be used in the app bar. */
 
 export const viewIcons: Record<ViewType, IconPropT> = {
-  card: iconObject(<ViewArray />, {}, true),
-  list: iconObject(<ViewList />, {}, true),
-  imageList: iconObject(<GridView />, {}, true),
-  compact: iconObject(<ViewColumn />, {}, true),
+  card: iconObject(<ViewArray />),
+  list: iconObject(<ViewList />),
+  imageList: iconObject(<GridView />),
+  compact: iconObject(<ViewColumn />),
 };

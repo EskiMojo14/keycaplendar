@@ -56,7 +56,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
       <CardActionIcons>
         {withTooltip(
           <CardActionIcon
-            icon={iconObject(<Edit />, {}, true)}
+            icon={iconObject(<Edit />)}
             onClick={() => {
               props.edit(entry);
             }}
@@ -65,7 +65,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
         )}
         {withTooltip(
           <CardActionIcon
-            icon={iconObject(<Delete />, {}, true)}
+            icon={iconObject(<Delete />)}
             onClick={() => {
               props.delete(entry);
             }}
@@ -77,7 +77,7 @@ export const GuideEntry = (props: GuideEntryProps) => {
   ) : (
     <CardActions>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Share />, {}, true)} onClick={copyLink} />, "Share")}
+        {withTooltip(<CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
       </CardActionIcons>
     </CardActions>
   );

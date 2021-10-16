@@ -70,10 +70,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
   const actions = user.isAdmin ? (
     useDrawer ? (
       <>
-        {withTooltip(<IconButton icon={iconObject(<Share />, {}, true)} onClick={copyLink} />, "Share")}
+        {withTooltip(<IconButton icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
         {withTooltip(
           <IconButton
-            icon={iconObject(<Edit />, {}, true)}
+            icon={iconObject(<Edit />)}
             onClick={() => {
               props.edit(entry);
             }}
@@ -82,7 +82,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
         )}
         {withTooltip(
           <IconButton
-            icon={iconObject(<Delete />, {}, true)}
+            icon={iconObject(<Delete />)}
             onClick={() => {
               props.delete(entry);
             }}
@@ -92,10 +92,10 @@ export const ModalDetail = (props: ModalCreateProps) => {
       </>
     ) : (
       <>
-        {withTooltip(<TopAppBarActionItem icon={iconObject(<Share />, {}, true)} onClick={copyLink} />, "Share")}
+        {withTooltip(<TopAppBarActionItem icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
         {withTooltip(
           <TopAppBarActionItem
-            icon={iconObject(<Edit />, {}, true)}
+            icon={iconObject(<Edit />)}
             onClick={() => {
               props.edit(entry);
             }}
@@ -104,7 +104,7 @@ export const ModalDetail = (props: ModalCreateProps) => {
         )}
         {withTooltip(
           <TopAppBarActionItem
-            icon={iconObject(<Delete />, {}, true)}
+            icon={iconObject(<Delete />)}
             onClick={() => {
               props.edit(entry);
             }}

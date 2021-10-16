@@ -217,11 +217,9 @@ export const ContentImages = (props: ContentImagesProps) => {
           <TopAppBarSection alignEnd>
             {contextual ? (
               <>
-                {withTooltip(
-                  <TopAppBarActionItem icon={iconObject(<Delete />, {}, true)} onClick={openDelete} />,
-                  "Delete",
-                  { align: tooltipAlign }
-                )}
+                {withTooltip(<TopAppBarActionItem icon={iconObject(<Delete />)} onClick={openDelete} />, "Delete", {
+                  align: tooltipAlign,
+                })}
               </>
             ) : (
               <>
@@ -231,7 +229,7 @@ export const ContentImages = (props: ContentImagesProps) => {
                 {device === "mobile" ? (
                   <MenuSurfaceAnchor>
                     {withTooltip(
-                      <TopAppBarActionItem icon={iconObject(<PermMedia />, {}, true)} onClick={openFolderMenu} />,
+                      <TopAppBarActionItem icon={iconObject(<PermMedia />)} onClick={openFolderMenu} />,
                       "Folder",
                       { align: tooltipAlign }
                     )}
