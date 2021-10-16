@@ -32,6 +32,7 @@ import { ResponsiveCirclePacking, ComputedDatum as PackingDatum } from "@nivo/ci
 import { NivoThemeContext } from "@c/util/theme-provider";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import { BubbleChart, DonutSmall } from "@i";
 import "./pie-card.scss";
 
 const statuses = ["IC", "Live GB", "Pre GB", "Post GB", "Shipped"] as const;
@@ -193,16 +194,7 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
-                icon={iconObject(
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M15.99 9h3.43C18.6 7 17 5.4 15 4.58v3.43c.37.28.71.62.99.99zM4 12c0 3.35 2.04 6.24 5 7.42v-3.44c-1.23-.93-2-2.4-2-3.99C7 10.4 7.77 8.93 9 8V4.58C6.04 5.76 4 8.65 4 12zm11 3.99v3.43c2-.82 3.6-2.42 4.42-4.42h-3.43c-.28.37-.62.71-.99.99z"
-                      opacity=".3"
-                    />
-                    <path d="M14.82 11h7.13c-.47-4.72-4.23-8.48-8.95-8.95v7.13c.85.31 1.51.97 1.82 1.82zM15 4.58C17 5.4 18.6 7 19.42 9h-3.43c-.28-.37-.62-.71-.99-.99V4.58zM2 12c0 5.19 3.95 9.45 9 9.95v-7.13C9.84 14.4 9 13.3 9 12c0-1.3.84-2.4 2-2.82V2.05c-5.05.5-9 4.76-9 9.95zm7-7.42v3.44c-1.23.92-2 2.39-2 3.98 0 1.59.77 3.06 2 3.99v3.44C6.04 18.24 4 15.35 4 12c0-3.35 2.04-6.24 5-7.42zm4 10.24v7.13c4.72-.47 8.48-4.23 8.95-8.95h-7.13c-.31.85-.97 1.51-1.82 1.82zm2 1.17c.37-.28.71-.61.99-.99h3.43C18.6 17 17 18.6 15 19.42v-3.43z" />
-                  </svg>
-                )}
+                icon={iconObject(<DonutSmall />)}
                 selected={graphType === "sunburst"}
                 onClick={() => {
                   setGraphType("sunburst");
@@ -212,18 +204,7 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={iconObject(
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M16.5 12c1.93 0 3.5-1.57 3.5-3.5S18.43 5 16.5 5 13 6.57 13 8.5s1.57 3.5 3.5 3.5z"
-                      opacity=".3"
-                    />
-                    <circle cx="15.01" cy="18" opacity=".3" r="1" />
-                    <circle cx="7" cy="14" opacity=".3" r="2" />
-                    <path d="M7 18c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm11.01 6c0-1.65-1.35-3-3-3s-3 1.35-3 3 1.35 3 3 3 3-1.35 3-3zm-4 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm2.49-4c3.03 0 5.5-2.47 5.5-5.5S19.53 3 16.5 3 11 5.47 11 8.5s2.47 5.5 5.5 5.5zm0-9C18.43 5 20 6.57 20 8.5S18.43 12 16.5 12 13 10.43 13 8.5 14.57 5 16.5 5z" />
-                  </svg>
-                )}
+                icon={iconObject(<BubbleChart />)}
                 selected={graphType === "packing"}
                 onClick={() => {
                   setGraphType("packing");
@@ -484,16 +465,7 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
           <SegmentedButton toggle>
             {withTooltip(
               <SegmentedButtonSegment
-                icon={iconObject(
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M15.99 9h3.43C18.6 7 17 5.4 15 4.58v3.43c.37.28.71.62.99.99zM4 12c0 3.35 2.04 6.24 5 7.42v-3.44c-1.23-.93-2-2.4-2-3.99C7 10.4 7.77 8.93 9 8V4.58C6.04 5.76 4 8.65 4 12zm11 3.99v3.43c2-.82 3.6-2.42 4.42-4.42h-3.43c-.28.37-.62.71-.99.99z"
-                      opacity=".3"
-                    />
-                    <path d="M14.82 11h7.13c-.47-4.72-4.23-8.48-8.95-8.95v7.13c.85.31 1.51.97 1.82 1.82zM15 4.58C17 5.4 18.6 7 19.42 9h-3.43c-.28-.37-.62-.71-.99-.99V4.58zM2 12c0 5.19 3.95 9.45 9 9.95v-7.13C9.84 14.4 9 13.3 9 12c0-1.3.84-2.4 2-2.82V2.05c-5.05.5-9 4.76-9 9.95zm7-7.42v3.44c-1.23.92-2 2.39-2 3.98 0 1.59.77 3.06 2 3.99v3.44C6.04 18.24 4 15.35 4 12c0-3.35 2.04-6.24 5-7.42zm4 10.24v7.13c4.72-.47 8.48-4.23 8.95-8.95h-7.13c-.31.85-.97 1.51-1.82 1.82zm2 1.17c.37-.28.71-.61.99-.99h3.43C18.6 17 17 18.6 15 19.42v-3.43z" />
-                  </svg>
-                )}
+                icon={iconObject(<DonutSmall />)}
                 selected={graphType === "sunburst"}
                 onClick={() => {
                   setGraphType("sunburst");
@@ -503,18 +475,7 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
             )}
             {withTooltip(
               <SegmentedButtonSegment
-                icon={iconObject(
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px">
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M16.5 12c1.93 0 3.5-1.57 3.5-3.5S18.43 5 16.5 5 13 6.57 13 8.5s1.57 3.5 3.5 3.5z"
-                      opacity=".3"
-                    />
-                    <circle cx="15.01" cy="18" opacity=".3" r="1" />
-                    <circle cx="7" cy="14" opacity=".3" r="2" />
-                    <path d="M7 18c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm11.01 6c0-1.65-1.35-3-3-3s-3 1.35-3 3 1.35 3 3 3 3-1.35 3-3zm-4 0c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm2.49-4c3.03 0 5.5-2.47 5.5-5.5S19.53 3 16.5 3 11 5.47 11 8.5s2.47 5.5 5.5 5.5zm0-9C18.43 5 20 6.57 20 8.5S18.43 12 16.5 12 13 10.43 13 8.5 14.57 5 16.5 5z" />
-                  </svg>
-                )}
+                icon={iconObject(<BubbleChart />)}
                 selected={graphType === "packing"}
                 onClick={() => {
                   setGraphType("packing");

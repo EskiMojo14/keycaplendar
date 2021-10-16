@@ -1,6 +1,7 @@
 export { default as AddPhotoAlternate } from "./add-photo-alternate";
 export { default as AdminPanelSettings } from "./admin-panel-settings";
 export { default as Article } from "./article";
+export { default as BubbleChart } from "./bubble-chart";
 export { default as CalendarToday } from "./calendar-today";
 export { default as Campaign } from "./campaign";
 export { default as Category } from "./category";
@@ -10,6 +11,7 @@ export { default as Collections } from "./collections";
 export { default as DateRange } from "./date-range";
 export { default as Delete } from "./delete";
 export { default as Discord } from "./discord";
+export { default as DonutSmall } from "./donut-small";
 export { default as Edit } from "./edit";
 export { default as Email } from "./email";
 export { default as Event } from "./event";
