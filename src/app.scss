@@ -298,6 +298,7 @@ body {
   }
   &__content {
     overflow-x: hidden;
+    overscroll-behavior: contain;
   }
   .mdc-list-item,
   .mdc-list-item:first-child {

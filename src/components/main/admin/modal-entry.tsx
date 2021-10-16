@@ -1,4 +1,4 @@
-import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
+import { useEffect, useState, FocusEvent, ChangeEvent, useReducer } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
@@ -41,6 +41,7 @@ import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
+import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import "./modal-entry.scss";
 
 const getVendorStyle = (provided: DraggableProvided) => {
@@ -71,7 +72,7 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   (!obj.endDate || !invalidDate(obj.endDate, false));
 
 export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
-  hasKey(obj, "img") && (!obj.img || new RegExp(validLink).test(obj.img)) && hasKey(obj, "thirdParty");
+  hasKey(obj, "salesImg") && (!obj.img || new RegExp(validLink).test(obj.salesImg)) && hasKey(obj, "salesThirdParty");
 
 type ModalCreateProps = {
   close: () => void;
@@ -88,7 +89,25 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const allVendors = useAppSelector(selectAllVendors);
   const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
-  const [fields, setFields] = useState({
+  const initialState: {
+    profile: string;
+    colorway: string;
+    designer: string[];
+    icDate: string;
+    details: string;
+    notes: string;
+    gbMonth: boolean;
+    gbLaunch: string;
+    gbEnd: string;
+    shipped: boolean;
+    vendors: VendorType[];
+    salesImg: string;
+    salesThirdParty: boolean;
+    salesImageLoaded: boolean;
+    image: Blob | File | null;
+    imageUploadProgress: number;
+    imageURL: string;
+  } = {
     profile: "",
     colorway: "",
     designer: [""],
@@ -99,20 +118,42 @@ export const ModalCreate = (props: ModalCreateProps) => {
     gbLaunch: "",
     gbEnd: "",
     shipped: false,
-  });
-
-  const [vendors, setVendors] = useState<VendorType[]>([]);
-
-  const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
-
-  const [imageInfo, setImageInfo] = useState<{
-    image: Blob | File | null;
-    imageUploadProgress: number;
-    imageURL: string;
-  }>({
+    vendors: [],
+    salesImg: "",
+    salesThirdParty: false,
+    salesImageLoaded: false,
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
+  };
+
+  const [state, dispatch] = useReducer(
+    <T extends typeof initialState, K extends keyof T>(
+      state: T,
+      action: { type: "key"; key: K; payload: T[K] } | { type: "reset" }
+    ) => {
+      switch (action.type) {
+        case "key":
+          return {
+            ...state,
+            [action.key]: action.payload,
+          };
+        case "reset":
+          return initialState;
+        default:
+          return state;
+      }
+    },
+    initialState
+  );
+
+  const dispatchKey = <T extends typeof initialState, K extends keyof T>(
+    key: K,
+    payload: T[K]
+  ): { type: "key"; key: K; payload: T[K] } => ({
+    type: "key",
+    key,
+    payload,
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -122,38 +163,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   useEffect(() => {
     if (!user.isEditor && user.isDesigner) {
-      setFields((fields) => ({ ...fields, designer: [user.nickname] }));
+      dispatch(dispatchKey("designer", [user.nickname]));
     }
   }, [props.open]);
 
   const closeModal = () => {
     props.close();
-    setFields({
-      profile: "",
-      colorway: "",
-      designer: [""],
-      icDate: "",
-      details: "",
-      notes: "",
-      gbMonth: true,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-    });
-    setVendors([]);
-    setSalesInfo({ img: "", thirdParty: false, salesImageLoaded: false });
-    setImageInfo({
-      image: null,
-      imageUploadProgress: 0,
-      imageURL: "",
-    });
+    dispatch({ type: "reset" });
     setUploadingImage(false);
     setUploadingDoc(false);
     setFocused("");
   };
 
   const setImage = (image: Blob | File | null) => {
-    setImageInfo((imageInfo) => ({ ...imageInfo, image: image }));
+    dispatch(dispatchKey("image", image));
   };
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -165,32 +188,31 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const toggleDate = () => {
-    setFields((fields) => ({ ...fields, gbMonth: !fields.gbMonth }));
+    dispatch(dispatchKey("gbMonth", !state.gbMonth));
   };
 
   const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      setFields((fields) => ({ ...fields, [prop]: [value] }));
-      setFocused("");
-    } else {
-      setFields((fields) => ({ ...fields, [prop]: value }));
-      setFocused("");
+      dispatch(dispatchKey(prop, [value]));
+    } else if (hasKey(state, prop)) {
+      dispatch(dispatchKey(prop, value));
     }
+    setFocused("");
   };
 
   const selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(fields, prop)) {
-      const original = fields[prop];
+    if (hasKey(state, prop)) {
+      const original = state[prop];
       if (original) {
         if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
-          setFields((fields) => ({ ...fields, [prop]: array }));
+          dispatch(dispatchKey(prop, array));
           setFocused("");
         } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          setFields((fields) => ({ ...fields, [prop]: array.join(", ") }));
+          dispatch(dispatchKey(prop, array.join(", ")));
           setFocused("");
         }
       }
@@ -200,11 +222,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
       setFocused("");
     }
   };
@@ -212,7 +234,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       const original = vendor[property];
@@ -220,7 +242,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
         const array = original.split(", ");
         array[array.length - 1] = value;
         vendor[property] = array.join(", ");
-        setVendors(newVendors);
+        dispatch(dispatchKey("vendors", newVendors));
         setFocused("");
       }
     }
@@ -231,44 +253,40 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const value = e.target.value;
     const checked = e.target.checked;
     if (name === "designer") {
-      setFields((fields) => ({ ...fields, [name]: value.split(", ") }));
-    } else if (name === "shipped") {
-      setFields((fields) => ({ ...fields, [name]: checked }));
-    } else if (name === "salesImg") {
-      setSalesInfo((salesInfo) => ({ ...salesInfo, img: value }));
-    } else if (name === "salesThirdParty") {
-      setSalesInfo((salesInfo) => ({ ...salesInfo, thirdParty: checked }));
-    } else {
-      setFields((fields) => ({ ...fields, [name]: value }));
+      dispatch(dispatchKey(name, value.split(", ")));
+    } else if (name === "shipped" || name === "salesThirdParty") {
+      dispatch(dispatchKey(name, checked));
+    } else if (hasKey(state, name)) {
+      dispatch(dispatchKey(name, value));
     }
   };
 
-  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
-    setFields((fields) => ({ ...fields, [name]: value }));
+  const handleNamedChange = (name: keyof typeof state) => (value: string) => {
+    dispatch(dispatchKey(name, value));
   };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = vendors[index];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
-    const newVendors = [...vendors];
-    const vendor = vendors[index];
+    const newVendors = [...state.vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, name)) {
       vendor[name] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = newVendors[index];
     if (e.target.checked) {
@@ -276,7 +294,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     } else {
       delete vendor.endDate;
     }
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const addVendor = () => {
@@ -286,39 +304,39 @@ export const ModalCreate = (props: ModalCreateProps) => {
       region: "",
       storeLink: "",
     };
-    setVendors((vendors) => [...vendors, emptyVendor]);
+    dispatch(dispatchKey("vendors", [...state.vendors, emptyVendor]));
   };
 
   const removeVendor = (index: number) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     newVendors.splice(index, 1);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     arrayMove(newVendors, result.source.index, result.destination.index);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const uploadImage = () => {
-    if (imageInfo.image instanceof Blob) {
+    if (state.image instanceof Blob) {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
+      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
         "yyyyMMddHHmmss"
       )}`;
       const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(imageInfo.image);
+      const uploadTask = imageRef.put(state.image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          setImageInfo((imageInfo) => ({ ...imageInfo, imageUploadProgress: progress }));
+          dispatch(dispatchKey("imageUploadProgress", progress));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -332,12 +350,14 @@ export const ModalCreate = (props: ModalCreateProps) => {
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
-              setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: downloadURL }));
-              setUploadingImage(false);
+              dispatch(dispatchKey("imageURL", downloadURL));
               createEntry(downloadURL);
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
+              console.error(error);
+            })
+            .finally(() => {
               setUploadingImage(false);
             });
         }
@@ -346,59 +366,60 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const valid =
-    !!fields.profile &&
-    !!fields.colorway &&
-    !!fields.designer &&
-    !invalidDate(fields.icDate, false, true, true) &&
-    new RegExp(validLink).test(fields.details) &&
-    !!imageInfo.image &&
-    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
-    !invalidDate(fields.gbEnd) &&
-    arrayEveryType(vendors, validVendor) &&
-    validSalesInfo(salesInfo);
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    !!state.image &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
 
-  const createEntry = (url = imageInfo.imageURL) => {
+  const createEntry = (url = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
         .add({
           alias: nanoid(10),
-          profile: fields.profile,
-          colorway: fields.colorway,
-          designer: fields.designer,
-          icDate: fields.icDate,
-          details: fields.details,
-          notes: fields.notes,
-          sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
-          shipped: fields.shipped,
+          profile: state.profile,
+          colorway: state.colorway,
+          designer: state.designer,
+          icDate: state.icDate,
+          details: state.details,
+          notes: state.notes,
+          sales: { img: state.img, thirdParty: state.thirdParty },
+          shipped: state.shipped,
           image: url,
-          gbMonth: fields.gbMonth,
-          gbLaunch: fields.gbLaunch,
-          gbEnd: fields.gbEnd,
-          vendors: vendors,
+          gbMonth: state.gbMonth,
+          gbLaunch: state.gbLaunch,
+          gbEnd: state.gbEnd,
+          vendors: state.vendors,
           latestEditor: user.id,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
           queue.notify({ title: "Entry written successfully." });
-          setUploadingDoc(false);
           getData();
           closeModal();
         })
         .catch((error) => {
-          setUploadingDoc(false);
-          console.error("Error adding document: ", error);
+          console.error(error);
           queue.notify({ title: "Error adding document: " + error });
+        })
+        .finally(() => {
+          setUploadingDoc(false);
         });
     }
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    setSalesInfo((salesInfo) => ({ ...salesInfo, salesImageLoaded: val }));
+    dispatch(dispatchKey("salesImageLoaded", val));
   };
   const useDrawer = device !== "mobile";
-  const dateCard = fields.gbMonth ? (
+  const dateCard = state.gbMonth ? (
     <Card outlined className="date-container">
       <Typography use="caption" tag="h3" className="date-title">
         Month
@@ -406,16 +427,10 @@ export const ModalCreate = (props: ModalCreateProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={iconObject(
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-              <path d="M4 5.01h16V8H4z" opacity=".3" />
-            </svg>
-          )}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB month"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           month
@@ -437,16 +452,10 @@ export const ModalCreate = (props: ModalCreateProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={iconObject(
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-              <path d="M0 0h24v24H0V0z" fill="none" />
-              <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-              <path d="M4 5.01h16V8H4z" opacity=".3" />
-            </svg>
-          )}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB launch"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           showNowButton
@@ -454,19 +463,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
         />
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB end"
-          value={fields.gbEnd}
-          fallbackValue={fields.gbLaunch}
+          value={state.gbEnd}
+          fallbackValue={state.gbLaunch}
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
           showNowButton
@@ -500,7 +501,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             {children}
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </DrawerHeader>
         )}
@@ -509,7 +510,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <TopAppBarRow>{children}</TopAppBarRow>
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </FullScreenDialogAppBar>
         )}
@@ -566,7 +567,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                   outlined
                   required
                   label="Profile"
-                  value={fields.profile}
+                  value={state.profile}
                   name="profile"
                   onChange={handleChange}
                   onFocus={handleFocus}
@@ -575,7 +576,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 <Autocomplete
                   open={focused === "profile"}
                   array={allProfiles}
-                  query={fields.profile}
+                  query={state.profile}
                   prop="profile"
                   select={selectValue}
                   minChars={1}
@@ -589,7 +590,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 outlined
                 required
                 label="Colorway"
-                value={fields.colorway}
+                value={state.colorway}
                 name="colorway"
                 onChange={handleChange}
                 onFocus={handleFocus}
@@ -603,7 +604,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
               outlined
               label="Designer"
               required
-              value={fields.designer.join(", ")}
+              value={state.designer.join(", ")}
               name="designer"
               helpText={{
                 persistent: true,
@@ -621,7 +622,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Autocomplete
               open={focused === "designer"}
               array={allDesigners}
-              query={fields.designer.join(", ")}
+              query={state.designer.join(", ")}
               prop="designer"
               select={selectValueAppend}
               minChars={2}
@@ -630,17 +631,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
-            icon={iconObject(
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            )}
+            icon={iconObject(<CalendarToday />)}
             outlined
             label="IC date"
             required
-            value={fields.icDate}
+            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
             pickerProps={{ disableFuture: true }}
@@ -653,7 +648,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
             label="Details"
             required
             pattern={validLink}
-            value={fields.details}
+            value={state.details}
             name="details"
             helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
             onChange={handleChange}
@@ -666,19 +661,19 @@ export const ModalCreate = (props: ModalCreateProps) => {
             autoComplete="off"
             outlined
             label="Notes"
-            value={fields.notes}
+            value={state.notes}
             name="notes"
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload image={imageInfo.image} setImage={setImage} desktop={device === "desktop"} />
+          <ImageUpload image={state.image} setImage={setImage} desktop={device === "desktop"} />
           {dateCard}
           <Checkbox
             label="Shipped"
             id="create-shipped"
             name="shipped"
-            checked={fields.shipped}
+            checked={state.shipped}
             onChange={handleChange}
           />
           <Typography use="caption" tag="h3" className="subheader">
@@ -688,20 +683,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Droppable droppableId="vendors-create">
               {(provided) => (
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
-                  {vendors.map((vendor, index) => {
+                  {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
-                          icon={{
-                            icon: (
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                <path d="M4 5.01h16V8H4z" opacity=".3" />
-                              </svg>
-                            ),
-                          }}
+                          icon={iconObject(<CalendarToday />)}
                           outlined
                           label="End date"
                           required
@@ -728,20 +715,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(
-                                    <div>
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M8 9h8v10H8z" opacity=".3" />
-                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                      </svg>
-                                    </div>
-                                  )}
+                                  icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
@@ -757,20 +731,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Store />)}
                                   required
                                   outlined
                                   label="Name"
@@ -792,23 +753,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                          opacity=".3"
-                                        />
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Public />)}
                                   required
                                   outlined
                                   label="Region"
@@ -872,20 +817,12 @@ export const ModalCreate = (props: ModalCreateProps) => {
             <Typography use="caption" tag="h3" className="sales-title">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: salesInfo.salesImageLoaded })}>
+            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
               <div className="sales-image-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                  <path
-                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                    opacity=".3"
-                  />
-                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                </svg>
+                <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={salesInfo.img}
+                src={state.salesImg}
                 alt=""
                 onLoad={() => {
                   setSalesImageLoaded(true);
@@ -902,7 +839,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 outlined
                 label="URL"
                 pattern={validLink}
-                value={salesInfo.img}
+                value={state.salesImg}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                 onChange={handleChange}
@@ -915,7 +852,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 name="salesThirdParty"
                 id={"CreateSalesThirdParty"}
                 onChange={handleChange}
-                checked={salesInfo.thirdParty}
+                checked={state.salesThirdParty}
               />
             </div>
           </Card>
@@ -941,7 +878,28 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const [id, setId] = useState("");
 
-  const [fields, setFields] = useState({
+  const initialState: {
+    alias: string;
+    profile: string;
+    colorway: string;
+    designer: string[];
+    icDate: string;
+    details: string;
+    notes: string;
+    gbMonth: boolean;
+    gbLaunch: string;
+    gbEnd: string;
+    shipped: boolean;
+    vendors: VendorType[];
+    salesImg: string;
+    salesThirdParty: boolean;
+    salesImageLoaded: boolean;
+    image: Blob | File | string | null;
+    imageUploadProgress: number;
+    imageURL: string;
+    newImage: boolean;
+  } = {
+    alias: "",
     profile: "",
     colorway: "",
     designer: [""],
@@ -952,22 +910,48 @@ export const ModalEdit = (props: ModalEditProps) => {
     gbLaunch: "",
     gbEnd: "",
     shipped: false,
-  });
-
-  const [vendors, setVendors] = useState<VendorType[]>([]);
-
-  const [salesInfo, setSalesInfo] = useState({ img: "", thirdParty: false, salesImageLoaded: false });
-
-  const [imageInfo, setImageInfo] = useState<{
-    image: Blob | File | null;
-    imageUploadProgress: number;
-    imageURL: string;
-    newImage: boolean;
-  }>({
+    vendors: [],
+    salesImg: "",
+    salesThirdParty: false,
+    salesImageLoaded: false,
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
     newImage: false,
+  };
+
+  const [state, dispatch] = useReducer(
+    <T extends typeof initialState, K extends keyof T>(
+      state: T,
+      action: { type: "key"; key: K; payload: T[K] } | { type: "reset" } | { type: "merge"; payload: Partial<T> }
+    ) => {
+      switch (action.type) {
+        case "key":
+          return {
+            ...state,
+            [action.key]: action.payload,
+          };
+        case "merge":
+          return {
+            ...state,
+            ...action.payload,
+          };
+        case "reset":
+          return initialState;
+        default:
+          return state;
+      }
+    },
+    initialState
+  );
+
+  const dispatchKey = <T extends typeof initialState, K extends keyof T>(
+    key: K,
+    payload: T[K]
+  ): { type: "key"; key: K; payload: T[K] } => ({
+    type: "key",
+    key,
+    payload,
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -1003,63 +987,45 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
 
     setId(set.id);
-    setFields({
-      profile: set.profile,
-      colorway: set.colorway,
-      designer: set.designer,
-      icDate: set.icDate,
-      details: set.details,
-      notes: set.notes ? set.notes : "",
-      gbMonth: is<boolean>(set.gbMonth) ? set.gbMonth : false,
-      gbLaunch: gbLaunch,
-      gbEnd: set.gbEnd,
-      shipped: set.shipped ? set.shipped : false,
-    });
-    setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: set.image }));
-    setVendors(
-      set.vendors
-        ? set.vendors.map((vendor) => {
+    dispatch({
+      type: "merge",
+      payload: {
+        alias: set.alias || nanoid(10),
+        profile: set.profile,
+        colorway: set.colorway,
+        designer: set.designer,
+        icDate: set.icDate,
+        details: set.details,
+        notes: set.notes ?? "",
+        gbMonth: !!set.gbMonth ?? false,
+        gbLaunch: gbLaunch,
+        gbEnd: set.gbEnd,
+        shipped: set.shipped ?? false,
+        imageURL: set.image,
+        vendors:
+          set.vendors?.map((vendor) => {
             if (!vendor.id) {
               vendor.id = nanoid();
             }
             return vendor;
-          })
-        : []
-    );
-    setSalesInfo((salesInfo) =>
-      set.sales ? { ...salesInfo, ...set.sales } : { img: "", thirdParty: false, salesImageLoaded: false }
-    );
+          }) ?? [],
+        salesImg: set.sales?.img ?? "",
+        salesThirdParty: set.sales?.thirdParty ?? false,
+      },
+    });
   };
 
   const closeModal = () => {
     props.close();
-    setFields({
-      profile: "",
-      colorway: "",
-      designer: [""],
-      icDate: "",
-      details: "",
-      notes: "",
-      gbMonth: true,
-      gbLaunch: "",
-      gbEnd: "",
-      shipped: false,
-    });
-    setVendors([]);
-    setSalesInfo({ img: "", thirdParty: false, salesImageLoaded: false });
-    setImageInfo({
-      image: null,
-      imageUploadProgress: 0,
-      imageURL: "",
-      newImage: false,
-    });
+    dispatch({ type: "reset" });
     setUploadingImage(false);
     setUploadingDoc(false);
     setFocused("");
   };
 
   const setImage = (image: File | Blob | null) => {
-    setImageInfo((imageInfo) => ({ ...imageInfo, image: image, newImage: true }));
+    dispatch(dispatchKey("image", image));
+    dispatch(dispatchKey("newImage", true));
   };
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -1071,32 +1037,34 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const toggleDate = () => {
-    setFields((fields) => ({ ...fields, gbMonth: !fields.gbMonth }));
+    dispatch(dispatchKey("gbMonth", !state.gbMonth));
   };
 
   const selectValue = (prop: string, value: string) => {
-    if (prop === "designer") {
-      setFields((fields) => ({ ...fields, [prop]: [value] }));
-      setFocused("");
-    } else {
-      setFields((fields) => ({ ...fields, [prop]: value }));
-      setFocused("");
+    if (hasKey(state, prop)) {
+      if (prop === "designer") {
+        dispatch(dispatchKey(prop, [value]));
+        setFocused("");
+      } else {
+        dispatch(dispatchKey(prop, value));
+        setFocused("");
+      }
     }
   };
 
   const selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(fields, prop)) {
-      const original = fields[prop];
+    if (hasKey(state, prop)) {
+      const original = state[prop];
       if (original) {
         if (is<string[]>(original)) {
           const array = [...original];
           array[array.length - 1] = value;
-          setFields((fields) => ({ ...fields, [prop]: array }));
+          dispatch(dispatchKey(prop, array));
           setFocused("");
         } else if (is<string>(original)) {
           const array = original.split(", ");
           array[array.length - 1] = value;
-          setFields((fields) => ({ ...fields, [prop]: array.join(", ") }));
+          dispatch(dispatchKey(prop, array.join(", ")));
           setFocused("");
         }
       }
@@ -1106,11 +1074,11 @@ export const ModalEdit = (props: ModalEditProps) => {
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
       setFocused("");
     }
   };
@@ -1118,7 +1086,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       const original = vendor[property];
@@ -1126,7 +1094,7 @@ export const ModalEdit = (props: ModalEditProps) => {
         const array = original.split(", ");
         array[array.length - 1] = value;
         vendor[property] = array.join(", ");
-        setVendors(newVendors);
+        dispatch(dispatchKey("vendors", newVendors));
         setFocused("");
       }
     }
@@ -1137,44 +1105,40 @@ export const ModalEdit = (props: ModalEditProps) => {
     const value = e.target.value;
     const checked = e.target.checked;
     if (name === "designer") {
-      setFields((fields) => ({ ...fields, [name]: value.split(", ") }));
-    } else if (name === "shipped") {
-      setFields((fields) => ({ ...fields, [name]: checked }));
-    } else if (name === "salesImg") {
-      setSalesInfo((salesInfo) => ({ ...salesInfo, img: value }));
-    } else if (name === "salesThirdParty") {
-      setSalesInfo((salesInfo) => ({ ...salesInfo, thirdParty: checked }));
-    } else if (hasKey(fields, name)) {
-      setFields((fields) => ({ ...fields, [name]: value }));
+      dispatch(dispatchKey(name, value.split(", ")));
+    } else if (name === "shipped" || name === "salesThirdParty") {
+      dispatch(dispatchKey(name, checked));
+    } else if (hasKey(state, name)) {
+      dispatch(dispatchKey(name, value));
     }
   };
 
-  const handleNamedChange = (name: keyof typeof fields) => (value: string) => {
-    setFields((fields) => ({ ...fields, [name]: value }));
+  const handleNamedChange = (name: keyof typeof state) => (value: string) => {
+    dispatch(dispatchKey(name, value));
   };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const property = e.target.name.replace(/\d/g, "");
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = vendors[index];
+    const vendor = newVendors[index];
     if (hasKey(vendor, property)) {
       vendor[property] = e.target.value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
-    const newVendors = [...vendors];
-    const vendor = vendors[index];
+    const newVendors = [...state.vendors];
+    const vendor = newVendors[index];
     if (hasKey(vendor, name)) {
       vendor[name] = value;
-      setVendors(newVendors);
+      dispatch(dispatchKey("vendors", newVendors));
     }
   };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     const vendor = newVendors[index];
     if (e.target.checked) {
@@ -1182,7 +1146,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     } else {
       delete vendor.endDate;
     }
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const addVendor = () => {
@@ -1192,42 +1156,43 @@ export const ModalEdit = (props: ModalEditProps) => {
       region: "",
       storeLink: "",
     };
-    setVendors((vendors) => [...vendors, emptyVendor]);
+    dispatch(dispatchKey("vendors", [...state.vendors, emptyVendor]));
   };
 
   const removeVendor = (index: number) => {
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     newVendors.splice(index, 1);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const newVendors = [...vendors];
+    const newVendors = [...state.vendors];
     arrayMove(newVendors, result.source.index, result.destination.index);
-    setVendors(newVendors);
+    dispatch(dispatchKey("vendors", newVendors));
   };
 
   const uploadImage = () => {
-    if (imageInfo.image instanceof Blob) {
+    if (state.image instanceof Blob) {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${fields.profile} ${fields.colorway}`)}T${DateTime.utc().toFormat(
+      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
         "yyyyMMddHHmmss"
       )}`;
       const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(imageInfo.image);
+      const uploadTask = imageRef.put(state.image);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          setImageInfo((imageInfo) => ({ ...imageInfo, imageUploadProgress: progress }));
+          dispatch(dispatchKey("imageUploadProgress", progress));
         },
         (error) => {
           // Handle unsuccessful uploads
+          console.error(error);
           queue.notify({ title: "Failed to upload image: " + error });
           setUploadingImage(false);
         },
@@ -1238,8 +1203,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
-              setImageInfo((imageInfo) => ({ ...imageInfo, imageURL: downloadURL }));
-              setUploadingImage(false);
+              dispatch(dispatchKey("imageURL", downloadURL));
               editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = props.set.image.match(fileNameRegex);
@@ -1253,12 +1217,15 @@ export const ModalEdit = (props: ModalEditProps) => {
                   })
                   .catch((error) => {
                     queue.notify({ title: "Failed to delete previous thumbnails: " + error });
-                    console.log(error);
+                    console.error(error);
                   });
               }
             })
             .catch((error) => {
               queue.notify({ title: "Failed to get URL: " + error });
+              console.error(error);
+            })
+            .finally(() => {
               setUploadingImage(false);
             });
         }
@@ -1267,58 +1234,60 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const valid =
-    !!fields.profile &&
-    !!fields.colorway &&
-    !!fields.designer &&
-    !invalidDate(fields.icDate, false, true, true) &&
-    new RegExp(validLink).test(fields.details) &&
-    ((imageInfo.newImage && imageInfo.image instanceof Blob && !!imageInfo.image) || !!imageInfo.imageURL) &&
-    !invalidDate(fields.gbLaunch, fields.gbMonth, false, true) &&
-    !invalidDate(fields.gbEnd) &&
-    arrayEveryType(vendors, validVendor) &&
-    validSalesInfo(salesInfo);
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    ((state.newImage && state.image instanceof Blob && !!state.image) || !!state.imageURL) &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
 
-  const editEntry = (imageUrl = imageInfo.imageURL) => {
+  const editEntry = (imageUrl = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
       typedFirestore
         .collection("keysets")
         .doc(id as KeysetId)
         .update({
-          alias: props.set.alias ? props.set.alias : nanoid(10),
-          profile: fields.profile,
-          colorway: fields.colorway,
-          designer: fields.designer,
-          icDate: fields.icDate,
-          details: fields.details,
-          notes: fields.notes,
-          sales: { img: salesInfo.img, thirdParty: salesInfo.thirdParty },
-          shipped: fields.shipped,
+          alias: state.alias,
+          profile: state.profile,
+          colorway: state.colorway,
+          designer: state.designer,
+          icDate: state.icDate,
+          details: state.details,
+          notes: state.notes,
+          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
+          shipped: state.shipped,
           image: imageUrl,
-          gbMonth: fields.gbMonth,
-          gbLaunch: fields.gbLaunch,
-          gbEnd: fields.gbEnd,
-          vendors: vendors,
+          gbMonth: state.gbMonth,
+          gbLaunch: state.gbLaunch,
+          gbEnd: state.gbEnd,
+          vendors: state.vendors,
           latestEditor: user.id,
         })
         .then(() => {
-          setUploadingDoc(false);
           queue.notify({ title: "Entry edited successfully." });
           closeModal();
           getData();
         })
         .catch((error) => {
-          setUploadingDoc(false);
           queue.notify({ title: "Error editing document: " + error });
+          console.error(error);
+        })
+        .finally(() => {
+          setUploadingDoc(false);
         });
     }
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    setSalesInfo((salesInfo) => ({ ...salesInfo, salesImageLoaded: val }));
+    dispatch(dispatchKey("salesImageLoaded", val));
   };
   const useDrawer = device !== "mobile";
-  const dateCard = fields.gbMonth ? (
+  const dateCard = state.gbMonth ? (
     <Card outlined className="date-container">
       <Typography use="caption" tag="h3" className="date-title">
         Month
@@ -1326,18 +1295,10 @@ export const ModalEdit = (props: ModalEditProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB month"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           month
@@ -1359,18 +1320,10 @@ export const ModalEdit = (props: ModalEditProps) => {
       <div className="date-form">
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB launch"
-          value={fields.gbLaunch}
+          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
           showNowButton
@@ -1378,19 +1331,11 @@ export const ModalEdit = (props: ModalEditProps) => {
         />
         <DatePicker
           autoComplete="off"
-          icon={{
-            icon: (
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                <path d="M0 0h24v24H0V0z" fill="none" />
-                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                <path d="M4 5.01h16V8H4z" opacity=".3" />
-              </svg>
-            ),
-          }}
+          icon={iconObject(<CalendarToday />)}
           outlined
           label="GB end"
-          value={fields.gbEnd}
-          fallbackValue={fields.gbLaunch}
+          value={state.gbEnd}
+          fallbackValue={state.gbLaunch}
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
           showNowButton
@@ -1424,7 +1369,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             {children}
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </DrawerHeader>
         )}
@@ -1433,7 +1378,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             <TopAppBarRow>{children}</TopAppBarRow>
             <LinearProgress
               closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? imageInfo.imageUploadProgress : undefined}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
             />
           </FullScreenDialogAppBar>
         )}
@@ -1461,7 +1406,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             label="Save"
             onClick={() => {
               if (valid && !uploadingImage && !uploadingDoc) {
-                if (imageInfo.newImage) {
+                if (state.newImage) {
                   uploadImage();
                 } else {
                   editEntry();
@@ -1494,7 +1439,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                   outlined
                   required
                   label="Profile"
-                  value={fields.profile}
+                  value={state.profile}
                   name="profile"
                   onChange={handleChange}
                   onFocus={handleFocus}
@@ -1503,7 +1448,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 <Autocomplete
                   open={focused === "profile"}
                   array={allProfiles}
-                  query={fields.profile}
+                  query={state.profile}
                   prop="profile"
                   select={selectValue}
                   minChars={1}
@@ -1517,7 +1462,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 outlined
                 required
                 label="Colorway"
-                value={fields.colorway}
+                value={state.colorway}
                 name="colorway"
                 helpText={{ persistent: false, validationMsg: true, children: "Enter a name" }}
                 onChange={handleChange}
@@ -1530,7 +1475,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               outlined
               label="Designer"
               required
-              value={fields.designer.join(", ")}
+              value={state.designer.join(", ")}
               name="designer"
               helpText={{
                 persistent: true,
@@ -1548,7 +1493,7 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Autocomplete
               open={focused === "designer"}
               array={allDesigners}
-              query={fields.designer.join(", ")}
+              query={state.designer.join(", ")}
               prop="designer"
               select={selectValueAppend}
               minChars={2}
@@ -1557,19 +1502,11 @@ export const ModalEdit = (props: ModalEditProps) => {
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
-            icon={{
-              icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                  <path d="M4 5.01h16V8H4z" opacity=".3" />
-                </svg>
-              ),
-            }}
+            icon={iconObject(<CalendarToday />)}
             outlined
             label="IC date"
             required
-            value={fields.icDate}
+            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
             showNowButton
@@ -1581,12 +1518,12 @@ export const ModalEdit = (props: ModalEditProps) => {
             label="Details"
             required
             pattern={validLink}
-            value={fields.details}
+            value={state.details}
             name="details"
             helpText={{
               persistent: false,
               validationMsg: true,
-              children: fields.details.length > 0 ? "Must be valid link" : "Enter a link",
+              children: state.details.length > 0 ? "Must be valid link" : "Enter a link",
             }}
             onChange={handleChange}
           />
@@ -1596,19 +1533,19 @@ export const ModalEdit = (props: ModalEditProps) => {
             autoComplete="off"
             outlined
             label="Notes"
-            value={fields.notes}
+            value={state.notes}
             name="notes"
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
           <ImageUpload
-            image={imageInfo.newImage ? imageInfo.image : imageInfo.imageURL.replace("keysets", "thumbs")}
+            image={state.newImage ? state.image : state.imageURL.replace("keysets", "thumbs")}
             setImage={setImage}
             desktop={device === "desktop"}
           />
           {dateCard}
-          <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={fields.shipped} onChange={handleChange} />
+          <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={state.shipped} onChange={handleChange} />
           <Typography use="caption" tag="h3" className="subheader">
             Vendors
           </Typography>
@@ -1616,20 +1553,12 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Droppable droppableId="vendors-edit">
               {(provided) => (
                 <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
-                  {vendors.map((vendor, index) => {
+                  {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
                         <DatePicker
                           autoComplete="off"
-                          icon={{
-                            icon: (
-                              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H4V5h16zM4 21V10h16v11H4z" />
-                                <path d="M4 5.01h16V8H4z" opacity=".3" />
-                              </svg>
-                            ),
-                          }}
+                          icon={iconObject(<CalendarToday />)}
                           outlined
                           label="End date"
                           required
@@ -1656,20 +1585,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               {withTooltip(
                                 <IconButton
                                   type="button"
-                                  icon={iconObject(
-                                    <div>
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M8 9h8v10H8z" opacity=".3" />
-                                        <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z" />
-                                      </svg>
-                                    </div>
-                                  )}
+                                  icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
@@ -1685,20 +1601,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path d="M5.64 9l-.6 3h13.92l-.6-3z" opacity=".3" />
-                                        <path d="M4 4h16v2H4zm16 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zm-8 11H6v-4h6v4zm-6.96-6l.6-3h12.72l.6 3H5.04z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Store />)}
                                   required
                                   outlined
                                   label="Name"
@@ -1720,23 +1623,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
-                                  icon={{
-                                    icon: (
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        width="24"
-                                      >
-                                        <path d="M0 0h24v24H0V0z" fill="none" />
-                                        <path
-                                          d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
-                                          opacity=".3"
-                                        />
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z" />
-                                      </svg>
-                                    ),
-                                  }}
+                                  icon={iconObject(<Public />)}
                                   required
                                   outlined
                                   label="Region"
@@ -1795,20 +1682,12 @@ export const ModalEdit = (props: ModalEditProps) => {
             <Typography use="caption" tag="h3" className="sales-title">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: salesInfo.salesImageLoaded })}>
+            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
               <div className="sales-image-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                  <path d="M0 0h24v24H0V0z" fill="none" />
-                  <path d="M10.21 16.83l-1.96-2.36L5.5 18h11l-3.54-4.71z" />
-                  <path
-                    d="M16.5 18h-11l2.75-3.53 1.96 2.36 2.75-3.54L16.5 18zM17 7h-3V6H4v14h14V10h-1V7z"
-                    opacity=".3"
-                  />
-                  <path d="M20 4V1h-2v3h-3v2h3v2.99h2V6h3V4zm-2 16H4V6h10V4H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V10h-2v10z" />
-                </svg>
+                <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={salesInfo.img}
+                src={state.salesImg}
                 alt=""
                 onLoad={() => {
                   setSalesImageLoaded(true);
@@ -1825,7 +1704,7 @@ export const ModalEdit = (props: ModalEditProps) => {
                 outlined
                 label="URL"
                 pattern={validLink}
-                value={salesInfo.img}
+                value={state.salesImg}
                 name="salesImg"
                 helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
                 onChange={handleChange}
@@ -1836,9 +1715,9 @@ export const ModalEdit = (props: ModalEditProps) => {
                 className="sales-checkbox"
                 label="Third party graph"
                 name="salesThirdParty"
-                id={"editSalesThirdParty"}
+                id="editSalesThirdParty"
                 onChange={handleChange}
-                checked={salesInfo.thirdParty}
+                checked={state.salesThirdParty}
               />
             </div>
           </Card>

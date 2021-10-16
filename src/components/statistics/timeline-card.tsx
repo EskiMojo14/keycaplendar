@@ -10,6 +10,7 @@ import {
   CSSProperties,
 } from "react";
 import classNames from "classnames";
+import { alpha } from "@material-ui/core";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
@@ -39,7 +40,6 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-butto
 import { withTooltip } from "@c/util/hocs";
 import { NivoThemeContext } from "@c/util/theme-provider";
 import "./timeline-card.scss";
-import { alpha } from "@material-ui/core";
 
 type ShippedCardProps = {
   data: ShippedDataObject;

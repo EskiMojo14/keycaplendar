@@ -24,6 +24,7 @@
     "@rmwc/drawer": "^6.1.4",
     "@rmwc/fab": "^6.1.4",
     "@rmwc/formfield": "^6.1.4",
+    "@rmwc/icon": "^6.1.4",
     "@rmwc/icon-button": "^6.1.4",
     "@rmwc/image-list": "^6.1.4",
     "@rmwc/linear-progress": "^6.1.4",
@@ -84,7 +85,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "icons": "npx @svgr/cli --icon --ignore-existing --memo --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/ && npx prettier --write src/media/icons/index.tsx"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -103,6 +105,7 @@
   },
   "devDependencies": {
     "@types/gulp": "^4.0.9",
+    "@svgr/cli": "^5.5.0",
     "@types/lodash.clonedeep": "^4.5.6",
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.isequal": "^4.5.5",

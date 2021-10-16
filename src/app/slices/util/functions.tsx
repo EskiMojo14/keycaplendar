@@ -26,7 +26,7 @@ export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any
  * @returns If item is desired type, and asserts so.
  */
 
-export const typeGuard = <T>(item: any, predicate: (item: any) => boolean): item is T => predicate(item);
+export const typeGuard = <T,>(item: any, predicate: (item: any) => boolean): item is T => predicate(item);
 
 /**
  * Checks if item is included in array, and asserts that the types are the same.
@@ -35,7 +35,7 @@ export const typeGuard = <T>(item: any, predicate: (item: any) => boolean): item
  * @returns Whether the item is contained in the array.
  */
 
-export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
+export const arrayIncludes = <T,>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
 
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
@@ -44,14 +44,14 @@ export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T
  * @returns If all items meet the callback requirement.
  */
 
-export const arrayEveryType = <T>(
+export const arrayEveryType = <T,>(
   arr: any[],
   predicate: (item: any, index: number, array: any[]) => item is T
 ): arr is T[] => arr.every(predicate);
 
 /** Merge object and modify specified keys. */
 
-export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
+export const mergeObject = <T,>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
 
 /** Returns an array of object keys to iterate on.
  *
@@ -73,7 +73,7 @@ export const objectEntries = <T extends Record<string, any>>(obj: T): [keyof T, 
  * @returns `array` with only unique values.
  */
 
-export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
+export const removeDuplicates = <T,>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
  * "Toggles" an element in an array.
@@ -82,7 +82,7 @@ export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) =
  * @returns `array` with element added or removed.
  */
 
-export const addOrRemove = <T>(array: T[], value: T): T[] => {
+export const addOrRemove = <T,>(array: T[], value: T): T[] => {
   const newArray: any[] = [...array];
   const index: number = newArray.indexOf(value);
 
@@ -102,7 +102,7 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
  * chunks([1,2,3,4,5,6], 2) // [[1,2], [3,4], [5,6]]
  */
 
-export const chunks = <T>(array: T[], size: number): T[][] =>
+export const chunks = <T,>(array: T[], size: number): T[][] =>
   Array(Math.ceil(array.length / size))
     .fill(undefined)
     .map((_, index) => index * size)
@@ -277,7 +277,7 @@ export const formatFileName = (str: string) => camelise(normalise(replaceFunctio
  *
  * found https://stackoverflow.com/a/57748845
  */
-export const braidArrays = <T>(...arrays: T[][]) => {
+export const braidArrays = <T,>(...arrays: T[][]) => {
   const braided: T[] = [];
   for (let i = 0; i < Math.max(...arrays.map((a) => a.length)); i++) {
     arrays.forEach((array) => {
@@ -342,7 +342,7 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
+export const iconObject = (jsx: ReactNode, config: Omit<IconOptions, "icon"> = {}): IconPropT => ({
   strategy: "component",
   icon: jsx,
   ...config,
