@@ -82,7 +82,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "icons": "npx @svgr/cli --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -100,6 +101,7 @@
     ]
   },
   "devDependencies": {
+    "@svgr/cli": "^5.5.0",
     "@types/chartist": "^0.11.0",
     "@types/jest": "^26.0.23",
     "@types/lodash.clonedeep": "^4.5.6",
