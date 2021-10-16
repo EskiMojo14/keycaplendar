@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 const SvgPerson = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 24 24" width="1em" {...props}>
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M12 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2z" opacity={0.3} />
     <circle cx={12} cy={8} opacity={0.3} r={2} />

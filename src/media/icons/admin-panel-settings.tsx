@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 const SvgAdminPanelSettings = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 24 24" width="1em" {...props}>
     <path fill="none" d="M0 0h24v24H0z" />
     <path
       d="M16 7.58l-5.5-2.4L5 7.58v3.6c0 3.5 2.33 6.74 5.5 7.74.25-.08.49-.2.73-.3-.15-.51-.23-1.06-.23-1.62 0-2.97 2.16-5.43 5-5.91V7.58z"
