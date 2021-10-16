@@ -316,7 +316,7 @@ export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-export const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">, spanWrap = false): IconPropT => {
+export const iconObject = (jsx: ReactNode, config: Omit<IconOptions, "icon"> = {}, spanWrap = false): IconPropT => {
   return {
     strategy: "component",
     icon: spanWrap ? <span>{jsx}</span> : jsx,
