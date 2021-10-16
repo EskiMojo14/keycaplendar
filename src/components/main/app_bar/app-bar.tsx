@@ -19,6 +19,7 @@ import {
   TopAppBarTitle,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
+import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { MenuView } from "./menu-view";
 import { MenuSort } from "./menu-sort";
@@ -80,18 +81,7 @@ export const AppBar = (props: AppBarProps) => {
         )
       : null;
 
-  const indent =
-    props.indent && bottomNav ? (
-      <TopAppBarSection className="indent" alignEnd>
-        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
-          <path
-            d="M107.3,0a8.042,8.042,0,0,0-7.9,6.6A36.067,36.067,0,0,1,64,36,36.067,36.067,0,0,1,28.6,6.6,8.042,8.042,0,0,0,20.7,0H0V56H128V0Z"
-            fill="inherit"
-          />
-        </svg>
-        <div className="fill"></div>
-      </TopAppBarSection>
-    ) : null;
+  const indent = props.indent && bottomNav ? <AppBarIndent /> : null;
 
   const searchBar = indent ? (
     <SearchAppBar open={searchOpen} openBar={openSearch} close={closeSearch} search={search} setSearch={setSearch} />

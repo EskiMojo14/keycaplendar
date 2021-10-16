@@ -29,6 +29,7 @@ import { EntriesList } from "./entries-list";
 import { ModalDetail } from "./modal-detail";
 import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { DialogDelete } from "@c/guides/admin/dialog-delete";
+import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
@@ -168,18 +169,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
 
   const buttons = <>{refreshButton}</>;
 
-  const indent =
-    user.isAdmin && bottomNav ? (
-      <TopAppBarSection className="indent" alignEnd>
-        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="56" viewBox="0 0 128 56">
-          <path
-            d="M107.3,0a8.042,8.042,0,0,0-7.9,6.6A36.067,36.067,0,0,1,64,36,36.067,36.067,0,0,1,28.6,6.6,8.042,8.042,0,0,0,20.7,0H0V56H128V0Z"
-            fill="inherit"
-          />
-        </svg>
-        <div className="fill"></div>
-      </TopAppBarSection>
-    ) : null;
+  const indent = user.isAdmin && bottomNav ? <AppBarIndent /> : null;
 
   const editorElements = user.isAdmin ? (
     <>
