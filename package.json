@@ -83,7 +83,7 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "postinstall": "patch-package",
-    "icons": "npx @svgr/cli --memo --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/"
+    "icons": "npx @svgr/cli --ignore-existing --memo --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/"
   },
   "eslintConfig": {
     "extends": "react-app"
