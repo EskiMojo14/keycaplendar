@@ -35,6 +35,10 @@ function template({ template }, opts, { imports, interfaces, componentName, prop
   // Filter out React import, since we use automatic jsx runtime
   imports = (imports || []).filter(({ source }) => (source ? source.value : "").toLowerCase() !== "react");
 
+  if (opts.memo) {
+    imports.push(memoImportAST);
+  }
+
   exports = (exports || []).map((exportAST) =>
     exportAST.type === "VariableDeclaration"
       ? {
@@ -49,7 +53,7 @@ function template({ template }, opts, { imports, interfaces, componentName, prop
       : exportAST
   );
 
-  const templatedComponent = templatingEngine.ast`${[...imports, memoImportAST]}
+  const templatedComponent = templatingEngine.ast`${imports}
 
 const ${componentName} = (${props}) =>
   ${jsx}
