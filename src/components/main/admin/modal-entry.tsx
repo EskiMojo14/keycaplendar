@@ -72,7 +72,9 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   (!obj.endDate || !invalidDate(obj.endDate, false));
 
 export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
-  hasKey(obj, "salesImg") && (!obj.img || new RegExp(validLink).test(obj.salesImg)) && hasKey(obj, "salesThirdParty");
+  hasKey(obj, "salesImg") &&
+  (!obj.salesImg || new RegExp(validLink).test(obj.salesImg)) &&
+  hasKey(obj, "salesThirdParty");
 
 type ModalCreateProps = {
   close: () => void;
@@ -390,7 +392,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           icDate: state.icDate,
           details: state.details,
           notes: state.notes,
-          sales: { img: state.img, thirdParty: state.thirdParty },
+          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
           shipped: state.shipped,
           image: url,
           gbMonth: state.gbMonth,
