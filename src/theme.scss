@@ -175,7 +175,7 @@ $overlay-values: (
 
   .sales-container {
     .sales-image-icon {
-      fill: map-get($variables, text-medium);
+      color: map-get($variables, text-medium);
     }
   }
 
