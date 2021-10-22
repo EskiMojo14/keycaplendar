@@ -134,7 +134,10 @@ export const getData = () => {
           const { gbLaunch: docGbLaunch, sales: docSales, latestEditor, ...data } = doc.data();
 
           const lastInMonth = docGbLaunch ? DateTime.fromISO(docGbLaunch).daysInMonth : 0;
-          const gbLaunch = doc.data().gbMonth && docGbLaunch ? docGbLaunch + "-" + lastInMonth : docGbLaunch;
+          const gbLaunch =
+            doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
+              ? docGbLaunch + "-" + lastInMonth
+              : docGbLaunch;
           const sales = is<string>(docSales) ? { img: docSales, thirdParty: false } : docSales;
 
           sets.push({
