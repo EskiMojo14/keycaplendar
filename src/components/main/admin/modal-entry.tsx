@@ -1,10 +1,11 @@
-import { useEffect, useState, FocusEvent, ChangeEvent, useReducer } from "react";
+import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 import cloneDeep from "lodash.clonedeep";
 import { is } from "typescript-is";
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from "react-beautiful-dnd";
+import { useImmer } from "use-immer";
 import firebase from "@s/firebase";
 import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
@@ -43,6 +44,7 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { withTooltip } from "@c/util/hocs";
 import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import "./modal-entry.scss";
+import { KeysMatching } from "@s/common/types";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
@@ -128,35 +130,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
     imageUploadProgress: 0,
     imageURL: "",
   };
+  type State = typeof initialState;
 
-  const [state, dispatch] = useReducer(
-    <T extends typeof initialState, K extends keyof T>(
-      state: T,
-      action: { type: "key"; key: K; payload: T[K] } | { type: "reset" }
-    ) => {
-      switch (action.type) {
-        case "key":
-          return {
-            ...state,
-            [action.key]: action.payload,
-          };
-        case "reset":
-          return initialState;
-        default:
-          return state;
-      }
-    },
-    initialState
-  );
+  const [state, updateState] = useImmer(initialState);
 
-  const dispatchKey = <T extends typeof initialState, K extends keyof T>(
-    key: K,
-    payload: T[K]
-  ): { type: "key"; key: K; payload: T[K] } => ({
-    type: "key",
-    key,
-    payload,
-  });
+  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
+    draft[key] = payload;
+  };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -165,20 +145,20 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   useEffect(() => {
     if (!user.isEditor && user.isDesigner) {
-      dispatch(dispatchKey("designer", [user.nickname]));
+      updateState(keyedUpdate("designer", [user.nickname]));
     }
   }, [props.open]);
 
   const closeModal = () => {
     props.close();
-    dispatch({ type: "reset" });
+    updateState(initialState);
     setUploadingImage(false);
     setUploadingDoc(false);
     setFocused("");
   };
 
   const setImage = (image: Blob | File | null) => {
-    dispatch(dispatchKey("image", image));
+    updateState(keyedUpdate("image", image));
   };
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -190,113 +170,112 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const toggleDate = () => {
-    dispatch(dispatchKey("gbMonth", !state.gbMonth));
+    updateState(keyedUpdate("gbMonth", !state.gbMonth));
   };
 
   const selectValue = (prop: string, value: string) => {
     if (prop === "designer") {
-      dispatch(dispatchKey(prop, [value]));
+      updateState(keyedUpdate(prop, [value]));
     } else if (hasKey(state, prop)) {
-      dispatch(dispatchKey(prop, value));
+      updateState(keyedUpdate(prop, value));
     }
     setFocused("");
   };
 
   const selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(state, prop)) {
-      const original = state[prop];
-      if (original) {
-        if (is<string[]>(original)) {
-          const array = [...original];
-          array[array.length - 1] = value;
-          dispatch(dispatchKey(prop, array));
-          setFocused("");
-        } else if (is<string>(original)) {
-          const array = original.split(", ");
-          array[array.length - 1] = value;
-          dispatch(dispatchKey(prop, array.join(", ")));
-          setFocused("");
+    updateState((draft) => {
+      if (hasKey(draft, prop)) {
+        const original = draft[prop];
+        if (original) {
+          if (is<string[]>(original)) {
+            original[original.length - 1] = value;
+            setFocused("");
+          } else if (is<string>(original)) {
+            const array = original.split(", ");
+            array[array.length - 1] = value;
+            draft[prop as KeysMatching<State, string>] = array.join(", ");
+            setFocused("");
+          }
         }
       }
-    }
+    });
   };
 
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      vendor[property] = value;
-      dispatch(dispatchKey("vendors", newVendors));
-      setFocused("");
-    }
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+        setFocused("");
+      }
+    });
   };
 
   const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      const original = vendor[property];
-      if (original) {
-        const array = original.split(", ");
-        array[array.length - 1] = value;
-        vendor[property] = array.join(", ");
-        dispatch(dispatchKey("vendors", newVendors));
-        setFocused("");
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        const original = vendor[property];
+        if (original) {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          vendor[property] = array.join(", ");
+          setFocused("");
+        }
       }
-    }
+    });
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    const checked = e.target.checked;
+    const { name, value, checked } = e.target;
     if (name === "designer") {
-      dispatch(dispatchKey(name, value.split(", ")));
+      updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
-      dispatch(dispatchKey(name, checked));
+      updateState(keyedUpdate(name, checked));
     } else if (hasKey(state, name)) {
-      dispatch(dispatchKey(name, value));
+      updateState(keyedUpdate(name, value));
     }
   };
 
   const handleNamedChange = (name: keyof typeof state) => (value: string) => {
-    dispatch(dispatchKey(name, value));
+    updateState(keyedUpdate(name, value));
   };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...state.vendors];
-    const property = e.target.name.replace(/\d/g, "");
-    const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      vendor[property] = e.target.value;
-      dispatch(dispatchKey("vendors", newVendors));
-    }
+    const { name, value } = e.target;
+    const property = name.replace(/\d/g, "");
+    const index = parseInt(name.replace(/\D/g, ""));
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+      }
+    });
   };
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, name)) {
-      vendor[name] = value;
-      dispatch(dispatchKey("vendors", newVendors));
-    }
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, name)) {
+        vendor[name] = value;
+      }
+    });
   };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...state.vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = newVendors[index];
-    if (e.target.checked) {
-      vendor.endDate = "";
-    } else {
-      delete vendor.endDate;
-    }
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (e.target.checked) {
+        vendor.endDate = "";
+      } else {
+        delete vendor.endDate;
+      }
+    });
   };
 
   const addVendor = () => {
@@ -306,20 +285,22 @@ export const ModalCreate = (props: ModalCreateProps) => {
       region: "",
       storeLink: "",
     };
-    dispatch(dispatchKey("vendors", [...state.vendors, emptyVendor]));
+    updateState((draft) => {
+      draft.vendors = [...draft.vendors, emptyVendor];
+    });
   };
 
   const removeVendor = (index: number) => {
-    const newVendors = [...state.vendors];
-    newVendors.splice(index, 1);
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState((draft) => {
+      draft.vendors.splice(index, 1);
+    });
   };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const newVendors = [...state.vendors];
-    arrayMove(newVendors, result.source.index, result.destination.index);
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState((draft) => {
+      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+    });
   };
 
   const uploadImage = () => {
@@ -338,7 +319,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          dispatch(dispatchKey("imageUploadProgress", progress));
+          updateState(keyedUpdate("imageUploadProgress", progress));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -352,7 +333,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
           imageRef
             .getDownloadURL()
             .then((downloadURL) => {
-              dispatch(dispatchKey("imageURL", downloadURL));
+              updateState(keyedUpdate("imageURL", downloadURL));
               createEntry(downloadURL);
             })
             .catch((error) => {
@@ -418,7 +399,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    dispatch(dispatchKey("salesImageLoaded", val));
+    updateState(keyedUpdate("salesImageLoaded", val));
   };
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
@@ -921,40 +902,13 @@ export const ModalEdit = (props: ModalEditProps) => {
     imageURL: "",
     newImage: false,
   };
+  type State = typeof initialState;
 
-  const [state, dispatch] = useReducer(
-    <T extends typeof initialState, K extends keyof T>(
-      state: T,
-      action: { type: "key"; key: K; payload: T[K] } | { type: "reset" } | { type: "merge"; payload: Partial<T> }
-    ) => {
-      switch (action.type) {
-        case "key":
-          return {
-            ...state,
-            [action.key]: action.payload,
-          };
-        case "merge":
-          return {
-            ...state,
-            ...action.payload,
-          };
-        case "reset":
-          return initialState;
-        default:
-          return state;
-      }
-    },
-    initialState
-  );
+  const [state, updateState] = useImmer(initialState);
 
-  const dispatchKey = <T extends typeof initialState, K extends keyof T>(
-    key: K,
-    payload: T[K]
-  ): { type: "key"; key: K; payload: T[K] } => ({
-    type: "key",
-    key,
-    payload,
-  });
+  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
+    draft[key] = payload;
+  };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -989,45 +943,45 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
 
     setId(set.id);
-    dispatch({
-      type: "merge",
-      payload: {
-        alias: set.alias || nanoid(10),
-        profile: set.profile,
-        colorway: set.colorway,
-        designer: set.designer,
-        icDate: set.icDate,
-        details: set.details,
-        notes: set.notes ?? "",
-        gbMonth: !!set.gbMonth ?? false,
-        gbLaunch: gbLaunch,
-        gbEnd: set.gbEnd,
-        shipped: set.shipped ?? false,
-        imageURL: set.image,
-        vendors:
-          set.vendors?.map((vendor) => {
-            if (!vendor.id) {
-              vendor.id = nanoid();
-            }
-            return vendor;
-          }) ?? [],
-        salesImg: set.sales?.img ?? "",
-        salesThirdParty: set.sales?.thirdParty ?? false,
-      },
-    });
+    updateState((draft) => ({
+      ...draft,
+      alias: set.alias || nanoid(10),
+      profile: set.profile,
+      colorway: set.colorway,
+      designer: set.designer,
+      icDate: set.icDate,
+      details: set.details,
+      notes: set.notes ?? "",
+      gbMonth: !!set.gbMonth ?? false,
+      gbLaunch: gbLaunch,
+      gbEnd: set.gbEnd,
+      shipped: set.shipped ?? false,
+      imageURL: set.image,
+      vendors:
+        set.vendors?.map((vendor) => {
+          if (!vendor.id) {
+            vendor.id = nanoid();
+          }
+          return vendor;
+        }) ?? [],
+      salesImg: set.sales?.img ?? "",
+      salesThirdParty: set.sales?.thirdParty ?? false,
+    }));
   };
 
   const closeModal = () => {
     props.close();
-    dispatch({ type: "reset" });
+    updateState(initialState);
     setUploadingImage(false);
     setUploadingDoc(false);
     setFocused("");
   };
 
   const setImage = (image: File | Blob | null) => {
-    dispatch(dispatchKey("image", image));
-    dispatch(dispatchKey("newImage", true));
+    updateState((draft) => {
+      draft.image = image;
+      draft.newImage = true;
+    });
   };
 
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
@@ -1039,116 +993,112 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const toggleDate = () => {
-    dispatch(dispatchKey("gbMonth", !state.gbMonth));
+    updateState(keyedUpdate("gbMonth", !state.gbMonth));
   };
 
   const selectValue = (prop: string, value: string) => {
-    if (hasKey(state, prop)) {
-      if (prop === "designer") {
-        dispatch(dispatchKey(prop, [value]));
-        setFocused("");
-      } else {
-        dispatch(dispatchKey(prop, value));
-        setFocused("");
-      }
+    if (prop === "designer") {
+      updateState(keyedUpdate(prop, [value]));
+    } else if (hasKey(state, prop)) {
+      updateState(keyedUpdate(prop, value));
     }
+    setFocused("");
   };
 
   const selectValueAppend = (prop: string, value: string) => {
-    if (hasKey(state, prop)) {
-      const original = state[prop];
-      if (original) {
-        if (is<string[]>(original)) {
-          const array = [...original];
-          array[array.length - 1] = value;
-          dispatch(dispatchKey(prop, array));
-          setFocused("");
-        } else if (is<string>(original)) {
-          const array = original.split(", ");
-          array[array.length - 1] = value;
-          dispatch(dispatchKey(prop, array.join(", ")));
-          setFocused("");
+    updateState((draft) => {
+      if (hasKey(draft, prop)) {
+        const original = draft[prop];
+        if (original) {
+          if (is<string[]>(original)) {
+            original[original.length - 1] = value;
+            setFocused("");
+          } else if (is<string>(original)) {
+            const array = original.split(", ");
+            array[array.length - 1] = value;
+            draft[prop as KeysMatching<State, string>] = array.join(", ");
+            setFocused("");
+          }
         }
       }
-    }
+    });
   };
 
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      vendor[property] = value;
-      dispatch(dispatchKey("vendors", newVendors));
-      setFocused("");
-    }
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+        setFocused("");
+      }
+    });
   };
 
   const selectVendorAppend = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      const original = vendor[property];
-      if (original) {
-        const array = original.split(", ");
-        array[array.length - 1] = value;
-        vendor[property] = array.join(", ");
-        dispatch(dispatchKey("vendors", newVendors));
-        setFocused("");
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        const original = vendor[property];
+        if (original) {
+          const array = original.split(", ");
+          array[array.length - 1] = value;
+          vendor[property] = array.join(", ");
+          setFocused("");
+        }
       }
-    }
+    });
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    const checked = e.target.checked;
+    const { name, value, checked } = e.target;
     if (name === "designer") {
-      dispatch(dispatchKey(name, value.split(", ")));
+      updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
-      dispatch(dispatchKey(name, checked));
+      updateState(keyedUpdate(name, checked));
     } else if (hasKey(state, name)) {
-      dispatch(dispatchKey(name, value));
+      updateState(keyedUpdate(name, value));
     }
   };
 
   const handleNamedChange = (name: keyof typeof state) => (value: string) => {
-    dispatch(dispatchKey(name, value));
+    updateState(keyedUpdate(name, value));
   };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...state.vendors];
-    const property = e.target.name.replace(/\d/g, "");
-    const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = newVendors[index];
-    if (hasKey(vendor, property)) {
-      vendor[property] = e.target.value;
-      dispatch(dispatchKey("vendors", newVendors));
-    }
+    const { name, value } = e.target;
+    const property = name.replace(/\d/g, "");
+    const index = parseInt(name.replace(/\D/g, ""));
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, property)) {
+        vendor[property] = value;
+      }
+    });
   };
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
-    const newVendors = [...state.vendors];
-    const vendor = newVendors[index];
-    if (hasKey(vendor, name)) {
-      vendor[name] = value;
-      dispatch(dispatchKey("vendors", newVendors));
-    }
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (hasKey(vendor, name)) {
+        vendor[name] = value;
+      }
+    });
   };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVendors = [...state.vendors];
     const index = parseInt(e.target.name.replace(/\D/g, ""));
-    const vendor = newVendors[index];
-    if (e.target.checked) {
-      vendor.endDate = "";
-    } else {
-      delete vendor.endDate;
-    }
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState((draft) => {
+      const vendor = draft.vendors[index];
+      if (e.target.checked) {
+        vendor.endDate = "";
+      } else {
+        delete vendor.endDate;
+      }
+    });
   };
 
   const addVendor = () => {
@@ -1158,20 +1108,22 @@ export const ModalEdit = (props: ModalEditProps) => {
       region: "",
       storeLink: "",
     };
-    dispatch(dispatchKey("vendors", [...state.vendors, emptyVendor]));
+    updateState((draft) => {
+      draft.vendors = [...draft.vendors, emptyVendor];
+    });
   };
 
   const removeVendor = (index: number) => {
     const newVendors = [...state.vendors];
     newVendors.splice(index, 1);
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState(keyedUpdate("vendors", newVendors));
   };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
-    const newVendors = [...state.vendors];
-    arrayMove(newVendors, result.source.index, result.destination.index);
-    dispatch(dispatchKey("vendors", newVendors));
+    updateState((draft) => {
+      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+    });
   };
 
   const uploadImage = () => {
@@ -1190,7 +1142,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           // Observe state change events such as progress, pause, and resume
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          dispatch(dispatchKey("imageUploadProgress", progress));
+          updateState(keyedUpdate("imageUploadProgress", progress));
         },
         (error) => {
           // Handle unsuccessful uploads
@@ -1205,7 +1157,7 @@ export const ModalEdit = (props: ModalEditProps) => {
           imageRef
             .getDownloadURL()
             .then(async (downloadURL) => {
-              dispatch(dispatchKey("imageURL", downloadURL));
+              updateState(keyedUpdate("imageURL", downloadURL));
               editEntry(downloadURL);
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = props.set.image.match(fileNameRegex);
@@ -1286,7 +1238,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   };
 
   const setSalesImageLoaded = (val: boolean) => {
-    dispatch(dispatchKey("salesImageLoaded", val));
+    updateState(keyedUpdate("salesImageLoaded", val));
   };
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
