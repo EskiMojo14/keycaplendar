@@ -382,10 +382,7 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
         valueFormat=">-,"
         enableArcLabels
         arcLabelsSkipAngle={10}
-        arcLabelsTextColor={({ color }) => {
-          console.log(color);
-          return getTextColour(color);
-        }}
+        arcLabelsTextColor={({ color }) => getTextColour(color)}
         layers={["arcs", "arcLabels", CentredLabel]}
         onClick={(clickedData) => {
           if (sunburstChildHasChildren(filterData)) {
