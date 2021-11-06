@@ -1,8 +1,16 @@
 import fs from "fs";
+import prettier from "prettier";
 import sass from "sass";
+import yargs from "yargs/yargs";
 import { camelCase, cloneDeep } from "lodash";
 import cssToJS from "transform-css-to-js";
 import { parse, stringify } from "comment-json";
+
+const { p: format } = yargs(process.argv.slice(2))
+  .options({
+    p: { type: "boolean", alias: ["format", "prettier"], default: false },
+  })
+  .parse();
 
 const objectEditDeep = <InputVal = string, OutputVal = string>(
   keyCB: (string: string) => string = (string) => string,
@@ -72,8 +80,27 @@ export const exportSCSS = (cb: () => void) => {
     value === "undefined" ? "" : ["true", "false"].includes(value) ? value === "true" : value;
   const processedParsed = objectEditDeep(editKey, editValue)(parsed);
   const listProcessed = handleLists(processedParsed);
-  fs.writeFileSync("src/theme-variables.json", stringify(listProcessed));
-  cb();
+  const writeFile = (data: string) => {
+    fs.writeFileSync("src/theme-variables.json", data);
+    cb();
+  };
+  if (format) {
+    prettier
+      .resolveConfig("src/theme-variables.json")
+      .then((options) => {
+        if (options) {
+          writeFile(prettier.format(stringify(listProcessed), { ...options, parser: "json" }));
+        } else {
+          writeFile(stringify(listProcessed));
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch prettier config: %s", err);
+        writeFile(stringify(listProcessed));
+      });
+  } else {
+    writeFile(stringify(listProcessed));
+  }
 };
 
 export default exportSCSS;
