@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, ReactNode, DetailedHTMLProps, HTMLAttr
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
+import { themeLists, graphColors } from "@s/common/constants";
 import { selectChartSettings, setStatisticsCalendarChartSetting } from "@s/statistics";
 import { CalendarDataObject, Categories } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, iconObject, pluralise } from "@s/util/functions";
@@ -17,17 +17,28 @@ import { withTooltip } from "@c/util/hocs";
 import { Palette } from "@i";
 import "./calendar-card.scss";
 
+const { heatmap } = graphColors;
+
 type CalendarCardProps = {
   data: CalendarDataObject;
   start: string;
   end: string;
   unit: string;
-  theme?: "primary" | "secondary";
+  theme?: keyof typeof themeLists;
   overline?: ReactNode;
   note?: ReactNode;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const CalendarCard = ({ data, start, end, unit, theme, overline, note, ...props }: CalendarCardProps) => {
+export const CalendarCard = ({
+  data,
+  start,
+  end,
+  unit,
+  theme = "primary",
+  overline,
+  note,
+  ...props
+}: CalendarCardProps) => {
   const dispatch = useAppDispatch();
 
   const {
@@ -37,8 +48,6 @@ export const CalendarCard = ({ data, start, end, unit, theme, overline, note, ..
   } = useAppSelector(selectChartSettings);
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const { heatmap } = useAppSelector(selectCurrentGraphColors);
 
   const toggleColour = () => {
     dispatch(
@@ -77,8 +86,8 @@ export const CalendarCard = ({ data, start, end, unit, theme, overline, note, ..
             from={start}
             to={end}
             theme={nivoTheme}
-            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${theme || "primary"}Gradient`]}
-            emptyColor={currentTheme?.divider}
+            colors={palette === "heatmap" ? heatmap : themeLists[theme]}
+            emptyColor="var(--theme-divider)"
             dayBorderWidth={0}
             monthBorderWidth={0}
             daySpacing={2}
@@ -114,7 +123,7 @@ export const CalendarSummaryCard = ({
   start,
   end,
   unit,
-  theme,
+  theme = "primary",
   overline,
   note,
   ...props
@@ -128,8 +137,6 @@ export const CalendarSummaryCard = ({
   } = useAppSelector(selectChartSettings);
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const { heatmap } = useAppSelector(selectCurrentGraphColors);
 
   const toggleColour = () => {
     dispatch(
@@ -190,8 +197,8 @@ export const CalendarSummaryCard = ({
             from={start}
             to={end}
             theme={nivoTheme}
-            colors={palette === "heatmap" ? heatmap : currentTheme?.[`${theme || "primary"}Gradient`]}
-            emptyColor={currentTheme?.divider}
+            colors={palette === "heatmap" ? heatmap : themeLists[theme]}
+            emptyColor="var(--theme-divider)"
             dayBorderWidth={0}
             monthBorderWidth={0}
             daySpacing={2}

@@ -25,6 +25,7 @@ import {
   hasKey,
   iconObject,
 } from "@s/util/functions";
+import { KeysMatching } from "@s/util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -44,7 +45,6 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { withTooltip } from "@c/util/hocs";
 import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import "./modal-entry.scss";
-import { KeysMatching } from "@s/common/types";
 
 const getVendorStyle = (provided: DraggableProvided) => {
   const style = provided.draggableProps.style;
@@ -833,7 +833,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
                 className="sales-checkbox"
                 label="Third party graph"
                 name="salesThirdParty"
-                id={"CreateSalesThirdParty"}
+                id="createSalesThirdParty"
                 onChange={handleChange}
                 checked={state.salesThirdParty}
               />

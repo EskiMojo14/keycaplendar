@@ -62,6 +62,13 @@ $overlay-values: (
   @each $variable, $value in $theme {
     @if type-of($value) == "color" {
       --theme-#{$variable}: #{$value};
+    } @else if type-of($value) == "list" {
+      @each $colour in $value {
+        $index: index($value, $colour);
+        @if type-of($colour) == "color" {
+          --theme-#{$variable}#{$index}: #{$colour};
+        }
+      }
     }
   }
 

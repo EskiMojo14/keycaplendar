@@ -31,8 +31,8 @@ export const loadState = () => {
 export const sanitiseState = (state: RootState) => {
   const { common, main, settings, user } = state;
   const sanitiseCommonSlice = (commonSlice: CommonState) => {
-    const { theme, themeMaps } = commonSlice;
-    return { theme, themeMaps };
+    const { theme } = commonSlice;
+    return { theme };
   };
   const sanitiseMainSlice = (mainSlice: MainState) => {
     /* eslint-disable @typescript-eslint/no-unused-vars */

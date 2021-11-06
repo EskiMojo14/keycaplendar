@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { IconOptions, IconPropT } from "@rmwc/types";
-import { Page, ThemeMap, GraphColors } from "./types";
+import { Page, ThemeMap } from "./types";
 import {
   CalendarToday,
   Store,
@@ -181,7 +181,18 @@ export const blankTheme: ThemeMap = {
   elevatedSurface: Array(25).fill(""),
 };
 
-export const blankGraphColors: GraphColors[keyof GraphColors] = {
-  rainbow: [],
-  heatmap: [],
+const createThemeList = (prefix: string, list: string, length: number) =>
+  Array(length)
+    .fill("")
+    .map((_, index) => `var(--${prefix}-${list}${index + 1})`);
+
+export const themeLists = {
+  primary: createThemeList("theme", "primary-gradient", 10),
+  secondary: createThemeList("theme", "secondary-gradient", 10),
+  elevatedSurface: createThemeList("theme", "elevated-surface", 25),
+};
+
+export const graphColors = {
+  rainbow: createThemeList("graph-color", "rainbow", 38),
+  heatmap: createThemeList("graph-color", "heatmap", 8),
 };

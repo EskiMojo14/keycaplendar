@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext, useMemo, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectCurrentThemeMap } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { ThemeColorName } from "@s/common/types";
 import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
@@ -37,7 +36,7 @@ type TableCardProps = {
   note?: ReactNode;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: TableCardProps) => {
+export const TableCard = ({ data, unit, tab, theme = "primary", overline, note, ...props }: TableCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
@@ -48,7 +47,6 @@ export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: 
     dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
   const labels = useMemo(
     () =>
       data.data
@@ -68,11 +66,11 @@ export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: 
         keys={["count"]}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
+        colors={`var(--theme-${theme})`}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -104,7 +102,7 @@ export const TableCard = ({ data, unit, tab, theme, overline, note, ...props }: 
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
+        colors={`var(--theme-${theme})`}
         tooltip={({
           point: {
             data: { xFormatted, yFormatted },
@@ -232,7 +230,7 @@ export const TableSummaryCard = ({
   breakdownData,
   unit,
   tab,
-  theme,
+  theme = "primary",
   overline,
   note,
   ...props
@@ -247,7 +245,6 @@ export const TableSummaryCard = ({
     dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [category]);
@@ -281,11 +278,11 @@ export const TableSummaryCard = ({
         keys={["count"]}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
+        colors={`var(--theme-${theme})`}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -317,7 +314,7 @@ export const TableSummaryCard = ({
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme[theme || "primary"]] : undefined}
+        colors={`var(--theme-${theme})`}
         tooltip={({
           point: {
             data: { xFormatted, yFormatted },

@@ -1,12 +1,11 @@
 import { is } from "typescript-is";
 import throttle from "lodash.throttle";
-import { alpha } from "@material-ui/core/styles";
 import { typedFirestore } from "@s/firebase/firestore";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
-import { setAppPage, setDevice, setGraphColors, setOrientation, setThemeMaps } from ".";
+import { setAppPage, setDevice, setOrientation } from ".";
 import { mainPages, pageTitle, urlPages } from "./constants";
-import { Page, ThemeMap } from "./types";
+import { Page } from "./types";
 import { setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -30,7 +29,6 @@ import { StatsTab } from "@s/statistics/types";
 import { setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes } from "@s/util/functions";
-import themeVariables from "~/theme-variables.json";
 
 const { dispatch } = store;
 
@@ -41,26 +39,11 @@ const { dispatch } = store;
  * @returns Theme colour to use for text
  */
 
-export const getTextColour = (bgColor: string, themeMap: ThemeMap, defaultColor = themeMap.textHigh) => {
-  switch (bgColor) {
-    case themeMap.primary:
-      return themeMap.onPrimary;
-    case themeMap.primaryLight:
-      return themeMap.onPrimaryLight;
-    case themeMap.primaryDark:
-      return themeMap.onPrimaryDark;
-    case themeMap.secondary:
-      return themeMap.onSecondary;
-    case themeMap.secondaryLight:
-      return themeMap.onSecondaryLight;
-    case themeMap.secondaryDark:
-      return themeMap.onSecondaryDark;
-    case themeMap.error:
-      return themeMap.onError;
-    case themeMap.surface:
-      return themeMap.onSurface;
-    default:
-      return defaultColor;
+export const getTextColour = (bgColor: string, defaultColor = "var(--theme-text-high)") => {
+  if (bgColor.startsWith("var(--theme")) {
+    return `var(--theme-on-${bgColor.replace("var(--theme-", "")}`;
+  } else {
+    return defaultColor;
   }
 };
 
@@ -77,26 +60,6 @@ export const getTextOpacity = (emphasis: "high" | "medium" | "disabled") => {
     disabled: 0.38,
   };
   return opacities[emphasis];
-};
-
-/** Gets according text colour with opacity for given theme background colour and emphasis.
- * @param bgColor Theme colour to put text on
- * @param themeMap Theme map to check against.
- * @param emphasis Emphasis to use (high, medium, disabled)
- * @param [defaultColor=themeMap.textHigh] Default text colour to use if no match found.
- * @returns Theme colour to use for text (with opacity)
- */
-
-export const getTextColourOpacity = (
-  bgColor: string,
-  themeMap: ThemeMap,
-  emphasis: "high" | "medium" | "disabled",
-  defaultColor = themeMap.textHigh
-) => alpha(getTextColour(bgColor, themeMap, defaultColor), getTextOpacity(emphasis));
-
-export const saveTheme = () => {
-  dispatch(setThemeMaps(themeVariables.themesMap));
-  dispatch(setGraphColors(themeVariables.graphColors));
 };
 
 export const checkDevice = () => {

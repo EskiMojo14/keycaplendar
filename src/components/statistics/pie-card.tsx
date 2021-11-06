@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useMemo, ReactNode, HTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectCurrentThemeMap, selectDevice } from "@s/common";
+import { selectDevice } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { selectChartSettings, setStatisticsSunburstPackingChartSetting } from "@s/statistics";
 import { sunburstChildHasChildren } from "@s/statistics/functions";
@@ -36,6 +36,15 @@ import { BubbleChart, DonutSmall } from "@i";
 import "./pie-card.scss";
 
 const statuses = ["IC", "Live GB", "Pre GB", "Post GB", "Shipped"] as const;
+
+const statusColors = {
+  IC: "var(--theme-grey-2)",
+  "Pre GB": "var(--theme-grey-1)",
+  "Live GB": "var(--theme-secondary)",
+  "Post GB": "var(--theme-primary)",
+  Shipped: "var(--theme-primary-dark)",
+  default: "var(--theme-lighter-divider)",
+};
 
 const flatten = (data: StatusDataObjectSunburstChild[]): StatusDataObjectSunburstChild[] =>
   data.reduce((acc, item) => {
@@ -81,19 +90,6 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
   } = useAppSelector(selectChartSettings);
   const setGraphType = (value: "sunburst" | "packing") =>
     dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
-
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
-
-  const statusColors = currentTheme
-    ? {
-        IC: currentTheme.grey2,
-        "Pre GB": currentTheme.grey1,
-        "Live GB": currentTheme.secondary,
-        "Post GB": currentTheme.primary,
-        Shipped: currentTheme.primaryDark,
-        default: currentTheme.lighterDivider,
-      }
-    : {};
   const getStatusColor = <RawDatum,>(
     node: Omit<SunburstDatum<RawDatum>, "color" | "fill"> | Omit<PackingDatum<RawDatum>, "color" | "fill">
   ) => {
@@ -130,12 +126,12 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
         inheritColorFromParent={false}
         margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
         theme={nivoTheme}
-        borderColor={currentTheme?.elevatedSurface[1]}
+        borderColor="var(--theme-elevated-surface2)"
         borderWidth={2}
         valueFormat=">-,"
         enableArcLabels
         arcLabelsSkipAngle={10}
-        arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        arcLabelsTextColor={({ color }) => getTextColour(color)}
         layers={["arcs", "arcLabels", CentredLabel]}
         onClick={(clickedData) => {
           if (sunburstChildHasChildren(chartData)) {
@@ -157,13 +153,13 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
         inheritColorFromParent={false}
         margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
         theme={nivoTheme}
-        borderColor={currentTheme?.elevatedSurface[1]}
+        borderColor="var(--theme-elevated-surface2)"
         borderWidth={1}
         valueFormat=">-,"
         enableLabels
         labelsFilter={(label) => label.node.depth === 1}
         labelsSkipRadius={32}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         onClick={(clickedData) => {
           if (sunburstChildHasChildren(chartData)) {
             const foundObject = findObject(flatten(chartData.children), clickedData.id);
@@ -321,18 +317,7 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
     dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
 
   const device = useAppSelector(selectDevice);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
 
-  const statusColors = currentTheme
-    ? {
-        IC: currentTheme.grey2,
-        "Pre GB": currentTheme.grey1,
-        "Live GB": currentTheme.secondary,
-        "Post GB": currentTheme.primary,
-        Shipped: currentTheme.primaryDark,
-        default: currentTheme.lighterDivider,
-      }
-    : {};
   const getStatusColor = <RawDatum,>(
     node: Omit<SunburstDatum<RawDatum>, "color" | "fill"> | Omit<PackingDatum<RawDatum>, "color" | "fill">
   ) => {
@@ -392,12 +377,15 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
         inheritColorFromParent={false}
         margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
         theme={nivoTheme}
-        borderColor={currentTheme?.elevatedSurface[1]}
+        borderColor="var(--theme-elevated-surface2)"
         borderWidth={2}
         valueFormat=">-,"
         enableArcLabels
         arcLabelsSkipAngle={10}
-        arcLabelsTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        arcLabelsTextColor={({ color }) => {
+          console.log(color);
+          return getTextColour(color);
+        }}
         layers={["arcs", "arcLabels", CentredLabel]}
         onClick={(clickedData) => {
           if (sunburstChildHasChildren(filterData)) {
@@ -419,13 +407,13 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
         inheritColorFromParent={false}
         margin={{ top: 16, right: 16, bottom: 16, left: 16 }}
         theme={nivoTheme}
-        borderColor={currentTheme?.elevatedSurface[1]}
+        borderColor="var(--theme-elevated-surface2)"
         borderWidth={1}
         valueFormat=">-,"
         enableLabels
         labelsFilter={(label) => label.node.depth === 1}
         labelsSkipRadius={32}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         onClick={(clickedData) => {
           if (sunburstChildHasChildren(filterData)) {
             const foundObject = findObject(flatten(filterData.children), clickedData.id);

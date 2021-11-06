@@ -12,7 +12,7 @@ import {
 import classNames from "classnames";
 import { alpha } from "@material-ui/core";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectCurrentGraphColors, selectCurrentThemeMap } from "@s/common";
+import { graphColors } from "@s/common/constants";
 import { getTextColour } from "@s/common/functions";
 import { ThemeColorName } from "@s/common/types";
 import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
@@ -52,7 +52,6 @@ export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedC
   const dispatch = useAppDispatch();
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const {
     barLine: {
@@ -69,15 +68,15 @@ export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedC
     graphType === "bar" ? (
       <ResponsiveBar
         data={data.months}
-        indexBy={"month"}
+        indexBy="month"
         keys={["shipped", "unshipped"]}
         groupMode={stackedGraph ? "stacked" : "grouped"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        colors={["var(--theme-primary-dark)", "var(--theme-primary)"]}
         padding={0.33}
         labelSkipHeight={16}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -101,7 +100,7 @@ export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedC
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        colors={["var(--theme-primary-dark)", "var(--theme-primary)"]}
         tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
@@ -231,7 +230,6 @@ export const ShippedSummaryCard = ({
   const dispatch = useAppDispatch();
 
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [category]);
@@ -253,15 +251,15 @@ export const ShippedSummaryCard = ({
     graphType === "bar" ? (
       <ResponsiveBar
         data={selectedData.months}
-        indexBy={"month"}
+        indexBy="month"
         keys={["shipped", "unshipped"]}
         groupMode={stackedGraph ? "stacked" : "grouped"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        colors={["var(--theme-primary-dark)", "var(--theme-primary)"]}
         padding={0.33}
         labelSkipHeight={16}
-        labelTextColor={currentTheme ? ({ color }) => getTextColour(color, currentTheme) : undefined}
+        labelTextColor={({ color }) => getTextColour(color)}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -285,7 +283,7 @@ export const ShippedSummaryCard = ({
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme ? [currentTheme.primaryDark, currentTheme.primary] : undefined}
+        colors={["var(--theme-primary-dark)", "var(--theme-primary)"]}
         tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
@@ -430,8 +428,6 @@ const blankTimelinesDataObject: TimelinesDataObject = {
 export const TimelinesCard = ({ data, months, singleTheme, allProfiles, ...props }: TimelinesCardProps) => {
   const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const { rainbow: graphColors } = useAppSelector(selectCurrentGraphColors);
 
   const [selectedA, setSelectedA] = useState(data[0]?.name || "");
   const selectedAData: TimelinesDataObject = useMemo(
@@ -452,8 +448,8 @@ export const TimelinesCard = ({ data, months, singleTheme, allProfiles, ...props
 
   const getProfileColour = (profile: string, index = 0) =>
     (allProfiles?.indexOf(profile) ?? -1) >= 0
-      ? alpha(graphColors[(allProfiles?.indexOf(profile) || 0) % graphColors.length], 1)
-      : alpha(graphColors[index % graphColors.length], 1);
+      ? alpha(graphColors.rainbow[(allProfiles?.indexOf(profile) || 0) % graphColors.rainbow.length], 1)
+      : alpha(graphColors.rainbow[index % graphColors.rainbow.length], 1);
 
   const {
     barLine: {
@@ -487,18 +483,16 @@ export const TimelinesCard = ({ data, months, singleTheme, allProfiles, ...props
       <ResponsiveBar
         data={data.months}
         maxValue={maxYVal}
-        indexBy={"month"}
+        indexBy="month"
         keys={data.profiles}
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme && theme ? [currentTheme[theme]] : (d) => getProfileColour(`${d.id}`, d.index)}
+        colors={theme ? `var(--theme-${theme})` : (d) => getProfileColour(`${d.id}`, d.index)}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
-        labelTextColor={
-          currentTheme ? ({ color }) => getTextColour(color, currentTheme, currentTheme.onSecondary) : undefined
-        }
+        labelTextColor={({ color }) => getTextColour(color, "var(--theme-on-secondary)")}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -522,7 +516,7 @@ export const TimelinesCard = ({ data, months, singleTheme, allProfiles, ...props
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme && theme ? [currentTheme[theme]] : (d) => getProfileColour(`${d.id}`, d.index)}
+        colors={theme ? `var(--theme-${theme})` : (d) => getProfileColour(`${d.id}`, d.index)}
         tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",
@@ -677,8 +671,6 @@ export const TimelinesSummaryCard = ({
 }: TimelinesSummaryCardProps) => {
   const dispatch = useAppDispatch();
   const nivoTheme = useContext(NivoThemeContext);
-  const currentTheme = useAppSelector(selectCurrentThemeMap);
-  const { rainbow: graphColors } = useAppSelector(selectCurrentGraphColors);
 
   const [selectedProfile, setSelectedProfile] = useState("");
   useEffect(() => setSelectedProfile(""), [category]);
@@ -724,18 +716,16 @@ export const TimelinesSummaryCard = ({
     graphType === "bar" ? (
       <ResponsiveBar
         data={selectedData.months}
-        indexBy={"month"}
+        indexBy="month"
         keys={allowedKeys}
         groupMode={!stackedGraph && allowUnstacked ? "grouped" : "stacked"}
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         theme={nivoTheme}
-        colors={currentTheme && singleTheme ? [currentTheme[singleTheme]] : graphColors || undefined}
+        colors={singleTheme ? `var(--theme-${singleTheme})` : graphColors.rainbow}
         padding={0.33}
         labelSkipWidth={16}
         labelSkipHeight={16}
-        labelTextColor={
-          currentTheme ? ({ color }) => getTextColour(color, currentTheme, currentTheme.onSecondary) : undefined
-        }
+        labelTextColor={({ color }) => getTextColour(color, "var(--theme-on-secondary)")}
         axisLeft={{
           legend: "Count",
           legendOffset: -40,
@@ -759,7 +749,7 @@ export const TimelinesSummaryCard = ({
         margin={{ top: 48, right: 48, bottom: 64, left: 64 }}
         enableArea
         theme={nivoTheme}
-        colors={currentTheme && singleTheme ? [currentTheme[singleTheme]] : graphColors ? graphColors : undefined}
+        colors={singleTheme ? `var(--theme-${singleTheme})` : graphColors.rainbow}
         tooltip={PointTooltip}
         axisLeft={{
           legend: "Count",

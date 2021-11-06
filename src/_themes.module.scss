@@ -1,4 +1,5 @@
 @use "@material/theme/color-palette" as palette;
+@use "@material/theme/functions" as theme-functions;
 @use "sass:math";
 @use "util";
 
@@ -186,6 +187,10 @@ $overlay-values: (
   24: 16%,
 );
 
+@function contrast-text($color) {
+  @return if(theme-functions.contrast-tone($color) == "dark", black, white);
+}
+
 @function overlay-elevation($color, $elevation: 0) {
   @return lighten($color, map-get($overlay-values, $elevation));
 }
@@ -216,6 +221,9 @@ $overlay-values: (
     text-disabled: rgba(map-get($theme, on-surface), 0.38),
   );
 
+  $grey1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%);
+  $grey2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%);
+
   $dynamic-colors: (
     meta:
       if(
@@ -225,8 +233,10 @@ $overlay-values: (
       ),
     divider: rgba(map-get($theme, on-surface), 0.12),
     lighter-divider: rgba(map-get($theme, on-surface), 0.06),
-    grey-1: mix(map-get($theme, on-surface), map-get($theme, surface), 24%),
-    grey-2: mix(map-get($theme, on-surface), map-get($theme, surface), 12%),
+    grey-1: $grey1,
+    on-grey-1: contrast-text($grey1),
+    grey-2: $grey2,
+    on-grey-2: contrast-text($grey2),
     primary-gradient: generate-gradient(map-get($theme, primary)),
     secondary-gradient: generate-gradient(map-get($theme, secondary)),
     elevated-surface: create-elevation-list($theme),

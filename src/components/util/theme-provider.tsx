@@ -1,13 +1,19 @@
-import { useState, useEffect, createContext, ReactNode } from "react";
+import { createContext, ReactNode } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";
-import { selectCurrentThemeMap } from "@s/common";
+import { selectTheme } from "@s/common";
 import { blankTheme } from "@s/common/constants";
 import { getTextOpacity } from "@s/common/functions";
+import { camelise, hasKey } from "@s/util/functions";
+import themeVariables from "~/theme-variables.json";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
+  const currentTheme = useAppSelector(selectTheme);
+  const camelisedKey = camelise(currentTheme, "-");
+  const currentThemeMap = hasKey(themeVariables.themesMap, camelisedKey)
+    ? themeVariables.themesMap[camelisedKey]
+    : blankTheme;
   const theme = currentThemeMap.primary
     ? createTheme({
         palette: {
@@ -47,60 +53,57 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
 export const NivoThemeContext = createContext<Theme>({});
 
-export const NivoThemeProvider = ({ children }: { children: ReactNode }) => {
-  const currentThemeMap = useAppSelector(selectCurrentThemeMap) || blankTheme;
-  const [theme, setTheme] = useState<Theme>({});
-  useEffect(() => {
-    setTheme({
-      background: "transparent",
-      textColor: currentThemeMap.textHigh,
+const theme = {
+  background: "transparent",
+  textColor: "var(--theme-text-high)",
+  fontFamily: "inherit",
+  axis: {
+    ticks: {
+      line: {
+        stroke: "var(--theme-divider)",
+      },
+      text: {
+        fill: "var(--theme-text-medium)",
+      },
+    },
+    domain: {
+      line: {
+        stroke: "var(--theme-divider)",
+      },
+    },
+    legend: {
+      text: {
+        fontSize: 13,
+        textRendering: "optimizeLegibility",
+      },
+    },
+  },
+  grid: {
+    line: {
+      stroke: "var(--theme-divider)",
+    },
+  },
+  crosshair: {
+    line: {
+      stroke: "var(--theme-text-medium)",
+      strokeOpacity: 1,
+    },
+  },
+  tooltip: {
+    container: {
       fontFamily: "inherit",
-      axis: {
-        ticks: {
-          line: {
-            stroke: currentThemeMap.divider,
-          },
-          text: {
-            fill: currentThemeMap.textMedium,
-          },
-        },
-        domain: {
-          line: {
-            stroke: currentThemeMap.divider,
-          },
-        },
-        legend: {
-          text: {
-            fontSize: 13,
-            textRendering: "optimizeLegibility",
-          },
-        },
-      },
-      grid: {
-        line: {
-          stroke: currentThemeMap.divider,
-        },
-      },
-      crosshair: {
-        line: {
-          stroke: currentThemeMap.textMedium,
-          strokeOpacity: 1,
-        },
-      },
-      tooltip: {
-        container: {
-          fontFamily: "inherit",
-          textTransform: "capitalize",
-          backgroundColor: currentThemeMap.textHigh,
-          color: currentThemeMap.surface,
-          //boxShadow: "none",
-          borderRadius: 4,
-        },
-        chip: {
-          borderRadius: "50%",
-        },
-      },
-    });
-  }, [currentThemeMap]);
-  return <NivoThemeContext.Provider value={theme}>{children}</NivoThemeContext.Provider>;
+      textTransform: "capitalize",
+      backgroundColor: "var(--theme-text-high)",
+      color: "var(--theme-surface)",
+      boxShadow: "none",
+      borderRadius: 4,
+    },
+    chip: {
+      borderRadius: "50%",
+    },
+  },
 };
+
+export const NivoThemeProvider = ({ children }: { children: ReactNode }) => (
+  <NivoThemeContext.Provider value={theme}>{children}</NivoThemeContext.Provider>
+);
