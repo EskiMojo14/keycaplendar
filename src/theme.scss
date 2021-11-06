@@ -64,6 +64,18 @@ $overlay-values: (
       --theme-#{$variable}: #{$value};
     }
   }
+
+  $graph-colors: map-get(graph-colors.$graph-colors, if($dark, dark, light));
+
+  @each $colourway, $list in $graph-colors {
+    @each $colour in $list {
+      $index: index($list, $colour);
+      @if type-of($colour) == "color" {
+        --graph-color-#{$colourway}#{$index}: #{$colour};
+      }
+    }
+  }
+
   body {
     background-color: map-get($theme, background);
   }
