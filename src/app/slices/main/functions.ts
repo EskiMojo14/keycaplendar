@@ -19,6 +19,7 @@ import {
   objectKeys,
   replaceFunction,
   removeDuplicates,
+  alphabeticalSortPropCurried,
 } from "@s/util/functions";
 import {
   allSorts,
@@ -70,6 +71,7 @@ import {
   VendorType,
   WhitelistType,
 } from "./types";
+import produce from "immer";
 
 const { dispatch } = store;
 
@@ -384,19 +386,20 @@ const sortData = (state = store.getState()) => {
   const sort = selectSort(state);
   const sortOrder = selectSortOrder(state);
   const groups = selectSetGroups(state);
-  const array = [...groups];
-  array.sort((x, y) => {
-    const a = x.title;
-    const b = y.title;
-    if (arrayIncludes(dateSorts, sort)) {
-      const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
-      const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
-      return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
-    }
-    return alphabeticalSortCurried()(a, b);
+  const sortedGroups = produce(groups, (groupsDraft) => {
+    groupsDraft.sort((x, y) => {
+      const a = x.title;
+      const b = y.title;
+      if (arrayIncludes(dateSorts, sort)) {
+        const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
+        const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
+        return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
+      }
+      return alphabeticalSortCurried()(a, b);
+    });
   });
 
-  dispatch(setSetGroups(array));
+  dispatch(setSetGroups(sortedGroups));
 };
 
 const createGroups = (state = store.getState()) => {
@@ -731,9 +734,10 @@ export const deletePreset = (preset: PresetType, state = store.getState()) => {
 export const syncPresets = (state = store.getState()) => {
   const presets = selectUserPresets(state);
   const user = selectUser(state);
-  const sortedPresets = alphabeticalSortProp([...presets], "name", false, "Default").map((preset) => ({
-    ...preset,
-  }));
+  const sortedPresets = produce(presets, (presetsDraft) => {
+    presetsDraft.sort(alphabeticalSortPropCurried("name", false, "Default"));
+    return presetsDraft.map((preset) => ({ ...preset }));
+  });
   typedFirestore
     .collection("users")
     .doc(user.id as UserId)
