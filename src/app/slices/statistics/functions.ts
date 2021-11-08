@@ -1,3 +1,4 @@
+import produce from "immer";
 import { DateTime, Interval } from "luxon";
 import firebase from "@s/firebase";
 import { Datum, Serie } from "@nivo/line";
@@ -36,7 +37,6 @@ import {
   TimelinesDataObject,
   VendorData,
 } from "./types";
-import produce from "immer";
 
 const storage = firebase.storage();
 
@@ -431,12 +431,11 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
 };
 
 export const sortData = (state = store.getState()) => {
-  const statisticsTab = selectTab(state);
+  const tab = selectTab(state);
   const statisticsData = selectData(state);
   const sort = selectSort(state);
-  if (statisticsTab !== "summary") {
+  if (tab !== "summary") {
     dispatch(setLoading(true));
-    const tab = statisticsTab;
     const sortedData = produce(statisticsData, (statisticsDataDraft) => {
       if (tab === "duration") {
         categories.forEach((category) => {
