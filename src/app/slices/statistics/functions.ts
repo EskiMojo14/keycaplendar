@@ -1,18 +1,9 @@
 import { DateTime, Interval } from "luxon";
 import firebase from "@s/firebase";
-import cloneDeep from "lodash.clonedeep";
 import { Datum, Serie } from "@nivo/line";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
-import {
-  alphabeticalSortPropCurried,
-  hasKey,
-  iterateDays,
-  mergeObject,
-  objectEntries,
-  ordinal,
-  typeGuard,
-} from "@s/util/functions";
+import { alphabeticalSortPropCurried, hasKey, iterateDays, objectEntries, ordinal, typeGuard } from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -45,6 +36,7 @@ import {
   TimelinesDataObject,
   VendorData,
 } from "./types";
+import produce from "immer";
 
 const storage = firebase.storage();
 
@@ -445,62 +437,47 @@ export const sortData = (state = store.getState()) => {
   if (statisticsTab !== "summary") {
     dispatch(setLoading(true));
     const tab = statisticsTab;
-    const setData = (data: StatisticsData[keyof StatisticsData]) => {
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [tab]: data })));
-      dispatch(setLoading(false));
-    };
-    if (tab === "duration") {
-      const data = cloneDeep(statisticsData[tab]);
-      categories.forEach((category) => {
-        properties.forEach((property) => {
-          const value = data[category].breakdown[property];
-          const sortedValue = value.slice().sort((a, b) => {
-            const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-              alphabeticalSortPropCurried("name")(a, b)
-            );
+    const sortedData = produce(statisticsData, (statisticsDataDraft) => {
+      if (tab === "duration") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
+              const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+                alphabeticalSortPropCurried("name")(a, b)
+              );
+            });
           });
-          data[category].breakdown[property] = sortedValue;
         });
-      });
-      setData(data);
-    } else if (tab === "timelines" || tab === "calendar") {
-      const data = cloneDeep(statisticsData[tab]);
-      categories.forEach((category) => {
-        properties.forEach((property) => {
-          const array = data[category].breakdown[property];
-          const sortedArray = array.slice().sort((a, b) => {
-            const key = sort[tab] === "alphabetical" ? "name" : "total";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-              alphabeticalSortPropCurried("name")(a, b)
-            );
+      } else if (tab === "timelines" || tab === "calendar") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
+              const key = sort[tab] === "alphabetical" ? "name" : "total";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+                alphabeticalSortPropCurried("name")(a, b)
+              );
+            });
           });
-          data[category].breakdown[
-            property
-          ] = sortedArray as StatisticsData["timelines"][Categories]["breakdown"][Properties];
         });
-      });
-      setData(data);
-    } else {
-      const data = cloneDeep(statisticsData[tab]);
-      properties.forEach((properties) => {
-        const value = data.breakdown[properties];
-        type DataObj = typeof data.breakdown[Properties][number];
-        const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
-          if (hasKey(sort, tab)) {
-            const key = sort[tab] === "total" ? "total" : "name";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
-            );
-          }
-          return 0;
+      } else {
+        properties.forEach((properties) => {
+          statisticsDataDraft[tab].breakdown[properties].sort((a, b) => {
+            if (hasKey(sort, tab)) {
+              const key = sort[tab] === "total" ? "total" : "name";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
+              );
+            }
+            return 0;
+          });
         });
-        data.breakdown[properties] = sortedValue;
-      });
-      setData(data);
-    }
+      }
+    });
+    dispatch(setStatisticsData(sortedData));
+    dispatch(setLoading(false));
   }
 };
 
