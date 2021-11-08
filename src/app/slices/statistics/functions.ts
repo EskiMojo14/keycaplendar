@@ -1,9 +1,9 @@
+import produce from "immer";
 import { DateTime } from "luxon";
 import firebase from "@s/firebase";
-import cloneDeep from "lodash.clonedeep";
 import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
-import { alphabeticalSortPropCurried, hasKey, mergeObject, ordinal } from "@s/util/functions";
+import { alphabeticalSortPropCurried, hasKey, ordinal } from "@s/util/functions";
 import {
   setStatisticsData,
   setLoading,
@@ -14,7 +14,7 @@ import {
   selectData,
   selectSort,
 } from ".";
-import { Properties, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
+import { StatisticsSortType, StatisticsType, StatsTab } from "./types";
 import { categories, properties } from "./constants";
 
 const storage = firebase.storage();
@@ -78,69 +78,51 @@ export const getData = async () => {
 };
 
 export const sortData = (state = store.getState()) => {
-  const statisticsTab = selectTab(state);
+  const tab = selectTab(state);
   const statisticsData = selectData(state);
   const sort = selectSort(state);
-  if (statisticsTab !== "summary") {
+  if (tab !== "summary") {
     dispatch(setLoading(true));
-    const tab = statisticsTab;
-    const setData = (data: StatisticsData[keyof StatisticsData]) => {
-      dispatch(setStatisticsData(mergeObject(statisticsData, { [tab]: data })));
-      dispatch(setLoading(false));
-    };
-    const stateData = statisticsData[tab];
-    if (tab === "duration") {
-      const data = cloneDeep(stateData) as StatisticsData["duration"];
-      categories.forEach((category) => {
-        properties.forEach((property) => {
-          const value = data[category].breakdown[property];
-          const sortedValue = value.slice().sort((a, b) => {
-            const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-              alphabeticalSortPropCurried("name")(a, b)
-            );
+    const sortedData = produce(statisticsData, (statisticsDataDraft) => {
+      if (tab === "duration") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
+              const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+                alphabeticalSortPropCurried("name")(a, b)
+              );
+            });
           });
-          data[category].breakdown[property] = sortedValue;
         });
-      });
-      setData(data);
-    } else if (tab === "timelines") {
-      const data = cloneDeep(stateData) as StatisticsData["timelines"];
-      categories.forEach((category) => {
-        properties.forEach((property) => {
-          const value = data[category].breakdown[property];
-          const sortedValue = value.slice().sort((a, b) => {
-            const key = sort[tab] === "alphabetical" ? "name" : "total";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-              alphabeticalSortPropCurried("name")(a, b)
-            );
+      } else if (tab === "timelines") {
+        categories.forEach((category) => {
+          properties.forEach((property) => {
+            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
+              const key = sort[tab] === "alphabetical" ? "name" : "total";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
+                alphabeticalSortPropCurried("name")(a, b)
+              );
+            });
           });
-          data[category].breakdown[property] = sortedValue;
         });
-      });
-      setData(data);
-    } else {
-      const data = cloneDeep(stateData) as Omit<StatisticsData, "duration" | "timelines">[keyof Omit<
-        StatisticsData,
-        "duration" | "timelines"
-      >];
-      properties.forEach((properties) => {
-        const value = data.breakdown[properties];
-        type DataObj = typeof data.breakdown[Properties][number];
-        const sortedValue = value.slice().sort((a: DataObj, b: DataObj) => {
-          if (hasKey(sort, tab)) {
-            const key = sort[tab] === "total" ? "total" : "name";
-            return (
-              alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
-            );
-          }
-          return 0;
+      } else {
+        properties.forEach((properties) => {
+          statisticsDataDraft[tab].breakdown[properties].sort((a, b) => {
+            if (hasKey(sort, tab)) {
+              const key = sort[tab] === "total" ? "total" : "name";
+              return (
+                alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
+              );
+            }
+            return 0;
+          });
         });
-        data.breakdown[properties] = sortedValue;
-      });
-      setData(data);
-    }
+      }
+    });
+    dispatch(setStatisticsData(sortedData));
+    dispatch(setLoading(false));
   }
 };
