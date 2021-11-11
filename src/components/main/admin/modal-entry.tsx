@@ -12,7 +12,6 @@ import { KeysetId } from "@s/firebase/types";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { selectDevice } from "@s/common";
-import { KeysMatching } from "@s/common/types";
 import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
 import { SetType, VendorType } from "@s/main/types";
@@ -26,6 +25,7 @@ import {
   hasKey,
   iconObject,
 } from "@s/util/functions";
+import { KeysMatching } from "@s/util/types";
 import { Button } from "@rmwc/button";
 import { Card, CardActions, CardActionButtons, CardActionButton } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";

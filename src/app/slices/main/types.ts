@@ -1,5 +1,5 @@
 import { allSorts } from "./constants";
-import { Overwrite } from "@s/common/types";
+import { Overwrite } from "@s/util/types";
 
 /** Possible values for sort types. */
 
