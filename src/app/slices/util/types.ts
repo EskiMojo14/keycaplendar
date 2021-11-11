@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 
 /** Alias for `Record<string, T>`. */
 
-export type Obj<T = unknown> = Record<string, T>;
+export type Obj<T> = Record<string, T>;
 
 /** Makes specified keys optional. */
 

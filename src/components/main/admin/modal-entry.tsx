@@ -93,7 +93,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const allVendors = useAppSelector(selectAllVendors);
   const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
-  const initialState: {
+  type State = {
     profile: string;
     colorway: string;
     designer: string[];
@@ -111,7 +111,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
     image: Blob | File | null;
     imageUploadProgress: number;
     imageURL: string;
-  } = {
+  };
+
+  const initialState: State = {
     profile: "",
     colorway: "",
     designer: [""],
@@ -130,7 +132,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
     imageUploadProgress: 0,
     imageURL: "",
   };
-  type State = typeof initialState;
 
   const [state, updateState] = useImmer(initialState);
 
@@ -861,7 +862,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const [id, setId] = useState("");
 
-  const initialState: {
+  type State = {
     alias: string;
     profile: string;
     colorway: string;
@@ -881,7 +882,9 @@ export const ModalEdit = (props: ModalEditProps) => {
     imageUploadProgress: number;
     imageURL: string;
     newImage: boolean;
-  } = {
+  };
+
+  const initialState: State = {
     alias: "",
     profile: "",
     colorway: "",
@@ -902,7 +905,6 @@ export const ModalEdit = (props: ModalEditProps) => {
     imageURL: "",
     newImage: false,
   };
-  type State = typeof initialState;
 
   const [state, updateState] = useImmer(initialState);
 
