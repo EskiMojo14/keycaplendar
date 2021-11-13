@@ -16,22 +16,33 @@ afterAll(() => {
   dispatchSpy.mockRestore();
 });
 
+const createExampleAction = (action: ActionType["action"], nickname: ActionType["user"]["nickname"]): ActionType => ({
+  action,
+  changelogId: "",
+  documentId: "",
+  timestamp: "",
+  user: {
+    nickname,
+    displayName: "",
+    email: "",
+  },
+  before: {},
+  after: {},
+});
+
 describe("filterActions", () => {
   it("filters to specified action type and user", () => {
     const editedState = produce(store.getState(), (draftState) => {
       draftState.audit.allActions = [
-        { action: "deleted", user: { nickname: "dvorcol" } },
-        { action: "deleted", user: { nickname: "eskimojo" } },
-        { action: "created", user: { nickname: "eskimojo" } },
-      ] as ActionType[];
+        createExampleAction("deleted", "dvorcol"),
+        createExampleAction("deleted", "eskimojo"),
+        createExampleAction("created", "eskimojo"),
+      ];
       draftState.audit.filterAction = "deleted";
       draftState.audit.filterUser = "eskimojo";
     });
     filterActions(editedState);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(
-      1,
-      setFilteredActions([{ action: "deleted", user: { nickname: "eskimojo" } }] as ActionType[])
-    );
+    expect(dispatchSpy).toHaveBeenNthCalledWith(1, setFilteredActions([createExampleAction("deleted", "eskimojo")]));
     expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
   });
 });

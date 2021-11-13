@@ -21,7 +21,7 @@ export const getEntries = () => {
     });
 };
 
-const sortEntries = (entries: GuideEntryType[]) => {
+export const sortEntries = (entries: GuideEntryType[]) => {
   const sortedEntries = alphabeticalSortProp(entries, "title", false, "Welcome to KeycapLendar!");
   dispatch(setEntries(sortedEntries));
   const allTags = alphabeticalSort(removeDuplicates(sortedEntries.map((entry) => entry.tags).flat(1)));
