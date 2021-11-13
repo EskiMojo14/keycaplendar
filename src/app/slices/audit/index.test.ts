@@ -28,56 +28,54 @@ const blankAction: ActionType = {
   },
 };
 
-describe("audit slice", () => {
-  let store = createStore();
+let store = createStore();
 
-  beforeEach(() => {
-    store = createStore();
-  });
+beforeEach(() => {
+  store = createStore();
+});
 
-  it("sets loading state", () => {
-    store.dispatch(setLoading(true));
-    const response = selectLoading(store.getState());
-    expect(response).toBe(true);
-  });
+it("sets loading state", () => {
+  store.dispatch(setLoading(true));
+  const response = selectLoading(store.getState());
+  expect(response).toBe(true);
+});
 
-  it("sets all actions array", () => {
-    store.dispatch(setAllActions([blankAction]));
-    const response = selectAllActions(store.getState());
-    expect(response).toEqual([blankAction]);
-  });
+it("sets all actions array", () => {
+  store.dispatch(setAllActions([blankAction]));
+  const response = selectAllActions(store.getState());
+  expect(response).toEqual([blankAction]);
+});
 
-  it("sets filtered actions array", () => {
-    store.dispatch(setAllActions([blankAction]));
-    const response = selectAllActions(store.getState());
-    expect(response).toEqual([blankAction]);
-  });
+it("sets filtered actions array", () => {
+  store.dispatch(setAllActions([blankAction]));
+  const response = selectAllActions(store.getState());
+  expect(response).toEqual([blankAction]);
+});
 
-  it("sets filter action type", () => {
-    const action = "created";
-    store.dispatch(setFilterAction(action));
-    const response = selectFilterAction(store.getState());
-    expect(response).toBe(action);
-  });
+it("sets filter action type", () => {
+  const action = "created";
+  store.dispatch(setFilterAction(action));
+  const response = selectFilterAction(store.getState());
+  expect(response).toBe(action);
+});
 
-  it("sets filter user type", () => {
-    const user = "eskimojo";
-    store.dispatch(setFilterUser(user));
-    const response = selectFilterUser(store.getState());
-    expect(response).toBe(user);
-  });
+it("sets filter user type", () => {
+  const user = "eskimojo";
+  store.dispatch(setFilterUser(user));
+  const response = selectFilterUser(store.getState());
+  expect(response).toBe(user);
+});
 
-  it("sets audit log length", () => {
-    const length = 100;
-    store.dispatch(setLength(length));
-    const response = selectLength(store.getState());
-    expect(response).toBe(length);
-  });
+it("sets audit log length", () => {
+  const length = 100;
+  store.dispatch(setLength(length));
+  const response = selectLength(store.getState());
+  expect(response).toBe(length);
+});
 
-  it("sets user list", () => {
-    const users = ["eskimojo", "dvorcol"];
-    store.dispatch(setUsers(users));
-    const response = selectUsers(store.getState());
-    expect(response).toEqual(users);
-  });
+it("sets user list", () => {
+  const users = ["eskimojo", "dvorcol"];
+  store.dispatch(setUsers(users));
+  const response = selectUsers(store.getState());
+  expect(response).toEqual(users);
 });
