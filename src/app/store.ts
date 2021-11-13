@@ -13,27 +13,32 @@ import updates from "@s/updates";
 import user from "@s/user";
 import users from "@s/users";
 
-export const store = configureStore({
-  preloadedState: loadState(),
-  reducer: {
-    audit,
-    common,
-    guides,
-    history,
-    images,
-    main,
-    settings,
-    statistics,
-    updates,
-    user,
-    users,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: { ignoredPaths: ["statistics.data", "images.images"] },
-      immutableCheck: false,
-    }),
-});
+const reducer = {
+  audit,
+  common,
+  guides,
+  history,
+  images,
+  main,
+  settings,
+  statistics,
+  updates,
+  user,
+  users,
+};
+
+export const createStore = <S = any>(preloadedState?: S) =>
+  configureStore({
+    preloadedState,
+    reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: { ignoredPaths: ["statistics.data", "images.images"] },
+        immutableCheck: false,
+      }),
+  });
+
+export const store = createStore(loadState());
 
 let currentValue: string;
 
