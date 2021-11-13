@@ -1,7 +1,7 @@
 import store from "~/app/store";
-import { GuideEntryType } from "@s/guides/types";
-import { sortEntries } from "@s/guides/functions";
 import { setAllTags, setEntries, setLoading } from "@s/guides";
+import { sortEntries } from "@s/guides/functions";
+import { GuideEntryType } from "@s/guides/types";
 
 jest.mock("~/app/store");
 

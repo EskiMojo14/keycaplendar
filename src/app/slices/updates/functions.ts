@@ -32,14 +32,14 @@ export const getEntries = () => {
     });
 };
 
-const sortEntries = (entries: UpdateEntryType[]) => {
+export const sortEntries = (entries: UpdateEntryType[]) => {
   const sortedEntries = entries.sort((a, b) => {
     if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
       return a.pinned ? -1 : 1;
     }
     return (
-      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("date", true)(a, b) ||
-      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("title")(a, b)
+      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(a, b) ||
+      alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
     );
   });
   dispatch(setEntries(sortedEntries));

@@ -131,7 +131,7 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
-export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O>(
+export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
   prop: K,
   descending = false,
   hoist?: O[K]
@@ -146,7 +146,7 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O>(
+export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
   array: O[],
   prop: K,
   descending = false,
