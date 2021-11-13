@@ -1,4 +1,4 @@
-import { SetType } from "@s/main/types";
+import { Keyset } from "@s/main/constructors";
 import {
   removeDuplicates,
   addOrRemove,
@@ -9,7 +9,7 @@ import {
   pluralise,
   arrayMove,
   getSetMonthRange,
-} from "./functions";
+} from "@s/util/functions";
 
 describe("removeDuplicates", () => {
   it("removes duplicates from an array", () => {
@@ -113,10 +113,12 @@ describe("arrayMove", () => {
 
 describe("getSetMonthRange", () => {
   it("creates an array of months from sets provided, in specified format", () => {
-    expect(getSetMonthRange([{ icDate: "2021-01" }, { icDate: "2021-03" }] as SetType[], "icDate", "yyyy-MM")).toEqual([
-      "2021-01",
-      "2021-02",
-      "2021-03",
-    ]);
+    expect(
+      getSetMonthRange(
+        [{ ...new Keyset("", [], "", "2021-01") }, { ...new Keyset("", [], "", "2021-03") }],
+        "icDate",
+        "yyyy-MM"
+      )
+    ).toEqual(["2021-01", "2021-02", "2021-03"]);
   });
 });
