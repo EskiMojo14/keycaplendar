@@ -135,22 +135,7 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
   prop: K,
   descending = false,
   hoist?: O[K]
-) => (a: O, b: O) => {
-  const x = a[prop];
-  const y = b[prop];
-  if (hoist && (x === hoist || y === hoist) && x !== y) {
-    return x === hoist ? -1 : 1;
-  }
-  const c = is<string>(x) ? x.toLowerCase() : x;
-  const d = is<string>(y) ? y.toLowerCase() : y;
-  if (c < d) {
-    return descending ? 1 : -1;
-  }
-  if (c > d) {
-    return descending ? -1 : 1;
-  }
-  return 0;
-};
+) => (a: O, b: O) => alphabeticalSortCurried(descending, hoist)(a[prop], b[prop]);
 
 /**
  * Sorts an array of objects by a specified prop, in alphabetical order.
@@ -365,7 +350,7 @@ export const useBoolStates = (func: (bool: boolean) => void) => {
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
  * @param sets Array of set objects to be checked.
  * @param prop Property of set to be used.
- * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens}.
+ * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/#/formatting?id=table-of-tokens}.
  * @returns Array of months from earliest to latest, in specified format.
  */
 
