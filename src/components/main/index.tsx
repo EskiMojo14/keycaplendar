@@ -102,12 +102,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
       if (clearUrl) {
         if (urlSet) {
-          dispatch(
-            setURLSet({
-              prop: "id",
-              value: "",
-            })
-          );
+          dispatch(setURLSet("id", ""));
         }
         const params = new URLSearchParams(window.location.search);
         if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {

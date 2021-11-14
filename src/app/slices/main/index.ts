@@ -103,7 +103,7 @@ export const mainSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<SortOrderType>) => {
       state.sortOrder = action.payload;
     },
-    setList: (
+    setListState: (
       state,
       action: PayloadAction<{
         name: "allDesigners" | "allProfiles" | "allRegions" | "allVendors" | "allVendorRegions";
@@ -111,9 +111,9 @@ export const mainSlice = createSlice({
       }>
     ) => {
       const { name, array } = action.payload;
-      state = Object.assign(state, { [name]: array });
+      state[name] = array;
     },
-    setSetList: (
+    setSetListState: (
       state,
       action: PayloadAction<{
         name: "allSets" | "filteredSets";
@@ -121,12 +121,12 @@ export const mainSlice = createSlice({
       }>
     ) => {
       const { name, array } = action.payload;
-      state = Object.assign(state, { [name]: array });
+      state[name] = array;
     },
     setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
       state.setGroups = action.payload;
     },
-    setURLSet: (
+    setURLSetState: (
       state,
       action: PayloadAction<{
         prop: "id" | "alias" | "name";
@@ -139,11 +139,11 @@ export const mainSlice = createSlice({
       state.search = action.payload;
     },
     setWhitelist: (state, action: PayloadAction<WhitelistType>) => {
-      state.whitelist = Object.assign(action.payload, { edited: Object.keys(action.payload) });
+      state.whitelist = { ...action.payload, edited: Object.keys(action.payload) };
     },
     mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
       const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
-      state.whitelist = Object.assign(state.whitelist, action.payload, { edited });
+      state.whitelist = { ...state.whitelist, ...action.payload, edited };
     },
     setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
       state.urlWhitelist = action.payload;
@@ -169,10 +169,10 @@ export const {
   setContent,
   setSort,
   setSortOrder,
-  setList,
-  setSetList,
+  setListState,
+  setSetListState,
   setSetGroups,
-  setURLSet,
+  setURLSetState,
   setSearch,
   setWhitelist,
   mergeWhitelist,
@@ -182,6 +182,17 @@ export const {
   setAppPresets,
   setLinkedFavorites,
 } = mainSlice.actions;
+
+export const setList = <P extends ReturnType<typeof setListState>["payload"]>(name: P["name"], array: P["array"]) =>
+  setListState({ name, array });
+
+export const setSetList = <P extends ReturnType<typeof setSetListState>["payload"]>(
+  name: P["name"],
+  array: P["array"]
+) => setSetListState({ name, array });
+
+export const setURLSet = <P extends ReturnType<typeof setURLSetState>["payload"]>(prop: P["prop"], value: P["value"]) =>
+  setURLSetState({ prop, value });
 
 export const selectTransition = (state: RootState) => state.main.transition;
 

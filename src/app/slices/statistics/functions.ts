@@ -38,11 +38,11 @@ export const setStatisticsTab = (tab: StatsTab, clearUrl = true, state = store.g
 };
 
 export const setSetting = <T extends keyof StatisticsType>(prop: T, value: StatisticsType[T]) => {
-  dispatch(setStatisticsSetting({ key: prop, value: value }));
+  dispatch(setStatisticsSetting(prop, value));
 };
 
 export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: StatisticsSortType[T]) => {
-  dispatch(setStatisticsSort({ key: prop, value: value }));
+  dispatch(setStatisticsSort(prop, value));
   sortData();
 };
 

@@ -41,7 +41,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
     const key =
       statisticsTab === "duration" ? "durationGroup" : statisticsTab === "timelines" ? "timelinesGroup" : statisticsTab;
     if (hasKey(settings, key) && settings[key] !== statistics) {
-      setStatisticsSetting({ key: key, value: statistics });
+      setStatisticsSetting(key, statistics);
     }
   };
 

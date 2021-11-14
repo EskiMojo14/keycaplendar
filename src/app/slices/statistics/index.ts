@@ -189,14 +189,14 @@ export const statisticsSlice = createSlice({
     setStatisticsData: (state, action: PayloadAction<StatisticsData>) => {
       state.data = action.payload;
     },
-    setStatisticsSetting: <T extends keyof StatisticsType>(
+    setStatisticsSettingState: <T extends keyof StatisticsType>(
       state: StatisticsState,
       action: PayloadAction<{ key: T; value: StatisticsType[T] }>
     ) => {
       const { key, value } = action.payload;
       state.settings[key] = value;
     },
-    setStatisticsSort: <T extends keyof StatisticsSortType>(
+    setStatisticsSortState: <T extends keyof StatisticsSortType>(
       state: StatisticsState,
       action: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
     ) => {
@@ -210,9 +210,15 @@ export const {
   setStatsTab,
   setLoading,
   setStatisticsData,
-  setStatisticsSetting,
-  setStatisticsSort,
+  setStatisticsSettingState,
+  setStatisticsSortState,
 } = statisticsSlice.actions;
+
+export const setStatisticsSetting = <T extends keyof StatisticsType>(key: T, value: StatisticsType[T]) =>
+  setStatisticsSettingState({ key, value });
+
+export const setStatisticsSort = <T extends keyof StatisticsSortType>(key: T, value: StatisticsSortType[T]) =>
+  setStatisticsSortState({ key, value });
 
 export const selectTab = (state: RootState) => state.statistics.tab;
 

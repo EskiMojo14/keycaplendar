@@ -153,7 +153,7 @@ export const getData = () => {
 
       alphabeticalSortProp(sets, "colorway");
 
-      dispatch(setSetList({ name: "allSets", array: sets }));
+      dispatch(setSetList("allSets", sets));
 
       filterData(store.getState());
       generateLists(store.getState());
@@ -261,7 +261,7 @@ const generateLists = (state = store.getState()) => {
   } as const;
 
   objectKeys(lists).forEach((key) => {
-    dispatch(setList({ name: key, array: lists[key] }));
+    dispatch(setList(key, lists[key]));
   });
 
   const params = new URLSearchParams(window.location.search);
@@ -372,7 +372,7 @@ export const filterData = (state = store.getState()) => {
 
   const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-  dispatch(setSetList({ name: "filteredSets", array: filteredSets }));
+  dispatch(setSetList("filteredSets", filteredSets));
 
   createGroups(store.getState());
 

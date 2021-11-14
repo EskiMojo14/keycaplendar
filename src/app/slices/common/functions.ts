@@ -172,32 +172,17 @@ export const getURLQuery = (state = store.getState()) => {
   if (params.has("keysetId")) {
     const keysetId = params.get("keysetId");
     if (keysetId) {
-      dispatch(
-        setURLSet({
-          prop: "id",
-          value: keysetId,
-        })
-      );
+      dispatch(setURLSet("id", keysetId));
     }
   } else if (params.has("keysetAlias")) {
     const keysetAlias = params.get("keysetAlias");
     if (keysetAlias) {
-      dispatch(
-        setURLSet({
-          prop: "alias",
-          value: keysetAlias,
-        })
-      );
+      dispatch(setURLSet("alias", keysetAlias));
     }
   } else if (params.has("keysetName")) {
     const keysetName = params.get("keysetName");
     if (keysetName) {
-      dispatch(
-        setURLSet({
-          prop: "name",
-          value: keysetName,
-        })
-      );
+      dispatch(setURLSet("name", keysetName));
     }
   }
   if (params.has("statisticsTab")) {
@@ -286,12 +271,7 @@ export const setPage = (page: Page, state = store.getState()) => {
       }
     });
     if (urlSet.value) {
-      dispatch(
-        setURLSet({
-          prop: "id",
-          value: "",
-        })
-      );
+      dispatch(setURLSet("id", ""));
     }
     if (urlGuide) {
       dispatch(setURLGuide(""));

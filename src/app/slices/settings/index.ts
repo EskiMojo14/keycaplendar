@@ -40,16 +40,17 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setSetting: <T extends keyof SettingsState>(
+    setSettingState: <T extends keyof SettingsState>(
       state: SettingsState,
       action: PayloadAction<{ key: T; value: SettingsState[T] }>
     ) => {
       const { key, value } = action.payload;
       state[key] = value;
     },
-    setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => {
-      state = Object.assign(state, action.payload);
-    },
+    setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => ({
+      ...state,
+      ...action.payload,
+    }),
     toggleLich: (state) => {
       state.lichTheme = !state.lichTheme;
     },
@@ -62,7 +63,10 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const { setSetting, setSettings, toggleLich, setCookies, setShareNameLoading } = settingsSlice.actions;
+export const { setSettingState, setSettings, toggleLich, setCookies, setShareNameLoading } = settingsSlice.actions;
+
+export const setSetting = <P extends ReturnType<typeof setSettingState>["payload"]>(key: P["key"], value: P["value"]) =>
+  setSettingState({ key, value });
 
 export const selectSettings = (state: RootState) => state.settings;
 
