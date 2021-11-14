@@ -129,7 +129,7 @@
     "patch-package": "^6.4.7",
     "prettier": "^2.2.1",
     "react-app-rewired": "^2.1.8",
-    "ts-jest": "^27.0.7",
+    "ts-jest": "^26.5.6",
     "ts-loader": "^8.3.0",
     "ttypescript": "^1.5.12",
     "typed-firestore": "^1.1.0",
