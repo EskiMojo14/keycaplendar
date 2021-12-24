@@ -351,11 +351,10 @@ export const closeModal = () => {
  * @returns An tuple of callbacks, the first being `func(false)` and the second being `func(true)`.
  */
 
-export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T, setTrue: () => T] => {
-  const setFalse = () => func(false);
-  const setTrue = () => func(true);
-  return [setFalse, setTrue];
-};
+export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T, setTrue: () => T] => [
+  () => func(false),
+  () => func(true),
+];
 
 /**
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
