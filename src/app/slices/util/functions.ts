@@ -40,9 +40,9 @@ export const arrayEveryType = <T>(
   predicate: (item: any, index: number, array: any[]) => item is T
 ): arr is T[] => arr.every(predicate);
 
-/** Merge object and modify specified keys. */
+/** Merge objects and modify specified keys. */
 
-export const mergeObject = <T>(obj: T, obj2: Partial<T>): T => Object.assign({ ...obj }, obj2);
+export const mergeObjects = <T>(obj: T, ...objs: Partial<T>[]): T => Object.assign({}, obj, ...objs);
 
 /** Returns an array of object keys to iterate on.
  *
@@ -60,22 +60,21 @@ export const objectKeys = <T extends Record<string, any>>(obj: T): (keyof T)[] =
 export const removeDuplicates = <T>(arr: T[]): T[] => arr.filter((item, index) => arr.indexOf(item) === index);
 
 /**
- * "Toggles" an element in an array.
+ * "Toggles" an element in an array. *MUTATES*
  * @param array Array of values.
  * @param value Value to be added or removed (if already in `array`).
  * @returns `array` with element added or removed.
  */
 
 export const addOrRemove = <T>(array: T[], value: T): T[] => {
-  const newArray: any[] = [...array];
-  const index: number = newArray.indexOf(value);
+  const index: number = array.indexOf(value);
 
   if (index === -1) {
-    newArray.push(value);
+    array.push(value);
   } else {
-    newArray.splice(index, 1);
+    array.splice(index, 1);
   }
-  return newArray;
+  return array;
 };
 
 /**
@@ -109,7 +108,7 @@ export const alphabeticalSortCurried = <T extends unknown>(descending = false, h
 };
 
 /**
- * Sorts an array of strings in alphabetical order.
+ * Sorts an array of strings in alphabetical order. *MUTATES*
  * @param array Array of strings to be sorted.
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
  * @param hoist Value to be hoisted to beginning of array.
@@ -138,7 +137,7 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
 ) => (a: O, b: O) => alphabeticalSortCurried(descending, hoist)(a[prop], b[prop]);
 
 /**
- * Sorts an array of objects by a specified prop, in alphabetical order.
+ * Sorts an array of objects by a specified prop, in alphabetical order. *MUTATES*
  * @param array Array of identical objects.
  * @param prop Property to sort objects by.
  * @param descending Whether to sort the `array` in descending order. Defaults to false.
@@ -273,21 +272,22 @@ export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) 
  * @returns Amount of items within `arr` equal to `val`.
  */
 
-export const countInArray = (arr: any[], val: any) => arr.reduce((count, item) => count + (item === val), 0);
+export const countInArray = <T>(arr: T[], val: T) => arr.reduce((count, item) => count + Number(item === val), 0);
 
 /**
- * Moves an item within an array to a new position.
+ * Moves an item within an array to a new position. *MUTATES*
  * @param arr Array to be manipulated.
  * @param old_index Current position of item to be moved.
  * @param new_index New position of item to be moved.
+ * @param fill What to fill empty spaces with if new index is larger than current array length (`undefined` by default)
  * @returns `arr` with item moved.
  */
 
-export const arrayMove = (arr: any[], old_index: number, new_index: number) => {
+export const arrayMove = <T>(arr: T[], old_index: number, new_index: number, fill = (undefined as unknown) as T) => {
   if (new_index >= arr.length) {
     let k = new_index - arr.length + 1;
     while (k--) {
-      arr.push(undefined);
+      arr.push(fill);
     }
   }
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
@@ -333,18 +333,13 @@ export const closeModal = () => {
 /**
  * Takes a function and returns two callbacks, calling it with boolean parameters.
  * @param func A function to be called with boolean parameters. Typically a `useState` set function.
- * @returns An array of callbacks, the first being `func(false)` and the second being `func(true)`.
+ * @returns An tuple of callbacks, the first being `func(false)` and the second being `func(true)`.
  */
 
-export const useBoolStates = (func: (bool: boolean) => void) => {
-  const setFalse = () => {
-    func(false);
-  };
-  const setTrue = () => {
-    func(true);
-  };
-  return [setFalse, setTrue];
-};
+export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T, setTrue: () => T] => [
+  () => func(false),
+  () => func(true),
+];
 
 /**
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).

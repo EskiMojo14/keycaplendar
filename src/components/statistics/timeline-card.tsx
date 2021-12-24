@@ -285,7 +285,7 @@ export const TimelinesCard = (props: TimelinesCardProps) => {
   const [focused, setFocused] = useState<number[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(props.defaultType || "bar");
   const setFocus = (index: number) => {
-    const newFocused = addOrRemove(focused, index);
+    const newFocused = addOrRemove([...focused], index);
     setFocused(newFocused);
   };
   const focusAll = () => {

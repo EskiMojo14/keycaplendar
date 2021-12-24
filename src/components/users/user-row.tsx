@@ -1,5 +1,6 @@
 import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
 import { DateTime } from "luxon";
+import { useImmer } from "use-immer";
 import firebase from "@s/firebase";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
@@ -7,7 +8,7 @@ import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";
-import { iconObject, mergeObject, ordinal, truncate } from "@s/util/functions";
+import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -24,41 +25,51 @@ type UserRowProps = {
   user: UserType;
 };
 
+const roles = ["designer", "editor", "admin"] as const;
+
 export const UserRow = (props: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
 
   const allDesigners = useAppSelector(selectAllDesigners);
 
   const blankUser = new User();
-  const [user, setUser] = useState<UserType>(blankUser);
+  const [user, updateUser] = useImmer<UserType>(blankUser);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
 
+  const keyedUpdate = <T extends UserType, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
+    draft[key] = payload;
+  };
+
   useEffect(() => {
     if (props.user !== user) {
-      setUser(props.user);
+      updateUser(props.user);
       setEdited(false);
     }
   }, [props.user]);
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setFocused(e.target.name);
-  };
-  const handleBlur = () => {
-    setFocused("");
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleBlur = () => setFocused("");
+
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    if (arrayIncludes(roles, name)) {
+      updateUser(keyedUpdate(name, checked));
+      setEdited(true);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.checked }));
-    setEdited(true);
+    const { name, value } = e.target;
+    if (hasKey(user, name)) {
+      updateUser(keyedUpdate(name, value));
+      setEdited(true);
+    }
   };
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
-    setEdited(true);
-  };
-  const selectValue = (prop: string, value: string | boolean) => {
-    setUser((user) => mergeObject(user, { [prop]: value }));
+
+  const selectValue = <Key extends keyof UserType>(prop: Key, value: UserType[Key]) => {
+    updateUser(keyedUpdate(prop, value));
     setEdited(true);
   };
 
@@ -73,7 +84,11 @@ export const UserRow = (props: UserRowProps) => {
       admin: user.admin,
     }).then((result) => {
       setLoading(false);
-      if (result.data.editor === user.editor && result.data.admin === user.admin) {
+      if (
+        result.data.designer === user.designer &&
+        result.data.editor === user.editor &&
+        result.data.admin === user.admin
+      ) {
         queue.notify({ title: "Successfully edited user permissions." });
         props.getUsers();
       } else if (result.data.error) {
@@ -133,7 +148,7 @@ export const UserRow = (props: UserRowProps) => {
             outlined
             className="nickname"
             name="nickname"
-            onChange={handleTextChange}
+            onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
             value={user.nickname}
@@ -143,19 +158,19 @@ export const UserRow = (props: UserRowProps) => {
             array={allDesigners}
             query={user.nickname}
             prop="nickname"
-            select={selectValue}
+            select={(prop, item) => hasKey(user, prop) && selectValue(prop, item)}
             minChars={2}
           />
         </MenuSurfaceAnchor>
       </DataTableCell>
       <DataTableCell hasFormControl>
-        <Checkbox name="designer" checked={user.designer} onChange={handleChange} />
+        <Checkbox name="designer" checked={user.designer} onChange={handleCheckboxChange} />
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
           name="editor"
           checked={user.editor}
-          onChange={handleChange}
+          onChange={handleCheckboxChange}
           disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
         />
       </DataTableCell>
@@ -163,7 +178,7 @@ export const UserRow = (props: UserRowProps) => {
         <Checkbox
           name="admin"
           checked={user.admin}
-          onChange={handleChange}
+          onChange={handleCheckboxChange}
           disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
         />
       </DataTableCell>

@@ -158,32 +158,22 @@ export const ModalCreate = (props: ModalCreateProps) => {
     setFocused("");
   };
 
-  const setImage = (image: Blob | File | null) => {
-    updateState(keyedUpdate("image", image));
-  };
+  const setImage = (image: Blob | File | null) => updateState(keyedUpdate("image", image));
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setFocused(e.target.name);
-  };
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
 
-  const handleBlur = () => {
-    setFocused("");
-  };
+  const handleBlur = () => setFocused("");
 
-  const toggleDate = () => {
-    updateState(keyedUpdate("gbMonth", !state.gbMonth));
-  };
+  const toggleDate = () => updateState(keyedUpdate("gbMonth", !state.gbMonth));
 
   const selectValue = (prop: string, value: string) => {
-    if (prop === "designer") {
-      updateState(keyedUpdate(prop, [value]));
-    } else if (hasKey(state, prop)) {
+    if (hasKey(state, prop)) {
       updateState(keyedUpdate(prop, value));
     }
     setFocused("");
   };
 
-  const selectValueAppend = (prop: string, value: string) => {
+  const selectValueAppend = (prop: string, value: string) =>
     updateState((draft) => {
       if (hasKey(draft, prop)) {
         const original = draft[prop];
@@ -200,7 +190,6 @@ export const ModalCreate = (props: ModalCreateProps) => {
         }
       }
     });
-  };
 
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
@@ -242,9 +231,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChange = (name: keyof typeof state) => (value: string) => {
+  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
     updateState(keyedUpdate(name, value));
-  };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -258,14 +246,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
     updateState((draft) => {
       const vendor = draft.vendors[index];
       if (hasKey(vendor, name)) {
         vendor[name] = value;
       }
     });
-  };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -287,15 +274,14 @@ export const ModalCreate = (props: ModalCreateProps) => {
       storeLink: "",
     };
     updateState((draft) => {
-      draft.vendors = [...draft.vendors, emptyVendor];
+      draft.vendors.push(emptyVendor);
     });
   };
 
-  const removeVendor = (index: number) => {
+  const removeVendor = (index: number) =>
     updateState((draft) => {
       draft.vendors.splice(index, 1);
     });
-  };
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
@@ -364,7 +350,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const createEntry = (url = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
-      typedFirestore
+      firebase
+        .firestore()
         .collection("keysets")
         .add({
           alias: nanoid(10),
@@ -399,9 +386,8 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const setSalesImageLoaded = (val: boolean) => {
-    updateState(keyedUpdate("salesImageLoaded", val));
-  };
+  const setSalesImageLoaded = (val: boolean) => updateState(keyedUpdate("salesImageLoaded", val));
+
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
     <Card outlined className="date-container">
@@ -979,35 +965,26 @@ export const ModalEdit = (props: ModalEditProps) => {
     setFocused("");
   };
 
-  const setImage = (image: File | Blob | null) => {
+  const setImage = (image: File | Blob | null) =>
     updateState((draft) => {
       draft.image = image;
       draft.newImage = true;
     });
-  };
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setFocused(e.target.name);
-  };
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
 
-  const handleBlur = () => {
-    setFocused("");
-  };
+  const handleBlur = () => setFocused("");
 
-  const toggleDate = () => {
-    updateState(keyedUpdate("gbMonth", !state.gbMonth));
-  };
+  const toggleDate = () => updateState(keyedUpdate("gbMonth", !state.gbMonth));
 
   const selectValue = (prop: string, value: string) => {
-    if (prop === "designer") {
-      updateState(keyedUpdate(prop, [value]));
-    } else if (hasKey(state, prop)) {
+    if (hasKey(state, prop)) {
       updateState(keyedUpdate(prop, value));
     }
     setFocused("");
   };
 
-  const selectValueAppend = (prop: string, value: string) => {
+  const selectValueAppend = (prop: string, value: string) =>
     updateState((draft) => {
       if (hasKey(draft, prop)) {
         const original = draft[prop];
@@ -1024,7 +1001,6 @@ export const ModalEdit = (props: ModalEditProps) => {
         }
       }
     });
-  };
 
   const selectVendor = (prop: string, value: string) => {
     const property = prop.replace(/\d/g, "");
@@ -1066,9 +1042,8 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const handleNamedChange = (name: keyof typeof state) => (value: string) => {
+  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
     updateState(keyedUpdate(name, value));
-  };
 
   const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -1082,14 +1057,13 @@ export const ModalEdit = (props: ModalEditProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) => {
+  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
     updateState((draft) => {
       const vendor = draft.vendors[index];
       if (hasKey(vendor, name)) {
         vendor[name] = value;
       }
     });
-  };
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -1111,15 +1085,14 @@ export const ModalEdit = (props: ModalEditProps) => {
       storeLink: "",
     };
     updateState((draft) => {
-      draft.vendors = [...draft.vendors, emptyVendor];
+      draft.vendors.push(emptyVendor);
     });
   };
 
-  const removeVendor = (index: number) => {
-    const newVendors = [...state.vendors];
-    newVendors.splice(index, 1);
-    updateState(keyedUpdate("vendors", newVendors));
-  };
+  const removeVendor = (index: number) =>
+    updateState((draft) => {
+      draft.vendors.splice(index, 1);
+    });
 
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
