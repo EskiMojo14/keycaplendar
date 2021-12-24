@@ -9,7 +9,7 @@ import { selectUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";
-import { hasKey, iconObject, mergeObject, ordinal } from "@s/util/functions";
+import { hasKey, iconObject, mergeObjects, ordinal } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -63,16 +63,16 @@ export const UserCard = (props: UserCardProps) => {
     setFocused("");
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
+    setUser((user) => mergeObjects(user, { [e.target.name]: e.target.value }));
     setEdited(true);
   };
   const selectValue = (prop: string, value: string | boolean) => {
-    setUser((user) => mergeObject(user, { [prop]: value }));
+    setUser((user) => mergeObjects(user, { [prop]: value }));
     setEdited(true);
   };
   const toggleRole = (role: string) => {
     if (hasKey(user, role)) {
-      setUser((user) => mergeObject(user, { [role]: !user[role] }));
+      setUser((user) => mergeObjects(user, { [role]: !user[role] }));
       setEdited(true);
     }
   };

@@ -122,7 +122,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
       if (is<boolean>(original)) {
         edited = !original;
       } else if (is<string[]>(original)) {
-        edited = alphabeticalSort(addOrRemove(original, name));
+        edited = alphabeticalSort(addOrRemove([...original], name));
       } else if (original === "include" || original === "exclude") {
         edited = original === "include" ? "exclude" : "include";
       } else if (name === "unhidden" || name === "hidden" || name === "all") {

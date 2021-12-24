@@ -7,7 +7,7 @@ import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";
-import { iconObject, mergeObject, ordinal, truncate } from "@s/util/functions";
+import { iconObject, mergeObjects, ordinal, truncate } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -50,15 +50,15 @@ export const UserRow = (props: UserRowProps) => {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.checked }));
+    setUser((user) => mergeObjects(user, { [e.target.name]: e.target.checked }));
     setEdited(true);
   };
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
+    setUser((user) => mergeObjects(user, { [e.target.name]: e.target.value }));
     setEdited(true);
   };
   const selectValue = (prop: string, value: string | boolean) => {
-    setUser((user) => mergeObject(user, { [prop]: value }));
+    setUser((user) => mergeObjects(user, { [prop]: value }));
     setEdited(true);
   };
 
