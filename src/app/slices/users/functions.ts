@@ -62,8 +62,8 @@ export const sortUsers = (state = store.getState()) => {
   const sortedUsers = [...users];
   sortedUsers.sort((a, b) => {
     if (hasKey(a, sort) && hasKey(b, sort)) {
-      const aVal = a[sort];
-      const bVal = b[sort];
+      const { [sort]: aVal } = a;
+      const { [sort]: bVal } = b;
       if (is<string>(aVal) && is<string>(bVal)) {
         if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
           return aVal === "" ? 1 : -1;

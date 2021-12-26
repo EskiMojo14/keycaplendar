@@ -85,7 +85,7 @@ export const getUserPreferences = (id: string) => {
                 };
                 Object.keys(settingFns).forEach((setting) => {
                   if (hasKey(settingFns, setting)) {
-                    const func = settingFns[setting];
+                    const { [setting]: func } = settingFns;
                     getSetting(setting, func);
                   }
                 });
@@ -242,8 +242,7 @@ export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { traili
 export const getLinkedFavorites = (id: string) => {
   const cloudFn = firebase.functions().httpsCallable("getFavorites");
   cloudFn({ id })
-    .then((result) => {
-      const data = result.data;
+    .then(({ data }) => {
       if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
         filterData(store.getState());

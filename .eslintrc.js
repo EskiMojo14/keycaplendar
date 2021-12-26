@@ -19,6 +19,16 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "object-shorthand": "error",
+    "prefer-destructuring": [
+      "error",
+      {
+        array: true,
+        object: true,
+      },
+      {
+        enforceForRenamedProperties: true,
+      },
+    ],
   },
   settings: {
     react: {

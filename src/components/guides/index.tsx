@@ -61,7 +61,7 @@ export const ContentGuides = (props: ContentGuidesProps) => {
     const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
     const index = entries.findIndex((entry) => entry.id === id);
     if (index >= 0 && device === "desktop") {
-      const entry = entries[index];
+      const { [index]: entry } = entries;
       setDetailEntry(entry);
     }
   }, [entries]);

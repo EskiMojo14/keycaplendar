@@ -34,9 +34,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
     setIsNew(!props.preset.name);
   }, [props.preset.name]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "name") {
       setName(value);
     }

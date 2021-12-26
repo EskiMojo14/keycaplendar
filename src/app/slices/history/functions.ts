@@ -33,8 +33,7 @@ export const getData = () => {
   const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
   dispatch(setLoading(true));
   cloudFn({ num: 25 })
-    .then((result) => {
-      const actions: PublicActionType[] = result.data;
+    .then(({ data: actions }) => {
       processActions(actions);
     })
     .catch((error) => {
@@ -52,8 +51,8 @@ export const processActions = (actions: PublicActionType[]) => {
         : `${action.before.profile} ${action.before.colorway}`;
     if (before && after) {
       auditProperties.forEach((prop) => {
-        const beforeProp = before[prop];
-        const afterProp = after[prop];
+        const { [prop]: beforeProp } = before;
+        const { [prop]: afterProp } = after;
         if (
           isEqual(beforeProp, afterProp) ||
           (!is<boolean>(beforeProp) && !beforeProp && !is<boolean>(afterProp) && !afterProp)
@@ -83,10 +82,9 @@ export const generateSets = (state = store.getState()) => {
       "timestamp",
       true
     );
-    const latestTimestamp = filteredActions.map((action) => action.timestamp).filter(Boolean)[0];
-    const title = filteredActions.map((action) => action.title).filter(Boolean)[0];
-    const designer =
-      filteredActions.map((action) => action.after.designer || action.before.designer).filter(Boolean)[0] ?? null;
+    const [latestTimestamp] = filteredActions.map((action) => action.timestamp).filter(Boolean);
+    const [title] = filteredActions.map((action) => action.title).filter(Boolean);
+    const [designer] = filteredActions.map((action) => action.after.designer || action.before.designer).filter(Boolean);
     const deleted = filteredActions[0].action === "deleted";
     const currentSet = getSetById(id, state);
     return {

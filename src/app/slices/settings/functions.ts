@@ -117,7 +117,8 @@ export const setSyncSettings = (bool: boolean, write = true, state = store.getSt
     if (bool) {
       Object.keys(settingFns).forEach((setting) => {
         if (hasKey(settings, setting)) {
-          settingsObject[setting] = settings[setting];
+          const { [setting]: settingVal } = settings;
+          settingsObject[setting] = settingVal;
         }
       });
     }
@@ -188,11 +189,11 @@ export const checkTheme = (state = store.getState()) => {
   const { settings } = state;
   const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
   dispatch(setTheme(theme));
-  const html = document.documentElement;
+  const { documentElement: html } = document;
   html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
-    meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--theme-meta"));
+    meta.setAttribute("content", getComputedStyle(html).getPropertyValue("--theme-meta"));
   }
 };
 

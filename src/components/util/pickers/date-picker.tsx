@@ -50,7 +50,7 @@ export const invalidDate = (
   allowQuarter = false,
   disableFuture = false
 ): string | false => {
-  const luxonExplanation = DateTime.fromISO(date).invalidExplanation;
+  const { invalidExplanation: luxonExplanation } = DateTime.fromISO(date);
   if (allowQuarter && /^Q[1-4]{1} \d{4}$/.test(date)) {
     // allow Q1-4 YYYY if quarters are allowed.
     return false;

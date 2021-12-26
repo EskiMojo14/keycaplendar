@@ -57,7 +57,7 @@ export const ContentMain = (props: ContentMainProps) => {
         }
       });
       if (index >= 0) {
-        const keyset = allSets[index];
+        const { [index]: keyset } = allSets;
         openDetails(keyset, false);
       }
     }

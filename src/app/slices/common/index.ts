@@ -22,25 +22,27 @@ export const commonSlice = createSlice({
   name: "common",
   initialState,
   reducers: {
-    setDevice: (state, action: PayloadAction<"mobile" | "tablet" | "desktop">) => {
-      state.device = action.payload;
+    setDevice: (state, { payload }: PayloadAction<"mobile" | "tablet" | "desktop">) => {
+      state.device = payload;
     },
-    setOrientation: (state, action: PayloadAction<"portrait" | "landscape">) => {
-      state.orientation = action.payload;
+    setOrientation: (state, { payload }: PayloadAction<"portrait" | "landscape">) => {
+      state.orientation = payload;
     },
-    setAppPage: (state, action: PayloadAction<Page>) => {
-      state.page = action.payload;
+    setAppPage: (state, { payload }: PayloadAction<Page>) => {
+      state.page = payload;
     },
-    setTheme: (state, action: PayloadAction<string>) => {
-      state.theme = action.payload;
+    setTheme: (state, { payload }: PayloadAction<string>) => {
+      state.theme = payload;
     },
-    setThemeMaps: (state, action: PayloadAction<Record<string, ThemeMap>>) => {
-      state.themeMaps = action.payload;
+    setThemeMaps: (state, { payload }: PayloadAction<Record<string, ThemeMap>>) => {
+      state.themeMaps = payload;
     },
   },
 });
 
-export const { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps } = commonSlice.actions;
+export const {
+  actions: { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps },
+} = commonSlice;
 
 export const selectDevice = (state: RootState) => state.common.device;
 

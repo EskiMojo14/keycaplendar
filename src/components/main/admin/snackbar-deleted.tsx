@@ -19,7 +19,9 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const user = useAppSelector(selectUser);
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { id, ...set } = props.set;
+    const {
+      set: { id, ...set },
+    } = props;
     typedFirestore
       .collection("keysets")
       .doc(id as KeysetId)
@@ -59,7 +61,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
       const fileNameRegex = /keysets%2F(.*)\?/;
       const regexMatch = props.set.image.match(fileNameRegex);
       if (regexMatch) {
-        const imageName = regexMatch[1];
+        const [, imageName] = regexMatch;
         deleteImages(imageName);
       }
     }

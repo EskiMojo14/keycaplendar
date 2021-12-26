@@ -86,9 +86,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));

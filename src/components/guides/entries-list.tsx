@@ -101,7 +101,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
           const filteredEntries = entries.filter(
             (entry) => entry.visibility === visibility && (filteredTag === "" || entry.tags.includes(filteredTag))
           );
-          const icon = visibilityIcons[visibility];
+          const { [visibility]: icon } = visibilityIcons;
           if (filteredEntries.length > 0) {
             return (
               <Fragment key={visibility}>

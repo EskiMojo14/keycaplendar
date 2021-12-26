@@ -22,22 +22,24 @@ export const historySlice = createSlice({
   name: "history",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setTab: (state, action: PayloadAction<HistoryTab>) => {
-      state.tab = action.payload;
+    setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
+      state.tab = payload;
     },
-    setProcessedActions: (state, action: PayloadAction<ProcessedPublicActionType[]>) => {
-      state.processedActions = action.payload;
+    setProcessedActions: (state, { payload }: PayloadAction<ProcessedPublicActionType[]>) => {
+      state.processedActions = payload;
     },
-    setRecentSets: (state, action: PayloadAction<RecentSet[]>) => {
-      state.recentSets = action.payload;
+    setRecentSets: (state, { payload }: PayloadAction<RecentSet[]>) => {
+      state.recentSets = payload;
     },
   },
 });
 
-export const { setLoading, setTab, setProcessedActions, setRecentSets } = historySlice.actions;
+export const {
+  actions: { setLoading, setTab, setProcessedActions, setRecentSets },
+} = historySlice;
 
 export const selectLoading = (state: RootState) => state.history.loading;
 

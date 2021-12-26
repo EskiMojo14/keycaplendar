@@ -351,10 +351,7 @@ export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T
 
 export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
   const setMonths = removeDuplicates(
-    sets.map((set) => {
-      const val = set[prop];
-      return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
-    })
+    sets.map(({ [prop]: val }) => (val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : ""))
   ).filter(Boolean);
   alphabeticalSort(setMonths);
   const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {

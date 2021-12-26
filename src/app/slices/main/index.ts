@@ -88,100 +88,108 @@ export const mainSlice = createSlice({
   name: "main",
   initialState,
   reducers: {
-    setTransition: (state, action: PayloadAction<boolean>) => {
-      state.transition = action.payload;
+    setTransition: (state, { payload }: PayloadAction<boolean>) => {
+      state.transition = payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setContent: (state, action: PayloadAction<boolean>) => {
-      state.content = action.payload;
+    setContent: (state, { payload }: PayloadAction<boolean>) => {
+      state.content = payload;
     },
-    setSort: (state, action: PayloadAction<SortType>) => {
-      state.sort = action.payload;
+    setSort: (state, { payload }: PayloadAction<SortType>) => {
+      state.sort = payload;
     },
-    setSortOrder: (state, action: PayloadAction<SortOrderType>) => {
-      state.sortOrder = action.payload;
+    setSortOrder: (state, { payload }: PayloadAction<SortOrderType>) => {
+      state.sortOrder = payload;
     },
     setListState: (
       state,
-      action: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         name: "allDesigners" | "allProfiles" | "allRegions" | "allVendors" | "allVendorRegions";
         array: string[];
       }>
     ) => {
-      const { name, array } = action.payload;
+      const { name, array } = payload;
       state[name] = array;
     },
     setSetListState: (
       state,
-      action: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         name: "allSets" | "filteredSets";
         array: SetType[];
       }>
     ) => {
-      const { name, array } = action.payload;
+      const { name, array } = payload;
       state[name] = array;
     },
-    setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
-      state.setGroups = action.payload;
+    setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
+      state.setGroups = payload;
     },
     setURLSetState: (
       state,
-      action: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         prop: "id" | "alias" | "name";
         value: string;
       }>
     ) => {
-      state.urlSet = action.payload;
+      state.urlSet = payload;
     },
-    setSearch: (state, action: PayloadAction<string>) => {
-      state.search = action.payload;
+    setSearch: (state, { payload }: PayloadAction<string>) => {
+      state.search = payload;
     },
-    setWhitelist: (state, action: PayloadAction<WhitelistType>) => {
-      state.whitelist = { ...action.payload, edited: Object.keys(action.payload) };
+    setWhitelist: (state, { payload }: PayloadAction<WhitelistType>) => {
+      state.whitelist = { ...payload, edited: Object.keys(payload) };
     },
-    mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
-      const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
-      state.whitelist = { ...state.whitelist, ...action.payload, edited };
+    mergeWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
+      const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(payload)]);
+      state.whitelist = { ...state.whitelist, ...payload, edited };
     },
-    setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
-      state.urlWhitelist = action.payload;
+    setURLWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
+      state.urlWhitelist = payload;
     },
-    setCurrentPreset: (state, action: PayloadAction<PresetType>) => {
-      state.currentPreset = action.payload;
+    setCurrentPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      state.currentPreset = payload;
     },
-    setDefaultPreset: (state, action: PayloadAction<PresetType>) => {
-      state.defaultPreset = action.payload;
+    setDefaultPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      state.defaultPreset = payload;
     },
-    setAppPresets: (state, action: PayloadAction<PresetType[]>) => {
-      state.appPresets = action.payload;
+    setAppPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
+      state.appPresets = payload;
     },
-    setLinkedFavorites: (state, action: PayloadAction<{ array: string[]; displayName: string }>) => {
-      state.linkedFavorites = action.payload;
+    setLinkedFavorites: (state, { payload }: PayloadAction<{ array: string[]; displayName: string }>) => {
+      state.linkedFavorites = payload;
     },
   },
 });
 
 export const {
-  setTransition,
-  setLoading,
-  setContent,
-  setSort,
-  setSortOrder,
-  setListState,
-  setSetListState,
-  setSetGroups,
-  setURLSetState,
-  setSearch,
-  setWhitelist,
-  mergeWhitelist,
-  setURLWhitelist,
-  setCurrentPreset,
-  setDefaultPreset,
-  setAppPresets,
-  setLinkedFavorites,
-} = mainSlice.actions;
+  actions: {
+    setTransition,
+    setLoading,
+    setContent,
+    setSort,
+    setSortOrder,
+    setListState,
+    setSetListState,
+    setSetGroups,
+    setURLSetState,
+    setSearch,
+    setWhitelist,
+    mergeWhitelist,
+    setURLWhitelist,
+    setCurrentPreset,
+    setDefaultPreset,
+    setAppPresets,
+    setLinkedFavorites,
+  },
+} = mainSlice;
 
 export const setList = <P extends ReturnType<typeof setListState>["payload"]>(name: P["name"], array: P["array"]) =>
   setListState({ name, array });

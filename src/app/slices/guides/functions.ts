@@ -11,8 +11,7 @@ export const getEntries = () => {
   const cloudFn = firebase.functions().httpsCallable("getGuides");
   dispatch(setLoading(true));
   cloudFn()
-    .then((result) => {
-      const entries: GuideEntryType[] = result.data;
+    .then(({ data: entries }) => {
       sortEntries(entries);
     })
     .catch((error) => {

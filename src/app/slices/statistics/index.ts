@@ -180,39 +180,35 @@ export const statisticsSlice = createSlice({
   name: "statistics",
   initialState,
   reducers: {
-    setStatsTab: (state, action: PayloadAction<StatsTab>) => {
-      state.tab = action.payload;
+    setStatsTab: (state, { payload }: PayloadAction<StatsTab>) => {
+      state.tab = payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setStatisticsData: (state, action: PayloadAction<StatisticsData>) => {
-      state.data = action.payload;
+    setStatisticsData: (state, { payload }: PayloadAction<StatisticsData>) => {
+      state.data = payload;
     },
     setStatisticsSettingState: <T extends keyof StatisticsType>(
       state: StatisticsState,
-      action: PayloadAction<{ key: T; value: StatisticsType[T] }>
+      { payload }: PayloadAction<{ key: T; value: StatisticsType[T] }>
     ) => {
-      const { key, value } = action.payload;
+      const { key, value } = payload;
       state.settings[key] = value;
     },
     setStatisticsSortState: <T extends keyof StatisticsSortType>(
       state: StatisticsState,
-      action: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
+      { payload }: PayloadAction<{ key: T; value: StatisticsSortType[T] }>
     ) => {
-      const { key, value } = action.payload;
+      const { key, value } = payload;
       state.sort[key] = value;
     },
   },
 });
 
 export const {
-  setStatsTab,
-  setLoading,
-  setStatisticsData,
-  setStatisticsSettingState,
-  setStatisticsSortState,
-} = statisticsSlice.actions;
+  actions: { setStatsTab, setLoading, setStatisticsData, setStatisticsSettingState, setStatisticsSortState },
+} = statisticsSlice;
 
 export const setStatisticsSetting = <T extends keyof StatisticsType>(key: T, value: StatisticsType[T]) =>
   setStatisticsSettingState({ key, value });

@@ -42,28 +42,30 @@ export const settingsSlice = createSlice({
   reducers: {
     setSettingState: <K extends keyof SettingsState>(
       state: SettingsState,
-      action: PayloadAction<{ key: K; value: SettingsState[K] }>
+      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
     ) => {
-      const { key, value } = action.payload;
+      const { key, value } = payload;
       state[key] = value;
     },
-    setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => ({
+    setSettings: (state, { payload }: PayloadAction<Partial<SettingsState>>) => ({
       ...state,
-      ...action.payload,
+      ...payload,
     }),
     toggleLich: (state) => {
       state.lichTheme = !state.lichTheme;
     },
-    setCookies: (state, action: PayloadAction<boolean>) => {
-      state.cookies = action.payload;
+    setCookies: (state, { payload }: PayloadAction<boolean>) => {
+      state.cookies = payload;
     },
-    setShareNameLoading: (state, action: PayloadAction<boolean>) => {
-      state.shareNameLoading = action.payload;
+    setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.shareNameLoading = payload;
     },
   },
 });
 
-export const { setSettingState, setSettings, toggleLich, setCookies, setShareNameLoading } = settingsSlice.actions;
+export const {
+  actions: { setSettingState, setSettings, toggleLich, setCookies, setShareNameLoading },
+} = settingsSlice;
 
 export const setSetting = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) =>
   setSettingState({ key, value });

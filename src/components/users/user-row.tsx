@@ -52,16 +52,14 @@ export const UserRow = (props: UserRowProps) => {
   const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
   const handleBlur = () => setFocused("");
 
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
+  const handleCheckboxChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
     if (arrayIncludes(roles, name)) {
       updateUser(keyedUpdate(name, checked));
       setEdited(true);
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (hasKey(user, name)) {
       updateUser(keyedUpdate(name, value));
       setEdited(true);
