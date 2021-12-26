@@ -97,10 +97,10 @@ export const paginateUsers = (state = store.getState()) => {
   const page = selectPage(state);
   const rowsPerPage = selectRowsPerPage(state);
   const paginatedUsers = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-  const firstIndex = users.indexOf(paginatedUsers[0]);
-  const lastIndex = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
+  const first = users.indexOf(paginatedUsers[0]);
+  const last = users.indexOf(paginatedUsers[paginatedUsers.length - 1]);
   dispatch(setPaginatedUsers(paginatedUsers));
-  dispatch(setIndices({ first: firstIndex, last: lastIndex }));
+  dispatch(setIndices({ first, last }));
 };
 
 export const setRowsPerPage = (val: number) => {
