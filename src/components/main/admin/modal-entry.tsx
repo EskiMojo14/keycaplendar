@@ -57,7 +57,7 @@ const getVendorStyle = (provided: DraggableProvided) => {
     }
     return {
       ...style,
-      transform: transform,
+      transform,
     };
   } else {
     return style;
@@ -941,7 +941,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       details: set.details,
       notes: set.notes ?? "",
       gbMonth: !!set.gbMonth ?? false,
-      gbLaunch: gbLaunch,
+      gbLaunch,
       gbEnd: set.gbEnd,
       shipped: set.shipped ?? false,
       imageURL: set.image,

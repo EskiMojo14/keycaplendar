@@ -285,7 +285,7 @@ export const setPage = (page: Page, state = store.getState()) => {
     const urlParams = params.toString() ? "?" + params.toString() : "";
     window.history.pushState(
       {
-        page: page,
+        page,
       },
       "KeycapLendar: " + pageTitle[page],
       "/" + page + urlParams

@@ -123,8 +123,8 @@ export const DatePicker = ({
         .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
 
   const rifm = useRifm({
-    value: value,
-    onChange: onChange,
+    value,
+    onChange,
     accept: allowQuarter ? /\d|\s|Q/g : /\d/g,
     format: formatDateWithAppend(month, allowQuarter),
   });

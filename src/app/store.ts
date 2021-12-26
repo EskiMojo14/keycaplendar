@@ -27,7 +27,7 @@ const reducer = {
   users,
 };
 
-export const createStore = <S = any>(preloadedState?: S) =>
+export const createStore = (preloadedState?: any) =>
   configureStore({
     preloadedState,
     reducer,

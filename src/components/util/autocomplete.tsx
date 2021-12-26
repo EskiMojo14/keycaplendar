@@ -83,7 +83,7 @@ export const AutocompleteMobile = (props: AutocompleteProps) => {
     return item.toLowerCase().includes(useQuery.toLowerCase());
   });
   return (
-    <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
+    <div {...filteredProps} className={bemClasses({ modifiers: { open }, extra: className })}>
       <List>
         {useQuery.length >= minChars
           ? matchingItems.map((item) => {

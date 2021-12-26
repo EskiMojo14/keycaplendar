@@ -89,8 +89,8 @@ export const TimePicker = ({
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
   const rifm = useRifm({
-    value: value,
-    onChange: onChange,
+    value,
+    onChange,
     accept: /\d:/g,
     format: formatTime,
   });

@@ -78,7 +78,7 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
         className={bemClasses({
           modifiers: {
             persistent: true,
-            expanded: expanded,
+            expanded,
           },
         })}
       >
@@ -215,10 +215,10 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
       className={bemClasses({
         modifiers: {
           modal: true,
-          open: open,
-          opening: opening,
-          closing: closing,
-          animate: animate,
+          open,
+          opening,
+          closing,
+          animate,
         },
       })}
     >

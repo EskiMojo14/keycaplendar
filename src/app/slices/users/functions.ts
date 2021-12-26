@@ -34,7 +34,7 @@ export const getUsers = (append = false, state = store.getState()) => {
   const allUsers = selectAllUsers(state);
   dispatch(setLoading(true));
   const listUsersFn = firebase.functions().httpsCallable("listUsers");
-  listUsersFn({ length: length, nextPageToken: nextPageToken })
+  listUsersFn({ length, nextPageToken })
     .then((result) => {
       if (result) {
         if (result.data.error) {

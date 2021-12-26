@@ -595,7 +595,7 @@ export const setWhitelistMerge = (
             if (page && arrayIncludes(allPages, page)) {
               window.history.pushState(
                 {
-                  page: page,
+                  page,
                 },
                 "KeycapLendar: " + pageTitle[page],
                 "?" + params.toString()
@@ -640,7 +640,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(
             if (page && arrayIncludes(allPages, page)) {
               window.history.pushState(
                 {
-                  page: page,
+                  page,
                 },
                 "KeycapLendar: " + pageTitle[page],
                 "?" + params.toString()

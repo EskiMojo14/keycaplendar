@@ -46,7 +46,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
     if (name) {
       const preset = {
         ...props.preset,
-        name: name,
+        name,
       };
       if (props.preset.global && user.isAdmin) {
         if (!props.preset.name) {

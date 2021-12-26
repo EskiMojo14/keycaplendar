@@ -110,7 +110,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     {typeof icon === "object" ? (
                       <Icon icon={{ ...icon, size: "xsmall" }} />
                     ) : (
-                      <Icon icon={{ icon: icon, size: "xsmall" }} />
+                      <Icon icon={{ icon, size: "xsmall" }} />
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>

@@ -427,7 +427,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   ]
             }
             onChange={selectPresetFn}
-            className={classNames({ modified: modified })}
+            className={classNames({ modified })}
             disabled={[...appPresets, ...userPresets].length === 1}
           />
           {userPresetOptions}

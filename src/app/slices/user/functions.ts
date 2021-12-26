@@ -119,7 +119,7 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
       .doc(user.id as UserId)
       .set(
         {
-          favorites: favorites,
+          favorites,
         },
         { merge: true }
       )
@@ -146,7 +146,7 @@ export const toggleBought = (id: string, state = store.getState()) => {
       .doc(user.id as UserId)
       .set(
         {
-          bought: bought,
+          bought,
         },
         { merge: true }
       )
@@ -186,7 +186,7 @@ export const toggleHidden = (id: string, state = store.getState()) => {
       .doc(user.id as UserId)
       .set(
         {
-          hidden: hidden,
+          hidden,
         },
         { merge: true }
       )

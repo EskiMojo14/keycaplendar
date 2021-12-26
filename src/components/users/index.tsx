@@ -281,7 +281,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                           <DataTableHeadCell>Save</DataTableHeadCell>
                           <DataTableHeadCell>Delete</DataTableHeadCell>
                         </DataTableRow>
-                        <DataTableRow className={classNames("progress-row", { loading: loading })}>
+                        <DataTableRow className={classNames("progress-row", { loading })}>
                           <DataTableHeadCell colSpan={12}>
                             <LinearProgress />
                           </DataTableHeadCell>

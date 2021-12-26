@@ -204,7 +204,7 @@ export const ContentImages = (props: ContentImagesProps) => {
   const tooltipAlign = bottomNav ? "top" : "bottom";
   return (
     <>
-      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual: contextual })}>
+      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             {contextual ? (
