@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { sortProps } from "@s/users/constants";
 import type { RootState } from "~/app/store";
 import { UserType } from "./types";
 
 type UserState = {
   view: "card" | "table";
   loading: boolean;
-  sort: keyof UserType;
+  sort: typeof sortProps[number];
   reverseSort: boolean;
 
   allUsers: UserType[];
@@ -15,8 +16,10 @@ type UserState = {
   nextPageToken: string;
   rowsPerPage: number;
   page: number;
-  firstIndex: number;
-  lastIndex: number;
+  indices: {
+    first: number;
+    last: number;
+  };
 };
 
 export const initialState: UserState = {
@@ -32,8 +35,10 @@ export const initialState: UserState = {
   nextPageToken: "",
   rowsPerPage: 25,
   page: 1,
-  firstIndex: 0,
-  lastIndex: 0,
+  indices: {
+    first: 0,
+    last: 0,
+  },
 };
 
 export const usersSlice = createSlice({
@@ -46,7 +51,7 @@ export const usersSlice = createSlice({
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
     },
-    setSort: (state, { payload }: PayloadAction<keyof UserType>) => {
+    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
       state.sort = payload;
     },
     setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
@@ -70,9 +75,8 @@ export const usersSlice = createSlice({
     setPage: (state, { payload }: PayloadAction<number>) => {
       state.page = payload;
     },
-    setIndices: (state, { payload: { first, last } }: PayloadAction<{ first: number; last: number }>) => {
-      state.firstIndex = first;
-      state.lastIndex = last;
+    setIndices: (state, { payload }: PayloadAction<{ first: number; last: number }>) => {
+      state.indices = payload;
     },
   },
 });
@@ -113,8 +117,6 @@ export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 
 export const selectPage = (state: RootState) => state.users.page;
 
-export const selectFirstIndex = (state: RootState) => state.users.firstIndex;
-
-export const selectLastIndex = (state: RootState) => state.users.lastIndex;
+export const selectIndices = (state: RootState) => state.users.indices;
 
 export default usersSlice.reducer;

@@ -1,4 +1,5 @@
 import { is } from "typescript-is";
+import produce from "immer";
 import firebase from "@s/firebase";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
@@ -23,7 +24,7 @@ import {
   selectRowsPerPage,
   selectNextPageToken,
 } from ".";
-import { UserType } from "./types";
+import { sortProps, views } from "@s/users/constants";
 
 const { dispatch } = store;
 
@@ -59,33 +60,34 @@ export const sortUsers = (state = store.getState()) => {
   const users = selectAllUsers(state);
   const sort = selectSort(state);
   const reverseSort = selectReverseSort(state);
-  const sortedUsers = [...users];
-  sortedUsers.sort((a, b) => {
-    if (hasKey(a, sort) && hasKey(b, sort)) {
-      const { [sort]: aVal } = a;
-      const { [sort]: bVal } = b;
-      if (is<string>(aVal) && is<string>(bVal)) {
-        if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
-          return aVal === "" ? 1 : -1;
+  const sortedUsers = produce(users, (draftUsers) => {
+    draftUsers.sort((a, b) => {
+      if (hasKey(a, sort) && hasKey(b, sort)) {
+        const { [sort]: aVal } = a;
+        const { [sort]: bVal } = b;
+        if (is<string>(aVal) && is<string>(bVal)) {
+          if ((aVal === "" || bVal === "") && !(aVal === "" && bVal === "")) {
+            return aVal === "" ? 1 : -1;
+          }
+          return (
+            alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
+            alphabeticalSortPropCurried("nickname")(a, b) ||
+            alphabeticalSortPropCurried("email")(a, b)
+          );
+        } else {
+          if ((aVal === null || bVal === null) && !(aVal === null && bVal === null)) {
+            return aVal === null ? 1 : -1;
+          }
+          return (
+            alphabeticalSortCurried(is<boolean>(aVal) && is<boolean>(bVal) ? !reverseSort : reverseSort)(aVal, bVal) ||
+            alphabeticalSortPropCurried("nickname")(a, b) ||
+            alphabeticalSortPropCurried("email")(a, b)
+          );
         }
-        return (
-          alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
-          alphabeticalSortPropCurried("nickname")(a, b) ||
-          alphabeticalSortPropCurried("email")(a, b)
-        );
       } else {
-        if (aVal === null || bVal === null) {
-          return aVal === null ? 1 : -1;
-        }
-        return (
-          alphabeticalSortCurried(reverseSort)(aVal, bVal) ||
-          alphabeticalSortPropCurried("nickname")(a, b) ||
-          alphabeticalSortPropCurried("email")(a, b)
-        );
+        return 0;
       }
-    } else {
-      return 0;
-    }
+    });
   });
   dispatch(setSortedUsers(sortedUsers));
   dispatch(setLoading(false));
@@ -115,11 +117,10 @@ export const setPage = (num: number) => {
 };
 
 export const setViewIndex = (index: number) => {
-  const views = ["card", "table"] as const;
   dispatch(setView(views[index]));
 };
 
-export const setSort = (sort: keyof UserType, state = store.getState()) => {
+export const setSort = (sort: typeof sortProps[number], state = store.getState()) => {
   const userSort = selectSort(state);
   const reverseUserSort = selectReverseSort(state);
   let reverseSort;
@@ -135,19 +136,8 @@ export const setSort = (sort: keyof UserType, state = store.getState()) => {
 };
 
 export const setSortIndex = (index: number) => {
-  const props = [
-    "displayName",
-    "email",
-    "dateCreated",
-    "lastSignIn",
-    "lastActive",
-    "nickname",
-    "designer",
-    "editor",
-    "admin",
-  ] as const;
   dispatch(setPageFn(1));
-  dispatch(setUserSort(props[index]));
+  dispatch(setUserSort(sortProps[index]));
   dispatch(setReverseUserSort(false));
   sortUsers(store.getState());
 };
