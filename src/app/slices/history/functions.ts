@@ -6,15 +6,13 @@ import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import { getSetById } from "@s/main/functions";
 import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
-import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
+import { selectProcessedActions, selectTab, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 
 const { dispatch } = store;
 
 export const setHistoryTab = (tab: HistoryTab, clearUrl = true, state = store.getState()) => {
-  const {
-    history: { tab: historyTab },
-  } = state;
+  const historyTab = selectTab(state);
   if (historyTab !== tab) {
     document.documentElement.scrollTop = 0;
     dispatch(setTab(tab));
