@@ -3,6 +3,17 @@ import type { RootState } from "~/app/store";
 import { CurrentUserType } from "./types";
 import { PresetType } from "@s/main/types";
 
+export const blankUser: CurrentUserType = {
+  email: "",
+  name: "",
+  avatar: "",
+  nickname: "",
+  isDesigner: false,
+  isEditor: false,
+  isAdmin: false,
+  id: "",
+};
+
 type UserState = {
   user: CurrentUserType;
   shareName: string;
@@ -37,17 +48,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<Partial<CurrentUserType>>) => {
-      const blankUser: CurrentUserType = {
-        email: "",
-        name: "",
-        avatar: "",
-        nickname: "",
-        isDesigner: false,
-        isEditor: false,
-        isAdmin: false,
-        id: "",
-      };
-      state.user = action.payload.email ? { ...blankUser, ...action.payload } : blankUser;
+      state.user = { ...blankUser, ...action.payload };
     },
     setShareName: (state, action: PayloadAction<string>) => {
       state.shareName = action.payload;
