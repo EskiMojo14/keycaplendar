@@ -17,14 +17,14 @@ import { CommandMap } from "react-mde/lib/definitions/types";
 import gfm from "remark-gfm";
 import BEMHelper from "@s/common/bem-helper";
 import {
-  headerOneCommand,
-  headerTwoCommand,
-  headerThreeCommand,
-  headerFourCommand,
   headerFiveCommand,
+  headerFourCommand,
+  headerOneCommand,
   headerSixCommand,
-  insertTableCommand,
+  headerThreeCommand,
+  headerTwoCommand,
   insertTableColumnAfter,
+  insertTableCommand,
 } from "@s/common/markdown-commands";
 import { markdownIcons } from "@s/common/markdown-constants";
 import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";

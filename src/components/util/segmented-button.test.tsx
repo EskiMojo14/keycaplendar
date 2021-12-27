@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 
 it("displays specified content", () => {

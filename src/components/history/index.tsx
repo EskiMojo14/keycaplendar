@@ -6,11 +6,11 @@ import { List } from "@rmwc/list";
 import { Tab, TabBar } from "@rmwc/tabs";
 import {
   TopAppBar,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
   TopAppBarRow,
   TopAppBarSection,
-  TopAppBarNavigationIcon,
   TopAppBarTitle,
-  TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";

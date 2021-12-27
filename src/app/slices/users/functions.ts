@@ -6,24 +6,24 @@ import firebase from "@s/firebase";
 import { sortProps, views } from "@s/users/constants";
 import { alphabeticalSortCurried, alphabeticalSortPropCurried, hasKey } from "@s/util/functions";
 import {
+  selectAllUsers,
+  selectNextPageToken,
+  selectPage,
+  selectReverseSort,
+  selectRowsPerPage,
+  selectSort,
+  selectSortedUsers,
   setAllUsers,
   setIndices,
   setLoading,
   setNextPageToken,
-  setPaginatedUsers,
-  setSortedUsers,
   setPage as setPageFn,
+  setPaginatedUsers,
   setReverseSort as setReverseUserSort,
   setRowsPerPage as setRowsPerPageFn,
+  setSortedUsers,
   setSort as setUserSort,
   setView,
-  selectAllUsers,
-  selectSort,
-  selectReverseSort,
-  selectSortedUsers,
-  selectPage,
-  selectRowsPerPage,
-  selectNextPageToken,
 } from ".";
 
 const { dispatch } = store;

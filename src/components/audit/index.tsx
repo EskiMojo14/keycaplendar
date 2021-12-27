@@ -1,16 +1,16 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { List } from "@rmwc/list";
 import {
   TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -20,7 +20,7 @@ import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
 import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
-import { getActions, filterActions } from "@s/audit/functions";
+import { filterActions, getActions } from "@s/audit/functions";
 import { ActionType } from "@s/audit/types";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";

@@ -11,7 +11,7 @@ import {
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";

@@ -2,21 +2,21 @@ import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
+  DataTableBody,
+  DataTableCell,
   DataTableContent,
   DataTableHead,
-  DataTableRow,
   DataTableHeadCell,
-  DataTableCell,
-  DataTableBody,
+  DataTableRow,
 } from "@rmwc/data-table";
 import {
   CollapsibleList,
   ListItem,
+  ListItemGraphic,
   ListItemMeta,
-  ListItemText,
   ListItemPrimaryText,
   ListItemSecondaryText,
-  ListItemGraphic,
+  ListItemText,
 } from "@rmwc/list";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";

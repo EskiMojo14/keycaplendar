@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -6,18 +6,18 @@ import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { FormField } from "@rmwc/formfield";
 import { Icon } from "@rmwc/icon";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
+import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { Select } from "@rmwc/select";
 import { Switch } from "@rmwc/switch";
 import { TextField } from "@rmwc/textfield";
 import {
   TopAppBar,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
   TopAppBarRow,
   TopAppBarSection,
-  TopAppBarNavigationIcon,
   TopAppBarTitle,
-  TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
 import { IconOptions } from "@rmwc/types";
 import { Typography } from "@rmwc/typography";

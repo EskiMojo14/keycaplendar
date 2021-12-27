@@ -7,19 +7,19 @@ import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
 import {
-  setSort as setMainSort,
-  setSortOrder as setMainSortOrder,
-  setSearch as setMainSearch,
-  setAppPresets,
-  setTransition,
-  setURLSet,
-  setLinkedFavorites,
-  setURLWhitelist,
   selectDefaultPreset,
-  setCurrentPreset,
+  selectLinkedFavorites,
   selectLoading,
   selectURLSet,
-  selectLinkedFavorites,
+  setAppPresets,
+  setCurrentPreset,
+  setLinkedFavorites,
+  setSearch as setMainSearch,
+  setSort as setMainSort,
+  setSortOrder as setMainSortOrder,
+  setTransition,
+  setURLSet,
+  setURLWhitelist,
 } from "@s/main";
 import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";

@@ -5,14 +5,14 @@ import store from "~/app/store";
 import firebase from "@s/firebase";
 import { alphabeticalSortPropCurried, hasKey, ordinal } from "@s/util/functions";
 import {
-  setStatisticsData,
+  selectData,
+  selectSort,
+  selectTab,
   setLoading,
+  setStatisticsData,
   setStatisticsSetting,
   setStatisticsSort,
   setStatsTab,
-  selectTab,
-  selectData,
-  selectSort,
 } from ".";
 import { categories, properties } from "./constants";
 import { StatisticsSortType, StatisticsType, StatsTab } from "./types";

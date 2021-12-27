@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { LinearProgress } from "@rmwc/linear-progress";
-import { TabBar, Tab } from "@rmwc/tabs";
+import { Tab, TabBar } from "@rmwc/tabs";
 import {
   TopAppBar,
+  TopAppBarActionItem,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
   TopAppBarRow,
   TopAppBarSection,
-  TopAppBarNavigationIcon,
   TopAppBarTitle,
-  TopAppBarFixedAdjust,
-  TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
@@ -20,7 +20,7 @@ import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-butto
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
-import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
+import { selectData, selectLoading, selectSettings, selectSort, selectTab } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
 import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
 import { StatisticsType } from "@s/statistics/types";

@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";

@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
 import { PresetType } from "@s/main/types";
 

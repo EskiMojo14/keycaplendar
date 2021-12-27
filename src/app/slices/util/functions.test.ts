@@ -1,14 +1,14 @@
 import { Keyset } from "@s/main/constructors";
 import {
-  removeDuplicates,
   addOrRemove,
-  alphabeticalSortCurried,
   alphabeticalSort,
-  alphabeticalSortPropCurried,
+  alphabeticalSortCurried,
   alphabeticalSortProp,
-  pluralise,
+  alphabeticalSortPropCurried,
   arrayMove,
   getSetMonthRange,
+  pluralise,
+  removeDuplicates,
 } from "@s/util/functions";
 
 describe("removeDuplicates", () => {

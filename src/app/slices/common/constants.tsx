@@ -2,17 +2,17 @@ import { ReactNode } from "react";
 import { IconOptions, IconPropT } from "@rmwc/types";
 import {
   CalendarToday,
-  Store,
-  Forum,
-  Favorites,
-  ShoppingBasket,
-  VisibilityOff,
-  HistoryEdu,
-  People,
-  Collections,
-  Info,
   Campaign,
+  Collections,
+  Favorites,
+  Forum,
+  HistoryEdu,
+  Info,
+  People,
   Settings,
+  ShoppingBasket,
+  Store,
+  VisibilityOff,
 } from "@i";
 import { Page, ThemeMap } from "./types";
 

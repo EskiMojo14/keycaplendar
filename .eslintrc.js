@@ -88,6 +88,13 @@ module.exports = {
     ],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "sort-imports": [
+      "warn",
+      {
+        ignoreCase: true,
+        ignoreDeclarationSort: true,
+      },
+    ],
   },
   settings: {
     react: {
