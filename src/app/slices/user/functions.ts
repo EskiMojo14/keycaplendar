@@ -4,7 +4,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import firebase from "@s/firebase";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { filterData, updatePreset } from "@s/main/functions";
@@ -28,7 +28,7 @@ const { dispatch } = store;
 
 export const getUserPreferences = (id: string) => {
   if (id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(id as UserId)
       .get()
@@ -114,7 +114,7 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
     filterData(store.getState());
   }
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
@@ -141,7 +141,7 @@ export const toggleBought = (id: string, state = store.getState()) => {
     filterData(store.getState());
   }
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
@@ -181,7 +181,7 @@ export const toggleHidden = (id: string, state = store.getState()) => {
     dismissesOnAction: true,
   });
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
@@ -200,7 +200,7 @@ export const toggleHidden = (id: string, state = store.getState()) => {
 export const syncShareName = (shareName: string, state = store.getState()) => {
   const user = selectUser(state);
   dispatch(setShareNameLoading(true));
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set(
@@ -222,7 +222,7 @@ export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: 
 
 export const syncFavoritesId = (id: string, state = store.getState()) => {
   const user = selectUser(state);
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set(

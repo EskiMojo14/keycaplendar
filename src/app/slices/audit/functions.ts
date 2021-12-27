@@ -1,7 +1,7 @@
 import isEqual from "lodash.isequal";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { alphabeticalSortProp } from "@s/util/functions";
 import {
   selectAllActions,
@@ -21,7 +21,7 @@ const { dispatch } = store;
 export const getActions = (state = store.getState()) => {
   const length = selectLength(state);
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("changelog")
     .orderBy("timestamp", "desc")
     .limit(length)

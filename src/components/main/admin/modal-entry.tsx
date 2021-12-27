@@ -26,7 +26,7 @@ import { withTooltip } from "@c/util/hocs";
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
@@ -1192,7 +1192,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   const editEntry = (imageUrl = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
-      typedFirestore
+      firestore
         .collection("keysets")
         .doc(id as KeysetId)
         .update({

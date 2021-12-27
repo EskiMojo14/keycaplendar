@@ -1,6 +1,6 @@
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { queue } from "~/app/snackbar-queue";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { GuideId } from "@s/firebase/types";
 import { GuideEntryType } from "@s/guides/types";
 
@@ -13,7 +13,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const deleteEntry = () => {
-    typedFirestore
+    firestore
       .collection("guides")
       .doc(props.entry.id as GuideId)
       .delete()

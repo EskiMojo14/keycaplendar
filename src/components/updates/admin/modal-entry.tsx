@@ -12,7 +12,7 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { UpdateId } from "@s/firebase/types";
 import { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
@@ -68,7 +68,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (valid) {
-      typedFirestore
+      firestore
         .collection("updates")
         .add({
           name,
@@ -233,7 +233,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (valid) {
-      typedFirestore
+      firestore
         .collection("updates")
         .doc(entry.id as UpdateId)
         .set({

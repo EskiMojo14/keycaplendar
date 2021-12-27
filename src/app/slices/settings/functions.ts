@@ -3,7 +3,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
@@ -122,7 +122,7 @@ export const setSyncSettings = (bool: boolean, write = true, state = store.getSt
         }
       });
     }
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
@@ -137,7 +137,7 @@ export const syncSetting = (setting: string, value: any, state = store.getState(
   const user = selectUser(state);
   const syncSettings = selectSyncSettings(state);
   if (user.id && syncSettings) {
-    const userDocRef = typedFirestore.collection("users").doc(user.id as UserId);
+    const userDocRef = firestore.collection("users").doc(user.id as UserId);
     const sync = () => {
       const settingObject: Record<string, any> = {};
       settingObject[`settings.${setting}`] = value;

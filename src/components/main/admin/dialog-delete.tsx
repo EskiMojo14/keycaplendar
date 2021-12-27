@@ -2,7 +2,7 @@ import { MouseEvent } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { KeysetDoc, KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
@@ -19,7 +19,7 @@ export const DialogDelete = (props: DialogDeleteProps) => {
   const user = useAppSelector(selectUser);
   const deleteEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    typedFirestore
+    firestore
       .collection("keysets")
       .doc(props.set.id as KeysetId)
       .set({

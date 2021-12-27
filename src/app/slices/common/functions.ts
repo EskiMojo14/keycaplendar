@@ -2,7 +2,7 @@ import throttle from "lodash.throttle";
 import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -222,7 +222,7 @@ export const getURLQuery = (state = store.getState()) => {
 };
 
 export const getGlobals = () => {
-  typedFirestore
+  firestore
     .collection("app")
     .doc("globals")
     .get()

@@ -12,7 +12,7 @@ import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { GuideId } from "@s/firebase/types";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
@@ -73,7 +73,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      typedFirestore
+      firestore
         .collection("guides")
         .add({
           name: user.nickname,
@@ -280,7 +280,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      typedFirestore
+      firestore
         .collection("guides")
         .doc(entry.id as GuideId)
         .set({

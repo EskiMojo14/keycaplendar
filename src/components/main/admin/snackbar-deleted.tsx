@@ -2,7 +2,7 @@ import { MouseEvent } from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
@@ -22,7 +22,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
     const {
       set: { id, ...set },
     } = props;
-    typedFirestore
+    firestore
       .collection("keysets")
       .doc(id as KeysetId)
       .set(

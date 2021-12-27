@@ -7,7 +7,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { UserId } from "@s/firebase/types";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
@@ -125,7 +125,7 @@ export const getSetById = (id: string, state = store.getState()) => {
 
 export const getData = () => {
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("keysets")
     .get()
     .then((querySnapshot) => {
@@ -739,7 +739,7 @@ export const syncPresets = (state = store.getState()) => {
     presetsDraft.sort(alphabeticalSortPropCurried("name", false, "Default"));
     return presetsDraft.map((preset) => ({ ...preset }));
   });
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set({ filterPresets: sortedPresets }, { merge: true })
@@ -792,7 +792,7 @@ export const syncGlobalPresets = (state = store.getState()) => {
   const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
     ...preset,
   }));
-  typedFirestore
+  firestore
     .collection("app")
     .doc("globals")
     .set({ filterPresets: sortedPresets }, { merge: true })

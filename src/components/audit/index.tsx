@@ -24,7 +24,7 @@ import { getActions, filterActions } from "@s/audit/functions";
 import { ActionType } from "@s/audit/types";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { ChangelogId } from "@s/firebase/types";
 import { Keyset } from "@s/main/constructors";
 import { selectBottomNav } from "@s/settings";
@@ -110,7 +110,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
   }, []);
 
   const deleteActionFn = (action: ActionType) => {
-    typedFirestore
+    firestore
       .collection("changelog")
       .doc(action.changelogId as ChangelogId)
       .delete()

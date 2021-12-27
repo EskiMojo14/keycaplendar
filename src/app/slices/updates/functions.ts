@@ -1,6 +1,6 @@
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { typedFirestore } from "@s/firebase/firestore";
+import firestore from "@s/firebase/firestore";
 import { UpdateId } from "@s/firebase/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import { setEntries, setLoading } from ".";
@@ -10,7 +10,7 @@ const { dispatch } = store;
 
 export const getEntries = () => {
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("updates")
     .orderBy("date", "desc")
     .get()
@@ -47,7 +47,7 @@ export const sortEntries = (entries: UpdateEntryType[]) => {
 };
 
 export const pinEntry = (entry: UpdateEntryType) => {
-  typedFirestore
+  firestore
     .collection("updates")
     .doc(entry.id as UpdateId)
     .set({ pinned: !entry.pinned }, { merge: true })
