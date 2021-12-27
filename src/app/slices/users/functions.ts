@@ -1,8 +1,9 @@
-import { is } from "typescript-is";
 import produce from "immer";
-import firebase from "@s/firebase";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import firebase from "@s/firebase";
+import { sortProps, views } from "@s/users/constants";
 import { alphabeticalSortCurried, alphabeticalSortPropCurried, hasKey } from "@s/util/functions";
 import {
   setAllUsers,
@@ -24,7 +25,6 @@ import {
   selectRowsPerPage,
   selectNextPageToken,
 } from ".";
-import { sortProps, views } from "@s/users/constants";
 
 const { dispatch } = store;
 

@@ -1,12 +1,4 @@
 import { ReactNode } from "react";
-import { DateTime } from "luxon";
-import { is } from "typescript-is";
-import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
-import { ActionSetType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
-import { ProcessedPublicActionType } from "@s/history/types";
-import { VendorType } from "@s/main/types";
-import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
@@ -27,6 +19,14 @@ import {
   ListItemMeta,
 } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
+import { DateTime } from "luxon";
+import { is } from "typescript-is";
+import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
+import { ActionSetType } from "@s/audit/types";
+import { KeysetDoc } from "@s/firebase/types";
+import { ProcessedPublicActionType } from "@s/history/types";
+import { VendorType } from "@s/main/types";
+import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import "./changelog-entry.scss";
 
 type ChangelogEntryProps = {

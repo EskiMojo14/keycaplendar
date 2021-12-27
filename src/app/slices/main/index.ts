@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { removeDuplicates } from "@s/util/functions";
+import { KeysMatching } from "@s/util/types";
 import { Preset } from "./constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
-import { KeysMatching } from "@s/util/types";
 
 export type MainState = {
   transition: boolean;

@@ -1,3 +1,5 @@
+import produce from "immer";
+import { createStore } from "~/app/store";
 import {
   initialState,
   selectCookies,
@@ -9,8 +11,6 @@ import {
   setShareNameLoading,
   toggleLich,
 } from "@s/settings";
-import produce from "immer";
-import { createStore } from "~/app/store";
 
 let store = createStore();
 

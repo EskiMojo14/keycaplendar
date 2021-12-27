@@ -1,6 +1,8 @@
 import isEqual from "lodash.isequal";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import { typedFirestore } from "@s/firebase/firestore";
+import { alphabeticalSortProp } from "@s/util/functions";
 import {
   selectAllActions,
   selectFilterAction,
@@ -13,8 +15,6 @@ import {
 } from ".";
 import { auditProperties } from "./constants";
 import { ActionType } from "./types";
-import { typedFirestore } from "@s/firebase/firestore";
-import { alphabeticalSortProp } from "@s/util/functions";
 
 const { dispatch } = store;
 

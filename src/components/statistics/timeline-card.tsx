@@ -1,10 +1,25 @@
 import { useState, useEffect, ReactNode } from "react";
+import { Card } from "@rmwc/card";
+import { ChipSet, Chip } from "@rmwc/chip";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableHead,
+  DataTableRow,
+  DataTableHeadCell,
+  DataTableBody,
+  DataTableCell,
+} from "@rmwc/data-table";
+import { IconButton } from "@rmwc/icon-button";
+import { Typography } from "@rmwc/typography";
 import Chartist, { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
-import ChartistGraph from "react-chartist";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
+import ChartistGraph from "react-chartist";
 import { useAppSelector } from "~/app/hooks";
+import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import {
@@ -15,21 +30,6 @@ import {
   iconObject,
   pluralise,
 } from "@s/util/functions";
-import { Card } from "@rmwc/card";
-import { ChipSet, Chip } from "@rmwc/chip";
-import { IconButton } from "@rmwc/icon-button";
-import { Typography } from "@rmwc/typography";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-  DataTableCell,
-} from "@rmwc/data-table";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/hocs";
 import { Circle, EyeCheck, EyeRemove, FilterAlt, FilterAltOff } from "@i";
 import "./timeline-card.scss";
 

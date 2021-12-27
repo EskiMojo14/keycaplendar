@@ -1,9 +1,9 @@
+import { Card } from "@rmwc/card";
+import { List } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
-import { Card } from "@rmwc/card";
-import { List } from "@rmwc/list";
 import { ElementCompact } from "./element-compact";
 import "./view-compact.scss";
 

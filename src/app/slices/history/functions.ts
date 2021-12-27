@@ -1,9 +1,9 @@
 import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import firebase from "@s/firebase";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
+import firebase from "@s/firebase";
 import { getSetById } from "@s/main/functions";
 import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { selectProcessedActions, selectTab, setLoading, setProcessedActions, setRecentSets, setTab } from ".";

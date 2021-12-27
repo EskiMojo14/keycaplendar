@@ -1,21 +1,5 @@
-import classNames from "classnames";
-import isEqual from "lodash.isequal";
-import { DateTime } from "luxon";
-import { is } from "typescript-is";
-import { auditProperties } from "@s/audit/constants";
-import { ActionType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
-import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
-import {
-  CollapsibleList,
-  ListItem,
-  ListItemMeta,
-  ListItemText,
-  ListItemPrimaryText,
-  ListItemSecondaryText,
-  ListItemGraphic,
-} from "@rmwc/list";
+import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
   DataTableContent,
@@ -25,7 +9,23 @@ import {
   DataTableCell,
   DataTableBody,
 } from "@rmwc/data-table";
-import { Checkbox } from "@rmwc/checkbox";
+import {
+  CollapsibleList,
+  ListItem,
+  ListItemMeta,
+  ListItemText,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemGraphic,
+} from "@rmwc/list";
+import classNames from "classnames";
+import isEqual from "lodash.isequal";
+import { DateTime } from "luxon";
+import { is } from "typescript-is";
+import { auditProperties } from "@s/audit/constants";
+import { ActionType } from "@s/audit/types";
+import { KeysetDoc } from "@s/firebase/types";
+import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import "./audit-entry.scss";
 
 type AuditEntryProps = {

@@ -1,7 +1,7 @@
+import store from "~/app/store";
 import { setStatisticsSetting, setStatisticsSort, setStatsTab } from "@s/statistics";
 import * as statsFunctions from "@s/statistics/functions";
 import { StatisticsSortType, StatisticsType, StatsTab } from "@s/statistics/types";
-import store from "~/app/store";
 
 const { setSetting, setSort, setStatisticsTab } = statsFunctions;
 

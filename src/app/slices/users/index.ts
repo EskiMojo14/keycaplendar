@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { sortProps } from "@s/users/constants";
 import type { RootState } from "~/app/store";
+import { sortProps } from "@s/users/constants";
 import { UserType } from "./types";
 
 type UserState = {

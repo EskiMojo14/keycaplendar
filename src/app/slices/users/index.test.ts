@@ -1,3 +1,4 @@
+import { createStore } from "~/app/store";
 import {
   selectAllUsers,
   selectIndices,
@@ -25,7 +26,6 @@ import {
 import { sortProps } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { UserType } from "@s/users/types";
-import { createStore } from "~/app/store";
 
 let store = createStore();
 

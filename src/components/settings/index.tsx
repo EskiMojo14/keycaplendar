@@ -1,34 +1,4 @@
 import { useEffect, useState, ChangeEvent } from "react";
-import firebase from "@s/firebase";
-import classNames from "classnames";
-import { Link } from "react-router-dom";
-import { IconOptions } from "@rmwc/types";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
-import { selectDevice } from "@s/common";
-import { pageTitle } from "@s/common/constants";
-import {
-  selectBottomNav,
-  selectSettings,
-  selectShareNameLoading,
-  selectSyncSettings,
-  setShareNameLoading,
-} from "@s/settings";
-import {
-  setApplyTheme,
-  setBottomNav,
-  setDarkTheme,
-  setDensity,
-  setFromTimeTheme,
-  setLightTheme,
-  setManualTheme,
-  setSyncSettings,
-  setToTimeTheme,
-} from "@s/settings/functions";
-import { selectShareName, selectUser, setUser } from "@s/user";
-import { userRoleIcons } from "@s/users/constants";
-import { debouncedSyncShareName } from "@s/user/functions";
-import { useBoolStates } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -49,10 +19,40 @@ import {
   TopAppBarTitle,
   TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import { IconOptions } from "@rmwc/types";
 import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { TimePicker } from "@c/util/pickers/time-picker";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
+import {
+  selectBottomNav,
+  selectSettings,
+  selectShareNameLoading,
+  selectSyncSettings,
+  setShareNameLoading,
+} from "@s/settings";
+import {
+  setApplyTheme,
+  setBottomNav,
+  setDarkTheme,
+  setDensity,
+  setFromTimeTheme,
+  setLightTheme,
+  setManualTheme,
+  setSyncSettings,
+  setToTimeTheme,
+} from "@s/settings/functions";
+import { selectShareName, selectUser, setUser } from "@s/user";
+import { debouncedSyncShareName } from "@s/user/functions";
+import { userRoleIcons } from "@s/users/constants";
+import { useBoolStates } from "@s/util/functions";
 import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 

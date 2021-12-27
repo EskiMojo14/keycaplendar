@@ -1,11 +1,11 @@
-import firebase from "@s/firebase";
-import { typedFirestore } from "@s/firebase/firestore";
-import { is } from "typescript-is";
 import debounce from "lodash.debounce";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";
+import firebase from "@s/firebase";
+import { typedFirestore } from "@s/firebase/firestore";
+import { UserId } from "@s/firebase/types";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { filterData, updatePreset } from "@s/main/functions";
 import { setShareNameLoading } from "@s/settings";

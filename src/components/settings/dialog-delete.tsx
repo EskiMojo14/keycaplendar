@@ -1,6 +1,6 @@
-import firebase from "@s/firebase";
-import { queue } from "~/app/snackbar-queue";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import { queue } from "~/app/snackbar-queue";
+import firebase from "@s/firebase";
 
 type DialogDeleteProps = {
   open: boolean;

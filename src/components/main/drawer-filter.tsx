@@ -1,9 +1,19 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import isEqual from "lodash.isequal";
+import { Button } from "@rmwc/button";
+import { ChipSet, Chip } from "@rmwc/chip";
+import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import { Icon } from "@rmwc/icon";
+import { IconButton } from "@rmwc/icon-button";
+import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
+import { Select } from "@rmwc/select";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
 import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice, selectPage } from "@s/common";
 import {
   selectAllProfiles,
@@ -20,16 +30,6 @@ import { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";
-import { Button } from "@rmwc/button";
-import { ChipSet, Chip } from "@rmwc/chip";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { Icon } from "@rmwc/icon";
-import { IconButton } from "@rmwc/icon-button";
-import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
-import { Select } from "@rmwc/select";
-import { Typography } from "@rmwc/typography";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/hocs";
 import {
   Favorite,
   FilterEdit,

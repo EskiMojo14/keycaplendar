@@ -1,6 +1,6 @@
 import { useState, useEffect, HTMLAttributes } from "react";
-import BEMHelper from "@s/common/bem-helper";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
+import BEMHelper from "@s/common/bem-helper";
 import "./full-screen-dialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");

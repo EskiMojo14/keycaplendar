@@ -1,3 +1,5 @@
+import produce from "immer";
+import { createStore } from "~/app/store";
 import {
   initialState,
   selectData,
@@ -12,8 +14,6 @@ import {
   setStatsTab,
 } from "@s/statistics";
 import { StatsTab } from "@s/statistics/types";
-import produce from "immer";
-import { createStore } from "~/app/store";
 
 let store = createStore();
 

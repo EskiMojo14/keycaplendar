@@ -1,10 +1,4 @@
 import { Fragment, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
-import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
-import { iconObject } from "@s/util/functions";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -19,7 +13,13 @@ import {
   ListItemSecondaryText,
   ListItemText,
 } from "@rmwc/list";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper } from "@c/util/conditional-wrapper";
+import { selectDevice } from "@s/common";
+import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
+import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
+import { GuideEntryType } from "@s/guides/types";
+import { iconObject } from "@s/util/functions";
 import { Article } from "@i";
 import "./entries-list.scss";
 

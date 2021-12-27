@@ -1,13 +1,3 @@
-import Twemoji from "react-twemoji";
-import LazyLoad from "react-lazy-load";
-import classNames from "classnames";
-import { queue } from "~/app/snackbar-queue";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common";
-import { SetType } from "@s/main/types";
-import { selectFavorites, selectHidden, selectUser } from "@s/user";
-import { toggleFavorite, toggleHidden } from "@s/user/functions";
-import { iconObject, pluralise } from "@s/util/functions";
 import {
   Card,
   CardMedia,
@@ -20,7 +10,17 @@ import {
 } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
+import LazyLoad from "react-lazy-load";
+import Twemoji from "react-twemoji";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice, selectPage } from "@s/common";
+import { SetType } from "@s/main/types";
+import { selectFavorites, selectHidden, selectUser } from "@s/user";
+import { toggleFavorite, toggleHidden } from "@s/user/functions";
+import { iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, Edit, Favorite, NewReleases, Share, Visibility, VisibilityOff } from "@i";
 import "./element-card.scss";
 

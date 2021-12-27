@@ -1,16 +1,4 @@
 import { useEffect, useState } from "react";
-import classNames from "classnames";
-import SwipeableViews from "react-swipeable-views";
-import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { pageTitle } from "@s/common/constants";
-import { selectBottomNav } from "@s/settings";
-import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
-import { statsTabs } from "@s/statistics/constants";
-import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
-import { StatisticsType } from "@s/statistics/types";
-import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { TabBar, Tab } from "@rmwc/tabs";
 import {
@@ -22,14 +10,26 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarActionItem,
 } from "@rmwc/top-app-bar";
+import classNames from "classnames";
+import SwipeableViews from "react-swipeable-views";
+import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
+import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import { pageTitle } from "@s/common/constants";
+import { selectBottomNav } from "@s/settings";
+import { selectTab, selectData, selectLoading, selectSettings, selectSort } from "@s/statistics";
+import { statsTabs } from "@s/statistics/constants";
+import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
+import { StatisticsType } from "@s/statistics/types";
+import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
+import { Category, DateRange, SortAlphabeticalVariant, SortNumericVariant } from "@i";
+import { DialogStatistics } from "./dialog-statistics";
 import { StatusCard } from "./pie-card";
 import { TableCard } from "./table-card";
 import { ShippedCard, TimelinesCard } from "./timeline-card";
-import { DialogStatistics } from "./dialog-statistics";
-import { Category, DateRange, SortAlphabeticalVariant, SortNumericVariant } from "@i";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);

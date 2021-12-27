@@ -1,9 +1,9 @@
 import { HTMLAttributes } from "react";
-import reactStringReplace from "react-string-replace";
-import classNames from "classnames";
-import BEMHelper from "@s/common/bem-helper";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
+import classNames from "classnames";
+import reactStringReplace from "react-string-replace";
+import BEMHelper from "@s/common/bem-helper";
 import "./autocomplete.scss";
 
 type AutocompleteProps = HTMLAttributes<HTMLElement> & {

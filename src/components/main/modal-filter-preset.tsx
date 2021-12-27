@@ -1,19 +1,19 @@
 import { useEffect, useState, ChangeEvent } from "react";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
-import { selectUser } from "@s/user";
-import { Checkbox } from "@rmwc/checkbox";
 import { Button } from "@rmwc/button";
+import { Checkbox } from "@rmwc/checkbox";
 import { ChipSet, Chip } from "@rmwc/chip";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import { useAppSelector } from "~/app/hooks";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
+import { PresetType } from "@s/main/types";
+import { selectUser } from "@s/user";
 import "./modal-filter-preset.scss";
 
 type ModalFilterPresetProps = {

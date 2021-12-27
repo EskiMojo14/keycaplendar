@@ -1,13 +1,13 @@
 import { MouseEvent } from "react";
-import { typedFirestore } from "@s/firebase/firestore";
+import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { typedFirestore } from "@s/firebase/firestore";
 import { KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
 import { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
-import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {
   close: () => void;

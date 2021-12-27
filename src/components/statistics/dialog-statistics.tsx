@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { List, ListItem, ListItemMeta } from "@rmwc/list";
+import { Radio } from "@rmwc/radio";
 import { useAppSelector } from "~/app/hooks";
 import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics";
 import { Categories, Properties } from "@s/statistics/types";
 import { hasKey } from "@s/util/functions";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { List, ListItem, ListItemMeta } from "@rmwc/list";
-import { Radio } from "@rmwc/radio";
 import "./dialog-statistics.scss";
 
 type DialogStatisticsProps = {

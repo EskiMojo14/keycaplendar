@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
+import { IconOptions, IconPropT } from "@rmwc/types";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import firebase from "@s/firebase";
-import { IconOptions, IconPropT } from "@rmwc/types";
 import { replaceChars } from "@s/common/constants";
+import firebase from "@s/firebase";
 import { DateSortKeys, SetType } from "@s/main/types";
 
 const storage = firebase.storage();

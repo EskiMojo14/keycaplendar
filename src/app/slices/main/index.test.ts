@@ -1,3 +1,4 @@
+import { createStore } from "~/app/store";
 import {
   initialState,
   mergeWhitelist,
@@ -36,7 +37,6 @@ import {
 } from "@s/main";
 import { Keyset, Preset, Whitelist } from "@s/main/constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "@s/main/types";
-import { createStore } from "~/app/store";
 
 let store = createStore();
 

@@ -1,15 +1,4 @@
 import { useEffect, useState } from "react";
-import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { pageTitle } from "@s/common/constants";
-import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
-import { Guide } from "@s/guides/constructors";
-import { getEntries } from "@s/guides/functions";
-import { GuideEntryType } from "@s/guides/types";
-import { selectBottomNav } from "@s/settings";
-import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Fab } from "@rmwc/fab";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -23,14 +12,25 @@ import {
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
-import { GuideEntry } from "./guide-entry";
-import { EntriesList } from "./entries-list";
-import { ModalDetail } from "./modal-detail";
-import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { DialogDelete } from "@c/guides/admin/dialog-delete";
+import { ModalCreate, ModalEdit } from "@c/guides/admin/modal-entry";
 import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice } from "@s/common";
+import { pageTitle } from "@s/common/constants";
+import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
+import { Guide } from "@s/guides/constructors";
+import { getEntries } from "@s/guides/functions";
+import { GuideEntryType } from "@s/guides/types";
+import { selectBottomNav } from "@s/settings";
+import { selectUser } from "@s/user";
+import { closeModal, openModal } from "@s/util/functions";
+import { EntriesList } from "./entries-list";
+import { GuideEntry } from "./guide-entry";
+import { ModalDetail } from "./modal-detail";
 import emptyImg from "@m/empty.svg";
 import "./index.scss";
 

@@ -1,16 +1,4 @@
 import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
-import { DateTime } from "luxon";
-import { useImmer } from "use-immer";
-import firebase from "@s/firebase";
-import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
-import { selectDevice } from "@s/common";
-import { selectAllDesigners } from "@s/main";
-import { selectUser } from "@s/user";
-import { userRoleIcons } from "@s/users/constants";
-import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
-import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -27,8 +15,20 @@ import {
 } from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
+import { DateTime } from "luxon";
+import { useImmer } from "use-immer";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import firebase from "@s/firebase";
+import { selectAllDesigners } from "@s/main";
+import { selectUser } from "@s/user";
+import { userRoleIcons } from "@s/users/constants";
+import { User } from "@s/users/constructors";
+import { UserType } from "@s/users/types";
+import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserCardProps = {

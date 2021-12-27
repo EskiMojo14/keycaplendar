@@ -1,5 +1,20 @@
 import { useState } from "react";
+import { Checkbox } from "@rmwc/checkbox";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
+import { IconButton } from "@rmwc/icon-button";
 import classNames from "classnames";
+import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
+import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
+import { CommandMap } from "react-mde/lib/definitions/types";
+import gfm from "remark-gfm";
 import BEMHelper from "@s/common/bem-helper";
 import {
   headerOneCommand,
@@ -13,21 +28,6 @@ import {
 } from "@s/common/markdown-commands";
 import { markdownIcons } from "@s/common/markdown-constants";
 import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";
-import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
-import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
-import { CommandMap } from "react-mde/lib/definitions/types";
-import gfm from "remark-gfm";
-import { Checkbox } from "@rmwc/checkbox";
-import {
-  DataTable,
-  DataTableBody,
-  DataTableCell,
-  DataTableContent,
-  DataTableHead,
-  DataTableHeadCell,
-  DataTableRow,
-} from "@rmwc/data-table";
-import { IconButton } from "@rmwc/icon-button";
 import { SegmentedButton, SegmentedButtonSegment } from "./segmented-button";
 import "./react-markdown.scss";
 

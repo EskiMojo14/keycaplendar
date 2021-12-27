@@ -1,13 +1,13 @@
-import { DateTime } from "luxon";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { ImageType } from "@s/images/types";
-import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
+import { DateTime } from "luxon";
+import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice } from "@s/common";
+import { ImageType } from "@s/images/types";
+import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import "./drawer-details.scss";
 
 type DrawerDetailsProps = {

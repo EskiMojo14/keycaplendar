@@ -1,15 +1,15 @@
-import { queue } from "~/app/snackbar-queue";
+import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
+import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { withTooltip } from "@c/util/hocs";
+import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
 import { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
 import { iconObject } from "@s/util/functions";
-import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
-import { Chip, ChipSet } from "@rmwc/chip";
-import { Typography } from "@rmwc/typography";
-import { CustomReactMarkdown } from "@c/util/react-markdown";
-import { withTooltip } from "@c/util/hocs";
 import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 

@@ -1,14 +1,4 @@
 import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
-import { DateTime } from "luxon";
-import { useImmer } from "use-immer";
-import firebase from "@s/firebase";
-import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
-import { selectAllDesigners } from "@s/main";
-import { selectUser } from "@s/user";
-import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
-import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -16,7 +6,17 @@ import { DataTableRow, DataTableCell } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
+import { DateTime } from "luxon";
+import { useImmer } from "use-immer";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
+import firebase from "@s/firebase";
+import { selectAllDesigners } from "@s/main";
+import { selectUser } from "@s/user";
+import { User } from "@s/users/constructors";
+import { UserType } from "@s/users/types";
+import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserRowProps = {

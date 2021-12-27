@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
-import BEMHelper from "@s/common/bem-helper";
-import { Select, SelectHTMLProps, SelectProps } from "@rmwc/select";
 import { IconButton, IconButtonHTMLProps, IconButtonProps } from "@rmwc/icon-button";
+import { Select, SelectHTMLProps, SelectProps } from "@rmwc/select";
+import BEMHelper from "@s/common/bem-helper";
 import "./data-table-pagination.scss";
 
 const bemClasses = new BEMHelper("mdc-data-table");

@@ -1,11 +1,11 @@
-import { Provider } from "react-redux";
-import { RMWCProvider } from "@rmwc/provider";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { RMWCProvider } from "@rmwc/provider";
 import { DateTime } from "luxon";
-import App from "./app";
+import { Provider } from "react-redux";
 import store from "~/app/store";
 import { ThemeProvider } from "@c/util/theme-provider";
+import App from "./app";
 
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {

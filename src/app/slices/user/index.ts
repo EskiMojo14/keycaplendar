@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { CurrentUserType } from "./types";
 import { PresetType } from "@s/main/types";
+import { CurrentUserType } from "./types";
 
 export const blankUser: CurrentUserType = {
   email: "",

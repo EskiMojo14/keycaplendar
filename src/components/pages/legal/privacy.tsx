@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Card } from "@rmwc/card";
 import {
   TopAppBar,
   TopAppBarRow,
@@ -7,8 +7,8 @@ import {
   TopAppBarFixedAdjust,
   TopAppBarNavigationIcon,
 } from "@rmwc/top-app-bar";
-import { Card } from "@rmwc/card";
 import { Typography } from "@rmwc/typography";
+import { Link } from "react-router-dom";
 import "./legal.scss";
 
 export const PrivacyPolicy = () => {

@@ -1,5 +1,5 @@
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 
 it("displays specified content", () => {
   const text = "Test";

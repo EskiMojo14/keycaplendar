@@ -1,12 +1,12 @@
+import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
+import { ViewCard } from "@c/main/views/card/view-card";
+import { ViewCompact } from "@c/main/views/compact/view-compact";
+import { ViewImageList } from "@c/main/views/image-list/view-image-list";
+import { ViewList } from "@c/main/views/list/view-list";
 import { selectSetGroups } from "@s/main";
 import { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
-import { Typography } from "@rmwc/typography";
-import { ViewCard } from "@c/main/views/card/view-card";
-import { ViewList } from "@c/main/views/list/view-list";
-import { ViewImageList } from "@c/main/views/image-list/view-image-list";
-import { ViewCompact } from "@c/main/views/compact/view-compact";
 import "./content-grid.scss";
 
 type ContentGridProps = {

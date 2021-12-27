@@ -1,11 +1,8 @@
-import { is } from "typescript-is";
 import throttle from "lodash.throttle";
-import { typedFirestore } from "@s/firebase/firestore";
-import store from "~/app/store";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
-import { selectPage, setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
-import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
-import { Page, ThemeMap } from "./types";
+import store from "~/app/store";
+import { typedFirestore } from "@s/firebase/firestore";
 import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
 import { HistoryTab } from "@s/history/types";
@@ -33,6 +30,9 @@ import { selectURLEntry as selectURLUpdate, setURLEntry as setURLUpdate } from "
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
+import { selectPage, setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
+import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
+import { Page, ThemeMap } from "./types";
 
 const { dispatch } = store;
 

@@ -1,9 +1,4 @@
-import Twemoji from "react-twemoji";
-import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
-import { selectDevice, selectPage } from "@s/common";
-import { SetType } from "@s/main/types";
-import { iconObject } from "@s/util/functions";
+import { IconButton } from "@rmwc/icon-button";
 import {
   ListItem,
   ListItemText,
@@ -12,8 +7,13 @@ import {
   ListItemGraphic,
   ListItemMeta,
 } from "@rmwc/list";
-import { IconButton } from "@rmwc/icon-button";
+import Twemoji from "react-twemoji";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice, selectPage } from "@s/common";
+import { SetType } from "@s/main/types";
+import { iconObject } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-compact.scss";
 

@@ -1,8 +1,8 @@
 import produce from "immer";
 import { DateTime } from "luxon";
-import firebase from "@s/firebase";
-import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
+import store from "~/app/store";
+import firebase from "@s/firebase";
 import { alphabeticalSortPropCurried, hasKey, ordinal } from "@s/util/functions";
 import {
   setStatisticsData,
@@ -14,8 +14,8 @@ import {
   selectData,
   selectSort,
 } from ".";
-import { StatisticsSortType, StatisticsType, StatsTab } from "./types";
 import { categories, properties } from "./constants";
+import { StatisticsSortType, StatisticsType, StatsTab } from "./types";
 
 const storage = firebase.storage();
 

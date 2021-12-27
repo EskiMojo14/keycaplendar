@@ -1,3 +1,5 @@
+import produce from "immer";
+import { createStore } from "~/app/store";
 import { Preset } from "@s/main/constructors";
 import { PresetType } from "@s/main/types";
 import {
@@ -18,8 +20,6 @@ import {
   setUserPresets,
 } from "@s/user";
 import { CurrentUserType } from "@s/user/types";
-import produce from "immer";
-import { createStore } from "~/app/store";
 
 let store = createStore();
 

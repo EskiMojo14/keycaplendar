@@ -1,15 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
-import Chartist, { ILineChartOptions } from "chartist";
-import ChartistGraph from "react-chartist";
-import chartistPluginAxisTitle from "chartist-plugin-axistitle";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
-import classNames from "classnames";
-import { is } from "typescript-is";
-import { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
-import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
-import { Typography } from "@rmwc/typography";
+import { Chip, ChipSet } from "@rmwc/chip";
 import {
   DataTable,
   DataTableContent,
@@ -19,8 +10,17 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { Typography } from "@rmwc/typography";
+import Chartist, { ILineChartOptions } from "chartist";
+import chartistPluginAxisTitle from "chartist-plugin-axistitle";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
+import classNames from "classnames";
+import ChartistGraph from "react-chartist";
+import { is } from "typescript-is";
 import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./table-card.scss";
 
 const customPoint = (data: any) => {

@@ -1,8 +1,8 @@
+import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { queue } from "~/app/snackbar-queue";
 import { typedFirestore } from "@s/firebase/firestore";
 import { GuideId } from "@s/firebase/types";
 import { GuideEntryType } from "@s/guides/types";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 
 type DialogDeleteProps = {
   open: boolean;

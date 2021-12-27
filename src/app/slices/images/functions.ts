@@ -1,6 +1,6 @@
-import firebase from "@s/firebase";
-import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
+import store from "~/app/store";
+import firebase from "@s/firebase";
 import { selectAllSets } from "@s/main";
 import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/util/functions";
 import {
@@ -14,8 +14,8 @@ import {
   setLoading,
   setSetImages,
 } from ".";
-import { ImageType } from "./types";
 import { ImageObj } from "./constructors";
+import { ImageType } from "./types";
 
 const storage = firebase.storage();
 

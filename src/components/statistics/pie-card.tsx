@@ -1,15 +1,6 @@
 import { useState, ReactNode } from "react";
-import classNames from "classnames";
-import ChartistGraph from "react-chartist";
-import { IPieChartOptions } from "chartist";
-import chartistTooltip from "chartist-plugin-tooltips-updated";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { StatusDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
-import { Typography } from "@rmwc/typography";
 import {
   DataTable,
   DataTableContent,
@@ -19,6 +10,15 @@ import {
   DataTableBody,
   DataTableCell,
 } from "@rmwc/data-table";
+import { Typography } from "@rmwc/typography";
+import { IPieChartOptions } from "chartist";
+import chartistTooltip from "chartist-plugin-tooltips-updated";
+import classNames from "classnames";
+import ChartistGraph from "react-chartist";
+import { useAppSelector } from "~/app/hooks";
+import { selectDevice } from "@s/common";
+import { StatusDataObject } from "@s/statistics/types";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./pie-card.scss";
 
 type StatusCardProps = {

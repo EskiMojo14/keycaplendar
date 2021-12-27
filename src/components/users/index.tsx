@@ -1,10 +1,44 @@
 import { useEffect, useState } from "react";
-import firebase from "@s/firebase";
+import { Button } from "@rmwc/button";
+import { Card } from "@rmwc/card";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableHead,
+  DataTableRow,
+  DataTableHeadCell,
+  DataTableBody,
+} from "@rmwc/data-table";
+import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarNavigationIcon,
+  TopAppBarTitle,
+  TopAppBarFixedAdjust,
+  TopAppBarActionItem,
+} from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { queue } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { Footer } from "@c/common/footer";
+import {
+  DataTablePagination,
+  DataTablePaginationTrailing,
+  DataTablePaginationRowsPerPage,
+  DataTablePaginationRowsPerPageLabel,
+  DataTablePaginationRowsPerPageSelect,
+  DataTablePaginationNavigation,
+  DataTablePaginationTotal,
+  DataTablePaginationButton,
+} from "@c/util/data-table-pagination";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
 import {
   selectIndices,
@@ -24,42 +58,8 @@ import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
 import { UserType } from "@s/users/types";
 import { useBoolStates } from "@s/util/functions";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-} from "@rmwc/data-table";
-import { Button } from "@rmwc/button";
-import { Card } from "@rmwc/card";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
-  TopAppBarFixedAdjust,
-  TopAppBarActionItem,
-} from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/footer";
-import {
-  DataTablePagination,
-  DataTablePaginationTrailing,
-  DataTablePaginationRowsPerPage,
-  DataTablePaginationRowsPerPageLabel,
-  DataTablePaginationRowsPerPageSelect,
-  DataTablePaginationNavigation,
-  DataTablePaginationTotal,
-  DataTablePaginationButton,
-} from "@c/util/data-table-pagination";
-import { withTooltip } from "@c/util/hocs";
-import { UserRow } from "./user-row";
 import { UserCard } from "./user-card";
+import { UserRow } from "./user-row";
 import "./index.scss";
 
 const length = 1000;

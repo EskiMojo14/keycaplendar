@@ -23,18 +23,6 @@ import {
   alphabeticalSortPropCurried,
 } from "@s/util/functions";
 import {
-  allSorts,
-  arraySorts,
-  dateSorts,
-  pageSort,
-  pageSortOrder,
-  reverseSortDatePages,
-  showAllPages,
-  sortHiddenCheck,
-  whitelistParams,
-} from "./constants";
-import { Preset, Whitelist } from "./constructors";
-import {
   setContent,
   setCurrentPreset,
   setDefaultPreset,
@@ -62,6 +50,18 @@ import {
   selectAllRegions,
   selectDefaultPreset,
 } from ".";
+import {
+  allSorts,
+  arraySorts,
+  dateSorts,
+  pageSort,
+  pageSortOrder,
+  reverseSortDatePages,
+  showAllPages,
+  sortHiddenCheck,
+  whitelistParams,
+} from "./constants";
+import { Preset, Whitelist } from "./constructors";
 import {
   OldPresetType,
   PresetType,

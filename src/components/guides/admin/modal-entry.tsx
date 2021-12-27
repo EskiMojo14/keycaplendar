@@ -1,15 +1,4 @@
 import { useEffect, useState, ChangeEvent } from "react";
-import { typedFirestore } from "@s/firebase/firestore";
-import { queue } from "~/app/snackbar-queue";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { GuideId } from "@s/firebase/types";
-import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
-import { selectUser } from "@s/user";
-import { userRoles } from "@s/users/constants";
-import { UserRoles } from "@s/users/types";
-import { arrayIncludes } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -17,9 +6,20 @@ import { Select } from "@rmwc/select";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
+import { selectDevice } from "@s/common";
+import { typedFirestore } from "@s/firebase/firestore";
+import { GuideId } from "@s/firebase/types";
+import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import { GuideEntryType } from "@s/guides/types";
+import { selectUser } from "@s/user";
+import { userRoles } from "@s/users/constants";
+import { UserRoles } from "@s/users/types";
+import { arrayIncludes } from "@s/util/functions";
 import "./modal-entry.scss";
 
 type ModalCreateProps = {
