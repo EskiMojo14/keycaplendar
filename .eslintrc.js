@@ -54,6 +54,7 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "import/no-named-as-default": "off",
+    "import/newline-after-import": "error",
     "import/order": [
       "warn",
       {
