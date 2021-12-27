@@ -67,10 +67,9 @@ export const ElementCard = (props: ElementCardProps) => {
     props.live && page !== "live"
       ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator =
-    props.set && props.set.shipped
-      ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
-      : null;
+  const shipIndicator = props.set?.shipped
+    ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" tag="h4" className="time-indicator">
       {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}

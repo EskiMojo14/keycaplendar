@@ -58,10 +58,9 @@ export const ElementImage = (props: ElementImageProps) => {
     props.live && page !== "live"
       ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator =
-    props.set && props.set.shipped
-      ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
-      : null;
+  const shipIndicator = props.set?.shipped
+    ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    : null;
   const timeIndicator = props.thisWeek ? (
     <div className="time-indicator">
       <Typography use="overline" className="live-indicator-text">

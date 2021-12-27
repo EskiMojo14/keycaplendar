@@ -49,10 +49,9 @@ export const ElementList = (props: ElementListProps) => {
     props.live && page !== "live"
       ? withTooltip(<ListItemMeta className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator =
-    props.set && props.set.shipped
-      ? withTooltip(<ListItemMeta className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
-      : null;
+  const shipIndicator = props.set?.shipped
+    ? withTooltip(<ListItemMeta className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    : null;
   const timeIndicator = props.thisWeek ? (
     <Typography use="overline" className="time-indicator">
       {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}

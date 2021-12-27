@@ -51,10 +51,9 @@ export const ElementCompact = (props: ElementCompactProps) => {
     props.live && page !== "live"
       ? withTooltip(<ListItemGraphic className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator =
-    props.set && props.set.shipped
-      ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
-      : null;
+  const shipIndicator = props.set?.shipped
+    ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    : null;
   return (
     <ListItem
       selected={props.selected}

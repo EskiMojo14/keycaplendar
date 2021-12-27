@@ -31,8 +31,7 @@ export const getActions = (state = store.getState()) => {
       const users: string[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const action =
-          data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
+        const action = data.before?.profile ? (data.after?.profile ? "updated" : "deleted") : "created";
         const { id: changelogId } = doc;
         const actionObj: ActionType = {
           ...data,

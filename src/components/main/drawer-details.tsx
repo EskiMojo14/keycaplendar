@@ -297,10 +297,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   const closeIcon = dismissible
     ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
     : null;
-  const salesButton =
-    props.set.sales && props.set.sales.img ? (
-      <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
-    ) : null;
+  const salesButton = props.set.sales?.img ? (
+    <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
+  ) : null;
   const notes = props.set.notes ? (
     <Typography use="caption" tag="p" className="multiline">
       {props.set.notes}

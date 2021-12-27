@@ -71,7 +71,11 @@ module.exports = {
     ],
     "@typescript-eslint/consistent-indexed-object-style": ["warn", "record"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/member-delimiter-style": "warn",
+    "@typescript-eslint/method-signature-style": "warn",
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/prefer-includes": "warn",
+    "@typescript-eslint/prefer-optional-chain": "warn",
     "import/no-named-as-default": "off",
     "import/newline-after-import": "error",
     "import/order": [
@@ -118,7 +122,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["*.ts", "*.tsx"], // Your TypeScript files extension
+      files: ["*.js", "*.ts", "*.tsx"], // Your TypeScript files extension
       parserOptions: {
         project: ["./tsconfig.json"], // Specify it only for TypeScript files
       },
