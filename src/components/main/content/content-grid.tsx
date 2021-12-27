@@ -5,7 +5,7 @@ import { ViewCompact } from "@c/main/views/compact/view-compact";
 import { ViewImageList } from "@c/main/views/image-list/view-image-list";
 import { ViewList } from "@c/main/views/list/view-list";
 import { selectSetGroups } from "@s/main";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import "./content-grid.scss";
 

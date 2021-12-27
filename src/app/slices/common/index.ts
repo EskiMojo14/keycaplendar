@@ -1,6 +1,7 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { Page, ThemeMap } from "./types";
+import type { Page, ThemeMap } from "./types";
 
 export type CommonState = {
   device: "mobile" | "tablet" | "desktop";

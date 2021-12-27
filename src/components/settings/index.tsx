@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Avatar } from "@rmwc/avatar";
 import { Badge, BadgeAnchor } from "@rmwc/badge";
 import { Button } from "@rmwc/button";
@@ -19,7 +20,7 @@ import {
   TopAppBarSection,
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
-import { IconOptions } from "@rmwc/types";
+import type { IconOptions } from "@rmwc/types";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { Link } from "react-router-dom";

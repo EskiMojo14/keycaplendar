@@ -36,7 +36,7 @@ import {
   setWhitelist,
 } from "@s/main";
 import { Keyset, Preset, Whitelist } from "@s/main/constructors";
-import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "@s/main/types";
+import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "@s/main/types";
 
 let store = createStore();
 

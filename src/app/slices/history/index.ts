@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { HistoryTab, ProcessedPublicActionType, RecentSet } from "./types";
+import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "./types";
 
 type HistoryState = {
   tab: HistoryTab;

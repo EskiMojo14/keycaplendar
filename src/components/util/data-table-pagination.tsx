@@ -1,6 +1,8 @@
-import { HTMLAttributes } from "react";
-import { IconButton, IconButtonHTMLProps, IconButtonProps } from "@rmwc/icon-button";
-import { Select, SelectHTMLProps, SelectProps } from "@rmwc/select";
+import type { HTMLAttributes } from "react";
+import { IconButton } from "@rmwc/icon-button";
+import type { IconButtonHTMLProps, IconButtonProps } from "@rmwc/icon-button";
+import { Select } from "@rmwc/select";
+import type { SelectHTMLProps, SelectProps } from "@rmwc/select";
 import BEMHelper from "@s/common/bem-helper";
 import "./data-table-pagination.scss";
 

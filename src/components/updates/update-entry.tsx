@@ -8,7 +8,7 @@ import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectURLEntry } from "@s/updates";
-import { UpdateEntryType } from "@s/updates/types";
+import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
 import { iconObject, ordinal } from "@s/util/functions";
 import { Delete, Edit, PushPin, Share } from "@i";

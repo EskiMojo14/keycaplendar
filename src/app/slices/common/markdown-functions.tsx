@@ -1,5 +1,6 @@
-import { FunctionComponent } from "react";
-import { Typography, TypographyT } from "@rmwc/typography";
+import type { FunctionComponent } from "react";
+import { Typography } from "@rmwc/typography";
+import type { TypographyT } from "@rmwc/typography";
 
 export const componentBuilder = (name: string, Component: FunctionComponent) =>
   Object.assign(

@@ -1,4 +1,4 @@
-import { UserRoles } from "@s/users/types";
+import type { UserRoles } from "@s/users/types";
 
 export class Guide {
   id: string;

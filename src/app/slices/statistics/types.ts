@@ -1,5 +1,5 @@
-import { IChartistData } from "chartist";
-import { categories, properties, statsTabs } from "./constants";
+import type { IChartistData } from "chartist";
+import type { categories, properties, statsTabs } from "./constants";
 
 export type Categories = typeof categories[number];
 

@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { WhitelistType } from "./types";
+import type { WhitelistType } from "./types";
 
 /**
  * Creates a standard whitelist object with specified values, or blank values if none specified.

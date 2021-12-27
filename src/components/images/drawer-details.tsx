@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import { ImageType } from "@s/images/types";
+import type { ImageType } from "@s/images/types";
 import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import "./drawer-details.scss";
 

@@ -1,4 +1,5 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import type { ReactNode } from "react";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import {
@@ -11,13 +12,13 @@ import {
   DataTableRow,
 } from "@rmwc/data-table";
 import { Typography } from "@rmwc/typography";
-import { IPieChartOptions } from "chartist";
+import type { IPieChartOptions } from "chartist";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
-import { StatusDataObject } from "@s/statistics/types";
+import type { StatusDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./pie-card.scss";
 

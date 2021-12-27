@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
@@ -13,8 +14,8 @@ import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
-import { UpdateId } from "@s/firebase/types";
-import { UpdateEntryType } from "@s/updates/types";
+import type { UpdateId } from "@s/firebase/types";
+import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
 import { ordinal } from "@s/util/functions";
 import "./modal-entry.scss";

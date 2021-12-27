@@ -1,8 +1,8 @@
-import { IconPropT } from "@rmwc/types";
+import type { IconPropT } from "@rmwc/types";
 import { formattedUserRoles, userRoleIcons, userRoles } from "@s/users/constants";
 import { iconObject } from "@s/util/functions";
 import { Public } from "@i";
-import { Visibility } from "./types";
+import type { Visibility } from "./types";
 
 export const visibilityVals = ["all", ...userRoles] as const;
 

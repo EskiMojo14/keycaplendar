@@ -3,7 +3,7 @@ import store from "~/app/store";
 import firebase from "@s/firebase";
 import { alphabeticalSort, alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { setAllTags, setEntries, setLoading } from ".";
-import { GuideEntryType } from "./types";
+import type { GuideEntryType } from "./types";
 
 const { dispatch } = store;
 

@@ -47,7 +47,6 @@ module.exports = {
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
-    project: "tsconfig.json",
   },
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
@@ -62,6 +61,12 @@ module.exports = {
       "warn",
       {
         assertionStyle: "as",
+      },
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      {
+        prefer: "type-imports",
       },
     ],
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -110,6 +115,14 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ["*.ts", "*.tsx"], // Your TypeScript files extension
+      parserOptions: {
+        project: ["./tsconfig.json"], // Specify it only for TypeScript files
+      },
+    },
+  ],
   settings: {
     react: {
       version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use

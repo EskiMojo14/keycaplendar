@@ -15,7 +15,7 @@ import {
   setSetImages,
 } from ".";
 import { ImageObj } from "./constructors";
-import { ImageType } from "./types";
+import type { ImageType } from "./types";
 
 const storage = firebase.storage();
 

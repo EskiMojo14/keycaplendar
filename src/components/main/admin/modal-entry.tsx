@@ -1,4 +1,5 @@
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FocusEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
@@ -14,7 +15,8 @@ import classNames from "classnames";
 import cloneDeep from "lodash.clonedeep";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
-import { DragDropContext, Draggable, DraggableProvided, Droppable, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import type { DraggableProvided, DropResult } from "react-beautiful-dnd";
 import { is } from "typescript-is";
 import { useImmer } from "use-immer";
 import { useAppSelector } from "~/app/hooks";
@@ -27,10 +29,10 @@ import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
-import { KeysetId } from "@s/firebase/types";
+import type { KeysetId } from "@s/firebase/types";
 import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
 import { getData } from "@s/main/functions";
-import { SetType, VendorType } from "@s/main/types";
+import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import {
   arrayEveryType,
@@ -41,7 +43,7 @@ import {
   hasKey,
   iconObject,
 } from "@s/util/functions";
-import { KeysMatching } from "@s/util/types";
+import type { KeysMatching } from "@s/util/types";
 import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import { ImageUpload } from "./image-upload";
 import "./modal-entry.scss";

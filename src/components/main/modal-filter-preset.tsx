@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
@@ -12,7 +13,7 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
+import type { PresetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import "./modal-filter-preset.scss";
 

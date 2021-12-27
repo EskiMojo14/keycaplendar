@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
@@ -22,10 +22,10 @@ import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
-import { ActionSetType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
-import { ProcessedPublicActionType } from "@s/history/types";
-import { VendorType } from "@s/main/types";
+import type { ActionSetType } from "@s/audit/types";
+import type { KeysetDoc } from "@s/firebase/types";
+import type { ProcessedPublicActionType } from "@s/history/types";
+import type { VendorType } from "@s/main/types";
 import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import "./changelog-entry.scss";
 

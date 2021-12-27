@@ -5,7 +5,7 @@ import { selectPage } from "@s/common";
 import { selectSort, selectSortOrder } from "@s/main";
 import { allSorts, sortBlacklist, sortNames } from "@s/main/constants";
 import { setSort, setSortOrder } from "@s/main/functions";
-import { SortOrderType } from "@s/main/types";
+import type { SortOrderType } from "@s/main/types";
 import { arrayIncludes, capitalise } from "@s/util/functions";
 
 type MenuSortProps = {

@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -26,7 +27,7 @@ import {
 import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
+import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";

@@ -1,5 +1,6 @@
 import { IconButton } from "@rmwc/icon-button";
-import { Command, MarkdownUtil, TextApi, TextState } from "react-mde";
+import { MarkdownUtil } from "react-mde";
+import type { Command, TextApi, TextState } from "react-mde";
 import { markdownIcons } from "./markdown-constants";
 
 // define the custom command handlers

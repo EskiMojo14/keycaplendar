@@ -7,7 +7,7 @@ import firebase from "@s/firebase";
 import { getSetById } from "@s/main/functions";
 import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { selectProcessedActions, selectTab, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
-import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
+import type { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 
 const { dispatch } = store;
 

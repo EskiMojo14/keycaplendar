@@ -1,11 +1,11 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import firestore from "@s/firebase/firestore";
-import { KeysetId } from "@s/firebase/types";
+import type { KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
 

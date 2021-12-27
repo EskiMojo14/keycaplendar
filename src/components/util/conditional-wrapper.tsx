@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 /**
  * Takes a condition, a wrapper function and children, and wraps children in wrapper if condition is true.

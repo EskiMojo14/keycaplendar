@@ -23,9 +23,9 @@ import {
   setSortedUsers,
   setView,
 } from "@s/users";
-import { sortProps } from "@s/users/constants";
+import type { sortProps } from "@s/users/constants";
 import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
+import type { UserType } from "@s/users/types";
 
 let store = createStore();
 

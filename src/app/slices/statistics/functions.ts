@@ -15,7 +15,7 @@ import {
   setStatsTab,
 } from ".";
 import { categories, properties } from "./constants";
-import { StatisticsSortType, StatisticsType, StatsTab } from "./types";
+import type { StatisticsSortType, StatisticsType, StatsTab } from "./types";
 
 const storage = firebase.storage();
 

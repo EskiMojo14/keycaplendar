@@ -20,11 +20,11 @@ import {
 } from "@rmwc/list";
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
-import { DateTime } from "luxon";
+import type { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { auditProperties } from "@s/audit/constants";
-import { ActionType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
+import type { ActionType } from "@s/audit/types";
+import type { KeysetDoc } from "@s/firebase/types";
 import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import "./audit-entry.scss";
 

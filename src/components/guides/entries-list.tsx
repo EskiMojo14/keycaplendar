@@ -18,7 +18,7 @@ import { BoolWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
 import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
 import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
+import type { GuideEntryType } from "@s/guides/types";
 import { iconObject } from "@s/util/functions";
 import { Article } from "@i";
 import "./entries-list.scss";

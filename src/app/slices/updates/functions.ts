@@ -1,10 +1,10 @@
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
-import { UpdateId } from "@s/firebase/types";
+import type { UpdateId } from "@s/firebase/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import { setEntries, setLoading } from ".";
-import { UpdateEntryType } from "./types";
+import type { UpdateEntryType } from "./types";
 
 const { dispatch } = store;
 

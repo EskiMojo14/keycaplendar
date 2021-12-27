@@ -1,6 +1,8 @@
-import { RootState } from "~/app/store";
-import { initialState as common, CommonState } from "@s/common";
-import { initialState as main, MainState } from "@s/main";
+import type { RootState } from "~/app/store";
+import { initialState as common } from "@s/common";
+import type { CommonState } from "@s/common";
+import { initialState as main } from "@s/main";
+import type { MainState } from "@s/main";
 import { selectCookies } from "@s/settings";
 
 export const hydrateState = (state: any) => {

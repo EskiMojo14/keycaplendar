@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { IconOptions, IconPropT } from "@rmwc/types";
+import type { ReactNode } from "react";
+import type { IconOptions, IconPropT } from "@rmwc/types";
 import {
   CalendarToday,
   Campaign,
@@ -14,7 +14,7 @@ import {
   Store,
   VisibilityOff,
 } from "@i";
-import { Page, ThemeMap } from "./types";
+import type { Page, ThemeMap } from "./types";
 
 /**
  * Converts JSX to RMWC icon object parameter.

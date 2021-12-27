@@ -13,7 +13,7 @@ import {
   setThemeMaps,
 } from "@s/common";
 import { blankTheme } from "@s/common/constants";
-import { Page } from "@s/common/types";
+import type { Page } from "@s/common/types";
 
 let store = createStore();
 

@@ -5,7 +5,7 @@ import store from "~/app/store";
 import firestore from "@s/firebase/firestore";
 import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
-import { HistoryTab } from "@s/history/types";
+import type { HistoryTab } from "@s/history/types";
 import {
   selectDefaultPreset,
   selectLinkedFavorites,
@@ -21,18 +21,19 @@ import {
   setURLSet,
   setURLWhitelist,
 } from "@s/main";
-import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
+import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams } from "@s/main/constants";
+import type { whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
-import { WhitelistType } from "@s/main/types";
+import type { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
-import { StatsTab } from "@s/statistics/types";
+import type { StatsTab } from "@s/statistics/types";
 import { selectURLEntry as selectURLUpdate, setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes, camelise, hasKey } from "@s/util/functions";
 import themesMap from "~/_themes.module.scss";
 import { selectPage, setAppPage, setDevice, setOrientation, setThemeMaps } from ".";
 import { blankTheme, mainPages, pageTitle, urlPages } from "./constants";
-import { Page, ThemeMap } from "./types";
+import type { Page, ThemeMap } from "./types";
 
 const { dispatch } = store;
 

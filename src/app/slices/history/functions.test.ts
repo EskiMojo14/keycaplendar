@@ -2,7 +2,7 @@ import produce from "immer";
 import store from "~/app/store";
 import { setLoading, setProcessedActions, setRecentSets, setTab } from "@s/history";
 import { generateSets, processActions, setHistoryTab } from "@s/history/functions";
-import { ProcessedPublicActionType, PublicActionType, RecentSet } from "@s/history/types";
+import type { ProcessedPublicActionType, PublicActionType, RecentSet } from "@s/history/types";
 import { Keyset } from "@s/main/constructors";
 
 jest.mock("~/app/store");

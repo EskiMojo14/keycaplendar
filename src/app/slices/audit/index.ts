@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { ActionType } from "./types";
+import type { ActionType } from "./types";
 
 type AuditState = {
   loading: boolean;

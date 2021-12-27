@@ -1,4 +1,5 @@
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FocusEvent } from "react";
 import { Avatar } from "@rmwc/avatar";
 import { Checkbox } from "@rmwc/checkbox";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -15,7 +16,7 @@ import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
+import type { UserType } from "@s/users/types";
 import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
 import { Delete, Save } from "@i";
 

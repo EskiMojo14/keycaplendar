@@ -15,7 +15,7 @@ import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
 import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
 import { Keyset, Preset } from "@s/main/constructors";
-import { PresetType, SetType } from "@s/main/types";
+import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";

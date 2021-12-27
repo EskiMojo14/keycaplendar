@@ -2,7 +2,7 @@ import produce from "immer";
 import store from "~/app/store";
 import { setFilteredActions, setLoading } from "@s/audit";
 import { filterActions } from "@s/audit/functions";
-import { ActionType } from "@s/audit/types";
+import type { ActionType } from "@s/audit/types";
 
 jest.mock("~/app/store");
 

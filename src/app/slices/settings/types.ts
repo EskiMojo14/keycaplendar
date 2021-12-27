@@ -1,4 +1,4 @@
-import { allViews } from "./constants";
+import type { allViews } from "./constants";
 
 export type Settings = {
   view: ViewType;

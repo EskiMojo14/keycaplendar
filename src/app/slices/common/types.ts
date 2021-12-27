@@ -1,4 +1,4 @@
-import { allPages, mainPages } from "./constants";
+import type { allPages, mainPages } from "./constants";
 
 /** Possible page names */
 

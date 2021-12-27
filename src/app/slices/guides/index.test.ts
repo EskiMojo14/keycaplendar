@@ -11,7 +11,7 @@ import {
   setLoading,
   setURLEntry,
 } from "@s/guides";
-import { GuideEntryType } from "@s/guides/types";
+import type { GuideEntryType } from "@s/guides/types";
 
 let store = createStore();
 

@@ -1,6 +1,6 @@
 import { createStore } from "~/app/store";
 import { selectEntries, selectLoading, selectURLEntry, setEntries, setLoading, setURLEntry } from "@s/updates";
-import { UpdateEntryType } from "@s/updates/types";
+import type { UpdateEntryType } from "@s/updates/types";
 
 let store = createStore();
 

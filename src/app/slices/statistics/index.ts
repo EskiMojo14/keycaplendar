@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
+import type { StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
 
 type StatisticsState = {
   tab: StatsTab;

@@ -13,7 +13,7 @@ import {
   setStatisticsSort,
   setStatsTab,
 } from "@s/statistics";
-import { StatsTab } from "@s/statistics/types";
+import type { StatsTab } from "@s/statistics/types";
 
 let store = createStore();
 

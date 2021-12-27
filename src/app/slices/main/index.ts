@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { removeDuplicates } from "@s/util/functions";
-import { KeysMatching } from "@s/util/types";
+import type { KeysMatching } from "@s/util/types";
 import { Preset } from "./constructors";
-import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
+import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 
 export type MainState = {
   transition: boolean;

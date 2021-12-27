@@ -56,7 +56,7 @@ import {
 import { sortLabels, sortProps, viewIcons, viewLabels, views } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
-import { UserType } from "@s/users/types";
+import type { UserType } from "@s/users/types";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
 import { UserRow } from "./user-row";

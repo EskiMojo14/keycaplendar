@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
 import classNames from "classnames";

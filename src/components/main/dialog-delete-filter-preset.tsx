@@ -1,7 +1,7 @@
-import { MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
+import type { PresetType } from "@s/main/types";
 
 type DialogDeleteFilterPresetProps = {
   close: () => void;

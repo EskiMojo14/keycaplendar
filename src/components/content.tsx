@@ -1,4 +1,5 @@
-import { HTMLAttributes, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { HTMLAttributes } from "react";
 import { DrawerAppContent } from "@rmwc/drawer";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";

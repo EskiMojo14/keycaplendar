@@ -20,7 +20,7 @@ import {
   setLoading,
   setSetImages,
 } from "@s/images";
-import { ImageType } from "@s/images/types";
+import type { ImageType } from "@s/images/types";
 
 let store = createStore();
 

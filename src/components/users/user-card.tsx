@@ -1,4 +1,5 @@
-import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FocusEvent } from "react";
 import { Avatar } from "@rmwc/avatar";
 import { Card, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
@@ -27,7 +28,7 @@ import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import { userRoleIcons } from "@s/users/constants";
 import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
+import type { UserType } from "@s/users/types";
 import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
 

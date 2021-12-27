@@ -1,4 +1,5 @@
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -17,7 +18,7 @@ import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { selectSearch } from "@s/main";
 import { setSearch } from "@s/main/functions";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";

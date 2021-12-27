@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -13,12 +14,12 @@ import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } fro
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
-import { GuideId } from "@s/firebase/types";
+import type { GuideId } from "@s/firebase/types";
 import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
+import type { GuideEntryType } from "@s/guides/types";
 import { selectUser } from "@s/user";
 import { userRoles } from "@s/users/constants";
-import { UserRoles } from "@s/users/types";
+import type { UserRoles } from "@s/users/types";
 import { arrayIncludes } from "@s/util/functions";
 import "./modal-entry.scss";
 

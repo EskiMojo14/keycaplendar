@@ -1,4 +1,5 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
@@ -6,7 +7,7 @@ import { useAppDispatch } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { setLoading } from "@s/images";
 import { listAll } from "@s/images/functions";
-import { ImageType } from "@s/images/types";
+import type { ImageType } from "@s/images/types";
 import { batchStorageDelete, pluralise } from "@s/util/functions";
 import "./dialog-delete.scss";
 

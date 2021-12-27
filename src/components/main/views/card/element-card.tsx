@@ -17,7 +17,7 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
 import { iconObject, pluralise } from "@s/util/functions";

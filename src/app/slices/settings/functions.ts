@@ -4,12 +4,12 @@ import store from "~/app/store";
 import { setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
 import firestore from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
+import type { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 import { hasKey } from "@s/util/functions";
 import { selectCookies, selectSyncSettings, setCookies, setSetting, toggleLich } from ".";
-import { ViewType } from "./types";
+import type { ViewType } from "./types";
 
 const { dispatch } = store;
 

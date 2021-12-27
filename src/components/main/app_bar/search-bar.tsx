@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";

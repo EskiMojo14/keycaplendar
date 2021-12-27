@@ -1,7 +1,7 @@
 import store from "~/app/store";
 import { setEntries, setLoading } from "@s/updates";
 import { sortEntries } from "@s/updates/functions";
-import { UpdateEntryType } from "@s/updates/types";
+import type { UpdateEntryType } from "@s/updates/types";
 
 jest.mock("~/app/store");
 

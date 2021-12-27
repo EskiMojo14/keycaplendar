@@ -21,7 +21,7 @@ import { selectBottomNav } from "@s/settings";
 import { selectEntries, selectLoading, selectURLEntry } from "@s/updates";
 import { Update } from "@s/updates/constructors";
 import { getEntries, pinEntry } from "@s/updates/functions";
-import { UpdateEntryType } from "@s/updates/types";
+import type { UpdateEntryType } from "@s/updates/types";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";
 import { UpdateEntry } from "./update-entry";

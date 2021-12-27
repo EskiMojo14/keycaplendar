@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import {
@@ -11,7 +12,8 @@ import {
   DataTableRow,
 } from "@rmwc/data-table";
 import { Typography } from "@rmwc/typography";
-import Chartist, { ILineChartOptions } from "chartist";
+import Chartist from "chartist";
+import type { ILineChartOptions } from "chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
@@ -19,7 +21,7 @@ import ChartistGraph from "react-chartist";
 import { is } from "typescript-is";
 import { withTooltip } from "@c/util/hocs";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import type { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./table-card.scss";
 

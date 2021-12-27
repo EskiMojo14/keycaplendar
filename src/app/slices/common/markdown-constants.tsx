@@ -1,4 +1,4 @@
-import { IconPropT } from "@rmwc/types";
+import type { IconPropT } from "@rmwc/types";
 import { iconObject } from "@s/util/functions";
 import {
   FormatHeader1,

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";

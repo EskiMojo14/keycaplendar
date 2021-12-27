@@ -9,7 +9,7 @@ import {
   setRecentSets,
   setTab,
 } from "@s/history";
-import { HistoryTab, ProcessedPublicActionType, RecentSet } from "@s/history/types";
+import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "@s/history/types";
 import { Keyset } from "@s/main/constructors";
 
 let store = createStore();

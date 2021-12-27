@@ -1,5 +1,6 @@
-import { HTMLAttributes } from "react";
-import { Button, ButtonHTMLProps, ButtonProps } from "@rmwc/button";
+import type { HTMLAttributes } from "react";
+import { Button } from "@rmwc/button";
+import type { ButtonHTMLProps, ButtonProps } from "@rmwc/button";
 import BEMHelper from "@s/common/bem-helper";
 import "./segmented-button.scss";
 

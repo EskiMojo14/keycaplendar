@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import {
@@ -12,7 +13,8 @@ import {
 } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
-import Chartist, { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
+import Chartist from "chartist";
+import type { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
@@ -21,7 +23,7 @@ import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
-import { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import type { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
 import {
   addOrRemove,
   alphabeticalSortPropCurried,

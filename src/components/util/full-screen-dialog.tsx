@@ -1,4 +1,5 @@
-import { HTMLAttributes, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { HTMLAttributes } from "react";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import BEMHelper from "@s/common/bem-helper";
 import "./full-screen-dialog.scss";

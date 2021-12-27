@@ -1,5 +1,5 @@
-import { Overwrite } from "@s/util/types";
-import { allSorts } from "./constants";
+import type { Overwrite } from "@s/util/types";
+import type { allSorts } from "./constants";
 
 /** Possible values for sort types. */
 

@@ -9,7 +9,7 @@ import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/common/constants";
 import { setPage as setMainPage } from "@s/common/functions";
-import { Page } from "@s/common/types";
+import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
 import { selectBottomNav } from "@s/settings";

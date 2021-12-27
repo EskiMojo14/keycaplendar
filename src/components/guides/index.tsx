@@ -24,7 +24,7 @@ import { pageTitle } from "@s/common/constants";
 import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
 import { Guide } from "@s/guides/constructors";
 import { getEntries } from "@s/guides/functions";
-import { GuideEntryType } from "@s/guides/types";
+import type { GuideEntryType } from "@s/guides/types";
 import { selectBottomNav } from "@s/settings";
 import { selectUser } from "@s/user";
 import { closeModal, openModal } from "@s/util/functions";

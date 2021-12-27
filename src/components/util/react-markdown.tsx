@@ -11,9 +11,11 @@ import {
 } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
 import classNames from "classnames";
-import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
-import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
-import { CommandMap } from "react-mde/lib/definitions/types";
+import ReactMarkdown from "react-markdown";
+import type { ReactMarkdownOptions } from "react-markdown";
+import ReactMde from "react-mde";
+import type { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
+import type { CommandMap } from "react-mde/lib/definitions/types";
 import gfm from "remark-gfm";
 import BEMHelper from "@s/common/bem-helper";
 import {

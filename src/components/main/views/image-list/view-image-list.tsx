@@ -1,7 +1,7 @@
 import { ImageList } from "@rmwc/image-list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementImage } from "./element-image";
 

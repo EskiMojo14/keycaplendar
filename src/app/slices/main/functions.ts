@@ -8,7 +8,7 @@ import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import firestore from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
+import type { UserId } from "@s/firebase/types";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
   alphabeticalSort,
@@ -62,7 +62,7 @@ import {
   whitelistParams,
 } from "./constants";
 import { Preset, Whitelist } from "./constructors";
-import {
+import type {
   OldPresetType,
   PresetType,
   SetGroup,

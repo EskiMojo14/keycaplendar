@@ -1,4 +1,5 @@
-import { ChangeEvent, DragEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, DragEvent } from "react";
 import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Icon } from "@rmwc/icon";

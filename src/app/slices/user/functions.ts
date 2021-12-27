@@ -5,7 +5,7 @@ import store from "~/app/store";
 import { selectPage } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
+import type { UserId } from "@s/firebase/types";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { filterData, updatePreset } from "@s/main/functions";
 import { setShareNameLoading } from "@s/settings";

@@ -1,6 +1,7 @@
-import { HTMLProps } from "react";
-import { TopAppBarSection, TopAppBarSectionProps } from "@rmwc/top-app-bar";
-import * as RMWC from "@rmwc/types";
+import type { HTMLProps } from "react";
+import { TopAppBarSection } from "@rmwc/top-app-bar";
+import type { TopAppBarSectionProps } from "@rmwc/top-app-bar";
+import type * as RMWC from "@rmwc/types";
 
 export const AppBarIndent = <Tag extends React.ElementType<any> = "div">(
   props: RMWC.ComponentProps<TopAppBarSectionProps, HTMLProps<HTMLElement>, Tag>

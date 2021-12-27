@@ -13,7 +13,7 @@ import {
   setLoading,
   setUsers,
 } from "@s/audit";
-import { ActionType } from "@s/audit/types";
+import type { ActionType } from "@s/audit/types";
 
 const blankAction: ActionType = {
   action: "created",

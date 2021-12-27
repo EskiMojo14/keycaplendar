@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { sortProps } from "@s/users/constants";
-import { UserType } from "./types";
+import type { sortProps } from "@s/users/constants";
+import type { UserType } from "./types";
 
 type UserState = {
   view: "card" | "table";

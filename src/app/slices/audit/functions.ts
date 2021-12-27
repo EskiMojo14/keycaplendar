@@ -14,7 +14,7 @@ import {
   setUsers,
 } from ".";
 import { auditProperties } from "./constants";
-import { ActionType } from "./types";
+import type { ActionType } from "./types";
 
 const { dispatch } = store;
 

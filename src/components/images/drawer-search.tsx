@@ -1,4 +1,5 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
@@ -16,7 +17,7 @@ import reactStringReplace from "react-string-replace";
 import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
-import { ImageType } from "@s/images/types";
+import type { ImageType } from "@s/images/types";
 import { iconObject } from "@s/util/functions";
 import { Regex, RegexOff } from "@i";
 import "./drawer-search.scss";
