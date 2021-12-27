@@ -4,8 +4,8 @@ import type { RootState } from "~/app/store";
 import type { Page, ThemeMap } from "./types";
 
 export type CommonState = {
-  device: "mobile" | "tablet" | "desktop";
-  orientation: "portrait" | "landscape";
+  device: "desktop" | "mobile" | "tablet";
+  orientation: "landscape" | "portrait";
   page: Page;
   theme: string;
   themeMaps: Record<string, ThemeMap>;
@@ -23,10 +23,10 @@ export const commonSlice = createSlice({
   name: "common",
   initialState,
   reducers: {
-    setDevice: (state, { payload }: PayloadAction<"mobile" | "tablet" | "desktop">) => {
+    setDevice: (state, { payload }: PayloadAction<"desktop" | "mobile" | "tablet">) => {
       state.device = payload;
     },
-    setOrientation: (state, { payload }: PayloadAction<"portrait" | "landscape">) => {
+    setOrientation: (state, { payload }: PayloadAction<"landscape" | "portrait">) => {
       state.orientation = payload;
     },
     setAppPage: (state, { payload }: PayloadAction<Page>) => {

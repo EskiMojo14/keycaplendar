@@ -10,7 +10,7 @@ type AuditState = {
   filteredActions: ActionType[];
 
   users: string[];
-  filterAction: "none" | "created" | "updated" | "deleted";
+  filterAction: "created" | "deleted" | "none" | "updated";
   filterUser: string;
   length: number;
 };
@@ -40,7 +40,7 @@ export const auditSlice = createSlice({
     setFilteredActions: (state, { payload }: PayloadAction<ActionType[]>) => {
       state.filteredActions = payload;
     },
-    setFilterAction: (state, { payload }: PayloadAction<"none" | "created" | "updated" | "deleted">) => {
+    setFilterAction: (state, { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">) => {
       state.filterAction = payload;
     },
     setFilterUser: (state, { payload }: PayloadAction<string>) => {

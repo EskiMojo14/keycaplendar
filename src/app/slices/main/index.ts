@@ -24,7 +24,7 @@ export type MainState = {
   filteredSets: SetType[];
   setGroups: SetGroup[];
   urlSet: {
-    prop: "id" | "alias" | "name";
+    prop: "alias" | "id" | "name";
     value: string;
   };
 
@@ -135,7 +135,7 @@ export const mainSlice = createSlice({
       {
         payload,
       }: PayloadAction<{
-        prop: "id" | "alias" | "name";
+        prop: "alias" | "id" | "name";
         value: string;
       }>
     ) => {

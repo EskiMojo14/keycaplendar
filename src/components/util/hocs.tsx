@@ -4,7 +4,7 @@ import type { TooltipProps } from "@rmwc/tooltip";
 export const withTooltip = (
   children: TooltipProps["children"],
   content: TooltipProps["content"],
-  props?: Omit<TooltipProps, "content" | "children">
+  props?: Omit<TooltipProps, "children" | "content">
 ) => {
   return (
     <Tooltip content={content} {...props}>

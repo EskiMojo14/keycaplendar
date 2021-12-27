@@ -95,7 +95,7 @@ export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
 };
 const bemClasses = new BEMHelper("markdown-editor");
 
-type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "selectedTab" | "onTabChange"> & {
+type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "onTabChange" | "selectedTab"> & {
   required?: boolean;
 };
 
@@ -121,7 +121,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
         ["insert-table", "column-after"],
         ["h1", "h2", "h3", "h4", "h5", "h6"],
       ];
-  const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+  const [selectedTab, setSelectedTab] = useState<"preview" | "write">("write");
   const customTabButtons: L18n = {
     write: (
       <SegmentedButton toggle>

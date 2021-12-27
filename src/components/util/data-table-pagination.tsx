@@ -42,7 +42,7 @@ export const DataTablePaginationRowsPerPageLabel = (props: DivProps) => {
   );
 };
 
-type DataTablePaginationRowsPerPageSelectProps = SelectProps & SelectHTMLProps;
+type DataTablePaginationRowsPerPageSelectProps = SelectHTMLProps & SelectProps;
 
 export const DataTablePaginationRowsPerPageSelect = (props: DataTablePaginationRowsPerPageSelectProps) => {
   return (
@@ -72,7 +72,7 @@ export const DataTablePaginationTotal = (props: DivProps) => {
   );
 };
 
-type DataTablePaginationButtonProps = IconButtonProps & IconButtonHTMLProps;
+type DataTablePaginationButtonProps = IconButtonHTMLProps & IconButtonProps;
 
 export const DataTablePaginationButton = (props: DataTablePaginationButtonProps) => {
   return (

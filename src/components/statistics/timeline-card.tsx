@@ -54,7 +54,7 @@ const customPoint = (data: any) => {
 
 const listener = { draw: (e: any) => customPoint(e) };
 
-const chartOptions = (monthLabel: string): ILineChartOptions & IBarChartOptions => {
+const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions => {
   return {
     showArea: true,
     stackBars: true,

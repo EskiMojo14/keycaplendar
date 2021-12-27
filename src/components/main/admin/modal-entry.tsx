@@ -974,7 +974,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     setFocused("");
   };
 
-  const setImage = (image: File | Blob | null) =>
+  const setImage = (image: Blob | File | null) =>
     updateState((draft) => {
       draft.image = image;
       draft.newImage = true;

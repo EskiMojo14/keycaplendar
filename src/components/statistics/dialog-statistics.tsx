@@ -17,7 +17,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
-  const [statistics, setStatistics] = useState<Properties | Categories>("profile");
+  const [statistics, setStatistics] = useState<Categories | Properties>("profile");
 
   useEffect(() => {
     if (props.open) {
@@ -33,7 +33,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
     }
   }, [props.open]);
 
-  const handleChange = (stats: Properties | Categories) => {
+  const handleChange = (stats: Categories | Properties) => {
     setStatistics(stats);
   };
 

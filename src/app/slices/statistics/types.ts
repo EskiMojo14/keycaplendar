@@ -5,7 +5,7 @@ export type Categories = typeof categories[number];
 
 export type Properties = typeof properties[number];
 
-export type Sorts = "total" | "alphabetical";
+export type Sorts = "alphabetical" | "total";
 
 export type StatsTab = typeof statsTabs[number];
 

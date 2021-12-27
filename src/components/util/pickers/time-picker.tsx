@@ -55,17 +55,17 @@ export const invalidTime = (date: string, required?: boolean): string | false =>
 };
 
 export type TimePickerProps = Overwrite<
-  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "helpText">,
+  Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
-      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & HTMLProps<HTMLElement>>,
-      "open" | "anchorCorner" | "renderToPortal"
+      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardTimePickerProps, "value" | "onChange" | "orientation" | "variant">;
+    pickerProps?: Omit<KeyboardTimePickerProps, "onChange" | "orientation" | "value" | "variant">;
     showNowButton?: boolean;
     saveOnClose?: boolean;
   }

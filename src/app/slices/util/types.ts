@@ -4,7 +4,7 @@ export type Obj<T> = Record<string, T>;
 
 /** Makes specified keys optional. */
 
-export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+export type Optional<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>;
 
 /** Overwrite keys with a new object. */
 

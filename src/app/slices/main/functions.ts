@@ -190,7 +190,7 @@ export const testSets = (state = store.getState()) => {
         if (is<string>(value)) {
           testValue(set, key, value);
         } else if (is<any[]>(value)) {
-          value.forEach((item: string | VendorType) => {
+          value.forEach((item: VendorType | string) => {
             if (is<string>(item)) {
               testValue(set, key, item);
             } else if (is<VendorType>(item)) {

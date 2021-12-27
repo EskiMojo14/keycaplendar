@@ -97,7 +97,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     set.image = "";
   }
   const today = DateTime.utc();
-  let gbLaunch: string | DateTime = "";
+  let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | null = null;
   let icDate: DateTime;
   let verb = "";

@@ -26,7 +26,7 @@ export const hasKey = <O extends Record<string, unknown>>(obj: O, key: keyof any
  * @returns Whether the item is contained in the array.
  */
 
-export const arrayIncludes = <T>(arr: T[] | Readonly<T[]>, item: any): item is T => arr.includes(item);
+export const arrayIncludes = <T>(arr: Readonly<T[]> | T[], item: any): item is T => arr.includes(item);
 
 /**
  * Checks every item of an array matches a condition, and asserts that the items are a specified type.
@@ -256,7 +256,7 @@ export const braidArrays = <T>(...arrays: T[][]) => {
 
 export const pluralise = (strings: TemplateStringsArray, ...expressions: any[]) => {
   const plurals = expressions.map((value) => {
-    if (is<[number, string] | [number, string, string]>(value)) {
+    if (is<[number, string, string] | [number, string]>(value)) {
       const [val, single, plural] = value;
       return val === 1 ? single : plural || single + "s";
     }

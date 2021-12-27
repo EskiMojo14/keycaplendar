@@ -73,17 +73,17 @@ export const invalidDate = (
 };
 
 export type DatePickerProps = Overwrite<
-  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "helpText">,
+  Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
-      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & HTMLProps<HTMLElement>>,
-      "open" | "anchorCorner" | "renderToPortal"
+      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
+    pickerProps?: Omit<KeyboardDatePickerProps, "onChange" | "orientation" | "value" | "variant" | "views">;
     month?: boolean;
     allowQuarter?: boolean;
     showNowButton?: boolean;
