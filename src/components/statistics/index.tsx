@@ -284,9 +284,8 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
     </TopAppBarRow>
   );
 
-  const slideRenderer: SlideRendererCallback = (params) => {
-    const { index, key } = params;
-    const tab = statsTabs[index];
+  const slideRenderer: SlideRendererCallback = ({ index, key }) => {
+    const { [index]: tab } = statsTabs;
     const tabs = {
       summary: (
         <div className="stats-tab stats-grid summary" key={key}>

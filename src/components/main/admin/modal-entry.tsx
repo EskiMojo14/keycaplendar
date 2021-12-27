@@ -46,10 +46,9 @@ import { withTooltip } from "@c/util/hocs";
 import { AddPhotoAlternate, CalendarToday, Delete, Public, Store } from "@i";
 import "./modal-entry.scss";
 
-const getVendorStyle = (provided: DraggableProvided) => {
-  const style = provided.draggableProps.style;
+const getVendorStyle = ({ draggableProps: { style } }: DraggableProvided) => {
   if (style) {
-    let transform = style.transform;
+    let { transform } = style;
     if (style.transform) {
       const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
       const axisLockY = "translate(0px, " + YVal + "px)";
@@ -57,7 +56,7 @@ const getVendorStyle = (provided: DraggableProvided) => {
     }
     return {
       ...style,
-      transform: transform,
+      transform,
     };
   } else {
     return style;
@@ -176,7 +175,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const selectValueAppend = (prop: string, value: string) =>
     updateState((draft) => {
       if (hasKey(draft, prop)) {
-        const original = draft[prop];
+        const { [prop]: original } = draft;
         if (original) {
           if (is<string[]>(original)) {
             original[original.length - 1] = value;
@@ -195,7 +194,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
         vendor[property] = value;
         setFocused("");
@@ -207,9 +208,11 @@ export const ModalCreate = (props: ModalCreateProps) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
-        const original = vendor[property];
+        const { [property]: original } = vendor;
         if (original) {
           const array = original.split(", ");
           array[array.length - 1] = value;
@@ -220,8 +223,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     });
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
+  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -234,12 +236,13 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
     updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
         vendor[property] = value;
       }
@@ -248,7 +251,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, name)) {
         vendor[name] = value;
       }
@@ -257,7 +262,9 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (e.target.checked) {
         vendor.endDate = "";
       } else {
@@ -923,10 +930,10 @@ export const ModalEdit = (props: ModalEditProps) => {
         } else if (oneNumRegExp.test(set.gbLaunch)) {
           gbLaunch = set.gbLaunch.slice(0, -2);
         } else {
-          gbLaunch = set.gbLaunch;
+          ({ gbLaunch } = set);
         }
       } else {
-        gbLaunch = set.gbLaunch;
+        ({ gbLaunch } = set);
       }
     }
 
@@ -941,7 +948,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       details: set.details,
       notes: set.notes ?? "",
       gbMonth: !!set.gbMonth ?? false,
-      gbLaunch: gbLaunch,
+      gbLaunch,
       gbEnd: set.gbEnd,
       shipped: set.shipped ?? false,
       imageURL: set.image,
@@ -987,7 +994,7 @@ export const ModalEdit = (props: ModalEditProps) => {
   const selectValueAppend = (prop: string, value: string) =>
     updateState((draft) => {
       if (hasKey(draft, prop)) {
-        const original = draft[prop];
+        const { [prop]: original } = draft;
         if (original) {
           if (is<string[]>(original)) {
             original[original.length - 1] = value;
@@ -1006,7 +1013,9 @@ export const ModalEdit = (props: ModalEditProps) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
         vendor[property] = value;
         setFocused("");
@@ -1018,9 +1027,11 @@ export const ModalEdit = (props: ModalEditProps) => {
     const property = prop.replace(/\d/g, "");
     const index = parseInt(prop.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
-        const original = vendor[property];
+        const { [property]: original } = vendor;
         if (original) {
           const array = original.split(", ");
           array[array.length - 1] = value;
@@ -1031,8 +1042,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     });
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
+  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -1045,12 +1055,13 @@ export const ModalEdit = (props: ModalEditProps) => {
   const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
     updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, property)) {
         vendor[property] = value;
       }
@@ -1059,7 +1070,9 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (hasKey(vendor, name)) {
         vendor[name] = value;
       }
@@ -1068,7 +1081,9 @@ export const ModalEdit = (props: ModalEditProps) => {
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
     updateState((draft) => {
-      const vendor = draft.vendors[index];
+      const {
+        vendors: { [index]: vendor },
+      } = draft;
       if (e.target.checked) {
         vendor.endDate = "";
       } else {
@@ -1137,7 +1152,7 @@ export const ModalEdit = (props: ModalEditProps) => {
               const fileNameRegex = /keysets%2F(.*)\?/;
               const regexMatch = props.set.image.match(fileNameRegex);
               if (regexMatch) {
-                const imageName = regexMatch[1];
+                const [, imageName] = regexMatch;
                 const folders = await getStorageFolders();
                 const allImages = folders.map((folder) => `${folder}/${imageName}`);
                 batchStorageDelete(allImages)

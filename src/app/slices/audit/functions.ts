@@ -33,7 +33,7 @@ export const getActions = (state = store.getState()) => {
         const data = doc.data();
         const action =
           data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
-        const changelogId = doc.id;
+        const { id: changelogId } = doc;
         const actionObj: ActionType = {
           ...data,
           action,
@@ -62,8 +62,8 @@ const processActions = (actions: ActionType[]) => {
     const { before, after, ...restAction } = action;
     if (before && after) {
       auditProperties.forEach((prop) => {
-        const beforeProp = before[prop];
-        const afterProp = after[prop];
+        const { [prop]: beforeProp } = before;
+        const { [prop]: afterProp } = after;
         if (isEqual(beforeProp, afterProp) && prop !== "profile" && prop !== "colorway") {
           delete before[prop];
           delete after[prop];

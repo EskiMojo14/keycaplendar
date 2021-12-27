@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
-import { virtualize } from "react-swipeable-views-utils";
+import { SlideRendererCallback, virtualize } from "react-swipeable-views-utils";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { pageTitle } from "@s/common/constants";
 import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
@@ -140,9 +140,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     dispatch(setTab(historyTabs[index]));
   };
 
-  const slideRenderer = (params: any) => {
-    const { key, index } = params;
-    const tab = historyTabs[index];
+  const slideRenderer: SlideRendererCallback = ({ key, index }) => {
+    const { [index]: tab } = historyTabs;
     const tabs = {
       recent: (
         <div className="history-tab recent recent-grid" key={key}>

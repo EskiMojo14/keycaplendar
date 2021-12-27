@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { alias, aliasJest, configPaths } = require("react-app-rewire-alias");
 
 const aliasMap = configPaths("./tsconfig.paths.json");
@@ -27,4 +27,7 @@ module.exports = function override(config, env) {
   return alias(aliasMap)(config);
 };
 
-module.exports.jest = aliasJest(aliasMap);
+module.exports.jest = function override(config, env) {
+  config.transform["^.+\\.(js|jsx|mjs|cjs|ts|tsx)$"] = "ts-jest";
+  return aliasJest(aliasMap)(config);
+};

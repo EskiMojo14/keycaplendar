@@ -53,9 +53,7 @@ export const ImageUpload = (props: ImageUploadProps) => {
     };
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "imageLink") {
       setImageLink(value);
     }
@@ -107,8 +105,11 @@ export const ImageUpload = (props: ImageUploadProps) => {
       e.preventDefault();
       e.stopPropagation();
       setLoading(true);
-      const dt = e.dataTransfer;
-      const file = dt.files[0];
+      const {
+        dataTransfer: {
+          files: [file],
+        },
+      } = e;
       if (!file.type.includes("image")) {
         queue.notify({ title: "Error: file is not an image." });
         setDragOver(false);
@@ -124,9 +125,11 @@ export const ImageUpload = (props: ImageUploadProps) => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
-    const files = e.target.files;
+    const {
+      target: { files },
+    } = e;
     if (files) {
-      const file = files[0];
+      const [file] = files;
       props.setImage(file);
       setDragOver(false);
     }

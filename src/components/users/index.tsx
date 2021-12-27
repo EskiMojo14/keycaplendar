@@ -7,8 +7,7 @@ import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
 import {
-  selectFirstIndex,
-  selectLastIndex,
+  selectIndices,
   selectLoading,
   selectNextPageToken,
   selectPage,
@@ -20,10 +19,11 @@ import {
   selectView,
   setLoading,
 } from "@s/users";
+import { sortLabels, sortProps, viewIcons, viewLabels, views } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
 import { UserType } from "@s/users/types";
-import { iconObject, useBoolStates } from "@s/util/functions";
+import { useBoolStates } from "@s/util/functions";
 import {
   DataTable,
   DataTableContent,
@@ -60,7 +60,6 @@ import {
 import { withTooltip } from "@c/util/hocs";
 import { UserRow } from "./user-row";
 import { UserCard } from "./user-card";
-import { ViewArray, ViewList } from "@i";
 import "./index.scss";
 
 const length = 1000;
@@ -88,8 +87,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
   const nextPageToken = useAppSelector(selectNextPageToken);
   const rowsPerPage = useAppSelector(selectRowsPerPage);
   const page = useAppSelector(selectPage);
-  const firstIndex = useAppSelector(selectFirstIndex);
-  const lastIndex = useAppSelector(selectLastIndex);
+  const { first: firstIndex, last: lastIndex } = useAppSelector(selectIndices);
 
   const blankUser = new User();
 
@@ -146,15 +144,11 @@ export const ContentUsers = (props: ContentUsersProps) => {
           onClose={closeSortMenu}
           onSelect={(e) => setSortIndex(e.detail.index)}
         >
-          <MenuItem selected={userSort === "displayName"}>Name</MenuItem>
-          <MenuItem selected={userSort === "email"}>Email</MenuItem>
-          <MenuItem selected={userSort === "dateCreated"}>Date created</MenuItem>
-          <MenuItem selected={userSort === "lastSignIn"}>Last sign in</MenuItem>
-          <MenuItem selected={userSort === "lastActive"}>Last active</MenuItem>
-          <MenuItem selected={userSort === "nickname"}>Nickname</MenuItem>
-          <MenuItem selected={userSort === "designer"}>Designer</MenuItem>
-          <MenuItem selected={userSort === "editor"}>Editor</MenuItem>
-          <MenuItem selected={userSort === "admin"}>Admin</MenuItem>
+          {sortProps.map((prop) => (
+            <MenuItem key={prop} selected={userSort === prop}>
+              {sortLabels[prop]}
+            </MenuItem>
+          ))}
         </Menu>
         {withTooltip(<TopAppBarActionItem icon="sort" onClick={openSortMenu} />, "Sort")}
       </MenuSurfaceAnchor>
@@ -168,16 +162,13 @@ export const ContentUsers = (props: ContentUsersProps) => {
           onClose={closeViewMenu}
           onSelect={(e) => setViewIndex(e.detail.index)}
         >
-          <MenuItem selected={view === "card"}>Card</MenuItem>
-          <MenuItem selected={view === "table"}>Table</MenuItem>
+          {views.map((viewType) => (
+            <MenuItem key={viewType} selected={view === viewType}>
+              {viewLabels[viewType]}
+            </MenuItem>
+          ))}
         </Menu>
-        {withTooltip(
-          <TopAppBarActionItem
-            onClick={openViewMenu}
-            icon={iconObject(view === "card" ? <ViewArray /> : <ViewList />)}
-          />,
-          "View"
-        )}
+        {withTooltip(<TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />, "View")}
       </MenuSurfaceAnchor>
     ) : null;
   return (
@@ -281,7 +272,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                           <DataTableHeadCell>Save</DataTableHeadCell>
                           <DataTableHeadCell>Delete</DataTableHeadCell>
                         </DataTableRow>
-                        <DataTableRow className={classNames("progress-row", { loading: loading })}>
+                        <DataTableRow className={classNames("progress-row", { loading })}>
                           <DataTableHeadCell colSpan={12}>
                             <LinearProgress />
                           </DataTableHeadCell>

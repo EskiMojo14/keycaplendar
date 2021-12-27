@@ -70,7 +70,9 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
         )
         .map((prop) => {
           if (dataObj.data) {
-            const useData = dataObj.data[prop];
+            const {
+              data: { [prop]: useData },
+            } = dataObj;
             let contents: ReactNode;
             if (is<string>(useData)) {
               const domain = useData.match(domainRegex);
@@ -161,8 +163,10 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
     } else if (dataObj.before && dataObj.after) {
       return properties.map((prop) => {
         if (dataObj.before && dataObj.after && hasKey(dataObj.before, prop) && hasKey(dataObj.after, prop)) {
-          const beforeData = dataObj.before[prop];
-          const afterData = dataObj.after[prop];
+          const {
+            before: { [prop]: beforeData },
+            after: { [prop]: afterData },
+          } = dataObj;
           let contents: { before: ReactNode; after: ReactNode } = { before: null, after: null };
           if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);

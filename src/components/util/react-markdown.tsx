@@ -67,7 +67,7 @@ const customComponents = {
   p: typographyBuilder("p", "body2"),
   li: typographyBuilder("li", "body2"),
   code: typographyBuilder("code", "body2"),
-  input: input,
+  input,
   table: dataTableContainer,
   thead: componentBuilder("thead", DataTableHead),
   tbody: componentBuilder("tbody", DataTableBody),
@@ -171,7 +171,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
         }
       },
       onInvalid: () => setInvalid(true),
-      required: required,
+      required,
     },
   };
   return (

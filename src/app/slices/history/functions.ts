@@ -6,15 +6,13 @@ import store from "~/app/store";
 import { auditProperties } from "@s/audit/constants";
 import { getSetById } from "@s/main/functions";
 import { alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
-import { selectProcessedActions, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
+import { selectProcessedActions, selectTab, setLoading, setProcessedActions, setRecentSets, setTab } from ".";
 import { HistoryTab, ProcessedPublicActionType, PublicActionType, RecentSet } from "./types";
 
 const { dispatch } = store;
 
 export const setHistoryTab = (tab: HistoryTab, clearUrl = true, state = store.getState()) => {
-  const {
-    history: { tab: historyTab },
-  } = state;
+  const historyTab = selectTab(state);
   if (historyTab !== tab) {
     document.documentElement.scrollTop = 0;
     dispatch(setTab(tab));
@@ -33,8 +31,7 @@ export const getData = () => {
   const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
   dispatch(setLoading(true));
   cloudFn({ num: 25 })
-    .then((result) => {
-      const actions: PublicActionType[] = result.data;
+    .then(({ data: actions }) => {
       processActions(actions);
     })
     .catch((error) => {
@@ -52,8 +49,8 @@ export const processActions = (actions: PublicActionType[]) => {
         : `${action.before.profile} ${action.before.colorway}`;
     if (before && after) {
       auditProperties.forEach((prop) => {
-        const beforeProp = before[prop];
-        const afterProp = after[prop];
+        const { [prop]: beforeProp } = before;
+        const { [prop]: afterProp } = after;
         if (
           isEqual(beforeProp, afterProp) ||
           (!is<boolean>(beforeProp) && !beforeProp && !is<boolean>(afterProp) && !afterProp)
@@ -83,21 +80,18 @@ export const generateSets = (state = store.getState()) => {
       "timestamp",
       true
     );
-    const latestTimestamp = filteredActions[0].timestamp;
-    const title = filteredActions[0].title;
-    const designer = filteredActions[0].after.designer
-      ? filteredActions[0].after.designer
-      : filteredActions[0].before.designer
-      ? filteredActions[0].before.designer
-      : null;
+    const [latestTimestamp] = filteredActions.map((action) => action.timestamp).filter(Boolean);
+    const [title] = filteredActions.map((action) => action.title).filter(Boolean);
+    const [designer] = filteredActions.map((action) => action.after.designer || action.before.designer).filter(Boolean);
     const deleted = filteredActions[0].action === "deleted";
+    const currentSet = getSetById(id, state);
     return {
-      id: id,
-      title: title,
-      designer: designer,
-      deleted: deleted,
-      currentSet: getSetById(id),
-      latestTimestamp: latestTimestamp,
+      id,
+      title,
+      designer: designer ?? currentSet?.designer ?? null,
+      deleted,
+      currentSet,
+      latestTimestamp,
     };
   });
   alphabeticalSortProp(recentSets, "latestTimestamp", true);

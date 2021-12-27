@@ -3,6 +3,17 @@ import type { RootState } from "~/app/store";
 import { CurrentUserType } from "./types";
 import { PresetType } from "@s/main/types";
 
+export const blankUser: CurrentUserType = {
+  email: "",
+  name: "",
+  avatar: "",
+  nickname: "",
+  isDesigner: false,
+  isEditor: false,
+  isAdmin: false,
+  id: "",
+};
+
 type UserState = {
   user: CurrentUserType;
   shareName: string;
@@ -36,49 +47,33 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<Partial<CurrentUserType>>) => {
-      const blankUser: CurrentUserType = {
-        email: "",
-        name: "",
-        avatar: "",
-        nickname: "",
-        isDesigner: false,
-        isEditor: false,
-        isAdmin: false,
-        id: "",
-      };
-      state.user = action.payload.email ? { ...blankUser, ...action.payload } : blankUser;
+    setUser: (state, { payload }: PayloadAction<Partial<CurrentUserType>>) => {
+      state.user = { ...blankUser, ...payload };
     },
-    setShareName: (state, action: PayloadAction<string>) => {
-      state.shareName = action.payload;
+    setShareName: (state, { payload }: PayloadAction<string>) => {
+      state.shareName = payload;
     },
-    setUserPresets: (state, action: PayloadAction<PresetType[]>) => {
-      state.userPresets = action.payload;
+    setUserPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
+      state.userPresets = payload;
     },
-    setFavorites: (state, action: PayloadAction<string[]>) => {
-      state.favorites = action.payload;
+    setFavorites: (state, { payload }: PayloadAction<string[]>) => {
+      state.favorites = payload;
     },
-    setFavoritesId: (state, action: PayloadAction<string>) => {
-      state.favoritesId = action.payload;
+    setFavoritesId: (state, { payload }: PayloadAction<string>) => {
+      state.favoritesId = payload;
     },
-    setBought: (state, action: PayloadAction<string[]>) => {
-      state.bought = action.payload;
+    setBought: (state, { payload }: PayloadAction<string[]>) => {
+      state.bought = payload;
     },
-    setHidden: (state, action: PayloadAction<string[]>) => {
-      state.hidden = action.payload;
+    setHidden: (state, { payload }: PayloadAction<string[]>) => {
+      state.hidden = payload;
     },
   },
 });
 
 export const {
-  setUser,
-  setShareName,
-  setUserPresets,
-  setFavorites,
-  setFavoritesId,
-  setBought,
-  setHidden,
-} = userSlice.actions;
+  actions: { setUser, setShareName, setUserPresets, setFavorites, setFavoritesId, setBought, setHidden },
+} = userSlice;
 
 export const selectUser = (state: RootState) => state.user.user;
 

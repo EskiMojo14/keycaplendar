@@ -72,8 +72,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { edited, ...whitelist } = mainWhitelist;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited: presetEdited, ...presetWhitelist } = preset.whitelist;
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      whitelist: { edited: presetEdited, ...presetWhitelist },
+    } = preset;
     const equal = isEqual(presetWhitelist, whitelist);
     setModified(!equal);
   }, [preset.whitelist, mainWhitelist]);
@@ -117,7 +119,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const handleChange = (name: string, prop: string) => {
     if (hasKey(mainWhitelist, prop)) {
-      const original = mainWhitelist[prop];
+      const { [prop]: original } = mainWhitelist;
       let edited = original;
       if (is<boolean>(original)) {
         edited = !original;
@@ -134,7 +136,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const checkAll = (prop: string) => {
     if (hasKey(lists, prop)) {
-      const all = lists[prop];
+      const { [prop]: all } = lists;
       setWhitelist(prop, all);
     } else if (prop === "shipped") {
       setWhitelist(prop, [...whitelistShipped]);
@@ -151,7 +153,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const invertAll = (prop: string) => {
     if (hasKey(lists, prop)) {
-      const all = lists[prop];
+      const { [prop]: all } = lists;
       const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
       setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
@@ -164,15 +166,13 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     const params = new URLSearchParams(window.location.search);
     whitelistParams.forEach((param) => {
       if (param === "profile" || param === "region" || param === "vendor") {
-        const plural = param + "s";
+        const plural = `${param}s` as const;
         const whitelist = mainWhitelist;
-        if (hasKey(whitelist, plural)) {
-          const array = whitelist[plural];
-          if (is<string[]>(array) && array.length === 1) {
-            params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
-          } else {
-            params.delete(param);
-          }
+        const { [plural]: array } = whitelist;
+        if (is<string[]>(array) && array.length === 1) {
+          params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
+        } else {
+          params.delete(param);
         }
       } else if (param === "vendorMode") {
         if (mainWhitelist.vendorMode !== "exclude") {
@@ -427,7 +427,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   ]
             }
             onChange={selectPresetFn}
-            className={classNames({ modified: modified })}
+            className={classNames({ modified })}
             disabled={[...appPresets, ...userPresets].length === 1}
           />
           {userPresetOptions}

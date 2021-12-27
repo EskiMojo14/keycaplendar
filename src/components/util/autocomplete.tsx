@@ -19,7 +19,7 @@ type AutocompleteProps = HTMLAttributes<HTMLElement> & {
 export const Autocomplete = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
   const splitQuery = query.split(", ");
-  const lastItem = splitQuery[splitQuery.length - 1];
+  const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => {
     return item.toLowerCase().includes(useQuery.toLowerCase());
@@ -77,13 +77,13 @@ const bemClasses = new BEMHelper("autocomplete-mobile");
 export const AutocompleteMobile = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
   const splitQuery = query.split(", ");
-  const lastItem = splitQuery[splitQuery.length - 1];
+  const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => {
     return item.toLowerCase().includes(useQuery.toLowerCase());
   });
   return (
-    <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
+    <div {...filteredProps} className={bemClasses({ modifiers: { open }, extra: className })}>
       <List>
         {useQuery.length >= minChars
           ? matchingItems.map((item) => {

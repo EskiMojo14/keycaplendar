@@ -45,9 +45,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setBody("");
     }
   }, [props.open]);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -59,8 +57,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const selectVisibility = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -255,10 +252,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   }, [props.open, entry]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -270,8 +264,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const selectVisibility = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }

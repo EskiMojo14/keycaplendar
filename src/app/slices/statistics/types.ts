@@ -1,9 +1,9 @@
 import { IChartistData } from "chartist";
-import { statsTabs } from "./constants";
+import { statsTabs, categories, properties } from "./constants";
 
-export type Categories = "icDate" | "gbLaunch";
+export type Categories = typeof categories[number];
 
-export type Properties = "profile" | "designer" | "vendor";
+export type Properties = typeof properties[number];
 
 export type Sorts = "total" | "alphabetical";
 

@@ -57,7 +57,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
   }, [props.recentSet.currentSet]);
 
   return (
-    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted: deleted })}>
+    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted })}>
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
@@ -95,11 +95,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         <div className="info-container">
           <div className="overline">
             <Typography use="overline" tag="h3">
-              {set
-                ? set.designer.join(" + ")
-                : recentSet.designer
-                ? recentSet.designer.join(" + ")
-                : recentSet.designer}
+              {set?.designer.join(" + ") ?? recentSet.designer?.join(" + ")}
             </Typography>
           </div>
           <Typography use="headline5" tag="h2">

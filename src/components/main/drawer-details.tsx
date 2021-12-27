@@ -156,7 +156,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         });
       } else {
         if (hasKey(set, prop)) {
-          const val = set[prop];
+          const { [prop]: val } = set;
           if (val && Array.isArray(val)) {
             val.forEach((entry: any) => {
               if (is<string>(entry)) {
@@ -238,8 +238,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         </List>
       </div>
     ) : null;
-  const edit = props.edit;
-  const deleteSet = props.delete;
+  const { edit, delete: deleteSet } = props;
   const editorButtons =
     (user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))) &&
     edit &&

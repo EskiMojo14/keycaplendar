@@ -130,26 +130,11 @@ export const alphabeticalSort = (array: string[], descending = false, hoist?: st
  * arr.sort((a,b) => alphabeticalSortProp("key")(a,b) || alphabeticalSortProp("key2")(a,b))
  */
 
-export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O>(
+export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
   prop: K,
   descending = false,
   hoist?: O[K]
-) => (a: O, b: O) => {
-  const x = a[prop];
-  const y = b[prop];
-  if (hoist && (x === hoist || y === hoist) && x !== y) {
-    return x === hoist ? -1 : 1;
-  }
-  const c = is<string>(x) ? x.toLowerCase() : x;
-  const d = is<string>(y) ? y.toLowerCase() : y;
-  if (c < d) {
-    return descending ? 1 : -1;
-  }
-  if (c > d) {
-    return descending ? -1 : 1;
-  }
-  return 0;
-};
+) => (a: O, b: O) => alphabeticalSortCurried(descending, hoist)(a[prop], b[prop]);
 
 /**
  * Sorts an array of objects by a specified prop, in alphabetical order. *MUTATES*
@@ -160,7 +145,7 @@ export const alphabeticalSortPropCurried = <O extends Record<string, unknown>, K
  * @returns `array` sorted by provided prop, with hoisted value at the beginning if provided.
  */
 
-export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O>(
+export const alphabeticalSortProp = <O extends Record<string, unknown>, K extends keyof O = keyof O>(
   array: O[],
   prop: K,
   descending = false,
@@ -360,16 +345,13 @@ export const useBoolStates = <T>(func: (bool: boolean) => T): [setFalse: () => T
  * Takes an array of set objects, and returns a month range of the specfied property, in the specified format (uses Luxon).
  * @param sets Array of set objects to be checked.
  * @param prop Property of set to be used.
- * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/docs/manual/formatting.html#table-of-tokens}.
+ * @param format Luxon string to specify format. See {@link https://moment.github.io/luxon/#/formatting?id=table-of-tokens}.
  * @returns Array of months from earliest to latest, in specified format.
  */
 
 export const getSetMonthRange = (sets: SetType[], prop: DateSortKeys, format: string) => {
   const setMonths = removeDuplicates(
-    sets.map((set) => {
-      const val = set[prop];
-      return val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : "";
-    })
+    sets.map(({ [prop]: val }) => (val && !val.includes("Q") ? DateTime.fromISO(val).toFormat("yyyy-MM") : ""))
   ).filter(Boolean);
   alphabeticalSort(setMonths);
   const monthDiff = (dateFrom: DateTime, dateTo: DateTime) => {

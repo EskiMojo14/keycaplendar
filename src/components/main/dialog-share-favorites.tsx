@@ -30,9 +30,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));
@@ -59,9 +57,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
       });
   };
 
-  const handleSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const checked = e.target.checked;
+  const handleSwitchChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareFavorites") {
       const newId = checked ? nanoid() : "";
       dispatch(setFavoritesId(newId));

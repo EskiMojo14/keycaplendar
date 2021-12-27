@@ -14,7 +14,9 @@ export const DialogDelete = (props: DialogDeleteProps) => {
     deleteFn()
       .then((result) => {
         if (result.data.error) {
-          const error = result.data.error;
+          const {
+            data: { error },
+          } = result;
           queue.notify({ title: "Failed to delete account: " + error });
           console.log(
             `Failed to delete account: ${error}. Please contact keycaplendar@gmail.com if this issue reoccurs.`
