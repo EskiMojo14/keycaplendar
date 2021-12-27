@@ -139,7 +139,7 @@ export const syncSetting = (setting: string, value: any, state = store.getState(
   if (user.id && syncSettings) {
     const userDocRef = typedFirestore.collection("users").doc(user.id as UserId);
     const sync = () => {
-      const settingObject: { [key: string]: any } = {};
+      const settingObject: Record<string, any> = {};
       settingObject[`settings.${setting}`] = value;
       userDocRef.update(settingObject).catch((error) => {
         console.log("Failed to sync settings: " + error);

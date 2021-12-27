@@ -13,7 +13,7 @@ import "./drawer-details.scss";
 type DrawerDetailsProps = {
   close: () => void;
   image: ImageType;
-  metadata: { [key: string]: any };
+  metadata: Record<string, any>;
   open: boolean;
 };
 

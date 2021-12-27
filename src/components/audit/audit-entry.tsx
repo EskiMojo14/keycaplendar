@@ -56,7 +56,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
   const arrayProps: string[] = ["designer"];
   const urlProps: string[] = ["image", "details"];
   const boolProps: string[] = ["gbMonth", "shipped"];
-  const icons: { [key: string]: string } = {
+  const icons: Record<string, string> = {
     created: "add_circle_outline",
     updated: "update",
     deleted: "remove_circle_outline",
