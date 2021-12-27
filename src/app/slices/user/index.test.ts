@@ -47,10 +47,11 @@ it("sets user", () => {
 });
 
 it("sets partial user", () => {
-  store.dispatch(setUser({ email: user.email }));
+  const { email } = user;
+  store.dispatch(setUser({ email }));
   const response = selectUser(store.getState());
   const expected = produce(blankUser, (draftUser) => {
-    draftUser.email = user.email;
+    draftUser.email = email;
   });
   expect(response).toEqual(expected);
 });
