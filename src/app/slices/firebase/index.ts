@@ -1,9 +1,11 @@
 import firebase from "firebase/app";
+/* eslint-disable import/no-duplicates */
 //import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
 import "firebase/storage";
+/* eslint-enable import/no-duplicates */
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2gQez-yGoqRpI-G8kqB5CvusDvDyFiy4",
@@ -16,6 +18,7 @@ const firebaseConfig = {
   //measurementId: "G-DTG7KB21BQ",
 };
 // Initialize Firebase
+// eslint-disable-next-line import/no-named-as-default-member
 firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
