@@ -113,7 +113,7 @@ export const setSyncSettings = (bool: boolean, write = true, state = store.getSt
   const user = selectUser(state);
   dispatch(setSetting("syncSettings", bool));
   if (write) {
-    const settingsObject: { [key: string]: any } = {};
+    const settingsObject: Record<string, any> = {};
     if (bool) {
       Object.keys(settingFns).forEach((setting) => {
         if (hasKey(settings, setting)) {

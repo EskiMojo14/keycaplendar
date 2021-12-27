@@ -59,9 +59,9 @@ export const sanitiseState = (state: RootState) => {
 
 export const saveState = (state: RootState) => {
   try {
-    const serializedState = JSON.stringify(sanitiseState(state));
     const accepted = selectCookies(state);
     if (accepted) {
+      const serializedState = JSON.stringify(sanitiseState(state));
       localStorage.setItem("state", serializedState);
     }
   } catch (err) {
