@@ -3,6 +3,7 @@ import type { RootState } from "~/app/store";
 import { removeDuplicates } from "@s/util/functions";
 import { Preset } from "./constructors";
 import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
+import { KeysMatching } from "@s/util/types";
 
 export type MainState = {
   transition: boolean;
@@ -106,25 +107,23 @@ export const mainSlice = createSlice({
     setListState: (
       state,
       {
-        payload,
+        payload: { name, array },
       }: PayloadAction<{
-        name: "allDesigners" | "allProfiles" | "allRegions" | "allVendors" | "allVendorRegions";
+        name: KeysMatching<MainState, string[]>;
         array: string[];
       }>
     ) => {
-      const { name, array } = payload;
       state[name] = array;
     },
     setSetListState: (
       state,
       {
-        payload,
+        payload: { name, array },
       }: PayloadAction<{
-        name: "allSets" | "filteredSets";
+        name: KeysMatching<MainState, SetType[]>;
         array: SetType[];
       }>
     ) => {
-      const { name, array } = payload;
       state[name] = array;
     },
     setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
@@ -148,7 +147,7 @@ export const mainSlice = createSlice({
       state.whitelist = { ...payload, edited: Object.keys(payload) };
     },
     mergeWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
-      const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(payload)]);
+      const edited = removeDuplicates([...(state.whitelist.edited ?? []), ...Object.keys(payload)]);
       state.whitelist = { ...state.whitelist, ...payload, edited };
     },
     setURLWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
@@ -191,15 +190,13 @@ export const {
   },
 } = mainSlice;
 
-export const setList = <P extends ReturnType<typeof setListState>["payload"]>(name: P["name"], array: P["array"]) =>
+export const setList = <P extends Parameters<typeof setListState>[0]>(name: P["name"], array: P["array"]) =>
   setListState({ name, array });
 
-export const setSetList = <P extends ReturnType<typeof setSetListState>["payload"]>(
-  name: P["name"],
-  array: P["array"]
-) => setSetListState({ name, array });
+export const setSetList = <P extends Parameters<typeof setSetListState>[0]>(name: P["name"], array: P["array"]) =>
+  setSetListState({ name, array });
 
-export const setURLSet = <P extends ReturnType<typeof setURLSetState>["payload"]>(prop: P["prop"], value: P["value"]) =>
+export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(prop: P["prop"], value: P["value"]) =>
   setURLSetState({ prop, value });
 
 export const selectTransition = (state: RootState) => state.main.transition;

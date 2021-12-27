@@ -1,3 +1,4 @@
+import produce from "immer";
 import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
@@ -71,7 +72,6 @@ import {
   VendorType,
   WhitelistType,
 } from "./types";
-import produce from "immer";
 
 const { dispatch } = store;
 
@@ -119,8 +119,8 @@ export const pageConditions = (
 
 export const getSetById = (id: string, state = store.getState()) => {
   const allSets = selectAllSets(state);
-  const index = allSets.findIndex((set) => set.id === id);
-  return index > -1 ? allSets[index] : null;
+  const set = allSets.find((set) => set.id === id);
+  return set ?? null;
 };
 
 export const getData = () => {
