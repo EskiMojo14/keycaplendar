@@ -69,6 +69,7 @@ module.exports = {
         prefer: "type-imports",
       },
     ],
+    "@typescript-eslint/consistent-indexed-object-style": ["warn", "record"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "import/no-named-as-default": "off",

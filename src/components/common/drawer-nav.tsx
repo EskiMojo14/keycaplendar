@@ -46,9 +46,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     }
   };
 
-  const quantities: {
-    [key: string]: number;
-  } = {
+  const quantities: Record<string, number> = {
     favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.length : favorites.length,
     bought: bought.length,
     hidden: hidden.length,
