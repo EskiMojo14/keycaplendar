@@ -92,7 +92,7 @@ export const addOrRemove = <T>(array: T[], value: T): T[] => {
  * objArr.sort((a, b) => alphabeticalSortCurried()(a.key, b.key) || alphabeticalSortCurried()(a.key2, b.key2))
  */
 
-export const alphabeticalSortCurried = <T extends unknown>(descending = false, hoist?: T) => (a: T, b: T) => {
+export const alphabeticalSortCurried = <T>(descending = false, hoist?: T) => (a: T, b: T) => {
   if (hoist && (a === hoist || b === hoist) && a !== b) {
     return a === hoist ? -1 : 1;
   }

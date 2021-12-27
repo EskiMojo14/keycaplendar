@@ -71,7 +71,7 @@ export const TableCard = (props: TableCardProps) => {
     },
     axisX: {
       labelInterpolationFnc: (value: number, index: number) => {
-        return is<Array<any>>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
+        return is<any[]>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
           ? index % (chartData.chartData.series[0].length >= 24 && !props.summary ? 3 : 2) === 0
             ? value
             : null
