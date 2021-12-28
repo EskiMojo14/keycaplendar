@@ -1,15 +1,15 @@
-import { ChangeEvent } from "react";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
-import { getActions } from "@s/audit/functions";
-import { selectDevice } from "@s/common";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import type { ChangeEvent } from "react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
 import { Select } from "@rmwc/select";
 import { Slider } from "@rmwc/slider";
 import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
+import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
+import { getActions } from "@s/audit/functions";
+import { selectDevice } from "@s/common";
 import "./drawer-audit-filter.scss";
 
 type DrawerAuditFilterProps = {

@@ -1,6 +1,7 @@
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
+import { Button } from "@rmwc/button";
+import type { ButtonHTMLProps, ButtonProps } from "@rmwc/button";
 import BEMHelper from "@s/common/bem-helper";
-import { Button, ButtonHTMLProps, ButtonProps } from "@rmwc/button";
 import "./segmented-button.scss";
 
 const bemClasses = new BEMHelper("segmented-button");
@@ -20,8 +21,7 @@ export const SegmentedButton = (props: SegmentedButtonProps) => {
   );
 };
 
-type SegmentedButtonSegmentProps = ButtonProps &
-  ButtonHTMLProps & {
+type SegmentedButtonSegmentProps = ButtonHTMLProps & ButtonProps & {
     selected?: boolean;
   };
 
@@ -31,11 +31,7 @@ export const SegmentedButtonSegment = (props: SegmentedButtonSegmentProps) => {
     <Button
       {...props}
       outlined
-      className={bemClasses(
-        "segment",
-        { "only-icon": !!props.icon && !props.label, selected: selected },
-        props.className
-      )}
+      className={bemClasses("segment", { "only-icon": !!props.icon && !props.label, selected }, props.className)}
     />
   );
 };

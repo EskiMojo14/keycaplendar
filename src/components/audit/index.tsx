@@ -1,37 +1,38 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import { DateTime } from "luxon";
-import classNames from "classnames";
-import { queue } from "~/app/snackbar-queue";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
-import { getActions, filterActions } from "@s/audit/functions";
-import { ActionType } from "@s/audit/types";
-import { selectDevice } from "@s/common";
-import { pageTitle } from "@s/common/constants";
-import { typedFirestore } from "@s/firebase/firestore";
-import { ChangelogId } from "@s/firebase/types";
-import { Keyset } from "@s/main/constructors";
-import { selectBottomNav } from "@s/settings";
-import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { DrawerAppContent } from "@rmwc/drawer";
 import { List } from "@rmwc/list";
 import {
   TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
   TopAppBarActionItem,
   TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
 } from "@rmwc/top-app-bar";
+import classNames from "classnames";
+import { DateTime } from "luxon";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { DrawerAuditFilter } from "./drawer-audit-filter";
-import { DialogAuditDelete } from "./dialog-audit-delete";
+import { selectAllActions, selectFilteredActions, selectLoading, setFilterAction, setFilterUser } from "@s/audit";
+import { filterActions, getActions } from "@s/audit/functions";
+import type { ActionType } from "@s/audit/types";
+import { selectDevice } from "@s/common";
+import { pageTitle } from "@s/common/constants";
+import firestore from "@s/firebase/firestore";
+import type { ChangelogId } from "@s/firebase/types";
+import { Keyset } from "@s/main/constructors";
+import { selectBottomNav } from "@s/settings";
+import { arrayIncludes, closeModal, openModal } from "@s/util/functions";
 import { AuditEntry } from "./audit-entry";
+import { DialogAuditDelete } from "./dialog-audit-delete";
+import { DrawerAuditFilter } from "./drawer-audit-filter";
 import "./index.scss";
 
 type ContentAuditProps = {
@@ -110,7 +111,7 @@ export const ContentAudit = (props: ContentAuditProps) => {
   }, []);
 
   const deleteActionFn = (action: ActionType) => {
-    typedFirestore
+    firestore
       .collection("changelog")
       .doc(action.changelogId as ChangelogId)
       .delete()

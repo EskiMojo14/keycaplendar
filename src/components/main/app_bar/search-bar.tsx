@@ -1,14 +1,15 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import { IconButton } from "@rmwc/icon-button";
+import { MenuSurfaceAnchor } from "@rmwc/menu";
+import { TextField } from "@rmwc/textfield";
+import { TopAppBar, TopAppBarFixedAdjust, TopAppBarRow } from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import BEMHelper from "@s/common/bem-helper";
 import { useAppSelector } from "~/app/hooks";
+import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
+import BEMHelper from "@s/common/bem-helper";
 import { selectFilteredSets } from "@s/main";
 import { alphabeticalSort } from "@s/util/functions";
-import { IconButton } from "@rmwc/icon-button";
-import { TextField } from "@rmwc/textfield";
-import { TopAppBar, TopAppBarRow, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
-import { MenuSurfaceAnchor } from "@rmwc/menu";
-import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
 import "./search-bar.scss";
 
 const bemClasses = new BEMHelper("search-bar");
@@ -78,7 +79,7 @@ export const SearchBarPersistent = (props: SearchBarPersistentProps) => {
         className={bemClasses({
           modifiers: {
             persistent: true,
-            expanded: expanded,
+            expanded,
           },
         })}
       >
@@ -215,10 +216,10 @@ export const SearchBarModal = (props: SearchBarModalProps) => {
       className={bemClasses({
         modifiers: {
           modal: true,
-          open: open,
-          opening: opening,
-          closing: closing,
-          animate: animate,
+          open,
+          opening,
+          closing,
+          animate,
         },
       })}
     >

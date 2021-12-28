@@ -1,10 +1,39 @@
 import { useEffect, useState } from "react";
+import { Button } from "@rmwc/button";
+import { Checkbox } from "@rmwc/checkbox";
+import { DrawerAppContent } from "@rmwc/drawer";
+import {
+  ImageList,
+  ImageListImage,
+  ImageListImageAspectContainer,
+  ImageListItem,
+  ImageListLabel,
+  ImageListSupporting,
+} from "@rmwc/image-list";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
+import { Ripple } from "@rmwc/ripple";
+import {
+  TopAppBar,
+  TopAppBarActionItem,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import LazyLoad from "react-lazy-load";
-import firebase from "@s/firebase";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { Footer } from "@c/common/footer";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import {
   selectCheckedImages,
   selectCurrentFolder,
@@ -21,43 +50,14 @@ import {
 } from "@s/images";
 import { ImageObj } from "@s/images/constructors";
 import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
-import { ImageType } from "@s/images/types";
+import type { ImageType } from "@s/images/types";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/util/functions";
-import { queue } from "~/app/snackbar-queue";
-import { Button } from "@rmwc/button";
-import { Checkbox } from "@rmwc/checkbox";
-import { DrawerAppContent } from "@rmwc/drawer";
-import {
-  ImageList,
-  ImageListItem,
-  ImageListImageAspectContainer,
-  ImageListImage,
-  ImageListSupporting,
-  ImageListLabel,
-} from "@rmwc/image-list";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
-import { Ripple } from "@rmwc/ripple";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
-  TopAppBarFixedAdjust,
-  TopAppBarActionItem,
-} from "@rmwc/top-app-bar";
-import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/hocs";
+import { Delete, PermMedia } from "@i";
+import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
 import { DrawerSearch } from "./drawer-search";
-import { DialogDelete } from "./dialog-delete";
-import { Delete, PermMedia } from "@i";
 import "./index.scss";
 
 const storage = firebase.storage();
@@ -204,7 +204,7 @@ export const ContentImages = (props: ContentImagesProps) => {
   const tooltipAlign = bottomNav ? "top" : "bottom";
   return (
     <>
-      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual: contextual })}>
+      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual })}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             {contextual ? (

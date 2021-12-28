@@ -1,31 +1,31 @@
-import classNames from "classnames";
-import isEqual from "lodash.isequal";
-import { DateTime } from "luxon";
-import { is } from "typescript-is";
-import { auditProperties } from "@s/audit/constants";
-import { ActionType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
-import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
+import { Checkbox } from "@rmwc/checkbox";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
 import {
   CollapsibleList,
   ListItem,
+  ListItemGraphic,
   ListItemMeta,
-  ListItemText,
   ListItemPrimaryText,
   ListItemSecondaryText,
-  ListItemGraphic,
+  ListItemText,
 } from "@rmwc/list";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableCell,
-  DataTableBody,
-} from "@rmwc/data-table";
-import { Checkbox } from "@rmwc/checkbox";
+import classNames from "classnames";
+import isEqual from "lodash.isequal";
+import type { DateTime } from "luxon";
+import { is } from "typescript-is";
+import { auditProperties } from "@s/audit/constants";
+import type { ActionType } from "@s/audit/types";
+import type { KeysetDoc } from "@s/firebase/types";
+import { alphabeticalSortProp, hasKey, ordinal } from "@s/util/functions";
 import "./audit-entry.scss";
 
 type AuditEntryProps = {
@@ -56,7 +56,7 @@ export const AuditEntry = (props: AuditEntryProps) => {
   const arrayProps: string[] = ["designer"];
   const urlProps: string[] = ["image", "details"];
   const boolProps: string[] = ["gbMonth", "shipped"];
-  const icons: { [key: string]: string } = {
+  const icons: Record<string, string> = {
     created: "add_circle_outline",
     updated: "update",
     deleted: "remove_circle_outline",

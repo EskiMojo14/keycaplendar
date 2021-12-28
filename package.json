@@ -2,6 +2,70 @@
   "name": "keycaplendar",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "postinstall": "patch-package",
+    "icons": "npx @svgr/cli --icon --ignore-existing --memo --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/ && npx prettier --write src/media/icons/index.tsx"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@svgr/cli": "^5.5.0",
+    "@types/gulp": "^4.0.9",
+    "@types/jest": "^26.0.23",
+    "@types/lodash.clonedeep": "^4.5.6",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/lodash.isequal": "^4.5.5",
+    "@types/lodash.throttle": "^4.1.6",
+    "@types/luxon": "^1.26.5",
+    "@types/mathjs": "^9.3.2",
+    "@types/node": "^15.6.1",
+    "@types/react": "^17.0.8",
+    "@types/react-beautiful-dnd": "^13.0.0",
+    "@types/react-dom": "^17.0.5",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/react-swipeable-views": "^0.13.0",
+    "@types/react-swipeable-views-utils": "^0.13.2",
+    "@types/sass": "^1.16.1",
+    "@types/twemoji": "^12.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "comment-json": "^4.1.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "gulp": "^4.0.2",
+    "patch-package": "^6.4.7",
+    "prettier": "^2.2.1",
+    "react-app-rewired": "^2.1.8",
+    "sass": "^1.42.1",
+    "transform-css-to-js": "^0.1.1",
+    "ts-jest": "^26.5.6",
+    "ts-loader": "^8.3.0",
+    "ts-node": "^10.2.1",
+    "ttypescript": "^1.5.12",
+    "typed-firestore": "^1.1.0",
+    "typescript": "^4.4.3",
+    "yargs": "^17.2.1"
+  },
   "dependencies": {
     "@date-io/luxon": "^1.3.13",
     "@material-ui/core": "^4.12.3",
@@ -82,64 +146,28 @@
     "use-immer": "^0.6.0",
     "websocket-extensions": "^0.1.4"
   },
-  "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "postinstall": "patch-package",
-    "icons": "npx @svgr/cli --icon --ignore-existing --memo --template svgrc-template.js --typescript --filename-case kebab -d src/media/icons/svg/ --out-dir src/media/icons/ src/media/icons/svg/ && npx prettier --write src/media/icons/index.tsx"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@svgr/cli": "^5.5.0",
-    "@types/gulp": "^4.0.9",
-    "@types/lodash.clonedeep": "^4.5.6",
-    "@types/lodash.debounce": "^4.0.6",
-    "@types/lodash.isequal": "^4.5.5",
-    "@types/lodash.throttle": "^4.1.6",
-    "@types/luxon": "^1.26.5",
-    "@types/mathjs": "^9.3.2",
-    "@types/node": "^15.6.1",
-    "@types/react": "^17.0.8",
-    "@types/react-beautiful-dnd": "^13.0.0",
-    "@types/react-dom": "^17.0.5",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/react-swipeable-views": "^0.13.0",
-    "@types/react-swipeable-views-utils": "^0.13.2",
-    "@types/sass": "^1.16.1",
-    "@types/twemoji": "^12.1.2",
-    "@typescript-eslint/eslint-plugin": "^4.31.1",
-    "@typescript-eslint/parser": "^4.31.1",
-    "comment-json": "^4.1.1",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "gulp": "^4.0.2",
-    "patch-package": "^6.4.7",
-    "prettier": "^2.2.1",
-    "react-app-rewired": "^2.1.8",
-    "sass": "^1.42.1",
-    "transform-css-to-js": "^0.1.1",
-    "ts-loader": "^8.3.0",
-    "ts-node": "^10.2.1",
-    "ttypescript": "^1.5.12",
-    "typed-firestore": "^1.1.0",
-    "typescript": "^4.4.3",
-    "yargs": "^17.2.1"
+  "jest": {
+    "moduleNameMapper": {
+      "@s/(.*)": [
+        "<rootDir>/src/app/slices/$1"
+      ],
+      "@c/(.*)": [
+        "<rootDir>/src/components/$1"
+      ],
+      "@i": [
+        "<rootDir>/src/media/icons"
+      ],
+      "@m/(.*)": [
+        "<rootDir>/src/media/$1"
+      ],
+      "~/(.*)": [
+        "<rootDir>/src/$1"
+      ]
+    },
+    "globals": {
+      "ts-jest": {
+        "compiler": "ttypescript"
+      }
+    }
   }
 }

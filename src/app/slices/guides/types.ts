@@ -1,4 +1,4 @@
-import { visibilityVals } from "./constants";
+import type { visibilityVals } from "./constants";
 
 export type Visibility = typeof visibilityVals[number];
 

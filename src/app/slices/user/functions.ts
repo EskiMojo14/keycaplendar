@@ -1,11 +1,11 @@
-import firebase from "@s/firebase";
-import { typedFirestore } from "@s/firebase/firestore";
-import { is } from "typescript-is";
 import debounce from "lodash.debounce";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { UserId } from "@s/firebase/types";
 import { selectPage } from "@s/common";
+import firebase from "@s/firebase";
+import firestore from "@s/firebase/firestore";
+import type { UserId } from "@s/firebase/types";
 import { selectWhitelist, setLinkedFavorites } from "@s/main";
 import { filterData, updatePreset } from "@s/main/functions";
 import { setShareNameLoading } from "@s/settings";
@@ -28,7 +28,7 @@ const { dispatch } = store;
 
 export const getUserPreferences = (id: string) => {
   if (id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(id as UserId)
       .get()
@@ -85,7 +85,7 @@ export const getUserPreferences = (id: string) => {
                 };
                 Object.keys(settingFns).forEach((setting) => {
                   if (hasKey(settingFns, setting)) {
-                    const func = settingFns[setting];
+                    const { [setting]: func } = settingFns;
                     getSetting(setting, func);
                   }
                 });
@@ -114,12 +114,12 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
     filterData(store.getState());
   }
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
         {
-          favorites: favorites,
+          favorites,
         },
         { merge: true }
       )
@@ -141,12 +141,12 @@ export const toggleBought = (id: string, state = store.getState()) => {
     filterData(store.getState());
   }
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
         {
-          bought: bought,
+          bought,
         },
         { merge: true }
       )
@@ -181,12 +181,12 @@ export const toggleHidden = (id: string, state = store.getState()) => {
     dismissesOnAction: true,
   });
   if (user.id) {
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set(
         {
-          hidden: hidden,
+          hidden,
         },
         { merge: true }
       )
@@ -200,7 +200,7 @@ export const toggleHidden = (id: string, state = store.getState()) => {
 export const syncShareName = (shareName: string, state = store.getState()) => {
   const user = selectUser(state);
   dispatch(setShareNameLoading(true));
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set(
@@ -222,7 +222,7 @@ export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: 
 
 export const syncFavoritesId = (id: string, state = store.getState()) => {
   const user = selectUser(state);
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set(
@@ -242,8 +242,7 @@ export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { traili
 export const getLinkedFavorites = (id: string) => {
   const cloudFn = firebase.functions().httpsCallable("getFavorites");
   cloudFn({ id })
-    .then((result) => {
-      const data = result.data;
+    .then(({ data }) => {
       if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
         filterData(store.getState());

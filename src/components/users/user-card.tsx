@@ -1,33 +1,35 @@
-import { useEffect, useState, FocusEvent, ChangeEvent } from "react";
-import firebase from "@s/firebase";
-import { DateTime } from "luxon";
-import { useAppSelector } from "~/app/hooks";
-import { queue } from "~/app/snackbar-queue";
-import { selectDevice } from "@s/common";
-import { selectAllDesigners } from "@s/main";
-import { selectUser } from "@s/user";
-import { userRoleIcons } from "@s/users/constants";
-import { User } from "@s/users/constructors";
-import { UserType } from "@s/users/types";
-import { hasKey, iconObject, mergeObject, ordinal } from "@s/util/functions";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FocusEvent } from "react";
 import { Avatar } from "@rmwc/avatar";
-import { Card, CardActions, CardActionIcons, CardActionIcon, CardActionButtons } from "@rmwc/card";
+import { Card, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { IconButton } from "@rmwc/icon-button";
 import {
+  CollapsibleList,
   List,
   ListItem,
-  ListItemText,
+  ListItemMeta,
   ListItemPrimaryText,
   ListItemSecondaryText,
-  ListItemMeta,
-  CollapsibleList,
+  ListItemText,
   SimpleListItem,
 } from "@rmwc/list";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
+import { DateTime } from "luxon";
+import { useImmer } from "use-immer";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import firebase from "@s/firebase";
+import { selectAllDesigners } from "@s/main";
+import { selectUser } from "@s/user";
+import { userRoleIcons } from "@s/users/constants";
+import { User } from "@s/users/constructors";
+import type { UserType } from "@s/users/types";
+import { hasKey, iconObject, ordinal } from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserCardProps = {
@@ -35,6 +37,8 @@ type UserCardProps = {
   getUsers: () => void;
   user: UserType;
 };
+
+const roles = ["designer", "editor", "admin"] as const;
 
 export const UserCard = (props: UserCardProps) => {
   const device = useAppSelector(selectDevice);
@@ -44,35 +48,40 @@ export const UserCard = (props: UserCardProps) => {
   const allDesigners = useAppSelector(selectAllDesigners);
 
   const blankUser = new User();
-  const [user, setUser] = useState<UserType>(blankUser);
+  const [user, updateUser] = useImmer<UserType>(blankUser);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
 
+  const keyedUpdate = <T extends UserType, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
+    draft[key] = payload;
+  };
+
   useEffect(() => {
     if (props.user !== user) {
-      setUser(props.user);
+      updateUser(props.user);
       setEdited(false);
     }
   }, [props.user]);
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
-    setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleBlur = () => setFocused("");
+
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    if (hasKey(user, name)) {
+      updateUser(keyedUpdate(name, value));
+      setEdited(true);
+    }
   };
-  const handleBlur = () => {
-    setFocused("");
-  };
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser((user) => mergeObject(user, { [e.target.name]: e.target.value }));
+  const selectValue = <Key extends keyof UserType>(prop: Key, value: UserType[Key]) => {
+    updateUser(keyedUpdate(prop, value));
     setEdited(true);
   };
-  const selectValue = (prop: string, value: string | boolean) => {
-    setUser((user) => mergeObject(user, { [prop]: value }));
-    setEdited(true);
-  };
-  const toggleRole = (role: string) => {
-    if (hasKey(user, role)) {
-      setUser((user) => mergeObject(user, { [role]: !user[role] }));
+  const toggleRole = (role: typeof roles[number]) => {
+    if (roles.includes(role)) {
+      updateUser((user) => {
+        user[role] = !user[role];
+      });
       setEdited(true);
     }
   };
@@ -88,7 +97,11 @@ export const UserCard = (props: UserCardProps) => {
       admin: user.admin,
     }).then((result) => {
       setLoading(false);
-      if (result.data.editor === user.editor && result.data.admin === user.admin) {
+      if (
+        result.data.designer === user.designer &&
+        result.data.editor === user.editor &&
+        result.data.admin === user.admin
+      ) {
         queue.notify({ title: "Successfully edited user permissions." });
         props.getUsers();
       } else if (result.data.error) {
@@ -98,7 +111,7 @@ export const UserCard = (props: UserCardProps) => {
       }
     });
   };
-  const roles = ["designer", "editor", "admin"];
+
   const saveButton = loading ? (
     <CircularProgress />
   ) : (
@@ -185,7 +198,7 @@ export const UserCard = (props: UserCardProps) => {
             array={allDesigners}
             query={user.nickname}
             prop="nickname"
-            select={selectValue}
+            select={(prop, item) => hasKey(user, prop) && selectValue(prop, item)}
             minChars={2}
           />
         </MenuSurfaceAnchor>

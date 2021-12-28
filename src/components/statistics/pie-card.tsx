@@ -1,11 +1,25 @@
-import { useState, useContext, useEffect, useMemo, ReactNode, HTMLAttributes, DetailedHTMLProps } from "react";
+import { useState, useContext, useEffect, useMemo } from "react";
+import type { ReactNode, HTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
+import { Card } from "@rmwc/card";
+import { Checkbox } from "@rmwc/checkbox";
+import { Chip, ChipSet } from "@rmwc/chip";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
+import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { selectDevice } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { selectChartSettings, setStatisticsSunburstPackingChartSetting } from "@s/statistics";
 import { sunburstChildHasChildren } from "@s/statistics/functions";
-import { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
+import type { StatusDataObject, StatusDataObjectSunburstChild } from "@s/statistics/types";
 import {
   alphabeticalSortPropCurried,
   arrayIncludes,
@@ -14,19 +28,6 @@ import {
   objectKeys,
   pluralise,
 } from "@s/util/functions";
-import { Card } from "@rmwc/card";
-import { Checkbox } from "@rmwc/checkbox";
-import { Chip, ChipSet } from "@rmwc/chip";
-import { Typography } from "@rmwc/typography";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-  DataTableCell,
-} from "@rmwc/data-table";
 import { ResponsiveSunburst, ComputedDatum as SunburstDatum, DatumId, SunburstCustomLayerProps } from "@nivo/sunburst";
 import { ResponsiveCirclePacking, ComputedDatum as PackingDatum } from "@nivo/circle-packing";
 import { NivoThemeContext } from "@c/util/theme-provider";

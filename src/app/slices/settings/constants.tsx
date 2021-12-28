@@ -1,7 +1,7 @@
-import { IconPropT } from "@rmwc/types";
+import type { IconPropT } from "@rmwc/types";
 import { iconObject } from "@s/util/functions";
-import { ViewType } from "./types";
 import { GridView, ViewArray, ViewColumn, ViewList } from "@i";
+import type { ViewType } from "./types";
 
 /** All possible views. */
 

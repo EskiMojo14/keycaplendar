@@ -1,3 +1,4 @@
+import produce from "immer";
 import { debounce } from "lodash";
 import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
@@ -6,21 +7,49 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
-import { typedFirestore } from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
+import firestore from "@s/firebase/firestore";
+import type { UserId } from "@s/firebase/types";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
   alphabeticalSortProp,
+  alphabeticalSortPropCurried,
   arrayIncludes,
   hasKey,
   normalise,
   objectKeys,
-  replaceFunction,
   removeDuplicates,
-  alphabeticalSortPropCurried,
+  replaceFunction,
 } from "@s/util/functions";
+import {
+  mergeWhitelist,
+  selectAllRegions,
+  selectAllSets,
+  selectAppPresets,
+  selectCurrentPreset,
+  selectDefaultPreset,
+  selectFilteredSets,
+  selectLinkedFavorites,
+  selectSearch,
+  selectSetGroups,
+  selectSort,
+  selectSortOrder,
+  selectURLWhitelist,
+  selectWhitelist,
+  setAppPresets,
+  setContent,
+  setCurrentPreset,
+  setDefaultPreset,
+  setList,
+  setLoading,
+  setSearch as setMainSearch,
+  setSort as setMainSort,
+  setSortOrder as setMainSortOrder,
+  setSetGroups,
+  setSetList,
+  setURLWhitelist,
+} from ".";
 import {
   allSorts,
   arraySorts,
@@ -33,35 +62,7 @@ import {
   whitelistParams,
 } from "./constants";
 import { Preset, Whitelist } from "./constructors";
-import {
-  setContent,
-  setCurrentPreset,
-  setDefaultPreset,
-  setList,
-  setLoading,
-  setSetGroups,
-  setSetList,
-  setSort as setMainSort,
-  setSortOrder as setMainSortOrder,
-  setSearch as setMainSearch,
-  mergeWhitelist,
-  setAppPresets,
-  setURLWhitelist,
-  selectAllSets,
-  selectSort,
-  selectSortOrder,
-  selectSearch,
-  selectWhitelist,
-  selectSetGroups,
-  selectFilteredSets,
-  selectAppPresets,
-  selectLinkedFavorites,
-  selectCurrentPreset,
-  selectURLWhitelist,
-  selectAllRegions,
-  selectDefaultPreset,
-} from ".";
-import {
+import type {
   OldPresetType,
   PresetType,
   SetGroup,
@@ -71,7 +72,6 @@ import {
   VendorType,
   WhitelistType,
 } from "./types";
-import produce from "immer";
 
 const { dispatch } = store;
 
@@ -119,13 +119,13 @@ export const pageConditions = (
 
 export const getSetById = (id: string, state = store.getState()) => {
   const allSets = selectAllSets(state);
-  const index = allSets.findIndex((set) => set.id === id);
-  return index > -1 ? allSets[index] : null;
+  const set = allSets.find((set) => set.id === id);
+  return set ?? null;
 };
 
 export const getData = () => {
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("keysets")
     .get()
     .then((querySnapshot) => {
@@ -153,7 +153,7 @@ export const getData = () => {
 
       alphabeticalSortProp(sets, "colorway");
 
-      dispatch(setSetList({ name: "allSets", array: sets }));
+      dispatch(setSetList("allSets", sets));
 
       filterData(store.getState());
       generateLists(store.getState());
@@ -186,11 +186,11 @@ export const testSets = (state = store.getState()) => {
   sets.forEach((set) => {
     Object.keys(set).forEach((key) => {
       if (hasKey(set, key)) {
-        const value = set[key];
+        const { [key]: value } = set;
         if (is<string>(value)) {
           testValue(set, key, value);
         } else if (is<any[]>(value)) {
-          value.forEach((item: string | VendorType) => {
+          value.forEach((item: VendorType | string) => {
             if (is<string>(item)) {
               testValue(set, key, item);
             } else if (is<VendorType>(item)) {
@@ -261,7 +261,7 @@ const generateLists = (state = store.getState()) => {
   } as const;
 
   objectKeys(lists).forEach((key) => {
-    dispatch(setList({ name: key, array: lists[key] }));
+    dispatch(setList(key, lists[key]));
   });
 
   const params = new URLSearchParams(window.location.search);
@@ -276,7 +276,10 @@ const generateLists = (state = store.getState()) => {
     const defaultParams = ["profiles", "regions"] as const;
     defaultParams.forEach((param) => {
       if (!urlParams.includes(param)) {
-        partialWhitelist[param] = defaultPreset.whitelist[param];
+        const {
+          whitelist: { [param]: defaultParam },
+        } = defaultPreset;
+        partialWhitelist[param] = defaultParam;
       }
     });
     setWhitelistMerge(partialWhitelist, false);
@@ -372,7 +375,7 @@ export const filterData = (state = store.getState()) => {
 
   const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
 
-  dispatch(setSetList({ name: "filteredSets", array: filteredSets }));
+  dispatch(setSetList("filteredSets", filteredSets));
 
   createGroups(store.getState());
 
@@ -387,9 +390,7 @@ const sortData = (state = store.getState()) => {
   const sortOrder = selectSortOrder(state);
   const groups = selectSetGroups(state);
   const sortedGroups = produce(groups, (groupsDraft) => {
-    groupsDraft.sort((x, y) => {
-      const a = x.title;
-      const b = y.title;
+    groupsDraft.sort(({ title: a }, { title: b }) => {
       if (arrayIncludes(dateSorts, sort)) {
         const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
         const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
@@ -444,7 +445,7 @@ const createGroups = (state = store.getState()) => {
     const filteredSets = sets.filter((set) => {
       if (hasKey(set, sort) || sort === "vendor") {
         if (arrayIncludes(dateSorts, sort)) {
-          const val = set[sort];
+          const { [sort]: val } = set;
           const setDate = DateTime.fromISO(val, { zone: "utc" });
           const setMonth = setDate.toFormat("MMMM yyyy");
           return setMonth && setMonth === group;
@@ -470,9 +471,9 @@ const createGroups = (state = store.getState()) => {
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
       const nameSort = alphabeticalSortCurried()(aName, bName);
       if (arrayIncludes(dateSorts, prop)) {
-        const aProp = a[prop];
+        const { [prop]: aProp } = a;
         const aDate = aProp && !aProp.includes("Q") ? DateTime.fromISO(aProp, { zone: "utc" }) : null;
-        const bProp = b[prop];
+        const { [prop]: bProp } = b;
         const bDate = bProp && !bProp.includes("Q") ? DateTime.fromISO(bProp, { zone: "utc" }) : null;
         const returnVal = order === "ascending" ? 1 : -1;
         if (aDate && bDate) {
@@ -593,7 +594,7 @@ export const setWhitelistMerge = (
             if (page && arrayIncludes(allPages, page)) {
               window.history.pushState(
                 {
-                  page: page,
+                  page,
                 },
                 "KeycapLendar: " + pageTitle[page],
                 "?" + params.toString()
@@ -638,7 +639,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(
             if (page && arrayIncludes(allPages, page)) {
               window.history.pushState(
                 {
-                  page: page,
+                  page,
                 },
                 "KeycapLendar: " + pageTitle[page],
                 "?" + params.toString()
@@ -736,7 +737,7 @@ export const syncPresets = (state = store.getState()) => {
     presetsDraft.sort(alphabeticalSortPropCurried("name", false, "Default"));
     return presetsDraft.map((preset) => ({ ...preset }));
   });
-  typedFirestore
+  firestore
     .collection("users")
     .doc(user.id as UserId)
     .set({ filterPresets: sortedPresets }, { merge: true })
@@ -789,7 +790,7 @@ export const syncGlobalPresets = (state = store.getState()) => {
   const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
     ...preset,
   }));
-  typedFirestore
+  firestore
     .collection("app")
     .doc("globals")
     .set({ filterPresets: sortedPresets }, { merge: true })

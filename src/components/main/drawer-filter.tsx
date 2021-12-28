@@ -1,9 +1,20 @@
-import { useState, useEffect, ChangeEvent } from "react";
-import isEqual from "lodash.isequal";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import { Button } from "@rmwc/button";
+import { Chip, ChipSet } from "@rmwc/chip";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
+import { Icon } from "@rmwc/icon";
+import { IconButton } from "@rmwc/icon-button";
+import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
+import { Select } from "@rmwc/select";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
+import isEqual from "lodash.isequal";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
 import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice, selectPage } from "@s/common";
 import {
   selectAllProfiles,
@@ -16,20 +27,10 @@ import {
 import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
+import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
 import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";
-import { Button } from "@rmwc/button";
-import { ChipSet, Chip } from "@rmwc/chip";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { Icon } from "@rmwc/icon";
-import { IconButton } from "@rmwc/icon-button";
-import { CollapsibleList, ListItem, ListItemMeta } from "@rmwc/list";
-import { Select } from "@rmwc/select";
-import { Typography } from "@rmwc/typography";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/hocs";
 import {
   Favorite,
   FilterEdit,
@@ -72,8 +73,10 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { edited, ...whitelist } = mainWhitelist;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { edited: presetEdited, ...presetWhitelist } = preset.whitelist;
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      whitelist: { edited: presetEdited, ...presetWhitelist },
+    } = preset;
     const equal = isEqual(presetWhitelist, whitelist);
     setModified(!equal);
   }, [preset.whitelist, mainWhitelist]);
@@ -117,12 +120,12 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const handleChange = (name: string, prop: string) => {
     if (hasKey(mainWhitelist, prop)) {
-      const original = mainWhitelist[prop];
+      const { [prop]: original } = mainWhitelist;
       let edited = original;
       if (is<boolean>(original)) {
         edited = !original;
       } else if (is<string[]>(original)) {
-        edited = alphabeticalSort(addOrRemove(original, name));
+        edited = alphabeticalSort(addOrRemove([...original], name));
       } else if (original === "include" || original === "exclude") {
         edited = original === "include" ? "exclude" : "include";
       } else if (name === "unhidden" || name === "hidden" || name === "all") {
@@ -134,7 +137,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const checkAll = (prop: string) => {
     if (hasKey(lists, prop)) {
-      const all = lists[prop];
+      const { [prop]: all } = lists;
       setWhitelist(prop, all);
     } else if (prop === "shipped") {
       setWhitelist(prop, [...whitelistShipped]);
@@ -151,7 +154,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
 
   const invertAll = (prop: string) => {
     if (hasKey(lists, prop)) {
-      const all = lists[prop];
+      const { [prop]: all } = lists;
       const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
       setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
@@ -164,15 +167,13 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
     const params = new URLSearchParams(window.location.search);
     whitelistParams.forEach((param) => {
       if (param === "profile" || param === "region" || param === "vendor") {
-        const plural = param + "s";
+        const plural = `${param}s` as const;
         const whitelist = mainWhitelist;
-        if (hasKey(whitelist, plural)) {
-          const array = whitelist[plural];
-          if (is<string[]>(array) && array.length === 1) {
-            params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
-          } else {
-            params.delete(param);
-          }
+        const { [plural]: array } = whitelist;
+        if (is<string[]>(array) && array.length === 1) {
+          params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
+        } else {
+          params.delete(param);
         }
       } else if (param === "vendorMode") {
         if (mainWhitelist.vendorMode !== "exclude") {
@@ -427,7 +428,7 @@ export const DrawerFilter = (props: DrawerFilterProps) => {
                   ]
             }
             onChange={selectPresetFn}
-            className={classNames({ modified: modified })}
+            className={classNames({ modified })}
             disabled={[...appPresets, ...userPresets].length === 1}
           />
           {userPresetOptions}

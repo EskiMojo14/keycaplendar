@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { GuideEntryType } from "./types";
+import type { GuideEntryType } from "./types";
 
 type UpdatesState = {
   loading: boolean;
@@ -26,25 +27,27 @@ export const guidesSlice = createSlice({
   name: "guides",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setEntries: (state, action: PayloadAction<GuideEntryType[]>) => {
-      state.entries = action.payload;
+    setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
+      state.entries = payload;
     },
-    setURLEntry: (state, action: PayloadAction<string>) => {
-      state.urlEntry = action.payload;
+    setURLEntry: (state, { payload }: PayloadAction<string>) => {
+      state.urlEntry = payload;
     },
-    setAllTags: (state, action: PayloadAction<string[]>) => {
-      state.allTags = action.payload;
+    setAllTags: (state, { payload }: PayloadAction<string[]>) => {
+      state.allTags = payload;
     },
-    setFilteredTag: (state, action: PayloadAction<string>) => {
-      state.filteredTag = action.payload;
+    setFilteredTag: (state, { payload }: PayloadAction<string>) => {
+      state.filteredTag = payload;
     },
   },
 });
 
-export const { setLoading, setEntries, setURLEntry, setAllTags, setFilteredTag } = guidesSlice.actions;
+export const {
+  actions: { setLoading, setEntries, setURLEntry, setAllTags, setFilteredTag },
+} = guidesSlice;
 
 export const selectLoading = (state: RootState) => state.guides.loading;
 

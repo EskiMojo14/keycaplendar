@@ -1,19 +1,24 @@
-import { useState, useEffect, HTMLProps } from "react";
+import { useEffect, useState } from "react";
+import type { HTMLProps } from "react";
+import { KeyboardTimePicker } from "@material-ui/pickers";
+import type { KeyboardTimePickerProps } from "@material-ui/pickers";
+import { Button } from "@rmwc/button";
+import { Dialog, DialogActions, DialogButton } from "@rmwc/dialog";
+import type { DialogProps } from "@rmwc/dialog";
+import { IconButton } from "@rmwc/icon-button";
+import { MenuSurface, MenuSurfaceAnchor } from "@rmwc/menu";
+import type { MenuHTMLProps, MenuSurfaceProps } from "@rmwc/menu";
+import { TextField } from "@rmwc/textfield";
+import type { TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bem-helper";
 import { capitalise, iconObject } from "@s/util/functions";
-import { Common, Overwrite } from "@s/util/types";
-import { Dialog, DialogActions, DialogButton, DialogProps } from "@rmwc/dialog";
-import { Button } from "@rmwc/button";
-import { IconButton } from "@rmwc/icon-button";
-import { MenuSurface, MenuSurfaceAnchor, MenuSurfaceProps, MenuHTMLProps } from "@rmwc/menu";
-import { TextField, TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
-import { KeyboardTimePicker, KeyboardTimePickerProps } from "@material-ui/pickers";
-import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/hocs";
+import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
 import "./pickers.scss";
 
@@ -50,17 +55,17 @@ export const invalidTime = (date: string, required?: boolean): string | false =>
 };
 
 export type TimePickerProps = Overwrite<
-  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "helpText">,
+  Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
-      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & HTMLProps<HTMLElement>>,
-      "open" | "anchorCorner" | "renderToPortal"
+      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardTimePickerProps, "value" | "onChange" | "orientation" | "variant">;
+    pickerProps?: Omit<KeyboardTimePickerProps, "onChange" | "orientation" | "value" | "variant">;
     showNowButton?: boolean;
     saveOnClose?: boolean;
   }
@@ -89,8 +94,8 @@ export const TimePicker = ({
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
   const rifm = useRifm({
-    value: value,
-    onChange: onChange,
+    value,
+    onChange,
     accept: /\d:/g,
     format: formatTime,
   });

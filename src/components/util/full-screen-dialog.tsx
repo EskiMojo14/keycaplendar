@@ -1,6 +1,7 @@
-import { useState, useEffect, HTMLAttributes } from "react";
-import BEMHelper from "@s/common/bem-helper";
+import { useEffect, useState } from "react";
+import type { HTMLAttributes } from "react";
 import { TopAppBar, TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
+import BEMHelper from "@s/common/bem-helper";
 import "./full-screen-dialog.scss";
 
 const bemClasses = new BEMHelper("full-screen-dialog");
@@ -53,10 +54,10 @@ export const FullScreenDialog = (props: FullScreenDialogProps) => {
         {...filteredProps}
         className={bemClasses({
           modifiers: {
-            open: open,
-            opening: opening,
-            closing: closing,
-            animate: animate,
+            open,
+            opening,
+            closing,
+            animate,
           },
           extra: props.className,
         })}

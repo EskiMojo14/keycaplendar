@@ -1,4 +1,4 @@
-import { userRoles } from "./constants";
+import type { userRoles } from "./constants";
 
 export type UserType = {
   admin: boolean;

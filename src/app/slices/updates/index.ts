@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { UpdateEntryType } from "./types";
+import type { UpdateEntryType } from "./types";
 
 type UpdatesState = {
   loading: boolean;
@@ -20,19 +21,21 @@ export const updatesSlice = createSlice({
   name: "updates",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setEntries: (state, action: PayloadAction<UpdateEntryType[]>) => {
-      state.entries = action.payload;
+    setEntries: (state, { payload }: PayloadAction<UpdateEntryType[]>) => {
+      state.entries = payload;
     },
-    setURLEntry: (state, action: PayloadAction<string>) => {
-      state.urlEntry = action.payload;
+    setURLEntry: (state, { payload }: PayloadAction<string>) => {
+      state.urlEntry = payload;
     },
   },
 });
 
-export const { setLoading, setEntries, setURLEntry } = updatesSlice.actions;
+export const {
+  actions: { setLoading, setEntries, setURLEntry },
+} = updatesSlice;
 
 export const selectLoading = (state: RootState) => state.updates.loading;
 

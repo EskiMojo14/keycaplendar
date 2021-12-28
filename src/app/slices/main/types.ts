@@ -1,5 +1,5 @@
-import { allSorts } from "./constants";
-import { Overwrite } from "@s/util/types";
+import type { Overwrite } from "@s/util/types";
+import type { allSorts } from "./constants";
 
 /** Possible values for sort types. */
 
@@ -11,7 +11,7 @@ export type SortOrderType = "ascending" | "descending";
 
 /** Sort params which are dates. */
 
-export type DateSortKeys = "icDate" | "gbLaunch" | "gbEnd";
+export type DateSortKeys = "gbEnd" | "gbLaunch" | "icDate";
 
 /** Sort params which are arrays. */
 
@@ -54,11 +54,11 @@ export type WhitelistType = {
   /** Array of allowed profiles. */
   profiles: string[];
   /** Array of allowed shipped values. */
-  shipped: ("Shipped" | "Not shipped")[];
+  shipped: ("Not shipped" | "Shipped")[];
   /** Regions to include. */
   regions: string[];
   /** Whether to `include` or `exclude` the specified `vendors`. */
-  vendorMode: "include" | "exclude";
+  vendorMode: "exclude" | "include";
   /** Array of vendors to either `include` or `exclude`. */
   vendors: string[];
   /** Array of all keys that have been edited. */
@@ -68,7 +68,7 @@ export type WhitelistType = {
   /** Whether to filter to only bought sets. */
   bought: boolean;
   /** Whether to filter to only hidden sets, unhidden sets, or show all. */
-  hidden: "unhidden" | "hidden" | "all";
+  hidden: "all" | "hidden" | "unhidden";
 };
 
 export type PresetType = {
@@ -86,7 +86,7 @@ export type OldPresetType = Overwrite<
       {
         regions?: string[];
         bought?: boolean;
-        hidden: boolean | "hidden" | "unhidden" | "all";
+        hidden: boolean | "all" | "hidden" | "unhidden";
       }
     >;
   }

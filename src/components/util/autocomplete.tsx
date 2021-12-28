@@ -1,9 +1,9 @@
-import { HTMLAttributes } from "react";
-import reactStringReplace from "react-string-replace";
-import classNames from "classnames";
-import BEMHelper from "@s/common/bem-helper";
+import type { HTMLAttributes } from "react";
 import { List, ListItem } from "@rmwc/list";
 import { Menu, MenuItem } from "@rmwc/menu";
+import classNames from "classnames";
+import reactStringReplace from "react-string-replace";
+import BEMHelper from "@s/common/bem-helper";
 import "./autocomplete.scss";
 
 type AutocompleteProps = HTMLAttributes<HTMLElement> & {
@@ -19,7 +19,7 @@ type AutocompleteProps = HTMLAttributes<HTMLElement> & {
 export const Autocomplete = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
   const splitQuery = query.split(", ");
-  const lastItem = splitQuery[splitQuery.length - 1];
+  const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   const firstFour = matchingItems.slice(0, 4);
@@ -71,11 +71,11 @@ const bemClasses = new BEMHelper("autocomplete-mobile");
 export const AutocompleteMobile = (props: AutocompleteProps) => {
   const { array, className, minChars, open, prop, query, listSplit, select, ...filteredProps } = props;
   const splitQuery = query.split(", ");
-  const lastItem = splitQuery[splitQuery.length - 1];
+  const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
   const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
   return (
-    <div {...filteredProps} className={bemClasses({ modifiers: { open: open }, extra: className })}>
+    <div {...filteredProps} className={bemClasses({ modifiers: { open }, extra: className })}>
       <List>
         {useQuery.length >= minChars
           ? matchingItems.map((item) => (

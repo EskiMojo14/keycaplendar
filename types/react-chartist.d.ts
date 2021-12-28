@@ -1,12 +1,12 @@
 declare module "react-chartist" {
   import { ComponentType, CSSProperties } from "react";
   import {
-    IChartOptions,
     IBarChartOptions,
+    IChartistData,
+    IChartOptions,
     ILineChartOptions,
     IPieChartOptions,
     IResponsiveOptionTuple,
-    IChartistData,
   } from "chartist";
 
   type ChartProps<ChartType extends string, Options extends IChartOptions> = {
@@ -14,7 +14,7 @@ declare module "react-chartist" {
     data: IChartistData;
 
     options?: Options;
-    responsiveOptions?: Array<IResponsiveOptionTuple<Options>>;
+    responsiveOptions?: IResponsiveOptionTuple<Options>[];
     listener?: Record<string, (...args: any[]) => any>;
 
     className?: string;

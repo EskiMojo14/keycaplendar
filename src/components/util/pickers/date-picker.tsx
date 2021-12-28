@@ -1,19 +1,24 @@
-import { useState, useEffect, HTMLProps } from "react";
+import { useEffect, useState } from "react";
+import type { HTMLProps } from "react";
+import { KeyboardDatePicker } from "@material-ui/pickers";
+import type { KeyboardDatePickerProps } from "@material-ui/pickers";
+import { Button } from "@rmwc/button";
+import { Dialog, DialogActions, DialogButton } from "@rmwc/dialog";
+import type { DialogProps } from "@rmwc/dialog";
+import { IconButton } from "@rmwc/icon-button";
+import { MenuSurface, MenuSurfaceAnchor } from "@rmwc/menu";
+import type { MenuHTMLProps, MenuSurfaceProps } from "@rmwc/menu";
+import { TextField } from "@rmwc/textfield";
+import type { TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
 import { DateTime } from "luxon";
 import { useRifm } from "rifm";
 import { useAppSelector } from "~/app/hooks";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectOrientation } from "@s/common";
 import BEMHelper from "@s/common/bem-helper";
 import { capitalise, iconObject } from "@s/util/functions";
-import { Common, Overwrite } from "@s/util/types";
-import { Dialog, DialogActions, DialogButton, DialogProps } from "@rmwc/dialog";
-import { Button } from "@rmwc/button";
-import { IconButton } from "@rmwc/icon-button";
-import { MenuSurface, MenuSurfaceAnchor, MenuSurfaceProps, MenuHTMLProps } from "@rmwc/menu";
-import { TextField, TextFieldHelperTextProps, TextFieldHTMLProps, TextFieldProps } from "@rmwc/textfield";
-import { KeyboardDatePicker, KeyboardDatePickerProps } from "@material-ui/pickers";
-import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/hocs";
+import type { Common, Overwrite } from "@s/util/types";
 import { Event } from "@i";
 import "./pickers.scss";
 
@@ -50,7 +55,7 @@ export const invalidDate = (
   allowQuarter = false,
   disableFuture = false
 ): string | false => {
-  const luxonExplanation = DateTime.fromISO(date).invalidExplanation;
+  const { invalidExplanation: luxonExplanation } = DateTime.fromISO(date);
   if (allowQuarter && /^Q[1-4]{1} \d{4}$/.test(date)) {
     // allow Q1-4 YYYY if quarters are allowed.
     return false;
@@ -68,17 +73,17 @@ export const invalidDate = (
 };
 
 export type DatePickerProps = Overwrite<
-  Omit<TextFieldProps & TextFieldHTMLProps, "onFocus" | "onBlur" | "helpText">,
+  Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
     value: string;
     fallbackValue?: string;
     onChange: (val: string) => void;
     helpTextProps?: TextFieldHelperTextProps;
     modalProps?: Omit<
-      Common<MenuSurfaceProps & MenuHTMLProps, DialogProps & HTMLProps<HTMLElement>>,
-      "open" | "anchorCorner" | "renderToPortal"
+      Common<MenuHTMLProps & MenuSurfaceProps, DialogProps & HTMLProps<HTMLElement>>,
+      "anchorCorner" | "open" | "renderToPortal"
     >;
-    pickerProps?: Omit<KeyboardDatePickerProps, "value" | "onChange" | "orientation" | "variant" | "views">;
+    pickerProps?: Omit<KeyboardDatePickerProps, "onChange" | "orientation" | "value" | "variant" | "views">;
     month?: boolean;
     allowQuarter?: boolean;
     showNowButton?: boolean;
@@ -123,8 +128,8 @@ export const DatePicker = ({
         .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
 
   const rifm = useRifm({
-    value: value,
-    onChange: onChange,
+    value,
+    onChange,
     accept: allowQuarter ? /\d|\s|Q/g : /\d/g,
     format: formatDateWithAppend(month, allowQuarter),
   });

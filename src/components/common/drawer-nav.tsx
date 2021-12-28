@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
+import { IconButton } from "@rmwc/icon-button";
+import { CollapsibleList, List, ListDivider, ListItem, ListItemGraphic, ListItemMeta } from "@rmwc/list";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
-import { typedFirestore } from "@s/firebase/firestore";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
 import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/common/constants";
 import { setPage as setMainPage } from "@s/common/functions";
-import { Page } from "@s/common/types";
+import type { Page } from "@s/common/types";
+import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
 import { selectBottomNav } from "@s/settings";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
 import { hasKey, iconObject } from "@s/util/functions";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { List, ListItem, ListItemGraphic, ListItemMeta, ListDivider, CollapsibleList } from "@rmwc/list";
-import { IconButton } from "@rmwc/icon-button";
-import { Typography } from "@rmwc/typography";
 import { AdminPanelSettings, FiberNew, Person } from "@i";
 import logo from "@m/logo.svg";
 import "./drawer-nav.scss";
@@ -46,9 +46,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
     }
   };
 
-  const quantities: {
-    [key: string]: number;
-  } = {
+  const quantities: Record<string, number> = {
     favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.length : favorites.length,
     bought: bought.length,
     hidden: hidden.length,
@@ -58,7 +56,7 @@ export const DrawerNav = (props: DrawerNavProps) => {
 
   const checkForUpdates = () => {
     const lastWeek = DateTime.utc().minus({ days: 7 });
-    typedFirestore
+    firestore
       .collection("updates")
       .orderBy("date", "desc")
       .limit(1)

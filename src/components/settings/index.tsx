@@ -1,12 +1,37 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import firebase from "@s/firebase";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import { Avatar } from "@rmwc/avatar";
+import { Badge, BadgeAnchor } from "@rmwc/badge";
+import { Button } from "@rmwc/button";
+import { Card } from "@rmwc/card";
+import { CircularProgress } from "@rmwc/circular-progress";
+import { FormField } from "@rmwc/formfield";
+import { Icon } from "@rmwc/icon";
+import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import { Radio } from "@rmwc/radio";
+import { Select } from "@rmwc/select";
+import { Switch } from "@rmwc/switch";
+import { TextField } from "@rmwc/textfield";
+import {
+  TopAppBar,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
+import type { IconOptions } from "@rmwc/types";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { IconOptions } from "@rmwc/types";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
+import { Footer } from "@c/common/footer";
+import { TimePicker } from "@c/util/pickers/time-picker";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import {
   selectBottomNav,
   selectSettings,
@@ -26,33 +51,9 @@ import {
   setToTimeTheme,
 } from "@s/settings/functions";
 import { selectShareName, selectUser, setUser } from "@s/user";
-import { userRoleIcons } from "@s/users/constants";
 import { debouncedSyncShareName } from "@s/user/functions";
+import { userRoleIcons } from "@s/users/constants";
 import { useBoolStates } from "@s/util/functions";
-import { Avatar } from "@rmwc/avatar";
-import { Badge, BadgeAnchor } from "@rmwc/badge";
-import { Button } from "@rmwc/button";
-import { Card } from "@rmwc/card";
-import { CircularProgress } from "@rmwc/circular-progress";
-import { FormField } from "@rmwc/formfield";
-import { Icon } from "@rmwc/icon";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
-import { Radio } from "@rmwc/radio";
-import { Select } from "@rmwc/select";
-import { Switch } from "@rmwc/switch";
-import { TextField } from "@rmwc/textfield";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
-  TopAppBarFixedAdjust,
-} from "@rmwc/top-app-bar";
-import { Typography } from "@rmwc/typography";
-import { Footer } from "@c/common/footer";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { TimePicker } from "@c/util/pickers/time-picker";
 import { DialogDelete } from "./dialog-delete";
 import "./index.scss";
 
@@ -86,9 +87,7 @@ export const ContentSettings = (props: ContentSettingsProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));

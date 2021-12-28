@@ -1,34 +1,38 @@
-import { is } from "typescript-is";
 import throttle from "lodash.throttle";
-import { typedFirestore } from "@s/firebase/firestore";
-import store from "~/app/store";
+import { is } from "typescript-is";
 import { queue } from "~/app/snackbar-queue";
-import { setAppPage, setDevice, setOrientation } from ".";
-import { mainPages, pageTitle, urlPages } from "./constants";
-import { Page } from "./types";
-import { setURLEntry as setURLGuide } from "@s/guides";
+import store from "~/app/store";
+import firestore from "@s/firebase/firestore";
+import { selectURLEntry as selectURLGuide, setURLEntry as setURLGuide } from "@s/guides";
 import { setHistoryTab } from "@s/history/functions";
-import { HistoryTab } from "@s/history/types";
+import type { HistoryTab } from "@s/history/types";
 import {
+  selectDefaultPreset,
+  selectLinkedFavorites,
+  selectLoading,
+  selectURLSet,
+  setAppPresets,
+  setCurrentPreset,
+  setLinkedFavorites,
+  setSearch as setMainSearch,
   setSort as setMainSort,
   setSortOrder as setMainSortOrder,
-  setSearch as setMainSearch,
-  setAppPresets,
   setTransition,
   setURLSet,
-  setLinkedFavorites,
   setURLWhitelist,
-  selectDefaultPreset,
-  setCurrentPreset,
 } from "@s/main";
-import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams, whitelistShipped } from "@s/main/constants";
+import { allSorts, pageSort, pageSortOrder, sortBlacklist, whitelistParams } from "@s/main/constants";
+import type { whitelistShipped } from "@s/main/constants";
 import { filterData, getData, setWhitelistMerge, updatePreset } from "@s/main/functions";
-import { WhitelistType } from "@s/main/types";
+import type { WhitelistType } from "@s/main/types";
 import { setStatisticsTab } from "@s/statistics/functions";
-import { StatsTab } from "@s/statistics/types";
-import { setURLEntry as setURLUpdate } from "@s/updates";
+import type { StatsTab } from "@s/statistics/types";
+import { selectURLEntry as selectURLUpdate, setURLEntry as setURLUpdate } from "@s/updates";
 import { getLinkedFavorites } from "@s/user/functions";
 import { arrayIncludes } from "@s/util/functions";
+import { selectPage, setAppPage, setDevice, setOrientation } from ".";
+import { mainPages, pageTitle, urlPages } from "./constants";
+import type { Page } from "./types";
 
 const { dispatch } = store;
 
@@ -181,32 +185,17 @@ export const getURLQuery = (state = store.getState()) => {
   if (params.has("keysetId")) {
     const keysetId = params.get("keysetId");
     if (keysetId) {
-      dispatch(
-        setURLSet({
-          prop: "id",
-          value: keysetId,
-        })
-      );
+      dispatch(setURLSet("id", keysetId));
     }
   } else if (params.has("keysetAlias")) {
     const keysetAlias = params.get("keysetAlias");
     if (keysetAlias) {
-      dispatch(
-        setURLSet({
-          prop: "alias",
-          value: keysetAlias,
-        })
-      );
+      dispatch(setURLSet("alias", keysetAlias));
     }
   } else if (params.has("keysetName")) {
     const keysetName = params.get("keysetName");
     if (keysetName) {
-      dispatch(
-        setURLSet({
-          prop: "name",
-          value: keysetName,
-        })
-      );
+      dispatch(setURLSet("name", keysetName));
     }
   }
   if (params.has("statisticsTab")) {
@@ -243,7 +232,7 @@ export const getURLQuery = (state = store.getState()) => {
 };
 
 export const getGlobals = () => {
-  typedFirestore
+  firestore
     .collection("app")
     .doc("globals")
     .get()
@@ -264,12 +253,12 @@ export const getGlobals = () => {
 };
 
 export const setPage = (page: Page, state = store.getState()) => {
-  const {
-    common: { page: appPage },
-    main: { loading, urlSet, linkedFavorites },
-    guides: { urlEntry: urlGuide },
-    updates: { urlEntry: urlUpdate },
-  } = state;
+  const appPage = selectPage(state);
+  const loading = selectLoading(state);
+  const urlSet = selectURLSet(state);
+  const linkedFavorites = selectLinkedFavorites(state);
+  const urlGuide = selectURLGuide(state);
+  const urlUpdate = selectURLUpdate(state);
   if (page !== appPage && !loading && is<Page>(page)) {
     dispatch(setTransition(true));
     setTimeout(() => {
@@ -295,12 +284,7 @@ export const setPage = (page: Page, state = store.getState()) => {
       }
     });
     if (urlSet.value) {
-      dispatch(
-        setURLSet({
-          prop: "id",
-          value: "",
-        })
-      );
+      dispatch(setURLSet("id", ""));
     }
     if (urlGuide) {
       dispatch(setURLGuide(""));
@@ -314,7 +298,7 @@ export const setPage = (page: Page, state = store.getState()) => {
     const urlParams = params.toString() ? "?" + params.toString() : "";
     window.history.pushState(
       {
-        page: page,
+        page,
       },
       "KeycapLendar: " + pageTitle[page],
       "/" + page + urlParams

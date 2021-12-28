@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { ActionType } from "./types";
+import type { ActionType } from "./types";
 
 type AuditState = {
   loading: boolean;
@@ -9,7 +10,7 @@ type AuditState = {
   filteredActions: ActionType[];
 
   users: string[];
-  filterAction: "none" | "created" | "updated" | "deleted";
+  filterAction: "created" | "deleted" | "none" | "updated";
   filterUser: string;
   length: number;
 };
@@ -30,39 +31,33 @@ export const auditSlice = createSlice({
   name: "audit",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setAllActions: (state, action: PayloadAction<ActionType[]>) => {
-      state.allActions = action.payload;
+    setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
+      state.allActions = payload;
     },
-    setFilteredActions: (state, action: PayloadAction<ActionType[]>) => {
-      state.filteredActions = action.payload;
+    setFilteredActions: (state, { payload }: PayloadAction<ActionType[]>) => {
+      state.filteredActions = payload;
     },
-    setFilterAction: (state, action: PayloadAction<"none" | "created" | "updated" | "deleted">) => {
-      state.filterAction = action.payload;
+    setFilterAction: (state, { payload }: PayloadAction<"created" | "deleted" | "none" | "updated">) => {
+      state.filterAction = payload;
     },
-    setFilterUser: (state, action: PayloadAction<string>) => {
-      state.filterUser = action.payload;
+    setFilterUser: (state, { payload }: PayloadAction<string>) => {
+      state.filterUser = payload;
     },
-    setLength: (state, action: PayloadAction<number>) => {
-      state.length = action.payload;
+    setLength: (state, { payload }: PayloadAction<number>) => {
+      state.length = payload;
     },
-    setUsers: (state, action: PayloadAction<string[]>) => {
-      state.users = action.payload;
+    setUsers: (state, { payload }: PayloadAction<string[]>) => {
+      state.users = payload;
     },
   },
 });
 
 export const {
-  setLoading,
-  setAllActions,
-  setFilteredActions,
-  setFilterAction,
-  setFilterUser,
-  setLength,
-  setUsers,
-} = auditSlice.actions;
+  actions: { setLoading, setAllActions, setFilteredActions, setFilterAction, setFilterUser, setLength, setUsers },
+} = auditSlice;
 
 export const selectLoading = (state: RootState) => state.audit.loading;
 

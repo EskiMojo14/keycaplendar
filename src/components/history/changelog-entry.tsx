@@ -1,32 +1,32 @@
-import { ReactNode } from "react";
-import { DateTime } from "luxon";
-import { is } from "typescript-is";
-import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
-import { ActionSetType } from "@s/audit/types";
-import { KeysetDoc } from "@s/firebase/types";
-import { ProcessedPublicActionType } from "@s/history/types";
-import { VendorType } from "@s/main/types";
-import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
+import type { ReactNode } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
+  DataTableBody,
+  DataTableCell,
   DataTableContent,
   DataTableHead,
-  DataTableRow,
   DataTableHeadCell,
-  DataTableCell,
-  DataTableBody,
+  DataTableRow,
 } from "@rmwc/data-table";
 import {
   CollapsibleList,
   ListItem,
   ListItemGraphic,
-  ListItemText,
+  ListItemMeta,
   ListItemPrimaryText,
   ListItemSecondaryText,
-  ListItemMeta,
+  ListItemText,
 } from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
+import { DateTime } from "luxon";
+import { is } from "typescript-is";
+import { auditProperties, auditPropertiesFormatted } from "@s/audit/constants";
+import type { ActionSetType } from "@s/audit/types";
+import type { KeysetDoc } from "@s/firebase/types";
+import type { ProcessedPublicActionType } from "@s/history/types";
+import type { VendorType } from "@s/main/types";
+import { arrayIncludes, hasKey, objectKeys, ordinal } from "@s/util/functions";
 import "./changelog-entry.scss";
 
 type ChangelogEntryProps = {
@@ -70,7 +70,9 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
         )
         .map((prop) => {
           if (dataObj.data) {
-            const useData = dataObj.data[prop];
+            const {
+              data: { [prop]: useData },
+            } = dataObj;
             let contents: ReactNode;
             if (is<string>(useData)) {
               const domain = useData.match(domainRegex);
@@ -161,8 +163,10 @@ export const ChangelogEntry = (props: ChangelogEntryProps) => {
     } else if (dataObj.before && dataObj.after) {
       return properties.map((prop) => {
         if (dataObj.before && dataObj.after && hasKey(dataObj.before, prop) && hasKey(dataObj.after, prop)) {
-          const beforeData = dataObj.before[prop];
-          const afterData = dataObj.after[prop];
+          const {
+            before: { [prop]: beforeData },
+            after: { [prop]: afterData },
+          } = dataObj;
           let contents: { before: ReactNode; after: ReactNode } = { before: null, after: null };
           if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);

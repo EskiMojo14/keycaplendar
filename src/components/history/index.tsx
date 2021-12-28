@@ -1,18 +1,4 @@
 import { useEffect, useState } from "react";
-import classNames from "classnames";
-import SwipeableViews from "react-swipeable-views";
-import { virtualize } from "react-swipeable-views-utils";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { pageTitle } from "@s/common/constants";
-import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
-import { historyTabs } from "@s/history/constants";
-import { generateSets, getData } from "@s/history/functions";
-import { RecentSet } from "@s/history/types";
-import { selectAllSets } from "@s/main";
-import { Keyset } from "@s/main/constructors";
-import { SetType } from "@s/main/types";
-import { selectBottomNav } from "@s/settings";
-import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/util/functions";
 import { Card } from "@rmwc/card";
 import { Chip } from "@rmwc/chip";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -20,18 +6,33 @@ import { List } from "@rmwc/list";
 import { Tab, TabBar } from "@rmwc/tabs";
 import {
   TopAppBar,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
   TopAppBarRow,
   TopAppBarSection,
-  TopAppBarNavigationIcon,
   TopAppBarTitle,
-  TopAppBarFixedAdjust,
 } from "@rmwc/top-app-bar";
+import classNames from "classnames";
+import SwipeableViews from "react-swipeable-views";
+import { virtualize } from "react-swipeable-views-utils";
+import type { SlideRendererCallback} from "react-swipeable-views-utils";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
+import { pageTitle } from "@s/common/constants";
+import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
+import { historyTabs } from "@s/history/constants";
+import { generateSets, getData } from "@s/history/functions";
+import type { RecentSet } from "@s/history/types";
+import { selectAllSets } from "@s/main";
+import { Keyset } from "@s/main/constructors";
+import type { SetType } from "@s/main/types";
+import { selectBottomNav } from "@s/settings";
+import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/util/functions";
+import { FilterVariantRemove } from "@i";
 import { ChangelogEntry } from "./changelog-entry";
 import { RecentSetCard } from "./recent-set-card";
-import { FilterVariantRemove } from "@i";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
@@ -140,9 +141,8 @@ export const ContentHistory = (props: ContentHistoryProps) => {
     dispatch(setTab(historyTabs[index]));
   };
 
-  const slideRenderer = (params: any) => {
-    const { key, index } = params;
-    const tab = historyTabs[index];
+  const slideRenderer: SlideRendererCallback = ({ key, index }) => {
+    const { [index]: tab } = historyTabs;
     const tabs = {
       recent: (
         <div className="history-tab recent recent-grid" key={key}>

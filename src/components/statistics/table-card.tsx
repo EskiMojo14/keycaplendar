@@ -1,30 +1,31 @@
-import { useState, useEffect, useContext, useMemo, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
+import type { ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { getTextColour } from "@s/common/functions";
 import { ThemeColorName } from "@s/common/types";
 import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
 import { filterLabels } from "@s/statistics/functions";
-import { Categories, CountDataObject } from "@s/statistics/types";
+import type { Categories, CountDataObject } from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import { NivoThemeContext } from "@c/util/theme-provider";
-import { Chip, ChipSet } from "@rmwc/chip";
 import { Card } from "@rmwc/card";
-import { Typography } from "@rmwc/typography";
+import { Chip, ChipSet } from "@rmwc/chip";
 import {
   DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
   DataTableBody,
   DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
 } from "@rmwc/data-table";
+import { Typography } from "@rmwc/typography";
 import { BarTooltipProps, ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
 import { BasicTooltip } from "@nivo/tooltip";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import "./table-card.scss";
 
 type TableCardProps = {

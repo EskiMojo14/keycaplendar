@@ -1,19 +1,20 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
-import { PresetType } from "@s/main/types";
-import { selectUser } from "@s/user";
-import { Checkbox } from "@rmwc/checkbox";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
-import { ChipSet, Chip } from "@rmwc/chip";
-import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
+import { Checkbox } from "@rmwc/checkbox";
+import { Chip, ChipSet } from "@rmwc/chip";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
+import { useAppSelector } from "~/app/hooks";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { selectDevice } from "@s/common";
+import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
+import type { PresetType } from "@s/main/types";
+import { selectUser } from "@s/user";
 import "./modal-filter-preset.scss";
 
 type ModalFilterPresetProps = {
@@ -34,9 +35,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
     setIsNew(!props.preset.name);
   }, [props.preset.name]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "name") {
       setName(value);
     }
@@ -46,7 +45,7 @@ export const ModalFilterPreset = (props: ModalFilterPresetProps) => {
     if (name) {
       const preset = {
         ...props.preset,
-        name: name,
+        name,
       };
       if (props.preset.global && user.isAdmin) {
         if (!props.preset.name) {

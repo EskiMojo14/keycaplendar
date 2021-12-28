@@ -1,22 +1,4 @@
 import { useState } from "react";
-import classNames from "classnames";
-import BEMHelper from "@s/common/bem-helper";
-import {
-  headerOneCommand,
-  headerTwoCommand,
-  headerThreeCommand,
-  headerFourCommand,
-  headerFiveCommand,
-  headerSixCommand,
-  insertTableCommand,
-  insertTableColumnAfter,
-} from "@s/common/markdown-commands";
-import { markdownIcons } from "@s/common/markdown-constants";
-import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";
-import ReactMarkdown, { ReactMarkdownOptions } from "react-markdown";
-import ReactMde, { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
-import { CommandMap } from "react-mde/lib/definitions/types";
-import gfm from "remark-gfm";
 import { Checkbox } from "@rmwc/checkbox";
 import {
   DataTable,
@@ -28,6 +10,26 @@ import {
   DataTableRow,
 } from "@rmwc/data-table";
 import { IconButton } from "@rmwc/icon-button";
+import classNames from "classnames";
+import ReactMarkdown from "react-markdown";
+import type { ReactMarkdownOptions } from "react-markdown";
+import ReactMde from "react-mde";
+import type { ChildProps, Classes, L18n, ReactMdeProps } from "react-mde";
+import type { CommandMap } from "react-mde/lib/definitions/types";
+import gfm from "remark-gfm";
+import BEMHelper from "@s/common/bem-helper";
+import {
+  headerFiveCommand,
+  headerFourCommand,
+  headerOneCommand,
+  headerSixCommand,
+  headerThreeCommand,
+  headerTwoCommand,
+  insertTableColumnAfter,
+  insertTableCommand,
+} from "@s/common/markdown-commands";
+import { markdownIcons } from "@s/common/markdown-constants";
+import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";
 import { SegmentedButton, SegmentedButtonSegment } from "./segmented-button";
 import "./react-markdown.scss";
 
@@ -67,7 +69,7 @@ const customComponents = {
   p: typographyBuilder("p", "body2"),
   li: typographyBuilder("li", "body2"),
   code: typographyBuilder("code", "body2"),
-  input: input,
+  input,
   table: dataTableContainer,
   thead: componentBuilder("thead", DataTableHead),
   tbody: componentBuilder("tbody", DataTableBody),
@@ -93,7 +95,7 @@ export const CustomReactMarkdown = (props: CustomReactMarkdownProps) => {
 };
 const bemClasses = new BEMHelper("markdown-editor");
 
-type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "selectedTab" | "onTabChange"> & {
+type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "onTabChange" | "selectedTab"> & {
   required?: boolean;
 };
 
@@ -119,7 +121,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
         ["insert-table", "column-after"],
         ["h1", "h2", "h3", "h4", "h5", "h6"],
       ];
-  const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
+  const [selectedTab, setSelectedTab] = useState<"preview" | "write">("write");
   const customTabButtons: L18n = {
     write: (
       <SegmentedButton toggle>
@@ -171,7 +173,7 @@ export const CustomReactMde = (props: CustomReactMdeProps) => {
         }
       },
       onInvalid: () => setInvalid(true),
-      required: required,
+      required,
     },
   };
   return (

@@ -1,4 +1,5 @@
-import { createContext, ReactNode } from "react";
+import { createContext } from "react";
+import type { ReactNode } from "react";
 import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import { Theme } from "@nivo/core";
 import { useAppSelector } from "~/app/hooks";

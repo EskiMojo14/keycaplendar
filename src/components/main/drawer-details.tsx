@@ -1,28 +1,29 @@
-import { useEffect, ReactNode } from "react";
-import Twemoji from "react-twemoji";
+import { useEffect } from "react";
+import type { ReactNode } from "react";
+import { Button } from "@rmwc/button";
+import { Chip, ChipSet } from "@rmwc/chip";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
+import { IconButton } from "@rmwc/icon-button";
+import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
+import Twemoji from "react-twemoji";
 import { is } from "typescript-is";
-import { queue } from "~/app/snackbar-queue";
 import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { mainPages } from "@s/common/constants";
 import { selectSearch } from "@s/main";
 import { setSearch } from "@s/main/functions";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
 import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
 import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "@s/util/functions";
-import { Button } from "@rmwc/button";
-import { Chip, ChipSet } from "@rmwc/chip";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
-import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText, ListItemMeta } from "@rmwc/list";
-import { Typography } from "@rmwc/typography";
-import { ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { withTooltip } from "@c/util/hocs";
 import {
   Delete,
   Edit,
@@ -96,7 +97,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
     set.image = "";
   }
   const today = DateTime.utc();
-  let gbLaunch: string | DateTime = "";
+  let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | null = null;
   let icDate: DateTime;
   let verb = "";
@@ -156,7 +157,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         });
       } else {
         if (hasKey(set, prop)) {
-          const val = set[prop];
+          const { [prop]: val } = set;
           if (val && Array.isArray(val)) {
             val.forEach((entry: any) => {
               if (is<string>(entry)) {
@@ -238,8 +239,7 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
         </List>
       </div>
     ) : null;
-  const edit = props.edit;
-  const deleteSet = props.delete;
+  const { edit, delete: deleteSet } = props;
   const editorButtons =
     (user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))) &&
     edit &&
@@ -297,10 +297,9 @@ export const DrawerDetails = (props: DrawerDetailsProps) => {
   const closeIcon = dismissible
     ? withTooltip(<IconButton className="close-icon" icon="close" onClick={props.close} />, "Close")
     : null;
-  const salesButton =
-    props.set.sales && props.set.sales.img ? (
-      <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
-    ) : null;
+  const salesButton = props.set.sales?.img ? (
+    <Button outlined label="Sales" icon="bar_chart" onClick={() => props.openSales(set)} />
+  ) : null;
   const notes = props.set.notes ? (
     <Typography use="caption" tag="p" className="multiline">
       {props.set.notes}

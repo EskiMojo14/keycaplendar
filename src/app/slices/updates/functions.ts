@@ -1,16 +1,16 @@
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { typedFirestore } from "@s/firebase/firestore";
-import { UpdateId } from "@s/firebase/types";
+import firestore from "@s/firebase/firestore";
+import type { UpdateId } from "@s/firebase/types";
 import { alphabeticalSortPropCurried } from "@s/util/functions";
 import { setEntries, setLoading } from ".";
-import { UpdateEntryType } from "./types";
+import type { UpdateEntryType } from "./types";
 
 const { dispatch } = store;
 
 export const getEntries = () => {
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("updates")
     .orderBy("date", "desc")
     .get()
@@ -32,14 +32,14 @@ export const getEntries = () => {
     });
 };
 
-const sortEntries = (entries: UpdateEntryType[]) => {
+export const sortEntries = (entries: UpdateEntryType[]) => {
   const sortedEntries = entries.sort((a, b) => {
     if ((a.pinned || b.pinned) && !(a.pinned && b.pinned)) {
       return a.pinned ? -1 : 1;
     }
     return (
-      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("date", true)(a, b) ||
-      alphabeticalSortPropCurried<UpdateEntryType, keyof UpdateEntryType>("title")(a, b)
+      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(a, b) ||
+      alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
     );
   });
   dispatch(setEntries(sortedEntries));
@@ -47,7 +47,7 @@ const sortEntries = (entries: UpdateEntryType[]) => {
 };
 
 export const pinEntry = (entry: UpdateEntryType) => {
-  typedFirestore
+  firestore
     .collection("updates")
     .doc(entry.id as UpdateId)
     .set({ pinned: !entry.pinned }, { merge: true })

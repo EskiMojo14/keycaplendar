@@ -1,8 +1,8 @@
-import emptyImg from "@m/empty.svg";
+import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
 import { selectPage } from "@s/common";
 import { selectFavorites, selectHidden } from "@s/user";
-import { Typography } from "@rmwc/typography";
+import emptyImg from "@m/empty.svg";
 import "./content-empty.scss";
 
 export const ContentEmpty = () => {

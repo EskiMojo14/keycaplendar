@@ -1,15 +1,15 @@
 import { DateTime } from "luxon";
-import { typedFirestore } from "@s/firebase/firestore";
-import { UserId } from "@s/firebase/types";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { selectCookies, selectSyncSettings, setCookies, setSettings, toggleLich } from ".";
-import { ViewType } from "./types";
 import { setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
-import { hasKey } from "@s/util/functions";
+import firestore from "@s/firebase/firestore";
+import type { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
+import { hasKey } from "@s/util/functions";
+import { selectCookies, selectSyncSettings, setCookies, setSetting, toggleLich } from ".";
+import type { ViewType } from "./types";
 
 const { dispatch } = store;
 
@@ -95,13 +95,13 @@ export const setView = (view: ViewType, write = true, state = store.getState()) 
     dispatch(setTransition(true));
     setTimeout(() => {
       document.documentElement.scrollTop = 0;
-      dispatch(setSettings({ view: view }));
+      dispatch(setSetting("view", view));
     }, 90);
     setTimeout(() => {
       dispatch(setTransition(true));
     }, 300);
   } else {
-    dispatch(setSettings({ view: view }));
+    dispatch(setSetting("view", view));
   }
   if (write) {
     syncSetting("view", view);
@@ -111,17 +111,18 @@ export const setView = (view: ViewType, write = true, state = store.getState()) 
 export const setSyncSettings = (bool: boolean, write = true, state = store.getState()) => {
   const { settings } = state;
   const user = selectUser(state);
-  dispatch(setSettings({ syncSettings: bool }));
+  dispatch(setSetting("syncSettings", bool));
   if (write) {
-    const settingsObject: { [key: string]: any } = {};
+    const settingsObject: Record<string, any> = {};
     if (bool) {
       Object.keys(settingFns).forEach((setting) => {
         if (hasKey(settings, setting)) {
-          settingsObject[setting] = settings[setting];
+          const { [setting]: settingVal } = settings;
+          settingsObject[setting] = settingVal;
         }
       });
     }
-    typedFirestore
+    firestore
       .collection("users")
       .doc(user.id as UserId)
       .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
@@ -136,9 +137,9 @@ export const syncSetting = (setting: string, value: any, state = store.getState(
   const user = selectUser(state);
   const syncSettings = selectSyncSettings(state);
   if (user.id && syncSettings) {
-    const userDocRef = typedFirestore.collection("users").doc(user.id as UserId);
+    const userDocRef = firestore.collection("users").doc(user.id as UserId);
     const sync = () => {
-      const settingObject: { [key: string]: any } = {};
+      const settingObject: Record<string, any> = {};
       settingObject[`settings.${setting}`] = value;
       userDocRef.update(settingObject).catch((error) => {
         console.log("Failed to sync settings: " + error);
@@ -188,16 +189,16 @@ export const checkTheme = (state = store.getState()) => {
   const { settings } = state;
   const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
   dispatch(setTheme(theme));
-  const html = document.documentElement;
+  const { documentElement: html } = document;
   html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
-    meta.setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--theme-meta"));
+    meta.setAttribute("content", getComputedStyle(html).getPropertyValue("--theme-meta"));
   }
 };
 
 export const setApplyTheme = (applyTheme: string, write = true) => {
-  dispatch(setSettings({ applyTheme: applyTheme }));
+  dispatch(setSetting("applyTheme", applyTheme));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("applyTheme", applyTheme);
@@ -205,7 +206,7 @@ export const setApplyTheme = (applyTheme: string, write = true) => {
 };
 
 export const setLightTheme = (theme: string, write = true) => {
-  dispatch(setSettings({ lightTheme: theme }));
+  dispatch(setSetting("lightTheme", theme));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("lightTheme", theme);
@@ -213,7 +214,7 @@ export const setLightTheme = (theme: string, write = true) => {
 };
 
 export const setDarkTheme = (theme: string, write = true) => {
-  dispatch(setSettings({ darkTheme: theme }));
+  dispatch(setSetting("darkTheme", theme));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("darkTheme", theme);
@@ -221,7 +222,7 @@ export const setDarkTheme = (theme: string, write = true) => {
 };
 
 export const setManualTheme = (bool: boolean, write = true) => {
-  dispatch(setSettings({ manualTheme: bool }));
+  dispatch(setSetting("manualTheme", bool));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("manualTheme", bool);
@@ -229,7 +230,7 @@ export const setManualTheme = (bool: boolean, write = true) => {
 };
 
 export const setFromTimeTheme = (time: string, write = true) => {
-  dispatch(setSettings({ fromTimeTheme: time }));
+  dispatch(setSetting("fromTimeTheme", time));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("fromTimeTheme", time);
@@ -237,7 +238,7 @@ export const setFromTimeTheme = (time: string, write = true) => {
 };
 
 export const setToTimeTheme = (time: string, write = true) => {
-  dispatch(setSettings({ toTimeTheme: time }));
+  dispatch(setSetting("toTimeTheme", time));
   setTimeout(checkTheme, 1);
   if (write) {
     syncSetting("toTimeTheme", time);
@@ -251,14 +252,14 @@ export const toggleLichTheme = () => {
 
 export const setBottomNav = (value: boolean, write = true) => {
   document.documentElement.scrollTop = 0;
-  dispatch(setSettings({ bottomNav: value }));
+  dispatch(setSetting("bottomNav", value));
   if (write) {
     syncSetting("bottomNav", value);
   }
 };
 
 export const setDensity = (density: string, write = true) => {
-  dispatch(setSettings({ density: density }));
+  dispatch(setSetting("density", density));
   if (write) {
     syncSetting("density", density);
   }

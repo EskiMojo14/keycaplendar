@@ -1,8 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { removeDuplicates } from "@s/util/functions";
+import type { KeysMatching } from "@s/util/types";
 import { Preset } from "./constructors";
-import { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
+import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
 
 export type MainState = {
   transition: boolean;
@@ -22,7 +24,7 @@ export type MainState = {
   filteredSets: SetType[];
   setGroups: SetGroup[];
   urlSet: {
-    prop: "id" | "alias" | "name";
+    prop: "alias" | "id" | "name";
     value: string;
   };
 
@@ -88,100 +90,115 @@ export const mainSlice = createSlice({
   name: "main",
   initialState,
   reducers: {
-    setTransition: (state, action: PayloadAction<boolean>) => {
-      state.transition = action.payload;
+    setTransition: (state, { payload }: PayloadAction<boolean>) => {
+      state.transition = payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setContent: (state, action: PayloadAction<boolean>) => {
-      state.content = action.payload;
+    setContent: (state, { payload }: PayloadAction<boolean>) => {
+      state.content = payload;
     },
-    setSort: (state, action: PayloadAction<SortType>) => {
-      state.sort = action.payload;
+    setSort: (state, { payload }: PayloadAction<SortType>) => {
+      state.sort = payload;
     },
-    setSortOrder: (state, action: PayloadAction<SortOrderType>) => {
-      state.sortOrder = action.payload;
+    setSortOrder: (state, { payload }: PayloadAction<SortOrderType>) => {
+      state.sortOrder = payload;
     },
-    setList: (
+    setListState: (
       state,
-      action: PayloadAction<{
-        name: "allDesigners" | "allProfiles" | "allRegions" | "allVendors" | "allVendorRegions";
+      {
+        payload: { name, array },
+      }: PayloadAction<{
+        name: KeysMatching<MainState, string[]>;
         array: string[];
       }>
     ) => {
-      const { name, array } = action.payload;
-      state = Object.assign(state, { [name]: array });
+      state[name] = array;
     },
-    setSetList: (
+    setSetListState: (
       state,
-      action: PayloadAction<{
-        name: "allSets" | "filteredSets";
+      {
+        payload: { name, array },
+      }: PayloadAction<{
+        name: KeysMatching<MainState, SetType[]>;
         array: SetType[];
       }>
     ) => {
-      const { name, array } = action.payload;
-      state = Object.assign(state, { [name]: array });
+      state[name] = array;
     },
-    setSetGroups: (state, action: PayloadAction<SetGroup[]>) => {
-      state.setGroups = action.payload;
+    setSetGroups: (state, { payload }: PayloadAction<SetGroup[]>) => {
+      state.setGroups = payload;
     },
-    setURLSet: (
+    setURLSetState: (
       state,
-      action: PayloadAction<{
-        prop: "id" | "alias" | "name";
+      {
+        payload,
+      }: PayloadAction<{
+        prop: "alias" | "id" | "name";
         value: string;
       }>
     ) => {
-      state.urlSet = action.payload;
+      state.urlSet = payload;
     },
-    setSearch: (state, action: PayloadAction<string>) => {
-      state.search = action.payload;
+    setSearch: (state, { payload }: PayloadAction<string>) => {
+      state.search = payload;
     },
-    setWhitelist: (state, action: PayloadAction<WhitelistType>) => {
-      state.whitelist = Object.assign(action.payload, { edited: Object.keys(action.payload) });
+    setWhitelist: (state, { payload }: PayloadAction<WhitelistType>) => {
+      state.whitelist = { ...payload, edited: Object.keys(payload) };
     },
-    mergeWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
-      const edited = removeDuplicates([...(state.whitelist.edited || []), ...Object.keys(action.payload)]);
-      state.whitelist = Object.assign(state.whitelist, action.payload, { edited });
+    mergeWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
+      const edited = removeDuplicates([...(state.whitelist.edited ?? []), ...Object.keys(payload)]);
+      state.whitelist = { ...state.whitelist, ...payload, edited };
     },
-    setURLWhitelist: (state, action: PayloadAction<Partial<WhitelistType>>) => {
-      state.urlWhitelist = action.payload;
+    setURLWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
+      state.urlWhitelist = payload;
     },
-    setCurrentPreset: (state, action: PayloadAction<PresetType>) => {
-      state.currentPreset = action.payload;
+    setCurrentPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      state.currentPreset = payload;
     },
-    setDefaultPreset: (state, action: PayloadAction<PresetType>) => {
-      state.defaultPreset = action.payload;
+    setDefaultPreset: (state, { payload }: PayloadAction<PresetType>) => {
+      state.defaultPreset = payload;
     },
-    setAppPresets: (state, action: PayloadAction<PresetType[]>) => {
-      state.appPresets = action.payload;
+    setAppPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
+      state.appPresets = payload;
     },
-    setLinkedFavorites: (state, action: PayloadAction<{ array: string[]; displayName: string }>) => {
-      state.linkedFavorites = action.payload;
+    setLinkedFavorites: (state, { payload }: PayloadAction<{ array: string[]; displayName: string }>) => {
+      state.linkedFavorites = payload;
     },
   },
 });
 
 export const {
-  setTransition,
-  setLoading,
-  setContent,
-  setSort,
-  setSortOrder,
-  setList,
-  setSetList,
-  setSetGroups,
-  setURLSet,
-  setSearch,
-  setWhitelist,
-  mergeWhitelist,
-  setURLWhitelist,
-  setCurrentPreset,
-  setDefaultPreset,
-  setAppPresets,
-  setLinkedFavorites,
-} = mainSlice.actions;
+  actions: {
+    setTransition,
+    setLoading,
+    setContent,
+    setSort,
+    setSortOrder,
+    setListState,
+    setSetListState,
+    setSetGroups,
+    setURLSetState,
+    setSearch,
+    setWhitelist,
+    mergeWhitelist,
+    setURLWhitelist,
+    setCurrentPreset,
+    setDefaultPreset,
+    setAppPresets,
+    setLinkedFavorites,
+  },
+} = mainSlice;
+
+export const setList = <P extends Parameters<typeof setListState>[0]>(name: P["name"], array: P["array"]) =>
+  setListState({ name, array });
+
+export const setSetList = <P extends Parameters<typeof setSetListState>[0]>(name: P["name"], array: P["array"]) =>
+  setSetListState({ name, array });
+
+export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(prop: P["prop"], value: P["value"]) =>
+  setURLSetState({ prop, value });
 
 export const selectTransition = (state: RootState) => state.main.transition;
 

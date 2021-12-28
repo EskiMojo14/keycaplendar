@@ -1,10 +1,4 @@
 import { Fragment, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
-import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
-import { iconObject } from "@s/util/functions";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -19,7 +13,13 @@ import {
   ListItemSecondaryText,
   ListItemText,
 } from "@rmwc/list";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper } from "@c/util/conditional-wrapper";
+import { selectDevice } from "@s/common";
+import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
+import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
+import type { GuideEntryType } from "@s/guides/types";
+import { iconObject } from "@s/util/functions";
 import { Article } from "@i";
 import "./entries-list.scss";
 
@@ -99,7 +99,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
           const filteredEntries = entries.filter(
             (entry) => entry.visibility === visibility && (filteredTag === "" || entry.tags.includes(filteredTag))
           );
-          const icon = visibilityIcons[visibility];
+          const { [visibility]: icon } = visibilityIcons;
           if (filteredEntries.length > 0) {
             return (
               <Fragment key={visibility}>
@@ -108,7 +108,7 @@ export const EntriesList = (props: EntriesDrawerProps) => {
                     {typeof icon === "object" ? (
                       <Icon icon={{ ...icon, size: "xsmall" }} />
                     ) : (
-                      <Icon icon={{ icon: icon, size: "xsmall" }} />
+                      <Icon icon={{ icon, size: "xsmall" }} />
                     )}
                     {formattedVisibility[visibility]}
                   </ListGroupSubheader>

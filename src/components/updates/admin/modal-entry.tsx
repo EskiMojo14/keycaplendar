@@ -1,22 +1,23 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import { DateTime } from "luxon";
-import { typedFirestore } from "@s/firebase/firestore";
-import { queue } from "~/app/snackbar-queue";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { UpdateId } from "@s/firebase/types";
-import { UpdateEntryType } from "@s/updates/types";
-import { selectUser } from "@s/user";
-import { ordinal } from "@s/util/functions";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
+import { DateTime } from "luxon";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
+import { selectDevice } from "@s/common";
+import firestore from "@s/firebase/firestore";
+import type { UpdateId } from "@s/firebase/types";
+import type { UpdateEntryType } from "@s/updates/types";
+import { selectUser } from "@s/user";
+import { ordinal } from "@s/util/functions";
 import "./modal-entry.scss";
 
 type ModalCreateProps = {
@@ -42,10 +43,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setBody("");
     }
   }, [props.open]);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "title") {
@@ -71,7 +69,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (valid) {
-      typedFirestore
+      firestore
         .collection("updates")
         .add({
           name,
@@ -210,10 +208,7 @@ export const ModalEdit = (props: ModalEditProps) => {
       setBody("");
     }
   }, [props.open, entry]);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "title") {
@@ -239,7 +234,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (valid) {
-      typedFirestore
+      firestore
         .collection("updates")
         .doc(entry.id as UpdateId)
         .set({

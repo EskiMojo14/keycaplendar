@@ -1,14 +1,47 @@
 import { useEffect, useState } from "react";
-import firebase from "@s/firebase";
+import { Button } from "@rmwc/button";
+import { Card } from "@rmwc/card";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
+import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
+import {
+  TopAppBar,
+  TopAppBarActionItem,
+  TopAppBarFixedAdjust,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import classNames from "classnames";
-import { queue } from "~/app/snackbar-queue";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { Footer } from "@c/common/footer";
+import {
+  DataTablePagination,
+  DataTablePaginationButton,
+  DataTablePaginationNavigation,
+  DataTablePaginationRowsPerPage,
+  DataTablePaginationRowsPerPageLabel,
+  DataTablePaginationRowsPerPageSelect,
+  DataTablePaginationTotal,
+  DataTablePaginationTrailing,
+} from "@c/util/data-table-pagination";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
 import {
-  selectFirstIndex,
-  selectLastIndex,
+  selectIndices,
   selectLoading,
   selectNextPageToken,
   selectPage,
@@ -20,47 +53,13 @@ import {
   selectView,
   setLoading,
 } from "@s/users";
+import { sortLabels, sortProps, viewIcons, viewLabels, views } from "@s/users/constants";
 import { User } from "@s/users/constructors";
 import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
-import { UserType } from "@s/users/types";
-import { iconObject, useBoolStates } from "@s/util/functions";
-import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-} from "@rmwc/data-table";
-import { Button } from "@rmwc/button";
-import { Card } from "@rmwc/card";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { MenuSurfaceAnchor, Menu, MenuItem } from "@rmwc/menu";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
-  TopAppBarFixedAdjust,
-  TopAppBarActionItem,
-} from "@rmwc/top-app-bar";
-import { Footer } from "@c/common/footer";
-import {
-  DataTablePagination,
-  DataTablePaginationTrailing,
-  DataTablePaginationRowsPerPage,
-  DataTablePaginationRowsPerPageLabel,
-  DataTablePaginationRowsPerPageSelect,
-  DataTablePaginationNavigation,
-  DataTablePaginationTotal,
-  DataTablePaginationButton,
-} from "@c/util/data-table-pagination";
-import { withTooltip } from "@c/util/hocs";
-import { UserRow } from "./user-row";
+import type { UserType } from "@s/users/types";
+import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
-import { ViewArray, ViewList } from "@i";
+import { UserRow } from "./user-row";
 import "./index.scss";
 
 const length = 1000;
@@ -88,8 +87,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
   const nextPageToken = useAppSelector(selectNextPageToken);
   const rowsPerPage = useAppSelector(selectRowsPerPage);
   const page = useAppSelector(selectPage);
-  const firstIndex = useAppSelector(selectFirstIndex);
-  const lastIndex = useAppSelector(selectLastIndex);
+  const { first: firstIndex, last: lastIndex } = useAppSelector(selectIndices);
 
   const blankUser = new User();
 
@@ -146,15 +144,11 @@ export const ContentUsers = (props: ContentUsersProps) => {
           onClose={closeSortMenu}
           onSelect={(e) => setSortIndex(e.detail.index)}
         >
-          <MenuItem selected={userSort === "displayName"}>Name</MenuItem>
-          <MenuItem selected={userSort === "email"}>Email</MenuItem>
-          <MenuItem selected={userSort === "dateCreated"}>Date created</MenuItem>
-          <MenuItem selected={userSort === "lastSignIn"}>Last sign in</MenuItem>
-          <MenuItem selected={userSort === "lastActive"}>Last active</MenuItem>
-          <MenuItem selected={userSort === "nickname"}>Nickname</MenuItem>
-          <MenuItem selected={userSort === "designer"}>Designer</MenuItem>
-          <MenuItem selected={userSort === "editor"}>Editor</MenuItem>
-          <MenuItem selected={userSort === "admin"}>Admin</MenuItem>
+          {sortProps.map((prop) => (
+            <MenuItem key={prop} selected={userSort === prop}>
+              {sortLabels[prop]}
+            </MenuItem>
+          ))}
         </Menu>
         {withTooltip(<TopAppBarActionItem icon="sort" onClick={openSortMenu} />, "Sort")}
       </MenuSurfaceAnchor>
@@ -168,16 +162,13 @@ export const ContentUsers = (props: ContentUsersProps) => {
           onClose={closeViewMenu}
           onSelect={(e) => setViewIndex(e.detail.index)}
         >
-          <MenuItem selected={view === "card"}>Card</MenuItem>
-          <MenuItem selected={view === "table"}>Table</MenuItem>
+          {views.map((viewType) => (
+            <MenuItem key={viewType} selected={view === viewType}>
+              {viewLabels[viewType]}
+            </MenuItem>
+          ))}
         </Menu>
-        {withTooltip(
-          <TopAppBarActionItem
-            onClick={openViewMenu}
-            icon={iconObject(view === "card" ? <ViewArray /> : <ViewList />)}
-          />,
-          "View"
-        )}
+        {withTooltip(<TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />, "View")}
       </MenuSurfaceAnchor>
     ) : null;
   return (
@@ -281,7 +272,7 @@ export const ContentUsers = (props: ContentUsersProps) => {
                           <DataTableHeadCell>Save</DataTableHeadCell>
                           <DataTableHeadCell>Delete</DataTableHeadCell>
                         </DataTableRow>
-                        <DataTableRow className={classNames("progress-row", { loading: loading })}>
+                        <DataTableRow className={classNames("progress-row", { loading })}>
                           <DataTableHeadCell colSpan={12}>
                             <LinearProgress />
                           </DataTableHeadCell>

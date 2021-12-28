@@ -1,7 +1,9 @@
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
+import { IconButton } from "@rmwc/icon-button";
+import type { IconButtonHTMLProps, IconButtonProps } from "@rmwc/icon-button";
+import { Select } from "@rmwc/select";
+import type { SelectHTMLProps, SelectProps } from "@rmwc/select";
 import BEMHelper from "@s/common/bem-helper";
-import { Select, SelectProps, SelectHTMLProps } from "@rmwc/select";
-import { IconButton, IconButtonProps, IconButtonHTMLProps } from "@rmwc/icon-button";
 import "./data-table-pagination.scss";
 
 const bemClasses = new BEMHelper("mdc-data-table");
@@ -32,7 +34,7 @@ export const DataTablePaginationRowsPerPageLabel = (props: DivProps) => (
   </div>
 );
 
-type DataTablePaginationRowsPerPageSelectProps = SelectProps & SelectHTMLProps;
+type DataTablePaginationRowsPerPageSelectProps = SelectHTMLProps & SelectProps;
 
 export const DataTablePaginationRowsPerPageSelect = (props: DataTablePaginationRowsPerPageSelectProps) => (
   <Select
@@ -56,7 +58,7 @@ export const DataTablePaginationTotal = (props: DivProps) => (
   </div>
 );
 
-type DataTablePaginationButtonProps = IconButtonProps & IconButtonHTMLProps;
+type DataTablePaginationButtonProps = IconButtonHTMLProps & IconButtonProps;
 
 export const DataTablePaginationButton = (props: DataTablePaginationButtonProps) => (
   <IconButton {...props} className={bemClasses({ element: "pagination-button", extra: props.className })}>

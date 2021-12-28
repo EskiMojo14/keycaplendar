@@ -1,6 +1,8 @@
 import isEqual from "lodash.isequal";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import firestore from "@s/firebase/firestore";
+import { alphabeticalSortProp } from "@s/util/functions";
 import {
   selectAllActions,
   selectFilterAction,
@@ -12,16 +14,14 @@ import {
   setUsers,
 } from ".";
 import { auditProperties } from "./constants";
-import { ActionType } from "./types";
-import { typedFirestore } from "@s/firebase/firestore";
-import { alphabeticalSortProp } from "@s/util/functions";
+import type { ActionType } from "./types";
 
 const { dispatch } = store;
 
 export const getActions = (state = store.getState()) => {
   const length = selectLength(state);
   dispatch(setLoading(true));
-  typedFirestore
+  firestore
     .collection("changelog")
     .orderBy("timestamp", "desc")
     .limit(length)
@@ -31,9 +31,8 @@ export const getActions = (state = store.getState()) => {
       const users: string[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const action =
-          data.before && data.before.profile ? (data.after && data.after.profile ? "updated" : "deleted") : "created";
-        const changelogId = doc.id;
+        const action = data.before?.profile ? (data.after?.profile ? "updated" : "deleted") : "created";
+        const { id: changelogId } = doc;
         const actionObj: ActionType = {
           ...data,
           action,
@@ -62,8 +61,8 @@ const processActions = (actions: ActionType[]) => {
     const { before, after, ...restAction } = action;
     if (before && after) {
       auditProperties.forEach((prop) => {
-        const beforeProp = before[prop];
-        const afterProp = after[prop];
+        const { [prop]: beforeProp } = before;
+        const { [prop]: afterProp } = after;
         if (isEqual(beforeProp, afterProp) && prop !== "profile" && prop !== "colorway") {
           delete before[prop];
           delete after[prop];

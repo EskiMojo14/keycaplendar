@@ -1,10 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { Page } from "./types";
+import type { Page } from "./types";
 
 export type CommonState = {
-  device: "mobile" | "tablet" | "desktop";
-  orientation: "portrait" | "landscape";
+  device: "desktop" | "mobile" | "tablet";
+  orientation: "landscape" | "portrait";
   page: Page;
   theme: string;
 };
@@ -20,22 +21,24 @@ export const commonSlice = createSlice({
   name: "common",
   initialState,
   reducers: {
-    setDevice: (state, action: PayloadAction<"mobile" | "tablet" | "desktop">) => {
-      state.device = action.payload;
+    setDevice: (state, { payload }: PayloadAction<"desktop" | "mobile" | "tablet">) => {
+      state.device = payload;
     },
-    setOrientation: (state, action: PayloadAction<"portrait" | "landscape">) => {
-      state.orientation = action.payload;
+    setOrientation: (state, { payload }: PayloadAction<"landscape" | "portrait">) => {
+      state.orientation = payload;
     },
-    setAppPage: (state, action: PayloadAction<Page>) => {
-      state.page = action.payload;
+    setAppPage: (state, { payload }: PayloadAction<Page>) => {
+      state.page = payload;
     },
-    setTheme: (state, action: PayloadAction<string>) => {
-      state.theme = action.payload;
+    setTheme: (state, { payload }: PayloadAction<string>) => {
+      state.theme = payload;
     },
   },
 });
 
-export const { setDevice, setOrientation, setAppPage, setTheme } = commonSlice.actions;
+export const {
+  actions: { setDevice, setOrientation, setAppPage, setTheme },
+} = commonSlice;
 
 export const selectDevice = (state: RootState) => state.common.device;
 

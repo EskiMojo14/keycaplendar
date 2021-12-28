@@ -1,15 +1,5 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import { typedFirestore } from "@s/firebase/firestore";
-import { queue } from "~/app/snackbar-queue";
-import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { GuideId } from "@s/firebase/types";
-import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
-import { GuideEntryType } from "@s/guides/types";
-import { selectUser } from "@s/user";
-import { userRoles } from "@s/users/constants";
-import { UserRoles } from "@s/users/types";
-import { arrayIncludes } from "@s/util/functions";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
@@ -17,9 +7,20 @@ import { Select } from "@rmwc/select";
 import { TextField } from "@rmwc/textfield";
 import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
+import { useAppSelector } from "~/app/hooks";
+import { queue } from "~/app/snackbar-queue";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
+import { selectDevice } from "@s/common";
+import firestore from "@s/firebase/firestore";
+import type { GuideId } from "@s/firebase/types";
+import { formattedVisibility, visibilityIcons } from "@s/guides/constants";
+import type { GuideEntryType } from "@s/guides/types";
+import { selectUser } from "@s/user";
+import { userRoles } from "@s/users/constants";
+import type { UserRoles } from "@s/users/types";
+import { arrayIncludes } from "@s/util/functions";
 import "./modal-entry.scss";
 
 type ModalCreateProps = {
@@ -45,9 +46,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
       setBody("");
     }
   }, [props.open]);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -59,8 +58,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
     }
   };
 
-  const selectVisibility = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -76,7 +74,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      typedFirestore
+      firestore
         .collection("guides")
         .add({
           name: user.nickname,
@@ -253,10 +251,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   }, [props.open, entry]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -268,8 +263,7 @@ export const ModalEdit = (props: ModalEditProps) => {
     }
   };
 
-  const selectVisibility = (e: ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -285,7 +279,7 @@ export const ModalEdit = (props: ModalEditProps) => {
 
   const saveEntry = () => {
     if (formFilled) {
-      typedFirestore
+      firestore
         .collection("guides")
         .doc(entry.id as GuideId)
         .set({

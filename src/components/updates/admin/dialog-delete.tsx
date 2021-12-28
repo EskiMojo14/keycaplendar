@@ -1,8 +1,8 @@
-import { typedFirestore } from "@s/firebase/firestore";
-import { queue } from "~/app/snackbar-queue";
-import { UpdateId } from "@s/firebase/types";
-import { UpdateEntryType } from "@s/updates/types";
 import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import { queue } from "~/app/snackbar-queue";
+import firestore from "@s/firebase/firestore";
+import type { UpdateId } from "@s/firebase/types";
+import type { UpdateEntryType } from "@s/updates/types";
 
 type DialogDeleteProps = {
   open: boolean;
@@ -13,7 +13,7 @@ type DialogDeleteProps = {
 
 export const DialogDelete = (props: DialogDeleteProps) => {
   const deleteEntry = () => {
-    typedFirestore
+    firestore
       .collection("updates")
       .doc(props.entry.id as UpdateId)
       .delete()

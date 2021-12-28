@@ -1,19 +1,19 @@
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
+import { IconButton } from "@rmwc/icon-button";
+import { List, ListItem, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
-import { selectDevice } from "@s/common";
-import { ImageType } from "@s/images/types";
-import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
-import { Drawer, DrawerHeader, DrawerContent, DrawerTitle } from "@rmwc/drawer";
-import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemText, ListItemPrimaryText, ListItemSecondaryText } from "@rmwc/list";
-import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice } from "@s/common";
+import type { ImageType } from "@s/images/types";
+import { formatBytes, objectKeys, ordinal } from "@s/util/functions";
 import "./drawer-details.scss";
 
 type DrawerDetailsProps = {
   close: () => void;
   image: ImageType;
-  metadata: { [key: string]: any };
+  metadata: Record<string, any>;
   open: boolean;
 };
 

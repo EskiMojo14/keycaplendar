@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "~/app/hooks";
-import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics";
-import { Categories, Properties } from "@s/statistics/types";
-import { hasKey } from "@s/util/functions";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
 import { List, ListItem, ListItemMeta } from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
+import { useAppSelector } from "~/app/hooks";
+import { selectSettings, selectTab, setStatisticsSetting } from "@s/statistics";
+import type { Categories, Properties } from "@s/statistics/types";
+import { hasKey } from "@s/util/functions";
 import "./dialog-statistics.scss";
 
 type DialogStatisticsProps = {
@@ -17,7 +17,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
-  const [statistics, setStatistics] = useState<Properties | Categories>("profile");
+  const [statistics, setStatistics] = useState<Categories | Properties>("profile");
 
   useEffect(() => {
     if (props.open) {
@@ -33,7 +33,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
     }
   }, [props.open]);
 
-  const handleChange = (stats: Properties | Categories) => {
+  const handleChange = (stats: Categories | Properties) => {
     setStatistics(stats);
   };
 
@@ -41,7 +41,7 @@ export const DialogStatistics = (props: DialogStatisticsProps) => {
     const key =
       statisticsTab === "duration" ? "durationGroup" : statisticsTab === "timelines" ? "timelinesGroup" : statisticsTab;
     if (hasKey(settings, key) && settings[key] !== statistics) {
-      setStatisticsSetting({ key: key, value: statistics });
+      setStatisticsSetting(key, statistics);
     }
   };
 

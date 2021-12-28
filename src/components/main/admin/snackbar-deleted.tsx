@@ -1,13 +1,13 @@
-import { MouseEvent } from "react";
-import { typedFirestore } from "@s/firebase/firestore";
+import type { MouseEvent } from "react";
+import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { KeysetId } from "@s/firebase/types";
+import firestore from "@s/firebase/firestore";
+import type { KeysetId } from "@s/firebase/types";
 import { getData } from "@s/main/functions";
-import { SetType } from "@s/main/types";
+import type { SetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import { batchStorageDelete, getStorageFolders } from "@s/util/functions";
-import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarDeletedProps = {
   close: () => void;
@@ -19,8 +19,10 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
   const user = useAppSelector(selectUser);
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { id, ...set } = props.set;
-    typedFirestore
+    const {
+      set: { id, ...set },
+    } = props;
+    firestore
       .collection("keysets")
       .doc(id as KeysetId)
       .set(
@@ -59,7 +61,7 @@ export const SnackbarDeleted = (props: SnackbarDeletedProps) => {
       const fileNameRegex = /keysets%2F(.*)\?/;
       const regexMatch = props.set.image.match(fileNameRegex);
       if (regexMatch) {
-        const imageName = regexMatch[1];
+        const [, imageName] = regexMatch;
         deleteImages(imageName);
       }
     }

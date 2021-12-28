@@ -1,11 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { UserType } from "./types";
+import type { sortProps } from "@s/users/constants";
+import type { UserType } from "./types";
 
 type UserState = {
   view: "card" | "table";
   loading: boolean;
-  sort: keyof UserType;
+  sort: typeof sortProps[number];
   reverseSort: boolean;
 
   allUsers: UserType[];
@@ -15,8 +17,10 @@ type UserState = {
   nextPageToken: string;
   rowsPerPage: number;
   page: number;
-  firstIndex: number;
-  lastIndex: number;
+  indices: {
+    first: number;
+    last: number;
+  };
 };
 
 export const initialState: UserState = {
@@ -32,64 +36,67 @@ export const initialState: UserState = {
   nextPageToken: "",
   rowsPerPage: 25,
   page: 1,
-  firstIndex: 0,
-  lastIndex: 0,
+  indices: {
+    first: 0,
+    last: 0,
+  },
 };
 
 export const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    setView: (state, action: PayloadAction<"card" | "table">) => {
-      state.view = action.payload;
+    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
+      state.view = payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setSort: (state, action: PayloadAction<keyof UserType>) => {
-      state.sort = action.payload;
+    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
+      state.sort = payload;
     },
-    setReverseSort: (state, action: PayloadAction<boolean>) => {
-      state.reverseSort = action.payload;
+    setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
+      state.reverseSort = payload;
     },
-    setAllUsers: (state, action: PayloadAction<UserType[]>) => {
-      state.allUsers = action.payload;
+    setAllUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.allUsers = payload;
     },
-    setSortedUsers: (state, action: PayloadAction<UserType[]>) => {
-      state.sortedUsers = action.payload;
+    setSortedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.sortedUsers = payload;
     },
-    setPaginatedUsers: (state, action: PayloadAction<UserType[]>) => {
-      state.paginatedUsers = action.payload;
+    setPaginatedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.paginatedUsers = payload;
     },
-    setNextPageToken: (state, action: PayloadAction<string>) => {
-      state.nextPageToken = action.payload;
+    setNextPageToken: (state, { payload }: PayloadAction<string>) => {
+      state.nextPageToken = payload;
     },
-    setRowsPerPage: (state, action: PayloadAction<number>) => {
-      state.rowsPerPage = action.payload;
+    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
+      state.rowsPerPage = payload;
     },
-    setPage: (state, action: PayloadAction<number>) => {
-      state.page = action.payload;
+    setPage: (state, { payload }: PayloadAction<number>) => {
+      state.page = payload;
     },
-    setIndices: (state, action: PayloadAction<{ first: number; last: number }>) => {
-      state.firstIndex = action.payload.first;
-      state.lastIndex = action.payload.last;
+    setIndices: (state, { payload }: PayloadAction<{ first: number; last: number }>) => {
+      state.indices = payload;
     },
   },
 });
 
 export const {
-  setView,
-  setLoading,
-  setSort,
-  setReverseSort,
-  setAllUsers,
-  setSortedUsers,
-  setPaginatedUsers,
-  setNextPageToken,
-  setRowsPerPage,
-  setPage,
-  setIndices,
-} = usersSlice.actions;
+  actions: {
+    setView,
+    setLoading,
+    setSort,
+    setReverseSort,
+    setAllUsers,
+    setSortedUsers,
+    setPaginatedUsers,
+    setNextPageToken,
+    setRowsPerPage,
+    setPage,
+    setIndices,
+  },
+} = usersSlice;
 
 export const selectView = (state: RootState) => state.users.view;
 
@@ -111,8 +118,6 @@ export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 
 export const selectPage = (state: RootState) => state.users.page;
 
-export const selectFirstIndex = (state: RootState) => state.users.firstIndex;
-
-export const selectLastIndex = (state: RootState) => state.users.lastIndex;
+export const selectIndices = (state: RootState) => state.users.indices;
 
 export default usersSlice.reducer;

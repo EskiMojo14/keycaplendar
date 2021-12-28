@@ -1,30 +1,30 @@
 import { useState } from "react";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
+import {
+  TopAppBar,
+  TopAppBarActionItem,
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
+import { AppBarIndent } from "@c/util/app-bar-indent";
+import { withTooltip } from "@c/util/hocs";
 import { selectDevice, selectPage } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { selectLoading, selectSearch, selectLinkedFavorites } from "@s/main";
+import { selectLinkedFavorites, selectLoading, selectSearch } from "@s/main";
 import { setSearch } from "@s/main/functions";
 import { selectBottomNav, selectView } from "@s/settings";
 import { viewIcons } from "@s/settings/constants";
 import { selectUser } from "@s/user";
 import { iconObject, useBoolStates } from "@s/util/functions";
-import { LinearProgress } from "@rmwc/linear-progress";
-import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
-import {
-  TopAppBar,
-  TopAppBarRow,
-  TopAppBarSection,
-  TopAppBarNavigationIcon,
-  TopAppBarTitle,
-  TopAppBarActionItem,
-} from "@rmwc/top-app-bar";
-import { AppBarIndent } from "@c/util/app-bar-indent";
-import { withTooltip } from "@c/util/hocs";
-import { MenuView } from "./menu-view";
-import { MenuSort } from "./menu-sort";
-import { SearchBarPersistent, SearchBarModal, SearchAppBar } from "./search-bar";
 import { Share } from "@i";
+import { MenuSort } from "./menu-sort";
+import { MenuView } from "./menu-view";
+import { SearchAppBar, SearchBarModal, SearchBarPersistent } from "./search-bar";
 import "./app-bar.scss";
 
 type AppBarProps = {

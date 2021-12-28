@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
-import classNames from "classnames";
-import LazyLoad from "react-lazy-load";
-import { useAppSelector } from "~/app/hooks";
-import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
-import { setPage } from "@s/common/functions";
-import { MainPage } from "@s/common/types";
-import { pageConditions } from "@s/main/functions";
-import { SetType } from "@s/main/types";
-import { RecentSet } from "@s/history/types";
-import { selectBought, selectFavorites, selectHidden } from "@s/user";
-import { arrayIncludes, iconObject, objectKeys, ordinal } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
+import { DateTime } from "luxon";
+import LazyLoad from "react-lazy-load";
+import { useAppSelector } from "~/app/hooks";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { mainPages, pageIcons, pageTitle } from "@s/common/constants";
+import { setPage } from "@s/common/functions";
+import type { MainPage } from "@s/common/types";
+import type { RecentSet } from "@s/history/types";
+import { pageConditions } from "@s/main/functions";
+import type { SetType } from "@s/main/types";
+import { selectBought, selectFavorites, selectHidden } from "@s/user";
+import { arrayIncludes, iconObject, objectKeys, ordinal } from "@s/util/functions";
 import { FilterVariantRemove, ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
@@ -55,7 +55,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
   }, [props.recentSet.currentSet]);
 
   return (
-    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted: deleted })}>
+    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted })}>
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
@@ -93,11 +93,7 @@ export const RecentSetCard = (props: RecentSetCardProps) => {
         <div className="info-container">
           <div className="overline">
             <Typography use="overline" tag="h3">
-              {set
-                ? set.designer.join(" + ")
-                : recentSet.designer
-                ? recentSet.designer.join(" + ")
-                : recentSet.designer}
+              {set?.designer.join(" + ") ?? recentSet.designer?.join(" + ")}
             </Typography>
           </div>
           <Typography use="headline5" tag="h2">

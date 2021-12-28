@@ -1,16 +1,17 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import { CircularProgress } from "@rmwc/circular-progress";
+import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
+import { IconButton } from "@rmwc/icon-button";
+import { Switch } from "@rmwc/switch";
+import { TextField } from "@rmwc/textfield";
+import { Typography } from "@rmwc/typography";
 import { nanoid } from "nanoid";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
 import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
-import { CircularProgress } from "@rmwc/circular-progress";
-import { Dialog, DialogContent, DialogTitle } from "@rmwc/dialog";
-import { Switch } from "@rmwc/switch";
-import { TextField } from "@rmwc/textfield";
-import { Typography } from "@rmwc/typography";
-import { IconButton } from "@rmwc/icon-button";
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {
@@ -30,9 +31,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));
@@ -59,9 +58,7 @@ export const DialogShareFavorites = (props: DialogShareFavoritesProps) => {
       });
   };
 
-  const handleSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.name;
-    const checked = e.target.checked;
+  const handleSwitchChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareFavorites") {
       const newId = checked ? nanoid() : "";
       dispatch(setFavoritesId(newId));

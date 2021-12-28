@@ -1,9 +1,9 @@
-import { iconObject } from "@s/util/functions";
 import { Button } from "@rmwc/button";
 import { Typography } from "@rmwc/typography";
 import { withTooltip } from "@c/util/hocs";
-import latamkeysLogoImg from "@m/latamkeys_smol.png";
+import { iconObject } from "@s/util/functions";
 import { Discord, Email, Github, Kofi } from "@i";
+import latamkeysLogoImg from "@m/latamkeys_smol.png";
 import "./footer.scss";
 
 export const Footer = () => {

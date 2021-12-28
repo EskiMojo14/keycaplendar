@@ -22,7 +22,12 @@
     "sourceMap": true,
     "declaration": false,
     "incremental": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "plugins": [
+      {
+        "transform": "typescript-is/lib/transform-inline/transformer"
+      }
+    ]
   },
   "include": [
     "src/**/*",

@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
+import { DrawerAppContent } from "@rmwc/drawer";
+import { Fab } from "@rmwc/fab";
+import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { selectDevice, selectPage } from "@s/common";
-import { Keyset, Preset } from "@s/main/constructors";
-import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
-import { PresetType, SetType } from "@s/main/types";
-import { selectBottomNav, selectView } from "@s/settings";
-import { selectUser } from "@s/user";
-import { closeModal, openModal } from "@s/util/functions";
-import { Fab } from "@rmwc/fab";
-import { DrawerAppContent } from "@rmwc/drawer";
-import { TopAppBarFixedAdjust } from "@rmwc/top-app-bar";
 import { Footer } from "@c/common/footer";
-import { ConditionalWrapper, BoolWrapper } from "@c/util/conditional-wrapper";
-import { DrawerDetails } from "./drawer-details";
-import { DrawerFilter } from "./drawer-filter";
-import { DialogSales } from "./dialog-sales";
-import { ModalFilterPreset } from "./modal-filter-preset";
-import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
-import { DialogShareFavorites } from "./dialog-share-favorites";
+import { DialogDelete } from "@c/main/admin/dialog-delete";
+import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
+import { SnackbarDeleted } from "@c/main/admin/snackbar-deleted";
 import { AppBar } from "@c/main/app_bar/app-bar";
 import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
-import { ModalCreate, ModalEdit } from "@c/main/admin/modal-entry";
-import { DialogDelete } from "@c/main/admin/dialog-delete";
-import { SnackbarDeleted } from "@c/main/admin/snackbar-deleted";
+import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
+import { selectDevice, selectPage } from "@s/common";
+import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
+import { Keyset, Preset } from "@s/main/constructors";
+import type { PresetType, SetType } from "@s/main/types";
+import { selectBottomNav, selectView } from "@s/settings";
+import { selectUser } from "@s/user";
+import { closeModal, openModal } from "@s/util/functions";
+import { DialogDeleteFilterPreset } from "./dialog-delete-filter-preset";
+import { DialogSales } from "./dialog-sales";
+import { DialogShareFavorites } from "./dialog-share-favorites";
+import { DrawerDetails } from "./drawer-details";
+import { DrawerFilter } from "./drawer-filter";
+import { ModalFilterPreset } from "./modal-filter-preset";
 
 type ContentMainProps = {
   navOpen: boolean;
@@ -57,7 +57,7 @@ export const ContentMain = (props: ContentMainProps) => {
         }
       });
       if (index >= 0) {
-        const keyset = allSets[index];
+        const { [index]: keyset } = allSets;
         openDetails(keyset, false);
       }
     }
@@ -102,12 +102,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
       if (clearUrl) {
         if (urlSet) {
-          dispatch(
-            setURLSet({
-              prop: "id",
-              value: "",
-            })
-          );
+          dispatch(setURLSet("id", ""));
         }
         const params = new URLSearchParams(window.location.search);
         if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {

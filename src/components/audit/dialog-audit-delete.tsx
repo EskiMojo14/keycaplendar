@@ -1,5 +1,5 @@
-import { ActionType } from "@s/audit/types";
-import { Dialog, DialogTitle, DialogContent, DialogActions, DialogButton } from "@rmwc/dialog";
+import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import type { ActionType } from "@s/audit/types";
 
 type DialogAuditDeleteProps = {
   close: () => void;

@@ -1,19 +1,19 @@
+import { IconButton } from "@rmwc/icon-button";
+import {
+  ListItem,
+  ListItemGraphic,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
-import { selectDevice, selectPage } from "@s/common";
-import { SetType } from "@s/main/types";
-import { iconObject } from "@s/util/functions";
-import {
-  ListItem,
-  ListItemText,
-  ListItemPrimaryText,
-  ListItemSecondaryText,
-  ListItemGraphic,
-  ListItemMeta,
-} from "@rmwc/list";
-import { IconButton } from "@rmwc/icon-button";
 import { withTooltip } from "@c/util/hocs";
+import { selectDevice, selectPage } from "@s/common";
+import type { SetType } from "@s/main/types";
+import { iconObject } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
 import "./element-compact.scss";
 
@@ -51,10 +51,9 @@ export const ElementCompact = (props: ElementCompactProps) => {
     props.live && page !== "live"
       ? withTooltip(<ListItemGraphic className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator =
-    props.set && props.set.shipped
-      ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
-      : null;
+  const shipIndicator = props.set?.shipped
+    ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    : null;
   return (
     <ListItem
       selected={props.selected}

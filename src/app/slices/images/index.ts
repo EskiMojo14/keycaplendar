@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
 import { ImageObj } from "./constructors";
-import { ImageType } from "./types";
+import type { ImageType } from "./types";
 
 const blankImage = { ...new ImageObj() };
 
@@ -39,51 +40,53 @@ export const imagesSlice = createSlice({
   name: "images",
   initialState,
   reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
-    setCurrentFolder: (state, action: PayloadAction<string>) => {
-      state.currentFolder = action.payload;
+    setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
+      state.currentFolder = payload;
     },
-    setFolders: (state, action: PayloadAction<string[]>) => {
-      state.folders = action.payload;
+    setFolders: (state, { payload }: PayloadAction<string[]>) => {
+      state.folders = payload;
     },
-    setImages: (state, action: PayloadAction<ImageType[]>) => {
-      state.images = action.payload;
+    setImages: (state, { payload }: PayloadAction<ImageType[]>) => {
+      state.images = payload;
     },
-    appendImages: (state, action: PayloadAction<ImageType[]>) => {
-      state.images = state.images.concat(action.payload);
+    appendImages: (state, { payload }: PayloadAction<ImageType[]>) => {
+      state.images = state.images.concat(payload);
     },
-    setCheckedImages: (state, action: PayloadAction<ImageType[]>) => {
-      state.checkedImages = action.payload;
+    setCheckedImages: (state, { payload }: PayloadAction<ImageType[]>) => {
+      state.checkedImages = payload;
     },
-    setSetImages: (state, action: PayloadAction<string[]>) => {
-      state.setImages = action.payload;
+    setSetImages: (state, { payload }: PayloadAction<string[]>) => {
+      state.setImages = payload;
     },
-    setDuplicateSetImages: (state, action: PayloadAction<string[]>) => {
-      state.duplicateSetImages = action.payload;
+    setDuplicateSetImages: (state, { payload }: PayloadAction<string[]>) => {
+      state.duplicateSetImages = payload;
     },
-    setDetailImage: (state, action: PayloadAction<ImageType>) => {
-      state.detailImage = action.payload;
+    setDetailImage: (state, { payload }: PayloadAction<ImageType>) => {
+      state.detailImage = payload;
     },
-    setDetailMetadata: (state, action: PayloadAction<Record<string, unknown>>) => {
-      state.detailMetadata = action.payload;
+    setDetailMetadata: (state, { payload }: PayloadAction<Record<string, unknown>>) => {
+      state.detailMetadata = payload;
     },
   },
 });
 
 export const {
-  setLoading,
-  setCurrentFolder,
-  setFolders,
-  setImages,
-  appendImages,
-  setCheckedImages,
-  setSetImages,
-  setDuplicateSetImages,
-  setDetailImage,
-  setDetailMetadata,
-} = imagesSlice.actions;
+  actions: {
+    setLoading,
+    setCurrentFolder,
+    setFolders,
+    setImages,
+    appendImages,
+    setCheckedImages,
+    setSetImages,
+    setDuplicateSetImages,
+    setDetailImage,
+    setDetailMetadata,
+  },
+} = imagesSlice;
 
 export const selectLoading = (state: RootState) => state.images.loading;
 

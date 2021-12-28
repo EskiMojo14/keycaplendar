@@ -1,9 +1,9 @@
-import firebase from "@s/firebase";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
+import firebase from "@s/firebase";
 import { alphabeticalSort, alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
 import { setAllTags, setEntries, setLoading } from ".";
-import { GuideEntryType } from "./types";
+import type { GuideEntryType } from "./types";
 
 const { dispatch } = store;
 
@@ -11,8 +11,7 @@ export const getEntries = () => {
   const cloudFn = firebase.functions().httpsCallable("getGuides");
   dispatch(setLoading(true));
   cloudFn()
-    .then((result) => {
-      const entries: GuideEntryType[] = result.data;
+    .then(({ data: entries }) => {
       sortEntries(entries);
     })
     .catch((error) => {
@@ -21,7 +20,7 @@ export const getEntries = () => {
     });
 };
 
-const sortEntries = (entries: GuideEntryType[]) => {
+export const sortEntries = (entries: GuideEntryType[]) => {
   const sortedEntries = alphabeticalSortProp(entries, "title", false, "Welcome to KeycapLendar!");
   dispatch(setEntries(sortedEntries));
   const allTags = alphabeticalSort(removeDuplicates(sortedEntries.map((entry) => entry.tags).flat(1)));

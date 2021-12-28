@@ -1,6 +1,6 @@
-import { historyTabs } from "./constants";
-import { ActionSetType } from "@s/audit/types";
-import { SetType } from "@s/main/types";
+import type { ActionSetType } from "@s/audit/types";
+import type { SetType } from "@s/main/types";
+import type { historyTabs } from "./constants";
 
 export type HistoryTab = typeof historyTabs[number];
 

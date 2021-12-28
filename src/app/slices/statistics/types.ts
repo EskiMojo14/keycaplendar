@@ -1,12 +1,12 @@
 import { Serie as LineSeries } from "@nivo/line";
 import { Overwrite } from "@s/util/types";
-import { statsTabs } from "./constants";
+import type { categories, properties, statsTabs } from "./constants";
 
-export type Categories = "icDate" | "gbLaunch";
+export type Categories = typeof categories[number];
 
-export type Properties = "profile" | "designer" | "vendor";
+export type Properties = typeof properties[number];
 
-export type Sorts = "total" | "alphabetical";
+export type Sorts = "alphabetical" | "total";
 
 export type StatsTab = typeof statsTabs[number];
 

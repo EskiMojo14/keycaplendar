@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import { ViewType } from "./types";
+import type { ViewType } from "./types";
 
 type SettingsState = {
   view: ViewType;
@@ -40,29 +41,35 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setSetting: <T extends keyof SettingsState>(
+    setSettingState: <K extends keyof SettingsState>(
       state: SettingsState,
-      action: PayloadAction<{ key: T; value: SettingsState[T] }>
+      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
     ) => {
-      const { key, value } = action.payload;
+      const { key, value } = payload;
       state[key] = value;
     },
-    setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => {
-      state = Object.assign(state, action.payload);
-    },
+    setSettings: (state, { payload }: PayloadAction<Partial<SettingsState>>) => ({
+      ...state,
+      ...payload,
+    }),
     toggleLich: (state) => {
       state.lichTheme = !state.lichTheme;
     },
-    setCookies: (state, action: PayloadAction<boolean>) => {
-      state.cookies = action.payload;
+    setCookies: (state, { payload }: PayloadAction<boolean>) => {
+      state.cookies = payload;
     },
-    setShareNameLoading: (state, action: PayloadAction<boolean>) => {
-      state.shareNameLoading = action.payload;
+    setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.shareNameLoading = payload;
     },
   },
 });
 
-export const { setSetting, setSettings, toggleLich, setCookies, setShareNameLoading } = settingsSlice.actions;
+export const {
+  actions: { setSettingState, setSettings, toggleLich, setCookies, setShareNameLoading },
+} = settingsSlice;
+
+export const setSetting = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) =>
+  setSettingState({ key, value });
 
 export const selectSettings = (state: RootState) => state.settings;
 
