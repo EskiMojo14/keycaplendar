@@ -21,7 +21,8 @@ export const SegmentedButton = (props: SegmentedButtonProps) => {
   );
 };
 
-type SegmentedButtonSegmentProps = ButtonHTMLProps & ButtonProps & {
+type SegmentedButtonSegmentProps = ButtonHTMLProps &
+  ButtonProps & {
     selected?: boolean;
   };
 
