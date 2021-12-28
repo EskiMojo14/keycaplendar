@@ -51,7 +51,8 @@ export type KeysetDoc = Overwrite<
   Omit<SetType, "id">,
   {
     sales:
-      string | {
+      | string
+      | {
           /** Direct URL to sales graph. */
           img: string;
           thirdParty: boolean;

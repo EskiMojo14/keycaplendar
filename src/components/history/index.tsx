@@ -15,7 +15,7 @@ import {
 import classNames from "classnames";
 import SwipeableViews from "react-swipeable-views";
 import { virtualize } from "react-swipeable-views-utils";
-import type { SlideRendererCallback} from "react-swipeable-views-utils";
+import type { SlideRendererCallback } from "react-swipeable-views-utils";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
