@@ -1,18 +1,14 @@
 import { createStore } from "~/app/store";
 import {
-  selectCurrentThemeMap,
   selectDevice,
   selectOrientation,
   selectPage,
   selectTheme,
-  selectThemesMap,
   setAppPage,
   setDevice,
   setOrientation,
   setTheme,
-  setThemeMaps,
 } from "@s/common";
-import { blankTheme } from "@s/common/constants";
 import type { Page } from "@s/common/types";
 
 let store = createStore();
@@ -47,19 +43,4 @@ it("sets app theme", () => {
   store.dispatch(setTheme(theme));
   const response = selectTheme(store.getState());
   expect(response).toBe(theme);
-});
-
-const mockThemeMap = { deep: blankTheme };
-
-it("sets theme maps", () => {
-  store.dispatch(setThemeMaps(mockThemeMap));
-  const response = selectThemesMap(store.getState());
-  expect(response).toEqual(mockThemeMap);
-});
-
-it("selects current theme map", () => {
-  store.dispatch(setTheme("deep"));
-  store.dispatch(setThemeMaps(mockThemeMap));
-  const response = selectCurrentThemeMap(store.getState());
-  expect(response).toEqual(mockThemeMap.deep);
 });

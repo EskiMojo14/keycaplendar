@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-reduce-type-parameter */
 import type { Datum, Serie } from "@nivo/line";
 import produce from "immer";
 import { DateTime, Interval } from "luxon";
@@ -188,12 +189,12 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
                 }
               ),
             }),
-            {}
+            {} as typeof breakdown
           ),
         },
       };
     },
-    {}
+    {} as TimelinesData
   );
 
   const hydrateCalendarData = ({
@@ -218,7 +219,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       summary: hydrateCalendarDataObject(summary),
       breakdown: objectEntries(breakdown).reduce<Record<Properties, CalendarDataObject<false>[]>>(
         (obj, [prop, array]) => ({ ...obj, [prop]: array.map((object) => hydrateCalendarDataObject(object)) }),
-        {}
+        {} as Record<Properties, CalendarDataObject<false>[]>
       ),
     };
   };
@@ -228,7 +229,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       ...obj,
       [cat]: hydrateCalendarData(catData),
     }),
-    {}
+    {} as CalendarData<false>
   );
 
   const hydrateStatusData = (
@@ -290,7 +291,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
         ...obj,
         [prop]: hydrateStatusData(array),
       }),
-      {}
+      {} as StatusData["breakdown"]
     ),
   };
 
@@ -338,7 +339,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
         ...obj,
         [prop]: hydrateShippedData(array, shipped.months),
       }),
-      {}
+      {} as ShippedData["breakdown"]
     ),
   };
 
@@ -400,11 +401,11 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
             ...obj,
             [prop]: hydrateCountData(array, true),
           }),
-          {}
+          {} as DurationData[Categories]["breakdown"]
         ),
       },
     }),
-    {}
+    {} as DurationData
   );
 
   const hydratedVendorData: VendorData = {
@@ -414,7 +415,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
         ...obj,
         [prop]: hydrateCountData(array, true),
       }),
-      {}
+      {} as VendorData["breakdown"]
     ),
   };
 
