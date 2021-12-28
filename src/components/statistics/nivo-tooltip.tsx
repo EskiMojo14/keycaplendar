@@ -1,6 +1,6 @@
 import { useTheme } from "@nivo/core";
-import { PointTooltipProps, SliceTooltipProps } from "@nivo/line";
-import { BasicTooltip, TableTooltip, Chip } from "@nivo/tooltip";
+import type { PointTooltipProps, SliceTooltipProps } from "@nivo/line";
+import { BasicTooltip, Chip, TableTooltip } from "@nivo/tooltip";
 
 export const PointTooltip = ({
   point: {

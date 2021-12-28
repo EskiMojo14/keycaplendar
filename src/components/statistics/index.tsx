@@ -1,10 +1,4 @@
 import { useEffect, useState } from "react";
-import classNames from "classnames";
-import SwipeableViews from "react-swipeable-views";
-import { virtualize } from "react-swipeable-views-utils";
-import type { SlideRendererCallback } from "react-swipeable-views-utils";
-import firebase from "@s/firebase";
-import { VirtuosoGrid } from "react-virtuoso";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Tab, TabBar } from "@rmwc/tabs";
 import {
@@ -16,17 +10,18 @@ import {
   TopAppBarSection,
   TopAppBarTitle,
 } from "@rmwc/top-app-bar";
+import classNames from "classnames";
+import SwipeableViews from "react-swipeable-views";
+import type { SlideRendererCallback } from "react-swipeable-views-utils";
+import { virtualize } from "react-swipeable-views-utils";
+import { VirtuosoGrid } from "react-virtuoso";
 import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { withTooltip } from "@c/util/hocs";
-import { CalendarCard, CalendarSummaryCard } from "./calendar-card";
-import { StatusCard, StatusSummaryCard } from "./pie-card";
-import { TableCard, TableSummaryCard } from "./table-card";
-import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
-import { DialogStatistics } from "./dialog-statistics";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
+import firebase from "@s/firebase";
 import { selectBottomNav } from "@s/settings";
 import { selectData, selectLoading, selectSettings, selectSort, selectTab } from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
@@ -34,6 +29,11 @@ import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/fu
 import type { StatisticsType } from "@s/statistics/types";
 import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
 import { Category, DateRange, SortAlphabeticalVariant, SortNumericVariant } from "@i";
+import { CalendarCard, CalendarSummaryCard } from "./calendar-card";
+import { DialogStatistics } from "./dialog-statistics";
+import { StatusCard, StatusSummaryCard } from "./pie-card";
+import { TableCard, TableSummaryCard } from "./table-card";
+import { ShippedCard, ShippedSummaryCard, TimelinesCard, TimelinesSummaryCard } from "./timeline-card";
 import "./index.scss";
 
 const VirtualizeSwipeableViews = virtualize(SwipeableViews);
@@ -436,7 +436,15 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             listClassName="stats-grid"
             itemClassName="stats-grid-item half-span"
             itemContent={(index) => {
-              const data = statisticsData.calendar[settings.calendarCat].breakdown[settings.calendarGroup][index];
+              const {
+                calendar: {
+                  [settings.calendarCat]: {
+                    breakdown: {
+                      [settings.calendarGroup]: { [index]: data },
+                    },
+                  },
+                },
+              } = statisticsData;
               return (
                 <CalendarCard
                   data={data}
@@ -458,7 +466,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             listClassName="stats-grid"
             itemClassName="stats-grid-item"
             itemContent={(index) => {
-              const data = statisticsData.status.breakdown[settings.status][index];
+              const {
+                status: {
+                  breakdown: {
+                    [settings.status]: { [index]: data },
+                  },
+                },
+              } = statisticsData;
               return <StatusCard data={data} />;
             }}
             overscan={1000}
@@ -473,7 +487,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             listClassName="stats-grid"
             itemClassName="stats-grid-item full-span"
             itemContent={(index) => {
-              const data = statisticsData.shipped.breakdown[settings.shipped][index];
+              const {
+                shipped: {
+                  breakdown: {
+                    [settings.shipped]: { [index]: data },
+                  },
+                },
+              } = statisticsData;
               return <ShippedCard data={data} months={statisticsData.shipped.months} />;
             }}
             overscan={1000}
@@ -488,7 +508,15 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             listClassName="stats-grid"
             itemClassName="stats-grid-item full-span"
             itemContent={(index) => {
-              const data = statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup][index];
+              const {
+                duration: {
+                  [settings.durationCat]: {
+                    breakdown: {
+                      [settings.durationGroup]: { [index]: data },
+                    },
+                  },
+                },
+              } = statisticsData;
               return (
                 <TableCard
                   data={data}
@@ -509,7 +537,13 @@ export const ContentStatistics = (props: ContentStatisticsProps) => {
             listClassName="stats-grid"
             itemClassName="stats-grid-item full-span"
             itemContent={(index) => {
-              const data = statisticsData.vendors.breakdown[settings.vendors][index];
+              const {
+                vendors: {
+                  breakdown: {
+                    [settings.vendors]: { [index]: data },
+                  },
+                },
+              } = statisticsData;
               return <TableCard data={data} tab="vendors" unit="Vendors" />;
             }}
             overscan={1000}

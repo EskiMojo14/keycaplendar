@@ -1,5 +1,5 @@
-import { Serie as LineSeries } from "@nivo/line";
-import { Overwrite } from "@s/util/types";
+import type { Serie as LineSeries } from "@nivo/line";
+import type { Overwrite } from "@s/util/types";
 import type { categories, properties, statsTabs } from "./constants";
 
 export type Categories = typeof categories[number];
@@ -32,7 +32,7 @@ export type StatisticsSortType = {
   vendors: Sorts;
 };
 
-export type BarLineTabs = "timelines" | "shipped" | "duration" | "vendors";
+export type BarLineTabs = "duration" | "shipped" | "timelines" | "vendors";
 
 export type SunburstPackingTabs = "status";
 
@@ -43,14 +43,14 @@ export type StatisticsChartSettingType = {
     [tab in BarLineTabs]: { stacked: boolean; type: "bar" | "line" };
   };
   sunburstPacking: {
-    [tab in SunburstPackingTabs]: { type: "sunburst" | "packing" };
+    [tab in SunburstPackingTabs]: { type: "packing" | "sunburst" };
   };
   calendar: {
     [tab in CalendarTabs]: { palette: "gradient" | "heatmap" };
   };
 };
 
-export type TimelinesDataObject<Optimised extends true | false = false> = Optimised extends true
+export type TimelinesDataObject<Optimised extends boolean = false> = Optimised extends true
   ? {
       name: string;
       total: number;
@@ -61,11 +61,11 @@ export type TimelinesDataObject<Optimised extends true | false = false> = Optimi
       name: string;
       total: number;
       profiles: string[];
-      months: Record<string, string | number>[];
+      months: Record<string, number | string>[];
       monthsLine: LineSeries[];
     };
 
-export type TimelinesData<Optimised extends true | false = false> = Record<
+export type TimelinesData<Optimised extends boolean = false> = Record<
   Categories,
   {
     months: string[];
@@ -77,7 +77,7 @@ export type TimelinesData<Optimised extends true | false = false> = Record<
   }
 >;
 
-export type CalendarDatum<Optimised extends true | false = false> = Optimised extends true
+export type CalendarDatum<Optimised extends boolean = false> = Optimised extends true
   ? {
       index: number;
       val: number;
@@ -87,13 +87,13 @@ export type CalendarDatum<Optimised extends true | false = false> = Optimised ex
       value: number;
     };
 
-export type CalendarDataObject<Optimised extends true | false = false> = {
+export type CalendarDataObject<Optimised extends boolean = false> = {
   name: string;
   total: number;
   data: CalendarDatum<Optimised>[];
 };
 
-export type CalendarData<Optimised extends true | false = false> = Record<
+export type CalendarData<Optimised extends boolean = false> = Record<
   Categories,
   Optimised extends true
     ? {
@@ -111,7 +111,7 @@ export type CalendarData<Optimised extends true | false = false> = Record<
       }
 >;
 
-export type StatusDataObjectSunburstDatum<Optimised extends true | false = false> = Optimised extends true
+export type StatusDataObjectSunburstDatum<Optimised extends boolean = false> = Optimised extends true
   ? {
       id: string;
       index?: number;
@@ -122,22 +122,22 @@ export type StatusDataObjectSunburstDatum<Optimised extends true | false = false
       val: number;
     };
 
-export type StatusDataObjectSunburstChildWithChild<Optimised extends true | false = false> = Optimised extends true
+export type StatusDataObjectSunburstChildWithChild<Optimised extends boolean = false> = Optimised extends true
   ? {
       id?: string;
       index?: number;
-      children: (StatusDataObjectSunburstDatum<Optimised> | StatusDataObjectSunburstChild<Optimised>)[];
+      children: (StatusDataObjectSunburstChild<Optimised> | StatusDataObjectSunburstDatum<Optimised>)[];
     }
   : {
       id: string;
-      children: (StatusDataObjectSunburstDatum<Optimised> | StatusDataObjectSunburstChild<Optimised>)[];
+      children: (StatusDataObjectSunburstChild<Optimised> | StatusDataObjectSunburstDatum<Optimised>)[];
     };
 
-export type StatusDataObjectSunburstChild<Optimised extends true | false = false> =
+export type StatusDataObjectSunburstChild<Optimised extends boolean = false> =
   | StatusDataObjectSunburstChildWithChild<Optimised>
   | StatusDataObjectSunburstDatum<Optimised>;
 
-export type StatusDataObject<Optimised extends true | false = false> = Optimised extends true
+export type StatusDataObject<Optimised extends boolean = false> = Optimised extends true
   ? {
       name: string;
       total: number;
@@ -163,12 +163,12 @@ export type StatusDataObject<Optimised extends true | false = false> = Optimised
       sunburst: StatusDataObjectSunburstChildWithChild;
     };
 
-export type StatusData<Optimised extends true | false = false> = {
+export type StatusData<Optimised extends boolean = false> = {
   summary: StatusDataObject<Optimised>;
   breakdown: Record<Properties, StatusDataObject<Optimised>[]>;
 };
 
-export type ShippedDataObject<Optimised extends true | false = false> = Optimised extends true
+export type ShippedDataObject<Optimised extends boolean = false> = Optimised extends true
   ? {
       name: string;
       total: number;
@@ -185,13 +185,13 @@ export type ShippedDataObject<Optimised extends true | false = false> = Optimise
       monthsLine: LineSeries[];
     };
 
-export type ShippedData<Optimised extends true | false = false> = {
+export type ShippedData<Optimised extends boolean = false> = {
   summary: ShippedDataObject<Optimised>;
   months: string[];
   breakdown: Record<Properties, ShippedDataObject<Optimised>[]>;
 };
 
-export type CountDataObject<Optimised extends true | false = false> = Optimised extends true
+export type CountDataObject<Optimised extends boolean = false> = Optimised extends true
   ? {
       name: string;
       total: number;
@@ -214,7 +214,7 @@ export type CountDataObject<Optimised extends true | false = false> = Optimised 
       dataLine: LineSeries[];
     };
 
-export type DurationData<Optimised extends true | false = false> = Record<
+export type DurationData<Optimised extends boolean = false> = Record<
   Categories,
   {
     summary: CountDataObject<Optimised>;
@@ -222,12 +222,12 @@ export type DurationData<Optimised extends true | false = false> = Record<
   }
 >;
 
-export type VendorData<Optimised extends true | false = false> = {
+export type VendorData<Optimised extends boolean = false> = {
   summary: CountDataObject<Optimised>;
   breakdown: Record<Properties, CountDataObject<Optimised>[]>;
 };
 
-export type StatisticsData<Optimised extends true | false = false> = {
+export type StatisticsData<Optimised extends boolean = false> = {
   timelines: TimelinesData<Optimised>;
   calendar: CalendarData<Optimised>;
   status: StatusData<Optimised>;

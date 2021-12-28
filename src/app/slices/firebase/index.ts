@@ -23,6 +23,7 @@ firebase.initializeApp(firebaseConfig);
 //firebase.analytics();
 
 if (process.env.NODE_ENV === "development") {
+  // eslint-disable-next-line import/no-named-as-default-member
   firebase.functions().useEmulator("localhost", 5001);
 }
 

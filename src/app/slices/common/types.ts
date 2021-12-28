@@ -46,10 +46,10 @@ export type ThemeMap = {
 
 /** Theme variables with `on-` variants */
 export type ThemeColorName =
-  | "primary"
-  | "primary-light"
+  | "error"
   | "primary-dark"
-  | "secondary"
-  | "secondary-light"
+  | "primary-light"
+  | "primary"
   | "secondary-dark"
-  | "error";
+  | "secondary-light"
+  | "secondary";

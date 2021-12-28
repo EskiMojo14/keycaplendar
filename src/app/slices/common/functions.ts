@@ -57,7 +57,7 @@ export const getTextColour = (bgColor: string, defaultColor = "var(--theme-text-
  * @returns Opacity to use
  */
 
-export const getTextOpacity = (emphasis: "high" | "medium" | "disabled") => {
+export const getTextOpacity = (emphasis: "disabled" | "high" | "medium") => {
   const opacities = {
     high: 0.87,
     medium: 0.6,

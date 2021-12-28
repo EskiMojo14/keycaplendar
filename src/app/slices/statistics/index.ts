@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import type { StatsTab, StatisticsData, StatisticsType, StatisticsSortType, StatisticsChartSettingType } from "./types";
+import type { StatisticsChartSettingType, StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
 
 type StatisticsState = {
   tab: StatsTab;
@@ -255,13 +255,14 @@ export const statisticsSlice = createSlice({
       Setting extends keyof StatisticsChartSettingType["barLine"][Tab]
     >(
       state: StatisticsState,
-      action: PayloadAction<{
+      {
+        payload: { tab, key, value },
+      }: PayloadAction<{
         tab: Tab;
         key: Setting;
         value: StatisticsChartSettingType["barLine"][Tab][Setting];
       }>
     ) => {
-      const { tab, key, value } = action.payload;
       state.chartSettings.barLine[tab][key] = value;
     },
     setStatisticsSunburstPackingChartSetting: <
@@ -269,13 +270,14 @@ export const statisticsSlice = createSlice({
       Setting extends keyof StatisticsChartSettingType["sunburstPacking"][Tab]
     >(
       state: StatisticsState,
-      action: PayloadAction<{
+      {
+        payload: { tab, key, value },
+      }: PayloadAction<{
         tab: Tab;
         key: Setting;
         value: StatisticsChartSettingType["sunburstPacking"][Tab][Setting];
       }>
     ) => {
-      const { tab, key, value } = action.payload;
       state.chartSettings.sunburstPacking[tab][key] = value;
     },
     setStatisticsCalendarChartSetting: <
@@ -283,13 +285,14 @@ export const statisticsSlice = createSlice({
       Setting extends keyof StatisticsChartSettingType["calendar"][Tab]
     >(
       state: StatisticsState,
-      action: PayloadAction<{
+      {
+        payload: { tab, key, value },
+      }: PayloadAction<{
         tab: Tab;
         key: Setting;
         value: StatisticsChartSettingType["calendar"][Tab][Setting];
       }>
     ) => {
-      const { tab, key, value } = action.payload;
       state.chartSettings.calendar[tab][key] = value;
     },
   },

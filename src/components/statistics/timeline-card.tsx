@@ -1,52 +1,53 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  memo,
-  ReactNode,
+import type {
+  CSSProperties,
   DetailedHTMLProps,
   HTMLAttributes,
-  CSSProperties,
-} from "react";
-import classNames from "classnames";
-import { alpha } from "@material-ui/core";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { graphColors } from "@s/common/constants";
-import { getTextColour } from "@s/common/functions";
-import { ThemeColorName } from "@s/common/types";
-import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
-import { filterLabels, getMaxYValFromLineData } from "@s/statistics/functions";
-import { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
-import { Overwrite } from "@s/util/types";
-import { Card } from "@rmwc/card";
-import { ChipSet, Chip } from "@rmwc/chip";
-import { IconButton } from "@rmwc/icon-button";
-import { Typography } from "@rmwc/typography";
+  ReactNode} from "react";
 import {
-  DataTable,
-  DataTableContent,
-  DataTableHead,
-  DataTableRow,
-  DataTableHeadCell,
-  DataTableBody,
-  DataTableCell,
-} from "@rmwc/data-table";
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react";
+import { alpha } from "@material-ui/core";
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsiveLine } from "@nivo/line";
+import { Card } from "@rmwc/card";
+import { Chip, ChipSet } from "@rmwc/chip";
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableContent,
+  DataTableHead,
+  DataTableHeadCell,
+  DataTableRow,
+} from "@rmwc/data-table";
+import { IconButton } from "@rmwc/icon-button";
+import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { PointTooltip, SliceTooltip } from "@c/statistics/nivo-tooltip";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
 import { NivoThemeContext } from "@c/util/theme-provider";
+import { graphColors } from "@s/common/constants";
+import { getTextColour } from "@s/common/functions";
+import type { ThemeColorName } from "@s/common/types";
+import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
+import { filterLabels, getMaxYValFromLineData } from "@s/statistics/functions";
+import type { ShippedDataObject, TimelinesDataObject } from "@s/statistics/types";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
+import type { Overwrite } from "@s/util/types";
 import "./timeline-card.scss";
 
-type ShippedCardProps = {
+type ShippedCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   data: ShippedDataObject;
   months: string[];
   overline?: ReactNode;
   note?: ReactNode;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+};
 
 export const ShippedCard = ({ data, months, overline, note, ...props }: ShippedCardProps) => {
   const dispatch = useAppDispatch();
@@ -410,12 +411,12 @@ export const ShippedSummaryCard = ({
   );
 };
 
-export type TimelinesCardProps = {
+export type TimelinesCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   data: TimelinesDataObject[];
   months: string[];
   singleTheme?: ThemeColorName;
   allProfiles?: string[];
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+};
 
 const blankTimelinesDataObject: TimelinesDataObject = {
   name: "",

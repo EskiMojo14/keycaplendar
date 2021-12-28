@@ -1,9 +1,9 @@
+import type { Datum, Serie } from "@nivo/line";
 import produce from "immer";
 import { DateTime, Interval } from "luxon";
-import firebase from "@s/firebase";
-import { Datum, Serie } from "@nivo/line";
-import store from "~/app/store";
 import { queue } from "~/app/snackbar-queue";
+import store from "~/app/store";
+import firebase from "@s/firebase";
 import { alphabeticalSortPropCurried, hasKey, iterateDays, objectEntries, ordinal, typeGuard } from "@s/util/functions";
 import {
   selectData,
@@ -97,15 +97,15 @@ export const getData = async () => {
     });
 };
 
-export const sunburstChildHasChildren = <Optimised extends true | false = false>(
+export const sunburstChildHasChildren = <Optimised extends false | true = false>(
   child: StatusDataObjectSunburstChild<Optimised>
 ): child is StatusDataObjectSunburstChildWithChild<Optimised> => hasKey(child, "children");
 
 const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }: StatisticsData<true>) => {
-  const hydrateTimelinesData = (data: Record<string, string | number>[], months: string[], profiles: string[]) =>
+  const hydrateTimelinesData = (data: Record<string, number | string>[], months: string[], profiles: string[]) =>
     months.map((month, monthIndex) => {
       const blankObject = {
-        month: month,
+        month,
         index: monthIndex,
         summary: 0,
         ...profiles.reduce((a, profile) => ({ ...a, [profile]: 0 }), {}),
@@ -117,7 +117,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       return { ...blankObject, ...foundObject };
     });
 
-  const hydratedTimelinesData = objectEntries(timelines).reduce(
+  const hydratedTimelinesData = objectEntries(timelines).reduce<TimelinesData>(
     (
       obj,
       [
@@ -145,7 +145,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
               barDataToLineData(summaryMonthsData, key, "month", key as keyof typeof summaryMonthsData[number])
             ),
           },
-          breakdown: objectEntries(breakdown).reduce(
+          breakdown: objectEntries(breakdown).reduce<typeof breakdown>(
             (obj, [prop, array]) => ({
               ...obj,
               [prop]: array.map(
@@ -188,12 +188,12 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
                 }
               ),
             }),
-            {} as typeof breakdown
+            {}
           ),
         },
       };
     },
-    {} as TimelinesData
+    {}
   );
 
   const hydrateCalendarData = ({
@@ -216,19 +216,19 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
       end,
       years: Math.ceil(interval.toDuration("years").years),
       summary: hydrateCalendarDataObject(summary),
-      breakdown: objectEntries(breakdown).reduce(
+      breakdown: objectEntries(breakdown).reduce<Record<Properties, CalendarDataObject<false>[]>>(
         (obj, [prop, array]) => ({ ...obj, [prop]: array.map((object) => hydrateCalendarDataObject(object)) }),
-        {} as Record<Properties, CalendarDataObject<false>[]>
+        {}
       ),
     };
   };
 
-  const hydratedCalendarData = objectEntries(calendar).reduce(
+  const hydratedCalendarData = objectEntries(calendar).reduce<CalendarData<false>>(
     (obj, [cat, catData]) => ({
       ...obj,
       [cat]: hydrateCalendarData(catData),
     }),
-    {} as CalendarData<false>
+    {}
   );
 
   const hydrateStatusData = (
@@ -285,12 +285,12 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
 
   const hydratedStatusData: StatusData = {
     summary: hydrateStatusData([status.summary])[0],
-    breakdown: objectEntries(status.breakdown).reduce(
+    breakdown: objectEntries(status.breakdown).reduce<StatusData["breakdown"]>(
       (obj, [prop, array]) => ({
         ...obj,
         [prop]: hydrateStatusData(array),
       }),
-      {} as StatusData["breakdown"]
+      {}
     ),
   };
 
@@ -306,7 +306,7 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
     return data.map(({ months: monthData, ...datum }) => {
       const monthsData = months.map((month, monthIndex) => {
         const blankObject = {
-          month: month,
+          month,
           index: monthIndex,
           shipped: 0,
           unshipped: 0,
@@ -333,12 +333,12 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
   const hydratedShippedData: ShippedData = {
     summary: hydrateShippedData([shipped.summary], shipped.months)[0],
     months: shipped.months,
-    breakdown: objectEntries(shipped.breakdown).reduce(
+    breakdown: objectEntries(shipped.breakdown).reduce<ShippedData["breakdown"]>(
       (obj, [prop, array]) => ({
         ...obj,
         [prop]: hydrateShippedData(array, shipped.months),
       }),
-      {} as ShippedData["breakdown"]
+      {}
     ),
   };
 
@@ -390,31 +390,31 @@ const hydrateData = ({ timelines, calendar, status, shipped, duration, vendors }
     });
   };
 
-  const hydratedDurationData: DurationData = objectEntries(duration).reduce(
+  const hydratedDurationData: DurationData = objectEntries(duration).reduce<DurationData>(
     (obj, [category, { summary, breakdown }]): DurationData => ({
       ...obj,
       [category]: {
         summary: hydrateCountData([summary], true)[0],
-        breakdown: objectEntries(breakdown).reduce(
+        breakdown: objectEntries(breakdown).reduce<DurationData[Categories]["breakdown"]>(
           (obj, [prop, array]) => ({
             ...obj,
             [prop]: hydrateCountData(array, true),
           }),
-          {} as DurationData[Categories]["breakdown"]
+          {}
         ),
       },
     }),
-    {} as DurationData
+    {}
   );
 
   const hydratedVendorData: VendorData = {
     summary: hydrateCountData([vendors.summary], true)[0],
-    breakdown: objectEntries(vendors.breakdown).reduce(
+    breakdown: objectEntries(vendors.breakdown).reduce<VendorData["breakdown"]>(
       (obj, [prop, array]) => ({
         ...obj,
         [prop]: hydrateCountData(array, true),
       }),
-      {} as VendorData["breakdown"]
+      {}
     ),
   };
 
@@ -483,15 +483,15 @@ export const sortData = (state = store.getState()) => {
 export const barDataToLineData = <Datum extends Record<string, any>>(
   datumArray: Datum[],
   id: string,
-  xKey: keyof Datum | ((datum: Datum) => string | number) = "id",
-  yKey: (keyof Datum | ((datum: Datum) => string | number))[] | keyof Datum | ((datum: Datum) => string | number) = [
+  xKey: keyof Datum | ((datum: Datum) => number | string) = "id",
+  yKey: (keyof Datum | ((datum: Datum) => number | string))[] | keyof Datum | ((datum: Datum) => number | string) = [
     "value" as keyof Datum,
   ]
 ): {
-  id: string | number;
+  id: number | string;
   data: {
-    x: number | string | Date;
-    y: number | string | Date;
+    x: Date | number | string;
+    y: Date | number | string;
   }[];
 } => {
   const yKeys = yKey instanceof Array ? yKey : [yKey];
@@ -519,8 +519,8 @@ export const barDataToLineData = <Datum extends Record<string, any>>(
  * array.filter(filterLabels([[24, 3, !props.summary],[16, 2]]))
  */
 
-export const filterLabels = <T extends string | number>(
-  breakpoints: ([minLength: number, divisor: number] | [minLength: number, divisor: number, condition: boolean])[]
+export const filterLabels = <T extends number | string>(
+  breakpoints: ([minLength: number, divisor: number, condition: boolean] | [minLength: number, divisor: number])[]
 ) => (label: T, index: number, array: T[]): boolean => {
   for (const breakpoint of breakpoints.sort((aTuple, bTuple) => bTuple[0] - aTuple[0])) {
     if (array.length >= breakpoint[0] && (breakpoint[2] === undefined || breakpoint[2])) {

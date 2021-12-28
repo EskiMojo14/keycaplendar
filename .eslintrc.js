@@ -126,7 +126,7 @@ module.exports = {
   overrides: [
     {
       files: ["*.js", "*.ts", "*.tsx"], // Your TypeScript files extension
-      ignorePatterns: [".eslintrc.js"],
+      excludedFiles: ".eslintrc.js",
       parserOptions: {
         project: ["./tsconfig.json"], // Specify it only for TypeScript files
       },

@@ -1,25 +1,26 @@
-import { useContext, useEffect, useState, ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
-import classNames from "classnames";
-import { DateTime } from "luxon";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { themeLists, graphColors } from "@s/common/constants";
-import { selectChartSettings, setStatisticsCalendarChartSetting } from "@s/statistics";
-import { CalendarDataObject, Categories } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, iconObject, pluralise } from "@s/util/functions";
+import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ResponsiveCalendar } from "@nivo/calendar";
+import { BasicTooltip } from "@nivo/tooltip";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
-import { ResponsiveCalendar } from "@nivo/calendar";
-import { BasicTooltip } from "@nivo/tooltip";
-import { NivoThemeContext } from "@c/util/theme-provider";
+import classNames from "classnames";
+import { DateTime } from "luxon";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
+import { NivoThemeContext } from "@c/util/theme-provider";
+import { graphColors, themeLists } from "@s/common/constants";
+import { selectChartSettings, setStatisticsCalendarChartSetting } from "@s/statistics";
+import type { CalendarDataObject, Categories } from "@s/statistics/types";
+import { alphabeticalSortPropCurried, iconObject, pluralise } from "@s/util/functions";
 import { Palette } from "@i";
 import "./calendar-card.scss";
 
 const { heatmap } = graphColors;
 
-type CalendarCardProps = {
+type CalendarCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   data: CalendarDataObject;
   start: string;
   end: string;
@@ -27,7 +28,7 @@ type CalendarCardProps = {
   theme?: keyof typeof themeLists;
   overline?: ReactNode;
   note?: ReactNode;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+};
 
 export const CalendarCard = ({
   data,

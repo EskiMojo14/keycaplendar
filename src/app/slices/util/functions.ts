@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { DateTime, Interval } from "luxon";
 import type { IconOptions, IconPropT } from "@rmwc/types";
+import type { Interval } from "luxon";
+import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { replaceChars } from "@s/common/constants";
 import firebase from "@s/firebase";

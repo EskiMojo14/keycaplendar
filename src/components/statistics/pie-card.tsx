@@ -1,6 +1,9 @@
-import { useState, useContext, useEffect, useMemo } from "react";
-import type { ReactNode, HTMLAttributes, DetailedHTMLProps } from "react";
-import classNames from "classnames";
+import { useContext, useEffect, useMemo, useState } from "react";
+import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import { ResponsiveCirclePacking } from "@nivo/circle-packing";
+import type { ComputedDatum as PackingDatum } from "@nivo/circle-packing";
+import { ResponsiveSunburst } from "@nivo/sunburst";
+import type { DatumId, SunburstCustomLayerProps, ComputedDatum as SunburstDatum } from "@nivo/sunburst";
 import { Card } from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
@@ -14,7 +17,11 @@ import {
   DataTableRow,
 } from "@rmwc/data-table";
 import { Typography } from "@rmwc/typography";
+import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
+import { withTooltip } from "@c/util/hocs";
+import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { NivoThemeContext } from "@c/util/theme-provider";
 import { selectDevice } from "@s/common";
 import { getTextColour } from "@s/common/functions";
 import { selectChartSettings, setStatisticsSunburstPackingChartSetting } from "@s/statistics";
@@ -28,11 +35,6 @@ import {
   objectKeys,
   pluralise,
 } from "@s/util/functions";
-import { ResponsiveSunburst, ComputedDatum as SunburstDatum, DatumId, SunburstCustomLayerProps } from "@nivo/sunburst";
-import { ResponsiveCirclePacking, ComputedDatum as PackingDatum } from "@nivo/circle-packing";
-import { NivoThemeContext } from "@c/util/theme-provider";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import { withTooltip } from "@c/util/hocs";
 import { BubbleChart, DonutSmall } from "@i";
 import "./pie-card.scss";
 
@@ -48,13 +50,13 @@ const statusColors = {
 };
 
 const flatten = (data: StatusDataObjectSunburstChild[]): StatusDataObjectSunburstChild[] =>
-  data.reduce((acc, item) => {
+  data.reduce<StatusDataObjectSunburstChild[]>((acc, item) => {
     if (sunburstChildHasChildren(item)) {
       return [...acc, item, ...flatten(item.children)];
     }
 
     return [...acc, item];
-  }, [] as StatusDataObjectSunburstChild[]);
+  }, []);
 
 const findObject = (data: StatusDataObjectSunburstChild[], name: DatumId) =>
   data.find((searchedName) => searchedName.id === name);
@@ -75,11 +77,11 @@ const CentredLabel = <RawDatum,>({ nodes, centerX, centerY }: SunburstCustomLaye
   ) : null;
 };
 
-type StatusCardProps = {
+type StatusCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   data: StatusDataObject;
   overline?: ReactNode;
   note?: ReactNode;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+};
 
 export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) => {
   const dispatch = useAppDispatch();
@@ -89,10 +91,10 @@ export const StatusCard = ({ data, overline, note, ...props }: StatusCardProps) 
       status: { type: graphType },
     },
   } = useAppSelector(selectChartSettings);
-  const setGraphType = (value: "sunburst" | "packing") =>
+  const setGraphType = (value: "packing" | "sunburst") =>
     dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
   const getStatusColor = <RawDatum,>(
-    node: Omit<SunburstDatum<RawDatum>, "color" | "fill"> | Omit<PackingDatum<RawDatum>, "color" | "fill">
+    node: Omit<PackingDatum<RawDatum>, "color" | "fill"> | Omit<SunburstDatum<RawDatum>, "color" | "fill">
   ) => {
     const category = [...node.path].find((pathItem) => arrayIncludes(objectKeys(statusColors), pathItem)) || "";
     if (hasKey(statusColors, category)) {
@@ -314,13 +316,13 @@ export const StatusSummaryCard = ({ data, breakdownData, overline, note, ...prop
       status: { type: graphType },
     },
   } = useAppSelector(selectChartSettings);
-  const setGraphType = (value: "sunburst" | "packing") =>
+  const setGraphType = (value: "packing" | "sunburst") =>
     dispatch(setStatisticsSunburstPackingChartSetting({ tab: "status", key: "type", value }));
 
   const device = useAppSelector(selectDevice);
 
   const getStatusColor = <RawDatum,>(
-    node: Omit<SunburstDatum<RawDatum>, "color" | "fill"> | Omit<PackingDatum<RawDatum>, "color" | "fill">
+    node: Omit<PackingDatum<RawDatum>, "color" | "fill"> | Omit<SunburstDatum<RawDatum>, "color" | "fill">
   ) => {
     const category = [...node.path].find((pathItem) => arrayIncludes(objectKeys(statusColors), pathItem)) || "";
     if (hasKey(statusColors, category)) {

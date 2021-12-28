@@ -1,14 +1,9 @@
-import { useState, useEffect, useContext, useMemo } from "react";
-import type { ReactNode, DetailedHTMLProps, HTMLAttributes } from "react";
-import classNames from "classnames";
-import { useAppDispatch, useAppSelector } from "~/app/hooks";
-import { getTextColour } from "@s/common/functions";
-import { ThemeColorName } from "@s/common/types";
-import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
-import { filterLabels } from "@s/statistics/functions";
-import type { Categories, CountDataObject } from "@s/statistics/types";
-import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
-import { NivoThemeContext } from "@c/util/theme-provider";
+import { useContext, useEffect, useMemo, useState } from "react";
+import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import type { BarTooltipProps } from "@nivo/bar";
+import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveLine } from "@nivo/line";
+import { BasicTooltip } from "@nivo/tooltip";
 import { Card } from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import {
@@ -21,31 +16,41 @@ import {
   DataTableRow,
 } from "@rmwc/data-table";
 import { Typography } from "@rmwc/typography";
-import { BarTooltipProps, ResponsiveBar } from "@nivo/bar";
-import { ResponsiveLine } from "@nivo/line";
-import { BasicTooltip } from "@nivo/tooltip";
+import classNames from "classnames";
+import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
 import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import { NivoThemeContext } from "@c/util/theme-provider";
+import { getTextColour } from "@s/common/functions";
+import type { ThemeColorName } from "@s/common/types";
+import { selectChartSettings, setStatisticsBarLineChartSetting } from "@s/statistics";
+import { filterLabels } from "@s/statistics/functions";
+import type { Categories, CountDataObject } from "@s/statistics/types";
+import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./table-card.scss";
 
-type TableCardProps = {
+type TableCardProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
   data: CountDataObject;
   unit: string;
   tab: "duration" | "vendors";
   theme?: ThemeColorName;
   overline?: ReactNode;
   note?: ReactNode;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+};
 
 export const TableCard = ({ data, unit, tab, theme = "primary", overline, note, ...props }: TableCardProps) => {
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[tab];
+  const {
+    barLine: {
+      [tab]: { type: graphType /*, stacked: stackedGraph */ },
+    },
+  } = settings;
   /*const setStackedGraph = (value: boolean) =>
     dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
   const labels = useMemo(
@@ -239,11 +244,15 @@ export const TableSummaryCard = ({
   const dispatch = useAppDispatch();
 
   const settings = useAppSelector(selectChartSettings);
-  const { type: graphType /*, stacked: stackedGraph */ } = settings.barLine[tab];
+  const {
+    barLine: {
+      [tab]: { type: graphType /*, stacked: stackedGraph */ },
+    },
+  } = settings;
   /*const setStackedGraph = (value: boolean) =>
     dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "stacked", value }));*/
   const setGraphType = (value: "bar" | "line") =>
-    dispatch(setStatisticsBarLineChartSetting({ tab: tab, key: "type", value }));
+    dispatch(setStatisticsBarLineChartSetting({ tab, key: "type", value }));
 
   const nivoTheme = useContext(NivoThemeContext);
 
