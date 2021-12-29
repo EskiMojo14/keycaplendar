@@ -16,19 +16,19 @@
 
 @use "@material/typography" with (
   $font-family: typography-variables.$body-font,
-  $styles-headline1: typography-variables.$headline1,
-  $styles-headline2: typography-variables.$headline2,
-  $styles-headline3: typography-variables.$headline3,
-  $styles-headline4: typography-variables.$headline4,
-  $styles-headline5: typography-variables.$headline5,
-  $styles-headline6: typography-variables.$headline6,
-  $styles-body1: typography-variables.$body1,
-  $styles-body2: typography-variables.$body2,
-  $styles-subtitle1: typography-variables.$subtitle1,
-  $styles-subtitle2: typography-variables.$subtitle2,
-  $styles-button: typography-variables.$button,
-  $styles-overline: typography-variables.$overline,
-  $styles-caption: typography-variables.$caption
+  $styles-headline1: map-get(typography-variables.$styles, headline1),
+  $styles-headline2: map-get(typography-variables.$styles, headline2),
+  $styles-headline3: map-get(typography-variables.$styles, headline3),
+  $styles-headline4: map-get(typography-variables.$styles, headline4),
+  $styles-headline5: map-get(typography-variables.$styles, headline5),
+  $styles-headline6: map-get(typography-variables.$styles, headline6),
+  $styles-body1: map-get(typography-variables.$styles, body1),
+  $styles-body2: map-get(typography-variables.$styles, body2),
+  $styles-subtitle1: map-get(typography-variables.$styles, subtitle1),
+  $styles-subtitle2: map-get(typography-variables.$styles, subtitle2),
+  $styles-button: map-get(typography-variables.$styles, button),
+  $styles-overline: map-get(typography-variables.$styles, overline),
+  $styles-caption: map-get(typography-variables.$styles, caption)
 );
 
 @use "theme";
@@ -111,6 +111,10 @@ code {
       text-decoration: none;
     }
   }
+}
+
+.skeleton-block {
+  @include shape.radius(small);
 }
 
 .sales-image,

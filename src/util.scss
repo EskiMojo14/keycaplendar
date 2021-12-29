@@ -1,3 +1,6 @@
+@use "@material/typography/_index" as typography;
+@use "typography-variables";
+
 @mixin divider-border($direction: all, $width: 1px, $style: solid) {
   @if ($direction == all) {
     border: $width $style var(--theme-divider);
@@ -11,4 +14,32 @@
   } @else {
     border-#{$direction}: $width $style var(--theme-lighter-divider);
   }
+}
+
+@function map-deep-get($map, $keys...) {
+  @each $key in $keys {
+    $map: map-get($map, $key);
+  }
+  @return $map;
+}
+
+@function map-deep-has($map, $keys...) {
+  $key: nth($keys, 1);
+  @for $i from 1 to (length($keys) - 1) {
+    @if (map-has-key($map, $key)) {
+      $map: map-get($map, $key);
+      $key: nth($keys, $i + 1);
+    } @else {
+      @return false;
+    }
+  }
+  @return map-has-key($map, $key);
+}
+
+@function typography-get($style, $prop: font-size) {
+  @return if(
+    map-deep-has(typography-variables.$styles, $style, $prop),
+    map-deep-get(typography-variables.$styles, $style, $prop),
+    map-deep-get(typography.$styles, $style, $prop)
+  );
 }

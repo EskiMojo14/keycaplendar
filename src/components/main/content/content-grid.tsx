@@ -4,7 +4,8 @@ import { ViewCard } from "@c/main/views/card/view-card";
 import { ViewCompact } from "@c/main/views/compact/view-compact";
 import { ViewImageList } from "@c/main/views/image-list/view-image-list";
 import { ViewList } from "@c/main/views/list/view-list";
-import { selectSetGroups } from "@s/main";
+import { SkeletonBlock } from "@c/util/skeleton-block";
+import { selectLoading, selectSetGroups } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import "./content-grid.scss";
@@ -16,44 +17,21 @@ type ContentGridProps = {
   edit: (set: SetType) => void;
 };
 
-export const ContentGrid = (props: ContentGridProps) => {
+export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentGridProps) => {
   const view = useAppSelector(selectView);
 
   const setGroups = useAppSelector(selectSetGroups);
+  const loading = useAppSelector(selectLoading);
 
   const createGroup = (sets: SetType[]) => {
     if (view === "card") {
-      return (
-        <ViewCard
-          sets={sets}
-          details={props.details}
-          closeDetails={props.closeDetails}
-          detailSet={props.detailSet}
-          edit={props.edit}
-        />
-      );
+      return <ViewCard {...{ sets, details, detailSet, closeDetails, edit }} />;
     } else if (view === "list") {
-      return (
-        <ViewList sets={sets} details={props.details} closeDetails={props.closeDetails} detailSet={props.detailSet} />
-      );
+      return <ViewList {...{ sets, details, detailSet, closeDetails, edit }} />;
     } else if (view === "imageList") {
-      return (
-        <ViewImageList
-          sets={sets}
-          details={props.details}
-          closeDetails={props.closeDetails}
-          detailSet={props.detailSet}
-        />
-      );
+      return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit }} />;
     } else if (view === "compact") {
-      return (
-        <ViewCompact
-          sets={sets}
-          details={props.details}
-          closeDetails={props.closeDetails}
-          detailSet={props.detailSet}
-        />
-      );
+      return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit }} />;
     }
   };
   return (
@@ -62,9 +40,13 @@ export const ContentGrid = (props: ContentGridProps) => {
         return (
           <div className="outer-container" key={group.title}>
             <div className="subheader">
-              <Typography use="caption">
-                {group.title} <b>{`(${group.sets.length})`}</b>
-              </Typography>
+              {loading ? (
+                <SkeletonBlock typography="caption" content={`${group.title} (${group.sets.length})`} />
+              ) : (
+                <Typography use="caption">
+                  {group.title} <b>{`(${group.sets.length})`}</b>
+                </Typography>
+              )}
             </div>
             {createGroup(group.sets)}
           </div>

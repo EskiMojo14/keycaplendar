@@ -1,0 +1,21 @@
+@use "@material/shape/_index" as shape;
+
+.skeleton-block {
+  &:not(.skeleton-block--typography) {
+    animation: placeholder 2s ease infinite;
+  }
+  &--rounded {
+    @include shape.radius(999em);
+  }
+  &--typography {
+    display: flex;
+    align-items: center;
+    &::after {
+      content: var(--content, " ");
+      animation: placeholder 2s ease infinite;
+      width: auto;
+      border-radius: inherit;
+      color: transparent;
+    }
+  }
+}
