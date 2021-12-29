@@ -7,6 +7,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
+import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
@@ -155,7 +156,7 @@ export const getData = () => {
 
       dispatch(setSetList("allSets", sets));
 
-      filterData(store.getState());
+      filterData(true);
       generateLists(store.getState());
     })
     .catch((error) => {
@@ -286,7 +287,7 @@ const generateLists = (state = store.getState()) => {
   }
 };
 
-export const filterData = (state = store.getState()) => {
+export const filterData = (transition = false, state = store.getState()) => {
   const page = selectPage(state);
   const sets = selectAllSets(state);
   const search = selectSearch(state);
@@ -381,6 +382,9 @@ export const filterData = (state = store.getState()) => {
 
   dispatch(setContent(filteredSets.length > 0));
   dispatch(setLoading(false));
+  if (transition) {
+    triggerTransition();
+  }
 };
 
 const debouncedFilterData = debounce(filterData, 350, { trailing: true });
@@ -568,7 +572,7 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
 export const setSearch = (query: string) => {
   dispatch(setMainSearch(query));
   document.documentElement.scrollTop = 0;
-  debouncedFilterData(store.getState());
+  debouncedFilterData();
 };
 
 export const setWhitelistMerge = (
@@ -580,7 +584,7 @@ export const setWhitelistMerge = (
   dispatch(mergeWhitelist(partialWhitelist));
   document.documentElement.scrollTop = 0;
   if (allSets.length > 0) {
-    filterData(store.getState());
+    filterData();
   }
   if (clearUrl) {
     dispatch(setURLWhitelist({}));
@@ -624,7 +628,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(
     dispatch(mergeWhitelist({ [prop]: val }));
     document.documentElement.scrollTop = 0;
     if (allSets.length > 0) {
-      filterData(store.getState());
+      filterData();
     }
   }
   if (clearUrl) {

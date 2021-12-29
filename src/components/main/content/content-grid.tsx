@@ -8,6 +8,7 @@ import { SkeletonBlock } from "@c/util/skeleton-block";
 import { selectLoading, selectSetGroups } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
+import { selectUser } from "@s/user";
 import "./content-grid.scss";
 
 type ContentGridProps = {
@@ -23,9 +24,11 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   const setGroups = useAppSelector(selectSetGroups);
   const loading = useAppSelector(selectLoading);
 
+  const user = useAppSelector(selectUser);
+
   const createGroup = (sets: SetType[]) => {
     if (view === "card") {
-      return <ViewCard {...{ sets, details, detailSet, closeDetails, edit }} />;
+      return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user }} />;
     } else if (view === "list") {
       return <ViewList {...{ sets, details, detailSet, closeDetails, edit }} />;
     } else if (view === "imageList") {

@@ -1,6 +1,8 @@
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import { SkeletonCard } from "@c/main/views/card/skeleton-card";
 import type { SetType } from "@s/main/types";
+import type { CurrentUserType } from "@s/user/types";
 import { ordinal } from "@s/util/functions";
 import { ElementCard } from "./element-card";
 import "./view-card.scss";
@@ -11,15 +13,17 @@ type ViewCardProps = {
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
   sets: SetType[];
+  loading?: boolean;
+  user: CurrentUserType;
 };
 
-export const ViewCard = (props: ViewCardProps) => {
+export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading, user }: ViewCardProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <div className="group-container">
-      {props.sets.map((set, index) => {
+      {sets.map((set) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
@@ -34,8 +38,6 @@ export const ViewCard = (props: ViewCardProps) => {
 
         const icDate = set.icDate ? DateTime.fromISO(set.icDate, { zone: "utc" }) : null;
         const icDateOrdinal = icDate instanceof DateTime ? ordinal(icDate.day) : "";
-
-        const title = `${set.profile} ${set.colorway}`;
         let subtitle = "";
         if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
           subtitle = `${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
@@ -60,31 +62,31 @@ export const ViewCard = (props: ViewCardProps) => {
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
-        const designer = set.designer.join(" + ");
-        const thisWeek = gbEnd
-          ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf()
-          : false;
-        const daysLeft = gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0;
-        let live = false;
-        if (gbLaunch instanceof DateTime && gbEnd) {
-          live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
-        }
-        return (
+        return loading ? (
+          <SkeletonCard
+            key={set.id}
+            designer={set.designer.join(" + ")}
+            title={`${set.profile} ${set.colorway}`}
+            loggedIn={!!user?.email}
+            {...{ subtitle }}
+          />
+        ) : (
           <ElementCard
-            selected={props.detailSet === set}
-            set={set}
-            title={title}
-            subtitle={subtitle}
-            designer={designer}
+            key={set.id}
+            selected={detailSet === set}
+            designer={set.designer.join(" + ")}
             image={set.image.replace("keysets", "card")}
-            link={set.details}
-            details={props.details}
-            closeDetails={props.closeDetails}
-            edit={props.edit}
-            thisWeek={thisWeek}
-            daysLeft={daysLeft}
-            live={live}
-            key={set.details + index}
+            title={`${set.profile} ${set.colorway}`}
+            live={
+              gbLaunch instanceof DateTime && gbEnd
+                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+                : false
+            }
+            daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
+            thisWeek={
+              gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
+            }
+            {...{ set, subtitle, details, closeDetails, edit, user }}
           />
         );
       })}

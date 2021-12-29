@@ -10,10 +10,16 @@
   &--typography {
     display: flex;
     align-items: center;
+    position: relative;
+    .skeleton-block__content {
+      visibility: hidden;
+    }
     &::after {
+      position: absolute;
       content: var(--content, " ");
       animation: placeholder 2s ease infinite;
       width: auto;
+      height: var(--after-height, auto);
       border-radius: inherit;
       color: transparent;
     }

@@ -251,20 +251,17 @@ export const setPage = (page: Page, state = store.getState()) => {
   const urlGuide = selectURLGuide(state);
   const urlUpdate = selectURLUpdate(state);
   if (page !== appPage && !loading && is<Page>(page)) {
-    dispatch(setTransition(true));
+    triggerTransition();
     setTimeout(() => {
       dispatch(setMainSearch(""));
       dispatch(setAppPage(page));
       if (arrayIncludes(mainPages, page)) {
         dispatch(setMainSort(pageSort[page]));
         dispatch(setMainSortOrder(pageSortOrder[page]));
-        filterData(store.getState());
+        filterData();
       }
       document.documentElement.scrollTop = 0;
     }, 90);
-    setTimeout(() => {
-      dispatch(setTransition(true));
-    }, 300);
     document.title = "KeycapLendar: " + pageTitle[page];
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
@@ -295,4 +292,11 @@ export const setPage = (page: Page, state = store.getState()) => {
       "/" + page + urlParams
     );
   }
+};
+
+export const triggerTransition = (delay = 300) => {
+  dispatch(setTransition(true));
+  setTimeout(() => {
+    dispatch(setTransition(false));
+  }, delay);
 };

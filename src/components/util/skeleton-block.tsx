@@ -6,6 +6,7 @@ import "./skeleton-block.scss";
 export type SkeletonBlockProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
   width?: number | string;
   height?: number | string;
+  afterHeight?: number | string;
   typography?: TypographyT;
   content?: string;
 };
@@ -17,6 +18,7 @@ export const SkeletonBlock = ({
   width,
   typography,
   content,
+  afterHeight,
   className = "",
   style = {},
   ...props
@@ -29,6 +31,8 @@ export const SkeletonBlock = ({
       },
       extra: { [className]: !!className, [`mdc-typography--${typography}`]: !!typography },
     })}
-    style={{ ...style, height, width, [`--content`]: `"${content}"` }}
-  />
+    style={{ ...style, height, width, [`--content`]: `"${content}"`, [`--after-height`]: afterHeight }}
+  >
+    {content && <span className={bemClasses("content")}>{content}</span>}
+  </div>
 );

@@ -129,7 +129,7 @@
         display: none;
       }
     }
-    &:hover {
+    &:hover:not(.skeleton-card) {
       @include elevation.elevation(4);
       .hover-button {
         &::before {
