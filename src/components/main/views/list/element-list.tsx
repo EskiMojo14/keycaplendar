@@ -15,9 +15,9 @@ import "./element-list.scss";
 type ElementListProps = {
   closeDetails: () => void;
   daysLeft: number;
+  designer: string;
   details: (set: SetType) => void;
   image: string;
-  link: string;
   live: boolean;
   selected: boolean;
   set: SetType;
@@ -26,13 +26,25 @@ type ElementListProps = {
   title: string;
 };
 
-export const ElementList = (props: ElementListProps) => {
+export const ElementList = ({
+  closeDetails,
+  daysLeft,
+  designer,
+  details,
+  image,
+  live,
+  selected,
+  set,
+  subtitle,
+  thisWeek,
+  title,
+}: ElementListProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
   const copyShareLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -46,15 +58,15 @@ export const ElementList = (props: ElementListProps) => {
   const useLink = device === "desktop";
 
   const liveIndicator =
-    props.live && page !== "live"
+    live && page !== "live"
       ? withTooltip(<ListItemMeta className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator = props.set?.shipped
+  const shipIndicator = set?.shipped
     ? withTooltip(<ListItemMeta className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;
-  const timeIndicator = props.thisWeek ? (
+  const timeIndicator = thisWeek ? (
     <Typography use="overline" className="time-indicator">
-      {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
+      {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
   ) : null;
   const shareIcon = useLink
@@ -63,30 +75,27 @@ export const ElementList = (props: ElementListProps) => {
           className="link-icon"
           icon="open_in_new"
           tag="a"
-          href={props.link}
+          href={set.details}
           target="_blank"
           rel="noopener noreferrer"
-          label={"Link to " + props.title}
+          label={"Link to " + title}
         />,
         "Link"
       )
     : withTooltip(<IconButton icon={iconObject(<Share />)} onClick={copyShareLink} />, "Share");
   return (
-    <ListItem
-      selected={props.selected}
-      onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
-    >
+    <ListItem selected={selected} onClick={() => (!selected ? details(set) : closeDetails())}>
       <LazyLoad debounce={false} offsetVertical={480} className="list-image-container">
-        <div className="list-image" style={{ backgroundImage: "url(" + props.image + ")" }}></div>
+        <div className="list-image" style={{ backgroundImage: "url(" + image + ")" }}></div>
       </LazyLoad>
       <ListItemText>
         <Typography use="overline" className="overline">
-          {props.set.designer.join(" + ")}
+          {designer}
         </Typography>
         <ListItemPrimaryText>
-          <Twemoji options={{ className: "twemoji" }}>{props.title}</Twemoji>
+          <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
         </ListItemPrimaryText>
-        <ListItemSecondaryText>{props.subtitle}</ListItemSecondaryText>
+        <ListItemSecondaryText>{subtitle}</ListItemSecondaryText>
       </ListItemText>
       {timeIndicator}
       {liveIndicator}

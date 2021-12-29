@@ -62,21 +62,15 @@ export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
+        const title = `${set.profile} ${set.colorway}`;
+        const designer = set.designer.join(" + ");
         return loading ? (
-          <SkeletonCard
-            key={set.id}
-            designer={set.designer.join(" + ")}
-            title={`${set.profile} ${set.colorway}`}
-            loggedIn={!!user?.email}
-            {...{ subtitle }}
-          />
+          <SkeletonCard key={set.id} loggedIn={!!user?.email} {...{ title, subtitle, designer }} />
         ) : (
           <ElementCard
             key={set.id}
             selected={detailSet === set}
-            designer={set.designer.join(" + ")}
             image={set.image.replace("keysets", "card")}
-            title={`${set.profile} ${set.colorway}`}
             live={
               gbLaunch instanceof DateTime && gbEnd
                 ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
@@ -86,7 +80,7 @@ export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading
             thisWeek={
               gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
             }
-            {...{ set, subtitle, details, closeDetails, edit, user }}
+            {...{ set, title, subtitle, designer, details, closeDetails, edit, user }}
           />
         );
       })}

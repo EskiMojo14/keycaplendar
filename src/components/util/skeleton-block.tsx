@@ -27,7 +27,7 @@ export const SkeletonBlock = ({
     {...props}
     className={bemClasses({
       modifiers: {
-        typography: !!typography,
+        typography: !!typography || !!content,
       },
       extra: { [className]: !!className, [`mdc-typography--${typography}`]: !!typography },
     })}

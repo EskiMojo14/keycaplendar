@@ -122,7 +122,8 @@ code {
 .details-image,
 .image-details .image,
 .image-display,
-.mdc-list-item__graphic.image {
+.mdc-list-item__graphic.image,
+.list-image-container {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
 }
 

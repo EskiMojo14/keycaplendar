@@ -1,3 +1,4 @@
+@use "@material/rtl/_index" as rtl;
 @use "@material/shape/_index" as shape;
 
 .skeleton-block {
@@ -16,6 +17,8 @@
     }
     &::after {
       position: absolute;
+      @include rtl.reflexive-position(left, 0);
+      line-height: initial;
       content: var(--content, " ");
       animation: placeholder 2s ease infinite;
       width: auto;

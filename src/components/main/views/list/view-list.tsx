@@ -4,6 +4,7 @@ import { is } from "typescript-is";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementList } from "./element-list";
+import { SkeletonList } from "./skeleton-list";
 import "./view-list.scss";
 
 type ViewListProps = {
@@ -11,15 +12,16 @@ type ViewListProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   sets: SetType[];
+  loading?: boolean;
 };
 
-export const ViewList = (props: ViewListProps) => {
+export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: ViewListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
-    <List twoLine className="view-list three-line">
-      {props.sets.map((set, index) => {
+    <List twoLine nonInteractive={loading} className="view-list three-line">
+      {sets.map((set, index) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
@@ -35,7 +37,6 @@ export const ViewList = (props: ViewListProps) => {
         const icDate = set.icDate ? DateTime.fromISO(set.icDate, { zone: "utc" }) : null;
         const icDateOrdinal = icDate instanceof DateTime ? ordinal(icDate.day) : "";
 
-        const title = `${set.profile} ${set.colorway}`;
         let subtitle = "";
         if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
           subtitle = `${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
@@ -60,28 +61,26 @@ export const ViewList = (props: ViewListProps) => {
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
-        const thisWeek = gbEnd
-          ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf()
-          : false;
-        const daysLeft = gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0;
-        let live = false;
-        if (gbLaunch instanceof DateTime && gbEnd) {
-          live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
-        }
-        return (
+        const title = `${set.profile} ${set.colorway}`;
+        const designer = set.designer.join(" + ");
+        return loading ? (
+          <SkeletonList {...{ title, subtitle, designer }} />
+        ) : (
           <ElementList
-            selected={props.detailSet === set}
-            set={set}
-            title={title}
-            subtitle={subtitle}
-            image={set.image.replace("keysets", "list")}
-            link={set.details}
-            details={props.details}
-            closeDetails={props.closeDetails}
-            thisWeek={thisWeek}
-            daysLeft={daysLeft}
-            live={live}
             key={set.details + index}
+            selected={detailSet === set}
+            title={`${set.profile} ${set.colorway}`}
+            image={set.image.replace("keysets", "list")}
+            thisWeek={
+              gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
+            }
+            daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
+            live={
+              gbLaunch instanceof DateTime && gbEnd
+                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+                : false
+            }
+            {...{ set, subtitle, details, closeDetails, designer }}
           />
         );
       })}
