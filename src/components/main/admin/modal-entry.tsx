@@ -359,8 +359,7 @@ export const ModalCreate = (props: ModalCreateProps) => {
   const createEntry = (url = state.imageURL) => {
     if (valid && !uploadingImage && !uploadingDoc) {
       setUploadingDoc(true);
-      firebase
-        .firestore()
+      firestore
         .collection("keysets")
         .add({
           alias: nanoid(10),
