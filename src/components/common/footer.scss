@@ -3,7 +3,6 @@
 @use "~/util";
 
 .footer {
-  box-sizing: border-box;
   padding: 16px;
   @include util.divider-border(top);
   display: flex;

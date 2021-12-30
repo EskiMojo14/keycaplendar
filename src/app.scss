@@ -81,6 +81,10 @@
 
 @include typography.core-styles();
 
+* {
+  box-sizing: border-box;
+}
+
 code {
   font-family: "Roboto Mono", monospace;
   white-space: nowrap;
@@ -239,7 +243,6 @@ code {
   padding: 0.33rem 1rem;
   min-height: 2rem;
   min-width: 0;
-  box-sizing: border-box;
   white-space: pre-wrap;
   &::before {
     content: none !important;
@@ -359,7 +362,6 @@ body {
   .mdc-list-item:first-child {
     margin: 0;
     @include shape.radius(0);
-    box-sizing: border-box;
   }
   .mdc-menu {
     .mdc-list-item {

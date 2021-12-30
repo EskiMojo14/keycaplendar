@@ -32,7 +32,6 @@
   .mdc-drawer__content,
   .full-screen-dialog__content {
     padding: 16px;
-    box-sizing: border-box;
     .group {
       &:not(:last-child) {
         @include util.divider-border(bottom);
