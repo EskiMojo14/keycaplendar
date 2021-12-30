@@ -156,6 +156,7 @@ export const getData = () => {
       alphabeticalSortProp(sets, "colorway");
 
       dispatch(setSetList("allSets", sets));
+      dispatch(setInitialLoad(false));
 
       filterData(true);
       generateLists(store.getState());
@@ -300,7 +301,7 @@ export const filterData = (transition = false, state = store.getState()) => {
   const initialLoad = selectInitialLoad(state);
 
   if (initialLoad) {
-    return dispatch(setInitialLoad(false));
+    return;
   }
 
   // filter bool functions
