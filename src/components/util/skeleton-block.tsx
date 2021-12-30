@@ -56,6 +56,6 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
   </Tag>
 );
 
-export const SkeletonIcon = (props: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
-  <SkeletonBlock height={24} width={24} {...props} />
+export const SkeletonIcon = ({ className, ...props }: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
+  <SkeletonBlock className={bemClasses({ modifiers: "icon", extra: className })} height={24} width={24} {...props} />
 );
