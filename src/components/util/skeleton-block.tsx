@@ -9,18 +9,24 @@ export type SkeletonBlockProps = Omit<HTMLAttributes<HTMLDivElement>, "children"
   afterHeight?: number | string;
   typography?: TypographyT;
   content?: string;
+  colour?: string;
+  double?: boolean;
+  constrain?: boolean;
 };
 
 const bemClasses = new BEMHelper("skeleton-block");
 
 export const SkeletonBlock = ({
+  constrain,
   height,
   width,
   typography,
   content,
-  afterHeight,
+  afterHeight = constrain ? "1em" : undefined,
   className = "",
   style = {},
+  colour,
+  double,
   ...props
 }: SkeletonBlockProps) => (
   <div
@@ -28,10 +34,18 @@ export const SkeletonBlock = ({
     className={bemClasses({
       modifiers: {
         typography: !!typography || !!content,
+        double: !!double,
       },
       extra: { [className]: !!className, [`mdc-typography--${typography}`]: !!typography },
     })}
-    style={{ ...style, height, width, [`--content`]: `"${content}"`, [`--after-height`]: afterHeight }}
+    style={{
+      ...style,
+      height,
+      width,
+      [`--content`]: `"${content}"`,
+      [`--after-height`]: afterHeight,
+      [`--color`]: colour,
+    }}
   >
     {content && <span className={bemClasses("content")}>{content}</span>}
   </div>

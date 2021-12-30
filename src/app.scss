@@ -113,8 +113,11 @@ code {
   }
 }
 
-.skeleton-block {
-  @include shape.radius(small);
+.skeleton {
+  pointer-events: none;
+  &-block {
+    @include shape.radius(small);
+  }
 }
 
 .sales-image,

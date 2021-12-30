@@ -21,7 +21,7 @@ export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: Vi
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <List twoLine nonInteractive={loading} className="view-list three-line">
-      {sets.map((set, index) => {
+      {sets.map((set) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
@@ -64,10 +64,10 @@ export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: Vi
         const title = `${set.profile} ${set.colorway}`;
         const designer = set.designer.join(" + ");
         return loading ? (
-          <SkeletonList {...{ title, subtitle, designer }} />
+          <SkeletonList key={set.details} {...{ title, subtitle, designer }} />
         ) : (
           <ElementList
-            key={set.details + index}
+            key={set.details}
             selected={detailSet === set}
             title={`${set.profile} ${set.colorway}`}
             image={set.image.replace("keysets", "list")}

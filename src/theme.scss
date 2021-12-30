@@ -793,7 +793,7 @@ $overlay-values: (
   @if ($dark) {
     @media (min-width: 1240px) {
       transition-property: box-shadow, background-color;
-      .card-container .mdc-card:hover:not(.skeleton-card) {
+      .card-container .mdc-card:hover {
         background-color: overlay-elevation(map-get($variables, surface), 4);
       }
     }

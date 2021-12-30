@@ -17,6 +17,7 @@
   box-sizing: border-box;
   .subheader {
     padding-bottom: 16px;
+    align-self: flex-start;
   }
 
   @media (max-width: top-app-bar.$mobile-breakpoint) {

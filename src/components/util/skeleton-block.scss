@@ -2,9 +2,8 @@
 @use "@material/shape/_index" as shape;
 
 .skeleton-block {
-  &:not(.skeleton-block--typography) {
-    animation: placeholder 2s ease infinite;
-  }
+  background-color: var(--color, var(--theme-on-surface));
+  animation: skeleton 2s ease infinite;
   &--rounded {
     @include shape.radius(999em);
   }
@@ -12,6 +11,7 @@
     display: flex;
     align-items: center;
     position: relative;
+    background-color: transparent;
     .skeleton-block__content {
       visibility: hidden;
     }
@@ -20,11 +20,38 @@
       @include rtl.reflexive-position(left, 0);
       line-height: initial;
       content: var(--content, " ");
-      animation: placeholder 2s ease infinite;
       width: auto;
       height: var(--after-height, auto);
       border-radius: inherit;
       color: transparent;
+      background-color: var(--color, var(--theme-on-surface));
     }
+  }
+  &--double {
+    animation-name: skeleton-double;
+  }
+}
+
+@keyframes skeleton {
+  from {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.12;
+  }
+  to {
+    opacity: 0.06;
+  }
+}
+
+@keyframes skeleton-double {
+  from {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.24;
+  }
+  to {
+    opacity: 0.12;
   }
 }

@@ -10,24 +10,24 @@ export type SkeletonCardProps = {
 
 export const SkeletonCard = ({ designer, title, subtitle, loggedIn }: SkeletonCardProps) => (
   <div className="card-container">
-    <Card className="skeleton-card">
+    <Card className="skeleton">
       <div className="media-container">
         <CardMedia sixteenByNine />
       </div>
       <div className="text-row">
         <div className="text-container">
           <div className="overline">
-            <SkeletonBlock typography="overline" content={designer} afterHeight="1em" />
+            <SkeletonBlock typography="overline" content={designer} constrain />
           </div>
           <div className="title">
-            <SkeletonBlock typography="headline5" content={title} />
+            <SkeletonBlock typography="headline5" content={title} double />
           </div>
           <SkeletonBlock typography="subtitle2" content={subtitle} />
         </div>
       </div>
       {loggedIn && (
         <CardActions>
-          <SkeletonBlock typography="button" content="Share" afterHeight="1em" />
+          <SkeletonBlock typography="button" content="Share" constrain />
         </CardActions>
       )}
     </Card>

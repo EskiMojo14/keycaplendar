@@ -4,21 +4,23 @@ import { is } from "typescript-is";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementImage } from "./element-image";
+import { SkeletonImage } from "./skeleton-image";
 
 type ViewImageListProps = {
   closeDetails: () => void;
   detailSet: SetType;
   details: (set: SetType) => void;
   sets: SetType[];
+  loading?: boolean;
 };
 
-export const ViewImageList = (props: ViewImageListProps) => {
+export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading }: ViewImageListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
     <ImageList style={{ margin: -2 }} withTextProtection>
-      {props.sets.map((set, index) => {
+      {sets.map((set) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
             ? set.gbLaunch
@@ -59,28 +61,24 @@ export const ViewImageList = (props: ViewImageListProps) => {
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
-        const thisWeek = gbEnd
-          ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf()
-          : false;
-        const daysLeft = gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0;
-        let live = false;
-        if (gbLaunch instanceof DateTime && gbEnd) {
-          live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
-        }
-        return (
+        return loading ? (
+          <SkeletonImage key={set.details} {...{ title, subtitle }} />
+        ) : (
           <ElementImage
-            selected={props.detailSet === set}
-            title={title}
-            subtitle={subtitle}
+            key={set.details}
+            selected={detailSet === set}
             image={set.image.replace("keysets", "image-list")}
             link={set.details}
-            set={set}
-            details={props.details}
-            closeDetails={props.closeDetails}
-            thisWeek={thisWeek}
-            daysLeft={daysLeft}
-            live={live}
-            key={set.details + index}
+            thisWeek={
+              gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
+            }
+            daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
+            live={
+              gbLaunch instanceof DateTime && gbEnd
+                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+                : false
+            }
+            {...{ title, subtitle, set, details, closeDetails }}
           />
         );
       })}

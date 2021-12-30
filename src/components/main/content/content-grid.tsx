@@ -32,7 +32,7 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
     } else if (view === "list") {
       return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
     } else if (view === "imageList") {
-      return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit }} />;
+      return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
     } else if (view === "compact") {
       return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit }} />;
     }

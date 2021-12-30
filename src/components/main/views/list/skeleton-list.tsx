@@ -8,14 +8,14 @@ export type SkeletonListProps = {
 };
 
 export const SkeletonList = ({ designer, title, subtitle }: SkeletonListProps) => (
-  <ListItem ripple={false}>
+  <ListItem className="skeleton">
     <div className="list-image-container">
       <div className="list-image" />
     </div>
     <ListItemText>
-      <SkeletonBlock className="overline" typography="overline" content={designer} afterHeight="1em" />
+      <SkeletonBlock className="overline" typography="overline" content={designer} constrain />
       <ListItemPrimaryText>
-        <SkeletonBlock content={title} />
+        <SkeletonBlock content={title} double />
       </ListItemPrimaryText>
       <ListItemSecondaryText>
         <SkeletonBlock content={subtitle} />
