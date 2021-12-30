@@ -463,3 +463,10 @@ export const localeUses24HourTime = (langCode?: string) =>
       .formatToParts(new Date(2020, 0, 1, 13))
       .find((part) => part.type === "hour")?.value.length === 2
   );
+
+/**
+ * Generates a random integer between `min` and `max`
+ * @param max Maximum value to return
+ * @returns Random integer between `min` and `max`
+ */
+export const randomInt = (min = 0, max = 1) => Math.round(Math.random() * (max - min)) + min;

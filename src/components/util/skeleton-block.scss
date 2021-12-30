@@ -16,8 +16,11 @@
     align-items: center;
     position: relative;
     background-color: transparent;
+    word-wrap: break-word;
     .skeleton-block__content {
       visibility: hidden;
+      word-wrap: break-word;
+      max-width: 100%;
     }
     &::after {
       position: absolute;

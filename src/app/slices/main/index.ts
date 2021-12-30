@@ -1,13 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { DateTime } from "luxon";
+import { nanoid } from "nanoid";
 import type { RootState } from "~/app/store";
-import { removeDuplicates } from "@s/util/functions";
+import { randomInt, removeDuplicates } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
-import { Preset } from "./constructors";
+import { Keyset, Preset } from "./constructors";
 import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
+
+export const generateRandomSet = (): SetType => ({
+  ...new Keyset(
+    nanoid(randomInt(3, 4)),
+    nanoid(randomInt(5, 14)),
+    [...Array(randomInt(1, 3))].map(() => nanoid(randomInt(5, 7))),
+    "",
+    DateTime.now()
+      .minus({ days: randomInt(0, 100) })
+      .toISODate(),
+    DateTime.now()
+      .minus({ days: randomInt(0, 100) })
+      .toISODate(),
+    DateTime.now()
+      .minus({ days: randomInt(1, 100) })
+      .toISODate()
+  ),
+  id: nanoid(),
+});
+
+export const generateRandomSetGroups = (): SetGroup[] =>
+  [...Array(randomInt(2, 8))].map<SetGroup>(() => ({
+    title: nanoid(randomInt(8, 14)),
+    sets: [...Array(randomInt(2, 16))].map<SetType>(() => generateRandomSet()),
+  }));
 
 export type MainState = {
   transition: boolean;
+  initialLoad: boolean;
   loading: boolean;
   content: boolean;
 
@@ -41,7 +69,8 @@ export type MainState = {
 export const initialState: MainState = {
   // state
   transition: false,
-  loading: false,
+  initialLoad: true,
+  loading: true,
   content: true,
 
   // sorts
@@ -58,7 +87,7 @@ export const initialState: MainState = {
   // sets
   allSets: [],
   filteredSets: [],
-  setGroups: [],
+  setGroups: generateRandomSetGroups(),
   urlSet: {
     prop: "id",
     value: "",
@@ -93,11 +122,11 @@ export const mainSlice = createSlice({
     setTransition: (state, { payload }: PayloadAction<boolean>) => {
       state.transition = payload;
     },
+    setInitialLoad: (state, { payload }: PayloadAction<boolean>) => {
+      state.initialLoad = payload;
+    },
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
-    },
-    setContent: (state, { payload }: PayloadAction<boolean>) => {
-      state.content = payload;
     },
     setSort: (state, { payload }: PayloadAction<SortType>) => {
       state.sort = payload;
@@ -172,8 +201,8 @@ export const mainSlice = createSlice({
 export const {
   actions: {
     setTransition,
+    setInitialLoad,
     setLoading,
-    setContent,
     setSort,
     setSortOrder,
     setListState,
@@ -203,6 +232,8 @@ export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(prop: 
 export const selectTransition = (state: RootState) => state.main.transition;
 
 export const selectLoading = (state: RootState) => state.main.loading;
+
+export const selectInitialLoad = (state: RootState) => state.main.initialLoad;
 
 export const selectContent = (state: RootState) => state.main.content;
 

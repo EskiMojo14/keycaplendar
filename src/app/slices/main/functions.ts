@@ -31,6 +31,7 @@ import {
   selectCurrentPreset,
   selectDefaultPreset,
   selectFilteredSets,
+  selectInitialLoad,
   selectLinkedFavorites,
   selectSearch,
   selectSetGroups,
@@ -39,9 +40,9 @@ import {
   selectURLWhitelist,
   selectWhitelist,
   setAppPresets,
-  setContent,
   setCurrentPreset,
   setDefaultPreset,
+  setInitialLoad,
   setList,
   setLoading,
   setSearch as setMainSearch,
@@ -163,7 +164,7 @@ export const getData = () => {
       console.log("Error getting data: " + error);
       queue.notify({ title: "Error getting data: " + error });
       dispatch(setLoading(false));
-      dispatch(setContent(false));
+      dispatch(setSetGroups([]));
     });
 };
 
@@ -296,6 +297,11 @@ export const filterData = (transition = false, state = store.getState()) => {
   const bought = selectBought(state);
   const hidden = selectHidden(state);
   const user = selectUser(state);
+  const initialLoad = selectInitialLoad(state);
+
+  if (initialLoad) {
+    return dispatch(setInitialLoad(false));
+  }
 
   // filter bool functions
 
@@ -378,13 +384,9 @@ export const filterData = (transition = false, state = store.getState()) => {
 
   dispatch(setSetList("filteredSets", filteredSets));
 
-  createGroups(store.getState());
+  createGroups(transition);
 
-  dispatch(setContent(filteredSets.length > 0));
   dispatch(setLoading(false));
-  if (transition) {
-    triggerTransition();
-  }
 };
 
 const debouncedFilterData = debounce(filterData, 350, { trailing: true });
@@ -407,12 +409,12 @@ const sortData = (state = store.getState()) => {
   dispatch(setSetGroups(sortedGroups));
 };
 
-const createGroups = (state = store.getState()) => {
+const createGroups = (transition = false, state = store.getState()) => {
   const page = selectPage(state);
   const sort = selectSort(state);
   const sortOrder = selectSortOrder(state);
   const sets = selectFilteredSets(state);
-  const createGroups = (sets: SetType[]): string[] => {
+  const createSetGroups = (sets: SetType[]): string[] => {
     if (arrayIncludes(dateSorts, sort)) {
       return sets
         .map((set) => {
@@ -434,7 +436,7 @@ const createGroups = (state = store.getState()) => {
       return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter(Boolean);
     }
   };
-  const groups = removeDuplicates(createGroups(sets));
+  const groups = removeDuplicates(createSetGroups(sets));
 
   groups.sort((a, b) => {
     if (arrayIncludes(dateSorts, sort)) {
@@ -522,6 +524,10 @@ const createGroups = (state = store.getState()) => {
 
   dispatch(setSetGroups(setGroups));
 
+  if (transition) {
+    triggerTransition();
+  }
+
   if (sortHiddenCheck[sort].includes(page)) {
     const allGroupedSets = removeDuplicates(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
 
@@ -543,7 +549,7 @@ export const setSort = (sort: SortType, clearUrl = true, state = store.getState(
   if (arrayIncludes(allSorts, sort)) {
     dispatch(setMainSort(sort));
     dispatch(setMainSortOrder(sortOrder));
-    createGroups(store.getState());
+    createGroups();
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
