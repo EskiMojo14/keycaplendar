@@ -1,14 +1,22 @@
-import { ListItem, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
-import { SkeletonBlock } from "@c/util/skeleton-block";
+import {
+  ListItem,
+  ListItemGraphic,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
+import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonCompactProps = {
   title: string;
   subtitle: string;
-  live?: boolean;
+  icon?: boolean;
 };
 
-export const SkeletonCompact = ({ title, subtitle }: SkeletonCompactProps) => (
+export const SkeletonCompact = ({ title, subtitle, icon }: SkeletonCompactProps) => (
   <ListItem ripple={false} className="skeleton">
+    {icon && <ListItemGraphic className="live-indicator ship-indicator" tag={SkeletonIcon} />}
     <ListItemText>
       <ListItemPrimaryText>
         <SkeletonBlock content={title} double tag="span" />
@@ -17,5 +25,6 @@ export const SkeletonCompact = ({ title, subtitle }: SkeletonCompactProps) => (
         <SkeletonBlock content={subtitle} tag="span" />
       </ListItemSecondaryText>
     </ListItemText>
+    <ListItemMeta tag={SkeletonIcon} />
   </ListItem>
 );

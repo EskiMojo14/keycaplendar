@@ -6,7 +6,7 @@ import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
 import { iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
@@ -40,7 +40,6 @@ export const ElementList = ({
   title,
 }: ElementListProps) => {
   const device = useAppSelector(selectDevice);
-  const page = useAppSelector(selectPage);
 
   const copyShareLink = () => {
     const arr = window.location.href.split("/");
@@ -57,10 +56,9 @@ export const ElementList = ({
 
   const useLink = device === "desktop";
 
-  const liveIndicator =
-    live && page !== "live"
-      ? withTooltip(<ListItemMeta className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
-      : null;
+  const liveIndicator = live
+    ? withTooltip(<ListItemMeta className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    : null;
   const shipIndicator = set?.shipped
     ? withTooltip(<ListItemMeta className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;

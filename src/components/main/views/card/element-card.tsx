@@ -16,7 +16,7 @@ import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
 import { selectFavorites, selectHidden } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
@@ -57,7 +57,6 @@ export const ElementCard = ({
   user,
 }: ElementCardProps) => {
   const device = useAppSelector(selectDevice);
-  const page = useAppSelector(selectPage);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
 
@@ -76,10 +75,9 @@ export const ElementCard = ({
 
   const useLink = device === "desktop";
 
-  const liveIndicator =
-    live && page !== "live"
-      ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
-      : null;
+  const liveIndicator = live
+    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    : null;
   const shipIndicator = set?.shipped
     ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;

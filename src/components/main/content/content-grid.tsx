@@ -5,6 +5,7 @@ import { ViewCompact } from "@c/main/views/compact/view-compact";
 import { ViewImageList } from "@c/main/views/image-list/view-image-list";
 import { ViewList } from "@c/main/views/list/view-list";
 import { SkeletonBlock } from "@c/util/skeleton-block";
+import { selectPage } from "@s/common";
 import { selectLoading, selectSetGroups } from "@s/main";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
@@ -25,20 +26,21 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   const loading = useAppSelector(selectLoading);
 
   const user = useAppSelector(selectUser);
+  const page = useAppSelector(selectPage);
 
   const createGroup = (sets: SetType[]) => {
     switch (view) {
       case "card": {
-        return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user }} />;
+        return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user, page }} />;
       }
       case "list": {
-        return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+        return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
       }
       case "imageList": {
-        return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+        return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
       }
       case "compact": {
-        return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+        return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
       }
       default:
         return null;

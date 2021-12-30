@@ -1,6 +1,7 @@
 import { ImageList } from "@rmwc/image-list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import type { Page } from "@s/common/types";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementImage } from "./element-image";
@@ -12,9 +13,10 @@ type ViewImageListProps = {
   details: (set: SetType) => void;
   sets: SetType[];
   loading?: boolean;
+  page?: Page;
 };
 
-export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading }: ViewImageListProps) => {
+export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading, page }: ViewImageListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
@@ -61,8 +63,12 @@ export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading 
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
+        const live =
+          page !== "live" && gbLaunch instanceof DateTime && gbEnd
+            ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+            : false;
         return loading ? (
-          <SkeletonImage key={set.details} {...{ title, subtitle }} />
+          <SkeletonImage key={set.details} icon={set.shipped || live} {...{ title, subtitle }} />
         ) : (
           <ElementImage
             key={set.details}
@@ -73,12 +79,7 @@ export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading 
               gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
             }
             daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
-            live={
-              gbLaunch instanceof DateTime && gbEnd
-                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
-                : false
-            }
-            {...{ title, subtitle, set, details, closeDetails }}
+            {...{ title, subtitle, set, details, closeDetails, live }}
           />
         );
       })}

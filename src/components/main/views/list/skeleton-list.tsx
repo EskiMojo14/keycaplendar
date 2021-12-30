@@ -1,13 +1,14 @@
-import { ListItem, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
-import { SkeletonBlock } from "@c/util/skeleton-block";
+import { ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonListProps = {
   designer: string;
   title: string;
   subtitle: string;
+  icon?: boolean;
 };
 
-export const SkeletonList = ({ designer, title, subtitle }: SkeletonListProps) => (
+export const SkeletonList = ({ designer, title, subtitle, icon }: SkeletonListProps) => (
   <ListItem ripple={false} className="skeleton">
     <div className="list-image-container">
       <div className="list-image" />
@@ -21,5 +22,6 @@ export const SkeletonList = ({ designer, title, subtitle }: SkeletonListProps) =
         <SkeletonBlock content={subtitle} />
       </ListItemSecondaryText>
     </ListItemText>
+    {icon && <ListItemMeta tag={SkeletonIcon} />}
   </ListItem>
 );

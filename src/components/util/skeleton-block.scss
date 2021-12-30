@@ -2,8 +2,12 @@
 @use "@material/shape/_index" as shape;
 
 .skeleton-block {
-  background-color: var(--color, var(--theme-on-surface));
+  &,
+  &.mdc-list-item__graphic {
+    background-color: var(--color, var(--theme-on-surface));
+  }
   animation: skeleton 2s ease infinite;
+  max-width: 100%;
   &--rounded {
     @include shape.radius(999em);
   }
@@ -23,6 +27,7 @@
       width: auto;
       height: var(--after-height, auto);
       border-radius: inherit;
+      max-width: 100%;
       color: transparent;
       background-color: var(--color, var(--theme-on-surface));
     }

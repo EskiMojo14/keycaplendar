@@ -2,6 +2,7 @@ import { Card } from "@rmwc/card";
 import { List } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import type { Page } from "@s/common/types";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementCompact } from "./element-compact";
@@ -14,9 +15,10 @@ type ViewCompactProps = {
   details: (set: SetType) => void;
   sets: SetType[];
   loading?: boolean;
+  page: Page;
 };
 
-export const ViewCompact = ({ closeDetails, detailSet, details, sets, loading }: ViewCompactProps) => {
+export const ViewCompact = ({ closeDetails, detailSet, details, sets, loading, page }: ViewCompactProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   return (
@@ -63,19 +65,18 @@ export const ViewCompact = ({ closeDetails, detailSet, details, sets, loading }:
               icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
             }`;
           }
+          const live =
+            page !== "live" && gbLaunch instanceof DateTime && gbEnd
+              ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+              : false;
           return loading ? (
-            <SkeletonCompact key={set.details} {...{ title, subtitle }} />
+            <SkeletonCompact key={set.details} icon={set.shipped || live} {...{ title, subtitle }} />
           ) : (
             <ElementCompact
               key={set.details}
               selected={detailSet === set}
               link={set.details}
-              live={
-                gbLaunch instanceof DateTime && gbEnd
-                  ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
-                  : false
-              }
-              {...{ set, title, subtitle, details, closeDetails }}
+              {...{ set, title, subtitle, details, closeDetails, live }}
             />
           );
         })}

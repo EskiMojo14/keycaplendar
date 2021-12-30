@@ -47,11 +47,15 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
       ...style,
       height,
       width,
-      [`--content`]: `"${content}"`,
+      [`--content`]: content && `"${content}"`,
       [`--after-height`]: afterHeight,
       [`--color`]: colour,
     }}
   >
     {content && <span className={bemClasses("content")}>{content}</span>}
   </Tag>
+);
+
+export const SkeletonIcon = (props: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
+  <SkeletonBlock height={24} width={24} {...props} />
 );

@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
 import { SkeletonCard } from "@c/main/views/card/skeleton-card";
+import type { Page } from "@s/common/types";
 import type { SetType } from "@s/main/types";
 import type { CurrentUserType } from "@s/user/types";
 import { ordinal } from "@s/util/functions";
@@ -15,9 +16,10 @@ type ViewCardProps = {
   sets: SetType[];
   loading?: boolean;
   user: CurrentUserType;
+  page: Page;
 };
 
-export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading, user }: ViewCardProps) => {
+export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading, user, page }: ViewCardProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
@@ -62,25 +64,29 @@ export const ViewCard = ({ closeDetails, detailSet, details, edit, sets, loading
             icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
           }`;
         }
+        const live =
+          page !== "live" && gbLaunch instanceof DateTime && gbEnd
+            ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+            : false;
         const title = `${set.profile} ${set.colorway}`;
         const designer = set.designer.join(" + ");
         return loading ? (
-          <SkeletonCard key={set.id} loggedIn={!!user?.email} {...{ title, subtitle, designer }} />
+          <SkeletonCard
+            key={set.id}
+            loggedIn={!!user?.email}
+            icon={set.shipped || live}
+            {...{ title, subtitle, designer }}
+          />
         ) : (
           <ElementCard
             key={set.id}
             selected={detailSet === set}
             image={set.image.replace("keysets", "card")}
-            live={
-              gbLaunch instanceof DateTime && gbEnd
-                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
-                : false
-            }
             daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
             thisWeek={
               gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
             }
-            {...{ set, title, subtitle, designer, details, closeDetails, edit, user }}
+            {...{ set, title, subtitle, designer, details, closeDetails, edit, user, live }}
           />
         );
       })}

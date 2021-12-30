@@ -1,6 +1,7 @@
 import { List, ListDivider } from "@rmwc/list";
 import { DateTime } from "luxon";
 import { is } from "typescript-is";
+import type { Page } from "@s/common/types";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementList } from "./element-list";
@@ -13,9 +14,10 @@ type ViewListProps = {
   details: (set: SetType) => void;
   sets: SetType[];
   loading?: boolean;
+  page?: Page;
 };
 
-export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: ViewListProps) => {
+export const ViewList = ({ closeDetails, detailSet, details, sets, loading, page }: ViewListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
@@ -63,8 +65,12 @@ export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: Vi
         }
         const title = `${set.profile} ${set.colorway}`;
         const designer = set.designer.join(" + ");
+        const live =
+          page !== "live" && gbLaunch instanceof DateTime && gbEnd
+            ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+            : false;
         return loading ? (
-          <SkeletonList key={set.details} {...{ title, subtitle, designer }} />
+          <SkeletonList key={set.details} icon={set.shipped || live} {...{ title, subtitle, designer }} />
         ) : (
           <ElementList
             key={set.details}
@@ -75,12 +81,7 @@ export const ViewList = ({ closeDetails, detailSet, details, sets, loading }: Vi
               gbEnd ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() && gbEnd.valueOf() > today.valueOf() : false
             }
             daysLeft={gbEnd ? Math.ceil(Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)) : 0}
-            live={
-              gbLaunch instanceof DateTime && gbEnd
-                ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
-                : false
-            }
-            {...{ set, subtitle, details, closeDetails, designer }}
+            {...{ set, subtitle, details, closeDetails, designer, live }}
           />
         );
       })}
