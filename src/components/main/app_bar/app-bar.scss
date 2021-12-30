@@ -24,7 +24,6 @@
   .mdc-linear-progress {
     position: absolute;
     top: top-app-bar.$row-height - 4px;
-    z-index: 4;
     .mdc-linear-progress__buffering-dots {
       display: none;
     }

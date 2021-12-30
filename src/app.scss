@@ -116,7 +116,7 @@ code {
 .skeleton {
   pointer-events: none;
   &-block {
-    @include shape.radius(small);
+    @include shape.radius(shape.resolve-percentage-radius(32px, small));
   }
 }
 
