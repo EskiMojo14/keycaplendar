@@ -8,7 +8,7 @@ export type SkeletonListProps = {
 };
 
 export const SkeletonList = ({ designer, title, subtitle }: SkeletonListProps) => (
-  <ListItem className="skeleton">
+  <ListItem ripple={false} className="skeleton">
     <div className="list-image-container">
       <div className="list-image" />
     </div>

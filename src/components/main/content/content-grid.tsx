@@ -27,14 +27,21 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   const user = useAppSelector(selectUser);
 
   const createGroup = (sets: SetType[]) => {
-    if (view === "card") {
-      return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user }} />;
-    } else if (view === "list") {
-      return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
-    } else if (view === "imageList") {
-      return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
-    } else if (view === "compact") {
-      return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit }} />;
+    switch (view) {
+      case "card": {
+        return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user }} />;
+      }
+      case "list": {
+        return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+      }
+      case "imageList": {
+        return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+      }
+      case "compact": {
+        return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit, loading }} />;
+      }
+      default:
+        return null;
     }
   };
   return (

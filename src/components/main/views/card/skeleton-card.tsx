@@ -17,12 +17,12 @@ export const SkeletonCard = ({ designer, title, subtitle, loggedIn }: SkeletonCa
       <div className="text-row">
         <div className="text-container">
           <div className="overline">
-            <SkeletonBlock typography="overline" content={designer} constrain />
+            <SkeletonBlock typography="overline" content={designer} constrain tag="span" />
           </div>
           <div className="title">
             <SkeletonBlock typography="headline5" content={title} double />
           </div>
-          <SkeletonBlock typography="subtitle2" content={subtitle} />
+          <SkeletonBlock typography="subtitle2" content={subtitle} tag="p" />
         </div>
       </div>
       {loggedIn && (

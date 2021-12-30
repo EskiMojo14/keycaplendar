@@ -5,6 +5,7 @@ import { is } from "typescript-is";
 import type { SetType } from "@s/main/types";
 import { ordinal } from "@s/util/functions";
 import { ElementCompact } from "./element-compact";
+import { SkeletonCompact } from "./skeleton-compact";
 import "./view-compact.scss";
 
 type ViewCompactProps = {
@@ -12,15 +13,16 @@ type ViewCompactProps = {
   detailSet: SetType;
   details: (set: SetType) => void;
   sets: SetType[];
+  loading?: boolean;
 };
 
-export const ViewCompact = (props: ViewCompactProps) => {
+export const ViewCompact = ({ closeDetails, detailSet, details, sets, loading }: ViewCompactProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });
   return (
     <Card>
-      <List twoLine>
-        {props.sets.map((set, index) => {
+      <List twoLine nonInteractive={loading}>
+        {sets.map((set) => {
           const gbLaunch = set.gbLaunch
             ? set.gbLaunch.includes("Q") || !set.gbLaunch
               ? set.gbLaunch
@@ -61,21 +63,19 @@ export const ViewCompact = (props: ViewCompactProps) => {
               icDate.year !== today.year ? icDate.toFormat("\xa0yyyy") : ""
             }`;
           }
-          let live = false;
-          if (gbLaunch instanceof DateTime && gbEnd) {
-            live = gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd);
-          }
-          return (
+          return loading ? (
+            <SkeletonCompact key={set.details} {...{ title, subtitle }} />
+          ) : (
             <ElementCompact
-              selected={props.detailSet === set}
-              set={set}
-              title={title}
-              subtitle={subtitle}
-              details={props.details}
-              closeDetails={props.closeDetails}
+              key={set.details}
+              selected={detailSet === set}
               link={set.details}
-              live={live}
-              key={set.details + index}
+              live={
+                gbLaunch instanceof DateTime && gbEnd
+                  ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
+                  : false
+              }
+              {...{ set, title, subtitle, details, closeDetails }}
             />
           );
         })}

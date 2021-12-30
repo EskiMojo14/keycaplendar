@@ -1,9 +1,11 @@
-import type { HTMLAttributes } from "react";
 import type { TypographyT } from "@rmwc/typography";
 import BEMHelper from "@s/common/bem-helper";
 import "./skeleton-block.scss";
 
-export type SkeletonBlockProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
+export type SkeletonBlockProps<Tag extends keyof JSX.IntrinsicElements = "div"> = Omit<
+  JSX.IntrinsicElements[Tag],
+  "children"
+> & {
   width?: number | string;
   height?: number | string;
   afterHeight?: number | string;
@@ -12,11 +14,12 @@ export type SkeletonBlockProps = Omit<HTMLAttributes<HTMLDivElement>, "children"
   colour?: string;
   double?: boolean;
   constrain?: boolean;
+  tag?: Tag;
 };
 
 const bemClasses = new BEMHelper("skeleton-block");
 
-export const SkeletonBlock = ({
+export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div">({
   constrain,
   height,
   width,
@@ -27,9 +30,11 @@ export const SkeletonBlock = ({
   style = {},
   colour,
   double,
+  tag: Tag = "div" as HTMLTag,
   ...props
-}: SkeletonBlockProps) => (
-  <div
+}: SkeletonBlockProps<HTMLTag>) => (
+  // @ts-expect-error pain
+  <Tag
     {...props}
     className={bemClasses({
       modifiers: {
@@ -48,5 +53,5 @@ export const SkeletonBlock = ({
     }}
   >
     {content && <span className={bemClasses("content")}>{content}</span>}
-  </div>
+  </Tag>
 );

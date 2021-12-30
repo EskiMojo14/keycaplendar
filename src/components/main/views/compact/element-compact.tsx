@@ -28,7 +28,16 @@ type ElementCompactProps = {
   title: string;
 };
 
-export const ElementCompact = (props: ElementCompactProps) => {
+export const ElementCompact = ({
+  closeDetails,
+  details,
+  link,
+  live,
+  selected,
+  set,
+  subtitle,
+  title,
+}: ElementCompactProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -36,7 +45,7 @@ export const ElementCompact = (props: ElementCompactProps) => {
 
   const copyShareLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -48,24 +57,21 @@ export const ElementCompact = (props: ElementCompactProps) => {
   };
 
   const liveIndicator =
-    props.live && page !== "live"
+    live && page !== "live"
       ? withTooltip(<ListItemGraphic className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
       : null;
-  const shipIndicator = props.set?.shipped
+  const shipIndicator = set.shipped
     ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;
   return (
-    <ListItem
-      selected={props.selected}
-      onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
-    >
+    <ListItem selected={selected} onClick={() => (!selected ? details(set) : closeDetails())}>
       {liveIndicator}
       {shipIndicator}
       <ListItemText>
         <ListItemPrimaryText>
-          <Twemoji options={{ className: "twemoji" }}>{props.title}</Twemoji>
+          <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
         </ListItemPrimaryText>
-        <ListItemSecondaryText>{props.subtitle}</ListItemSecondaryText>
+        <ListItemSecondaryText>{subtitle}</ListItemSecondaryText>
       </ListItemText>
       {useLink
         ? withTooltip(
@@ -73,10 +79,10 @@ export const ElementCompact = (props: ElementCompactProps) => {
               className="mdc-list-item__meta"
               icon="open_in_new"
               tag="a"
-              href={props.link}
+              href={link}
               target="_blank"
               rel="noopener noreferrer"
-              label={"Link to " + props.title}
+              label={"Link to " + title}
             />,
             "Link"
           )
@@ -84,7 +90,7 @@ export const ElementCompact = (props: ElementCompactProps) => {
             <ListItemMeta
               tag={IconButton}
               icon={iconObject(<Share />)}
-              label={"Copy link to " + props.title}
+              label={"Copy link to " + title}
               onClick={copyShareLink}
             />,
             "Share"

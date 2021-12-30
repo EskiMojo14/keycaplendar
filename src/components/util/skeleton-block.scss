@@ -8,7 +8,7 @@
     @include shape.radius(999em);
   }
   &--typography {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     position: relative;
     background-color: transparent;
