@@ -4,55 +4,31 @@
 .skeleton-block {
   &,
   &.mdc-list-item__graphic {
-    background-color: var(--color, var(--theme-on-surface));
+    background-color: var(--color, currentColor);
   }
   animation: skeleton 2s ease infinite;
   max-width: 100%;
-  &--rounded {
-    @include shape.radius(999em);
-  }
   &--typography {
     display: inline-flex;
     align-items: center;
     position: relative;
-    background-color: transparent;
     word-wrap: break-word;
     .skeleton-block__content {
       visibility: hidden;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       max-width: 100%;
-    }
-    &::after {
-      position: absolute;
-      @include rtl.reflexive-position(left, 0);
-      line-height: initial;
-      content: var(--content, " ");
-      width: auto;
-      height: var(--after-height, auto);
-      border-radius: inherit;
-      max-width: 100%;
-      color: transparent;
-      background-color: var(--color, var(--theme-on-surface));
     }
   }
-  &--double {
-    animation-name: skeleton-double;
+  &--constrain {
+    .skeleton-block__content {
+      max-height: 1em;
+      display: inline-flex;
+      align-items: center;
+    }
   }
 }
 
 @keyframes skeleton {
-  from {
-    opacity: 0.06;
-  }
-  50% {
-    opacity: 0.12;
-  }
-  to {
-    opacity: 0.06;
-  }
-}
-
-@keyframes skeleton-double {
   from {
     opacity: 0.12;
   }

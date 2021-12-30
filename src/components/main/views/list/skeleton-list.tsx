@@ -16,7 +16,7 @@ export const SkeletonList = ({ designer, title, subtitle, icon }: SkeletonListPr
     <ListItemText>
       <SkeletonBlock className="overline" typography="overline" content={designer} constrain />
       <ListItemPrimaryText>
-        <SkeletonBlock content={title} double />
+        <SkeletonBlock content={title} />
       </ListItemPrimaryText>
       <ListItemSecondaryText>
         <SkeletonBlock content={subtitle} />

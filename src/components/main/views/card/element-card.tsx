@@ -172,9 +172,11 @@ export const ElementCard = ({
                   <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
                 </Typography>
               </div>
-              <Typography use="subtitle2" tag="p">
-                {subtitle}
-              </Typography>
+              <div className="subtitle">
+                <Typography use="subtitle2" tag="p">
+                  {subtitle}
+                </Typography>
+              </div>
             </div>
           </div>
         </CardPrimaryAction>

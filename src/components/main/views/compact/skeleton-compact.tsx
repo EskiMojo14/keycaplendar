@@ -19,7 +19,7 @@ export const SkeletonCompact = ({ title, subtitle, icon }: SkeletonCompactProps)
     {icon && <ListItemGraphic className="live-indicator ship-indicator" tag={SkeletonIcon} />}
     <ListItemText>
       <ListItemPrimaryText>
-        <SkeletonBlock content={title} double tag="span" />
+        <SkeletonBlock content={title} tag="span" />
       </ListItemPrimaryText>
       <ListItemSecondaryText>
         <SkeletonBlock content={subtitle} tag="span" />

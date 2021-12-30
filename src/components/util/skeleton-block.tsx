@@ -8,7 +8,6 @@ export type SkeletonBlockProps<Tag extends keyof JSX.IntrinsicElements = "div"> 
 > & {
   width?: number | string;
   height?: number | string;
-  afterHeight?: number | string;
   typography?: TypographyT;
   content?: string;
   colour?: string;
@@ -25,11 +24,9 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
   width,
   typography,
   content,
-  afterHeight = constrain ? "1em" : undefined,
   className = "",
   style = {},
   colour,
-  double,
   tag: Tag = "div" as HTMLTag,
   ...props
 }: SkeletonBlockProps<HTMLTag>) => (
@@ -39,7 +36,7 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
     className={bemClasses({
       modifiers: {
         typography: !!typography || !!content,
-        double: !!double,
+        constrain: !!constrain,
       },
       extra: { [className]: !!className, [`mdc-typography--${typography}`]: !!typography },
     })}
@@ -48,7 +45,6 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
       height,
       width,
       [`--content`]: content && `"${content}"`,
-      [`--after-height`]: afterHeight,
       [`--color`]: colour,
     }}
   >

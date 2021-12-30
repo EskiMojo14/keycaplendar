@@ -18,13 +18,21 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
       <div className="text-row">
         <div className="text-container">
           <div className="overline">
-            <SkeletonBlock typography="overline" content={designer} constrain tag="span" />
-            {icon && <SkeletonIcon className="live-indicator shipped-indicator" />}
+            <div className="overline-container">
+              <SkeletonBlock typography="overline" content={designer} constrain tag="span" />
+            </div>
+            {icon && (
+              <div className="skeleton-icon-container">
+                <SkeletonIcon className="live-indicator shipped-indicator" />
+              </div>
+            )}
           </div>
           <div className="title">
-            <SkeletonBlock typography="headline5" content={title} double />
+            <SkeletonBlock typography="headline5" content={title} />
           </div>
-          <SkeletonBlock typography="subtitle2" content={subtitle} tag="p" />
+          <div className="subtitle">
+            <SkeletonBlock typography="subtitle2" content={subtitle} tag="span" />
+          </div>
         </div>
       </div>
       {loggedIn && (
