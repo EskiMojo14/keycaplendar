@@ -70,10 +70,10 @@ export const ViewCompact = ({ closeDetails, detailSet, details, sets, loading, p
               ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
               : false;
           return loading ? (
-            <SkeletonCompact key={set.details} icon={set.shipped || live} {...{ title, subtitle }} />
+            <SkeletonCompact key={set.id} icon={set.shipped || live} {...{ title, subtitle }} />
           ) : (
             <ElementCompact
-              key={set.details}
+              key={set.id}
               selected={detailSet === set}
               link={set.details}
               {...{ set, title, subtitle, details, closeDetails, live }}

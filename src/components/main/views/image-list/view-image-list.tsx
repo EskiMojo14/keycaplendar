@@ -68,10 +68,10 @@ export const ViewImageList = ({ closeDetails, detailSet, details, sets, loading,
             ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
             : false;
         return loading ? (
-          <SkeletonImage key={set.details} icon={set.shipped || live} {...{ title, subtitle }} />
+          <SkeletonImage key={set.id} icon={set.shipped || live} {...{ title, subtitle }} />
         ) : (
           <ElementImage
-            key={set.details}
+            key={set.id}
             selected={detailSet === set}
             image={set.image.replace("keysets", "image-list")}
             link={set.details}

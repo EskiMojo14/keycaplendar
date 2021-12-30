@@ -70,10 +70,10 @@ export const ViewList = ({ closeDetails, detailSet, details, sets, loading, page
             ? gbLaunch.valueOf() < today.valueOf() && (gbEnd.valueOf() > yesterday.valueOf() || !set.gbEnd)
             : false;
         return loading ? (
-          <SkeletonList key={set.details} icon={set.shipped || live} {...{ title, subtitle, designer }} />
+          <SkeletonList key={set.id} icon={set.shipped || live} {...{ title, subtitle, designer }} />
         ) : (
           <ElementList
-            key={set.details}
+            key={set.id}
             selected={detailSet === set}
             title={`${set.profile} ${set.colorway}`}
             image={set.image.replace("keysets", "list")}

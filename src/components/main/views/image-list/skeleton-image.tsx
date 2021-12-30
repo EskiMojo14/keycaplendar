@@ -23,7 +23,7 @@ export const SkeletonImage = ({ title, subtitle, icon }: SkeletonImageProps) => 
               <SkeletonBlock content={subtitle} colour="white" />
             </div>
           </div>
-          {icon && <SkeletonIcon className="live-indicator ship-indicator" />}
+          {icon && <SkeletonIcon colour="white" className="live-indicator ship-indicator" />}
         </ImageListLabel>
       </ImageListSupporting>
     </div>
