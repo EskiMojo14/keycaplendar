@@ -115,7 +115,7 @@ describe("getSetMonthRange", () => {
   it("creates an array of months from sets provided, in specified format", () => {
     expect(
       getSetMonthRange(
-        [{ ...new Keyset("", [], "", "2021-01") }, { ...new Keyset("", [], "", "2021-03") }],
+        [{ ...new Keyset("", "", [], "", "2021-01") }, { ...new Keyset("", "", [], "", "2021-03") }],
         "icDate",
         "yyyy-MM"
       )

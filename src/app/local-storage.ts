@@ -46,6 +46,7 @@ export const sanitiseState = (state: RootState) => {
       urlWhitelist,
       linkedFavorites,
       defaultPreset,
+      initialLoad,
       ...filteredMainSlice
     } = mainSlice;
     /* eslint-enable @typescript-eslint/no-unused-vars */

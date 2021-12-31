@@ -94,14 +94,14 @@ export class Keyset {
   image: string;
   profile: string;
   constructor(
+    profile = "",
     colorway = "",
-    designer = [],
+    designer: string[] = [],
     details = "",
     icDate = "",
     gbLaunch = "",
     gbEnd = "",
     image = "",
-    profile = "",
     id = "",
     alias = ""
   ) {

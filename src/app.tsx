@@ -98,7 +98,6 @@ export const App = () => {
       window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", checkThemeListener);
     };
   }, []);
-  const transitionClass = classNames({ "view-transition": transition });
   return (
     <Router>
       <Switch>
@@ -109,7 +108,7 @@ export const App = () => {
         <Route path="/terms" component={TermsOfService} />
         <Route exact path={["/", ...allPages.map((page: string) => `/${page}`)]}>
           <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
-            <Content className={transitionClass} />
+            <Content className={classNames({ "view-transition": transition })} />
             <SnackbarQueue messages={queue.messages} />
             <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
             <Portal />

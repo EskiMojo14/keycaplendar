@@ -5,7 +5,6 @@ import {
   selectAllDesigners,
   selectAllSets,
   selectAppPresets,
-  selectContent,
   selectCurrentPreset,
   selectDefaultPreset,
   selectLinkedFavorites,
@@ -19,7 +18,6 @@ import {
   selectURLWhitelist,
   selectWhitelist,
   setAppPresets,
-  setContent,
   setCurrentPreset,
   setDefaultPreset,
   setLinkedFavorites,
@@ -53,12 +51,6 @@ it("sets transition", () => {
 it("sets loading", () => {
   store.dispatch(setLoading(true));
   const response = selectLoading(store.getState());
-  expect(response).toBe(true);
-});
-
-it("sets content", () => {
-  store.dispatch(setContent(true));
-  const response = selectContent(store.getState());
   expect(response).toBe(true);
 });
 

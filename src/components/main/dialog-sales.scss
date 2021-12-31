@@ -6,7 +6,6 @@
     img {
       width: 100%;
       @include util.divider-border();
-      box-sizing: border-box;
     }
   }
   .mdc-dialog__surface {

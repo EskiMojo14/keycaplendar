@@ -5,7 +5,6 @@
 .mdc-data-table__pagination {
   @include typography.typography(body2);
   @include util.divider-border(top);
-  box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
   &-trailing {

@@ -15,7 +15,7 @@ import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
 import { iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, NewReleases, Share } from "@i";
@@ -35,13 +35,24 @@ type ElementImageProps = {
   title: string;
 };
 
-export const ElementImage = (props: ElementImageProps) => {
+export const ElementImage = ({
+  closeDetails,
+  daysLeft,
+  details,
+  image,
+  link,
+  live,
+  selected,
+  set,
+  subtitle,
+  thisWeek,
+  title,
+}: ElementImageProps) => {
   const device = useAppSelector(selectDevice);
-  const page = useAppSelector(selectPage);
 
   const copyShareLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -54,17 +65,16 @@ export const ElementImage = (props: ElementImageProps) => {
 
   const useLink = device === "desktop";
 
-  const liveIndicator =
-    props.live && page !== "live"
-      ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
-      : null;
-  const shipIndicator = props.set?.shipped
+  const liveIndicator = live
+    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    : null;
+  const shipIndicator = set?.shipped
     ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;
-  const timeIndicator = props.thisWeek ? (
+  const timeIndicator = thisWeek ? (
     <div className="time-indicator">
       <Typography use="overline" className="live-indicator-text">
-        {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
+        {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
       </Typography>
     </div>
   ) : null;
@@ -75,10 +85,10 @@ export const ElementImage = (props: ElementImageProps) => {
           className="link-icon"
           icon="open_in_new"
           tag="a"
-          href={props.link}
+          href={link}
           target="_blank"
           rel="noopener noreferrer"
-          label={"Link to " + props.title}
+          label={"Link to " + title}
         />,
         "Link"
       )
@@ -86,8 +96,8 @@ export const ElementImage = (props: ElementImageProps) => {
   return (
     <Ripple>
       <ImageListItem
-        onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
-        className={classNames("image-list-item", { selected: props.selected })}
+        onClick={() => (!selected ? details(set) : closeDetails())}
+        className={classNames("image-list-item", { selected })}
       >
         <div className="container">
           <div className="link-icon-container">
@@ -101,7 +111,7 @@ export const ElementImage = (props: ElementImageProps) => {
             {timeIndicator}
             <ImageListImageAspectContainer style={{ paddingBottom: "calc(100% / 1)" }}>
               <LazyLoad debounce={false} offsetVertical={480}>
-                <ImageListImage tag="div" style={{ backgroundImage: "url(" + props.image + ")" }} />
+                <ImageListImage tag="div" style={{ backgroundImage: "url(" + image + ")" }} />
               </LazyLoad>
             </ImageListImageAspectContainer>
           </div>
@@ -109,9 +119,9 @@ export const ElementImage = (props: ElementImageProps) => {
             <ImageListLabel>
               <div className="text-container">
                 <div className="primary-text">
-                  <Twemoji options={{ className: "twemoji" }}>{props.title}</Twemoji>
+                  <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
                 </div>
-                <div className="secondary-text">{props.subtitle}</div>
+                <div className="secondary-text">{subtitle}</div>
               </div>
               {liveIndicator}
               {shipIndicator}

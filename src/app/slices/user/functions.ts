@@ -92,7 +92,7 @@ export const getUserPreferences = (id: string) => {
               }
             }
 
-            filterData(store.getState());
+            filterData();
           }
         }
       })
@@ -111,7 +111,7 @@ export const toggleFavorite = (id: string, state = store.getState()) => {
   const favorites = addOrRemove([...userFavorites], id);
   dispatch(setFavorites(favorites));
   if (page === "favorites" || whitelist.favorites) {
-    filterData(store.getState());
+    filterData();
   }
   if (user.id) {
     firestore
@@ -138,7 +138,7 @@ export const toggleBought = (id: string, state = store.getState()) => {
   const bought = addOrRemove([...userBought], id);
   dispatch(setBought(bought));
   if (page === "bought" || whitelist.bought) {
-    filterData(store.getState());
+    filterData();
   }
   if (user.id) {
     firestore
@@ -164,7 +164,7 @@ export const toggleHidden = (id: string, state = store.getState()) => {
   const hidden = addOrRemove([...userHidden], id);
   dispatch(setHidden(hidden));
   if (page !== "favorites" && page !== "bought") {
-    filterData(store.getState());
+    filterData();
   }
   const isHidden = hidden.includes(id);
   queue.notify({
@@ -245,7 +245,7 @@ export const getLinkedFavorites = (id: string) => {
     .then(({ data }) => {
       if (hasKey(data, "array") && is<string[]>(data.array)) {
         dispatch(setLinkedFavorites(data));
-        filterData(store.getState());
+        filterData();
       }
     })
     .catch((error) => {

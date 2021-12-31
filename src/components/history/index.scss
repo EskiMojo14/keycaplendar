@@ -46,7 +46,6 @@ $tabs: recent, changelog;
     max-width: 2000px;
     margin: 0 auto;
     width: 100%;
-    box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-gap: 16px;
