@@ -19,11 +19,11 @@ type AutocompleteProps = HTMLAttributes<HTMLElement> & {
 export const Autocomplete = ({
   array,
   className,
+  listSplit,
   minChars,
   open,
   prop,
   query,
-  listSplit,
   select,
   ...filteredProps
 }: AutocompleteProps) => {
@@ -85,11 +85,11 @@ const bemClasses = new BEMHelper("autocomplete-mobile");
 export const AutocompleteMobile = ({
   array,
   className,
+  listSplit,
   minChars,
   open,
   prop,
   query,
-  listSplit,
   select,
   ...filteredProps
 }: AutocompleteProps) => {

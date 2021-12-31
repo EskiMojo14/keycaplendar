@@ -38,7 +38,7 @@ import "./react-markdown.scss";
 
 const input = Object.assign(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ({ type, node, ...allProps }: Record<string, any>) => {
+  ({ node, type, ...allProps }: Record<string, any>) => {
     if (type === "checkbox") {
       return <Checkbox {...allProps} />;
     } else {
@@ -50,7 +50,7 @@ const input = Object.assign(
 
 const dataTableContainer = Object.assign(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ({ node, children, ...allProps }: Record<string, any>) => (
+  ({ children, node, ...allProps }: Record<string, any>) => (
     <DataTable {...allProps}>
       <DataTableContent>{children}</DataTableContent>
     </DataTable>
@@ -80,8 +80,8 @@ const customComponents = {
 type CustomReactMarkdownProps = ReactMarkdownOptions;
 
 export const CustomReactMarkdown = ({
-  components,
   className,
+  components,
   ...filteredProps
 }: CustomReactMarkdownProps) => (
   <ReactMarkdown
@@ -102,12 +102,12 @@ type CustomReactMdeProps = Omit<
 };
 
 export const CustomReactMde = ({
-  toolbarCommands,
+  childProps,
+  classes,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   l18n,
-  classes,
-  childProps,
   required,
+  toolbarCommands,
   value,
   ...filteredProps
 }: CustomReactMdeProps) => {

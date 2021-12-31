@@ -255,7 +255,7 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   };
 
   const handleChange = ({
-    target: { name, value, checked },
+    target: { checked, name, value },
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
@@ -1145,7 +1145,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   };
 
   const handleChange = ({
-    target: { name, value, checked },
+    target: { checked, name, value },
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));

@@ -148,9 +148,9 @@ export const getData = () => {
         if (doc.data().profile) {
           const {
             gbLaunch: docGbLaunch,
-            sales: docSales,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             latestEditor,
+            sales: docSales,
             ...data
           } = doc.data();
 

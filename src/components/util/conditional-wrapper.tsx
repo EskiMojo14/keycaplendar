@@ -5,9 +5,9 @@ import type { ReactNode } from "react";
  */
 
 export const ConditionalWrapper = ({
+  children,
   condition,
   wrapper,
-  children,
 }: {
   condition: boolean;
   wrapper: (children: ReactNode) => JSX.Element;
@@ -19,10 +19,10 @@ export const ConditionalWrapper = ({
  */
 
 export const BoolWrapper = ({
-  condition,
-  trueWrapper,
-  falseWrapper,
   children,
+  condition,
+  falseWrapper,
+  trueWrapper,
 }: {
   condition: boolean;
   trueWrapper: (children: ReactNode) => JSX.Element;

@@ -42,7 +42,7 @@ export const historySlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setTab, setProcessedActions, setRecentSets },
+  actions: { setLoading, setProcessedActions, setRecentSets, setTab },
 } = historySlice;
 
 export const selectLoading = (state: RootState) => state.history.loading;

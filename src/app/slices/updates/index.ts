@@ -34,7 +34,7 @@ export const updatesSlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setEntries, setURLEntry },
+  actions: { setEntries, setLoading, setURLEntry },
 } = updatesSlice;
 
 export const selectLoading = (state: RootState) => state.updates.loading;

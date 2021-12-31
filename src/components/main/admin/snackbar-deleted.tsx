@@ -16,9 +16,9 @@ type SnackbarDeletedProps = {
 };
 
 export const SnackbarDeleted = ({
-  set: { id, ...set },
-  open,
   close,
+  open,
+  set: { id, ...set },
 }: SnackbarDeletedProps) => {
   const closeBar = (recreated = false) => {
     if (!recreated) {

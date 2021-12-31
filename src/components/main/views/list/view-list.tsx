@@ -19,11 +19,11 @@ type ViewListProps = {
 
 export const ViewList = ({
   closeDetails,
-  detailSet,
   details,
-  sets,
+  detailSet,
   loading,
   page,
+  sets,
 }: ViewListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });

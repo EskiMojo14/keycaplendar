@@ -78,16 +78,16 @@ export const imagesSlice = createSlice({
 
 export const {
   actions: {
-    setLoading,
-    setCurrentFolder,
-    setFolders,
-    setImages,
     appendImages,
     setCheckedImages,
-    setSetImages,
-    setDuplicateSetImages,
+    setCurrentFolder,
     setDetailImage,
     setDetailMetadata,
+    setDuplicateSetImages,
+    setFolders,
+    setImages,
+    setLoading,
+    setSetImages,
   },
 } = imagesSlice;
 

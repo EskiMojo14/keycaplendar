@@ -63,14 +63,14 @@ type TableCardProps = {
 };
 
 export const TableCard = ({
-  data,
-  unit,
-  category,
-  defaultType,
   breakdownData,
-  overline,
+  category,
+  data,
+  defaultType,
   note,
+  overline,
   summary,
+  unit,
 }: TableCardProps) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   useEffect(() => setSelectedIndex(-1), [category]);

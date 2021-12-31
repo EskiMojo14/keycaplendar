@@ -15,9 +15,9 @@ export type SkeletonCompactProps = {
 };
 
 export const SkeletonCompact = ({
-  title,
-  subtitle,
   icon,
+  subtitle,
+  title,
 }: SkeletonCompactProps) => (
   <ListItem className="skeleton" ripple={false}>
     {icon && (

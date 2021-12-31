@@ -18,11 +18,11 @@ type ViewImageListProps = {
 
 export const ViewImageList = ({
   closeDetails,
-  detailSet,
   details,
-  sets,
+  detailSet,
   loading,
   page,
+  sets,
 }: ViewImageListProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });

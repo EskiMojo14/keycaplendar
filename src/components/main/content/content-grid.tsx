@@ -20,8 +20,8 @@ type ContentGridProps = {
 };
 
 export const ContentGrid = ({
-  details,
   closeDetails,
+  details,
   detailSet,
   edit,
 }: ContentGridProps) => {

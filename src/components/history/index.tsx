@@ -154,7 +154,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     dispatch(setTab(historyTabs[index]));
   };
 
-  const slideRenderer: SlideRendererCallback = ({ key, index }) => {
+  const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = historyTabs;
     const tabs = {
       recent: (

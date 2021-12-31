@@ -37,7 +37,7 @@ type EntriesDrawerProps = {
   detailEntry: GuideEntryType;
 };
 
-export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
+export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);

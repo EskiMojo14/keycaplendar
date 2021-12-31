@@ -6,11 +6,11 @@ export const componentBuilder = (name: string, Component: FunctionComponent) =>
   Object.assign(
     ({
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      node,
-      ordered,
-      level,
       inline,
       isHeader,
+      level,
+      node,
+      ordered,
       /* eslint-enable @typescript-eslint/no-unused-vars */
       ...allProps
     }: Record<string, any>) => <Component {...allProps} />,
@@ -20,13 +20,13 @@ export const componentBuilder = (name: string, Component: FunctionComponent) =>
 export const typographyBuilder = (tag: string, typography: TypographyT) =>
   Object.assign(
     ({
+      children,
       /* eslint-disable @typescript-eslint/no-unused-vars */
+      inline,
+      level,
       node,
       ordered,
-      level,
-      inline,
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      children,
       ...allProps
     }: Record<string, any>) => (
       <Typography tag={tag} use={typography} {...allProps}>

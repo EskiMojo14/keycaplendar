@@ -6,7 +6,7 @@ type SnackbarCookiesProps = {
   clear: () => void;
 };
 
-export const SnackbarCookies = ({ open, accept }: SnackbarCookiesProps) => (
+export const SnackbarCookies = ({ accept, open }: SnackbarCookiesProps) => (
   <Snackbar
     action={[<SnackbarAction key="accept" label="Accept" onClick={accept} />]}
     message="By using this site, you consent to use of cookies to store preferences."

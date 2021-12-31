@@ -437,7 +437,7 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 
 export const ordinal = (
   n: number,
-  { th = "th", rd = "rd", nd = "nd", st = "st" } = {}
+  { nd = "nd", rd = "rd", st = "st", th = "th" } = {}
 ) => {
   if (n === 11 || n === 12 || n === 13) return th;
 

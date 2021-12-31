@@ -36,9 +36,9 @@ type ModalCreateProps = {
 };
 
 export const ModalCreate = ({
-  open,
-  onClose,
   getEntries,
+  onClose,
+  open,
 }: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
@@ -228,10 +228,10 @@ type ModalEditProps = {
 };
 
 export const ModalEdit = ({
-  open,
-  onClose,
-  getEntries,
   entry,
+  getEntries,
+  onClose,
+  open,
 }: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);

@@ -144,7 +144,7 @@ export const mainSlice = createSlice({
     setListState: (
       state,
       {
-        payload: { name, array },
+        payload: { array, name },
       }: PayloadAction<{
         name: KeysMatching<MainState, string[]>;
         array: string[];
@@ -155,7 +155,7 @@ export const mainSlice = createSlice({
     setSetListState: (
       state,
       {
-        payload: { name, array },
+        payload: { array, name },
       }: PayloadAction<{
         name: KeysMatching<MainState, SetType[]>;
         array: SetType[];
@@ -219,23 +219,23 @@ export const mainSlice = createSlice({
 
 export const {
   actions: {
-    setTransition,
-    setInitialLoad,
-    setLoading,
-    setSort,
-    setSortOrder,
-    setListState,
-    setSetListState,
-    setSetGroups,
-    setURLSetState,
-    setSearch,
-    setWhitelist,
     mergeWhitelist,
-    setURLWhitelist,
+    setAppPresets,
     setCurrentPreset,
     setDefaultPreset,
-    setAppPresets,
+    setInitialLoad,
     setLinkedFavorites,
+    setListState,
+    setLoading,
+    setSearch,
+    setSetGroups,
+    setSetListState,
+    setSort,
+    setSortOrder,
+    setTransition,
+    setURLSetState,
+    setURLWhitelist,
+    setWhitelist,
   },
 } = mainSlice;
 

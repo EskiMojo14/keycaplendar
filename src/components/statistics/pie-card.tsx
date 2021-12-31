@@ -31,11 +31,11 @@ type StatusCardProps = {
 };
 
 export const StatusCard = ({
-  data,
   breakdownData,
-  summary,
-  overline,
+  data,
   note,
+  overline,
+  summary,
 }: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);

@@ -74,13 +74,13 @@ export const userSlice = createSlice({
 
 export const {
   actions: {
-    setUser,
-    setShareName,
-    setUserPresets,
+    setBought,
     setFavorites,
     setFavoritesId,
-    setBought,
     setHidden,
+    setShareName,
+    setUser,
+    setUserPresets,
   },
 } = userSlice;
 

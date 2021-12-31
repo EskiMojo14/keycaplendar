@@ -104,12 +104,12 @@ export const DrawerFilter = ({
 
   const newPreset = (global = false) => {
     const {
-      favorites,
       bought,
+      favorites,
       hidden,
       profiles,
-      shipped,
       regions,
+      shipped,
       vendorMode,
       vendors,
     } = mainWhitelist;
@@ -131,12 +131,12 @@ export const DrawerFilter = ({
 
   const savePreset = () => {
     const {
-      favorites,
       bought,
+      favorites,
       hidden,
       profiles,
-      shipped,
       regions,
+      shipped,
       vendorMode,
       vendors,
     } = mainWhitelist;

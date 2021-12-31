@@ -37,11 +37,11 @@ type ModalCreateProps = {
 };
 
 export const ModalDetail = ({
-  entry,
-  open,
-  onClose,
-  edit,
   delete: deleteFn,
+  edit,
+  entry,
+  onClose,
+  open,
 }: ModalCreateProps) => {
   const dispatch = useAppDispatch();
 

@@ -29,9 +29,9 @@ type UpdateEntryProps = {
 };
 
 export const UpdateEntry = ({
-  entry,
-  edit,
   delete: deleteFn,
+  edit,
+  entry,
   pin,
 }: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);

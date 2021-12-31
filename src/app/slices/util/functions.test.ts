@@ -121,7 +121,7 @@ describe("alphabeticalSort", () => {
 describe("pluralise", () => {
   it("pluralises correctly, using custom plural if provided", () => {
     const farm = { cows: 2, pigs: 1, geese: 4 };
-    const { cows, pigs, geese } = farm;
+    const { cows, geese, pigs } = farm;
     expect(
       pluralise`I have ${cows} ${[cows, "cow"]}, ${pigs} ${[
         pigs,

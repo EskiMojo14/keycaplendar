@@ -137,13 +137,13 @@ type ShippedCardProps = {
 };
 
 export const ShippedCard = ({
-  data,
   breakdownData,
-  months,
-  summary,
+  data,
   defaultType = "bar",
-  overline,
+  months,
   note,
+  overline,
+  summary,
 }: ShippedCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -312,17 +312,17 @@ type TimelinesCardProps = {
 };
 
 export const TimelinesCard = ({
-  data,
-  months,
-  singleTheme,
-  defaultType = "bar",
-  summary,
-  category,
-  focusable,
   allProfiles,
   breakdownData,
-  overline,
+  category,
+  data,
+  defaultType = "bar",
+  focusable,
+  months,
   note,
+  overline,
+  singleTheme,
+  summary,
 }: TimelinesCardProps) => {
   const [onlyFocused, setOnlyFocused] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);

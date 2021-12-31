@@ -66,11 +66,11 @@ type DrawerDetailsProps = {
 
 export const DrawerDetails = ({
   close,
+  delete: deleteSet,
+  edit,
   open,
   openSales,
   set,
-  edit,
-  delete: deleteSet,
 }: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);

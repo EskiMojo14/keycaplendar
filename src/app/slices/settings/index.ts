@@ -69,11 +69,11 @@ export const settingsSlice = createSlice({
 
 export const {
   actions: {
-    setSettingState,
-    setSettings,
-    toggleLich,
     setCookies,
+    setSettings,
+    setSettingState,
     setShareNameLoading,
+    toggleLich,
   },
 } = settingsSlice;
 

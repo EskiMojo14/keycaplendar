@@ -214,11 +214,11 @@ export const statisticsSlice = createSlice({
 
 export const {
   actions: {
-    setStatsTab,
     setLoading,
     setStatisticsData,
     setStatisticsSettingState,
     setStatisticsSortState,
+    setStatsTab,
   },
 } = statisticsSlice;
 

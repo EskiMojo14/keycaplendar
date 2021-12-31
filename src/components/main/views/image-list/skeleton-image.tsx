@@ -13,9 +13,9 @@ export type SkeletonImageProps = {
 };
 
 export const SkeletonImage = ({
-  title,
-  subtitle,
   icon,
+  subtitle,
+  title,
 }: SkeletonImageProps) => (
   <ImageListItem className="image-list-item skeleton">
     <div className="container">

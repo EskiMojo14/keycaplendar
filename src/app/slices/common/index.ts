@@ -51,7 +51,7 @@ export const commonSlice = createSlice({
 });
 
 export const {
-  actions: { setDevice, setOrientation, setAppPage, setTheme, setThemeMaps },
+  actions: { setAppPage, setDevice, setOrientation, setTheme, setThemeMaps },
 } = commonSlice;
 
 export const selectDevice = (state: RootState) => state.common.device;

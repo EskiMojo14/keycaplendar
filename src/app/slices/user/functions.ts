@@ -38,14 +38,14 @@ export const getUserPreferences = (id: string) => {
           const data = doc.data();
           if (data) {
             const {
+              bought,
               favorites,
               favoritesId,
-              bought,
+              filterPresets,
               hidden,
               settings: settingsPrefs,
-              syncSettings,
-              filterPresets,
               shareName,
+              syncSettings,
             } = data;
 
             if (shareName) {

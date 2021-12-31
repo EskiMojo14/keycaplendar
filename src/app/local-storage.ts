@@ -45,14 +45,14 @@ export const sanitiseState = (state: RootState) => {
   const sanitiseMainSlice = (mainSlice: MainState) => {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const {
-      transition,
-      loading,
-      urlSet,
-      search,
-      urlWhitelist,
-      linkedFavorites,
       defaultPreset,
       initialLoad,
+      linkedFavorites,
+      loading,
+      search,
+      transition,
+      urlSet,
+      urlWhitelist,
       ...filteredMainSlice
     } = mainSlice;
     /* eslint-enable @typescript-eslint/no-unused-vars */

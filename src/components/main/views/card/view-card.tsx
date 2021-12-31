@@ -21,13 +21,13 @@ type ViewCardProps = {
 
 export const ViewCard = ({
   closeDetails,
-  detailSet,
   details,
+  detailSet,
   edit,
-  sets,
   loading,
-  user,
   page,
+  sets,
+  user,
 }: ViewCardProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });

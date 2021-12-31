@@ -60,12 +60,12 @@ export const auditSlice = createSlice({
 
 export const {
   actions: {
-    setLoading,
     setAllActions,
-    setFilteredActions,
     setFilterAction,
+    setFilteredActions,
     setFilterUser,
     setLength,
+    setLoading,
     setUsers,
   },
 } = auditSlice;

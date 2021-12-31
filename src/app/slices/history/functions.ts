@@ -59,7 +59,7 @@ export const getData = () => {
 export const processActions = (actions: PublicActionType[]) => {
   const processedActions: ProcessedPublicActionType[] = actions.map(
     (action) => {
-      const { before, after, ...restAction } = action;
+      const { after, before, ...restAction } = action;
       const title =
         action.action !== "deleted"
           ? `${action.after.profile} ${action.after.colorway}`

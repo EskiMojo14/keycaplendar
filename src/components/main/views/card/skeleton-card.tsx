@@ -11,10 +11,10 @@ export type SkeletonCardProps = {
 
 export const SkeletonCard = ({
   designer,
-  title,
-  subtitle,
   icon,
   loggedIn,
+  subtitle,
+  title,
 }: SkeletonCardProps) => (
   <div className="card-container">
     <Card className="skeleton">

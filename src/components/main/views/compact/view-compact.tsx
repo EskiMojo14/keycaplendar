@@ -20,11 +20,11 @@ type ViewCompactProps = {
 
 export const ViewCompact = ({
   closeDetails,
-  detailSet,
   details,
-  sets,
+  detailSet,
   loading,
   page,
+  sets,
 }: ViewCompactProps) => {
   const today = DateTime.utc();
   const yesterday = today.minus({ days: 1 });

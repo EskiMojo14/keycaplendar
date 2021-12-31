@@ -18,10 +18,10 @@ type DialogDeleteProps = {
 };
 
 export const DialogDelete = ({
-  open,
-  onClose,
-  getEntries,
   entry,
+  getEntries,
+  onClose,
+  open,
 }: DialogDeleteProps) => {
   const deleteEntry = () => {
     firestore

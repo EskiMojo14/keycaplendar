@@ -27,9 +27,9 @@ type GuideEntryProps = {
 };
 
 export const GuideEntry = ({
-  entry,
-  edit,
   delete: deleteFn,
+  edit,
+  entry,
 }: GuideEntryProps) => {
   const dispatch = useAppDispatch();
 

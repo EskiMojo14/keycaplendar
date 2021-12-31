@@ -23,8 +23,8 @@ type DialogShareFavoritesProps = {
 };
 
 export const DialogShareFavorites = ({
-  open,
   close,
+  open,
 }: DialogShareFavoritesProps) => {
   const dispatch = useAppDispatch();
 
@@ -68,7 +68,7 @@ export const DialogShareFavorites = ({
   };
 
   const handleSwitchChange = ({
-    target: { name, checked },
+    target: { checked, name },
   }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareFavorites") {
       const newId = checked ? nanoid() : "";

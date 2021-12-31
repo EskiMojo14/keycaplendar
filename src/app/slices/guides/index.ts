@@ -46,7 +46,7 @@ export const guidesSlice = createSlice({
 });
 
 export const {
-  actions: { setLoading, setEntries, setURLEntry, setAllTags, setFilteredTag },
+  actions: { setAllTags, setEntries, setFilteredTag, setLoading, setURLEntry },
 } = guidesSlice;
 
 export const selectLoading = (state: RootState) => state.guides.loading;

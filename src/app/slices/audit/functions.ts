@@ -62,7 +62,7 @@ export const getActions = (state = store.getState()) => {
 
 const processActions = (actions: ActionType[]) => {
   const processedActions: ActionType[] = actions.map((action) => {
-    const { before, after, ...restAction } = action;
+    const { after, before, ...restAction } = action;
     if (before && after) {
       auditProperties.forEach((prop) => {
         const { [prop]: beforeProp } = before;

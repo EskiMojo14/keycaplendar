@@ -87,17 +87,17 @@ export const usersSlice = createSlice({
 
 export const {
   actions: {
-    setView,
-    setLoading,
-    setSort,
-    setReverseSort,
     setAllUsers,
-    setSortedUsers,
-    setPaginatedUsers,
-    setNextPageToken,
-    setRowsPerPage,
-    setPage,
     setIndices,
+    setLoading,
+    setNextPageToken,
+    setPage,
+    setPaginatedUsers,
+    setReverseSort,
+    setRowsPerPage,
+    setSort,
+    setSortedUsers,
+    setView,
   },
 } = usersSlice;
 

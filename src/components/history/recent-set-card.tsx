@@ -38,11 +38,11 @@ type RecentSetCardProps = {
 };
 
 export const RecentSetCard = ({
-  recentSet,
-  filtered,
-  selected,
   filterChangelog,
+  filtered,
   openDetails,
+  recentSet,
+  selected,
 }: RecentSetCardProps) => {
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);

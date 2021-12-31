@@ -65,7 +65,7 @@ export const UserRow = ({
   const handleBlur = () => setFocused("");
 
   const handleCheckboxChange = ({
-    target: { name, checked },
+    target: { checked, name },
   }: ChangeEvent<HTMLInputElement>) => {
     if (arrayIncludes(roles, name)) {
       updateUser(keyedUpdate(name, checked));

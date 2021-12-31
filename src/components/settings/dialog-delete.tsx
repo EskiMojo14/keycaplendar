@@ -14,7 +14,7 @@ type DialogDeleteProps = {
   signOut: () => void;
 };
 
-export const DialogDelete = ({ open, close, signOut }: DialogDeleteProps) => {
+export const DialogDelete = ({ close, open, signOut }: DialogDeleteProps) => {
   const deleteAccount = () => {
     const deleteFn = firebase.functions().httpsCallable("deleteOwnUser");
     deleteFn()

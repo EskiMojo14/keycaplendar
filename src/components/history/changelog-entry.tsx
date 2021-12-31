@@ -199,8 +199,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
           hasKey(dataObj.after, prop)
         ) {
           const {
-            before: { [prop]: beforeData },
             after: { [prop]: afterData },
+            before: { [prop]: beforeData },
           } = dataObj;
           let contents: { before: ReactNode; after: ReactNode } = {
             before: null,

@@ -19,7 +19,7 @@ type DialogStatisticsProps = {
   open: boolean;
 };
 
-export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
+export const DialogStatistics = ({ onClose, open }: DialogStatisticsProps) => {
   const statisticsTab = useAppSelector(selectTab);
   const settings = useAppSelector(selectSettings);
 
