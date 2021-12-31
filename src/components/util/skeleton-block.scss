@@ -20,10 +20,19 @@
     }
   }
   &--constrain {
-    .skeleton-block__content {
+    background-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    &::after {
+      content: " ";
       max-height: 1em;
-      display: inline-flex;
-      align-items: center;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      background-color: var(--color, currentColor);
+      border-radius: inherit;
+      max-width: 100%;
     }
   }
 }

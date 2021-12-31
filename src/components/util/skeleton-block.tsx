@@ -19,15 +19,15 @@ export type SkeletonBlockProps<Tag extends keyof JSX.IntrinsicElements = "div"> 
 const bemClasses = new BEMHelper("skeleton-block");
 
 export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div">({
-  constrain,
-  height,
-  width,
-  typography,
-  content,
   className = "",
-  style = {},
   colour,
+  constrain,
+  content,
+  height,
+  style = {},
   tag: Tag = "div" as HTMLTag,
+  typography,
+  width,
   ...props
 }: SkeletonBlockProps<HTMLTag>) => (
   // @ts-expect-error pain

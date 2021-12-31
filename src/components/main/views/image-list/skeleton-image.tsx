@@ -17,10 +17,10 @@ export const SkeletonImage = ({ title, subtitle, icon }: SkeletonImageProps) => 
         <ImageListLabel>
           <div className="text-container">
             <div className="primary-text">
-              <SkeletonBlock content={title} colour="white" />
+              <SkeletonBlock content={title} colour="white" typography="subtitle1" constrain />
             </div>
             <div className="secondary-text">
-              <SkeletonBlock content={subtitle} colour="hsla(0,0%,100%,.6)" />
+              <SkeletonBlock content={subtitle} typography="body2" colour="hsla(0,0%,100%,.6)" constrain />
             </div>
           </div>
           {icon && <SkeletonIcon className="live-indicator ship-indicator" />}

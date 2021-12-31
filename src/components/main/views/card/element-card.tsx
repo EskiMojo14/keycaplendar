@@ -149,7 +149,7 @@ export const ElementCard = ({
     <div className="card-container">
       <Card className={classNames({ "mdc-card--selected": selected })}>
         <CardPrimaryAction
-          className={classNames({ "mdc-card__primary-action--selected": selected })}
+          className={classNames("content", { "mdc-card__primary-action--selected": selected })}
           onClick={() => (!selected ? details(set) : closeDetails())}
         >
           <div className="media-container">
