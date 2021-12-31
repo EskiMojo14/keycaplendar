@@ -69,9 +69,7 @@
         .mdc-typography--overline {
           margin: 0;
           flex-shrink: 1;
-          &:not(.skeleton-block) {
-            flex-grow: 1;
-          }
+          flex-grow: 1;
         }
         &-container {
           height: 2rem;
@@ -83,9 +81,6 @@
         padding-bottom: 8px;
         .mdc-typography--headline5 {
           margin: 0;
-          &:not(.skeleton-block) {
-            width: 100%;
-          }
           div {
             display: inline-flex;
             align-items: center;
