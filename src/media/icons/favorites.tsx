@@ -1,7 +1,13 @@
 import { memo } from "react";
 
 const SvgFavorites = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 24 24" width="1em" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="1em"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M12 21.1C5.4 15.2 1.5 11.7 1.5 7v-.6c-.6.9-1 2-1 3.2 0 3.8 3.4 6.9 10 12.8l1.5-1.3z" />
     <path

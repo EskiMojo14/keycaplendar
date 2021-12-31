@@ -9,7 +9,13 @@ export type SkeletonCardProps = {
   icon?: boolean;
 };
 
-export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: SkeletonCardProps) => (
+export const SkeletonCard = ({
+  designer,
+  title,
+  subtitle,
+  icon,
+  loggedIn,
+}: SkeletonCardProps) => (
   <div className="card-container">
     <Card className="skeleton">
       <div className="content">
@@ -20,7 +26,12 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
           <div className="text-container">
             <div className="overline">
               <div className="overline-container">
-                <SkeletonBlock typography="overline" content={designer} constrain tag="span" />
+                <SkeletonBlock
+                  typography="overline"
+                  content={designer}
+                  constrain
+                  tag="span"
+                />
               </div>
               {icon && (
                 <div className="skeleton-icon-container">
@@ -32,7 +43,11 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
               <SkeletonBlock typography="headline5" content={title} />
             </div>
             <div className="subtitle">
-              <SkeletonBlock typography="subtitle2" content={subtitle} tag="span" />
+              <SkeletonBlock
+                typography="subtitle2"
+                content={subtitle}
+                tag="span"
+              />
             </div>
           </div>
         </div>
@@ -40,7 +55,12 @@ export const SkeletonCard = ({ designer, title, subtitle, icon, loggedIn }: Skel
       {loggedIn && (
         <CardActions>
           <div className="skeleton-button">
-            <SkeletonBlock typography="button" content="Share" colour="var(--theme-primary)" constrain />
+            <SkeletonBlock
+              typography="button"
+              content="Share"
+              colour="var(--theme-primary)"
+              constrain
+            />
           </div>
           <SkeletonIcon />
           <SkeletonIcon />

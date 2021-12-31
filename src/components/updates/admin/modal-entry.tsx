@@ -3,13 +3,22 @@ import type { ChangeEvent } from "react";
 import { Button } from "@rmwc/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
@@ -26,7 +35,11 @@ type ModalCreateProps = {
   getEntries: () => void;
 };
 
-export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => {
+export const ModalCreate = ({
+  open,
+  onClose,
+  getEntries,
+}: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -43,7 +56,9 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
       setBody("");
     }
   }, [open]);
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "title") {
@@ -62,10 +77,13 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
   };
 
   const formattedDate = !invalidDate(date, false, true)
-    ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
+    ? DateTime.fromISO(date).toFormat(
+        `d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`
+      )
     : date;
 
-  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
+  const valid =
+    !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
     if (valid) {
@@ -97,12 +115,21 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={onClose} className="drawer-right update-entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={onClose}
+          className="drawer-right update-entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={onClose} className="update-entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={onClose}
+          className="update-entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -130,15 +157,24 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
         </BoolWrapper>
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
+          <Button
+            label="Save"
+            outlined={useDrawer}
+            onClick={saveEntry}
+            disabled={!valid}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="form">
           <DatePicker
@@ -163,7 +199,11 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
+            <CustomReactMde
+              value={body}
+              onChange={handleNamedChange("body")}
+              required
+            />
           </div>
         </div>
         <div className="preview">
@@ -187,7 +227,12 @@ type ModalEditProps = {
   getEntries: () => void;
 };
 
-export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) => {
+export const ModalEdit = ({
+  open,
+  onClose,
+  getEntries,
+  entry,
+}: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -207,7 +252,9 @@ export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) 
       setBody("");
     }
   }, [open, entry]);
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "date") {
       setDate(value);
     } else if (name === "title") {
@@ -226,10 +273,13 @@ export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) 
   };
 
   const formattedDate = !invalidDate(date, false, true)
-    ? DateTime.fromISO(date).toFormat(`d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`)
+    ? DateTime.fromISO(date).toFormat(
+        `d'${ordinal(DateTime.fromISO(date).day)}' MMMM yyyy`
+      )
     : date;
 
-  const valid = !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
+  const valid =
+    !!name && !!date && !invalidDate(date, false, true) && !!title && !!body;
 
   const saveEntry = () => {
     if (valid) {
@@ -261,12 +311,21 @@ export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) 
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={onClose} className="drawer-right update-entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={onClose}
+          className="drawer-right update-entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={onClose} className="update-entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={onClose}
+          className="update-entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -295,15 +354,24 @@ export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) 
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!valid} />
+          <Button
+            label="Save"
+            outlined={useDrawer}
+            onClick={saveEntry}
+            disabled={!valid}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="form">
           <DatePicker
@@ -328,7 +396,11 @@ export const ModalEdit = ({ open, onClose, getEntries, entry }: ModalEditProps) 
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={handleNamedChange("body")} required />
+            <CustomReactMde
+              value={body}
+              onChange={handleNamedChange("body")}
+              required
+            />
           </div>
         </div>
         <div className="preview">

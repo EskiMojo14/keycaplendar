@@ -67,7 +67,10 @@ export const imagesSlice = createSlice({
     setDetailImage: (state, { payload }: PayloadAction<ImageType>) => {
       state.detailImage = payload;
     },
-    setDetailMetadata: (state, { payload }: PayloadAction<Record<string, unknown>>) => {
+    setDetailMetadata: (
+      state,
+      { payload }: PayloadAction<Record<string, unknown>>
+    ) => {
       state.detailMetadata = payload;
     },
   },
@@ -90,20 +93,24 @@ export const {
 
 export const selectLoading = (state: RootState) => state.images.loading;
 
-export const selectCurrentFolder = (state: RootState) => state.images.currentFolder;
+export const selectCurrentFolder = (state: RootState) =>
+  state.images.currentFolder;
 
 export const selectFolders = (state: RootState) => state.images.folders;
 
 export const selectImages = (state: RootState) => state.images.images;
 
-export const selectCheckedImages = (state: RootState) => state.images.checkedImages;
+export const selectCheckedImages = (state: RootState) =>
+  state.images.checkedImages;
 
 export const selectSetImages = (state: RootState) => state.images.setImages;
 
-export const selectDuplicateSetImages = (state: RootState) => state.images.duplicateSetImages;
+export const selectDuplicateSetImages = (state: RootState) =>
+  state.images.duplicateSetImages;
 
 export const selectDetailImage = (state: RootState) => state.images.detailImage;
 
-export const selectDetailMetadata = (state: RootState) => state.images.detailMetadata;
+export const selectDetailMetadata = (state: RootState) =>
+  state.images.detailMetadata;
 
 export default imagesSlice.reducer;

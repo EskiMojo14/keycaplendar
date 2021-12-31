@@ -1,7 +1,14 @@
 import { memo } from "react";
 
 const SvgTableColumnAddAfter = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" {...props}>
+  <svg
+    data-name="Layer 1"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    {...props}
+  >
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M11 14H4v-4h7zm0 2H4v4h7zM4 8h7V4H4z"

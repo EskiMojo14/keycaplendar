@@ -3,7 +3,11 @@ import type { ChangeEvent } from "react";
 import { IconButton } from "@rmwc/icon-button";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBar, TopAppBarFixedAdjust, TopAppBarRow } from "@rmwc/top-app-bar";
+import {
+  TopAppBar,
+  TopAppBarFixedAdjust,
+  TopAppBarRow,
+} from "@rmwc/top-app-bar";
 import classNames from "classnames";
 import { useAppSelector } from "~/app/hooks";
 import { Autocomplete, AutocompleteMobile } from "@c/util/autocomplete";
@@ -19,7 +23,10 @@ type SearchBarPersistentProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchBarPersistent = ({ search, setSearch }: SearchBarPersistentProps) => {
+export const SearchBarPersistent = ({
+  search,
+  setSearch,
+}: SearchBarPersistentProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [expanded, setExpanded] = useState(false);
@@ -90,7 +97,9 @@ export const SearchBarPersistent = ({ search, setSearch }: SearchBarPersistentPr
           autoComplete="off"
           placeholder="Search"
           icon="search"
-          trailingIcon={expanded ? <IconButton icon="clear" onClick={clearInput} /> : null}
+          trailingIcon={
+            expanded ? <IconButton icon="clear" onClick={clearInput} /> : null
+          }
           name="search"
           onChange={handleChange}
           onFocus={handleFocus}
@@ -118,7 +127,12 @@ type SearchBarModalProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchBarModal = ({ close, open: propsOpen, search, setSearch }: SearchBarModalProps) => {
+export const SearchBarModal = ({
+  close,
+  open: propsOpen,
+  search,
+  setSearch,
+}: SearchBarModalProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [opening, setOpening] = useState(false);
@@ -263,7 +277,13 @@ type SearchAppBarProps = {
   setSearch: (search: string) => void;
 };
 
-export const SearchAppBar = ({ close, open, openBar, search, setSearch }: SearchAppBarProps) => {
+export const SearchAppBar = ({
+  close,
+  open,
+  openBar,
+  search,
+  setSearch,
+}: SearchAppBarProps) => {
   const filteredSets = useAppSelector(selectFilteredSets);
 
   const [focused, setFocused] = useState(false);
@@ -322,7 +342,12 @@ export const SearchAppBar = ({ close, open, openBar, search, setSearch }: Search
   };
   return (
     <>
-      <TopAppBar fixed className={classNames("search-app-bar", { "search-app-bar--open": open })}>
+      <TopAppBar
+        fixed
+        className={classNames("search-app-bar", {
+          "search-app-bar--open": open,
+        })}
+      >
         <TopAppBarRow>
           <div className={bemClasses({ modifiers: "modal open" })}>
             <div className={bemClasses("field-container")}>

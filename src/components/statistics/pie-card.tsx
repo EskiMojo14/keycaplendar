@@ -30,12 +30,20 @@ type StatusCardProps = {
   note?: ReactNode;
 };
 
-export const StatusCard = ({ data, breakdownData, summary, overline, note }: StatusCardProps) => {
+export const StatusCard = ({
+  data,
+  breakdownData,
+  summary,
+  overline,
+  note,
+}: StatusCardProps) => {
   const device = useAppSelector(selectDevice);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const chartOptions: IPieChartOptions = {
     donut: true,
@@ -48,16 +56,18 @@ export const StatusCard = ({ data, breakdownData, summary, overline, note }: Sta
     summary && breakdownData ? (
       <div className="pie-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                selected={index === selectedIndex}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -81,7 +91,11 @@ export const StatusCard = ({ data, breakdownData, summary, overline, note }: Sta
           {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
         </Typography>
       </div>
-      <div className={classNames("pie-container", { "ct-double-octave": sideways })}>
+      <div
+        className={classNames("pie-container", {
+          "ct-double-octave": sideways,
+        })}
+      >
         <div className="pie-chart-container status">
           <ChartistGraph
             className={sideways ? "ct-square" : "ct-octave"}
@@ -92,7 +106,12 @@ export const StatusCard = ({ data, breakdownData, summary, overline, note }: Sta
                 { meta: "Live GB", value: chartData.liveGb },
                 { meta: "Post GB", value: chartData.postGb },
               ],
-              labels: [chartData.ic, chartData.preGb, chartData.liveGb, chartData.postGb],
+              labels: [
+                chartData.ic,
+                chartData.preGb,
+                chartData.liveGb,
+                chartData.postGb,
+              ],
             }}
             type="Pie"
             options={chartOptions}

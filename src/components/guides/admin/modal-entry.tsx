@@ -5,12 +5,21 @@ import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { Select } from "@rmwc/select";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { CustomReactMarkdown, CustomReactMde } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
 import firestore from "@s/firebase/firestore";
@@ -29,7 +38,11 @@ type ModalCreateProps = {
   getEntries: () => void;
 };
 
-export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => {
+export const ModalCreate = ({
+  open,
+  onClose,
+  getEntries,
+}: ModalCreateProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -46,7 +59,9 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
       setBody("");
     }
   }, [open]);
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -58,7 +73,9 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
     }
   };
 
-  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
+  const selectVisibility = ({
+    target: { value },
+  }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -103,12 +120,21 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={onClose}
+          className="drawer-right guide-entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={onClose} className="guide-entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={onClose}
+          className="guide-entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -136,15 +162,24 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
         </BoolWrapper>
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button
+            label="Save"
+            outlined={useDrawer}
+            onClick={saveEntry}
+            disabled={!formFilled}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="form">
           <div className="double-field">
@@ -164,7 +199,14 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
               />
             </div>
             <div className="half-field">
-              <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
+              <TextField
+                outlined
+                label="Tags"
+                name="tags"
+                value={tags.join(", ")}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
           <TextField
@@ -191,7 +233,11 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde
+              value={body}
+              onChange={(string) => handleEditorChange("body", string)}
+              required
+            />
           </div>
         </div>
         <div className="preview">
@@ -204,7 +250,11 @@ export const ModalCreate = ({ open, onClose, getEntries }: ModalCreateProps) => 
             <Typography use="caption">{description}</Typography>
             <div className="tag-container">
               <ChipSet>
-                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                <Chip
+                  icon={visibilityIcons[visibility]}
+                  label={formattedVisibility[visibility]}
+                  disabled
+                />
                 {tags.map((tag) => (
                   <Chip label={tag} key={tag} disabled />
                 ))}
@@ -225,7 +275,12 @@ type ModalEditProps = {
   getEntries: () => void;
 };
 
-export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) => {
+export const ModalEdit = ({
+  entry,
+  onClose,
+  open,
+  getEntries,
+}: ModalEditProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -250,7 +305,9 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
     }
   }, [open, entry]);
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "tags") {
       setTags(value.split(", "));
     } else if (name === "title") {
@@ -262,7 +319,9 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
     }
   };
 
-  const selectVisibility = ({ target: { value } }: ChangeEvent<HTMLSelectElement>) => {
+  const selectVisibility = ({
+    target: { value },
+  }: ChangeEvent<HTMLSelectElement>) => {
     if (arrayIncludes<UserRoles | "all">([...userRoles, "all"], value)) {
       setVisibility(value);
     }
@@ -307,12 +366,21 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={onClose}
+          className="drawer-right guide-entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={onClose} className="guide-entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={onClose}
+          className="guide-entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -341,15 +409,24 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" outlined={useDrawer} onClick={saveEntry} disabled={!formFilled} />
+          <Button
+            label="Save"
+            outlined={useDrawer}
+            onClick={saveEntry}
+            disabled={!formFilled}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="form">
           <div className="double-field">
@@ -369,7 +446,14 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
               />
             </div>
             <div className="half-field">
-              <TextField outlined label="Tags" name="tags" value={tags.join(", ")} onChange={handleChange} required />
+              <TextField
+                outlined
+                label="Tags"
+                name="tags"
+                value={tags.join(", ")}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
           <TextField
@@ -396,7 +480,11 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
             <Typography use="caption" tag="div" className="subheader">
               Body*
             </Typography>
-            <CustomReactMde value={body} onChange={(string) => handleEditorChange("body", string)} required />
+            <CustomReactMde
+              value={body}
+              onChange={(string) => handleEditorChange("body", string)}
+              required
+            />
           </div>
         </div>
         <div className="preview">
@@ -409,7 +497,11 @@ export const ModalEdit = ({ entry, onClose, open, getEntries }: ModalEditProps) 
             <Typography use="caption">{description}</Typography>
             <div className="tag-container">
               <ChipSet>
-                <Chip icon={visibilityIcons[visibility]} label={formattedVisibility[visibility]} disabled />
+                <Chip
+                  icon={visibilityIcons[visibility]}
+                  label={formattedVisibility[visibility]}
+                  disabled
+                />
                 {tags.map((tag) => (
                   <Chip label={tag} key={tag} disabled />
                 ))}

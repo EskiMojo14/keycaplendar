@@ -10,7 +10,14 @@ import { allPages, mainPages, pageTitle } from "@s/common/constants";
 import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
-import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+  selectUserPresets,
+  setUserPresets,
+} from "@s/user";
 import {
   alphabeticalSort,
   alphabeticalSortCurried,
@@ -107,13 +114,18 @@ export const pageConditions = (
     millisecond: 999,
   });
   return {
-    calendar: startDate > today || (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
+    calendar:
+      startDate > today ||
+      (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
     live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
     ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
     previous: !!(endDate && endDate <= yesterday),
     timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
     archive: true,
-    favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.includes(set.id) : favorites.includes(set.id),
+    favorites:
+      linkedFavorites.array.length > 0
+        ? linkedFavorites.array.includes(set.id)
+        : favorites.includes(set.id),
     bought: bought.includes(set.id),
     hidden: hidden.includes(set.id),
   };
@@ -134,15 +146,24 @@ export const getData = () => {
       const sets: SetType[] = [];
       querySnapshot.forEach((doc) => {
         if (doc.data().profile) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { gbLaunch: docGbLaunch, sales: docSales, latestEditor, ...data } = doc.data();
+          const {
+            gbLaunch: docGbLaunch,
+            sales: docSales,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            latestEditor,
+            ...data
+          } = doc.data();
 
-          const lastInMonth = docGbLaunch ? DateTime.fromISO(docGbLaunch).daysInMonth : 0;
+          const lastInMonth = docGbLaunch
+            ? DateTime.fromISO(docGbLaunch).daysInMonth
+            : 0;
           const gbLaunch =
             doc.data().gbMonth && docGbLaunch && !docGbLaunch.includes("Q")
               ? docGbLaunch + "-" + lastInMonth
               : docGbLaunch;
-          const sales = is<string>(docSales) ? { img: docSales, thirdParty: false } : docSales;
+          const sales = is<string>(docSales)
+            ? { img: docSales, thirdParty: false }
+            : docSales;
 
           sets.push({
             id: doc.id,
@@ -176,7 +197,10 @@ export const testSets = (state = store.getState()) => {
       const endSpace = /\s+$/m;
       const startSpace = /^\s+/;
       const commaNoSpace = /,[^ ]/;
-      const stringInvalid = endSpace.test(value) || startSpace.test(value) || commaNoSpace.test(value);
+      const stringInvalid =
+        endSpace.test(value) ||
+        startSpace.test(value) ||
+        commaNoSpace.test(value);
       if (stringInvalid) {
         console.log(
           `${set.profile} ${set.colorway} - ${key}: ${value
@@ -202,7 +226,9 @@ export const testSets = (state = store.getState()) => {
                   if (itemKey === "region") {
                     item[itemKey].split(", ").forEach((region) => {
                       if (!region) {
-                        console.log(`${set.profile} ${set.colorway}: ${item.name} <empty region>`);
+                        console.log(
+                          `${set.profile} ${set.colorway}: ${item.name} <empty region>`
+                        );
                       }
                       testValue(set, `${key} ${itemKey}`, region);
                     });
@@ -225,33 +251,72 @@ const generateLists = (state = store.getState()) => {
   const urlWhitelist = selectURLWhitelist(state);
 
   const allVendors = alphabeticalSort(
-    removeDuplicates(sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat())
+    removeDuplicates(
+      sets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+        )
+        .flat()
+    )
   );
 
   const allVendorRegions = alphabeticalSort(
     removeDuplicates([
-      ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region) : [])).flat(),
-      ...sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2),
+      ...sets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.region) : []
+        )
+        .flat(),
+      ...sets
+        .map((set) =>
+          set.vendors
+            ? set.vendors.map((vendor) => vendor.region.split(", "))
+            : []
+        )
+        .flat(2),
     ])
   );
 
   const allRegions = alphabeticalSort(
     removeDuplicates(
-      sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.region.split(", ")) : [])).flat(2)
+      sets
+        .map((set) =>
+          set.vendors
+            ? set.vendors.map((vendor) => vendor.region.split(", "))
+            : []
+        )
+        .flat(2)
     )
   );
 
-  const allDesigners = alphabeticalSort(removeDuplicates(sets.map((set) => (set.designer ? set.designer : [])).flat()));
+  const allDesigners = alphabeticalSort(
+    removeDuplicates(
+      sets.map((set) => (set.designer ? set.designer : [])).flat()
+    )
+  );
 
-  const allProfiles = alphabeticalSort(removeDuplicates(sets.map((set) => set.profile)));
+  const allProfiles = alphabeticalSort(
+    removeDuplicates(sets.map((set) => set.profile))
+  );
 
   // create default preset
 
   const defaultWhitelist: WhitelistType = {
-    ...new Whitelist(false, false, "unhidden", allProfiles, ["Shipped", "Not shipped"], allRegions, "exclude", []),
+    ...new Whitelist(
+      false,
+      false,
+      "unhidden",
+      allProfiles,
+      ["Shipped", "Not shipped"],
+      allRegions,
+      "exclude",
+      []
+    ),
   };
 
-  const defaultPreset: PresetType = { ...new Preset("Default", false, defaultWhitelist, "default") };
+  const defaultPreset: PresetType = {
+    ...new Preset("Default", false, defaultWhitelist, "default"),
+  };
 
   dispatch(setDefaultPreset(defaultPreset));
 
@@ -268,8 +333,13 @@ const generateLists = (state = store.getState()) => {
   });
 
   const params = new URLSearchParams(window.location.search);
-  const noUrlParams = !whitelistParams.some((param) => params.has(param)) && Object.keys(urlWhitelist).length === 0;
-  const urlParams = [...whitelistParams.filter((param) => params.has(param)), ...Object.keys(urlWhitelist)];
+  const noUrlParams =
+    !whitelistParams.some((param) => params.has(param)) &&
+    Object.keys(urlWhitelist).length === 0;
+  const urlParams = [
+    ...whitelistParams.filter((param) => params.has(param)),
+    ...Object.keys(urlWhitelist),
+  ];
   if (!currentPreset.name && noUrlParams) {
     dispatch(setCurrentPreset(defaultPreset));
     setWhitelistMerge(defaultPreset.whitelist);
@@ -307,9 +377,15 @@ export const filterData = (transition = false, state = store.getState()) => {
   // filter bool functions
 
   const hiddenBool = (set: SetType) => {
-    if (showAllPages.includes(page) || (whitelist.hidden === "all" && user.email)) {
+    if (
+      showAllPages.includes(page) ||
+      (whitelist.hidden === "all" && user.email)
+    ) {
       return true;
-    } else if ((whitelist.hidden === "hidden" && user.email) || page === "hidden") {
+    } else if (
+      (whitelist.hidden === "hidden" && user.email) ||
+      page === "hidden"
+    ) {
       return hidden.includes(set.id);
     } else {
       return !hidden.includes(set.id);
@@ -325,7 +401,9 @@ export const filterData = (transition = false, state = store.getState()) => {
 
   const vendorBool = (set: SetType) => {
     if (set.vendors) {
-      const included = set.vendors.some((vendor) => whitelist.vendors.includes(vendor.name));
+      const included = set.vendors.some((vendor) =>
+        whitelist.vendors.includes(vendor.name)
+      );
       return whitelist.vendorMode === "exclude" ? !included : included;
     }
     return false;
@@ -334,7 +412,9 @@ export const filterData = (transition = false, state = store.getState()) => {
   const regionBool = (set: SetType) => {
     if (set.vendors) {
       return set.vendors.some((vendor) =>
-        vendor.region.split(", ").some((region) => whitelist.regions.includes(region))
+        vendor.region
+          .split(", ")
+          .some((region) => whitelist.regions.includes(region))
       );
     }
     return false;
@@ -345,9 +425,12 @@ export const filterData = (transition = false, state = store.getState()) => {
       (whitelist.shipped.includes("Shipped") && set.shipped) ||
       (whitelist.shipped.includes("Not shipped") && !set.shipped);
     const favoritesBool = user.email
-      ? !whitelist.favorites || (whitelist.favorites && favorites.includes(set.id))
+      ? !whitelist.favorites ||
+        (whitelist.favorites && favorites.includes(set.id))
       : true;
-    const boughtBool = user.email ? !whitelist.bought || (whitelist.bought && bought.includes(set.id)) : true;
+    const boughtBool = user.email
+      ? !whitelist.bought || (whitelist.bought && bought.includes(set.id))
+      : true;
     if (set.vendors && set.vendors.length > 0) {
       return (
         vendorBool(set) &&
@@ -358,10 +441,19 @@ export const filterData = (transition = false, state = store.getState()) => {
         boughtBool
       );
     } else {
-      if ((whitelist.vendors.length === 1 && whitelist.vendorMode === "include") || whitelist.regions.length === 1) {
+      if (
+        (whitelist.vendors.length === 1 &&
+          whitelist.vendorMode === "include") ||
+        whitelist.regions.length === 1
+      ) {
         return false;
       } else {
-        return whitelist.profiles.includes(set.profile) && shippedBool && favoritesBool && boughtBool;
+        return (
+          whitelist.profiles.includes(set.profile) &&
+          shippedBool &&
+          favoritesBool &&
+          boughtBool
+        );
       }
     }
   };
@@ -372,16 +464,23 @@ export const filterData = (transition = false, state = store.getState()) => {
       set.colorway,
       normalise(replaceFunction(set.colorway)),
       set.designer.join(" "),
-      set.vendors ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`) : "",
+      set.vendors
+        ? set.vendors.map((vendor) => ` ${vendor.name} ${vendor.region}`)
+        : "",
     ];
     const bool = search
       .toLowerCase()
       .split(" ")
-      .every((term) => setInfo.join(" ").toLowerCase().includes(term.toLowerCase()));
+      .every((term) =>
+        setInfo.join(" ").toLowerCase().includes(term.toLowerCase())
+      );
     return search.length > 0 ? bool : true;
   };
 
-  const filteredSets = sets.filter((set) => hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set));
+  const filteredSets = sets.filter(
+    (set) =>
+      hiddenBool(set) && pageBool(set) && filterBool(set) && searchBool(set)
+  );
 
   dispatch(setSetList("filteredSets", filteredSets));
 
@@ -401,7 +500,10 @@ const sortData = (state = store.getState()) => {
       if (arrayIncludes(dateSorts, sort)) {
         const aDate = DateTime.fromFormat(a, "MMMM yyyy", { zone: "utc" });
         const bDate = DateTime.fromFormat(b, "MMMM yyyy", { zone: "utc" });
-        return alphabeticalSortCurried(sortOrder === "descending")(aDate, bDate);
+        return alphabeticalSortCurried(sortOrder === "descending")(
+          aDate,
+          bDate
+        );
       }
       return alphabeticalSortCurried()(a, b);
     });
@@ -432,9 +534,15 @@ const createGroups = (transition = false, state = store.getState()) => {
     } else if (arrayIncludes(arraySorts, sort)) {
       return sets.map((set) => set[sort]).flat();
     } else if (sort === "vendor") {
-      return sets.map((set) => (set.vendors ? set.vendors.map((vendor) => vendor.name) : [])).flat();
+      return sets
+        .map((set) =>
+          set.vendors ? set.vendors.map((vendor) => vendor.name) : []
+        )
+        .flat();
     } else {
-      return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter(Boolean);
+      return sets
+        .map((set) => (hasKey(set, sort) ? `${set[sort]}` : ""))
+        .filter(Boolean);
     }
   };
   const groups = removeDuplicates(createSetGroups(sets));
@@ -471,17 +579,32 @@ const createGroups = (transition = false, state = store.getState()) => {
         return false;
       }
     });
-    const defaultSort = arrayIncludes(mainPages, page) ? pageSort[page] : "icDate";
-    const defaultSortOrder = arrayIncludes(mainPages, page) ? pageSortOrder[page] : "descending";
-    const dateSort = (a: SetType, b: SetType, prop = sort, order = sortOrder) => {
+    const defaultSort = arrayIncludes(mainPages, page)
+      ? pageSort[page]
+      : "icDate";
+    const defaultSortOrder = arrayIncludes(mainPages, page)
+      ? pageSortOrder[page]
+      : "descending";
+    const dateSort = (
+      a: SetType,
+      b: SetType,
+      prop = sort,
+      order = sortOrder
+    ) => {
       const aName = `${a.profile.toLowerCase()} ${a.colorway.toLowerCase()}`;
       const bName = `${b.profile.toLowerCase()} ${b.colorway.toLowerCase()}`;
       const nameSort = alphabeticalSortCurried()(aName, bName);
       if (arrayIncludes(dateSorts, prop)) {
         const { [prop]: aProp } = a;
-        const aDate = aProp && !aProp.includes("Q") ? DateTime.fromISO(aProp, { zone: "utc" }) : null;
+        const aDate =
+          aProp && !aProp.includes("Q")
+            ? DateTime.fromISO(aProp, { zone: "utc" })
+            : null;
         const { [prop]: bProp } = b;
-        const bDate = bProp && !bProp.includes("Q") ? DateTime.fromISO(bProp, { zone: "utc" }) : null;
+        const bDate =
+          bProp && !bProp.includes("Q")
+            ? DateTime.fromISO(bProp, { zone: "utc" })
+            : null;
         const returnVal = order === "ascending" ? 1 : -1;
         if (aDate && bDate) {
           if (aDate > bDate) {
@@ -528,7 +651,9 @@ const createGroups = (transition = false, state = store.getState()) => {
   }
 
   if (sortHiddenCheck[sort].includes(page)) {
-    const allGroupedSets = removeDuplicates(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
+    const allGroupedSets = removeDuplicates(
+      setGroups.map((group) => group.sets.map((set) => set.id)).flat()
+    );
 
     const diff = sets.length - allGroupedSets.length;
 
@@ -538,7 +663,11 @@ const createGroups = (transition = false, state = store.getState()) => {
   }
 };
 
-export const setSort = (sort: SortType, clearUrl = true, state = store.getState()) => {
+export const setSort = (
+  sort: SortType,
+  clearUrl = true,
+  state = store.getState()
+) => {
   const page = selectPage(state);
   document.documentElement.scrollTop = 0;
   let sortOrder: SortOrderType = "ascending";
@@ -612,7 +741,9 @@ export const setWhitelistMerge = (
               );
             }
           } else {
-            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            const questionParam = params.has("page")
+              ? "?" + params.toString()
+              : "/";
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
@@ -657,7 +788,9 @@ export const setWhitelist = <T extends keyof WhitelistType>(
               );
             }
           } else {
-            const questionParam = params.has("page") ? "?" + params.toString() : "/";
+            const questionParam = params.has("page")
+              ? "?" + params.toString()
+              : "/";
             window.history.pushState({}, "KeycapLendar", questionParam);
           }
         }
@@ -666,23 +799,36 @@ export const setWhitelist = <T extends keyof WhitelistType>(
   }
 };
 
-export const updatePreset = (preset: OldPresetType | PresetType, state = store.getState()): PresetType => {
+export const updatePreset = (
+  preset: OldPresetType | PresetType,
+  state = store.getState()
+): PresetType => {
   const allRegions = selectAllRegions(state);
   const regions =
-    hasKey(preset.whitelist, "regions") && is<string[]>(preset.whitelist.regions)
+    hasKey(preset.whitelist, "regions") &&
+    is<string[]>(preset.whitelist.regions)
       ? preset.whitelist.regions
       : allRegions;
-  const bought = hasKey(preset.whitelist, "bought") ? !!preset.whitelist.bought : false;
+  const bought = hasKey(preset.whitelist, "bought")
+    ? !!preset.whitelist.bought
+    : false;
   const hidden = is<boolean>(preset.whitelist.hidden)
     ? preset.whitelist.hidden
       ? "hidden"
       : "unhidden"
     : preset.whitelist.hidden;
-  const updatedPreset: PresetType = { ...preset, whitelist: { ...preset.whitelist, regions, bought, hidden } };
+  const updatedPreset: PresetType = {
+    ...preset,
+    whitelist: { ...preset.whitelist, regions, bought, hidden },
+  };
   return updatedPreset;
 };
 
-export const findPreset = (prop: keyof PresetType, val: string, state = store.getState()): PresetType | undefined => {
+export const findPreset = (
+  prop: keyof PresetType,
+  val: string,
+  state = store.getState()
+): PresetType | undefined => {
   const appPresets = selectAppPresets(state);
   const userPresets = selectUserPresets(state);
   const allPresets = [...appPresets, ...userPresets];
@@ -734,7 +880,9 @@ export const editPreset = (preset: PresetType, state = store.getState()) => {
 export const deletePreset = (preset: PresetType, state = store.getState()) => {
   const defaultPreset = selectDefaultPreset(state);
   const userPresets = selectUserPresets(state);
-  const presets = userPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+  const presets = userPresets.filter(
+    (filterPreset) => filterPreset.id !== preset.id
+  );
   alphabeticalSortProp(presets, "name", false);
   dispatch(setCurrentPreset(defaultPreset));
   dispatch(setUserPresets(presets));
@@ -758,7 +906,10 @@ export const syncPresets = (state = store.getState()) => {
     });
 };
 
-export const newGlobalPreset = (preset: PresetType, state = store.getState()) => {
+export const newGlobalPreset = (
+  preset: PresetType,
+  state = store.getState()
+) => {
   const appPresets = selectAppPresets(state);
   preset.id = nanoid();
   const presets = [...appPresets, preset];
@@ -768,7 +919,10 @@ export const newGlobalPreset = (preset: PresetType, state = store.getState()) =>
   syncGlobalPresets(store.getState());
 };
 
-export const editGlobalPreset = (preset: PresetType, state = store.getState()) => {
+export const editGlobalPreset = (
+  preset: PresetType,
+  state = store.getState()
+) => {
   const appPresets = selectAppPresets(state);
   const savedPreset = findPreset("id", preset.id);
   let presets: PresetType[];
@@ -785,10 +939,15 @@ export const editGlobalPreset = (preset: PresetType, state = store.getState()) =
   syncGlobalPresets(store.getState());
 };
 
-export const deleteGlobalPreset = (preset: PresetType, state = store.getState()) => {
+export const deleteGlobalPreset = (
+  preset: PresetType,
+  state = store.getState()
+) => {
   const appPresets = selectAppPresets(state);
   const defaultPreset = selectDefaultPreset(state);
-  const presets = appPresets.filter((filterPreset) => filterPreset.id !== preset.id);
+  const presets = appPresets.filter(
+    (filterPreset) => filterPreset.id !== preset.id
+  );
   alphabeticalSortProp(presets, "name", false, "Default");
   dispatch(setCurrentPreset(defaultPreset));
   dispatch(setAppPresets(presets));
@@ -798,7 +957,11 @@ export const deleteGlobalPreset = (preset: PresetType, state = store.getState())
 export const syncGlobalPresets = (state = store.getState()) => {
   const presets = selectAppPresets(state);
   const filteredPresets = presets.filter((preset) => preset.id !== "default");
-  const sortedPresets = alphabeticalSortProp(filteredPresets, "name", false).map((preset) => ({
+  const sortedPresets = alphabeticalSortProp(
+    filteredPresets,
+    "name",
+    false
+  ).map((preset) => ({
     ...preset,
   }));
   firestore

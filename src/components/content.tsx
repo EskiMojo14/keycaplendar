@@ -54,19 +54,38 @@ export const Content = ({ className, ...filteredProps }: ContentProps) => {
     }
   }, [device, navEdited]);
 
-  const contentMain = arrayIncludes(mainPages, page) ? <ContentMain openNav={openNav} /> : null;
-  const contentStatistics = page === "statistics" ? <ContentStatistics openNav={openNav} /> : null;
-  const contentChangelog = page === "history" ? <ContentHistory openNav={openNav} /> : null;
-  const contentAudit = page === "audit" && user.isAdmin ? <ContentAudit openNav={openNav} /> : null;
-  const contentUsers = page === "users" && user.isAdmin ? <ContentUsers openNav={openNav} /> : null;
-  const contentImages = page === "images" && user.isAdmin ? <ContentImages openNav={openNav} /> : null;
-  const contentGuides = page === "guides" ? <ContentGuides openNav={openNav} /> : null;
-  const contentUpdates = page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
-  const contentSettings = page === "settings" ? <ContentSettings openNav={openNav} /> : null;
+  const contentMain = arrayIncludes(mainPages, page) ? (
+    <ContentMain openNav={openNav} />
+  ) : null;
+  const contentStatistics =
+    page === "statistics" ? <ContentStatistics openNav={openNav} /> : null;
+  const contentChangelog =
+    page === "history" ? <ContentHistory openNav={openNav} /> : null;
+  const contentAudit =
+    page === "audit" && user.isAdmin ? (
+      <ContentAudit openNav={openNav} />
+    ) : null;
+  const contentUsers =
+    page === "users" && user.isAdmin ? (
+      <ContentUsers openNav={openNav} />
+    ) : null;
+  const contentImages =
+    page === "images" && user.isAdmin ? (
+      <ContentImages openNav={openNav} />
+    ) : null;
+  const contentGuides =
+    page === "guides" ? <ContentGuides openNav={openNav} /> : null;
+  const contentUpdates =
+    page === "updates" ? <ContentUpdates openNav={openNav} /> : null;
+  const contentSettings =
+    page === "settings" ? <ContentSettings openNav={openNav} /> : null;
   return (
     <div
       className={classNames(className, page, "app-container", {
-        "has-fab": (user.isEditor || user.isDesigner) && device !== "desktop" && arrayIncludes(mainPages, page),
+        "has-fab":
+          (user.isEditor || user.isDesigner) &&
+          device !== "desktop" &&
+          arrayIncludes(mainPages, page),
         "bottom-nav": bottomNav,
       })}
       {...filteredProps}

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, DragEvent } from "react";
-import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActions,
+} from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { Icon } from "@rmwc/icon";
 import { TextField } from "@rmwc/textfield";
@@ -54,7 +59,9 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     };
   };
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "imageLink") {
       setImageLink(value);
     }
@@ -154,11 +161,18 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       name="imageLink"
       value={imageLink}
       onChange={handleChange}
-      helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+      helpText={{
+        persistent: false,
+        validationMsg: true,
+        children: "Must be valid link",
+      }}
     />
   ) : null;
   const areaInner = hasImage ? (
-    <div className="image-display-image" style={{ backgroundImage: "url(" + imageBase64 + ")" }} />
+    <div
+      className="image-display-image"
+      style={{ backgroundImage: "url(" + imageBase64 + ")" }}
+    />
   ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">
       <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
@@ -181,7 +195,12 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       <CardActionButtons>
         <div className="file-input">
           <CardActionButton tag="label" htmlFor="file-upload" label="Browse" />
-          <input type="file" id="file-upload" accept=".png, .jpg, .jpeg" onChange={handleFileChange} />
+          <input
+            type="file"
+            id="file-upload"
+            accept=".png, .jpg, .jpeg"
+            onChange={handleFileChange}
+          />
         </div>
         <CardActionButton label="From URL" onClick={fromUrl} />
       </CardActionButtons>
@@ -200,7 +219,10 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       </Typography>
       <div className="image-upload-form">
         <div
-          className={classNames("image-display", { over: dragOver, image: hasImage })}
+          className={classNames("image-display", {
+            over: dragOver,
+            image: hasImage,
+          })}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}

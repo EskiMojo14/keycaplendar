@@ -33,7 +33,9 @@ export const createStore = (preloadedState?: any) =>
     reducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-        serializableCheck: { ignoredPaths: ["statistics.data", "images.images"] },
+        serializableCheck: {
+          ignoredPaths: ["statistics.data", "images.images"],
+        },
         immutableCheck: false,
       }),
   });

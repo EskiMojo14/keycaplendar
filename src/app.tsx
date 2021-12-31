@@ -13,13 +13,33 @@ import { Login } from "@c/pages/login";
 import { NotFound } from "@c/pages/not-found";
 import { selectDevice } from "@s/common";
 import { allPages } from "@s/common/constants";
-import { checkDevice, getGlobals, getURLQuery, saveTheme } from "@s/common/functions";
+import {
+  checkDevice,
+  getGlobals,
+  getURLQuery,
+  saveTheme,
+} from "@s/common/functions";
 import firebase from "@s/firebase";
-import { selectDefaultPreset, selectTransition, setCurrentPreset } from "@s/main";
+import {
+  selectDefaultPreset,
+  selectTransition,
+  setCurrentPreset,
+} from "@s/main";
 import { testSets } from "@s/main/functions";
 import { selectCookies, selectSettings } from "@s/settings";
-import { acceptCookies, checkStorage, checkTheme, clearCookies } from "@s/settings/functions";
-import { setFavorites, setHidden, setShareName, setUser, setUserPresets } from "@s/user";
+import {
+  acceptCookies,
+  checkStorage,
+  checkTheme,
+  clearCookies,
+} from "@s/settings/functions";
+import {
+  setFavorites,
+  setHidden,
+  setShareName,
+  setUser,
+  setUserPresets,
+} from "@s/user";
 import { getUserPreferences } from "@s/user/functions";
 import "./app.scss";
 
@@ -48,7 +68,9 @@ export const App = () => {
       checkTheme();
     };
 
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", checkThemeListener);
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", checkThemeListener);
 
     const authObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -96,7 +118,9 @@ export const App = () => {
     });
     return () => {
       authObserver();
-      window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", checkThemeListener);
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", checkThemeListener);
     };
   }, []);
   return (
@@ -107,11 +131,24 @@ export const App = () => {
         </Route>
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/terms" component={TermsOfService} />
-        <Route exact path={["/", ...allPages.map((page: string) => `/${page}`)]}>
-          <div className={classNames("app", { [`density-${settings.density}`]: device === "desktop" })}>
-            <Content className={classNames({ "view-transition": transition })} />
+        <Route
+          exact
+          path={["/", ...allPages.map((page: string) => `/${page}`)]}
+        >
+          <div
+            className={classNames("app", {
+              [`density-${settings.density}`]: device === "desktop",
+            })}
+          >
+            <Content
+              className={classNames({ "view-transition": transition })}
+            />
             <SnackbarQueue messages={queue.messages} />
-            <SnackbarCookies open={!cookies} accept={acceptCookies} clear={clearCookies} />
+            <SnackbarCookies
+              open={!cookies}
+              accept={acceptCookies}
+              clear={clearCookies}
+            />
             <Portal />
           </div>
         </Route>

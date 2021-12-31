@@ -114,9 +114,23 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
-      <ModalEdit open={editOpen} onClose={closeEdit} getEntries={getEntries} entry={editEntry} />
-      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
+      <ModalCreate
+        open={createOpen}
+        onClose={closeCreate}
+        getEntries={getEntries}
+      />
+      <ModalEdit
+        open={editOpen}
+        onClose={closeEdit}
+        getEntries={getEntries}
+        entry={editEntry}
+      />
+      <DialogDelete
+        open={deleteOpen}
+        onClose={closeDelete}
+        entry={deleteEntry}
+        getEntries={getEntries}
+      />
     </>
   ) : null;
   return (
@@ -142,7 +156,13 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         <div className="main extended-app-bar">
           <div className="update-container">
             {entries.map((entry) => (
-              <UpdateEntry key={entry.id} entry={entry} edit={openEdit} delete={openDelete} pin={pinEntry} />
+              <UpdateEntry
+                key={entry.id}
+                entry={entry}
+                edit={openEdit}
+                delete={openDelete}
+                pin={pinEntry}
+              />
             ))}
           </div>
         </div>

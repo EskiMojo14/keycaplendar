@@ -1,7 +1,11 @@
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firebase from "@s/firebase";
-import { alphabeticalSort, alphabeticalSortProp, removeDuplicates } from "@s/util/functions";
+import {
+  alphabeticalSort,
+  alphabeticalSortProp,
+  removeDuplicates,
+} from "@s/util/functions";
 import { setAllTags, setEntries, setLoading } from ".";
 import type { GuideEntryType } from "./types";
 
@@ -21,9 +25,16 @@ export const getEntries = () => {
 };
 
 export const sortEntries = (entries: GuideEntryType[]) => {
-  const sortedEntries = alphabeticalSortProp(entries, "title", false, "Welcome to KeycapLendar!");
+  const sortedEntries = alphabeticalSortProp(
+    entries,
+    "title",
+    false,
+    "Welcome to KeycapLendar!"
+  );
   dispatch(setEntries(sortedEntries));
-  const allTags = alphabeticalSort(removeDuplicates(sortedEntries.map((entry) => entry.tags).flat(1)));
+  const allTags = alphabeticalSort(
+    removeDuplicates(sortedEntries.map((entry) => entry.tags).flat(1))
+  );
   dispatch(setAllTags(allTags));
   dispatch(setLoading(false));
 };

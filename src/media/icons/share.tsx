@@ -1,7 +1,13 @@
 import { memo } from "react";
 
 const SvgShare = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 24 24" width="1em" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="1em"
+    viewBox="0 0 24 24"
+    width="1em"
+    {...props}
+  >
     <path d="M0 0h24v24H0V0z" fill="none" />
     <circle cx={18} cy={5} opacity={0.3} r={1} />
     <circle cx={6} cy={12} opacity={0.3} r={1} />

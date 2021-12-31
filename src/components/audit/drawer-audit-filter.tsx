@@ -7,7 +7,13 @@ import { TextField } from "@rmwc/textfield";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
-import { selectFilterAction, selectFilterUser, selectLength, selectUsers, setLength } from "@s/audit";
+import {
+  selectFilterAction,
+  selectFilterUser,
+  selectLength,
+  selectUsers,
+  setLength,
+} from "@s/audit";
 import { getActions } from "@s/audit/functions";
 import { selectDevice } from "@s/common";
 import "./drawer-audit-filter.scss";
@@ -18,7 +24,11 @@ type DrawerAuditFilterProps = {
   open: boolean;
 };
 
-export const DrawerAuditFilter = ({ close, handleFilterChange, open }: DrawerAuditFilterProps) => {
+export const DrawerAuditFilter = ({
+  close,
+  handleFilterChange,
+  open,
+}: DrawerAuditFilterProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -30,7 +40,10 @@ export const DrawerAuditFilter = ({ close, handleFilterChange, open }: DrawerAud
 
   const closeButton =
     device === "desktop"
-      ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+      ? withTooltip(
+          <IconButton className="close-icon" icon="close" onClick={close} />,
+          "Close"
+        )
       : null;
   const handleLengthChange = (e: ChangeEvent<HTMLInputElement>) => {
     const length = parseInt(e.target.value);
@@ -109,7 +122,10 @@ export const DrawerAuditFilter = ({ close, handleFilterChange, open }: DrawerAud
           <Select
             outlined
             enhanced={{ fixed: true }}
-            options={[{ label: "All", value: "all" }, ...users.map((user) => ({ label: user, value: user }))]}
+            options={[
+              { label: "All", value: "all" },
+              ...users.map((user) => ({ label: user, value: user })),
+            ]}
             value={filterUser}
             className="user-select"
             onChange={(e) => {

@@ -1,8 +1,21 @@
 import produce from "immer";
 import store from "~/app/store";
-import { setLoading, setProcessedActions, setRecentSets, setTab } from "@s/history";
-import { generateSets, processActions, setHistoryTab } from "@s/history/functions";
-import type { ProcessedPublicActionType, PublicActionType, RecentSet } from "@s/history/types";
+import {
+  setLoading,
+  setProcessedActions,
+  setRecentSets,
+  setTab,
+} from "@s/history";
+import {
+  generateSets,
+  processActions,
+  setHistoryTab,
+} from "@s/history/functions";
+import type {
+  ProcessedPublicActionType,
+  PublicActionType,
+  RecentSet,
+} from "@s/history/types";
 import { Keyset } from "@s/main/constructors";
 
 jest.mock("~/app/store");
@@ -50,7 +63,12 @@ const processedAction: ProcessedPublicActionType = {
   title: "GMK Test",
 };
 
-const keyset = { ...new Keyset(), id: "test", profile: "GMK", colorway: "test" };
+const keyset = {
+  ...new Keyset(),
+  id: "test",
+  profile: "GMK",
+  colorway: "test",
+};
 
 const recentSet: RecentSet = {
   id: "test",
@@ -78,7 +96,10 @@ describe("setHistoryTab", () => {
 describe("processActions", () => {
   it("processes actions and dispatches to state", () => {
     processActions([action]);
-    expect(dispatchSpy).toHaveBeenNthCalledWith(1, setProcessedActions([processedAction]));
+    expect(dispatchSpy).toHaveBeenNthCalledWith(
+      1,
+      setProcessedActions([processedAction])
+    );
     expect(dispatchSpy).toHaveBeenNthCalledWith(2, setLoading(false));
   });
 });

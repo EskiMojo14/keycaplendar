@@ -1,7 +1,14 @@
 import { memo } from "react";
 
 const SvgTablePlus = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" {...props}>
+  <svg
+    data-name="Layer 1"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    {...props}
+  >
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M18 11h-6V7h6zM4 17h6v-4H4zm11.69-4H12v4h1.09a6 6 0 012.6-4zM4 11h6V7H4z"

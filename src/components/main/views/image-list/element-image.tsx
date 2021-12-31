@@ -66,10 +66,16 @@ export const ElementImage = ({
   const useLink = device === "desktop";
 
   const liveIndicator = live
-    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
+        "Live"
+      )
     : null;
   const shipIndicator = set?.shipped
-    ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
+        "Shipped"
+      )
     : null;
   const timeIndicator = thisWeek ? (
     <div className="time-indicator">
@@ -103,15 +109,24 @@ export const ElementImage = ({
           <div className="link-icon-container">
             {linkIcon}
             {withTooltip(
-              <IconButton className="link-icon" icon={iconObject(<Share />)} onClick={copyShareLink} />,
+              <IconButton
+                className="link-icon"
+                icon={iconObject(<Share />)}
+                onClick={copyShareLink}
+              />,
               "Share"
             )}
           </div>
           <div className="media-container">
             {timeIndicator}
-            <ImageListImageAspectContainer style={{ paddingBottom: "calc(100% / 1)" }}>
+            <ImageListImageAspectContainer
+              style={{ paddingBottom: "calc(100% / 1)" }}
+            >
               <LazyLoad debounce={false} offsetVertical={480}>
-                <ImageListImage tag="div" style={{ backgroundImage: "url(" + image + ")" }} />
+                <ImageListImage
+                  tag="div"
+                  style={{ backgroundImage: "url(" + image + ")" }}
+                />
               </LazyLoad>
             </ImageListImageAspectContainer>
           </div>

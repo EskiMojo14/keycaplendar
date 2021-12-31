@@ -19,7 +19,12 @@ type ContentGridProps = {
   edit: (set: SetType) => void;
 };
 
-export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentGridProps) => {
+export const ContentGrid = ({
+  details,
+  closeDetails,
+  detailSet,
+  edit,
+}: ContentGridProps) => {
   const view = useAppSelector(selectView);
 
   const setGroups = useAppSelector(selectSetGroups);
@@ -31,16 +36,41 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
   const createGroup = (sets: SetType[]) => {
     switch (view) {
       case "card": {
-        return <ViewCard {...{ sets, details, detailSet, closeDetails, edit, loading, user, page }} />;
+        return (
+          <ViewCard
+            {...{
+              sets,
+              details,
+              detailSet,
+              closeDetails,
+              edit,
+              loading,
+              user,
+              page,
+            }}
+          />
+        );
       }
       case "list": {
-        return <ViewList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewList
+            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+          />
+        );
       }
       case "imageList": {
-        return <ViewImageList {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewImageList
+            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+          />
+        );
       }
       case "compact": {
-        return <ViewCompact {...{ sets, details, detailSet, closeDetails, edit, loading, page }} />;
+        return (
+          <ViewCompact
+            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+          />
+        );
       }
       default:
         return null;
@@ -52,7 +82,10 @@ export const ContentGrid = ({ details, closeDetails, detailSet, edit }: ContentG
         <div className="outer-container" key={group.title}>
           <div className="subheader">
             {loading ? (
-              <SkeletonBlock typography="caption" content={`${group.title} (${group.sets.length})`} />
+              <SkeletonBlock
+                typography="caption"
+                content={`${group.title} (${group.sets.length})`}
+              />
             ) : (
               <Typography use="caption">
                 {group.title} <b>{`(${group.sets.length})`}</b>

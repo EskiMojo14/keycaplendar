@@ -30,7 +30,9 @@ export const Autocomplete = ({
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
+  const matchingItems = array.filter((item) =>
+    item.toLowerCase().includes(useQuery.toLowerCase())
+  );
   const firstFour = matchingItems.slice(0, 4);
   return (
     <Menu
@@ -41,7 +43,10 @@ export const Autocomplete = ({
       anchorCorner="bottomLeft"
       onSelect={(e) => {
         select(prop, matchingItems[e.detail.index]);
-        if (document.activeElement && document.activeElement instanceof HTMLElement) {
+        if (
+          document.activeElement &&
+          document.activeElement instanceof HTMLElement
+        ) {
           document.activeElement.blur();
         }
       }}
@@ -91,9 +96,14 @@ export const AutocompleteMobile = ({
   const splitQuery = query.split(", ");
   const { [splitQuery.length - 1]: lastItem } = splitQuery;
   const useQuery = listSplit ? lastItem : query;
-  const matchingItems = array.filter((item) => item.toLowerCase().includes(useQuery.toLowerCase()));
+  const matchingItems = array.filter((item) =>
+    item.toLowerCase().includes(useQuery.toLowerCase())
+  );
   return (
-    <div {...filteredProps} className={bemClasses({ modifiers: { open }, extra: className })}>
+    <div
+      {...filteredProps}
+      className={bemClasses({ modifiers: { open }, extra: className })}
+    >
       <List>
         {useQuery.length >= minChars
           ? matchingItems.map((item) => (

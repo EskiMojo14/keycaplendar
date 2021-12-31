@@ -1,5 +1,11 @@
 import { IconButton } from "@rmwc/icon-button";
-import { ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  ListItem,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import LazyLoad from "react-lazy-load";
 import Twemoji from "react-twemoji";
@@ -57,10 +63,22 @@ export const ElementList = ({
   const useLink = device === "desktop";
 
   const liveIndicator = live
-    ? withTooltip(<ListItemMeta className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <ListItemMeta
+          className="live-indicator"
+          icon={iconObject(<NewReleases />)}
+        />,
+        "Live"
+      )
     : null;
   const shipIndicator = set?.shipped
-    ? withTooltip(<ListItemMeta className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <ListItemMeta
+          className="ship-indicator"
+          icon={iconObject(<CheckCircle />)}
+        />,
+        "Shipped"
+      )
     : null;
   const timeIndicator = thisWeek ? (
     <Typography use="overline" className="time-indicator">
@@ -80,11 +98,24 @@ export const ElementList = ({
         />,
         "Link"
       )
-    : withTooltip(<IconButton icon={iconObject(<Share />)} onClick={copyShareLink} />, "Share");
+    : withTooltip(
+        <IconButton icon={iconObject(<Share />)} onClick={copyShareLink} />,
+        "Share"
+      );
   return (
-    <ListItem selected={selected} onClick={() => (!selected ? details(set) : closeDetails())}>
-      <LazyLoad debounce={false} offsetVertical={480} className="list-image-container">
-        <div className="list-image" style={{ backgroundImage: "url(" + image + ")" }}></div>
+    <ListItem
+      selected={selected}
+      onClick={() => (!selected ? details(set) : closeDetails())}
+    >
+      <LazyLoad
+        debounce={false}
+        offsetVertical={480}
+        className="list-image-container"
+      >
+        <div
+          className="list-image"
+          style={{ backgroundImage: "url(" + image + ")" }}
+        ></div>
       </LazyLoad>
       <ListItemText>
         <Typography use="overline" className="overline">

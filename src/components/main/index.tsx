@@ -13,7 +13,13 @@ import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
-import { selectAllSets, selectLinkedFavorites, selectSetGroups, selectURLSet, setURLSet } from "@s/main";
+import {
+  selectAllSets,
+  selectLinkedFavorites,
+  selectSetGroups,
+  selectURLSet,
+  setURLSet,
+} from "@s/main";
 import { Keyset, Preset } from "@s/main/constructors";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
@@ -104,11 +110,17 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
           dispatch(setURLSet("id", ""));
         }
         const params = new URLSearchParams(window.location.search);
-        if (params.has("keysetId") || params.has("keysetAlias") || params.has("keysetName")) {
+        if (
+          params.has("keysetId") ||
+          params.has("keysetAlias") ||
+          params.has("keysetName")
+        ) {
           params.delete("keysetId");
           params.delete("keysetAlias");
           params.delete("keysetName");
-          const questionParam = params.has("page") ? "?" + params.toString() : "/";
+          const questionParam = params.has("page")
+            ? "?" + params.toString()
+            : "/";
           window.history.pushState({}, "KeycapLendar", questionParam);
         }
       }
@@ -240,7 +252,11 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const filterPresetElements = user.email ? (
     <>
-      <ModalFilterPreset open={filterPresetOpen} close={closeFilterPreset} preset={filterPreset} />
+      <ModalFilterPreset
+        open={filterPresetOpen}
+        close={closeFilterPreset}
+        preset={filterPreset}
+      />
       <DialogDeleteFilterPreset
         open={deleteFilterPresetOpen}
         close={closeDeleteFilterPreset}
@@ -257,7 +273,11 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         set={deleteSet}
         openSnackbar={openDeleteSnackbar}
       />
-      <SnackbarDeleted open={deleteSnackbarOpen} close={closeDeleteSnackbar} set={deleteSet} />
+      <SnackbarDeleted
+        open={deleteSnackbarOpen}
+        close={closeDeleteSnackbar}
+        set={deleteSet}
+      />
     </>
   ) : null;
 
@@ -265,7 +285,9 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     user.isEditor || user.isDesigner ? (
       <ConditionalWrapper
         condition={device === "desktop"}
-        wrapper={(children) => <div className="editor-elements">{children}</div>}
+        wrapper={(children) => (
+          <div className="editor-elements">{children}</div>
+        )}
       >
         <Fab
           className={classNames("create-fab", { middle: bottomNav })}
@@ -280,7 +302,12 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
     ) : null;
 
   const content = contentBool ? (
-    <ContentGrid details={openDetails} closeDetails={closeDetails} detailSet={detailSet} edit={openEdit} />
+    <ContentGrid
+      details={openDetails}
+      closeDetails={closeDetails}
+      detailSet={detailSet}
+      edit={openEdit}
+    />
   ) : (
     <ContentEmpty />
   );
@@ -316,8 +343,14 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
         />
         <BoolWrapper
           condition={device === "desktop"}
-          trueWrapper={(children) => <DrawerAppContent className={wrapperClasses}>{children}</DrawerAppContent>}
-          falseWrapper={(children) => <div className={wrapperClasses}>{children}</div>}
+          trueWrapper={(children) => (
+            <DrawerAppContent className={wrapperClasses}>
+              {children}
+            </DrawerAppContent>
+          )}
+          falseWrapper={(children) => (
+            <div className={wrapperClasses}>{children}</div>
+          )}
         >
           {content}
           <Footer />

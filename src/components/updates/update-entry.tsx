@@ -1,4 +1,11 @@
-import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActionIcon,
+  CardActionIcons,
+  CardActions,
+} from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
@@ -21,7 +28,12 @@ type UpdateEntryProps = {
   pin: (entry: UpdateEntryType) => void;
 };
 
-export const UpdateEntry = ({ entry, edit, delete: deleteFn, pin }: UpdateEntryProps) => {
+export const UpdateEntry = ({
+  entry,
+  edit,
+  delete: deleteFn,
+  pin,
+}: UpdateEntryProps) => {
   const user = useAppSelector(selectUser);
 
   const urlEntry = useAppSelector(selectURLEntry);
@@ -41,11 +53,15 @@ export const UpdateEntry = ({ entry, edit, delete: deleteFn, pin }: UpdateEntryP
 
   const linkedIndicator =
     entry.id === urlEntry ? (
-      <div className="linked-indicator">{withTooltip(<Icon icon="link" />, "Linked")}</div>
+      <div className="linked-indicator">
+        {withTooltip(<Icon icon="link" />, "Linked")}
+      </div>
     ) : null;
 
   const pinIndicator = entry.pinned ? (
-    <div className="pin-indicator">{withTooltip(<Icon icon={iconObject(<PushPin />)} />, "Pinned")}</div>
+    <div className="pin-indicator">
+      {withTooltip(<Icon icon={iconObject(<PushPin />)} />, "Pinned")}
+    </div>
   ) : null;
   const buttons = user.isAdmin ? (
     <CardActions>
@@ -56,23 +72,45 @@ export const UpdateEntry = ({ entry, edit, delete: deleteFn, pin }: UpdateEntryP
           className={classNames({ secondary: entry.pinned })}
           onClick={() => pin(entry)}
         />
-        <CardActionButton icon={iconObject(<Share />)} label="Share" onClick={copyLink} />
+        <CardActionButton
+          icon={iconObject(<Share />)}
+          label="Share"
+          onClick={copyLink}
+        />
       </CardActionButtons>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Edit />)} onClick={() => edit(entry)} />, "Edit")}
-        {withTooltip(<CardActionIcon icon={iconObject(<Delete />)} onClick={() => deleteFn(entry)} />, "Delete")}
+        {withTooltip(
+          <CardActionIcon
+            icon={iconObject(<Edit />)}
+            onClick={() => edit(entry)}
+          />,
+          "Edit"
+        )}
+        {withTooltip(
+          <CardActionIcon
+            icon={iconObject(<Delete />)}
+            onClick={() => deleteFn(entry)}
+          />,
+          "Delete"
+        )}
       </CardActionIcons>
     </CardActions>
   ) : (
     <CardActions>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );
   return (
     <Card
-      className={classNames("update-entry", { pinned: entry.pinned, linked: entry.id === urlEntry })}
+      className={classNames("update-entry", {
+        pinned: entry.pinned,
+        linked: entry.id === urlEntry,
+      })}
       id={"update-entry-" + entry.id}
     >
       <div className="title-container">
@@ -84,7 +122,9 @@ export const UpdateEntry = ({ entry, edit, delete: deleteFn, pin }: UpdateEntryP
             {entry.title}
           </Typography>
           <Typography use="caption" tag="p">
-            {DateTime.fromISO(entry.date).toFormat(`d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`)}
+            {DateTime.fromISO(entry.date).toFormat(
+              `d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`
+            )}
           </Typography>
         </div>
         {linkedIndicator}

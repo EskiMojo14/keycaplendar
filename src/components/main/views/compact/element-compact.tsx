@@ -56,13 +56,28 @@ export const ElementCompact = ({
   };
 
   const liveIndicator = live
-    ? withTooltip(<ListItemGraphic className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <ListItemGraphic
+          className="live-indicator"
+          icon={iconObject(<NewReleases />)}
+        />,
+        "Live"
+      )
     : null;
   const shipIndicator = set.shipped
-    ? withTooltip(<ListItemGraphic className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <ListItemGraphic
+          className="ship-indicator"
+          icon={iconObject(<CheckCircle />)}
+        />,
+        "Shipped"
+      )
     : null;
   return (
-    <ListItem selected={selected} onClick={() => (!selected ? details(set) : closeDetails())}>
+    <ListItem
+      selected={selected}
+      onClick={() => (!selected ? details(set) : closeDetails())}
+    >
       {liveIndicator}
       {shipIndicator}
       <ListItemText>

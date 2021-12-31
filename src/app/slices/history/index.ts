@@ -29,7 +29,10 @@ export const historySlice = createSlice({
     setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
       state.tab = payload;
     },
-    setProcessedActions: (state, { payload }: PayloadAction<ProcessedPublicActionType[]>) => {
+    setProcessedActions: (
+      state,
+      { payload }: PayloadAction<ProcessedPublicActionType[]>
+    ) => {
       state.processedActions = payload;
     },
     setRecentSets: (state, { payload }: PayloadAction<RecentSet[]>) => {
@@ -46,7 +49,8 @@ export const selectLoading = (state: RootState) => state.history.loading;
 
 export const selectTab = (state: RootState) => state.history.tab;
 
-export const selectProcessedActions = (state: RootState) => state.history.processedActions;
+export const selectProcessedActions = (state: RootState) =>
+  state.history.processedActions;
 
 export const selectRecentSets = (state: RootState) => state.history.recentSets;
 

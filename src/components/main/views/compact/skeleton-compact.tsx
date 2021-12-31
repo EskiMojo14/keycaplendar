@@ -14,9 +14,18 @@ export type SkeletonCompactProps = {
   icon?: boolean;
 };
 
-export const SkeletonCompact = ({ title, subtitle, icon }: SkeletonCompactProps) => (
+export const SkeletonCompact = ({
+  title,
+  subtitle,
+  icon,
+}: SkeletonCompactProps) => (
   <ListItem ripple={false} className="skeleton">
-    {icon && <ListItemGraphic className="live-indicator ship-indicator" tag={SkeletonIcon} />}
+    {icon && (
+      <ListItemGraphic
+        className="live-indicator ship-indicator"
+        tag={SkeletonIcon}
+      />
+    )}
     <ListItemText>
       <ListItemPrimaryText>
         <SkeletonBlock content={title} tag="span" />

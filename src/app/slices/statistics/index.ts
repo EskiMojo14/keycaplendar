@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "~/app/store";
-import type { StatisticsData, StatisticsSortType, StatisticsType, StatsTab } from "./types";
+import type {
+  StatisticsData,
+  StatisticsSortType,
+  StatisticsType,
+  StatsTab,
+} from "./types";
 
 type StatisticsState = {
   tab: StatsTab;
@@ -208,14 +213,24 @@ export const statisticsSlice = createSlice({
 });
 
 export const {
-  actions: { setStatsTab, setLoading, setStatisticsData, setStatisticsSettingState, setStatisticsSortState },
+  actions: {
+    setStatsTab,
+    setLoading,
+    setStatisticsData,
+    setStatisticsSettingState,
+    setStatisticsSortState,
+  },
 } = statisticsSlice;
 
-export const setStatisticsSetting = <T extends keyof StatisticsType>(key: T, value: StatisticsType[T]) =>
-  setStatisticsSettingState({ key, value });
+export const setStatisticsSetting = <T extends keyof StatisticsType>(
+  key: T,
+  value: StatisticsType[T]
+) => setStatisticsSettingState({ key, value });
 
-export const setStatisticsSort = <T extends keyof StatisticsSortType>(key: T, value: StatisticsSortType[T]) =>
-  setStatisticsSortState({ key, value });
+export const setStatisticsSort = <T extends keyof StatisticsSortType>(
+  key: T,
+  value: StatisticsSortType[T]
+) => setStatisticsSortState({ key, value });
 
 export const selectTab = (state: RootState) => state.statistics.tab;
 

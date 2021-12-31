@@ -14,16 +14,27 @@ import {
 import { IconButton } from "@rmwc/icon-button";
 import { Typography } from "@rmwc/typography";
 import Chartist from "chartist";
-import type { IBarChartOptions, IChartistData, ILineChartOptions, IResponsiveOptionTuple } from "chartist";
+import type {
+  IBarChartOptions,
+  IChartistData,
+  ILineChartOptions,
+  IResponsiveOptionTuple,
+} from "chartist";
 import chartistPluginAxisTitle from "chartist-plugin-axistitle";
 import chartistTooltip from "chartist-plugin-tooltips-updated";
 import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { useAppSelector } from "~/app/hooks";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
-import type { ShippedDataObject, TimelineDataObject } from "@s/statistics/types";
+import type {
+  ShippedDataObject,
+  TimelineDataObject,
+} from "@s/statistics/types";
 import {
   addOrRemove,
   alphabeticalSortPropCurried,
@@ -54,7 +65,9 @@ const customPoint = (data: any) => {
 
 const listener = { draw: (e: any) => customPoint(e) };
 
-const chartOptions = (monthLabel: string): IBarChartOptions & ILineChartOptions => ({
+const chartOptions = (
+  monthLabel: string
+): IBarChartOptions & ILineChartOptions => ({
   showArea: true,
   stackBars: true,
   low: 0,
@@ -97,7 +110,8 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     "(min-width: 1240px) and (max-width: 1600px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => (index % 2 === 0 ? value : null),
+        labelInterpolationFnc: (value: any, index: number) =>
+          index % 2 === 0 ? value : null,
       },
     },
   ],
@@ -105,7 +119,8 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
     "(max-width: 1239px)",
     {
       axisX: {
-        labelInterpolationFnc: (value: any, index: number) => (index % 3 === 0 ? value : null),
+        labelInterpolationFnc: (value: any, index: number) =>
+          index % 3 === 0 ? value : null,
       },
     },
   ],
@@ -135,14 +150,23 @@ export const ShippedCard = ({
   const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={
+          device === "desktop" || summary
+            ? "ct-double-octave"
+            : "ct-major-twelfth"
+        }
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
+          series: [
+            chartData.timeline.shipped,
+            chartData.timeline.unshipped,
+          ] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Bar"}
@@ -153,9 +177,16 @@ export const ShippedCard = ({
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        className={device === "desktop" || summary ? "ct-double-octave" : "ct-major-twelfth"}
+        className={
+          device === "desktop" || summary
+            ? "ct-double-octave"
+            : "ct-major-twelfth"
+        }
         data={{
-          series: [chartData.timeline.shipped, chartData.timeline.unshipped] as IChartistData["series"],
+          series: [
+            chartData.timeline.shipped,
+            chartData.timeline.unshipped,
+          ] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
         }}
         type={"Line"}
@@ -168,16 +199,18 @@ export const ShippedCard = ({
     summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                selected={index === selectedIndex}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -296,7 +329,9 @@ export const TimelinesCard = ({
   useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
   const [focused, setFocused] = useState<number[]>([]);
   const [graphType, setGraphType] = useState<"bar" | "line">(defaultType);
@@ -309,7 +344,8 @@ export const TimelinesCard = ({
     if (
       arrayEveryType(
         chartData.timeline.series,
-        (series): series is { index: number } => typeof series === "object" && hasKey(series, "index")
+        (series): series is { index: number } =>
+          typeof series === "object" && hasKey(series, "index")
       ) &&
       chartData.timeline.series.length !== allProfiles?.length
     ) {
@@ -331,11 +367,14 @@ export const TimelinesCard = ({
     allProfiles &&
     arrayEveryType(
       chartData.timeline.series,
-      (series): series is { data: any; index: number } => hasKey(series, "data") && hasKey(series, "index")
+      (series): series is { data: any; index: number } =>
+        hasKey(series, "data") && hasKey(series, "index")
     ) &&
     focused.length > 0 &&
     focused.length !== chartData.timeline.series.length
-      ? chartData.timeline.series.filter((series) => focused.includes(series.index))
+      ? chartData.timeline.series.filter((series) =>
+          focused.includes(series.index)
+        )
       : chartData.timeline.series;
   const barChart =
     graphType === "bar" ? (
@@ -368,16 +407,18 @@ export const TimelinesCard = ({
     summary && breakdownData ? (
       <div className="timeline-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                selected={index === selectedIndex}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -393,7 +434,11 @@ export const TimelinesCard = ({
           "Focus all series"
         )}
         {withTooltip(
-          <IconButton icon={iconObject(<EyeRemove />)} disabled={focused.length === 0} onClick={clearFocus} />,
+          <IconButton
+            icon={iconObject(<EyeRemove />)}
+            disabled={focused.length === 0}
+            onClick={clearFocus}
+          />,
           "Clear focus"
         )}
         {withTooltip(
@@ -413,11 +458,18 @@ export const TimelinesCard = ({
       <div className="timeline-chips-container focus-chips">
         <ChipSet choice>
           {allProfiles.map((profile, index) => {
-            if (chartData.timeline.profiles.includes(profile) || chartData.timeline.profiles.length === 0) {
+            if (
+              chartData.timeline.profiles.includes(profile) ||
+              chartData.timeline.profiles.length === 0
+            ) {
               return (
                 <Chip
                   key={profile}
-                  icon={focused.length && !focused.includes(index) ? iconObject(<Circle />) : "circle"}
+                  icon={
+                    focused.length && !focused.includes(index)
+                      ? iconObject(<Circle />)
+                      : "circle"
+                  }
                   label={profile}
                   selected={focused.includes(index)}
                   onInteraction={() => {

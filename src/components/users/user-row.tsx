@@ -16,7 +16,13 @@ import firebase from "@s/firebase";
 import { selectAllDesigners } from "@s/main";
 import { selectUser } from "@s/user";
 import type { UserType } from "@s/users/types";
-import { arrayIncludes, hasKey, iconObject, ordinal, truncate } from "@s/util/functions";
+import {
+  arrayIncludes,
+  hasKey,
+  iconObject,
+  ordinal,
+  truncate,
+} from "@s/util/functions";
 import { Delete, Save } from "@i";
 
 type UserRowProps = {
@@ -27,7 +33,11 @@ type UserRowProps = {
 
 const roles = ["designer", "editor", "admin"] as const;
 
-export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRowProps) => {
+export const UserRow = ({
+  delete: deleteFn,
+  getUsers,
+  user: propsUser,
+}: UserRowProps) => {
   const currentUser = useAppSelector(selectUser);
 
   const allDesigners = useAppSelector(selectAllDesigners);
@@ -37,9 +47,11 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState("");
 
-  const keyedUpdate = <T extends UserType, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends UserType, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   useEffect(() => {
     if (propsUser !== user) {
@@ -48,24 +60,32 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
     }
   }, [propsUser]);
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
   const handleBlur = () => setFocused("");
 
-  const handleCheckboxChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = ({
+    target: { name, checked },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (arrayIncludes(roles, name)) {
       updateUser(keyedUpdate(name, checked));
       setEdited(true);
     }
   };
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (hasKey(user, name)) {
       updateUser(keyedUpdate(name, value));
       setEdited(true);
     }
   };
 
-  const selectValue = <Key extends keyof UserType>(prop: Key, value: UserType[Key]) => {
+  const selectValue = <Key extends keyof UserType>(
+    prop: Key,
+    value: UserType[Key]
+  ) => {
     updateUser(keyedUpdate(prop, value));
     setEdited(true);
   };
@@ -89,7 +109,9 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
         queue.notify({ title: "Successfully edited user permissions." });
         getUsers();
       } else if (result.data.error) {
-        queue.notify({ title: "Failed to edit user permissions: " + result.data.error });
+        queue.notify({
+          title: "Failed to edit user permissions: " + result.data.error,
+        });
       } else {
         queue.notify({ title: "Failed to edit user permissions." });
       }
@@ -109,8 +131,12 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
     />
   );
   const deleteButton =
-    user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com" ? null : (
-      <IconButton onClick={() => deleteFn(user)} icon={iconObject(<Delete />)} />
+    user.email === currentUser.email ||
+    user.email === "ben.j.durrant@gmail.com" ? null : (
+      <IconButton
+        onClick={() => deleteFn(user)}
+        icon={iconObject(<Delete />)}
+      />
     );
   return (
     <DataTableRow>
@@ -150,20 +176,29 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
             array={allDesigners}
             query={user.nickname}
             prop="nickname"
-            select={(prop, item) => hasKey(user, prop) && selectValue(prop, item)}
+            select={(prop, item) =>
+              hasKey(user, prop) && selectValue(prop, item)
+            }
             minChars={2}
           />
         </MenuSurfaceAnchor>
       </DataTableCell>
       <DataTableCell hasFormControl>
-        <Checkbox name="designer" checked={user.designer} onChange={handleCheckboxChange} />
+        <Checkbox
+          name="designer"
+          checked={user.designer}
+          onChange={handleCheckboxChange}
+        />
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
           name="editor"
           checked={user.editor}
           onChange={handleCheckboxChange}
-          disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+          disabled={
+            user.email === currentUser.email ||
+            user.email === "ben.j.durrant@gmail.com"
+          }
         />
       </DataTableCell>
       <DataTableCell hasFormControl>
@@ -171,7 +206,10 @@ export const UserRow = ({ delete: deleteFn, getUsers, user: propsUser }: UserRow
           name="admin"
           checked={user.admin}
           onChange={handleCheckboxChange}
-          disabled={user.email === currentUser.email || user.email === "ben.j.durrant@gmail.com"}
+          disabled={
+            user.email === currentUser.email ||
+            user.email === "ben.j.durrant@gmail.com"
+          }
         />
       </DataTableCell>
       <DataTableCell hasFormControl>{saveButton}</DataTableCell>

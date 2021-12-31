@@ -29,11 +29,19 @@ type DrawerSearchProps = {
   unusedImages: ImageType[];
 };
 
-export const DrawerSearch = ({ close, images, open, unusedImages }: DrawerSearchProps) => {
+export const DrawerSearch = ({
+  close,
+  images,
+  open,
+  unusedImages,
+}: DrawerSearchProps) => {
   const device = useAppSelector(selectDevice);
   const dismissible = device === "desktop";
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
 
   const [search, setSearch] = useState("");
@@ -52,7 +60,10 @@ export const DrawerSearch = ({ close, images, open, unusedImages }: DrawerSearch
       const regex = new RegExp(search);
       return regex.test(image.name) && search.length > 1;
     } else {
-      return image.name.toLowerCase().includes(search.toLowerCase()) && search.length > 1;
+      return (
+        image.name.toLowerCase().includes(search.toLowerCase()) &&
+        search.length > 1
+      );
     }
   });
   return (
@@ -89,7 +100,10 @@ export const DrawerSearch = ({ close, images, open, unusedImages }: DrawerSearch
         <List twoLine>
           {searchedImages.map((image) => (
             <ListItem disabled key={image.fullPath}>
-              <ListItemGraphic className="image" style={{ backgroundImage: "url(" + image.src + ")" }} />
+              <ListItemGraphic
+                className="image"
+                style={{ backgroundImage: "url(" + image.src + ")" }}
+              />
               {withTooltip(
                 <ListItemText>
                   <ListItemPrimaryText>
@@ -99,12 +113,20 @@ export const DrawerSearch = ({ close, images, open, unusedImages }: DrawerSearch
                       </span>
                     ))}
                   </ListItemPrimaryText>
-                  <ListItemSecondaryText>{image.fullPath}</ListItemSecondaryText>
+                  <ListItemSecondaryText>
+                    {image.fullPath}
+                  </ListItemSecondaryText>
                 </ListItemText>,
                 image.name
               )}
               <ListItemMeta>
-                <Checkbox checked={!unusedImages.map(({ name }) => name).includes(image.name)} readOnly disabled />
+                <Checkbox
+                  checked={
+                    !unusedImages.map(({ name }) => name).includes(image.name)
+                  }
+                  readOnly
+                  disabled
+                />
               </ListItemMeta>
             </ListItem>
           ))}

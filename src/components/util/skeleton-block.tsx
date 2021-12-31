@@ -2,10 +2,9 @@ import type { TypographyT } from "@rmwc/typography";
 import BEMHelper from "@s/common/bem-helper";
 import "./skeleton-block.scss";
 
-export type SkeletonBlockProps<Tag extends keyof JSX.IntrinsicElements = "div"> = Omit<
-  JSX.IntrinsicElements[Tag],
-  "children"
-> & {
+export type SkeletonBlockProps<
+  Tag extends keyof JSX.IntrinsicElements = "div"
+> = Omit<JSX.IntrinsicElements[Tag], "children"> & {
   width?: number | string;
   height?: number | string;
   typography?: TypographyT;
@@ -18,7 +17,9 @@ export type SkeletonBlockProps<Tag extends keyof JSX.IntrinsicElements = "div"> 
 
 const bemClasses = new BEMHelper("skeleton-block");
 
-export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div">({
+export const SkeletonBlock = <
+  HTMLTag extends keyof JSX.IntrinsicElements = "div"
+>({
   className = "",
   colour,
   constrain,
@@ -38,7 +39,10 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
         typography: !!typography || !!content,
         constrain: !!constrain,
       },
-      extra: { [className]: !!className, [`mdc-typography--${typography}`]: !!typography },
+      extra: {
+        [className]: !!className,
+        [`mdc-typography--${typography}`]: !!typography,
+      },
     })}
     style={{
       ...style,
@@ -52,6 +56,14 @@ export const SkeletonBlock = <HTMLTag extends keyof JSX.IntrinsicElements = "div
   </Tag>
 );
 
-export const SkeletonIcon = ({ className, ...props }: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
-  <SkeletonBlock className={bemClasses({ modifiers: "icon", extra: className })} height={24} width={24} {...props} />
+export const SkeletonIcon = ({
+  className,
+  ...props
+}: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
+  <SkeletonBlock
+    className={bemClasses({ modifiers: "icon", extra: className })}
+    height={24}
+    width={24}
+    {...props}
+  />
 );

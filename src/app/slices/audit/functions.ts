@@ -31,7 +31,11 @@ export const getActions = (state = store.getState()) => {
       const users: string[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const action = data.before?.profile ? (data.after?.profile ? "updated" : "deleted") : "created";
+        const action = data.before?.profile
+          ? data.after?.profile
+            ? "updated"
+            : "deleted"
+          : "created";
         const { id: changelogId } = doc;
         const actionObj: ActionType = {
           ...data,
@@ -63,7 +67,11 @@ const processActions = (actions: ActionType[]) => {
       auditProperties.forEach((prop) => {
         const { [prop]: beforeProp } = before;
         const { [prop]: afterProp } = after;
-        if (isEqual(beforeProp, afterProp) && prop !== "profile" && prop !== "colorway") {
+        if (
+          isEqual(beforeProp, afterProp) &&
+          prop !== "profile" &&
+          prop !== "colorway"
+        ) {
           delete before[prop];
           delete after[prop];
         }
@@ -89,11 +97,15 @@ export const filterActions = (state = store.getState()) => {
   let filteredActions = allActions;
 
   if (filterAction !== "none") {
-    filteredActions = filteredActions.filter((action) => action.action === filterAction);
+    filteredActions = filteredActions.filter(
+      (action) => action.action === filterAction
+    );
   }
 
   if (filterUser !== "all") {
-    filteredActions = filteredActions.filter((action) => action.user.nickname === filterUser);
+    filteredActions = filteredActions.filter(
+      (action) => action.user.nickname === filterUser
+    );
   }
 
   dispatch(setFilteredActions(filteredActions));

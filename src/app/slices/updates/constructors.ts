@@ -5,7 +5,14 @@ export class Update {
   date: string;
   body: string;
   pinned: boolean;
-  constructor(user = "", title = "", date = "", body = "", pinned = false, id = "") {
+  constructor(
+    user = "",
+    title = "",
+    date = "",
+    body = "",
+    pinned = false,
+    id = ""
+  ) {
     this.name = user;
     this.title = title;
     this.date = date;

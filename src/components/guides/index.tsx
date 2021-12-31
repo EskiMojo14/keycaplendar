@@ -21,7 +21,12 @@ import { AppBarIndent } from "@c/util/app-bar-indent";
 import { withTooltip } from "@c/util/hocs";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
-import { selectEntries, selectLoading, selectURLEntry, setURLEntry } from "@s/guides";
+import {
+  selectEntries,
+  selectLoading,
+  selectURLEntry,
+  setURLEntry,
+} from "@s/guides";
 import { Guide } from "@s/guides/constructors";
 import { getEntries } from "@s/guides/functions";
 import type { GuideEntryType } from "@s/guides/types";
@@ -179,14 +184,34 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         label={device === "desktop" ? "Create" : null}
         onClick={openCreate}
       />
-      <ModalCreate open={createOpen} onClose={closeCreate} getEntries={getEntries} />
-      <ModalEdit open={editOpen} onClose={closeEdit} entry={editEntry} getEntries={getEntries} />
-      <DialogDelete open={deleteOpen} onClose={closeDelete} entry={deleteEntry} getEntries={getEntries} />
+      <ModalCreate
+        open={createOpen}
+        onClose={closeCreate}
+        getEntries={getEntries}
+      />
+      <ModalEdit
+        open={editOpen}
+        onClose={closeEdit}
+        entry={editEntry}
+        getEntries={getEntries}
+      />
+      <DialogDelete
+        open={deleteOpen}
+        onClose={closeDelete}
+        entry={deleteEntry}
+        getEntries={getEntries}
+      />
     </>
   ) : null;
 
-  const leftButtons = !indent ? <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle> : buttons;
-  const rightButtons = !indent ? <TopAppBarSection alignEnd>{buttons}</TopAppBarSection> : null;
+  const leftButtons = !indent ? (
+    <TopAppBarTitle>{pageTitle.guides}</TopAppBarTitle>
+  ) : (
+    buttons
+  );
+  const rightButtons = !indent ? (
+    <TopAppBarSection alignEnd>{buttons}</TopAppBarSection>
+  ) : null;
 
   const content =
     device === "desktop" ? (
@@ -195,7 +220,11 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         <div className="main drawer-margin">
           <div className="guide-container">
             {detailEntry.id ? (
-              <GuideEntry entry={detailEntry} edit={openEdit} delete={openDelete} />
+              <GuideEntry
+                entry={detailEntry}
+                edit={openEdit}
+                delete={openDelete}
+              />
             ) : (
               <div className="empty-container">
                 <img className="image" src={emptyImg} alt="Empty" />
@@ -231,7 +260,10 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     <>
       <TopAppBar
         fixed
-        className={classNames({ "bottom-app-bar": bottomNav, "bottom-app-bar--indent": bottomNav && user.isAdmin })}
+        className={classNames({
+          "bottom-app-bar": bottomNav,
+          "bottom-app-bar--indent": bottomNav && user.isAdmin,
+        })}
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>

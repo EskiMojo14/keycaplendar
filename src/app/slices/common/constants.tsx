@@ -23,7 +23,10 @@ import type { Page, ThemeMap } from "./types";
  * @returns Object with `strategy` set to `"component"` and `icon` set to the value of `jsx`.
  */
 
-const iconObject = (jsx: ReactNode, config?: Omit<IconOptions, "icon">): IconPropT => ({
+const iconObject = (
+  jsx: ReactNode,
+  config?: Omit<IconOptions, "icon">
+): IconPropT => ({
   strategy: "component",
   icon: jsx,
   ...config,
@@ -75,7 +78,14 @@ export const mainPages = [
 
 /** Main pages which can be accessed without being logged in. */
 
-export const standardPages: Page[] = ["calendar", "live", "ic", "previous", "timeline", "archive"];
+export const standardPages: Page[] = [
+  "calendar",
+  "live",
+  "ic",
+  "previous",
+  "timeline",
+  "archive",
+];
 
 /** Pages to allow linking to using URL params or path. (e.g. {@link https://keycaplendar.firebaseapp.com/ic} or {@link https://keycaplendar.firebaseapp.com/?page=ic}). */
 

@@ -23,14 +23,22 @@ export const MenuSort = ({ onClose, open }: MenuSortProps) => {
     <Menu anchorCorner="bottomLeft" open={open} onClose={onClose}>
       {allSorts.map((key) =>
         arrayIncludes(sortBlacklist[key], page) ? null : (
-          <MenuItem selected={sort === key} onClick={() => setSort(key)} key={key}>
+          <MenuItem
+            selected={sort === key}
+            onClick={() => setSort(key)}
+            key={key}
+          >
             {sortNames[key]}
           </MenuItem>
         )
       )}
       <ListDivider />
       {sortOrders.map((item) => (
-        <MenuItem selected={sortOrder === item} onClick={() => setSortOrder(item)} key={item}>
+        <MenuItem
+          selected={sortOrder === item}
+          onClick={() => setSortOrder(item)}
+          key={item}
+        >
           {capitalise(item)}
         </MenuItem>
       ))}

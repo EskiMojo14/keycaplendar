@@ -70,7 +70,12 @@ export class Preset {
    * @param id Internal ID. Will be generated with `nanoid()` if not provided.
    */
 
-  constructor(name = "", global = false, whitelist: WhitelistType = { ...new Whitelist() }, id = nanoid()) {
+  constructor(
+    name = "",
+    global = false,
+    whitelist: WhitelistType = { ...new Whitelist() },
+    id = nanoid()
+  ) {
     this.name = name;
     this.id = id;
     this.global = global;

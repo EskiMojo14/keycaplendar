@@ -39,7 +39,14 @@ export const reverseSortDatePages: Page[] = ["ic", "previous"];
 
 /** All possible sort types. */
 
-export const allSorts = ["profile", "designer", "vendor", "icDate", "gbLaunch", "gbEnd"] as const;
+export const allSorts = [
+  "profile",
+  "designer",
+  "vendor",
+  "icDate",
+  "gbLaunch",
+  "gbEnd",
+] as const;
 
 /** Formatted names for each sort. */
 

@@ -14,7 +14,11 @@ export const MenuView = ({ onClose, open }: MenuViewProps) => {
   return (
     <Menu anchorCorner="bottomLeft" open={open} onClose={onClose}>
       {allViews.map((key) => (
-        <MenuItem key={key} selected={view === key} onClick={() => setView(key)}>
+        <MenuItem
+          key={key}
+          selected={view === key}
+          onClick={() => setView(key)}
+        >
           {viewNames[key]}
         </MenuItem>
       ))}

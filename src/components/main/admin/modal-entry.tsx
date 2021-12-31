@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FocusEvent } from "react";
 import { Button } from "@rmwc/button";
-import { Card, CardActionButton, CardActionButtons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActions,
+} from "@rmwc/card";
 import { Checkbox } from "@rmwc/checkbox";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { Icon } from "@rmwc/icon";
@@ -9,7 +14,12 @@ import { IconButton } from "@rmwc/icon-button";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { MenuSurfaceAnchor } from "@rmwc/menu";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -22,14 +32,23 @@ import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Autocomplete } from "@c/util/autocomplete";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { DatePicker, invalidDate } from "@c/util/pickers/date-picker";
 import { selectDevice } from "@s/common";
 import firebase from "@s/firebase";
 import firestore from "@s/firebase/firestore";
 import type { KeysetId } from "@s/firebase/types";
-import { selectAllDesigners, selectAllProfiles, selectAllVendorRegions, selectAllVendors } from "@s/main";
+import {
+  selectAllDesigners,
+  selectAllProfiles,
+  selectAllVendorRegions,
+  selectAllVendors,
+} from "@s/main";
 import { getData } from "@s/main/functions";
 import type { SetType, VendorType } from "@s/main/types";
 import { selectUser } from "@s/user";
@@ -51,7 +70,12 @@ const getVendorStyle = ({ draggableProps: { style } }: DraggableProvided) => {
   if (style) {
     let { transform } = style;
     if (style.transform) {
-      const YVal = parseInt(style.transform.slice(style.transform.indexOf(",") + 2, style.transform.length - 3));
+      const YVal = parseInt(
+        style.transform.slice(
+          style.transform.indexOf(",") + 2,
+          style.transform.length - 3
+        )
+      );
       const axisLockY = "translate(0px, " + YVal + "px)";
       transform = axisLockY;
     }
@@ -73,7 +97,9 @@ export const validVendor = (obj: Record<string, any>): obj is VendorType =>
   (!obj.storeLink || new RegExp(validLink).test(obj.storeLink)) &&
   (!obj.endDate || !invalidDate(obj.endDate, false));
 
-export const validSalesInfo = (obj: Record<string, any>): obj is Exclude<SetType["sales"], undefined> =>
+export const validSalesInfo = (
+  obj: Record<string, any>
+): obj is Exclude<SetType["sales"], undefined> =>
   hasKey(obj, "salesImg") &&
   (!obj.salesImg || new RegExp(validLink).test(obj.salesImg)) &&
   hasKey(obj, "salesThirdParty");
@@ -135,9 +161,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
 
   const [state, updateState] = useImmer(initialState);
 
-  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends State, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -158,9 +186,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     setFocused("");
   };
 
-  const setImage = (image: Blob | File | null) => updateState(keyedUpdate("image", image));
+  const setImage = (image: Blob | File | null) =>
+    updateState(keyedUpdate("image", image));
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
 
   const handleBlur = () => setFocused("");
 
@@ -224,7 +254,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     });
   };
 
-  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value, checked },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -234,10 +266,14 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     }
   };
 
-  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
-    updateState(keyedUpdate(name, value));
+  const handleNamedChange =
+    <Key extends keyof State>(name: Key) =>
+    (value: State[Key]) =>
+      updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
@@ -250,15 +286,16 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
-    updateState((draft) => {
-      const {
-        vendors: { [index]: vendor },
-      } = draft;
-      if (hasKey(vendor, name)) {
-        vendor[name] = value;
-      }
-    });
+  const handleNamedChangeVendor =
+    (name: keyof VendorType, index: number) => (value: string) =>
+      updateState((draft) => {
+        const {
+          vendors: { [index]: vendor },
+        } = draft;
+        if (hasKey(vendor, name)) {
+          vendor[name] = value;
+        }
+      });
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -294,7 +331,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     updateState((draft) => {
-      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+      arrayMove(
+        draft.vendors,
+        result.source.index,
+        result.destination?.index || 0
+      );
     });
   };
 
@@ -303,9 +344,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
-        "yyyyMMddHHmmss"
-      )}`;
+      const fileName = `${formatFileName(
+        `${state.profile} ${state.colorway}`
+      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
@@ -393,7 +434,8 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     }
   };
 
-  const setSalesImageLoaded = (val: boolean) => updateState(keyedUpdate("salesImageLoaded", val));
+  const setSalesImageLoaded = (val: boolean) =>
+    updateState(keyedUpdate("salesImageLoaded", val));
 
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
@@ -461,12 +503,21 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={closeModal}
+          className="drawer-right entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={closeModal}
+          className="entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -507,7 +558,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
           <Button
             type="button"
@@ -525,12 +578,18 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guides?guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button label="guide" />
             </a>
           </div>
@@ -587,7 +646,8 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                 persistent: true,
                 children: (
                   <>
-                    Separate multiple designers with <code className="multiline">, </code>.
+                    Separate multiple designers with{" "}
+                    <code className="multiline">, </code>.
                   </>
                 ),
               }}
@@ -627,7 +687,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             pattern={validLink}
             value={state.details}
             name="details"
-            helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+            helpText={{
+              persistent: false,
+              validationMsg: true,
+              children: "Must be valid link",
+            }}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -644,7 +708,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <ImageUpload image={state.image} setImage={setImage} desktop={device === "desktop"} />
+          <ImageUpload
+            image={state.image}
+            setImage={setImage}
+            desktop={device === "desktop"}
+          />
           {dateCard}
           <Checkbox
             label="Shipped"
@@ -659,7 +727,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-create">
               {(provided) => (
-                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  className="vendors-container"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
@@ -676,17 +748,26 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                         />
                       ) : null;
                     return (
-                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                      <Draggable
+                        key={vendor.id}
+                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <Card
                             outlined
-                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
+                            className={classNames("vendor-container", {
+                              dragged: snapshot.isDragging,
+                            })}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
-                              <Typography use="caption" className="vendor-title">
+                              <Typography
+                                use="caption"
+                                className="vendor-title"
+                              >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
@@ -700,7 +781,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 "Delete"
                               )}
                               {withTooltip(
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                <Icon
+                                  icon="drag_handle"
+                                  className="drag-handle"
+                                  {...provided.dragHandleProps}
+                                />,
                                 "Drag"
                               )}
                             </div>
@@ -773,7 +858,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 name={"endDate" + index}
                                 id={"editEndDate" + index}
                                 onChange={handleChangeVendorEndDate}
-                                checked={!!vendor.endDate || vendor.endDate === ""}
+                                checked={
+                                  !!vendor.endDate || vendor.endDate === ""
+                                }
                               />
                               {endDateField}
                             </div>
@@ -788,13 +875,22 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
+            <Button
+              type="button"
+              outlined
+              label="Add vendor"
+              onClick={addVendor}
+            />
           </div>
           <Card outlined className="sales-container">
             <Typography use="caption" tag="h3" className="sales-title">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
+            <div
+              className={classNames("sales-image", {
+                loaded: state.salesImageLoaded,
+              })}
+            >
               <div className="sales-image-icon">
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
@@ -818,7 +914,11 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                 pattern={validLink}
                 value={state.salesImg}
                 name="salesImg"
-                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                helpText={{
+                  persistent: true,
+                  validationMsg: true,
+                  children: "Must be direct link to image",
+                }}
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
@@ -901,9 +1001,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
   const [state, updateState] = useImmer(initialState);
 
-  const keyedUpdate = <T extends State, K extends keyof T>(key: K, payload: T[K]) => (draft: T) => {
-    draft[key] = payload;
-  };
+  const keyedUpdate =
+    <T extends State, K extends keyof T>(key: K, payload: T[K]) =>
+    (draft: T) => {
+      draft[key] = payload;
+    };
 
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
@@ -977,7 +1079,8 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       draft.newImage = true;
     });
 
-  const handleFocus = (e: FocusEvent<HTMLInputElement>) => setFocused(e.target.name);
+  const handleFocus = (e: FocusEvent<HTMLInputElement>) =>
+    setFocused(e.target.name);
 
   const handleBlur = () => setFocused("");
 
@@ -1041,7 +1144,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     });
   };
 
-  const handleChange = ({ target: { name, value, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value, checked },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "designer") {
       updateState(keyedUpdate(name, value.split(", ")));
     } else if (name === "shipped" || name === "salesThirdParty") {
@@ -1051,10 +1156,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     }
   };
 
-  const handleNamedChange = <Key extends keyof State>(name: Key) => (value: State[Key]) =>
-    updateState(keyedUpdate(name, value));
+  const handleNamedChange =
+    <Key extends keyof State>(name: Key) =>
+    (value: State[Key]) =>
+      updateState(keyedUpdate(name, value));
 
-  const handleChangeVendor = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeVendor = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     const property = name.replace(/\d/g, "");
     const index = parseInt(name.replace(/\D/g, ""));
     updateState((draft) => {
@@ -1067,15 +1176,16 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     });
   };
 
-  const handleNamedChangeVendor = (name: keyof VendorType, index: number) => (value: string) =>
-    updateState((draft) => {
-      const {
-        vendors: { [index]: vendor },
-      } = draft;
-      if (hasKey(vendor, name)) {
-        vendor[name] = value;
-      }
-    });
+  const handleNamedChangeVendor =
+    (name: keyof VendorType, index: number) => (value: string) =>
+      updateState((draft) => {
+        const {
+          vendors: { [index]: vendor },
+        } = draft;
+        if (hasKey(vendor, name)) {
+          vendor[name] = value;
+        }
+      });
 
   const handleChangeVendorEndDate = (e: ChangeEvent<HTMLInputElement>) => {
     const index = parseInt(e.target.name.replace(/\D/g, ""));
@@ -1111,7 +1221,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   const handleDragVendor = (result: DropResult) => {
     if (!result.destination) return;
     updateState((draft) => {
-      arrayMove(draft.vendors, result.source.index, result.destination?.index || 0);
+      arrayMove(
+        draft.vendors,
+        result.source.index,
+        result.destination?.index || 0
+      );
     });
   };
 
@@ -1120,9 +1234,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       setUploadingImage(true);
       const storageRef = firebase.storage().ref();
       const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(`${state.profile} ${state.colorway}`)}T${DateTime.utc().toFormat(
-        "yyyyMMddHHmmss"
-      )}`;
+      const fileName = `${formatFileName(
+        `${state.profile} ${state.colorway}`
+      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
       const imageRef = keysetsRef.child(fileName + ".png");
       const uploadTask = imageRef.put(state.image);
       uploadTask.on(
@@ -1153,13 +1267,19 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               if (regexMatch) {
                 const [, imageName] = regexMatch;
                 const folders = await getStorageFolders();
-                const allImages = folders.map((folder) => `${folder}/${imageName}`);
+                const allImages = folders.map(
+                  (folder) => `${folder}/${imageName}`
+                );
                 batchStorageDelete(allImages)
                   .then(() => {
-                    queue.notify({ title: "Successfully deleted previous thumbnails." });
+                    queue.notify({
+                      title: "Successfully deleted previous thumbnails.",
+                    });
                   })
                   .catch((error) => {
-                    queue.notify({ title: "Failed to delete previous thumbnails: " + error });
+                    queue.notify({
+                      title: "Failed to delete previous thumbnails: " + error,
+                    });
                     console.error(error);
                   });
               }
@@ -1182,7 +1302,8 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     !!state.designer &&
     !invalidDate(state.icDate, false, true, true) &&
     new RegExp(validLink).test(state.details) &&
-    ((state.newImage && state.image instanceof Blob && !!state.image) || !!state.imageURL) &&
+    ((state.newImage && state.image instanceof Blob && !!state.image) ||
+      !!state.imageURL) &&
     !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
     !invalidDate(state.gbEnd) &&
     arrayEveryType(state.vendors, validVendor) &&
@@ -1295,12 +1416,21 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={closeModal} className="drawer-right entry-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={closeModal}
+          className="drawer-right entry-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={closeModal} className="entry-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={closeModal}
+          className="entry-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -1341,7 +1471,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
           <Button
             type="button"
@@ -1363,12 +1495,18 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
-            <a href="/guides?guideId=JLB4xxfx52NJmmnbvbzO" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button label="guide" />
             </a>
           </div>
@@ -1407,7 +1545,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 label="Colorway"
                 value={state.colorway}
                 name="colorway"
-                helpText={{ persistent: false, validationMsg: true, children: "Enter a name" }}
+                helpText={{
+                  persistent: false,
+                  validationMsg: true,
+                  children: "Enter a name",
+                }}
                 onChange={handleChange}
               />
             </div>
@@ -1424,7 +1566,8 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 persistent: true,
                 children: (
                   <>
-                    Separate multiple designers with <code className="multiline">, </code>.
+                    Separate multiple designers with{" "}
+                    <code className="multiline">, </code>.
                   </>
                 ),
               }}
@@ -1466,7 +1609,10 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             helpText={{
               persistent: false,
               validationMsg: true,
-              children: state.details.length > 0 ? "Must be valid link" : "Enter a link",
+              children:
+                state.details.length > 0
+                  ? "Must be valid link"
+                  : "Enter a link",
             }}
             onChange={handleChange}
           />
@@ -1483,19 +1629,33 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             onBlur={handleBlur}
           />
           <ImageUpload
-            image={state.newImage ? state.image : state.imageURL.replace("keysets", "thumbs")}
+            image={
+              state.newImage
+                ? state.image
+                : state.imageURL.replace("keysets", "thumbs")
+            }
             setImage={setImage}
             desktop={device === "desktop"}
           />
           {dateCard}
-          <Checkbox label="Shipped" id="edit-shipped" name="shipped" checked={state.shipped} onChange={handleChange} />
+          <Checkbox
+            label="Shipped"
+            id="edit-shipped"
+            name="shipped"
+            checked={state.shipped}
+            onChange={handleChange}
+          />
           <Typography use="caption" tag="h3" className="subheader">
             Vendors
           </Typography>
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-edit">
               {(provided) => (
-                <div className="vendors-container" ref={provided.innerRef} {...provided.droppableProps}>
+                <div
+                  className="vendors-container"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
                   {state.vendors.map((vendor, index) => {
                     const endDateField =
                       typeof vendor.endDate === "string" ? (
@@ -1512,17 +1672,26 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                         />
                       ) : null;
                     return (
-                      <Draggable key={vendor.id} draggableId={vendor.id ? vendor.id : index.toString()} index={index}>
+                      <Draggable
+                        key={vendor.id}
+                        draggableId={vendor.id ? vendor.id : index.toString()}
+                        index={index}
+                      >
                         {(provided, snapshot) => (
                           <Card
                             outlined
-                            className={classNames("vendor-container", { dragged: snapshot.isDragging })}
+                            className={classNames("vendor-container", {
+                              dragged: snapshot.isDragging,
+                            })}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
-                              <Typography use="caption" className="vendor-title">
+                              <Typography
+                                use="caption"
+                                className="vendor-title"
+                              >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
@@ -1536,7 +1705,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 "Delete"
                               )}
                               {withTooltip(
-                                <Icon icon="drag_handle" className="drag-handle" {...provided.dragHandleProps} />,
+                                <Icon
+                                  icon="drag_handle"
+                                  className="drag-handle"
+                                  {...provided.dragHandleProps}
+                                />,
                                 "Drag"
                               )}
                             </div>
@@ -1596,7 +1769,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 onChange={handleChangeVendor}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
-                                helpText={{ persistent: false, validationMsg: true, children: "Must be valid link" }}
+                                helpText={{
+                                  persistent: false,
+                                  validationMsg: true,
+                                  children: "Must be valid link",
+                                }}
                               />
                               <Checkbox
                                 className="end-date-field"
@@ -1604,7 +1781,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 name={"endDate" + index}
                                 id={"editEndDate" + index}
                                 onChange={handleChangeVendorEndDate}
-                                checked={!!vendor.endDate || vendor.endDate === ""}
+                                checked={
+                                  !!vendor.endDate || vendor.endDate === ""
+                                }
                               />
                               {endDateField}
                             </div>
@@ -1619,13 +1798,22 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             </Droppable>
           </DragDropContext>
           <div className="add-button">
-            <Button type="button" outlined label="Add vendor" onClick={addVendor} />
+            <Button
+              type="button"
+              outlined
+              label="Add vendor"
+              onClick={addVendor}
+            />
           </div>
           <Card outlined className="sales-container">
             <Typography use="caption" tag="h3" className="sales-title">
               Sales
             </Typography>
-            <div className={classNames("sales-image", { loaded: state.salesImageLoaded })}>
+            <div
+              className={classNames("sales-image", {
+                loaded: state.salesImageLoaded,
+              })}
+            >
               <div className="sales-image-icon">
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
@@ -1649,7 +1837,11 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 pattern={validLink}
                 value={state.salesImg}
                 name="salesImg"
-                helpText={{ persistent: true, validationMsg: true, children: "Must be direct link to image" }}
+                helpText={{
+                  persistent: true,
+                  validationMsg: true,
+                  children: "Must be direct link to image",
+                }}
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}

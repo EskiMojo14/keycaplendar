@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import { alpha, createTheme, ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import {
+  alpha,
+  createTheme,
+  ThemeProvider as MuiThemeProvider,
+} from "@material-ui/core/styles";
 import { useAppSelector } from "~/app/hooks";
 import { selectCurrentThemeMap } from "@s/common";
 import { blankTheme } from "@s/common/constants";
@@ -10,9 +14,18 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     ? createTheme({
         palette: {
           type: currentThemeMap.dark ? "dark" : "light",
-          primary: { main: currentThemeMap.primary, contrastText: currentThemeMap.onPrimary },
-          secondary: { main: currentThemeMap.secondary, contrastText: currentThemeMap.onSecondary },
-          error: { main: currentThemeMap.error, contrastText: currentThemeMap.onError },
+          primary: {
+            main: currentThemeMap.primary,
+            contrastText: currentThemeMap.onPrimary,
+          },
+          secondary: {
+            main: currentThemeMap.secondary,
+            contrastText: currentThemeMap.onSecondary,
+          },
+          error: {
+            main: currentThemeMap.error,
+            contrastText: currentThemeMap.onError,
+          },
           text: {
             primary: alpha(currentThemeMap.onSurface, 0.87),
             secondary: alpha(currentThemeMap.onSurface, 0.6),
@@ -25,7 +38,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
             disabled: alpha(currentThemeMap.onSurface, 0.3),
             disabledBackground: alpha(currentThemeMap.onSurface, 0.12),
           },
-          background: { paper: currentThemeMap.surface, default: currentThemeMap.background },
+          background: {
+            paper: currentThemeMap.surface,
+            default: currentThemeMap.background,
+          },
           divider: alpha(currentThemeMap.onSurface, 0.12),
         },
       })

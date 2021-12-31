@@ -8,7 +8,13 @@ import type { UserId } from "@s/firebase/types";
 import { selectLoading, setTransition } from "@s/main";
 import { selectUser } from "@s/user";
 import { hasKey } from "@s/util/functions";
-import { selectCookies, selectSyncSettings, setCookies, setSetting, toggleLich } from ".";
+import {
+  selectCookies,
+  selectSyncSettings,
+  setCookies,
+  setSetting,
+  toggleLich,
+} from ".";
 import type { ViewType } from "./types";
 
 const { dispatch } = store;
@@ -23,7 +29,12 @@ export const clearCookies = () => {
   localStorage.removeItem("accepted");
 };
 
-export const setCookie = (cname: string, cvalue: string, exdays: number, state = store.getState()) => {
+export const setCookie = (
+  cname: string,
+  cvalue: string,
+  exdays: number,
+  state = store.getState()
+) => {
   const cookies = selectCookies(state);
   if (cookies || cname === "accepted") {
     const d = new Date();
@@ -39,7 +50,11 @@ export const getCookie = (name: string) => {
   if (parts.length === 2) return parts.pop()?.split(";").shift();
 };
 
-export const setStorage = (name: string, value: any, state = store.getState()) => {
+export const setStorage = (
+  name: string,
+  value: any,
+  state = store.getState()
+) => {
   const cookies = selectCookies(state);
   if (cookies) {
     localStorage.setItem(name, JSON.stringify(value));
@@ -57,7 +72,10 @@ export const checkStorage = () => {
   if (acceptedCookie === "true" || accepted) {
     dispatch(setCookies(true));
 
-    const convertCookie = (key: string, setFunction: (val: any, write: boolean) => void) => {
+    const convertCookie = (
+      key: string,
+      setFunction: (val: any, write: boolean) => void
+    ) => {
       const cookie = getCookie(key);
       const storage = getStorage(key);
       if (cookie || (storage !== null && key !== "accepted")) {
@@ -88,7 +106,11 @@ export const checkStorage = () => {
   }
 };
 
-export const setView = (view: ViewType, write = true, state = store.getState()) => {
+export const setView = (
+  view: ViewType,
+  write = true,
+  state = store.getState()
+) => {
   const { settings } = state;
   const loading = selectLoading(state);
   if (view !== settings.view && !loading) {
@@ -108,7 +130,11 @@ export const setView = (view: ViewType, write = true, state = store.getState()) 
   }
 };
 
-export const setSyncSettings = (bool: boolean, write = true, state = store.getState()) => {
+export const setSyncSettings = (
+  bool: boolean,
+  write = true,
+  state = store.getState()
+) => {
   const { settings } = state;
   const user = selectUser(state);
   dispatch(setSetting("syncSettings", bool));
@@ -133,7 +159,11 @@ export const setSyncSettings = (bool: boolean, write = true, state = store.getSt
   }
 };
 
-export const syncSetting = (setting: string, value: any, state = store.getState()) => {
+export const syncSetting = (
+  setting: string,
+  value: any,
+  state = store.getState()
+) => {
   const user = selectUser(state);
   const syncSettings = selectSyncSettings(state);
   if (user.id && syncSettings) {
@@ -157,7 +187,9 @@ export const syncSetting = (setting: string, value: any, state = store.getState(
           })
           .catch((error) => {
             console.log("Failed to create settings object: " + error);
-            queue.notify({ title: "Failed to create settings object: " + error });
+            queue.notify({
+              title: "Failed to create settings object: " + error,
+            });
           });
       }
     });
@@ -168,14 +200,24 @@ const isDarkTheme = (state = store.getState()) => {
   const { settings } = state;
   const manualBool = settings.applyTheme === "manual" && settings.manualTheme;
   const systemBool =
-    settings.applyTheme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    settings.applyTheme === "system" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const currentDay = DateTime.now();
   const fromArray = settings.fromTimeTheme.split(":");
-  const fromTime = currentDay.set({ hour: parseInt(fromArray[0] || "0"), minute: parseInt(fromArray[1] || "0") });
+  const fromTime = currentDay.set({
+    hour: parseInt(fromArray[0] || "0"),
+    minute: parseInt(fromArray[1] || "0"),
+  });
   const toArray = settings.toTimeTheme.split(":");
-  const toTime = currentDay.set({ hour: parseInt(toArray[0] || "0"), minute: parseInt(toArray[1] || "0") });
-  const timedBool = settings.applyTheme === "timed" && (currentDay >= fromTime || currentDay <= toTime);
+  const toTime = currentDay.set({
+    hour: parseInt(toArray[0] || "0"),
+    minute: parseInt(toArray[1] || "0"),
+  });
+  const timedBool =
+    settings.applyTheme === "timed" &&
+    (currentDay >= fromTime || currentDay <= toTime);
   return manualBool || systemBool || timedBool;
 };
 
@@ -187,7 +229,11 @@ export const checkTheme = (state = store.getState()) => {
   }
 
   const { settings } = state;
-  const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
+  const theme = settings.lichTheme
+    ? "lich"
+    : isDarkTheme(state)
+    ? settings.darkTheme
+    : settings.lightTheme;
   if (selectTheme(state) !== theme) {
     dispatch(setTheme(theme));
   }
@@ -195,7 +241,10 @@ export const checkTheme = (state = store.getState()) => {
   html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");
   if (meta) {
-    meta.setAttribute("content", getComputedStyle(html).getPropertyValue("--theme-meta"));
+    meta.setAttribute(
+      "content",
+      getComputedStyle(html).getPropertyValue("--theme-meta")
+    );
   }
 };
 

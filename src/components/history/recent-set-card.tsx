@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@rmwc/button";
-import { Card, CardMedia, CardMediaContent, CardPrimaryAction } from "@rmwc/card";
+import {
+  Card,
+  CardMedia,
+  CardMediaContent,
+  CardPrimaryAction,
+} from "@rmwc/card";
 import { Icon } from "@rmwc/icon";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
@@ -15,7 +20,12 @@ import type { RecentSet } from "@s/history/types";
 import { pageConditions } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectBought, selectFavorites, selectHidden } from "@s/user";
-import { arrayIncludes, iconObject, objectKeys, ordinal } from "@s/util/functions";
+import {
+  arrayIncludes,
+  iconObject,
+  objectKeys,
+  ordinal,
+} from "@s/util/functions";
 import { FilterVariantRemove, ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
@@ -27,7 +37,13 @@ type RecentSetCardProps = {
   openDetails: (set: SetType) => void;
 };
 
-export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, openDetails }: RecentSetCardProps) => {
+export const RecentSetCard = ({
+  recentSet,
+  filtered,
+  selected,
+  filterChangelog,
+  openDetails,
+}: RecentSetCardProps) => {
   const { currentSet: set, deleted } = recentSet;
   const favorites = useAppSelector(selectFavorites);
   const bought = useAppSelector(selectBought);
@@ -47,20 +63,29 @@ export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, 
         bought: false,
         hidden: false,
       };
-      const pageBools: Record<MainPage, boolean> = set ? pageConditions(set, favorites, bought, hidden) : falsePages;
+      const pageBools: Record<MainPage, boolean> = set
+        ? pageConditions(set, favorites, bought, hidden)
+        : falsePages;
       const keysetPages = objectKeys(pageBools).filter((key) => pageBools[key]);
       setPages(keysetPages);
     }
   }, [recentSet.currentSet]);
 
   return (
-    <Card className={classNames("set-changelog", { "mdc-card--selected": selected, deleted })}>
+    <Card
+      className={classNames("set-changelog", {
+        "mdc-card--selected": selected,
+        deleted,
+      })}
+    >
       <ConditionalWrapper
         condition={!!set}
         wrapper={(children) => (
           <CardPrimaryAction
             onClick={set ? () => openDetails(set) : undefined}
-            className={classNames({ "mdc-card__primary-action--selected": selected })}
+            className={classNames({
+              "mdc-card__primary-action--selected": selected,
+            })}
           >
             {children}
           </CardPrimaryAction>
@@ -69,13 +94,28 @@ export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, 
         <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
           <CardMedia
             sixteenByNine
-            style={!deleted && set ? { backgroundImage: `url(${set.image.replace("keysets", "thumbs")})` } : undefined}
+            style={
+              !deleted && set
+                ? {
+                    backgroundImage: `url(${set.image.replace(
+                      "keysets",
+                      "thumbs"
+                    )})`,
+                  }
+                : undefined
+            }
           >
             {!set ? (
               <CardMediaContent>
-                <Icon icon={iconObject(<ImageNotSupported />, { size: "xlarge" })} />
+                <Icon
+                  icon={iconObject(<ImageNotSupported />, { size: "xlarge" })}
+                />
                 {deleted ? (
-                  <Typography use="overline" tag="div" className="deleted-indicator">
+                  <Typography
+                    use="overline"
+                    tag="div"
+                    className="deleted-indicator"
+                  >
                     Deleted
                   </Typography>
                 ) : null}
@@ -94,8 +134,12 @@ export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, 
           </Typography>
           <Typography use="subtitle2" tag="p">
             Last updated:{" "}
-            {DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).toFormat(
-              `d'${ordinal(DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day)}' MMM yyyy HH:mm`
+            {DateTime.fromISO(recentSet.latestTimestamp, {
+              zone: "utc",
+            }).toFormat(
+              `d'${ordinal(
+                DateTime.fromISO(recentSet.latestTimestamp, { zone: "utc" }).day
+              )}' MMM yyyy HH:mm`
             )}
           </Typography>
         </div>
@@ -116,9 +160,18 @@ export const RecentSetCard = ({ recentSet, filtered, selected, filterChangelog, 
           <div className="button-container">
             {pages.map((page) => {
               if (arrayIncludes(mainPages, page)) {
-                const title = page === "previous" ? pageTitle[page].split(" ")[0] : pageTitle[page];
+                const title =
+                  page === "previous"
+                    ? pageTitle[page].split(" ")[0]
+                    : pageTitle[page];
                 return (
-                  <Button outlined label={title} icon={pageIcons[page]} onClick={() => setPage(page)} key={page} />
+                  <Button
+                    outlined
+                    label={title}
+                    icon={pageIcons[page]}
+                    onClick={() => setPage(page)}
+                    key={page}
+                  />
                 );
               }
               return null;

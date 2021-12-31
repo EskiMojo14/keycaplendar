@@ -38,8 +38,10 @@ export const sortEntries = (entries: UpdateEntryType[]) => {
       return a.pinned ? -1 : 1;
     }
     return (
-      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(a, b) ||
-      alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
+      alphabeticalSortPropCurried<UpdateEntryType, "date">("date", true)(
+        a,
+        b
+      ) || alphabeticalSortPropCurried<UpdateEntryType, "title">("title")(a, b)
     );
   });
   dispatch(setEntries(sortedEntries));
@@ -56,7 +58,11 @@ export const pinEntry = (entry: UpdateEntryType) => {
       getEntries();
     })
     .catch((error) => {
-      console.log(`Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`);
-      queue.notify({ title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}` });
+      console.log(
+        `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`
+      );
+      queue.notify({
+        title: `Failed to ${entry.pinned ? "unpin" : "pin"} entry: ${error}`,
+      });
     });
 };

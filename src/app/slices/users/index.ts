@@ -76,7 +76,10 @@ export const usersSlice = createSlice({
     setPage: (state, { payload }: PayloadAction<number>) => {
       state.page = payload;
     },
-    setIndices: (state, { payload }: PayloadAction<{ first: number; last: number }>) => {
+    setIndices: (
+      state,
+      { payload }: PayloadAction<{ first: number; last: number }>
+    ) => {
       state.indices = payload;
     },
   },
@@ -110,9 +113,11 @@ export const selectAllUsers = (state: RootState) => state.users.allUsers;
 
 export const selectSortedUsers = (state: RootState) => state.users.sortedUsers;
 
-export const selectPaginatedUsers = (state: RootState) => state.users.paginatedUsers;
+export const selectPaginatedUsers = (state: RootState) =>
+  state.users.paginatedUsers;
 
-export const selectNextPageToken = (state: RootState) => state.users.nextPageToken;
+export const selectNextPageToken = (state: RootState) =>
+  state.users.nextPageToken;
 
 export const selectRowsPerPage = (state: RootState) => state.users.rowsPerPage;
 

@@ -17,16 +17,40 @@ import type { SlideRendererCallback } from "react-swipeable-views-utils";
 import { useAppSelector } from "~/app/hooks";
 import { Footer } from "@c/common/footer";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import { selectBottomNav } from "@s/settings";
-import { selectData, selectLoading, selectSettings, selectSort, selectTab } from "@s/statistics";
+import {
+  selectData,
+  selectLoading,
+  selectSettings,
+  selectSort,
+  selectTab,
+} from "@s/statistics";
 import { statsTabs } from "@s/statistics/constants";
-import { getData, setSetting, setSort, setStatisticsTab } from "@s/statistics/functions";
+import {
+  getData,
+  setSetting,
+  setSort,
+  setStatisticsTab,
+} from "@s/statistics/functions";
 import type { StatisticsType } from "@s/statistics/types";
-import { capitalise, hasKey, iconObject, useBoolStates } from "@s/util/functions";
-import { Category, DateRange, SortAlphabeticalVariant, SortNumericVariant } from "@i";
+import {
+  capitalise,
+  hasKey,
+  iconObject,
+  useBoolStates,
+} from "@s/util/functions";
+import {
+  Category,
+  DateRange,
+  SortAlphabeticalVariant,
+  SortNumericVariant,
+} from "@i";
 import { DialogStatistics } from "./dialog-statistics";
 import { StatusCard } from "./pie-card";
 import { TableCard } from "./table-card";
@@ -50,7 +74,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const statisticsSort = useAppSelector(selectSort);
 
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [closeCategoryDialog, openCategoryDialog] = useBoolStates(setCategoryDialogOpen);
+  const [closeCategoryDialog, openCategoryDialog] = useBoolStates(
+    setCategoryDialogOpen
+  );
 
   useEffect(() => {
     if (statisticsData.timelines.icDate.summary.count.total === 0) {
@@ -107,7 +133,10 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
       <SegmentedButton toggle>
         {withTooltip(
           <SegmentedButtonSegment
-            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "total"}
+            selected={
+              hasKey(statisticsSort, statisticsTab) &&
+              statisticsSort[statisticsTab] === "total"
+            }
             onClick={() => {
               if (hasKey(statisticsSort, statisticsTab)) {
                 setSort(statisticsTab, "total");
@@ -120,7 +149,10 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         )}
         {withTooltip(
           <SegmentedButtonSegment
-            selected={hasKey(statisticsSort, statisticsTab) && statisticsSort[statisticsTab] === "alphabetical"}
+            selected={
+              hasKey(statisticsSort, statisticsTab) &&
+              statisticsSort[statisticsTab] === "alphabetical"
+            }
             onClick={() => {
               if (hasKey(statisticsSort, statisticsTab)) {
                 setSort(statisticsTab, "alphabetical");
@@ -265,7 +297,10 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
 
   const categoryDialog =
     statisticsTab !== "summary" && device !== "desktop" ? (
-      <DialogStatistics open={categoryDialogOpen} onClose={closeCategoryDialog} />
+      <DialogStatistics
+        open={categoryDialogOpen}
+        onClose={closeCategoryDialog}
+      />
     ) : null;
 
   const tabRow = (
@@ -291,7 +326,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           <TimelinesCard
             months={statisticsData.timelines[settings.summary].months}
             data={statisticsData.timelines[settings.summary].summary.count}
-            breakdownData={statisticsData.timelines[settings.summary].breakdown.profile}
+            breakdownData={
+              statisticsData.timelines[settings.summary].breakdown.profile
+            }
             category={settings.summary}
             defaultType="line"
             singleTheme="secondary"
@@ -324,9 +361,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           />
           <TableCard
             data={statisticsData.duration[settings.summary].summary}
-            breakdownData={statisticsData.duration[settings.summary].breakdown.profile}
+            breakdownData={
+              statisticsData.duration[settings.summary].breakdown.profile
+            }
             category={settings.summary}
-            unit={`Time ${settings.summary === "icDate" ? "(months)" : "(days)"}`}
+            unit={`Time ${
+              settings.summary === "icDate" ? "(months)" : "(days)"
+            }`}
             overline="Duration"
             summary
           />
@@ -342,14 +383,20 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
       ),
       timelines: (
         <div className="stats-tab stats-grid timelines" key={key}>
-          {statisticsData.timelines[settings.timelinesCat].breakdown[settings.timelinesGroup].map((data) => (
+          {statisticsData.timelines[settings.timelinesCat].breakdown[
+            settings.timelinesGroup
+          ].map((data) => (
             <TimelinesCard
               key={data.name}
               data={data}
               focusable={!(settings.timelinesGroup === "profile")}
               category={settings.timelinesCat}
-              singleTheme={settings.timelinesGroup === "profile" ? "primary" : undefined}
-              allProfiles={statisticsData.timelines[settings.timelinesCat].allProfiles}
+              singleTheme={
+                settings.timelinesGroup === "profile" ? "primary" : undefined
+              }
+              allProfiles={
+                statisticsData.timelines[settings.timelinesCat].allProfiles
+              }
               months={statisticsData.timelines[settings.timelinesCat].months}
             />
           ))}
@@ -365,18 +412,26 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
       shipped: (
         <div className="stats-tab stats-grid shipped" key={key}>
           {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard key={data.name} data={data} months={statisticsData.shipped.months} />
+            <ShippedCard
+              key={data.name}
+              data={data}
+              months={statisticsData.shipped.months}
+            />
           ))}
         </div>
       ),
       duration: (
         <div className="stats-tab stats-grid duration" key={key}>
-          {statisticsData.duration[settings.durationCat].breakdown[settings.durationGroup].map((data) => (
+          {statisticsData.duration[settings.durationCat].breakdown[
+            settings.durationGroup
+          ].map((data) => (
             <TableCard
               key={data.name}
               data={data}
               category={settings.durationCat}
-              unit={`Time ${settings.durationCat === "icDate" ? "(months)" : "(days)"}`}
+              unit={`Time ${
+                settings.durationCat === "icDate" ? "(months)" : "(days)"
+              }`}
             />
           ))}
         </div>
@@ -399,9 +454,13 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
-            <TopAppBarTitle>{device !== "mobile" ? pageTitle.statistics : null}</TopAppBarTitle>
+            <TopAppBarTitle>
+              {device !== "mobile" ? pageTitle.statistics : null}
+            </TopAppBarTitle>
           </TopAppBarSection>
-          <TopAppBarSection alignEnd>{hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}</TopAppBarSection>
+          <TopAppBarSection alignEnd>
+            {hasKey(buttons, statisticsTab) ? buttons[statisticsTab] : null}
+          </TopAppBarSection>
         </TopAppBarRow>
         {bottomNav ? null : tabRow}
         <LinearProgress closed={!loading} />

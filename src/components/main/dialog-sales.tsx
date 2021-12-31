@@ -1,4 +1,10 @@
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import type { SetType } from "@s/main/types";
 import "./dialog-sales.scss";
 

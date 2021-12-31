@@ -14,7 +14,10 @@ import { is } from "typescript-is";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice, selectPage } from "@s/common";
 import {
   selectAllProfiles,
@@ -24,13 +27,22 @@ import {
   selectCurrentPreset,
   selectWhitelist,
 } from "@s/main";
-import { showAllPages, whitelistParams, whitelistShipped } from "@s/main/constants";
+import {
+  showAllPages,
+  whitelistParams,
+  whitelistShipped,
+} from "@s/main/constants";
 import { Preset, Whitelist } from "@s/main/constructors";
 import { selectPreset, setWhitelist } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { selectUser, selectUserPresets } from "@s/user";
-import { addOrRemove, alphabeticalSort, hasKey, iconObject } from "@s/util/functions";
+import {
+  addOrRemove,
+  alphabeticalSort,
+  hasKey,
+  iconObject,
+} from "@s/util/functions";
 import {
   Favorite,
   FilterEdit,
@@ -50,7 +62,12 @@ type DrawerFilterProps = {
   openPreset: (preset: PresetType) => void;
 };
 
-export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }: DrawerFilterProps) => {
+export const DrawerFilter = ({
+  close,
+  deletePreset: deleteFn,
+  open,
+  openPreset,
+}: DrawerFilterProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -86,16 +103,43 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   };
 
   const newPreset = (global = false) => {
-    const { favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
+    const {
+      favorites,
+      bought,
+      hidden,
+      profiles,
+      shipped,
+      regions,
+      vendorMode,
+      vendors,
+    } = mainWhitelist;
     const newWhitelist = {
-      ...new Whitelist(favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors),
+      ...new Whitelist(
+        favorites,
+        bought,
+        hidden,
+        profiles,
+        shipped,
+        regions,
+        vendorMode,
+        vendors
+      ),
     };
     const newPreset = { ...new Preset("", global, newWhitelist) };
     openPreset(newPreset);
   };
 
   const savePreset = () => {
-    const { favorites, bought, hidden, profiles, shipped, regions, vendorMode, vendors } = mainWhitelist;
+    const {
+      favorites,
+      bought,
+      hidden,
+      profiles,
+      shipped,
+      regions,
+      vendorMode,
+      vendors,
+    } = mainWhitelist;
     const modifiedPreset = {
       ...preset,
       whitelist: {
@@ -155,10 +199,14 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const invertAll = (prop: string) => {
     if (hasKey(lists, prop)) {
       const { [prop]: all } = lists;
-      const inverted = all.filter((value) => !mainWhitelist[prop].includes(value));
+      const inverted = all.filter(
+        (value) => !mainWhitelist[prop].includes(value)
+      );
       setWhitelist(prop, inverted);
     } else if (prop === "shipped") {
-      const inverted = whitelistShipped.filter((value) => !mainWhitelist[prop].includes(value));
+      const inverted = whitelistShipped.filter(
+        (value) => !mainWhitelist[prop].includes(value)
+      );
       setWhitelist(prop, inverted);
     }
   };
@@ -171,7 +219,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
         const whitelist = mainWhitelist;
         const { [plural]: array } = whitelist;
         if (is<string[]>(array) && array.length === 1) {
-          params.set(param, array.map((item: string) => item.replace(" ", "-")).join(" "));
+          params.set(
+            param,
+            array.map((item: string) => item.replace(" ", "-")).join(" ")
+          );
         } else {
           params.delete(param);
         }
@@ -181,22 +232,44 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
         } else {
           params.delete(param);
         }
-      } else if (param === "profiles" || param === "shipped" || param === "regions" || param === "vendors") {
+      } else if (
+        param === "profiles" ||
+        param === "shipped" ||
+        param === "regions" ||
+        param === "vendors"
+      ) {
         const lengths = {
           profiles: profiles.length,
           shipped: 2,
           vendors: 0,
           regions: regions.length,
         };
-        if (param === "profiles" || param === "regions" || param === "vendors") {
-          if (mainWhitelist[param].length > 1 && mainWhitelist[param].length !== lengths[param]) {
-            params.set(param, mainWhitelist[param].map((profile) => profile.replace(" ", "-")).join(" "));
+        if (
+          param === "profiles" ||
+          param === "regions" ||
+          param === "vendors"
+        ) {
+          if (
+            mainWhitelist[param].length > 1 &&
+            mainWhitelist[param].length !== lengths[param]
+          ) {
+            params.set(
+              param,
+              mainWhitelist[param]
+                .map((profile) => profile.replace(" ", "-"))
+                .join(" ")
+            );
           } else {
             params.delete(param);
           }
         } else {
           if (mainWhitelist[param].length !== lengths[param]) {
-            params.set(param, mainWhitelist[param].map((item) => item.replace(" ", "-")).join(" "));
+            params.set(
+              param,
+              mainWhitelist[param]
+                .map((item) => item.replace(" ", "-"))
+                .join(" ")
+            );
           } else {
             params.delete(param);
           }
@@ -217,7 +290,10 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
   const dismissible = device === "desktop" && view !== "compact";
 
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
 
   const newPresetButton = user.isAdmin ? (
@@ -262,7 +338,8 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin &&
+              appPresets.map((preset) => preset.id).includes(preset.id))
           }
           onClick={savePreset}
         />
@@ -272,7 +349,8 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
           outlined
           disabled={
             (user.isAdmin && preset.id === "default") ||
-            (!user.isAdmin && appPresets.map((preset) => preset.id).includes(preset.id))
+            (!user.isAdmin &&
+              appPresets.map((preset) => preset.id).includes(preset.id))
           }
           className="delete"
           onClick={deletePreset}
@@ -301,19 +379,30 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
           <SegmentedButton toggle>
             <SegmentedButtonSegment
               label="Unhidden"
-              selected={mainWhitelist.hidden === "unhidden" && !showAllPages.includes(page) && !(page === "hidden")}
+              selected={
+                mainWhitelist.hidden === "unhidden" &&
+                !showAllPages.includes(page) &&
+                !(page === "hidden")
+              }
               onClick={() => handleChange("unhidden", "hidden")}
               disabled={disableHiddenButtons}
             />
             <SegmentedButtonSegment
               label="Hidden"
-              selected={(mainWhitelist.hidden === "hidden" && !showAllPages.includes(page)) || page == "hidden"}
+              selected={
+                (mainWhitelist.hidden === "hidden" &&
+                  !showAllPages.includes(page)) ||
+                page == "hidden"
+              }
               onClick={() => handleChange("hidden", "hidden")}
               disabled={disableHiddenButtons}
             />
             <SegmentedButtonSegment
               label="All"
-              selected={mainWhitelist.hidden === "all" || (showAllPages.includes(page) && !(page === "hidden"))}
+              selected={
+                mainWhitelist.hidden === "all" ||
+                (showAllPages.includes(page) && !(page === "hidden"))
+              }
               onClick={() => handleChange("all", "hidden")}
               disabled={disableHiddenButtons}
             />
@@ -370,7 +459,9 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
             outlined
             icon={
               userPresets.length > 0
-                ? userPresets.findIndex((userPreset) => userPreset.id === preset.id) >= 0
+                ? userPresets.findIndex(
+                    (userPreset) => userPreset.id === preset.id
+                  ) >= 0
                   ? iconObject(<Person />)
                   : iconObject(<Public />)
                 : null
@@ -444,7 +535,13 @@ export const DrawerFilter = ({ close, deletePreset: deleteFn, open, openPreset }
           }}
           disabled={!modified}
         />
-        <Button outlined icon="link" label="Copy" onClick={copyLink} disabled={preset.id === "default" && !modified} />
+        <Button
+          outlined
+          icon="link"
+          label="Copy"
+          onClick={copyLink}
+          disabled={preset.id === "default" && !modified}
+        />
       </div>
       <DrawerContent>
         {userFilterOptions}

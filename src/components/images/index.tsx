@@ -30,7 +30,10 @@ import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
@@ -49,11 +52,23 @@ import {
   setDetailMetadata,
 } from "@s/images";
 import { ImageObj } from "@s/images/constructors";
-import { createSetImageList, getFolders, listAll, setFolder } from "@s/images/functions";
+import {
+  createSetImageList,
+  getFolders,
+  listAll,
+  setFolder,
+} from "@s/images/functions";
 import type { ImageType } from "@s/images/types";
 import { selectAllSets } from "@s/main";
 import { selectBottomNav } from "@s/settings";
-import { addOrRemove, closeModal, hasKey, iconObject, openModal, useBoolStates } from "@s/util/functions";
+import {
+  addOrRemove,
+  closeModal,
+  hasKey,
+  iconObject,
+  openModal,
+  useBoolStates,
+} from "@s/util/functions";
 import { Delete, PermMedia } from "@i";
 import { DialogDelete } from "./dialog-delete";
 import { DrawerDetails } from "./drawer-details";
@@ -183,9 +198,15 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const clearChecked = () => {
     dispatch(setCheckedImages([]));
   };
-  const unusedImages = images.filter((image) => !keysetImages.includes(image.name));
-  const usedImages = images.filter((image) => keysetImages.includes(image.name));
-  const duplicateImages = usedImages.filter((image) => duplicateSetImages.includes(image.name));
+  const unusedImages = images.filter(
+    (image) => !keysetImages.includes(image.name)
+  );
+  const usedImages = images.filter((image) =>
+    keysetImages.includes(image.name)
+  );
+  const duplicateImages = usedImages.filter((image) =>
+    duplicateSetImages.includes(image.name)
+  );
   const display = [
     {
       title: "Unused images",
@@ -204,32 +225,60 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   const tooltipAlign = bottomNav ? "top" : "bottom";
   return (
     <>
-      <TopAppBar fixed className={classNames("is-contextual", { "bottom-app-bar": bottomNav, contextual })}>
+      <TopAppBar
+        fixed
+        className={classNames("is-contextual", {
+          "bottom-app-bar": bottomNav,
+          contextual,
+        })}
+      >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             {contextual ? (
-              withTooltip(<TopAppBarActionItem icon="close" onClick={clearChecked} />, "Close", { align: tooltipAlign })
+              withTooltip(
+                <TopAppBarActionItem icon="close" onClick={clearChecked} />,
+                "Close",
+                { align: tooltipAlign }
+              )
             ) : (
               <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
             )}
-            <TopAppBarTitle>{contextual ? `${checkedImages.length} selected` : pageTitle.images}</TopAppBarTitle>
+            <TopAppBarTitle>
+              {contextual
+                ? `${checkedImages.length} selected`
+                : pageTitle.images}
+            </TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             {contextual ? (
               <>
-                {withTooltip(<TopAppBarActionItem icon={iconObject(<Delete />)} onClick={openDelete} />, "Delete", {
-                  align: tooltipAlign,
-                })}
+                {withTooltip(
+                  <TopAppBarActionItem
+                    icon={iconObject(<Delete />)}
+                    onClick={openDelete}
+                  />,
+                  "Delete",
+                  {
+                    align: tooltipAlign,
+                  }
+                )}
               </>
             ) : (
               <>
-                {withTooltip(<TopAppBarActionItem icon="search" onClick={openSearch} />, "Search", {
-                  align: tooltipAlign,
-                })}
+                {withTooltip(
+                  <TopAppBarActionItem icon="search" onClick={openSearch} />,
+                  "Search",
+                  {
+                    align: tooltipAlign,
+                  }
+                )}
                 {device === "mobile" ? (
                   <MenuSurfaceAnchor>
                     {withTooltip(
-                      <TopAppBarActionItem icon={iconObject(<PermMedia />)} onClick={openFolderMenu} />,
+                      <TopAppBarActionItem
+                        icon={iconObject(<PermMedia />)}
+                        onClick={openFolderMenu}
+                      />,
                       "Folder",
                       { align: tooltipAlign }
                     )}
@@ -279,8 +328,18 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
         })}
       >
         <div className="main">
-          <DrawerSearch open={searchOpen} close={closeSearch} images={images} unusedImages={unusedImages} />
-          <DrawerDetails open={detailOpen} close={closeDetails} image={detailImage} metadata={detailMetadata} />
+          <DrawerSearch
+            open={searchOpen}
+            close={closeSearch}
+            images={images}
+            unusedImages={unusedImages}
+          />
+          <DrawerDetails
+            open={detailOpen}
+            close={closeDetails}
+            image={detailImage}
+            metadata={detailMetadata}
+          />
           <DialogDelete
             open={deleteOpen && checkedImages.length > 0}
             close={closeDelete}
@@ -290,11 +349,17 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
           />
           <ConditionalWrapper
             condition={device === "desktop"}
-            wrapper={(children) => <DrawerAppContent>{children}</DrawerAppContent>}
+            wrapper={(children) => (
+              <DrawerAppContent>{children}</DrawerAppContent>
+            )}
           >
             <div
               className="image-grid"
-              style={{ "--aspect-ratio": hasKey(aspectRatios, currentFolder) ? aspectRatios[currentFolder] : 1 }}
+              style={{
+                "--aspect-ratio": hasKey(aspectRatios, currentFolder)
+                  ? aspectRatios[currentFolder]
+                  : 1,
+              }}
             >
               {display.map((obj) =>
                 obj.array.length > 0 ? (
@@ -310,12 +375,28 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                     <ImageList style={{ margin: -2 }} withTextProtection>
                       {obj.array.map((image) => (
                         <Ripple key={image.fullPath}>
-                          <ImageListItem className={classNames({ selected: image === detailImage })}>
+                          <ImageListItem
+                            className={classNames({
+                              selected: image === detailImage,
+                            })}
+                          >
                             <div className="container">
-                              <div className="item-container" onClick={() => openDetails(image)}>
+                              <div
+                                className="item-container"
+                                onClick={() => openDetails(image)}
+                              >
                                 <ImageListImageAspectContainer>
-                                  <LazyLoad debounce={false} offsetVertical={480}>
-                                    <ImageListImage tag="div" style={{ backgroundImage: "url(" + image.src + ")" }} />
+                                  <LazyLoad
+                                    debounce={false}
+                                    offsetVertical={480}
+                                  >
+                                    <ImageListImage
+                                      tag="div"
+                                      style={{
+                                        backgroundImage:
+                                          "url(" + image.src + ")",
+                                      }}
+                                    />
                                   </LazyLoad>
                                 </ImageListImageAspectContainer>
                                 <ImageListSupporting>

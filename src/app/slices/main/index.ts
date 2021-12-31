@@ -6,7 +6,14 @@ import type { RootState } from "~/app/store";
 import { randomInt, removeDuplicates } from "@s/util/functions";
 import type { KeysMatching } from "@s/util/types";
 import { Keyset, Preset } from "./constructors";
-import type { PresetType, SetGroup, SetType, SortOrderType, SortType, WhitelistType } from "./types";
+import type {
+  PresetType,
+  SetGroup,
+  SetType,
+  SortOrderType,
+  SortType,
+  WhitelistType,
+} from "./types";
 
 export const generateRandomSet = (): SetType => ({
   ...new Keyset(
@@ -176,11 +183,20 @@ export const mainSlice = createSlice({
     setWhitelist: (state, { payload }: PayloadAction<WhitelistType>) => {
       state.whitelist = { ...payload, edited: Object.keys(payload) };
     },
-    mergeWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
-      const edited = removeDuplicates([...(state.whitelist.edited ?? []), ...Object.keys(payload)]);
+    mergeWhitelist: (
+      state,
+      { payload }: PayloadAction<Partial<WhitelistType>>
+    ) => {
+      const edited = removeDuplicates([
+        ...(state.whitelist.edited ?? []),
+        ...Object.keys(payload),
+      ]);
       state.whitelist = { ...state.whitelist, ...payload, edited };
     },
-    setURLWhitelist: (state, { payload }: PayloadAction<Partial<WhitelistType>>) => {
+    setURLWhitelist: (
+      state,
+      { payload }: PayloadAction<Partial<WhitelistType>>
+    ) => {
       state.urlWhitelist = payload;
     },
     setCurrentPreset: (state, { payload }: PayloadAction<PresetType>) => {
@@ -192,7 +208,10 @@ export const mainSlice = createSlice({
     setAppPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
       state.appPresets = payload;
     },
-    setLinkedFavorites: (state, { payload }: PayloadAction<{ array: string[]; displayName: string }>) => {
+    setLinkedFavorites: (
+      state,
+      { payload }: PayloadAction<{ array: string[]; displayName: string }>
+    ) => {
       state.linkedFavorites = payload;
     },
   },
@@ -220,14 +239,20 @@ export const {
   },
 } = mainSlice;
 
-export const setList = <P extends Parameters<typeof setListState>[0]>(name: P["name"], array: P["array"]) =>
-  setListState({ name, array });
+export const setList = <P extends Parameters<typeof setListState>[0]>(
+  name: P["name"],
+  array: P["array"]
+) => setListState({ name, array });
 
-export const setSetList = <P extends Parameters<typeof setSetListState>[0]>(name: P["name"], array: P["array"]) =>
-  setSetListState({ name, array });
+export const setSetList = <P extends Parameters<typeof setSetListState>[0]>(
+  name: P["name"],
+  array: P["array"]
+) => setSetListState({ name, array });
 
-export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(prop: P["prop"], value: P["value"]) =>
-  setURLSetState({ prop, value });
+export const setURLSet = <P extends Parameters<typeof setURLSetState>[0]>(
+  prop: P["prop"],
+  value: P["value"]
+) => setURLSetState({ prop, value });
 
 export const selectTransition = (state: RootState) => state.main.transition;
 
@@ -249,7 +274,8 @@ export const selectAllRegions = (state: RootState) => state.main.allRegions;
 
 export const selectAllVendors = (state: RootState) => state.main.allVendors;
 
-export const selectAllVendorRegions = (state: RootState) => state.main.allVendorRegions;
+export const selectAllVendorRegions = (state: RootState) =>
+  state.main.allVendorRegions;
 
 export const selectAllSets = (state: RootState) => state.main.allSets;
 
@@ -263,13 +289,16 @@ export const selectSearch = (state: RootState) => state.main.search;
 
 export const selectWhitelist = (state: RootState) => state.main.whitelist;
 
-export const selectCurrentPreset = (state: RootState) => state.main.currentPreset;
+export const selectCurrentPreset = (state: RootState) =>
+  state.main.currentPreset;
 
-export const selectDefaultPreset = (state: RootState) => state.main.defaultPreset;
+export const selectDefaultPreset = (state: RootState) =>
+  state.main.defaultPreset;
 
 export const selectAppPresets = (state: RootState) => state.main.appPresets;
 
-export const selectLinkedFavorites = (state: RootState) => state.main.linkedFavorites;
+export const selectLinkedFavorites = (state: RootState) =>
+  state.main.linkedFavorites;
 
 export const selectURLWhitelist = (state: RootState) => state.main.urlWhitelist;
 

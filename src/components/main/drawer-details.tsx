@@ -4,7 +4,14 @@ import { Button } from "@rmwc/button";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
@@ -21,9 +28,20 @@ import { setSearch } from "@s/main/functions";
 import type { SetType } from "@s/main/types";
 import { selectView } from "@s/settings";
 import { toggleLichTheme } from "@s/settings/functions";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+} from "@s/user";
 import { toggleBought, toggleFavorite, toggleHidden } from "@s/user/functions";
-import { alphabeticalSortProp, arrayIncludes, hasKey, iconObject, ordinal } from "@s/util/functions";
+import {
+  alphabeticalSortProp,
+  arrayIncludes,
+  hasKey,
+  iconObject,
+  ordinal,
+} from "@s/util/functions";
 import {
   Delete,
   Edit,
@@ -46,7 +64,14 @@ type DrawerDetailsProps = {
   set: SetType;
 };
 
-export const DrawerDetails = ({ close, open, openSales, set, edit, delete: deleteSet }: DrawerDetailsProps) => {
+export const DrawerDetails = ({
+  close,
+  open,
+  openSales,
+  set,
+  edit,
+  delete: deleteSet,
+}: DrawerDetailsProps) => {
   const device = useAppSelector(selectDevice);
   const page = useAppSelector(selectPage);
 
@@ -75,7 +100,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
   const setScroll = () => {
     const chipSet = document.getElementById("search-chip-set");
     if (chipSet) {
-      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
+      const selectedChip = chipSet.querySelector(
+        ".mdc-chip-set .mdc-chip--selected"
+      );
       if (selectedChip && selectedChip instanceof HTMLElement) {
         chipSet.scrollLeft = selectedChip.offsetLeft - 24;
       } else {
@@ -85,13 +112,18 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
   };
   useEffect(setScroll, [search, JSON.stringify(set)]);
   useEffect(() => {
-    const drawerContent = document.querySelector(".details-drawer .mdc-drawer__content");
+    const drawerContent = document.querySelector(
+      ".details-drawer .mdc-drawer__content"
+    );
     if (drawerContent) {
       drawerContent.scrollTop = 0;
     }
   }, [JSON.stringify(set)]);
 
-  const dismissible = device === "desktop" && view !== "compact" && arrayIncludes(mainPages, page);
+  const dismissible =
+    device === "desktop" &&
+    view !== "compact" &&
+    arrayIncludes(mainPages, page);
   const today = DateTime.utc();
   let gbLaunch: DateTime | string = "";
   let gbEnd: DateTime | null = null;
@@ -102,7 +134,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
   let shippedLine: ReactNode | null = "";
   const chips: string[] = [];
   const chipsContent = ["profile", "colorway", "designer", "vendors"];
-  const sortedVendors = set.vendors ? alphabeticalSortProp([...set.vendors], "region") : [];
+  const sortedVendors = set.vendors
+    ? alphabeticalSortProp([...set.vendors], "region")
+    : [];
 
   if (set.icDate) {
     gbLaunch = set.gbLaunch
@@ -110,7 +144,8 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
         ? set.gbLaunch
         : DateTime.fromISO(set.gbLaunch, { zone: "utc" })
       : "";
-    const gbLaunchOrdinal = gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
+    const gbLaunchOrdinal =
+      gbLaunch instanceof DateTime ? ordinal(gbLaunch.day) : "";
 
     gbEnd = set.gbEnd ? DateTime.fromISO(set.gbEnd, { zone: "utc" }) : null;
     const gbEndOrdinal = gbEnd instanceof DateTime ? ordinal(gbEnd.day) : "";
@@ -131,7 +166,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
     }
     if (gbLaunch && gbLaunch instanceof DateTime && gbEnd) {
       gb = `${verb} from ${gbLaunch.toFormat(`d'${gbLaunchOrdinal}'\xa0MMMM`)}${
-        gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year ? gbLaunch.toFormat("\xa0yyyy") : ""
+        gbLaunch.year !== today.year && gbLaunch.year !== gbEnd.year
+          ? gbLaunch.toFormat("\xa0yyyy")
+          : ""
       } until ${gbEnd.toFormat(`d'${gbEndOrdinal}'\xa0MMMM`)}${
         gbEnd.year !== today.year ? gbEnd.toFormat("\xa0yyyy") : ""
       }.`;
@@ -196,7 +233,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
           {sortedVendors.map((vendor) => {
             let differentDate;
             if (vendor.endDate) {
-              const dateObject = DateTime.fromISO(vendor.endDate, { zone: "utc" });
+              const dateObject = DateTime.fromISO(vendor.endDate, {
+                zone: "utc",
+              });
               const dateOrdinal = ordinal(dateObject.day);
               const todayObject = DateTime.utc();
               const yesterdayObject = todayObject.minus({ days: 1 });
@@ -204,8 +243,12 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
               differentDate = (
                 <div className="caption">
                   <Typography use="caption">
-                    {`${dateVerb} ${dateObject.toFormat(`d'${dateOrdinal}' MMMM`)} ${
-                      dateObject.year !== todayObject.year ? dateObject.toFormat(" yyyy") : ""
+                    {`${dateVerb} ${dateObject.toFormat(
+                      `d'${dateOrdinal}' MMMM`
+                    )} ${
+                      dateObject.year !== todayObject.year
+                        ? dateObject.toFormat(" yyyy")
+                        : ""
                     }`}
                   </Typography>
                 </div>
@@ -216,15 +259,24 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
                 key={vendor.name}
                 condition={!!vendor.storeLink}
                 wrapper={(children) => (
-                  <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={vendor.storeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {children}
                   </a>
                 )}
               >
-                <ListItem disabled={!vendor.storeLink} className={classNames({ "three-line": !!differentDate })}>
+                <ListItem
+                  disabled={!vendor.storeLink}
+                  className={classNames({ "three-line": !!differentDate })}
+                >
                   <ListItemText>
                     <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
-                    <ListItemSecondaryText>{vendor.region}</ListItemSecondaryText>
+                    <ListItemSecondaryText>
+                      {vendor.region}
+                    </ListItemSecondaryText>
                     {differentDate}
                   </ListItemText>
                   {vendor.storeLink ? <ListItemMeta icon="launch" /> : null}
@@ -236,11 +288,20 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
       </div>
     ) : null;
   const editorButtons =
-    (user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))) &&
+    (user.isEditor ||
+      (user.isDesigner &&
+        set.designer &&
+        set.designer.includes(user.nickname))) &&
     edit &&
     deleteSet ? (
       <div className="editor-buttons">
-        <Button className="edit" outlined label="Edit" onClick={() => edit(set)} icon={iconObject(<Edit />)} />
+        <Button
+          className="edit"
+          outlined
+          label="Edit"
+          onClick={() => edit(set)}
+          icon={iconObject(<Edit />)}
+        />
         {user.isEditor ? (
           <Button
             className="delete"
@@ -254,7 +315,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
       </div>
     ) : null;
   const lichButton =
-    set.colorway === "Lich" ? <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} /> : null;
+    set.colorway === "Lich" ? (
+      <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} />
+    ) : null;
   const userButtons = user.email ? (
     <>
       {withTooltip(
@@ -290,10 +353,18 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
     </>
   ) : null;
   const closeIcon = dismissible
-    ? withTooltip(<IconButton className="close-icon" icon="close" onClick={close} />, "Close")
+    ? withTooltip(
+        <IconButton className="close-icon" icon="close" onClick={close} />,
+        "Close"
+      )
     : null;
   const salesButton = set.sales?.img ? (
-    <Button outlined label="Sales" icon="bar_chart" onClick={() => openSales(set)} />
+    <Button
+      outlined
+      label="Sales"
+      icon="bar_chart"
+      onClick={() => openSales(set)}
+    />
   ) : null;
   const notes = set.notes ? (
     <Typography use="caption" tag="p" className="multiline">
@@ -341,7 +412,10 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
         <div>
           <div
             className="details-image"
-            style={{ backgroundImage: "url(" + (set.image?.replace("keysets", "card") ?? "") + ")" }}
+            style={{
+              backgroundImage:
+                "url(" + (set.image?.replace("keysets", "card") ?? "") + ")",
+            }}
           ></div>
           <div className="details-text">
             <Typography use="overline" tag="h3">
@@ -349,7 +423,9 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
             </Typography>
             <Typography use="headline4" tag="h1">
               <Twemoji options={{ className: "twemoji" }}>
-                {`${set.profile ? set.profile : ""} ${set.colorway ? set.colorway : ""}`}
+                {`${set.profile ? set.profile : ""} ${
+                  set.colorway ? set.colorway : ""
+                }`}
               </Twemoji>
             </Typography>
             {gbLine}
@@ -372,7 +448,12 @@ export const DrawerDetails = ({ close, open, openSales, set, edit, delete: delet
             {salesButton}
           </div>
           <div className="details-button">
-            <Button outlined label="Share" icon={iconObject(<Share />)} onClick={copyLink} />
+            <Button
+              outlined
+              label="Share"
+              icon={iconObject(<Share />)}
+              onClick={copyLink}
+            />
           </div>
           {vendorList}
         </div>

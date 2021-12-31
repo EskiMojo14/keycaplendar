@@ -34,23 +34,33 @@ type AuditEntryProps = {
   timestamp: DateTime;
 };
 
-export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryProps) => {
+export const AuditEntry = ({
+  action,
+  openDeleteDialog,
+  timestamp,
+}: AuditEntryProps) => {
   const documentRow = (
     <DataTableRow>
       <DataTableCell>documentId</DataTableCell>
-      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.documentId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.documentId}
+      </DataTableCell>
     </DataTableRow>
   );
   const changelogRow = (
     <DataTableRow>
       <DataTableCell>changelogId</DataTableCell>
-      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.changelogId}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.changelogId}
+      </DataTableCell>
     </DataTableRow>
   );
   const emailRow = action.user.email ? (
     <DataTableRow>
       <DataTableCell>userEmail</DataTableCell>
-      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>{action.user.email}</DataTableCell>
+      <DataTableCell colSpan={action.action === "created" ? 1 : 2}>
+        {action.user.email}
+      </DataTableCell>
     </DataTableRow>
   ) : null;
   const arrayProps: string[] = ["designer"];
@@ -74,7 +84,9 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                 : `${action.before.profile} ${action.before.colorway}`}
             </ListItemPrimaryText>
             <ListItemSecondaryText>
-              {`${action.user.nickname}, ${timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`)}`}
+              {`${action.user.nickname}, ${timestamp.toFormat(
+                `d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`
+              )}`}
             </ListItemSecondaryText>
           </ListItemText>
           <ListItemMeta icon="expand_more" />
@@ -86,13 +98,18 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              <DataTableHeadCell>{action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
-              {action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+              <DataTableHeadCell>
+                {action.action === "updated" ? "Before" : "Data"}
+              </DataTableHeadCell>
+              {action.action === "updated" ? (
+                <DataTableHeadCell>After</DataTableHeadCell>
+              ) : null}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>
             {auditProperties.map((property, index) => {
-              const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+              const domain =
+                /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
               if (
                 action.action === "updated" &&
                 hasKey(action.before, property) &&
@@ -101,10 +118,12 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   ((property === "profile" || property === "colorway") &&
                     !isEqual(action.before[property], action.after[property])))
               ) {
-                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = action.before[property]
+                const beforeProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
+                  .before[property]
                   ? action.before[property]
                   : "";
-                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = action.after[property]
+                const afterProp: Partial<KeysetDoc>[keyof KeysetDoc] = action
+                  .after[property]
                   ? action.after[property]
                   : "";
                 if (
@@ -125,24 +144,45 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (arrayProps.includes(property) && is<any[]>(beforeProp) && is<any[]>(afterProp)) {
+                } else if (
+                  arrayProps.includes(property) &&
+                  is<any[]>(beforeProp) &&
+                  is<any[]>(afterProp)
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
-                        <span className="highlight">{beforeProp.join(", ")}</span>
+                        <span className="highlight">
+                          {beforeProp.join(", ")}
+                        </span>
                       </DataTableCell>
                       <DataTableCell className="after">
-                        <span className="highlight">{afterProp.join(", ")}</span>
+                        <span className="highlight">
+                          {afterProp.join(", ")}
+                        </span>
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "vendors" && action.before.vendors && action.after.vendors) {
-                  const beforeVendors = alphabeticalSortProp([...action.before.vendors], "region");
+                } else if (
+                  property === "vendors" &&
+                  action.before.vendors &&
+                  action.after.vendors
+                ) {
+                  const beforeVendors = alphabeticalSortProp(
+                    [...action.before.vendors],
+                    "region"
+                  );
 
-                  const afterVendors = alphabeticalSortProp([...action.after.vendors], "region");
+                  const afterVendors = alphabeticalSortProp(
+                    [...action.after.vendors],
+                    "region"
+                  );
 
-                  const moreVendors = afterVendors.length >= beforeVendors.length ? afterVendors : beforeVendors;
+                  const moreVendors =
+                    afterVendors.length >= beforeVendors.length
+                      ? afterVendors
+                      : beforeVendors;
                   return moreVendors.map((_vendor, index) => {
                     const beforeVendor = beforeVendors[index]
                       ? beforeVendors[index]
@@ -156,36 +196,62 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                           <DataTableCell>{property + index}</DataTableCell>
                           <DataTableCell className="before">
                             <div>
-                              <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
+                              <span
+                                className={classNames({
+                                  highlight: afterVendor.id !== beforeVendor.id,
+                                })}
+                              >
                                 ID: {beforeVendor.id}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.name !== beforeVendor.name,
+                                })}
+                              >
                                 Name: {beforeVendor.name}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.region !== beforeVendor.region,
+                                })}
+                              >
                                 Region: {beforeVendor.region}
                               </span>
                             </div>
                             <div>
                               <span
                                 className={classNames({
-                                  highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  highlight:
+                                    afterVendor.storeLink !==
+                                    beforeVendor.storeLink,
                                 })}
                               >
                                 Link:{" "}
-                                <a href={beforeVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                  {beforeVendor.storeLink ? beforeVendor.storeLink.match(domain) : null}
+                                <a
+                                  href={beforeVendor.storeLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {beforeVendor.storeLink
+                                    ? beforeVendor.storeLink.match(domain)
+                                    : null}
                                 </a>
                               </span>
                             </div>
                             {beforeVendor.endDate ? (
                               <div>
                                 <span
-                                  className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  className={classNames({
+                                    highlight:
+                                      afterVendor.endDate !==
+                                      beforeVendor.endDate,
+                                  })}
                                 >
                                   End date: {beforeVendor.endDate}
                                 </span>
@@ -194,36 +260,62 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                           </DataTableCell>
                           <DataTableCell className="after">
                             <div>
-                              <span className={classNames({ highlight: afterVendor.id !== beforeVendor.id })}>
+                              <span
+                                className={classNames({
+                                  highlight: afterVendor.id !== beforeVendor.id,
+                                })}
+                              >
                                 ID: {afterVendor.id}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.name !== beforeVendor.name })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.name !== beforeVendor.name,
+                                })}
+                              >
                                 Name: {afterVendor.name}
                               </span>
                             </div>
                             <div>
-                              <span className={classNames({ highlight: afterVendor.region !== beforeVendor.region })}>
+                              <span
+                                className={classNames({
+                                  highlight:
+                                    afterVendor.region !== beforeVendor.region,
+                                })}
+                              >
                                 Region: {afterVendor.region}
                               </span>
                             </div>
                             <div>
                               <span
                                 className={classNames({
-                                  highlight: afterVendor.storeLink !== beforeVendor.storeLink,
+                                  highlight:
+                                    afterVendor.storeLink !==
+                                    beforeVendor.storeLink,
                                 })}
                               >
                                 Link:{" "}
-                                <a href={afterVendor.storeLink} target="_blank" rel="noopener noreferrer">
-                                  {afterVendor.storeLink ? afterVendor.storeLink.match(domain) : null}
+                                <a
+                                  href={afterVendor.storeLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {afterVendor.storeLink
+                                    ? afterVendor.storeLink.match(domain)
+                                    : null}
                                 </a>
                               </span>
                             </div>
                             {afterVendor.endDate ? (
                               <div>
                                 <span
-                                  className={classNames({ highlight: afterVendor.endDate !== beforeVendor.endDate })}
+                                  className={classNames({
+                                    highlight:
+                                      afterVendor.endDate !==
+                                      beforeVendor.endDate,
+                                  })}
                                 >
                                   End date: {afterVendor.endDate}
                                 </span>
@@ -235,20 +327,32 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                     }
                     return null;
                   });
-                } else if (urlProps.includes(property) && is<string>(beforeProp) && is<string>(afterProp)) {
+                } else if (
+                  urlProps.includes(property) &&
+                  is<string>(beforeProp) &&
+                  is<string>(afterProp)
+                ) {
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
                       <DataTableCell className="before">
                         <span className="highlight">
-                          <a href={beforeProp} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={beforeProp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {beforeProp.match(domain)}
                           </a>
                         </span>
                       </DataTableCell>
                       <DataTableCell className="after">
                         <span className="highlight">
-                          <a href={afterProp} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={afterProp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {afterProp.match(domain)}
                           </a>
                         </span>
@@ -272,8 +376,12 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   is<KeysetDoc["sales"]>(beforeProp) &&
                   is<KeysetDoc["sales"]>(afterProp)
                 ) {
-                  const beforeSales = !is<string>(beforeProp) ? beforeProp.img : beforeProp;
-                  const afterSales = !is<string>(afterProp) ? afterProp.img : afterProp;
+                  const beforeSales = !is<string>(beforeProp)
+                    ? beforeProp.img
+                    : beforeProp;
+                  const afterSales = !is<string>(afterProp)
+                    ? afterProp.img
+                    : afterProp;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
@@ -285,14 +393,22 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                             })}
                           >
                             Image:{" "}
-                            <a href={beforeSales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={beforeSales}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {beforeSales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(beforeProp) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={beforeProp.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox
+                              checked={beforeProp.thirdParty}
+                              disabled
+                            />
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -304,14 +420,19 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                             })}
                           >
                             Image:{" "}
-                            <a href={afterSales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={afterSales}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {afterSales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(afterProp) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={afterProp.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox checked={afterProp.thirdParty} disabled />
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -319,9 +440,16 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   );
                 }
                 return null;
-              } else if (action.action === "created" || action.action === "deleted") {
-                const docData = action.action === "created" ? action.after : action.before;
-                const prop = hasKey(docData, property) && docData[property] ? docData[property] : "";
+              } else if (
+                action.action === "created" ||
+                action.action === "deleted"
+              ) {
+                const docData =
+                  action.action === "created" ? action.after : action.before;
+                const prop =
+                  hasKey(docData, property) && docData[property]
+                    ? docData[property]
+                    : "";
                 if (
                   !arrayProps.includes(property) &&
                   property !== "vendors" &&
@@ -332,7 +460,11 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">{prop}</span>
                       </DataTableCell>
                     </DataTableRow>
@@ -341,17 +473,26 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">{prop.join(", ")}</span>
                       </DataTableCell>
                     </DataTableRow>
                   );
                 } else if (property === "vendors" && docData.vendors) {
-                  const domain = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
+                  const domain =
+                    /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
                   return docData.vendors.map((vendor, index) => (
                     <DataTableRow key={vendor.name + index}>
                       <DataTableCell>{property + index}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <div>
                           <span className="highlight">ID: {vendor.id}</span>
                         </div>
@@ -359,13 +500,19 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                           <span className="highlight">Name: {vendor.name}</span>
                         </div>
                         <div>
-                          <span className="highlight">Region: {vendor.region}</span>
+                          <span className="highlight">
+                            Region: {vendor.region}
+                          </span>
                         </div>
                         <div>
                           <span className="highlight">
                             Link:{" "}
                             {vendor.storeLink ? (
-                              <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={vendor.storeLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 {vendor.storeLink.match(domain)}
                               </a>
                             ) : null}
@@ -373,7 +520,9 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                         </div>
                         {vendor.endDate ? (
                           <div>
-                            <span className="highlight">End date: {vendor.endDate}</span>
+                            <span className="highlight">
+                              End date: {vendor.endDate}
+                            </span>
                           </div>
                         ) : null}
                       </DataTableCell>
@@ -383,9 +532,17 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <span className="highlight">
-                          <a href={prop} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={prop}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {prop.match(domain)}
                           </a>
                         </span>
@@ -396,28 +553,44 @@ export const AuditEntry = ({ action, openDeleteDialog, timestamp }: AuditEntryPr
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <Checkbox checked={prop} disabled />
                       </DataTableCell>
                     </DataTableRow>
                   );
-                } else if (property === "sales" && is<KeysetDoc["sales"]>(prop)) {
+                } else if (
+                  property === "sales" &&
+                  is<KeysetDoc["sales"]>(prop)
+                ) {
                   const sales = !is<string>(prop) ? prop.img : `${prop}`;
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell className={action.action === "created" ? "after" : "before"}>
+                      <DataTableCell
+                        className={
+                          action.action === "created" ? "after" : "before"
+                        }
+                      >
                         <div>
                           <span className="highlight">
                             Image:{" "}
-                            <a href={sales} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={sales}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               {sales.match(domain)}
                             </a>
                           </span>
                         </div>
                         {!is<string>(prop) ? (
                           <div className="list-checkbox">
-                            Third party: <Checkbox checked={prop.thirdParty} disabled />
+                            Third party:{" "}
+                            <Checkbox checked={prop.thirdParty} disabled />
                           </div>
                         ) : null}
                       </DataTableCell>

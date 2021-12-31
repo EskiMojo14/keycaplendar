@@ -21,7 +21,13 @@ import { Footer } from "@c/common/footer";
 import { DialogSales } from "@c/main/dialog-sales";
 import { DrawerDetails } from "@c/main/drawer-details";
 import { pageTitle } from "@s/common/constants";
-import { selectLoading, selectProcessedActions, selectRecentSets, selectTab, setTab } from "@s/history";
+import {
+  selectLoading,
+  selectProcessedActions,
+  selectRecentSets,
+  selectTab,
+  setTab,
+} from "@s/history";
 import { historyTabs } from "@s/history/constants";
 import { generateSets, getData } from "@s/history/functions";
 import type { RecentSet } from "@s/history/types";
@@ -29,7 +35,14 @@ import { selectAllSets } from "@s/main";
 import { Keyset } from "@s/main/constructors";
 import type { SetType } from "@s/main/types";
 import { selectBottomNav } from "@s/settings";
-import { capitalise, closeModal, hasKey, iconObject, openModal, truncate } from "@s/util/functions";
+import {
+  capitalise,
+  closeModal,
+  hasKey,
+  iconObject,
+  openModal,
+  truncate,
+} from "@s/util/functions";
 import { FilterVariantRemove } from "@i";
 import { ChangelogEntry } from "./changelog-entry";
 import { RecentSetCard } from "./recent-set-card";
@@ -160,7 +173,11 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       ),
       changelog: (
         <div className="history-tab changelog changelog-container" key={key}>
-          <Card className={classNames("changelog", { hidden: processedActions.length === 0 })}>
+          <Card
+            className={classNames("changelog", {
+              hidden: processedActions.length === 0,
+            })}
+          >
             <List twoLine className="three-line">
               {filteredActions.map((action) => (
                 <ChangelogEntry action={action} key={action.timestamp} />
@@ -189,8 +206,18 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       </TopAppBar>
       {bottomNav ? null : <TopAppBarFixedAdjust />}
       <div className="content-container">
-        <div className={classNames("main", { "extended-app-bar": filteredActions.length > 2 || tab !== "changelog" })}>
-          <DrawerDetails open={detailsOpen} close={closeDetails} set={detailSet} openSales={openSales} />
+        <div
+          className={classNames("main", {
+            "extended-app-bar":
+              filteredActions.length > 2 || tab !== "changelog",
+          })}
+        >
+          <DrawerDetails
+            open={detailsOpen}
+            close={closeDetails}
+            set={detailSet}
+            openSales={openSales}
+          />
           <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}

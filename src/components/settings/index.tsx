@@ -7,7 +7,14 @@ import { Card } from "@rmwc/card";
 import { CircularProgress } from "@rmwc/circular-progress";
 import { FormField } from "@rmwc/formfield";
 import { Icon } from "@rmwc/icon";
-import { List, ListItem, ListItemMeta, ListItemPrimaryText, ListItemSecondaryText, ListItemText } from "@rmwc/list";
+import {
+  List,
+  ListItem,
+  ListItemMeta,
+  ListItemPrimaryText,
+  ListItemSecondaryText,
+  ListItemText,
+} from "@rmwc/list";
 import { Radio } from "@rmwc/radio";
 import { Select } from "@rmwc/select";
 import { Switch } from "@rmwc/switch";
@@ -28,7 +35,10 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { Footer } from "@c/common/footer";
 import { TimePicker } from "@c/util/pickers/time-picker";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
 import { pageTitle } from "@s/common/constants";
 import firebase from "@s/firebase";
@@ -87,7 +97,9 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));
@@ -96,7 +108,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   };
 
   const [deleteDialogOpen, setDialogDeleteOpen] = useState(false);
-  const [closeDeleteDialog, openDeleteDialog] = useBoolStates(setDialogDeleteOpen);
+  const [closeDeleteDialog, openDeleteDialog] =
+    useBoolStates(setDialogDeleteOpen);
   const signOut = () => {
     firebase
       .auth()
@@ -120,7 +133,9 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     ? userRoleIcons.designer
     : null;
   const sizedIcon =
-    permissionIcon && typeof permissionIcon === "object" && "strategy" in permissionIcon
+    permissionIcon &&
+    typeof permissionIcon === "object" &&
+    "strategy" in permissionIcon
       ? ({
           ...permissionIcon,
           size: "xsmall",
@@ -128,7 +143,10 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
       : permissionIcon;
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
-      <Badge label={<Icon icon={sizedIcon} />} className="user-icon material-icons" />
+      <Badge
+        label={<Icon icon={sizedIcon} />}
+        className="user-icon material-icons"
+      />
     ) : null;
   const userDisplay = user.email ? (
     <div className="settings-group">
@@ -153,13 +171,18 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
             </BadgeAnchor>
           ) : (
             <BadgeAnchor className="avatar">
-              <Avatar size={user.name || user.nickname ? "xlarge" : "large"} name={user.name ? user.name : ""} />
+              <Avatar
+                size={user.name || user.nickname ? "xlarge" : "large"}
+                name={user.name ? user.name : ""}
+              />
               {userBadge}
             </BadgeAnchor>
           )}
           {user.name ? (
             <ListItemText>
-              {user.nickname ? <div className="overline">{user.nickname}</div> : null}
+              {user.nickname ? (
+                <div className="overline">{user.nickname}</div>
+              ) : null}
               <ListItemPrimaryText>{user.name}</ListItemPrimaryText>
               <ListItemSecondaryText>{user.email}</ListItemSecondaryText>
             </ListItemText>
@@ -180,7 +203,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
             <label className="text-field-label" htmlFor="shareName">
               <Typography use="body2">Display name</Typography>
               <Typography use="caption">
-                Used for features where a name would be displayed to other users, such as shared favorites.
+                Used for features where a name would be displayed to other
+                users, such as shared favorites.
               </Typography>
             </label>
             <TextField
@@ -190,7 +214,11 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
               value={shareName}
               className="name-field"
               onChange={handleChange}
-              trailingIcon={shareNameLoading ? <CircularProgress size="medium" /> : undefined}
+              trailingIcon={
+                shareNameLoading ? (
+                  <CircularProgress size="medium" />
+                ) : undefined
+              }
             />
           </FormField>
         </div>
@@ -202,7 +230,12 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           />
         </div>
         <div className="delete-container">
-          <Button className="delete" label="Delete account" outlined onClick={openDeleteDialog} />
+          <Button
+            className="delete"
+            label="Delete account"
+            outlined
+            onClick={openDeleteDialog}
+          />
         </div>
       </Card>
     </div>
@@ -224,7 +257,11 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     </div>
   );
   const deleteUserDialog = user.email ? (
-    <DialogDelete open={deleteDialogOpen} close={closeDeleteDialog} signOut={signOut} />
+    <DialogDelete
+      open={deleteDialogOpen}
+      close={closeDeleteDialog}
+      signOut={signOut}
+    />
   ) : null;
   const bottomNavOptions =
     device === "mobile" ? (
@@ -324,7 +361,10 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNavSetting })}>
+      <TopAppBar
+        fixed
+        className={classNames({ "bottom-app-bar": bottomNavSetting })}
+      >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
@@ -344,16 +384,30 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
               </div>
               <Card className="theme-card">
                 <List className="theme-list">
-                  <ListItem onClick={() => setLightTheme("light")} className="light">
+                  <ListItem
+                    onClick={() => setLightTheme("light")}
+                    className="light"
+                  >
                     Light
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={lightTheme === "light"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={lightTheme === "light"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => setLightTheme("sepia")} className="sepia">
+                  <ListItem
+                    onClick={() => setLightTheme("sepia")}
+                    className="sepia"
+                  >
                     Sepia
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={lightTheme === "sepia"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={lightTheme === "sepia"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
                 </List>
@@ -369,41 +423,82 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   <Select
                     enhanced
                     outlined
-                    value={applyTheme === "system" ? "System" : applyTheme === "timed" ? "Timed" : "Manual"}
+                    value={
+                      applyTheme === "system"
+                        ? "System"
+                        : applyTheme === "timed"
+                        ? "Timed"
+                        : "Manual"
+                    }
                     options={["Manual", "Timed", "System"]}
                     onChange={selectApplyTheme}
                   />
                 </FormField>
                 {themeOptions}
                 <List className="theme-list">
-                  <ListItem onClick={() => setDarkTheme("ocean")} className="ocean">
+                  <ListItem
+                    onClick={() => setDarkTheme("ocean")}
+                    className="ocean"
+                  >
                     Ocean
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={darkTheme === "ocean"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={darkTheme === "ocean"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => setDarkTheme("grey")} className="grey">
+                  <ListItem
+                    onClick={() => setDarkTheme("grey")}
+                    className="grey"
+                  >
                     Grey
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={darkTheme === "grey"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={darkTheme === "grey"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => setDarkTheme("deep-ocean")} className="deep-ocean">
+                  <ListItem
+                    onClick={() => setDarkTheme("deep-ocean")}
+                    className="deep-ocean"
+                  >
                     Deep Ocean
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={darkTheme === "deep-ocean"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={darkTheme === "deep-ocean"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => setDarkTheme("deep")} className="deep">
+                  <ListItem
+                    onClick={() => setDarkTheme("deep")}
+                    className="deep"
+                  >
                     Deep Purple
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={darkTheme === "deep"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={darkTheme === "deep"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
-                  <ListItem onClick={() => setDarkTheme("dark")} className="dark">
+                  <ListItem
+                    onClick={() => setDarkTheme("dark")}
+                    className="dark"
+                  >
                     Dark
                     <ListItemMeta>
-                      <Radio tabIndex={-1} checked={darkTheme === "dark"} readOnly />
+                      <Radio
+                        tabIndex={-1}
+                        checked={darkTheme === "dark"}
+                        readOnly
+                      />
                     </ListItemMeta>
                   </ListItem>
                 </List>

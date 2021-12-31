@@ -11,7 +11,10 @@ import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { selectShareNameLoading, setShareNameLoading } from "@s/settings";
 import { selectFavoritesId, selectShareName, setFavoritesId } from "@s/user";
-import { debouncedSyncFavoritesId, debouncedSyncShareName } from "@s/user/functions";
+import {
+  debouncedSyncFavoritesId,
+  debouncedSyncShareName,
+} from "@s/user/functions";
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {
@@ -19,7 +22,10 @@ type DialogShareFavoritesProps = {
   close: () => void;
 };
 
-export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps) => {
+export const DialogShareFavorites = ({
+  open,
+  close,
+}: DialogShareFavoritesProps) => {
   const dispatch = useAppDispatch();
 
   const docShareName = useAppSelector(selectShareName);
@@ -31,7 +37,9 @@ export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps)
     setShareName(docShareName);
   }, [docShareName]);
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareName") {
       setShareName(value);
       dispatch(setShareNameLoading(true));
@@ -45,7 +53,8 @@ export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps)
 
   const arr = window.location.href.split("/");
 
-  const shareLink = arr[0] + "//" + arr[2] + "/favorites?favoritesId=" + favoritesId;
+  const shareLink =
+    arr[0] + "//" + arr[2] + "/favorites?favoritesId=" + favoritesId;
 
   const copyLink = () => {
     navigator.clipboard
@@ -58,7 +67,9 @@ export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps)
       });
   };
 
-  const handleSwitchChange = ({ target: { name, checked } }: ChangeEvent<HTMLInputElement>) => {
+  const handleSwitchChange = ({
+    target: { name, checked },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "shareFavorites") {
       const newId = checked ? nanoid() : "";
       dispatch(setFavoritesId(newId));
@@ -77,8 +88,16 @@ export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps)
               name="shareName"
               label="Display name"
               className="name-field"
-              trailingIcon={shareNameLoading ? <CircularProgress size="medium" /> : undefined}
-              helpText={{ persistent: true, validationMsg: false, children: "Displayed username to link viewers." }}
+              trailingIcon={
+                shareNameLoading ? (
+                  <CircularProgress size="medium" />
+                ) : undefined
+              }
+              helpText={{
+                persistent: true,
+                validationMsg: false,
+                children: "Displayed username to link viewers.",
+              }}
               value={shareName}
               onChange={handleChange}
             />
@@ -96,15 +115,22 @@ export const DialogShareFavorites = ({ open, close }: DialogShareFavoritesProps)
           {shareable ? (
             <>
               <Typography use="caption">
-                Note that switching this off and back on will generate a new ID, thus breaking any existing links.
+                Note that switching this off and back on will generate a new ID,
+                thus breaking any existing links.
               </Typography>
               <TextField
                 outlined
                 readOnly
                 value={shareLink}
                 className="display-link"
-                trailingIcon={<IconButton icon="content_copy" onClick={copyLink} />}
-                helpText={{ persistent: true, validationMsg: false, children: "Anyone with the link can view." }}
+                trailingIcon={
+                  <IconButton icon="content_copy" onClick={copyLink} />
+                }
+                helpText={{
+                  persistent: true,
+                  validationMsg: false,
+                  children: "Anyone with the link can view.",
+                }}
               />
             </>
           ) : null}

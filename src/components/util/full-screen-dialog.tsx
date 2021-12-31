@@ -69,13 +69,25 @@ export const FullScreenDialog = ({
   );
 };
 
-export const FullScreenDialogAppBar = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
+export const FullScreenDialogAppBar = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
   <>
-    <TopAppBar {...props} className={bemClasses({ element: "app-bar", extra: className })} />
+    <TopAppBar
+      {...props}
+      className={bemClasses({ element: "app-bar", extra: className })}
+    />
     <TopAppBarFixedAdjust />
   </>
 );
 
-export const FullScreenDialogContent = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div {...props} className={bemClasses({ element: "content", extra: className })} />
+export const FullScreenDialogContent = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div
+    {...props}
+    className={bemClasses({ element: "content", extra: className })}
+  />
 );

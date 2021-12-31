@@ -338,7 +338,8 @@ body {
         transform: translateX(0);
       }
     }
-    &.mdc-drawer--open.mdc-drawer--dismissible:not(.mdc-drawer--closing) ~ .mdc-drawer-app-content {
+    &.mdc-drawer--open.mdc-drawer--dismissible:not(.mdc-drawer--closing)
+      ~ .mdc-drawer-app-content {
       @include rtl.reflexive-property(margin, 0, 320px);
     }
     @include rtl.rtl {
@@ -405,7 +406,9 @@ body {
 
 .mdc-list {
   &.theme-list {
-    @include shape.radius(shape.resolve-percentage-radius(list.$single-line-height, small));
+    @include shape.radius(
+      shape.resolve-percentage-radius(list.$single-line-height, small)
+    );
   }
   &-group {
     &__subheader {
@@ -454,7 +457,8 @@ body {
 
 .mdc-top-app-bar {
   &.is-contextual {
-    transition: elevation.transition-value(), background-color 100ms linear, color 100ms linear;
+    transition: elevation.transition-value(), background-color 100ms linear,
+      color 100ms linear;
     .mdc-top-app-bar__navigation-icon,
     .mdc-top-app-bar__action-item,
     .mdc-top-app-bar__title {
@@ -561,8 +565,10 @@ body {
 .mdc-data-table {
   background-color: transparent;
   &.rounded {
-    border-radius: shape.resolve-percentage-radius(56px, small) shape.resolve-percentage-radius(56px, small)
-      shape.resolve-percentage-radius(52px, small) shape.resolve-percentage-radius(52px, small);
+    border-radius: shape.resolve-percentage-radius(56px, small)
+      shape.resolve-percentage-radius(56px, small)
+      shape.resolve-percentage-radius(52px, small)
+      shape.resolve-percentage-radius(52px, small);
   }
   .mdc-data-table__header-row {
     .mdc-data-table__header-cell {
@@ -620,9 +626,12 @@ svg.material-icons,
   transform: rotate(0);
 }
 
-.rmwc-collapsible-list--open > .rmwc-collapsible-list__handle .mdc-list-item__meta,
+.rmwc-collapsible-list--open
+  > .rmwc-collapsible-list__handle
+  .mdc-list-item__meta,
 .mdc-select--activated .mdc-select__dropdown-icon,
-.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending .rmwc-data-table__sort-icon,
+.rmwc-data-table__head-cell--sorted.rmwc-data-table__head-cell--sorted-ascending
+  .rmwc-data-table__sort-icon,
 .rmwc-data-table__sort-icon {
   transform: rotate(180deg);
 }

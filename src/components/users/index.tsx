@@ -9,7 +9,13 @@ import {
   DataTableHeadCell,
   DataTableRow,
 } from "@rmwc/data-table";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { Menu, MenuItem, MenuSurfaceAnchor } from "@rmwc/menu";
 import {
@@ -53,9 +59,22 @@ import {
   selectView,
   setLoading,
 } from "@s/users";
-import { sortLabels, sortProps, viewIcons, viewLabels, views } from "@s/users/constants";
+import {
+  sortLabels,
+  sortProps,
+  viewIcons,
+  viewLabels,
+  views,
+} from "@s/users/constants";
 import { User } from "@s/users/constructors";
-import { getUsers, setPage, setRowsPerPage, setSort, setSortIndex, setViewIndex } from "@s/users/functions";
+import {
+  getUsers,
+  setPage,
+  setRowsPerPage,
+  setSort,
+  setSortIndex,
+  setViewIndex,
+} from "@s/users/functions";
 import type { UserType } from "@s/users/types";
 import { useBoolStates } from "@s/util/functions";
 import { UserCard } from "./user-card";
@@ -125,7 +144,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           queue.notify({ title: result.data.error });
           dispatch(setLoading(false));
         } else {
-          queue.notify({ title: "User " + user.displayName + " successfully deleted." });
+          queue.notify({
+            title: "User " + user.displayName + " successfully deleted.",
+          });
           getUsers();
         }
       })
@@ -150,7 +171,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
             </MenuItem>
           ))}
         </Menu>
-        {withTooltip(<TopAppBarActionItem icon="sort" onClick={openSortMenu} />, "Sort")}
+        {withTooltip(
+          <TopAppBarActionItem icon="sort" onClick={openSortMenu} />,
+          "Sort"
+        )}
       </MenuSurfaceAnchor>
     ) : null;
   const viewMenu =
@@ -168,7 +192,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
             </MenuItem>
           ))}
         </Menu>
-        {withTooltip(<TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />, "View")}
+        {withTooltip(
+          <TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />,
+          "View"
+        )}
       </MenuSurfaceAnchor>
     ) : null;
   return (
@@ -198,7 +225,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         <DataTableRow>
                           <DataTableHeadCell></DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "displayName" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "displayName"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("displayName");
                             }}
@@ -206,7 +239,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             User
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "email" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "email"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("email");
                             }}
@@ -214,7 +253,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Email
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "dateCreated" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "dateCreated"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("dateCreated");
                             }}
@@ -222,7 +267,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Date created
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "lastSignIn" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "lastSignIn"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("lastSignIn");
                             }}
@@ -230,7 +281,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last sign in
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "lastActive" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "lastActive"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("lastActive");
                             }}
@@ -238,7 +295,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Last active
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "nickname" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "nickname"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("nickname");
                             }}
@@ -246,7 +309,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Nickname
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "designer" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "designer"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("designer");
                             }}
@@ -254,7 +323,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Designer
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "editor" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "editor"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("editor");
                             }}
@@ -262,7 +337,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Editor
                           </DataTableHeadCell>
                           <DataTableHeadCell
-                            sort={userSort === "admin" ? (reverseUserSort ? -1 : 1) : null}
+                            sort={
+                              userSort === "admin"
+                                ? reverseUserSort
+                                  ? -1
+                                  : 1
+                                : null
+                            }
                             onClick={() => {
                               setSort("admin");
                             }}
@@ -272,7 +353,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           <DataTableHeadCell>Save</DataTableHeadCell>
                           <DataTableHeadCell>Delete</DataTableHeadCell>
                         </DataTableRow>
-                        <DataTableRow className={classNames("progress-row", { loading })}>
+                        <DataTableRow
+                          className={classNames("progress-row", { loading })}
+                        >
                           <DataTableHeadCell colSpan={12}>
                             <LinearProgress />
                           </DataTableHeadCell>
@@ -280,7 +363,12 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                       </DataTableHead>
                       <DataTableBody>
                         {paginatedUsers.map((user) => (
-                          <UserRow user={user} delete={openDeleteDialog} getUsers={getUsers} key={user.email} />
+                          <UserRow
+                            user={user}
+                            delete={openDeleteDialog}
+                            getUsers={getUsers}
+                            key={user.email}
+                          />
                         ))}
                       </DataTableBody>
                     </DataTableContent>
@@ -297,19 +385,27 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                       </div>
                       <DataTablePaginationTrailing>
                         <DataTablePaginationRowsPerPage>
-                          <DataTablePaginationRowsPerPageLabel>Rows per page</DataTablePaginationRowsPerPageLabel>
+                          <DataTablePaginationRowsPerPageLabel>
+                            Rows per page
+                          </DataTablePaginationRowsPerPageLabel>
                           <DataTablePaginationRowsPerPageSelect
                             value={rowsPerPage.toString()}
                             options={Array(3)
                               .fill(rows)
-                              .map((number, index) => (number * (index + 1)).toString())}
-                            onChange={(e) => setRowsPerPage(parseInt(e.currentTarget.value))}
+                              .map((number, index) =>
+                                (number * (index + 1)).toString()
+                              )}
+                            onChange={(e) =>
+                              setRowsPerPage(parseInt(e.currentTarget.value))
+                            }
                             enhanced
                           />
                         </DataTablePaginationRowsPerPage>
                         <DataTablePaginationNavigation>
                           <DataTablePaginationTotal>
-                            {`${firstIndex + 1}-${lastIndex + 1} of ${sortedUsers.length}`}
+                            {`${firstIndex + 1}-${lastIndex + 1} of ${
+                              sortedUsers.length
+                            }`}
                           </DataTablePaginationTotal>
                           <DataTablePaginationButton
                             className="rtl-flip"
@@ -340,7 +436,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             icon="last_page"
                             disabled={lastIndex === sortedUsers.length - 1}
                             onClick={() => {
-                              setPage(Math.ceil(sortedUsers.length / rowsPerPage));
+                              setPage(
+                                Math.ceil(sortedUsers.length / rowsPerPage)
+                              );
                             }}
                           />
                         </DataTablePaginationNavigation>
@@ -351,7 +449,12 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
               ) : (
                 <div className="user-container">
                   {sortedUsers.map((user) => (
-                    <UserCard user={user} key={user.email} delete={openDeleteDialog} getUsers={getUsers} />
+                    <UserCard
+                      user={user}
+                      key={user.email}
+                      delete={openDeleteDialog}
+                      getUsers={getUsers}
+                    />
                   ))}
                 </div>
               )}
@@ -359,12 +462,23 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           </div>
           <Dialog open={deleteOpen}>
             <DialogTitle>Delete User</DialogTitle>
-            <DialogContent>Are you sure you want to delete the user {deletedUser.displayName}?</DialogContent>
+            <DialogContent>
+              Are you sure you want to delete the user {deletedUser.displayName}
+              ?
+            </DialogContent>
             <DialogActions>
-              <DialogButton action="close" onClick={closeDeleteDialog} isDefaultAction>
+              <DialogButton
+                action="close"
+                onClick={closeDeleteDialog}
+                isDefaultAction
+              >
                 Cancel
               </DialogButton>
-              <DialogButton action="accept" className="delete" onClick={() => deleteUser(deletedUser)}>
+              <DialogButton
+                action="accept"
+                className="delete"
+                onClick={() => deleteUser(deletedUser)}
+              >
                 Delete
               </DialogButton>
             </DialogActions>

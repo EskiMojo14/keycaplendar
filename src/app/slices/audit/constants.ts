@@ -19,7 +19,10 @@ export const auditProperties = [
 
 /** Formatted names. */
 
-export const auditPropertiesFormatted: Record<typeof auditProperties[number], string> = {
+export const auditPropertiesFormatted: Record<
+  typeof auditProperties[number],
+  string
+> = {
   alias: "Alias",
   profile: "Profile",
   colorway: "Colorway",

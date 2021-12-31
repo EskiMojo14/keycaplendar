@@ -48,7 +48,10 @@ export const settingsSlice = createSlice({
       const { key, value } = payload;
       state[key] = value;
     },
-    setSettings: (state, { payload }: PayloadAction<Partial<SettingsState>>) => ({
+    setSettings: (
+      state,
+      { payload }: PayloadAction<Partial<SettingsState>>
+    ) => ({
       ...state,
       ...payload,
     }),
@@ -65,22 +68,33 @@ export const settingsSlice = createSlice({
 });
 
 export const {
-  actions: { setSettingState, setSettings, toggleLich, setCookies, setShareNameLoading },
+  actions: {
+    setSettingState,
+    setSettings,
+    toggleLich,
+    setCookies,
+    setShareNameLoading,
+  },
 } = settingsSlice;
 
-export const setSetting = <K extends keyof SettingsState>(key: K, value: SettingsState[K]) =>
-  setSettingState({ key, value });
+export const setSetting = <K extends keyof SettingsState>(
+  key: K,
+  value: SettingsState[K]
+) => setSettingState({ key, value });
 
 export const selectSettings = (state: RootState) => state.settings;
 
-export const selectBottomNav = (state: RootState) => state.settings.bottomNav && state.common.device === "mobile";
+export const selectBottomNav = (state: RootState) =>
+  state.settings.bottomNav && state.common.device === "mobile";
 
 export const selectView = (state: RootState) => state.settings.view;
 
 export const selectCookies = (state: RootState) => state.settings.cookies;
 
-export const selectSyncSettings = (state: RootState) => state.settings.syncSettings;
+export const selectSyncSettings = (state: RootState) =>
+  state.settings.syncSettings;
 
-export const selectShareNameLoading = (state: RootState) => state.settings.shareNameLoading;
+export const selectShareNameLoading = (state: RootState) =>
+  state.settings.shareNameLoading;
 
 export default settingsSlice.reducer;

@@ -6,7 +6,9 @@ import type { MainState } from "@s/main";
 import { selectCookies } from "@s/settings";
 
 export const hydrateState = (state: any) => {
-  const hydrateCommonSlice = (partialCommon: Partial<CommonState>): CommonState => ({
+  const hydrateCommonSlice = (
+    partialCommon: Partial<CommonState>
+  ): CommonState => ({
     ...common,
     ...partialCommon,
   });
@@ -14,7 +16,11 @@ export const hydrateState = (state: any) => {
     ...main,
     ...partialMain,
   });
-  return { ...state, common: hydrateCommonSlice(state.common), main: hydrateMainSlice(state.main) };
+  return {
+    ...state,
+    common: hydrateCommonSlice(state.common),
+    main: hydrateMainSlice(state.main),
+  };
 };
 
 export const loadState = () => {

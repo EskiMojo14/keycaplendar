@@ -58,9 +58,14 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
       : { data: action.action === "deleted" ? action.before : action.after };
 
   const timestamp = DateTime.fromISO(action.timestamp, { zone: "utc" });
-  const formattedTimestamp = timestamp.toFormat(`d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`);
+  const formattedTimestamp = timestamp.toFormat(
+    `d'${ordinal(timestamp.day)}' MMM yyyy HH:mm`
+  );
 
-  const constructRows = (dataObj = data, properties = auditProperties): ReactNode => {
+  const constructRows = (
+    dataObj = data,
+    properties = auditProperties
+  ): ReactNode => {
     if (dataObj.data) {
       return objectKeys(dataObj.data)
         .sort(
@@ -84,7 +89,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(useData, { zone: "utc" }).toFormat(
-                      `d'${ordinal(DateTime.fromISO(useData, { zone: "utc" }).day)}' MMM yyyy`
+                      `d'${ordinal(
+                        DateTime.fromISO(useData, { zone: "utc" }).day
+                      )}' MMM yyyy`
                     )
                   ) : prop === "image" ? (
                     "<link>"
@@ -93,8 +100,13 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   )}
                 </span>
               );
-            } else if (arrayIncludes(arrayProps, prop) && is<string[]>(useData)) {
-              contents = <span className="highlight">{useData.join(", ")}</span>;
+            } else if (
+              arrayIncludes(arrayProps, prop) &&
+              is<string[]>(useData)
+            ) {
+              contents = (
+                <span className="highlight">{useData.join(", ")}</span>
+              );
             } else if (arrayIncludes(boolProps, prop) && is<boolean>(useData)) {
               contents = <Checkbox checked={useData} disabled />;
             } else if (prop === "sales" && is<KeysetDoc["sales"]>(useData)) {
@@ -104,21 +116,31 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   <div>
                     <span className="highlight">
                       Image:{" "}
-                      <a href={useData.img} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={useData.img}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {domain ? domain[0] : null}
                       </a>
                     </span>
                   </div>
                   <div className="list-checkbox">
-                    <span className="highlight">Third party:</span> <Checkbox checked={useData.thirdParty} disabled />
+                    <span className="highlight">Third party:</span>{" "}
+                    <Checkbox checked={useData.thirdParty} disabled />
                   </div>
                 </>
               );
             } else if (prop === "vendors" && is<VendorType[]>(useData)) {
               contents = useData.map((vendor, index) => {
-                const domain = vendor.storeLink ? vendor.storeLink.match(domainRegex) : null;
+                const domain = vendor.storeLink
+                  ? vendor.storeLink.match(domainRegex)
+                  : null;
                 return (
-                  <div className="vendor-container" key={vendor.name + vendor.id}>
+                  <div
+                    className="vendor-container"
+                    key={vendor.name + vendor.id}
+                  >
                     <Typography use="subtitle2">Vendor {index + 1}</Typography>
                     <br />
                     <span className="highlight">Name: {vendor.name}</span>
@@ -129,7 +151,11 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                       <>
                         <span className="highlight">
                           Link:
-                          <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={vendor.storeLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {domain ? domain[0] : null}
                           </a>
                         </span>
@@ -138,7 +164,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     ) : null}
                     {vendor.endDate ? (
                       <>
-                        <span className="highlight">End date: {vendor.endDate}</span>
+                        <span className="highlight">
+                          End date: {vendor.endDate}
+                        </span>
                         <br />
                       </>
                     ) : null}
@@ -150,7 +178,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               <DataTableRow key={prop}>
                 <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
                 <DataTableCell
-                  hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(useData)}
+                  hasFormControl={
+                    arrayIncludes(boolProps, prop) && is<boolean>(useData)
+                  }
                   className={action.action === "created" ? "after" : "before"}
                 >
                   {contents}
@@ -162,12 +192,20 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
         });
     } else if (dataObj.before && dataObj.after) {
       return properties.map((prop) => {
-        if (dataObj.before && dataObj.after && hasKey(dataObj.before, prop) && hasKey(dataObj.after, prop)) {
+        if (
+          dataObj.before &&
+          dataObj.after &&
+          hasKey(dataObj.before, prop) &&
+          hasKey(dataObj.after, prop)
+        ) {
           const {
             before: { [prop]: beforeData },
             after: { [prop]: afterData },
           } = dataObj;
-          let contents: { before: ReactNode; after: ReactNode } = { before: null, after: null };
+          let contents: { before: ReactNode; after: ReactNode } = {
+            before: null,
+            after: null,
+          };
           if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);
             const afterDomain = afterData.match(domainRegex);
@@ -181,7 +219,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   ) : arrayIncludes(dateProps, prop) ? (
                     beforeData ? (
                       DateTime.fromISO(beforeData, { zone: "utc" }).toFormat(
-                        `d'${ordinal(DateTime.fromISO(beforeData, { zone: "utc" }).day)}' MMM yyyy`
+                        `d'${ordinal(
+                          DateTime.fromISO(beforeData, { zone: "utc" }).day
+                        )}' MMM yyyy`
                       )
                     ) : null
                   ) : prop === "image" ? (
@@ -199,7 +239,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
                     DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
-                      `d'${ordinal(DateTime.fromISO(afterData, { zone: "utc" }).day)}' MMM yyyy`
+                      `d'${ordinal(
+                        DateTime.fromISO(afterData, { zone: "utc" }).day
+                      )}' MMM yyyy`
                     )
                   ) : prop === "image" ? (
                     "<link>"
@@ -209,19 +251,37 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                 </span>
               ),
             };
-          } else if (arrayIncludes(arrayProps, prop) && is<string[]>(beforeData) && is<string[]>(afterData)) {
+          } else if (
+            arrayIncludes(arrayProps, prop) &&
+            is<string[]>(beforeData) &&
+            is<string[]>(afterData)
+          ) {
             contents = {
-              before: <span className="highlight">{beforeData.join(", ")}</span>,
+              before: (
+                <span className="highlight">{beforeData.join(", ")}</span>
+              ),
               after: <span className="highlight">{afterData.join(", ")}</span>,
             };
-          } else if (arrayIncludes(boolProps, prop) && is<boolean>(beforeData) && is<boolean>(afterData)) {
+          } else if (
+            arrayIncludes(boolProps, prop) &&
+            is<boolean>(beforeData) &&
+            is<boolean>(afterData)
+          ) {
             contents = {
               before: <Checkbox checked={beforeData} disabled />,
               after: <Checkbox checked={afterData} disabled />,
             };
-          } else if (prop === "sales" && is<KeysetDoc["sales"]>(beforeData) && is<KeysetDoc["sales"]>(afterData)) {
-            const beforeDomain = (is<string>(beforeData) ? beforeData : beforeData.img).match(domainRegex);
-            const afterDomain = (is<string>(afterData) ? afterData : afterData.img).match(domainRegex);
+          } else if (
+            prop === "sales" &&
+            is<KeysetDoc["sales"]>(beforeData) &&
+            is<KeysetDoc["sales"]>(afterData)
+          ) {
+            const beforeDomain = (
+              is<string>(beforeData) ? beforeData : beforeData.img
+            ).match(domainRegex);
+            const afterDomain = (
+              is<string>(afterData) ? afterData : afterData.img
+            ).match(domainRegex);
             contents = {
               before: (
                 <>
@@ -268,9 +328,15 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                 </>
               ),
             };
-          } else if (prop === "vendors" && is<VendorType[]>(beforeData) && is<VendorType[]>(afterData)) {
+          } else if (
+            prop === "vendors" &&
+            is<VendorType[]>(beforeData) &&
+            is<VendorType[]>(afterData)
+          ) {
             const displayVendor = (vendor: VendorType, index: number) => {
-              const domain = vendor.storeLink ? vendor.storeLink.match(domainRegex) : null;
+              const domain = vendor.storeLink
+                ? vendor.storeLink.match(domainRegex)
+                : null;
               return (
                 <div className="vendor-container" key={vendor.name + vendor.id}>
                   <Typography use="subtitle2">Vendor {index + 1}</Typography>
@@ -283,7 +349,11 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     <>
                       <span className="highlight">
                         Link:
-                        <a href={vendor.storeLink} target="_blank" rel="noopener noreferrer">
+                        <a
+                          href={vendor.storeLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           {domain ? domain[0] : null}
                         </a>
                       </span>
@@ -292,7 +362,9 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   ) : null}
                   {vendor.endDate ? (
                     <>
-                      <span className="highlight">End date: {vendor.endDate}</span>
+                      <span className="highlight">
+                        End date: {vendor.endDate}
+                      </span>
                       <br />
                     </>
                   ) : null}
@@ -300,21 +372,29 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               );
             };
             contents = {
-              before: beforeData.map((vendor, index) => displayVendor(vendor, index)),
-              after: afterData.map((vendor, index) => displayVendor(vendor, index)),
+              before: beforeData.map((vendor, index) =>
+                displayVendor(vendor, index)
+              ),
+              after: afterData.map((vendor, index) =>
+                displayVendor(vendor, index)
+              ),
             };
           }
           return (
             <DataTableRow key={prop}>
               <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
               <DataTableCell
-                hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(beforeData)}
+                hasFormControl={
+                  arrayIncludes(boolProps, prop) && is<boolean>(beforeData)
+                }
                 className="before"
               >
                 {contents.before}
               </DataTableCell>
               <DataTableCell
-                hasFormControl={arrayIncludes(boolProps, prop) && is<boolean>(afterData)}
+                hasFormControl={
+                  arrayIncludes(boolProps, prop) && is<boolean>(afterData)
+                }
                 className="after"
               >
                 {contents.after}
@@ -346,8 +426,12 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
           <DataTableHead>
             <DataTableRow>
               <DataTableHeadCell>Property</DataTableHeadCell>
-              <DataTableHeadCell>{action.action === "updated" ? "Before" : "Data"}</DataTableHeadCell>
-              {action.action === "updated" ? <DataTableHeadCell>After</DataTableHeadCell> : null}
+              <DataTableHeadCell>
+                {action.action === "updated" ? "Before" : "Data"}
+              </DataTableHeadCell>
+              {action.action === "updated" ? (
+                <DataTableHeadCell>After</DataTableHeadCell>
+              ) : null}
             </DataTableRow>
           </DataTableHead>
           <DataTableBody>{constructRows()}</DataTableBody>

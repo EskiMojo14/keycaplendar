@@ -1,5 +1,11 @@
 import type { MouseEvent } from "react";
-import { Dialog, DialogActions, DialogButton, DialogContent, DialogTitle } from "@rmwc/dialog";
+import {
+  Dialog,
+  DialogActions,
+  DialogButton,
+  DialogContent,
+  DialogTitle,
+} from "@rmwc/dialog";
 import { deleteGlobalPreset, deletePreset } from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 
@@ -9,7 +15,11 @@ type DialogDeleteFilterPresetProps = {
   preset: PresetType;
 };
 
-export const DialogDeleteFilterPreset = ({ close, open, preset }: DialogDeleteFilterPresetProps) => {
+export const DialogDeleteFilterPreset = ({
+  close,
+  open,
+  preset,
+}: DialogDeleteFilterPresetProps) => {
   const deleteFn = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (preset.global) {
@@ -23,7 +33,8 @@ export const DialogDeleteFilterPreset = ({ close, open, preset }: DialogDeleteFi
     <Dialog open={open}>
       <DialogTitle>Delete {`"${preset.name}"`}</DialogTitle>
       <DialogContent>
-        Are you sure you want to delete the{preset.global ? ` global` : ""} filter preset {`"${preset.name}"`}?
+        Are you sure you want to delete the{preset.global ? ` global` : ""}{" "}
+        filter preset {`"${preset.name}"`}?
       </DialogContent>
       <DialogActions>
         <DialogButton action="close" onClick={close} isDefaultAction>

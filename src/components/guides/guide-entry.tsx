@@ -1,4 +1,11 @@
-import { Card, CardActionButton, CardActionButtons, CardActionIcon, CardActionIcons, CardActions } from "@rmwc/card";
+import {
+  Card,
+  CardActionButton,
+  CardActionButtons,
+  CardActionIcon,
+  CardActionIcons,
+  CardActions,
+} from "@rmwc/card";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
@@ -19,7 +26,11 @@ type GuideEntryProps = {
   delete: (entry: GuideEntryType) => void;
 };
 
-export const GuideEntry = ({ entry, edit, delete: deleteFn }: GuideEntryProps) => {
+export const GuideEntry = ({
+  entry,
+  edit,
+  delete: deleteFn,
+}: GuideEntryProps) => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectUser);
@@ -50,7 +61,11 @@ export const GuideEntry = ({ entry, edit, delete: deleteFn }: GuideEntryProps) =
   const buttons = user.isAdmin ? (
     <CardActions>
       <CardActionButtons>
-        <CardActionButton label="Share" icon={iconObject(<Share />)} onClick={copyLink} />
+        <CardActionButton
+          label="Share"
+          icon={iconObject(<Share />)}
+          onClick={copyLink}
+        />
       </CardActionButtons>
       <CardActionIcons>
         {withTooltip(
@@ -76,7 +91,10 @@ export const GuideEntry = ({ entry, edit, delete: deleteFn }: GuideEntryProps) =
   ) : (
     <CardActions>
       <CardActionIcons>
-        {withTooltip(<CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <CardActionIcon icon={iconObject(<Share />)} onClick={copyLink} />,
+          "Share"
+        )}
       </CardActionIcons>
     </CardActions>
   );
@@ -94,7 +112,10 @@ export const GuideEntry = ({ entry, edit, delete: deleteFn }: GuideEntryProps) =
         </Typography>
         <div className="tags-container">
           <ChipSet>
-            <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />
+            <Chip
+              icon={visibilityIcons[entry.visibility]}
+              label={formattedVisibility[entry.visibility]}
+            />
             {entry.tags.map((tag) => (
               <Chip
                 key={tag}

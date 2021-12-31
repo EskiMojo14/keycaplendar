@@ -29,7 +29,10 @@ import {
   insertTableCommand,
 } from "@s/common/markdown-commands";
 import { markdownIcons } from "@s/common/markdown-constants";
-import { componentBuilder, typographyBuilder } from "@s/common/markdown-functions";
+import {
+  componentBuilder,
+  typographyBuilder,
+} from "@s/common/markdown-functions";
 import { SegmentedButton, SegmentedButtonSegment } from "./segmented-button";
 import "./react-markdown.scss";
 
@@ -76,7 +79,11 @@ const customComponents = {
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;
 
-export const CustomReactMarkdown = ({ components, className, ...filteredProps }: CustomReactMarkdownProps) => (
+export const CustomReactMarkdown = ({
+  components,
+  className,
+  ...filteredProps
+}: CustomReactMarkdownProps) => (
   <ReactMarkdown
     remarkPlugins={[gfm]}
     components={{ ...customComponents, ...components }}
@@ -87,7 +94,10 @@ export const CustomReactMarkdown = ({ components, className, ...filteredProps }:
 
 const bemClasses = new BEMHelper("markdown-editor");
 
-type CustomReactMdeProps = Omit<ReactMdeProps, "generateMarkdownPreview" | "onTabChange" | "selectedTab"> & {
+type CustomReactMdeProps = Omit<
+  ReactMdeProps,
+  "generateMarkdownPreview" | "onTabChange" | "selectedTab"
+> & {
   required?: boolean;
 };
 
@@ -140,7 +150,8 @@ export const CustomReactMde = ({
     ),
     preview: null,
     uploadingImage: "Uploading image...",
-    pasteDropSelect: "Attach files by dragging & dropping, selecting or pasting them.",
+    pasteDropSelect:
+      "Attach files by dragging & dropping, selecting or pasting them.",
   };
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -154,8 +165,14 @@ export const CustomReactMde = ({
     reactMde: [bemClasses(), classes ? classes.reactMde : ""],
     toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
     preview: [bemClasses("preview"), classes ? classes.preview : ""],
-    textArea: [bemClasses("textarea", { hovered, focused, invalid }), classes ? classes.textArea : ""],
-    suggestionsDropdown: [bemClasses("dropdown"), classes ? classes.suggestionsDropdown : ""],
+    textArea: [
+      bemClasses("textarea", { hovered, focused, invalid }),
+      classes ? classes.textArea : "",
+    ],
+    suggestionsDropdown: [
+      bemClasses("dropdown"),
+      classes ? classes.suggestionsDropdown : "",
+    ],
   };
 
   const customChildProps: ChildProps = {
@@ -184,8 +201,12 @@ export const CustomReactMde = ({
       toolbarCommands={customToolbarCommands}
       l18n={customTabButtons}
       classes={customClasses}
-      getIcon={(command) => <IconButton tag="div" icon={markdownIcons[command]} />}
-      generateMarkdownPreview={(markdown) => Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)}
+      getIcon={(command) => (
+        <IconButton tag="div" icon={markdownIcons[command]} />
+      )}
+      generateMarkdownPreview={(markdown) =>
+        Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)
+      }
       childProps={customChildProps}
       {...filteredProps}
     />

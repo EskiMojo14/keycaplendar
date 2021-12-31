@@ -12,7 +12,11 @@ import { Typography } from "@rmwc/typography";
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
 import { withTooltip } from "@c/util/hocs";
 import { CustomReactMarkdown } from "@c/util/react-markdown";
 import { selectDevice } from "@s/common";
@@ -32,7 +36,13 @@ type ModalCreateProps = {
   entry: GuideEntryType;
 };
 
-export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: ModalCreateProps) => {
+export const ModalDetail = ({
+  entry,
+  open,
+  onClose,
+  edit,
+  delete: deleteFn,
+}: ModalCreateProps) => {
   const dispatch = useAppDispatch();
 
   const device = useAppSelector(selectDevice);
@@ -68,7 +78,10 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
   const actions = user.isAdmin ? (
     useDrawer ? (
       <>
-        {withTooltip(<IconButton icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <IconButton icon={iconObject(<Share />)} onClick={copyLink} />,
+          "Share"
+        )}
         {withTooltip(
           <IconButton
             icon={iconObject(<Edit />)}
@@ -90,7 +103,13 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
       </>
     ) : (
       <>
-        {withTooltip(<TopAppBarActionItem icon={iconObject(<Share />)} onClick={copyLink} />, "Share")}
+        {withTooltip(
+          <TopAppBarActionItem
+            icon={iconObject(<Share />)}
+            onClick={copyLink}
+          />,
+          "Share"
+        )}
         {withTooltip(
           <TopAppBarActionItem
             icon={iconObject(<Edit />)}
@@ -117,12 +136,21 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={onClose} className="drawer-right guide-detail-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={onClose}
+          className="drawer-right guide-detail-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={onClose} className="guide-detail-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={onClose}
+          className="guide-detail-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -150,7 +178,9 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
         </BoolWrapper>
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
           {actions}
         </ConditionalWrapper>
@@ -158,7 +188,9 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="title">
           <Typography use="overline" tag="h3">
@@ -172,7 +204,10 @@ export const ModalDetail = ({ entry, open, onClose, edit, delete: deleteFn }: Mo
           </Typography>
           <div className="tags-container">
             <ChipSet>
-              <Chip icon={visibilityIcons[entry.visibility]} label={formattedVisibility[entry.visibility]} />
+              <Chip
+                icon={visibilityIcons[entry.visibility]}
+                label={formattedVisibility[entry.visibility]}
+              />
               {entry.tags.map((tag) => (
                 <Chip
                   key={tag}

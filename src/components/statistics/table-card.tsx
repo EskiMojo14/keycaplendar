@@ -20,8 +20,15 @@ import classNames from "classnames";
 import ChartistGraph from "react-chartist";
 import { is } from "typescript-is";
 import { withTooltip } from "@c/util/hocs";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
-import type { Categories, DurationDataObject, VendorDataObject } from "@s/statistics/types";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
+import type {
+  Categories,
+  DurationDataObject,
+  VendorDataObject,
+} from "@s/statistics/types";
 import { alphabeticalSortPropCurried, pluralise } from "@s/util/functions";
 import "./table-card.scss";
 
@@ -69,9 +76,13 @@ export const TableCard = ({
   useEffect(() => setSelectedIndex(-1), [category]);
   const chartData =
     selectedIndex >= 0 && summary && breakdownData
-      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[selectedIndex]
+      ? [...breakdownData].sort(alphabeticalSortPropCurried("name"))[
+          selectedIndex
+        ]
       : data;
-  const [graphType, setGraphType] = useState<"bar" | "line">(defaultType || "line");
+  const [graphType, setGraphType] = useState<"bar" | "line">(
+    defaultType || "line"
+  );
   const chartOptions: ILineChartOptions = {
     showArea: true,
     chartPadding: {
@@ -82,8 +93,13 @@ export const TableCard = ({
     },
     axisX: {
       labelInterpolationFnc: (value: number, index: number) =>
-        is<any[]>(chartData.chartData.series[0]) && chartData.chartData.series[0].length >= 16
-          ? index % (chartData.chartData.series[0].length >= 24 && !summary ? 3 : 2) === 0
+        is<any[]>(chartData.chartData.series[0]) &&
+        chartData.chartData.series[0].length >= 16
+          ? index %
+              (chartData.chartData.series[0].length >= 24 && !summary
+                ? 3
+                : 2) ===
+            0
             ? value
             : null
           : value,
@@ -139,16 +155,18 @@ export const TableCard = ({
     summary && breakdownData ? (
       <div className="table-chips-container">
         <ChipSet choice>
-          {[...breakdownData].sort(alphabeticalSortPropCurried("name")).map((obj, index) => (
-            <Chip
-              key={obj.name}
-              label={obj.name}
-              selected={index === selectedIndex}
-              onInteraction={() => {
-                setSelectedIndex(index === selectedIndex ? -1 : index);
-              }}
-            />
-          ))}
+          {[...breakdownData]
+            .sort(alphabeticalSortPropCurried("name"))
+            .map((obj, index) => (
+              <Chip
+                key={obj.name}
+                label={obj.name}
+                selected={index === selectedIndex}
+                onInteraction={() => {
+                  setSelectedIndex(index === selectedIndex ? -1 : index);
+                }}
+              />
+            ))}
         </ChipSet>
       </div>
     ) : null;
@@ -219,7 +237,9 @@ export const TableCard = ({
                 <DataTableRow>
                   <DataTableCell>Mode</DataTableCell>
                   <DataTableCell alignEnd>
-                    {chartData.mode.length === chartData.total ? "None" : chartData.mode.join(", ")}
+                    {chartData.mode.length === chartData.total
+                      ? "None"
+                      : chartData.mode.join(", ")}
                   </DataTableCell>
                 </DataTableRow>
                 <DataTableRow>
@@ -228,7 +248,9 @@ export const TableCard = ({
                 </DataTableRow>
                 <DataTableRow>
                   <DataTableCell>Standard deviation</DataTableCell>
-                  <DataTableCell alignEnd>{chartData.standardDev}</DataTableCell>
+                  <DataTableCell alignEnd>
+                    {chartData.standardDev}
+                  </DataTableCell>
                 </DataTableRow>
               </DataTableBody>
             </DataTableContent>

@@ -3,7 +3,11 @@ import { DateTime } from "luxon";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firebase from "@s/firebase";
-import { alphabeticalSortPropCurried, hasKey, ordinal } from "@s/util/functions";
+import {
+  alphabeticalSortPropCurried,
+  hasKey,
+  ordinal,
+} from "@s/util/functions";
 import {
   selectData,
   selectSort,
@@ -21,7 +25,11 @@ const storage = firebase.storage();
 
 const { dispatch } = store;
 
-export const setStatisticsTab = (tab: StatsTab, clearUrl = true, state = store.getState()) => {
+export const setStatisticsTab = (
+  tab: StatsTab,
+  clearUrl = true,
+  state = store.getState()
+) => {
   const statsTab = selectTab(state);
   dispatch(setStatsTab(tab));
   if (statsTab !== tab) {
@@ -37,11 +45,17 @@ export const setStatisticsTab = (tab: StatsTab, clearUrl = true, state = store.g
   }
 };
 
-export const setSetting = <T extends keyof StatisticsType>(prop: T, value: StatisticsType[T]) => {
+export const setSetting = <T extends keyof StatisticsType>(
+  prop: T,
+  value: StatisticsType[T]
+) => {
   dispatch(setStatisticsSetting(prop, value));
 };
 
-export const setSort = <T extends keyof StatisticsSortType>(prop: T, value: StatisticsSortType[T]) => {
+export const setSort = <T extends keyof StatisticsSortType>(
+  prop: T,
+  value: StatisticsSortType[T]
+) => {
   dispatch(setStatisticsSort(prop, value));
   sortData();
 };
@@ -58,8 +72,13 @@ export const getData = async () => {
             const { timestamp, ...statisticsData } = data;
             const luxonTimetamp = DateTime.fromISO(timestamp, { zone: "utc" });
             const timestampOrdinal = ordinal(luxonTimetamp.day);
-            const formattedTimestamp = luxonTimetamp.toFormat(`HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`);
-            queue.notify({ title: "Last updated: " + formattedTimestamp, timeout: 4000 });
+            const formattedTimestamp = luxonTimetamp.toFormat(
+              `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
+            );
+            queue.notify({
+              title: "Last updated: " + formattedTimestamp,
+              timeout: 4000,
+            });
             dispatch(setStatisticsData(statisticsData));
             dispatch(setLoading(false));
           });
@@ -87,25 +106,38 @@ export const sortData = (state = store.getState()) => {
       if (tab === "duration") {
         categories.forEach((category) => {
           properties.forEach((property) => {
-            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
-              const key = sort[tab] === "alphabetical" ? "name" : sort[tab] === "duration" ? "mean" : "total";
-              return (
-                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-                alphabeticalSortPropCurried("name")(a, b)
-              );
-            });
+            statisticsDataDraft[tab][category].breakdown[property].sort(
+              (a, b) => {
+                const key =
+                  sort[tab] === "alphabetical"
+                    ? "name"
+                    : sort[tab] === "duration"
+                    ? "mean"
+                    : "total";
+                return (
+                  alphabeticalSortPropCurried(
+                    key,
+                    sort[tab] !== "alphabetical"
+                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
+                );
+              }
+            );
           });
         });
       } else if (tab === "timelines") {
         categories.forEach((category) => {
           properties.forEach((property) => {
-            statisticsDataDraft[tab][category].breakdown[property].sort((a, b) => {
-              const key = sort[tab] === "alphabetical" ? "name" : "total";
-              return (
-                alphabeticalSortPropCurried(key, sort[tab] !== "alphabetical")(a, b) ||
-                alphabeticalSortPropCurried("name")(a, b)
-              );
-            });
+            statisticsDataDraft[tab][category].breakdown[property].sort(
+              (a, b) => {
+                const key = sort[tab] === "alphabetical" ? "name" : "total";
+                return (
+                  alphabeticalSortPropCurried(
+                    key,
+                    sort[tab] !== "alphabetical"
+                  )(a, b) || alphabeticalSortPropCurried("name")(a, b)
+                );
+              }
+            );
           });
         });
       } else {
@@ -114,7 +146,8 @@ export const sortData = (state = store.getState()) => {
             if (hasKey(sort, tab)) {
               const key = sort[tab] === "total" ? "total" : "name";
               return (
-                alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) || alphabeticalSortPropCurried(key)(a, b)
+                alphabeticalSortPropCurried(key, sort[tab] === "total")(a, b) ||
+                alphabeticalSortPropCurried(key)(a, b)
               );
             }
             return 0;

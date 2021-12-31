@@ -67,7 +67,9 @@ export const getUserPreferences = (id: string) => {
             }
 
             if (filterPresets) {
-              const updatedPresets = filterPresets.map((preset) => updatePreset(preset));
+              const updatedPresets = filterPresets.map((preset) =>
+                updatePreset(preset)
+              );
               dispatch(setUserPresets(updatedPresets));
             }
 
@@ -76,7 +78,10 @@ export const getUserPreferences = (id: string) => {
                 setSyncSettings(syncSettings, false);
               }
               if (syncSettings) {
-                const getSetting = (setting: string, setFunction: (val: any, write: boolean) => void) => {
+                const getSetting = (
+                  setting: string,
+                  setFunction: (val: any, write: boolean) => void
+                ) => {
                   if (settingsPrefs && hasKey(settingsPrefs, setting)) {
                     if (settingsPrefs[setting] !== settings[setting]) {
                       setFunction(settingsPrefs[setting], false);
@@ -218,7 +223,9 @@ export const syncShareName = (shareName: string, state = store.getState()) => {
     });
 };
 
-export const debouncedSyncShareName = debounce(syncShareName, 1000, { trailing: true });
+export const debouncedSyncShareName = debounce(syncShareName, 1000, {
+  trailing: true,
+});
 
 export const syncFavoritesId = (id: string, state = store.getState()) => {
   const user = selectUser(state);
@@ -237,7 +244,9 @@ export const syncFavoritesId = (id: string, state = store.getState()) => {
     });
 };
 
-export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, { trailing: true });
+export const debouncedSyncFavoritesId = debounce(syncFavoritesId, 1000, {
+  trailing: true,
+});
 
 export const getLinkedFavorites = (id: string) => {
   const cloudFn = firebase.functions().httpsCallable("getFavorites");

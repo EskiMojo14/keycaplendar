@@ -2,7 +2,7 @@
 @use "@material/ripple/_index" as ripple;
 @use "@material/rtl/_index" as rtl;
 
-@use '@material/feature-targeting/_index' as feature-targeting;
+@use "@material/feature-targeting/_index" as feature-targeting;
 
 .image-grid {
   flex-grow: 1;
@@ -54,7 +54,12 @@
             );
             @include checkbox.ink-color(white);
             @include checkbox.disabled-ink-color(white);
-            @include ripple.states(white, false, feature-targeting.all(), ".mdc-checkbox__ripple");
+            @include ripple.states(
+              white,
+              false,
+              feature-targeting.all(),
+              ".mdc-checkbox__ripple"
+            );
             &__background {
               border-radius: 50%;
             }

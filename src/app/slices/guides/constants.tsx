@@ -1,5 +1,9 @@
 import type { IconPropT } from "@rmwc/types";
-import { formattedUserRoles, userRoleIcons, userRoles } from "@s/users/constants";
+import {
+  formattedUserRoles,
+  userRoleIcons,
+  userRoles,
+} from "@s/users/constants";
 import { iconObject } from "@s/util/functions";
 import { Public } from "@i";
 import type { Visibility } from "./types";

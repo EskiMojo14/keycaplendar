@@ -9,7 +9,11 @@ import App from "./app";
 
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {
-    return date.toLocaleString({ weekday: "short", month: "short", day: "numeric" });
+    return date.toLocaleString({
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
   }
 }
 

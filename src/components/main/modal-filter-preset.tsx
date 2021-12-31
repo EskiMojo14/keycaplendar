@@ -5,15 +5,32 @@ import { Checkbox } from "@rmwc/checkbox";
 import { Chip, ChipSet } from "@rmwc/chip";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { TextField } from "@rmwc/textfield";
-import { TopAppBarNavigationIcon, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBarNavigationIcon,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import produce from "immer";
 import { useAppSelector } from "~/app/hooks";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
-import { FullScreenDialog, FullScreenDialogAppBar, FullScreenDialogContent } from "@c/util/full-screen-dialog";
-import { SegmentedButton, SegmentedButtonSegment } from "@c/util/segmented-button";
+import {
+  FullScreenDialog,
+  FullScreenDialogAppBar,
+  FullScreenDialogContent,
+} from "@c/util/full-screen-dialog";
+import {
+  SegmentedButton,
+  SegmentedButtonSegment,
+} from "@c/util/segmented-button";
 import { selectDevice } from "@s/common";
-import { editGlobalPreset, editPreset, newGlobalPreset, newPreset } from "@s/main/functions";
+import {
+  editGlobalPreset,
+  editPreset,
+  newGlobalPreset,
+  newPreset,
+} from "@s/main/functions";
 import type { PresetType } from "@s/main/types";
 import { selectUser } from "@s/user";
 import "./modal-filter-preset.scss";
@@ -24,7 +41,11 @@ type ModalFilterPresetProps = {
   preset: PresetType;
 };
 
-export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProps) => {
+export const ModalFilterPreset = ({
+  close,
+  open,
+  preset,
+}: ModalFilterPresetProps) => {
   const device = useAppSelector(selectDevice);
   const user = useAppSelector(selectUser);
 
@@ -36,7 +57,9 @@ export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProp
     setIsNew(!preset.name);
   }, [preset.name]);
 
-  const handleChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     if (name === "name") {
       setName(value);
     }
@@ -68,12 +91,21 @@ export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProp
     <BoolWrapper
       condition={useDrawer}
       trueWrapper={(children) => (
-        <Drawer modal open={open} onClose={close} className="drawer-right filter-preset-modal">
+        <Drawer
+          modal
+          open={open}
+          onClose={close}
+          className="drawer-right filter-preset-modal"
+        >
           {children}
         </Drawer>
       )}
       falseWrapper={(children) => (
-        <FullScreenDialog open={open} onClose={close} className="filter-preset-modal">
+        <FullScreenDialog
+          open={open}
+          onClose={close}
+          className="filter-preset-modal"
+        >
           {children}
         </FullScreenDialog>
       )}
@@ -103,18 +135,35 @@ export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProp
 
         <ConditionalWrapper
           condition={!useDrawer}
-          wrapper={(children) => <TopAppBarSection alignEnd>{children}</TopAppBarSection>}
+          wrapper={(children) => (
+            <TopAppBarSection alignEnd>{children}</TopAppBarSection>
+          )}
         >
-          <Button label="Save" disabled={!name} outlined={useDrawer} onClick={savePreset} />
+          <Button
+            label="Save"
+            disabled={!name}
+            outlined={useDrawer}
+            onClick={savePreset}
+          />
         </ConditionalWrapper>
       </BoolWrapper>
       <div className="form-container">
-        <TextField outlined label="Name" name="name" value={name} onChange={handleChange} autoComplete="off" required />
+        <TextField
+          outlined
+          label="Name"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          autoComplete="off"
+          required
+        />
       </div>
       <BoolWrapper
         condition={useDrawer}
         trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
-        falseWrapper={(children) => <FullScreenDialogContent>{children}</FullScreenDialogContent>}
+        falseWrapper={(children) => (
+          <FullScreenDialogContent>{children}</FullScreenDialogContent>
+        )}
       >
         <div className="group">
           <div className="subheader">
@@ -122,9 +171,21 @@ export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProp
           </div>
           <div className="toggle-container">
             <SegmentedButton toggle>
-              <SegmentedButtonSegment disabled label="Unhidden" selected={preset.whitelist.hidden === "unhidden"} />
-              <SegmentedButtonSegment disabled label="Hidden" selected={preset.whitelist.hidden === "hidden"} />
-              <SegmentedButtonSegment disabled label="All" selected={preset.whitelist.hidden === "all"} />
+              <SegmentedButtonSegment
+                disabled
+                label="Unhidden"
+                selected={preset.whitelist.hidden === "unhidden"}
+              />
+              <SegmentedButtonSegment
+                disabled
+                label="Hidden"
+                selected={preset.whitelist.hidden === "hidden"}
+              />
+              <SegmentedButtonSegment
+                disabled
+                label="All"
+                selected={preset.whitelist.hidden === "all"}
+              />
             </SegmentedButton>
           </div>
         </div>
@@ -186,8 +247,16 @@ export const ModalFilterPreset = ({ close, open, preset }: ModalFilterPresetProp
           </div>
           <div className="toggle-container">
             <SegmentedButton toggle>
-              <SegmentedButtonSegment disabled label="Include" selected={preset.whitelist.vendorMode === "include"} />
-              <SegmentedButtonSegment disabled label="Exclude" selected={preset.whitelist.vendorMode === "exclude"} />
+              <SegmentedButtonSegment
+                disabled
+                label="Include"
+                selected={preset.whitelist.vendorMode === "include"}
+              />
+              <SegmentedButtonSegment
+                disabled
+                label="Exclude"
+                selected={preset.whitelist.vendorMode === "exclude"}
+              />
             </SegmentedButton>
           </div>
           <div className="chip-set-container">

@@ -16,8 +16,17 @@ import {
 import { useAppDispatch, useAppSelector } from "~/app/hooks";
 import { BoolWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice } from "@s/common";
-import { selectAllTags, selectEntries, selectFilteredTag, setFilteredTag } from "@s/guides";
-import { formattedVisibility, visibilityIcons, visibilityVals } from "@s/guides/constants";
+import {
+  selectAllTags,
+  selectEntries,
+  selectFilteredTag,
+  setFilteredTag,
+} from "@s/guides";
+import {
+  formattedVisibility,
+  visibilityIcons,
+  visibilityVals,
+} from "@s/guides/constants";
 import type { GuideEntryType } from "@s/guides/types";
 import { iconObject } from "@s/util/functions";
 import { Article } from "@i";
@@ -40,7 +49,9 @@ export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
   const setScroll = () => {
     const chipSet = document.getElementById("filter-chip-set");
     if (chipSet) {
-      const selectedChip = chipSet.querySelector(".mdc-chip-set .mdc-chip--selected");
+      const selectedChip = chipSet.querySelector(
+        ".mdc-chip-set .mdc-chip--selected"
+      );
       if (selectedChip && selectedChip instanceof HTMLElement) {
         chipSet.scrollLeft = selectedChip.offsetLeft - 24;
       } else {
@@ -97,7 +108,9 @@ export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
       <List twoLine className="entries-list three-line">
         {visibilityVals.map((visibility) => {
           const filteredEntries = entries.filter(
-            (entry) => entry.visibility === visibility && (filteredTag === "" || entry.tags.includes(filteredTag))
+            (entry) =>
+              entry.visibility === visibility &&
+              (filteredTag === "" || entry.tags.includes(filteredTag))
           );
           const { [visibility]: icon } = visibilityIcons;
           if (filteredEntries.length > 0) {
@@ -123,7 +136,11 @@ export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
                       <ListItemGraphic icon={iconObject(<Article />)} />
                       <ListItemText>
                         <ListItemPrimaryText>{entry.title}</ListItemPrimaryText>
-                        {entry.description ? <ListItemSecondaryText>{entry.description}</ListItemSecondaryText> : null}
+                        {entry.description ? (
+                          <ListItemSecondaryText>
+                            {entry.description}
+                          </ListItemSecondaryText>
+                        ) : null}
                       </ListItemText>
                     </ListItem>
                   ))}

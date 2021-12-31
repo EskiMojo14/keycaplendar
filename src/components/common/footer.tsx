@@ -217,13 +217,23 @@ export const Footer = () => {
   const latamkeysLogo = (
     <div className="latamkeys">
       <img src={latamkeysLogoImg} className="latamkeys-img" />
-      <svg className="latamkeys-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 405.3 59.5">
-        <path d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z" transform="translate(-5.15 -44.5)" />
+      <svg
+        className="latamkeys-text"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 405.3 59.5"
+      >
+        <path
+          d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z"
+          transform="translate(-5.15 -44.5)"
+        />
         <path
           d="M78.65,83.9h-26l-7.2,19.3H42l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24L65.75,49.4h-.2Z"
           transform="translate(-5.15 -44.5)"
         />
-        <path d="M103.05,103.2v-55H82.65V45.3h44v2.9h-20.4v55Z" transform="translate(-5.15 -44.5)" />
+        <path
+          d="M103.05,103.2v-55H82.65V45.3h44v2.9h-20.4v55Z"
+          transform="translate(-5.15 -44.5)"
+        />
         <path
           d="M156.65,83.9h-26l-7.2,19.3H120l22.1-57.9h3.2l22,57.9h-3.4Zm-25-2.9h24l-11.9-31.6h-.2Z"
           transform="translate(-5.15 -44.5)"
@@ -261,11 +271,15 @@ export const Footer = () => {
           enterDelay: 0,
         })}
         , inspired by the spreadsheet created by{" "}
-        {withTooltip(<span className="bold">Jeff Langeland</span>, "Langelandia", {
-          align: "top",
-          showArrow: true,
-          enterDelay: 0,
-        })}
+        {withTooltip(
+          <span className="bold">Jeff Langeland</span>,
+          "Langelandia",
+          {
+            align: "top",
+            showArrow: true,
+            enterDelay: 0,
+          }
+        )}
         .
       </Typography>
       <Typography use="body2" tag="div">
@@ -291,8 +305,8 @@ export const Footer = () => {
           "keycaplendar@gmail.com",
           { align: "top", showArrow: true, enterDelay: 0 }
         )}
-        . Please note that for your IC to be added to the site, it needs a render of the keyset on a board (not rendered
-        by keycaprenders.com).
+        . Please note that for your IC to be added to the site, it needs a
+        render of the keyset on a board (not rendered by keycaprenders.com).
       </Typography>
       <Typography use="body2" tag="div">
         Please direct bug reports or feature requests to this project&apos;s{" "}
@@ -323,25 +337,53 @@ export const Footer = () => {
           <span className="bold">Kindly sponsored by:</span>
         </Typography>
         <div className="sponsors">
-          <a href="https://cannonkeys.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://cannonkeys.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {cannonkeysLogo}
           </a>
-          <a href="https://prototypist.net/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://prototypist.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {prototypistLogo}
           </a>
-          <a href="https://www.deskhero.ca/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.deskhero.ca/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="deskhero">
               Desk<span className="accent">[H]</span>ero
             </div>
           </a>
-          <a href="https://latamkeys.com/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://latamkeys.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {latamkeysLogo}
           </a>
         </div>
       </div>
       <div className="button-container">
-        <Button label="Privacy Policy" tag="a" href="./privacy" target="_blank" rel="noopener noreferrer" />
-        <Button label="Terms of Service" tag="a" href="./terms" target="_blank" rel="noopener noreferrer" />
+        <Button
+          label="Privacy Policy"
+          tag="a"
+          href="./privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+        />
+        <Button
+          label="Terms of Service"
+          tag="a"
+          href="./terms"
+          target="_blank"
+          rel="noopener noreferrer"
+        />
       </div>
     </div>
   );

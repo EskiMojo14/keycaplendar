@@ -2,7 +2,11 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import firebase from "@s/firebase";
 import { selectAllSets } from "@s/main";
-import { alphabeticalSort, alphabeticalSortCurried, getStorageFolders } from "@s/util/functions";
+import {
+  alphabeticalSort,
+  alphabeticalSortCurried,
+  getStorageFolders,
+} from "@s/util/functions";
 import {
   appendImages,
   selectCurrentFolder,
@@ -38,18 +42,24 @@ export const createSetImageList = (state = store.getState()) => {
       })
       .filter(Boolean)
   );
-  const findDuplicates = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) !== index);
+  const findDuplicates = (arr: string[]) =>
+    arr.filter((item, index) => arr.indexOf(item) !== index);
   dispatch(setSetImages(setImages));
   dispatch(setDuplicateSetImages(findDuplicates(setImages)));
 };
 
 const processItems = (items: firebase.storage.Reference[], append = false) => {
   const images = items.map((itemRef) => {
-    const src = `https://firebasestorage.googleapis.com/v0/b/${itemRef.bucket}/o/${encodeURIComponent(
-      itemRef.fullPath
-    )}?alt=media`;
+    const src = `https://firebasestorage.googleapis.com/v0/b/${
+      itemRef.bucket
+    }/o/${encodeURIComponent(itemRef.fullPath)}?alt=media`;
     const obj: ImageType = {
-      ...new ImageObj(itemRef.name, itemRef.parent ? itemRef.parent.fullPath : "", itemRef.fullPath, src),
+      ...new ImageObj(
+        itemRef.name,
+        itemRef.parent ? itemRef.parent.fullPath : "",
+        itemRef.fullPath,
+        src
+      ),
     };
     return obj;
   });

@@ -73,7 +73,15 @@ export const userSlice = createSlice({
 });
 
 export const {
-  actions: { setUser, setShareName, setUserPresets, setFavorites, setFavoritesId, setBought, setHidden },
+  actions: {
+    setUser,
+    setShareName,
+    setUserPresets,
+    setFavorites,
+    setFavoritesId,
+    setBought,
+    setHidden,
+  },
 } = userSlice;
 
 export const selectUser = (state: RootState) => state.user.user;

@@ -22,7 +22,15 @@ import { selectFavorites, selectHidden } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
 import type { CurrentUserType } from "@s/user/types";
 import { iconObject, pluralise } from "@s/util/functions";
-import { CheckCircle, Edit, Favorite, NewReleases, Share, Visibility, VisibilityOff } from "@i";
+import {
+  CheckCircle,
+  Edit,
+  Favorite,
+  NewReleases,
+  Share,
+  Visibility,
+  VisibilityOff,
+} from "@i";
 import "./element-card.scss";
 
 type ElementCardProps = {
@@ -76,10 +84,16 @@ export const ElementCard = ({
   const useLink = device === "desktop";
 
   const liveIndicator = live
-    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    ? withTooltip(
+        <Icon className="live-indicator" icon={iconObject(<NewReleases />)} />,
+        "Live"
+      )
     : null;
   const shipIndicator = set?.shipped
-    ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
+    ? withTooltip(
+        <Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />,
+        "Shipped"
+      )
     : null;
   const timeIndicator = thisWeek ? (
     <Typography use="overline" tag="h4" className="time-indicator">
@@ -89,7 +103,13 @@ export const ElementCard = ({
   const userButtons = user.email ? (
     useLink ? (
       <CardActionButtons>
-        <CardActionButton tag="a" label="Link" href={set.details} target="_blank" rel="noopener noreferrer" />
+        <CardActionButton
+          tag="a"
+          label="Link"
+          href={set.details}
+          target="_blank"
+          rel="noopener noreferrer"
+        />
       </CardActionButtons>
     ) : (
       <CardActionButtons>
@@ -112,7 +132,11 @@ export const ElementCard = ({
     : null;
   const shareIcon = !user.email
     ? withTooltip(
-        <CardActionIcon icon={iconObject(<Share />)} label={"Copy link to " + title} onClick={copyShareLink} />,
+        <CardActionIcon
+          icon={iconObject(<Share />)}
+          label={"Copy link to " + title}
+          onClick={copyShareLink}
+        />,
         "Share"
       )
     : null;
@@ -129,7 +153,11 @@ export const ElementCard = ({
       )
     : null;
   const hiddenIcon =
-    user.email && !(user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname)))
+    user.email &&
+    !(
+      user.isEditor ||
+      (user.isDesigner && set.designer && set.designer.includes(user.nickname))
+    )
       ? withTooltip(
           <CardActionIcon
             icon={iconObject(<Visibility />)}
@@ -142,19 +170,35 @@ export const ElementCard = ({
         )
       : null;
   const editButton =
-    user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))
-      ? withTooltip(<CardActionIcon icon={iconObject(<Edit />)} onClick={() => edit(set)} />, "Edit")
+    user.isEditor ||
+    (user.isDesigner && set.designer && set.designer.includes(user.nickname))
+      ? withTooltip(
+          <CardActionIcon
+            icon={iconObject(<Edit />)}
+            onClick={() => edit(set)}
+          />,
+          "Edit"
+        )
       : null;
   return (
     <div className="card-container">
       <Card className={classNames({ "mdc-card--selected": selected })}>
         <CardPrimaryAction
-          className={classNames("content", { "mdc-card__primary-action--selected": selected })}
+          className={classNames("content", {
+            "mdc-card__primary-action--selected": selected,
+          })}
           onClick={() => (!selected ? details(set) : closeDetails())}
         >
           <div className="media-container">
-            <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
-              <CardMedia sixteenByNine style={{ backgroundImage: "url(" + image + ")" }} />
+            <LazyLoad
+              debounce={false}
+              offsetVertical={480}
+              className="lazy-load"
+            >
+              <CardMedia
+                sixteenByNine
+                style={{ backgroundImage: "url(" + image + ")" }}
+              />
             </LazyLoad>
             {timeIndicator}
           </div>

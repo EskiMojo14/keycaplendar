@@ -1,19 +1,37 @@
 import { useEffect, useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@rmwc/drawer";
 import { IconButton } from "@rmwc/icon-button";
-import { CollapsibleList, List, ListDivider, ListItem, ListItemGraphic, ListItemMeta } from "@rmwc/list";
+import {
+  CollapsibleList,
+  List,
+  ListDivider,
+  ListItem,
+  ListItemGraphic,
+  ListItemMeta,
+} from "@rmwc/list";
 import { Typography } from "@rmwc/typography";
 import classNames from "classnames";
 import { DateTime } from "luxon";
 import { useAppSelector } from "~/app/hooks";
 import { selectDevice, selectPage } from "@s/common";
-import { adminPages, pageIcons, pageTitle, standardPages, userPages } from "@s/common/constants";
+import {
+  adminPages,
+  pageIcons,
+  pageTitle,
+  standardPages,
+  userPages,
+} from "@s/common/constants";
 import { setPage as setMainPage } from "@s/common/functions";
 import type { Page } from "@s/common/types";
 import firestore from "@s/firebase/firestore";
 import { selectLinkedFavorites } from "@s/main";
 import { selectBottomNav } from "@s/settings";
-import { selectBought, selectFavorites, selectHidden, selectUser } from "@s/user";
+import {
+  selectBought,
+  selectFavorites,
+  selectHidden,
+  selectUser,
+} from "@s/user";
 import { hasKey, iconObject } from "@s/util/functions";
 import { AdminPanelSettings, FiberNew, Person } from "@i";
 import logo from "@m/logo.svg";
@@ -47,7 +65,10 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   };
 
   const quantities: Record<string, number> = {
-    favorites: linkedFavorites.array.length > 0 ? linkedFavorites.array.length : favorites.length,
+    favorites:
+      linkedFavorites.array.length > 0
+        ? linkedFavorites.array.length
+        : favorites.length,
     bought: bought.length,
     hidden: hidden.length,
   };
@@ -73,15 +94,24 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
 
   useEffect(checkForUpdates, []);
 
-  const newUpdateIcon = newUpdate ? <ListItemMeta icon={iconObject(<FiberNew />)} /> : null;
+  const newUpdateIcon = newUpdate ? (
+    <ListItemMeta icon={iconObject(<FiberNew />)} />
+  ) : null;
 
   const linkedFavorite =
     !user.email && linkedFavorites.array.length > 0 ? (
       <>
         <ListDivider />
-        <ListItem onClick={() => setPage("favorites")} activated={appPage === "favorites"}>
+        <ListItem
+          onClick={() => setPage("favorites")}
+          activated={appPage === "favorites"}
+        >
           <ListItemGraphic
-            icon={appPage === "favorites" && linkedFavorites.array.length > 0 ? "link" : pageIcons.favorites}
+            icon={
+              appPage === "favorites" && linkedFavorites.array.length > 0
+                ? "link"
+                : pageIcons.favorites
+            }
           />
           {pageTitle.favorites}
           <ListItemMeta>{quantities.favorites}</ListItemMeta>
@@ -95,7 +125,11 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
       <CollapsibleList
         defaultOpen
         handle={
-          <ListItem className={classNames({ "contains-activated": userPages.includes(appPage) })}>
+          <ListItem
+            className={classNames({
+              "contains-activated": userPages.includes(appPage),
+            })}
+          >
             <ListItemGraphic icon={iconObject(<Person />)} />
             <Typography use="caption" className="subheader">
               User
@@ -106,16 +140,24 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         className="group-collapsible"
       >
         {userPages.map((page) => (
-          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
+          <ListItem
+            key={page}
+            onClick={() => setPage(page)}
+            activated={appPage === page}
+          >
             <ListItemGraphic
               icon={
-                appPage === "favorites" && page === "favorites" && linkedFavorites.array.length > 0
+                appPage === "favorites" &&
+                page === "favorites" &&
+                linkedFavorites.array.length > 0
                   ? "link"
                   : pageIcons[page]
               }
             />
             {pageTitle[page]}
-            {hasKey(quantities, page) ? <ListItemMeta>{quantities[page]}</ListItemMeta> : null}
+            {hasKey(quantities, page) ? (
+              <ListItemMeta>{quantities[page]}</ListItemMeta>
+            ) : null}
           </ListItem>
         ))}
       </CollapsibleList>
@@ -127,7 +169,11 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
       <ListDivider />
       <CollapsibleList
         handle={
-          <ListItem className={classNames({ "contains-activated": adminPages.includes(appPage) })}>
+          <ListItem
+            className={classNames({
+              "contains-activated": adminPages.includes(appPage),
+            })}
+          >
             <ListItemGraphic icon={iconObject(<AdminPanelSettings />)} />
             <Typography use="caption" className="subheader">
               Admin
@@ -138,7 +184,11 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
         className="group-collapsible"
       >
         {adminPages.map((page) => (
-          <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
+          <ListItem
+            key={page}
+            onClick={() => setPage(page)}
+            activated={appPage === page}
+          >
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
           </ListItem>
@@ -158,7 +208,10 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
 
   return (
     <Drawer
-      className={classNames("nav", { rail: dismissible, "drawer-bottom": bottomNav })}
+      className={classNames("nav", {
+        rail: dismissible,
+        "drawer-bottom": bottomNav,
+      })}
       dismissible={dismissible}
       modal={!dismissible}
       open={open}
@@ -172,17 +225,27 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
       <DrawerContent>
         <List>
           {standardPages.map((page) => (
-            <ListItem key={page} onClick={() => setPage(page)} activated={appPage === page}>
+            <ListItem
+              key={page}
+              onClick={() => setPage(page)}
+              activated={appPage === page}
+            >
               <ListItemGraphic icon={pageIcons[page]} />
               {pageTitle[page]}
             </ListItem>
           ))}
           <ListDivider />
-          <ListItem onClick={() => setPage("statistics")} activated={appPage === "statistics"}>
+          <ListItem
+            onClick={() => setPage("statistics")}
+            activated={appPage === "statistics"}
+          >
             <ListItemGraphic icon={pageIcons.statistics} />
             {pageTitle.statistics}
           </ListItem>
-          <ListItem onClick={() => setPage("history")} activated={appPage === "history"}>
+          <ListItem
+            onClick={() => setPage("history")}
+            activated={appPage === "history"}
+          >
             <ListItemGraphic icon={pageIcons.history} />
             {pageTitle.history}
           </ListItem>
@@ -190,16 +253,25 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
           {userOptions}
           {adminOptions}
           <ListDivider />
-          <ListItem onClick={() => setPage("guides")} activated={appPage === "guides"}>
+          <ListItem
+            onClick={() => setPage("guides")}
+            activated={appPage === "guides"}
+          >
             <ListItemGraphic icon={pageIcons.guides} />
             {pageTitle.guides}
           </ListItem>
-          <ListItem onClick={() => setPage("updates")} activated={appPage === "updates"}>
+          <ListItem
+            onClick={() => setPage("updates")}
+            activated={appPage === "updates"}
+          >
             <ListItemGraphic icon={pageIcons.updates} />
             {pageTitle.updates}
             {newUpdateIcon}
           </ListItem>
-          <ListItem onClick={() => setPage("settings")} activated={appPage === "settings"}>
+          <ListItem
+            onClick={() => setPage("settings")}
+            activated={appPage === "settings"}
+          >
             <ListItemGraphic icon={pageIcons.settings} />
             {pageTitle.settings}
           </ListItem>

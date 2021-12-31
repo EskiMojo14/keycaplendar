@@ -1,5 +1,10 @@
 import { Button } from "@rmwc/button";
-import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarTitle } from "@rmwc/top-app-bar";
+import {
+  TopAppBar,
+  TopAppBarRow,
+  TopAppBarSection,
+  TopAppBarTitle,
+} from "@rmwc/top-app-bar";
 import { Typography } from "@rmwc/typography";
 import { Link } from "react-router-dom";
 import { Footer } from "@c/common/footer";

@@ -15,7 +15,11 @@ type SnackbarDeletedProps = {
   set: SetType;
 };
 
-export const SnackbarDeleted = ({ set: { id, ...set }, open, close }: SnackbarDeletedProps) => {
+export const SnackbarDeleted = ({
+  set: { id, ...set },
+  open,
+  close,
+}: SnackbarDeletedProps) => {
   const closeBar = (recreated = false) => {
     if (!recreated) {
       const fileNameRegex = /keysets%2F(.*)\?/;
