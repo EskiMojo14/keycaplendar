@@ -21,9 +21,9 @@ import { Delete, Edit, Share } from "@i";
 import "./guide-entry.scss";
 
 type GuideEntryProps = {
-  entry: GuideEntryType;
-  edit: (entry: GuideEntryType) => void;
   delete: (entry: GuideEntryType) => void;
+  edit: (entry: GuideEntryType) => void;
+  entry: GuideEntryType;
 };
 
 export const GuideEntry = ({

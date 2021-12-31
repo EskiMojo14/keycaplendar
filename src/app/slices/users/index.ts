@@ -5,22 +5,20 @@ import type { sortProps } from "@s/users/constants";
 import type { UserType } from "./types";
 
 type UserState = {
-  view: "card" | "table";
-  loading: boolean;
-  sort: typeof sortProps[number];
-  reverseSort: boolean;
-
   allUsers: UserType[];
-  sortedUsers: UserType[];
-  paginatedUsers: UserType[];
-
-  nextPageToken: string;
-  rowsPerPage: number;
-  page: number;
   indices: {
     first: number;
     last: number;
   };
+  loading: boolean;
+  nextPageToken: string;
+  page: number;
+  paginatedUsers: UserType[];
+  reverseSort: boolean;
+  rowsPerPage: number;
+  sort: typeof sortProps[number];
+  sortedUsers: UserType[];
+  view: "card" | "table";
 };
 
 export const initialState: UserState = {

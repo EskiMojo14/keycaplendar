@@ -3,10 +3,10 @@ import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonCardProps = {
   designer?: string;
-  title?: string;
-  subtitle?: string;
-  loggedIn?: boolean;
   icon?: boolean;
+  loggedIn?: boolean;
+  subtitle?: string;
+  title?: string;
 };
 
 export const SkeletonCard = ({

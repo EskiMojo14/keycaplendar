@@ -9,9 +9,8 @@ export type Page = typeof allPages[number];
 export type MainPage = typeof mainPages[number];
 
 export type ThemeMap = {
-  dark: boolean;
   background: string;
-  surface: string;
+  dark: boolean;
   error: string;
   onError: string;
   onPrimary: string;
@@ -19,4 +18,5 @@ export type ThemeMap = {
   onSurface: string;
   primary: string;
   secondary: string;
+  surface: string;
 };

@@ -41,36 +41,31 @@ export const generateRandomSetGroups = (): SetGroup[] =>
   }));
 
 export type MainState = {
-  transition: boolean;
-  initialLoad: boolean;
-  loading: boolean;
-  content: boolean;
-
-  sort: SortType;
-  sortOrder: SortOrderType;
-
   allDesigners: string[];
   allProfiles: string[];
   allRegions: string[];
-  allVendors: string[];
-  allVendorRegions: string[];
-
   allSets: SetType[];
+  allVendorRegions: string[];
+  allVendors: string[];
+  appPresets: PresetType[];
+  content: boolean;
+  currentPreset: PresetType;
+  defaultPreset: PresetType;
   filteredSets: SetType[];
+  initialLoad: boolean;
+  linkedFavorites: { array: string[]; displayName: string };
+  loading: boolean;
+  search: string;
   setGroups: SetGroup[];
+  sort: SortType;
+  sortOrder: SortOrderType;
+  transition: boolean;
   urlSet: {
     prop: "alias" | "id" | "name";
     value: string;
   };
-
-  search: string;
-  whitelist: WhitelistType;
   urlWhitelist: Partial<WhitelistType>;
-  currentPreset: PresetType;
-  defaultPreset: PresetType;
-  appPresets: PresetType[];
-
-  linkedFavorites: { array: string[]; displayName: string };
+  whitelist: WhitelistType;
 };
 
 export const initialState: MainState = {
@@ -146,8 +141,8 @@ export const mainSlice = createSlice({
       {
         payload: { array, name },
       }: PayloadAction<{
-        name: KeysMatching<MainState, string[]>;
         array: string[];
+        name: KeysMatching<MainState, string[]>;
       }>
     ) => {
       state[name] = array;
@@ -157,8 +152,8 @@ export const mainSlice = createSlice({
       {
         payload: { array, name },
       }: PayloadAction<{
-        name: KeysMatching<MainState, SetType[]>;
         array: SetType[];
+        name: KeysMatching<MainState, SetType[]>;
       }>
     ) => {
       state[name] = array;

@@ -22,9 +22,9 @@ import { Delete, Edit, PushPin, Share } from "@i";
 import "./update-entry.scss";
 
 type UpdateEntryProps = {
-  entry: UpdateEntryType;
-  edit: (entry: UpdateEntryType) => void;
   delete: (entry: UpdateEntryType) => void;
+  edit: (entry: UpdateEntryType) => void;
+  entry: UpdateEntryType;
   pin: (entry: UpdateEntryType) => void;
 };
 

@@ -9,8 +9,8 @@ import { queue } from "~/app/snackbar-queue";
 import firebase from "@s/firebase";
 
 type DialogDeleteProps = {
-  open: boolean;
   close: () => void;
+  open: boolean;
   signOut: () => void;
 };
 

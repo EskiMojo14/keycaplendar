@@ -5,14 +5,14 @@ import "./skeleton-block.scss";
 export type SkeletonBlockProps<
   Tag extends keyof JSX.IntrinsicElements = "div"
 > = Omit<JSX.IntrinsicElements[Tag], "children"> & {
-  width?: number | string;
-  height?: number | string;
-  typography?: TypographyT;
-  content?: string;
   colour?: string;
-  double?: boolean;
   constrain?: boolean;
+  content?: string;
+  double?: boolean;
+  height?: number | string;
   tag?: Tag;
+  typography?: TypographyT;
+  width?: number | string;
 };
 
 const bemClasses = new BEMHelper("skeleton-block");

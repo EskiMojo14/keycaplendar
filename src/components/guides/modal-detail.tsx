@@ -29,11 +29,11 @@ import { Delete, Edit, Share } from "@i";
 import "./modal-detail.scss";
 
 type ModalCreateProps = {
-  open: boolean;
-  onClose: () => void;
-  edit: (entry: GuideEntryType) => void;
   delete: (entry: GuideEntryType) => void;
+  edit: (entry: GuideEntryType) => void;
   entry: GuideEntryType;
+  onClose: () => void;
+  open: boolean;
 };
 
 export const ModalDetail = ({

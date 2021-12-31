@@ -120,23 +120,23 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   const allVendorRegions = useAppSelector(selectAllVendorRegions);
 
   type State = {
-    profile: string;
     colorway: string;
     designer: string[];
-    icDate: string;
     details: string;
-    notes: string;
-    gbMonth: boolean;
-    gbLaunch: string;
     gbEnd: string;
-    shipped: boolean;
-    vendors: VendorType[];
-    salesImg: string;
-    salesThirdParty: boolean;
-    salesImageLoaded: boolean;
+    gbLaunch: string;
+    gbMonth: boolean;
+    icDate: string;
     image: Blob | File | null;
     imageUploadProgress: number;
     imageURL: string;
+    notes: string;
+    profile: string;
+    salesImageLoaded: boolean;
+    salesImg: string;
+    salesThirdParty: boolean;
+    shipped: boolean;
+    vendors: VendorType[];
   };
 
   const initialState: State = {
@@ -957,24 +957,24 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
   type State = {
     alias: string;
-    profile: string;
     colorway: string;
     designer: string[];
-    icDate: string;
     details: string;
-    notes: string;
-    gbMonth: boolean;
-    gbLaunch: string;
     gbEnd: string;
-    shipped: boolean;
-    vendors: VendorType[];
-    salesImg: string;
-    salesThirdParty: boolean;
-    salesImageLoaded: boolean;
+    gbLaunch: string;
+    gbMonth: boolean;
+    icDate: string;
     image: Blob | File | string | null;
     imageUploadProgress: number;
     imageURL: string;
     newImage: boolean;
+    notes: string;
+    profile: string;
+    salesImageLoaded: boolean;
+    salesImg: string;
+    salesThirdParty: boolean;
+    shipped: boolean;
+    vendors: VendorType[];
   };
 
   const initialState: State = {

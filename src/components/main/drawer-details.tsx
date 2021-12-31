@@ -57,11 +57,11 @@ import "./drawer-details.scss";
 
 type DrawerDetailsProps = {
   close: () => void;
-  delete?: (set: SetType) => void;
-  edit?: (set: SetType) => void;
   open: boolean;
   openSales: (set: SetType) => void;
   set: SetType;
+  delete?: (set: SetType) => void;
+  edit?: (set: SetType) => void;
 };
 
 export const DrawerDetails = ({

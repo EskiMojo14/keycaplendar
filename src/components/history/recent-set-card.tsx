@@ -30,11 +30,11 @@ import { FilterVariantRemove, ImageNotSupported } from "@i";
 import "./recent-set-card.scss";
 
 type RecentSetCardProps = {
-  recentSet: RecentSet;
-  filtered: boolean;
-  selected: boolean;
   filterChangelog: (set: RecentSet) => void;
+  filtered: boolean;
   openDetails: (set: SetType) => void;
+  recentSet: RecentSet;
+  selected: boolean;
 };
 
 export const RecentSetCard = ({

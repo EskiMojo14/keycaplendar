@@ -11,10 +11,10 @@ import type { GuideId } from "@s/firebase/types";
 import type { GuideEntryType } from "@s/guides/types";
 
 type DialogDeleteProps = {
-  open: boolean;
-  onClose: () => void;
-  getEntries: () => void;
   entry: GuideEntryType;
+  getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
 export const DialogDelete = ({

@@ -9,8 +9,8 @@ import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonListProps = {
   designer: string;
-  title: string;
   subtitle: string;
+  title: string;
   icon?: boolean;
 };
 

@@ -10,72 +10,72 @@ export type Sorts = "alphabetical" | "total";
 export type StatsTab = typeof statsTabs[number];
 
 export type StatisticsType = {
+  durationCat: Categories;
+  durationGroup: Properties;
+  shipped: Properties;
+  status: Properties;
   summary: Categories;
   timelinesCat: Categories;
   timelinesGroup: Properties;
-  status: Properties;
-  shipped: Properties;
-  durationCat: Categories;
-  durationGroup: Properties;
   vendors: Properties;
 };
 
 export type StatisticsSortType = {
-  timelines: Sorts;
-  status: Sorts;
-  shipped: Sorts;
   duration: Sorts | "duration";
+  shipped: Sorts;
+  status: Sorts;
+  timelines: Sorts;
   vendors: Sorts;
 };
 
 export type TimelineDataObject = {
   name: string;
-  total: number;
   timeline: {
     profiles: string[];
     series: IChartistData["series"];
   };
+  total: number;
 };
 
 export type TimelinesData = Record<
   Categories,
   {
-    summary: { count: TimelineDataObject; breakdown: TimelineDataObject };
-    breakdown: Record<Properties, TimelineDataObject[]>;
     allProfiles: string[];
+    breakdown: Record<Properties, TimelineDataObject[]>;
     months: string[];
+    summary: { breakdown: TimelineDataObject; count: TimelineDataObject };
   }
 >;
 
 export type StatusDataObject = {
-  name: string;
-  total: number;
   ic: number;
   liveGb: number;
+  name: string;
   postGb: number;
   preGb: number;
+  total: number;
 };
 
 export type StatusData = {
-  summary: StatusDataObject;
   breakdown: Record<Properties, StatusDataObject[]>;
+  summary: StatusDataObject;
 };
 
 export type ShippedDataObject = {
   name: string;
-  total: number;
   shipped: number;
-  unshipped: number;
   timeline: {
     shipped: IChartistData["series"][number];
     unshipped: IChartistData["series"][number];
   };
+  total: number;
+  unshipped: number;
 };
 
 export type ShippedData = {
-  summary: ShippedDataObject;
-  months: string[];
   breakdown: Record<Properties, ShippedDataObject[]>;
+  months: string[];
+  summary: ShippedDataObject;
 };
 
 export type DurationDataObject = {
@@ -92,8 +92,8 @@ export type DurationDataObject = {
 export type DurationData = Record<
   Categories,
   {
-    summary: DurationDataObject;
     breakdown: Record<Properties, DurationDataObject[]>;
+    summary: DurationDataObject;
   }
 >;
 
@@ -109,14 +109,14 @@ export type VendorDataObject = {
 };
 
 export type VendorData = {
-  summary: VendorDataObject;
   breakdown: Record<Properties, VendorDataObject[]>;
+  summary: VendorDataObject;
 };
 
 export type StatisticsData = {
-  timelines: TimelinesData;
-  status: StatusData;
-  shipped: ShippedData;
   duration: DurationData;
+  shipped: ShippedData;
+  status: StatusData;
+  timelines: TimelinesData;
   vendors: VendorData;
 };

@@ -10,13 +10,13 @@ import "./view-card.scss";
 
 type ViewCardProps = {
   closeDetails: () => void;
-  detailSet: SetType;
   details: (set: SetType) => void;
+  detailSet: SetType;
   edit: (set: SetType) => void;
-  sets: SetType[];
-  loading?: boolean;
-  user: CurrentUserType;
   page: Page;
+  sets: SetType[];
+  user: CurrentUserType;
+  loading?: boolean;
 };
 
 export const ViewCard = ({

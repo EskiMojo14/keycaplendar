@@ -34,8 +34,8 @@ type ChangelogEntryProps = {
 };
 
 type DataObject = {
-  before?: Omit<ActionSetType, "latestEditor">;
   after?: Omit<ActionSetType, "latestEditor">;
+  before?: Omit<ActionSetType, "latestEditor">;
   data?: Omit<ActionSetType, "latestEditor">;
 };
 
@@ -202,7 +202,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             after: { [prop]: afterData },
             before: { [prop]: beforeData },
           } = dataObj;
-          let contents: { before: ReactNode; after: ReactNode } = {
+          let contents: { after: ReactNode; before: ReactNode } = {
             before: null,
             after: null,
           };

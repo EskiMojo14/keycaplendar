@@ -128,12 +128,12 @@ const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
 
 type ShippedCardProps = {
   data: ShippedDataObject;
-  breakdownData?: ShippedDataObject[];
   months: string[];
-  summary?: boolean;
+  breakdownData?: ShippedDataObject[];
   defaultType?: "bar" | "line";
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
+  summary?: boolean;
 };
 
 export const ShippedCard = ({
@@ -300,15 +300,15 @@ export const ShippedCard = ({
 type TimelinesCardProps = {
   data: TimelineDataObject;
   months: string[];
-  singleTheme?: "primary" | "secondary";
-  defaultType?: "bar" | "line";
-  summary?: boolean;
-  category?: string;
-  focusable?: boolean;
   allProfiles?: string[];
   breakdownData?: TimelineDataObject[];
-  overline?: ReactNode;
+  category?: string;
+  defaultType?: "bar" | "line";
+  focusable?: boolean;
   note?: ReactNode;
+  overline?: ReactNode;
+  singleTheme?: "primary" | "secondary";
+  summary?: boolean;
 };
 
 export const TimelinesCard = ({

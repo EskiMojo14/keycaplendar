@@ -100,9 +100,10 @@ export const invalidDate = (
 export type DatePickerProps = Overwrite<
   Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
-    value: string;
-    fallbackValue?: string;
     onChange: (val: string) => void;
+    value: string;
+    allowQuarter?: boolean;
+    fallbackValue?: string;
     helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
       Common<
@@ -111,14 +112,13 @@ export type DatePickerProps = Overwrite<
       >,
       "anchorCorner" | "open" | "renderToPortal"
     >;
+    month?: boolean;
     pickerProps?: Omit<
       KeyboardDatePickerProps,
       "onChange" | "orientation" | "value" | "variant" | "views"
     >;
-    month?: boolean;
-    allowQuarter?: boolean;
-    showNowButton?: boolean;
     saveOnClose?: boolean;
+    showNowButton?: boolean;
   }
 >;
 

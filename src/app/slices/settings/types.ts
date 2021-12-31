@@ -5,13 +5,13 @@ import type { allViews } from "./constants";
 export type ViewType = typeof allViews[number];
 
 export type Settings = {
-  view: ViewType;
-  bottomNav: boolean;
   applyTheme: string;
-  lightTheme: string;
+  bottomNav: boolean;
   darkTheme: string;
-  manualTheme: boolean;
-  fromTimeTheme: string;
-  toTimeTheme: string;
   density: string;
+  fromTimeTheme: string;
+  lightTheme: string;
+  manualTheme: boolean;
+  toTimeTheme: string;
+  view: ViewType;
 };

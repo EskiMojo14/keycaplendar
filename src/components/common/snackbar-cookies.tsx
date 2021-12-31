@@ -1,9 +1,9 @@
 import { Snackbar, SnackbarAction } from "@rmwc/snackbar";
 
 type SnackbarCookiesProps = {
-  open: boolean;
   accept: () => void;
   clear: () => void;
+  open: boolean;
 };
 
 export const SnackbarCookies = ({ accept, open }: SnackbarCookiesProps) => (

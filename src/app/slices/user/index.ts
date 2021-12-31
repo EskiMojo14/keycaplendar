@@ -16,12 +16,12 @@ export const blankUser: CurrentUserType = {
 };
 
 type UserState = {
-  user: CurrentUserType;
-  shareName: string;
+  bought: string[];
   favorites: string[];
   favoritesId: string;
-  bought: string[];
   hidden: string[];
+  shareName: string;
+  user: CurrentUserType;
   userPresets: PresetType[];
 };
 

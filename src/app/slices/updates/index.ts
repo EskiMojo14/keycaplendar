@@ -4,9 +4,8 @@ import type { RootState } from "~/app/store";
 import type { UpdateEntryType } from "./types";
 
 type UpdatesState = {
-  loading: boolean;
-
   entries: UpdateEntryType[];
+  loading: boolean;
   urlEntry: string;
 };
 

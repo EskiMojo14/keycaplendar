@@ -64,9 +64,9 @@ export const invalidTime = (
 export type TimePickerProps = Overwrite<
   Omit<TextFieldHTMLProps & TextFieldProps, "helpText" | "onBlur" | "onFocus">,
   {
+    onChange: (val: string) => void;
     value: string;
     fallbackValue?: string;
-    onChange: (val: string) => void;
     helpTextProps?: Partial<TextFieldHelperTextProps>;
     modalProps?: Omit<
       Common<
@@ -79,8 +79,8 @@ export type TimePickerProps = Overwrite<
       KeyboardTimePickerProps,
       "onChange" | "orientation" | "value" | "variant"
     >;
-    showNowButton?: boolean;
     saveOnClose?: boolean;
+    showNowButton?: boolean;
   }
 >;
 

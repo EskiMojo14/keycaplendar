@@ -14,8 +14,8 @@ import "./content-grid.scss";
 
 type ContentGridProps = {
   closeDetails: () => void;
-  detailSet: SetType;
   details: (set: SetType) => void;
+  detailSet: SetType;
   edit: (set: SetType) => void;
 };
 

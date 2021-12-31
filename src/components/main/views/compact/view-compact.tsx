@@ -11,11 +11,11 @@ import "./view-compact.scss";
 
 type ViewCompactProps = {
   closeDetails: () => void;
-  detailSet: SetType;
   details: (set: SetType) => void;
+  detailSet: SetType;
+  page: Page;
   sets: SetType[];
   loading?: boolean;
-  page: Page;
 };
 
 export const ViewCompact = ({

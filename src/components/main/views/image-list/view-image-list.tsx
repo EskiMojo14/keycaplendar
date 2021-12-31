@@ -9,8 +9,8 @@ import { SkeletonImage } from "./skeleton-image";
 
 type ViewImageListProps = {
   closeDetails: () => void;
-  detailSet: SetType;
   details: (set: SetType) => void;
+  detailSet: SetType;
   sets: SetType[];
   loading?: boolean;
   page?: Page;

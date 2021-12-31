@@ -1,7 +1,7 @@
 export type ImageType = {
+  fullPath: string;
   name: string;
   parent: string;
-  fullPath: string;
   /** URL to image, for display. */
   src: string;
 };

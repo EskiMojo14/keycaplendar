@@ -30,9 +30,9 @@ import { ordinal } from "@s/util/functions";
 import "./modal-entry.scss";
 
 type ModalCreateProps = {
-  open: boolean;
-  onClose: () => void;
   getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
 export const ModalCreate = ({
@@ -221,10 +221,10 @@ export const ModalCreate = ({
 };
 
 type ModalEditProps = {
-  open: boolean;
-  onClose: () => void;
   entry: UpdateEntryType;
   getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
 export const ModalEdit = ({

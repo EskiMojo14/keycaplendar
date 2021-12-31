@@ -6,8 +6,8 @@ import type { Overwrite } from "@s/util/types";
 
 type FirestoreCollection<K, V, S = Record<string, never>> = {
   key: K;
-  value: V;
   subCollections: S;
+  value: V;
 };
 
 type FirestoreId<T extends string> = string & { [key in T]: never };
@@ -17,6 +17,7 @@ export type KeysetId = FirestoreId<"_keysetId">;
 export type KeysetDoc = Overwrite<
   Omit<SetType, "id">,
   {
+    latestEditor: string;
     sales:
       | string
       | {
@@ -24,7 +25,6 @@ export type KeysetDoc = Overwrite<
           img: string;
           thirdParty: boolean;
         };
-    latestEditor: string;
   }
 >;
 
@@ -62,13 +62,13 @@ export type UpdateId = FirestoreId<"_updateId">;
 export type UserId = FirestoreId<"_userId">;
 
 export type UserPreferencesDoc = {
-  shareName?: string;
-  filterPresets?: (OldPresetType | PresetType)[];
+  bought?: string[];
   favorites?: string[];
   favoritesId?: string;
-  bought?: string[];
+  filterPresets?: (OldPresetType | PresetType)[];
   hidden?: string[];
   settings?: Partial<Settings>;
+  shareName?: string;
   syncSettings?: boolean;
 };
 

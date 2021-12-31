@@ -42,7 +42,7 @@ module.exports = {
     "plugin:import/recommended",
     "plugin:import/typescript",
   ],
-  plugins: ["sort-destructure-keys"],
+  plugins: ["sort-destructure-keys", "typescript-sort-keys"],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: "module", // Allows for the use of imports
@@ -155,6 +155,16 @@ module.exports = {
     "sort-destructure-keys/sort-destructure-keys": [
       2,
       { caseSensitive: false },
+    ],
+    "typescript-sort-keys/interface": [
+      "error",
+      "asc",
+      { caseSensitive: false, natural: true, requiredFirst: true },
+    ],
+    "typescript-sort-keys/string-enum": [
+      "error",
+      "asc",
+      { caseSensitive: false, natural: true },
     ],
   },
   overrides: [

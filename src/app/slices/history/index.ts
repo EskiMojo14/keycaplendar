@@ -4,11 +4,10 @@ import type { RootState } from "~/app/store";
 import type { HistoryTab, ProcessedPublicActionType, RecentSet } from "./types";
 
 type HistoryState = {
-  tab: HistoryTab;
   loading: boolean;
-
   processedActions: ProcessedPublicActionType[];
   recentSets: RecentSet[];
+  tab: HistoryTab;
 };
 
 export const initialState: HistoryState = {

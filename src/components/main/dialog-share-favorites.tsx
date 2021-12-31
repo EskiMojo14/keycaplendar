@@ -18,8 +18,8 @@ import {
 import "./dialog-share-favorites.scss";
 
 type DialogShareFavoritesProps = {
-  open: boolean;
   close: () => void;
+  open: boolean;
 };
 
 export const DialogShareFavorites = ({

@@ -4,13 +4,11 @@ import type { RootState } from "~/app/store";
 import type { GuideEntryType } from "./types";
 
 type UpdatesState = {
-  loading: boolean;
-
-  entries: GuideEntryType[];
-  urlEntry: string;
-
   allTags: string[];
+  entries: GuideEntryType[];
   filteredTag: string;
+  loading: boolean;
+  urlEntry: string;
 };
 
 export const initialState: UpdatesState = {

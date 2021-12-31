@@ -33,8 +33,8 @@ import { Article } from "@i";
 import "./entries-list.scss";
 
 type EntriesDrawerProps = {
-  openEntry: (entry: GuideEntryType) => void;
   detailEntry: GuideEntryType;
+  openEntry: (entry: GuideEntryType) => void;
 };
 
 export const EntriesList = ({ detailEntry, openEntry }: EntriesDrawerProps) => {

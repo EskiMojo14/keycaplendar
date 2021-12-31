@@ -9,11 +9,11 @@ import type {
 } from "./types";
 
 type StatisticsState = {
-  tab: StatsTab;
-  loading: boolean;
   data: StatisticsData;
+  loading: boolean;
   settings: StatisticsType;
   sort: StatisticsSortType;
+  tab: StatsTab;
 };
 
 export const initialState: StatisticsState = {

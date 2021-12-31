@@ -7,8 +7,8 @@ import "./full-screen-dialog.scss";
 const bemClasses = new BEMHelper("full-screen-dialog");
 
 type FullScreenDialogProps = HTMLAttributes<HTMLDivElement> & {
-  open: boolean;
   onClose: () => void;
+  open: boolean;
 };
 
 export const FullScreenDialog = ({

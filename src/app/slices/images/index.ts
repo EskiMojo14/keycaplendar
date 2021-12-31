@@ -7,18 +7,15 @@ import type { ImageType } from "./types";
 const blankImage = { ...new ImageObj() };
 
 type ImagesState = {
-  loading: boolean;
-
-  currentFolder: string;
-  folders: string[];
-
-  images: ImageType[];
   checkedImages: ImageType[];
-  setImages: string[];
-  duplicateSetImages: string[];
-
+  currentFolder: string;
   detailImage: ImageType;
   detailMetadata: Record<string, unknown>;
+  duplicateSetImages: string[];
+  folders: string[];
+  images: ImageType[];
+  loading: boolean;
+  setImages: string[];
 };
 
 export const initialState: ImagesState = {

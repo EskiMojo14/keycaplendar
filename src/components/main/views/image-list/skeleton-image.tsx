@@ -7,8 +7,8 @@ import {
 import { SkeletonBlock, SkeletonIcon } from "@c/util/skeleton-block";
 
 export type SkeletonImageProps = {
-  title: string;
   subtitle: string;
+  title: string;
   icon?: boolean;
 };
 

@@ -11,10 +11,10 @@ import type { UpdateId } from "@s/firebase/types";
 import type { UpdateEntryType } from "@s/updates/types";
 
 type DialogDeleteProps = {
-  open: boolean;
-  onClose: () => void;
-  getEntries: () => void;
   entry: UpdateEntryType;
+  getEntries: () => void;
+  onClose: () => void;
+  open: boolean;
 };
 
 export const DialogDelete = ({

@@ -4,15 +4,13 @@ import type { RootState } from "~/app/store";
 import type { ActionType } from "./types";
 
 type AuditState = {
-  loading: boolean;
-
   allActions: ActionType[];
-  filteredActions: ActionType[];
-
-  users: string[];
   filterAction: "created" | "deleted" | "none" | "updated";
+  filteredActions: ActionType[];
   filterUser: string;
   length: number;
+  loading: boolean;
+  users: string[];
 };
 
 export const initialState: AuditState = {

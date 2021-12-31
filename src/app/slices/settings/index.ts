@@ -4,20 +4,19 @@ import type { RootState } from "~/app/store";
 import type { ViewType } from "./types";
 
 type SettingsState = {
-  view: ViewType;
-  bottomNav: boolean;
   applyTheme: string;
-  lightTheme: string;
-  darkTheme: string;
-  manualTheme: boolean;
-  fromTimeTheme: string;
-  toTimeTheme: string;
-  lichTheme: boolean;
-  density: string;
-  syncSettings: boolean;
+  bottomNav: boolean;
   cookies: boolean;
-
+  darkTheme: string;
+  density: string;
+  fromTimeTheme: string;
+  lichTheme: boolean;
+  lightTheme: string;
+  manualTheme: boolean;
   shareNameLoading: boolean;
+  syncSettings: boolean;
+  toTimeTheme: string;
+  view: ViewType;
 };
 
 export const initialState: SettingsState = {

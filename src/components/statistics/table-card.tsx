@@ -54,11 +54,11 @@ const listener = { draw: (e: any) => customPoint(e) };
 type TableCardProps = {
   data: DurationDataObject | VendorDataObject;
   unit: string;
+  breakdownData?: DurationDataObject[] | VendorDataObject[];
   category?: Categories;
   defaultType?: "bar" | "line";
-  breakdownData?: DurationDataObject[] | VendorDataObject[];
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
   summary?: boolean;
 };
 

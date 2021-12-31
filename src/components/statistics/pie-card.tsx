@@ -25,9 +25,9 @@ import "./pie-card.scss";
 type StatusCardProps = {
   data: StatusDataObject;
   breakdownData?: StatusDataObject[];
-  summary?: boolean;
-  overline?: ReactNode;
   note?: ReactNode;
+  overline?: ReactNode;
+  summary?: boolean;
 };
 
 export const StatusCard = ({
