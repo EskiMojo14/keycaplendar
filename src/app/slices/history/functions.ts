@@ -43,19 +43,6 @@ export const setHistoryTab = (
   }
 };
 
-export const getData = () => {
-  const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
-  dispatch(setLoading(true));
-  cloudFn({ num: 25 })
-    .then(({ data: actions }) => {
-      processActions(actions);
-    })
-    .catch((error) => {
-      console.log(error);
-      queue.notify({ title: "Failed to get changelog: " + error });
-    });
-};
-
 export const processActions = (actions: PublicActionType[]) => {
   const processedActions: ProcessedPublicActionType[] = actions.map(
     (action) => {
@@ -90,6 +77,19 @@ export const processActions = (actions: PublicActionType[]) => {
   );
   dispatch(setProcessedActions(processedActions));
   dispatch(setLoading(false));
+};
+
+export const getData = () => {
+  const cloudFn = firebase.functions().httpsCallable("getPublicAudit");
+  dispatch(setLoading(true));
+  cloudFn({ num: 25 })
+    .then(({ data: actions }) => {
+      processActions(actions);
+    })
+    .catch((error) => {
+      console.log(error);
+      queue.notify({ title: "Failed to get changelog: " + error });
+    });
 };
 
 export const generateSets = (state = store.getState()) => {

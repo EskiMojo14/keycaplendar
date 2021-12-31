@@ -62,15 +62,6 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }
   }, []);
 
-  useEffect(() => {
-    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
-    const index = entries.findIndex((entry) => entry.id === id);
-    if (index >= 0 && device === "desktop") {
-      const { [index]: entry } = entries;
-      setDetailEntry(entry);
-    }
-  }, [entries]);
-
   const blankEntry: GuideEntryType = new Guide();
 
   const [detailEntry, setDetailEntry] = useState(blankEntry);
@@ -98,6 +89,15 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     }, 300);
     closeModal();
   };
+
+  useEffect(() => {
+    const id = urlEntry ? urlEntry : "Di1F9XkWTG2M9qbP2ZcN";
+    const index = entries.findIndex((entry) => entry.id === id);
+    if (index >= 0 && device === "desktop") {
+      const { [index]: entry } = entries;
+      setDetailEntry(entry);
+    }
+  }, [entries]);
 
   const [createOpen, setCreateOpen] = useState(false);
   const openCreate = () => {

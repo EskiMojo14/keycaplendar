@@ -20,6 +20,19 @@ export const SnackbarDeleted = ({
   open,
   set: { id, ...set },
 }: SnackbarDeletedProps) => {
+  const user = useAppSelector(selectUser);
+  const deleteImages = async (name: string) => {
+    const folders = await getStorageFolders();
+    const allImages = folders.map((folder) => `${folder}/${name}`);
+    batchStorageDelete(allImages)
+      .then(() => {
+        queue.notify({ title: "Successfully deleted thumbnails." });
+      })
+      .catch((error) => {
+        queue.notify({ title: "Failed to delete thumbnails: " + error });
+        console.log(error);
+      });
+  };
   const closeBar = (recreated = false) => {
     if (!recreated) {
       const fileNameRegex = /keysets%2F(.*)\?/;
@@ -31,7 +44,6 @@ export const SnackbarDeleted = ({
     }
     close();
   };
-  const user = useAppSelector(selectUser);
   const recreateEntry = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     firestore
@@ -55,18 +67,6 @@ export const SnackbarDeleted = ({
         queue.notify({ title: "Error recreating document: " + error });
       });
     closeBar(true);
-  };
-  const deleteImages = async (name: string) => {
-    const folders = await getStorageFolders();
-    const allImages = folders.map((folder) => `${folder}/${name}`);
-    batchStorageDelete(allImages)
-      .then(() => {
-        queue.notify({ title: "Successfully deleted thumbnails." });
-      })
-      .catch((error) => {
-        queue.notify({ title: "Failed to delete thumbnails: " + error });
-        console.log(error);
-      });
   };
   return (
     <Snackbar

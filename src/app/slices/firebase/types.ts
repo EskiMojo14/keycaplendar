@@ -12,19 +12,21 @@ type FirestoreCollection<K, V, S = Record<string, never>> = {
 
 type FirestoreId<T extends string> = string & { [key in T]: never };
 
-export type FirestoreType = {
-  apiUsers: FirestoreCollection<
-    ApiUserId,
-    ApiUserDoc,
-    { data: FirestoreCollection<ApiUserId, ApiUserDoc> }
-  >;
-  app: FirestoreCollection<"globals", GlobalDoc>;
-  changelog: FirestoreCollection<ChangelogId, ChangelogDoc>;
-  guides: FirestoreCollection<GuideId, Omit<GuideEntryType, "id">>;
-  keysets: FirestoreCollection<KeysetId, KeysetDoc>;
-  updates: FirestoreCollection<UpdateId, Omit<UpdateEntryType, "id">>;
-  users: FirestoreCollection<UserId, UserPreferencesDoc>;
-};
+export type KeysetId = FirestoreId<"_keysetId">;
+
+export type KeysetDoc = Overwrite<
+  Omit<SetType, "id">,
+  {
+    sales:
+      | string
+      | {
+          /** Direct URL to sales graph. */
+          img: string;
+          thirdParty: boolean;
+        };
+    latestEditor: string;
+  }
+>;
 
 export type ApiUserId = FirestoreId<"_apiUserId">;
 
@@ -49,22 +51,6 @@ export type ChangelogDoc = {
   };
 };
 
-export type KeysetId = FirestoreId<"_keysetId">;
-
-export type KeysetDoc = Overwrite<
-  Omit<SetType, "id">,
-  {
-    sales:
-      | string
-      | {
-          /** Direct URL to sales graph. */
-          img: string;
-          thirdParty: boolean;
-        };
-    latestEditor: string;
-  }
->;
-
 export type GlobalDoc = {
   filterPresets: (OldPresetType | PresetType)[];
 };
@@ -84,4 +70,18 @@ export type UserPreferencesDoc = {
   hidden?: string[];
   settings?: Partial<Settings>;
   syncSettings?: boolean;
+};
+
+export type FirestoreType = {
+  apiUsers: FirestoreCollection<
+    ApiUserId,
+    ApiUserDoc,
+    { data: FirestoreCollection<ApiUserId, ApiUserDoc> }
+  >;
+  app: FirestoreCollection<"globals", GlobalDoc>;
+  changelog: FirestoreCollection<ChangelogId, ChangelogDoc>;
+  guides: FirestoreCollection<GuideId, Omit<GuideEntryType, "id">>;
+  keysets: FirestoreCollection<KeysetId, KeysetDoc>;
+  updates: FirestoreCollection<UpdateId, Omit<UpdateEntryType, "id">>;
+  users: FirestoreCollection<UserId, UserPreferencesDoc>;
 };

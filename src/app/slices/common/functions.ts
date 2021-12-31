@@ -60,6 +60,13 @@ import type { Page, ThemeMap } from "./types";
 
 const { dispatch } = store;
 
+export const triggerTransition = (delay = 300) => {
+  dispatch(setTransition(true));
+  setTimeout(() => {
+    dispatch(setTransition(false));
+  }, delay);
+};
+
 export const saveTheme = () => {
   const interpolatedThemeMap = Object.entries(themesMap).reduce<
     Record<string, ThemeMap>
@@ -345,11 +352,4 @@ export const setPage = (page: Page, state = store.getState()) => {
       "/" + page + urlParams
     );
   }
-};
-
-export const triggerTransition = (delay = 300) => {
-  dispatch(setTransition(true));
-  setTimeout(() => {
-    dispatch(setTransition(false));
-  }, delay);
 };

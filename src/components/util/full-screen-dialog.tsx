@@ -22,13 +22,6 @@ export const FullScreenDialog = ({
   const [opening, setOpening] = useState(false);
   const [animate, setAnimate] = useState(false);
   const [closing, setClosing] = useState(false);
-  useEffect(() => {
-    if (propsOpen) {
-      openDialog();
-    } else {
-      closeDialog();
-    }
-  }, [propsOpen]);
   const openDialog = () => {
     setOpen(true);
     setAnimate(true);
@@ -48,6 +41,13 @@ export const FullScreenDialog = ({
       setClosing(false);
     }, 400);
   };
+  useEffect(() => {
+    if (propsOpen) {
+      openDialog();
+    } else {
+      closeDialog();
+    }
+  }, [propsOpen]);
   return (
     <>
       <div

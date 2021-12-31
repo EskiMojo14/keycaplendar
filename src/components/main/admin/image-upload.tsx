@@ -31,6 +31,16 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const [loading, setLoading] = useState(false);
   const [hasImage, setHasImage] = useState(false);
 
+  const previewImage = (image: Blob | File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onloadend = () => {
+      setImageBase64(reader.result as string);
+      setHasImage(true);
+      setLoading(false);
+    };
+  };
+
   useEffect(() => {
     if (image) {
       if (is<string>(image)) {
@@ -49,28 +59,6 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     }
   }, [image]);
 
-  const previewImage = (image: Blob | File) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(image);
-    reader.onloadend = () => {
-      setImageBase64(reader.result as string);
-      setHasImage(true);
-      setLoading(false);
-    };
-  };
-
-  const handleChange = ({
-    target: { name, value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    if (name === "imageLink") {
-      setImageLink(value);
-    }
-    const regex = RegExp("https?://.+(?:.(?:jpe?g|png)|;image)");
-    if (regex.test(value)) {
-      getImageFromURL(value);
-    }
-  };
-
   const getImageFromURL = (url: string) => {
     setLoading(true);
     fetch(url)
@@ -83,6 +71,18 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
         setLoading(false);
         queue.notify({ title: "Failed to fetch image: " + err });
       });
+  };
+
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    if (name === "imageLink") {
+      setImageLink(value);
+    }
+    const regex = RegExp("https?://.+(?:.(?:jpe?g|png)|;image)");
+    if (regex.test(value)) {
+      getImageFromURL(value);
+    }
   };
 
   const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {

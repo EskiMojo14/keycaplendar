@@ -52,26 +52,21 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);
 
-  useEffect(() => {
-    if (urlSet.value) {
-      const index = allSets.findIndex((set) => {
-        if (urlSet.prop === "name") {
-          return urlSet.value === `${set.profile} ${set.colorway}`;
-        } else {
-          return set[urlSet.prop] === urlSet.value;
-        }
-      });
-      if (index >= 0) {
-        const { [index]: keyset } = allSets;
-        openDetails(keyset, false);
-      }
-    }
-  }, [allSets]);
-
   const blankSet: SetType = new Keyset();
   const blankPreset: PresetType = new Preset();
 
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailSet, setDetailSet] = useState(blankSet);
   const [filterOpen, setFilterOpen] = useState(false);
+  const closeFilter = () => {
+    closeModal();
+    setFilterOpen(false);
+  };
+  const closeDetails = () => {
+    closeModal();
+    setDetailsOpen(false);
+    setTimeout(() => setDetailSet(blankSet), 300);
+  };
   const openFilter = () => {
     const open = () => {
       if (filterOpen && device === "desktop") {
@@ -90,13 +85,6 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-  const closeFilter = () => {
-    closeModal();
-    setFilterOpen(false);
-  };
-
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailSet, setDetailSet] = useState(blankSet);
   const openDetails = (set: SetType, clearUrl = true) => {
     const open = () => {
       if (device !== "desktop" || view === "compact") {
@@ -132,11 +120,21 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
       open();
     }
   };
-  const closeDetails = () => {
-    closeModal();
-    setDetailsOpen(false);
-    setTimeout(() => setDetailSet(blankSet), 300);
-  };
+
+  useEffect(() => {
+    if (urlSet.value) {
+      const keyset = allSets.find((set) => {
+        if (urlSet.prop === "name") {
+          return urlSet.value === `${set.profile} ${set.colorway}`;
+        } else {
+          return set[urlSet.prop] === urlSet.value;
+        }
+      });
+      if (keyset) {
+        openDetails(keyset, false);
+      }
+    }
+  }, [allSets, urlSet]);
 
   const [salesOpen, setSalesOpen] = useState(false);
   const [salesSet, setSalesSet] = useState(blankSet);

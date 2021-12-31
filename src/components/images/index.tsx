@@ -130,6 +130,37 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   }, []);
   useEffect(createSetImageList, [JSON.stringify(allSets)]);
 
+  const closeSearch = () => {
+    if (device !== "desktop") {
+      closeModal();
+    }
+    setSearchOpen(false);
+  };
+
+  const closeDetails = () => {
+    if (device !== "desktop") {
+      closeModal();
+    }
+    setDetailOpen(false);
+    dispatch(setDetailImage(blankImage));
+    dispatch(setDetailMetadata({}));
+  };
+
+  const openSearch = () => {
+    const open = () => {
+      if (device !== "desktop") {
+        openModal();
+      }
+      setSearchOpen(true);
+    };
+    if (detailOpen) {
+      closeDetails();
+      setTimeout(() => open(), 300);
+    } else {
+      open();
+    }
+  };
+
   const openDetails = (image: ImageType) => {
     const open = () => {
       if (detailImage === image) {
@@ -159,34 +190,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       open();
     }
   };
-  const closeDetails = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setDetailOpen(false);
-    dispatch(setDetailImage(blankImage));
-    dispatch(setDetailMetadata({}));
-  };
-  const openSearch = () => {
-    const open = () => {
-      if (device !== "desktop") {
-        openModal();
-      }
-      setSearchOpen(true);
-    };
-    if (detailOpen) {
-      closeDetails();
-      setTimeout(() => open(), 300);
-    } else {
-      open();
-    }
-  };
-  const closeSearch = () => {
-    if (device !== "desktop") {
-      closeModal();
-    }
-    setSearchOpen(false);
-  };
+
   const toggleImageChecked = (image: ImageType) => {
     const editedArray = addOrRemove([...checkedImages], image);
     dispatch(setCheckedImages(editedArray));

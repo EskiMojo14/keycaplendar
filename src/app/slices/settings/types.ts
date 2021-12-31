@@ -1,5 +1,9 @@
 import type { allViews } from "./constants";
 
+/** Possible values for view. */
+
+export type ViewType = typeof allViews[number];
+
 export type Settings = {
   view: ViewType;
   bottomNav: boolean;
@@ -11,7 +15,3 @@ export type Settings = {
   toTimeTheme: string;
   density: string;
 };
-
-/** Possible values for view. */
-
-export type ViewType = typeof allViews[number];

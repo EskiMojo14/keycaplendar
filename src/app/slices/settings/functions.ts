@@ -19,16 +19,6 @@ import type { ViewType } from "./types";
 
 const { dispatch } = store;
 
-export const acceptCookies = () => {
-  dispatch(setCookies(true));
-  setStorage("accepted", true);
-};
-
-export const clearCookies = () => {
-  dispatch(setCookies(false));
-  localStorage.removeItem("accepted");
-};
-
 export const setCookie = (
   cname: string,
   cvalue: string,
@@ -66,97 +56,14 @@ export const getStorage = (name: string) => {
   return value ? JSON.parse(value) : value;
 };
 
-export const checkStorage = () => {
-  const acceptedCookie = getCookie("accepted");
-  const accepted = getStorage("accepted");
-  if (acceptedCookie === "true" || accepted) {
-    dispatch(setCookies(true));
-
-    const convertCookie = (
-      key: string,
-      setFunction: (val: any, write: boolean) => void
-    ) => {
-      const cookie = getCookie(key);
-      const storage = getStorage(key);
-      if (cookie || (storage !== null && key !== "accepted")) {
-        if (cookie !== "true" && cookie !== "false") {
-          setTimeout(() => {
-            setFunction(cookie || storage, false);
-            localStorage.removeItem(key);
-            setCookie(key, cookie || "", -1);
-          }, 0);
-        } else {
-          const cookieBool = cookie === "true";
-          setTimeout(() => {
-            setFunction(cookieBool ?? storage, false);
-            if (key === "accepted") {
-              setStorage("accepted", true, store.getState());
-            } else {
-              localStorage.removeItem(key);
-            }
-            setCookie(key, cookie, -1);
-          }, 0);
-        }
-      }
-    };
-
-    Object.entries(settingFns).forEach(([setting, func]) => {
-      convertCookie(setting, func);
-    });
-  }
+export const acceptCookies = () => {
+  dispatch(setCookies(true));
+  setStorage("accepted", true);
 };
 
-export const setView = (
-  view: ViewType,
-  write = true,
-  state = store.getState()
-) => {
-  const { settings } = state;
-  const loading = selectLoading(state);
-  if (view !== settings.view && !loading) {
-    dispatch(setTransition(true));
-    setTimeout(() => {
-      document.documentElement.scrollTop = 0;
-      dispatch(setSetting("view", view));
-    }, 90);
-    setTimeout(() => {
-      dispatch(setTransition(true));
-    }, 300);
-  } else {
-    dispatch(setSetting("view", view));
-  }
-  if (write) {
-    syncSetting("view", view);
-  }
-};
-
-export const setSyncSettings = (
-  bool: boolean,
-  write = true,
-  state = store.getState()
-) => {
-  const { settings } = state;
-  const user = selectUser(state);
-  dispatch(setSetting("syncSettings", bool));
-  if (write) {
-    const settingsObject: Record<string, any> = {};
-    if (bool) {
-      Object.keys(settingFns).forEach((setting) => {
-        if (hasKey(settings, setting)) {
-          const { [setting]: settingVal } = settings;
-          settingsObject[setting] = settingVal;
-        }
-      });
-    }
-    firestore
-      .collection("users")
-      .doc(user.id as UserId)
-      .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
-      .catch((error) => {
-        console.log("Failed to set sync setting: " + error);
-        queue.notify({ title: "Failed to set sync setting: " + error });
-      });
-  }
+export const clearCookies = () => {
+  dispatch(setCookies(false));
+  localStorage.removeItem("accepted");
 };
 
 export const syncSetting = (
@@ -193,6 +100,30 @@ export const syncSetting = (
           });
       }
     });
+  }
+};
+
+export const setView = (
+  view: ViewType,
+  write = true,
+  state = store.getState()
+) => {
+  const { settings } = state;
+  const loading = selectLoading(state);
+  if (view !== settings.view && !loading) {
+    dispatch(setTransition(true));
+    setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      dispatch(setSetting("view", view));
+    }, 90);
+    setTimeout(() => {
+      dispatch(setTransition(true));
+    }, 300);
+  } else {
+    dispatch(setSetting("view", view));
+  }
+  if (write) {
+    syncSetting("view", view);
   }
 };
 
@@ -328,4 +259,73 @@ export const settingFns: Record<string, (val: any, write: boolean) => void> = {
   density: setDensity,
   presetId: console.log,
   accepted: console.log,
+};
+
+export const checkStorage = () => {
+  const acceptedCookie = getCookie("accepted");
+  const accepted = getStorage("accepted");
+  if (acceptedCookie === "true" || accepted) {
+    dispatch(setCookies(true));
+
+    const convertCookie = (
+      key: string,
+      setFunction: (val: any, write: boolean) => void
+    ) => {
+      const cookie = getCookie(key);
+      const storage = getStorage(key);
+      if (cookie || (storage !== null && key !== "accepted")) {
+        if (cookie !== "true" && cookie !== "false") {
+          setTimeout(() => {
+            setFunction(cookie || storage, false);
+            localStorage.removeItem(key);
+            setCookie(key, cookie || "", -1);
+          }, 0);
+        } else {
+          const cookieBool = cookie === "true";
+          setTimeout(() => {
+            setFunction(cookieBool ?? storage, false);
+            if (key === "accepted") {
+              setStorage("accepted", true, store.getState());
+            } else {
+              localStorage.removeItem(key);
+            }
+            setCookie(key, cookie, -1);
+          }, 0);
+        }
+      }
+    };
+
+    Object.entries(settingFns).forEach(([setting, func]) => {
+      convertCookie(setting, func);
+    });
+  }
+};
+
+export const setSyncSettings = (
+  bool: boolean,
+  write = true,
+  state = store.getState()
+) => {
+  const { settings } = state;
+  const user = selectUser(state);
+  dispatch(setSetting("syncSettings", bool));
+  if (write) {
+    const settingsObject: Record<string, any> = {};
+    if (bool) {
+      Object.keys(settingFns).forEach((setting) => {
+        if (hasKey(settings, setting)) {
+          const { [setting]: settingVal } = settings;
+          settingsObject[setting] = settingVal;
+        }
+      });
+    }
+    firestore
+      .collection("users")
+      .doc(user.id as UserId)
+      .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
+      .catch((error) => {
+        console.log("Failed to set sync setting: " + error);
+        queue.notify({ title: "Failed to set sync setting: " + error });
+      });
+  }
 };

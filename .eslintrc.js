@@ -116,6 +116,7 @@ module.exports = {
         warnOnUnassignedImports: true,
       },
     ],
+    "no-use-before-define": "error",
     "object-shorthand": "error",
     "prefer-destructuring": [
       "error",

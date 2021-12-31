@@ -32,6 +32,24 @@ export const SearchBarPersistent = ({
   const [expanded, setExpanded] = useState(false);
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
+  const createSearchTerms = () => {
+    const searchTerms: Set<string> = new Set();
+    if (filteredSets && filteredSets.length > 0) {
+      filteredSets.forEach((set) => {
+        searchTerms.add(set.profile);
+        searchTerms.add(set.colorway);
+        set.designer.forEach((designer) => {
+          searchTerms.add(designer);
+        });
+        if (set.vendors) {
+          set.vendors.forEach((vendor) => {
+            searchTerms.add(vendor.name);
+          });
+        }
+      });
+    }
+    setSearchTerms(alphabeticalSort([...searchTerms]));
+  };
 
   useEffect(() => {
     setExpanded(search.length !== 0);
@@ -47,30 +65,6 @@ export const SearchBarPersistent = ({
   };
   const handleBlur = () => {
     setFocused(false);
-  };
-  const createSearchTerms = () => {
-    const searchTerms: string[] = [];
-    const addSearchTerm = (term: string) => {
-      if (!searchTerms.includes(term)) {
-        searchTerms.push(term);
-      }
-    };
-    if (filteredSets && filteredSets.length > 0) {
-      filteredSets.forEach((set) => {
-        addSearchTerm(set.profile);
-        addSearchTerm(set.colorway);
-        set.designer.forEach((designer) => {
-          addSearchTerm(designer);
-        });
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            addSearchTerm(vendor.name);
-          });
-        }
-      });
-    }
-    alphabeticalSort(searchTerms);
-    setSearchTerms(searchTerms);
   };
   const autoCompleteSearch = (_prop: string, value: string) => {
     setSearch(value);
@@ -142,23 +136,6 @@ export const SearchBarModal = ({
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
-  useEffect(() => {
-    setOpen(propsOpen);
-  }, []);
-  useEffect(() => {
-    if (propsOpen) {
-      openBar();
-    } else {
-      closeBar();
-    }
-  }, [propsOpen]);
-  useEffect(() => {
-    if (!open && search.length > 0) {
-      openBar();
-    }
-    createSearchTerms();
-  }, [search]);
-
   const openBar = () => {
     setOpen(true);
     setAnimate(true);
@@ -182,16 +159,6 @@ export const SearchBarModal = ({
       setClosing(false);
       setSearch("");
     }, 200);
-  };
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
-  const handleFocus = () => {
-    setFocused(true);
-  };
-  const handleBlur = () => {
-    setFocused(false);
   };
 
   const createSearchTerms = () => {
@@ -218,6 +185,34 @@ export const SearchBarModal = ({
     alphabeticalSort(searchTerms);
     setSearchTerms(searchTerms);
   };
+
+  useEffect(() => {
+    setOpen(propsOpen);
+  }, []);
+  useEffect(() => {
+    if (propsOpen) {
+      openBar();
+    } else {
+      closeBar();
+    }
+  }, [propsOpen]);
+  useEffect(() => {
+    if (!open && search.length > 0) {
+      openBar();
+    }
+    createSearchTerms();
+  }, [search]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+  const handleFocus = () => {
+    setFocused(true);
+  };
+  const handleBlur = () => {
+    setFocused(false);
+  };
+
   const autoCompleteSearch = (_prop: string, value: string) => {
     setSearch(value);
     setFocused(false);
@@ -269,6 +264,10 @@ export const SearchBarModal = ({
   );
 };
 
+const scrollTop = () => {
+  window.scrollTo(0, 0);
+};
+
 type SearchAppBarProps = {
   close: () => void;
   open: boolean;
@@ -289,6 +288,25 @@ export const SearchAppBar = ({
   const [focused, setFocused] = useState(false);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
+  const createSearchTerms = () => {
+    const searchTerms: Set<string> = new Set();
+    if (filteredSets && filteredSets.length > 0) {
+      filteredSets.forEach((set) => {
+        searchTerms.add(set.profile);
+        searchTerms.add(set.colorway);
+        set.designer.forEach((designer) => {
+          searchTerms.add(designer);
+        });
+        if (set.vendors) {
+          set.vendors.forEach((vendor) => {
+            searchTerms.add(vendor.name);
+          });
+        }
+      });
+    }
+    setSearchTerms(alphabeticalSort([...searchTerms]));
+  };
+
   useEffect(() => {
     if (search.length > 0) {
       openBar();
@@ -306,39 +324,13 @@ export const SearchAppBar = ({
   const handleBlur = () => {
     setFocused(false);
   };
-  const createSearchTerms = () => {
-    const searchTerms: string[] = [];
-    const addSearchTerm = (term: string) => {
-      if (!searchTerms.includes(term)) {
-        searchTerms.push(term);
-      }
-    };
-    if (filteredSets && filteredSets.length > 0) {
-      filteredSets.forEach((set) => {
-        addSearchTerm(set.profile);
-        addSearchTerm(set.colorway);
-        set.designer.forEach((designer) => {
-          addSearchTerm(designer);
-        });
-        if (set.vendors) {
-          set.vendors.forEach((vendor) => {
-            addSearchTerm(vendor.name);
-          });
-        }
-      });
-    }
-    alphabeticalSort(searchTerms);
-    setSearchTerms(searchTerms);
-  };
+
   const autoCompleteSearch = (_prop: string, value: string) => {
     setSearch(value);
     setFocused(false);
   };
   const clearInput = () => {
     setSearch("");
-  };
-  const scrollTop = () => {
-    window.scrollTo(0, 0);
   };
   return (
     <>

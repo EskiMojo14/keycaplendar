@@ -339,50 +339,8 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     });
   };
 
-  const uploadImage = () => {
-    if (state.image instanceof Blob) {
-      setUploadingImage(true);
-      const storageRef = firebase.storage().ref();
-      const keysetsRef = storageRef.child("keysets");
-      const fileName = `${formatFileName(
-        `${state.profile} ${state.colorway}`
-      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
-      const imageRef = keysetsRef.child(fileName + ".png");
-      const uploadTask = imageRef.put(state.image);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress = snapshot.bytesTransferred / snapshot.totalBytes;
-          updateState(keyedUpdate("imageUploadProgress", progress));
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          queue.notify({ title: "Failed to upload image: " + error });
-          setUploadingImage(false);
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          queue.notify({ title: "Successfully uploaded image." });
-          imageRef
-            .getDownloadURL()
-            .then((downloadURL) => {
-              updateState(keyedUpdate("imageURL", downloadURL));
-              createEntry(downloadURL);
-            })
-            .catch((error) => {
-              queue.notify({ title: "Failed to get URL: " + error });
-              console.error(error);
-            })
-            .finally(() => {
-              setUploadingImage(false);
-            });
-        }
-      );
-    }
-  };
+  const setSalesImageLoaded = (val: boolean) =>
+    updateState(keyedUpdate("salesImageLoaded", val));
 
   const valid =
     !!state.profile &&
@@ -434,8 +392,50 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
     }
   };
 
-  const setSalesImageLoaded = (val: boolean) =>
-    updateState(keyedUpdate("salesImageLoaded", val));
+  const uploadImage = () => {
+    if (state.image instanceof Blob) {
+      setUploadingImage(true);
+      const storageRef = firebase.storage().ref();
+      const keysetsRef = storageRef.child("keysets");
+      const fileName = `${formatFileName(
+        `${state.profile} ${state.colorway}`
+      )}T${DateTime.utc().toFormat("yyyyMMddHHmmss")}`;
+      const imageRef = keysetsRef.child(fileName + ".png");
+      const uploadTask = imageRef.put(state.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = snapshot.bytesTransferred / snapshot.totalBytes;
+          updateState(keyedUpdate("imageUploadProgress", progress));
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          queue.notify({ title: "Failed to upload image: " + error });
+          setUploadingImage(false);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          queue.notify({ title: "Successfully uploaded image." });
+          imageRef
+            .getDownloadURL()
+            .then((downloadURL) => {
+              updateState(keyedUpdate("imageURL", downloadURL));
+              createEntry(downloadURL);
+            })
+            .catch((error) => {
+              queue.notify({ title: "Failed to get URL: " + error });
+              console.error(error);
+            })
+            .finally(() => {
+              setUploadingImage(false);
+            });
+        }
+      );
+    }
+  };
 
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
@@ -1012,14 +1012,6 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
   const [focused, setFocused] = useState("");
 
-  useEffect(() => {
-    if (open) {
-      setValues();
-    } else {
-      setTimeout(closeModal, 300);
-    }
-  }, [open]);
-
   const setValues = () => {
     let gbLaunch = "";
     if (set.gbLaunch) {
@@ -1072,6 +1064,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     setUploadingDoc(false);
     setFocused("");
   };
+
+  useEffect(() => {
+    if (open) {
+      setValues();
+    } else {
+      setTimeout(closeModal, 300);
+    }
+  }, [open]);
 
   const setImage = (image: Blob | File | null) =>
     updateState((draft) => {
@@ -1229,6 +1229,60 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     });
   };
 
+  const setSalesImageLoaded = (val: boolean) =>
+    updateState(keyedUpdate("salesImageLoaded", val));
+
+  const valid =
+    !!state.profile &&
+    !!state.colorway &&
+    !!state.designer &&
+    !invalidDate(state.icDate, false, true, true) &&
+    new RegExp(validLink).test(state.details) &&
+    ((state.newImage && state.image instanceof Blob && !!state.image) ||
+      !!state.imageURL) &&
+    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
+    !invalidDate(state.gbEnd) &&
+    arrayEveryType(state.vendors, validVendor) &&
+    validSalesInfo(state);
+
+  const editEntry = (imageUrl = state.imageURL) => {
+    if (valid && !uploadingImage && !uploadingDoc) {
+      setUploadingDoc(true);
+      firestore
+        .collection("keysets")
+        .doc(id as KeysetId)
+        .update({
+          alias: state.alias,
+          profile: state.profile,
+          colorway: state.colorway,
+          designer: state.designer,
+          icDate: state.icDate,
+          details: state.details,
+          notes: state.notes,
+          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
+          shipped: state.shipped,
+          image: imageUrl,
+          gbMonth: state.gbMonth,
+          gbLaunch: state.gbLaunch,
+          gbEnd: state.gbEnd,
+          vendors: state.vendors,
+          latestEditor: user.id,
+        })
+        .then(() => {
+          queue.notify({ title: "Entry edited successfully." });
+          closeModal();
+          getData();
+        })
+        .catch((error) => {
+          queue.notify({ title: "Error editing document: " + error });
+          console.error(error);
+        })
+        .finally(() => {
+          setUploadingDoc(false);
+        });
+    }
+  };
+
   const uploadImage = () => {
     if (state.image instanceof Blob) {
       setUploadingImage(true);
@@ -1296,60 +1350,6 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     }
   };
 
-  const valid =
-    !!state.profile &&
-    !!state.colorway &&
-    !!state.designer &&
-    !invalidDate(state.icDate, false, true, true) &&
-    new RegExp(validLink).test(state.details) &&
-    ((state.newImage && state.image instanceof Blob && !!state.image) ||
-      !!state.imageURL) &&
-    !invalidDate(state.gbLaunch, state.gbMonth, false, true) &&
-    !invalidDate(state.gbEnd) &&
-    arrayEveryType(state.vendors, validVendor) &&
-    validSalesInfo(state);
-
-  const editEntry = (imageUrl = state.imageURL) => {
-    if (valid && !uploadingImage && !uploadingDoc) {
-      setUploadingDoc(true);
-      firestore
-        .collection("keysets")
-        .doc(id as KeysetId)
-        .update({
-          alias: state.alias,
-          profile: state.profile,
-          colorway: state.colorway,
-          designer: state.designer,
-          icDate: state.icDate,
-          details: state.details,
-          notes: state.notes,
-          sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
-          shipped: state.shipped,
-          image: imageUrl,
-          gbMonth: state.gbMonth,
-          gbLaunch: state.gbLaunch,
-          gbEnd: state.gbEnd,
-          vendors: state.vendors,
-          latestEditor: user.id,
-        })
-        .then(() => {
-          queue.notify({ title: "Entry edited successfully." });
-          closeModal();
-          getData();
-        })
-        .catch((error) => {
-          queue.notify({ title: "Error editing document: " + error });
-          console.error(error);
-        })
-        .finally(() => {
-          setUploadingDoc(false);
-        });
-    }
-  };
-
-  const setSalesImageLoaded = (val: boolean) => {
-    updateState(keyedUpdate("salesImageLoaded", val));
-  };
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
     <Card className="date-container" outlined>

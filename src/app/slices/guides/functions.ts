@@ -11,19 +11,6 @@ import type { GuideEntryType } from "./types";
 
 const { dispatch } = store;
 
-export const getEntries = () => {
-  const cloudFn = firebase.functions().httpsCallable("getGuides");
-  dispatch(setLoading(true));
-  cloudFn()
-    .then(({ data: entries }) => {
-      sortEntries(entries);
-    })
-    .catch((error) => {
-      console.log("Error getting data: " + error);
-      queue.notify({ title: "Error getting data: " + error });
-    });
-};
-
 export const sortEntries = (entries: GuideEntryType[]) => {
   const sortedEntries = alphabeticalSortProp(
     entries,
@@ -37,4 +24,17 @@ export const sortEntries = (entries: GuideEntryType[]) => {
   );
   dispatch(setAllTags(allTags));
   dispatch(setLoading(false));
+};
+
+export const getEntries = () => {
+  const cloudFn = firebase.functions().httpsCallable("getGuides");
+  dispatch(setLoading(true));
+  cloudFn()
+    .then(({ data: entries }) => {
+      sortEntries(entries);
+    })
+    .catch((error) => {
+      console.log("Error getting data: " + error);
+      queue.notify({ title: "Error getting data: " + error });
+    });
 };
