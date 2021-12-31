@@ -13,7 +13,7 @@ import { ContentEmpty } from "@c/main/content/content-empty";
 import { ContentGrid } from "@c/main/content/content-grid";
 import { BoolWrapper, ConditionalWrapper } from "@c/util/conditional-wrapper";
 import { selectDevice, selectPage } from "@s/common";
-import { selectAllSets, selectContent, selectLinkedFavorites, selectURLSet, setURLSet } from "@s/main";
+import { selectAllSets, selectLinkedFavorites, selectSetGroups, selectURLSet, setURLSet } from "@s/main";
 import { Keyset, Preset } from "@s/main/constructors";
 import type { PresetType, SetType } from "@s/main/types";
 import { selectBottomNav, selectView } from "@s/settings";
@@ -42,7 +42,7 @@ export const ContentMain = (props: ContentMainProps) => {
 
   const user = useAppSelector(selectUser);
 
-  const contentBool = useAppSelector(selectContent);
+  const contentBool = !!useAppSelector(selectSetGroups).length;
   const allSets = useAppSelector(selectAllSets);
   const urlSet = useAppSelector(selectURLSet);
   const linkedFavorites = useAppSelector(selectLinkedFavorites);

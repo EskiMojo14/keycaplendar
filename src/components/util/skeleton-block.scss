@@ -1,0 +1,50 @@
+@use "@material/rtl/_index" as rtl;
+@use "@material/shape/_index" as shape;
+
+.skeleton-block {
+  &,
+  &.mdc-list-item__graphic {
+    background-color: var(--color, currentColor);
+  }
+  animation: skeleton 2s ease infinite;
+  max-width: 100%;
+  &--typography {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    word-wrap: break-word;
+    .skeleton-block__content {
+      visibility: hidden;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+  }
+  &--constrain {
+    background-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    &::after {
+      content: " ";
+      max-height: 1em;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      background-color: var(--color, currentColor);
+      border-radius: inherit;
+      max-width: 100%;
+    }
+  }
+}
+
+@keyframes skeleton {
+  from {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.24;
+  }
+  to {
+    opacity: 0.12;
+  }
+}

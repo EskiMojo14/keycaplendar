@@ -62,8 +62,6 @@
         &__primary-text::before {
           height: 32px + $diff / 2;
         }
-        &__meta {
-        }
       }
     }
     &--two-line.three-line .mdc-list-item,
@@ -118,6 +116,11 @@
       }
       .title {
         padding-bottom: 8px + $diff;
+      }
+    }
+    .mdc-card__actions {
+      .skeleton-block--icon {
+        margin: 0 12px + $diff;
       }
     }
   }

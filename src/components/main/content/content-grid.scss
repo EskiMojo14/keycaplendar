@@ -14,9 +14,9 @@
   margin: 0 auto;
   min-height: 512px;
   width: 100%;
-  box-sizing: border-box;
   .subheader {
     padding-bottom: 16px;
+    align-self: flex-start;
   }
 
   @media (max-width: top-app-bar.$mobile-breakpoint) {
@@ -45,7 +45,6 @@
   padding-left: 0;
   padding-right: 0;
   margin-bottom: auto;
-  box-sizing: border-box;
   flex-grow: 1;
   flex-direction: row;
   flex-wrap: wrap;

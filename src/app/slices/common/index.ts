@@ -14,7 +14,7 @@ export type CommonState = {
 export const initialState: CommonState = {
   device: "tablet",
   orientation: "landscape",
-  page: "images",
+  page: "calendar",
   theme: "light",
   themeMaps: {},
 };

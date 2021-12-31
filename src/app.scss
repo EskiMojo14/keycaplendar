@@ -16,19 +16,19 @@
 
 @use "@material/typography" with (
   $font-family: typography-variables.$body-font,
-  $styles-headline1: typography-variables.$headline1,
-  $styles-headline2: typography-variables.$headline2,
-  $styles-headline3: typography-variables.$headline3,
-  $styles-headline4: typography-variables.$headline4,
-  $styles-headline5: typography-variables.$headline5,
-  $styles-headline6: typography-variables.$headline6,
-  $styles-body1: typography-variables.$body1,
-  $styles-body2: typography-variables.$body2,
-  $styles-subtitle1: typography-variables.$subtitle1,
-  $styles-subtitle2: typography-variables.$subtitle2,
-  $styles-button: typography-variables.$button,
-  $styles-overline: typography-variables.$overline,
-  $styles-caption: typography-variables.$caption
+  $styles-headline1: map-get(typography-variables.$styles, headline1),
+  $styles-headline2: map-get(typography-variables.$styles, headline2),
+  $styles-headline3: map-get(typography-variables.$styles, headline3),
+  $styles-headline4: map-get(typography-variables.$styles, headline4),
+  $styles-headline5: map-get(typography-variables.$styles, headline5),
+  $styles-headline6: map-get(typography-variables.$styles, headline6),
+  $styles-body1: map-get(typography-variables.$styles, body1),
+  $styles-body2: map-get(typography-variables.$styles, body2),
+  $styles-subtitle1: map-get(typography-variables.$styles, subtitle1),
+  $styles-subtitle2: map-get(typography-variables.$styles, subtitle2),
+  $styles-button: map-get(typography-variables.$styles, button),
+  $styles-overline: map-get(typography-variables.$styles, overline),
+  $styles-caption: map-get(typography-variables.$styles, caption)
 );
 
 @use "theme";
@@ -81,6 +81,10 @@
 
 @include typography.core-styles();
 
+* {
+  box-sizing: border-box;
+}
+
 code {
   font-family: "Roboto Mono", monospace;
   white-space: nowrap;
@@ -113,12 +117,20 @@ code {
   }
 }
 
+.skeleton {
+  pointer-events: none;
+  &-block {
+    @include shape.radius(shape.resolve-percentage-radius(32px, small));
+  }
+}
+
 .sales-image,
 .sales-image img,
 .details-image,
 .image-details .image,
 .image-display,
-.mdc-list-item__graphic.image {
+.mdc-list-item__graphic.image,
+.list-image-container {
   @include shape.radius(shape.resolve-percentage-radius(16px, medium));
 }
 
@@ -231,7 +243,6 @@ code {
   padding: 0.33rem 1rem;
   min-height: 2rem;
   min-width: 0;
-  box-sizing: border-box;
   white-space: pre-wrap;
   &::before {
     content: none !important;
@@ -351,7 +362,6 @@ body {
   .mdc-list-item:first-child {
     margin: 0;
     @include shape.radius(0);
-    box-sizing: border-box;
   }
   .mdc-menu {
     .mdc-list-item {
@@ -418,6 +428,7 @@ body {
         @include typography.typography(overline);
         font-family: inherit;
         line-height: 1rem;
+        align-self: flex-start;
       }
       .mdc-list-item__primary-text {
         margin: 2px 0;

@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
-import { setTheme } from "@s/common";
+import { selectTheme, setTheme } from "@s/common";
 import { Interval } from "@s/common/constructors";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
@@ -188,7 +188,9 @@ export const checkTheme = (state = store.getState()) => {
 
   const { settings } = state;
   const theme = settings.lichTheme ? "lich" : isDarkTheme(state) ? settings.darkTheme : settings.lightTheme;
-  dispatch(setTheme(theme));
+  if (selectTheme(state) !== theme) {
+    dispatch(setTheme(theme));
+  }
   const { documentElement: html } = document;
   html.setAttribute("class", theme);
   const meta = document.querySelector("meta[name=theme-color]");

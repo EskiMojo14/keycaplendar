@@ -2,5 +2,9 @@
     "javascript.preferences.importModuleSpecifier": "non-relative",
     "javascript.preferences.importModuleSpecifierEnding": "minimal",
     "typescript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.preferences.importModuleSpecifierEnding": "minimal"
+    "typescript.preferences.importModuleSpecifierEnding": "minimal",
+    "jest.autoRun": {
+        "watch": false,
+        "onSave": "test-file"
+    }
 }

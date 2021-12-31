@@ -7,6 +7,7 @@ import { queue } from "~/app/snackbar-queue";
 import store from "~/app/store";
 import { selectPage } from "@s/common";
 import { allPages, mainPages, pageTitle } from "@s/common/constants";
+import { triggerTransition } from "@s/common/functions";
 import firestore from "@s/firebase/firestore";
 import type { UserId } from "@s/firebase/types";
 import { selectBought, selectFavorites, selectHidden, selectUser, selectUserPresets, setUserPresets } from "@s/user";
@@ -30,6 +31,7 @@ import {
   selectCurrentPreset,
   selectDefaultPreset,
   selectFilteredSets,
+  selectInitialLoad,
   selectLinkedFavorites,
   selectSearch,
   selectSetGroups,
@@ -38,9 +40,9 @@ import {
   selectURLWhitelist,
   selectWhitelist,
   setAppPresets,
-  setContent,
   setCurrentPreset,
   setDefaultPreset,
+  setInitialLoad,
   setList,
   setLoading,
   setSearch as setMainSearch,
@@ -154,15 +156,16 @@ export const getData = () => {
       alphabeticalSortProp(sets, "colorway");
 
       dispatch(setSetList("allSets", sets));
+      dispatch(setInitialLoad(false));
 
-      filterData(store.getState());
+      filterData(true);
       generateLists(store.getState());
     })
     .catch((error) => {
       console.log("Error getting data: " + error);
       queue.notify({ title: "Error getting data: " + error });
       dispatch(setLoading(false));
-      dispatch(setContent(false));
+      dispatch(setSetGroups([]));
     });
 };
 
@@ -286,7 +289,7 @@ const generateLists = (state = store.getState()) => {
   }
 };
 
-export const filterData = (state = store.getState()) => {
+export const filterData = (transition = false, state = store.getState()) => {
   const page = selectPage(state);
   const sets = selectAllSets(state);
   const search = selectSearch(state);
@@ -295,6 +298,11 @@ export const filterData = (state = store.getState()) => {
   const bought = selectBought(state);
   const hidden = selectHidden(state);
   const user = selectUser(state);
+  const initialLoad = selectInitialLoad(state);
+
+  if (initialLoad) {
+    return;
+  }
 
   // filter bool functions
 
@@ -377,9 +385,8 @@ export const filterData = (state = store.getState()) => {
 
   dispatch(setSetList("filteredSets", filteredSets));
 
-  createGroups(store.getState());
+  createGroups(transition);
 
-  dispatch(setContent(filteredSets.length > 0));
   dispatch(setLoading(false));
 };
 
@@ -403,12 +410,12 @@ const sortData = (state = store.getState()) => {
   dispatch(setSetGroups(sortedGroups));
 };
 
-const createGroups = (state = store.getState()) => {
+const createGroups = (transition = false, state = store.getState()) => {
   const page = selectPage(state);
   const sort = selectSort(state);
   const sortOrder = selectSortOrder(state);
   const sets = selectFilteredSets(state);
-  const createGroups = (sets: SetType[]): string[] => {
+  const createSetGroups = (sets: SetType[]): string[] => {
     if (arrayIncludes(dateSorts, sort)) {
       return sets
         .map((set) => {
@@ -430,7 +437,7 @@ const createGroups = (state = store.getState()) => {
       return sets.map((set) => (hasKey(set, sort) ? `${set[sort]}` : "")).filter(Boolean);
     }
   };
-  const groups = removeDuplicates(createGroups(sets));
+  const groups = removeDuplicates(createSetGroups(sets));
 
   groups.sort((a, b) => {
     if (arrayIncludes(dateSorts, sort)) {
@@ -518,6 +525,10 @@ const createGroups = (state = store.getState()) => {
 
   dispatch(setSetGroups(setGroups));
 
+  if (transition) {
+    triggerTransition();
+  }
+
   if (sortHiddenCheck[sort].includes(page)) {
     const allGroupedSets = removeDuplicates(setGroups.map((group) => group.sets.map((set) => set.id)).flat());
 
@@ -539,7 +550,7 @@ export const setSort = (sort: SortType, clearUrl = true, state = store.getState(
   if (arrayIncludes(allSorts, sort)) {
     dispatch(setMainSort(sort));
     dispatch(setMainSortOrder(sortOrder));
-    createGroups(store.getState());
+    createGroups();
   }
   if (clearUrl) {
     const params = new URLSearchParams(window.location.search);
@@ -568,7 +579,7 @@ export const setSortOrder = (sortOrder: SortOrderType, clearUrl = true) => {
 export const setSearch = (query: string) => {
   dispatch(setMainSearch(query));
   document.documentElement.scrollTop = 0;
-  debouncedFilterData(store.getState());
+  debouncedFilterData();
 };
 
 export const setWhitelistMerge = (
@@ -580,7 +591,7 @@ export const setWhitelistMerge = (
   dispatch(mergeWhitelist(partialWhitelist));
   document.documentElement.scrollTop = 0;
   if (allSets.length > 0) {
-    filterData(store.getState());
+    filterData();
   }
   if (clearUrl) {
     dispatch(setURLWhitelist({}));
@@ -624,7 +635,7 @@ export const setWhitelist = <T extends keyof WhitelistType>(
     dispatch(mergeWhitelist({ [prop]: val }));
     document.documentElement.scrollTop = 0;
     if (allSets.length > 0) {
-      filterData(store.getState());
+      filterData();
     }
   }
   if (clearUrl) {

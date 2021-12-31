@@ -6,97 +6,98 @@ $body-font: unquote("Lato, sans-serif");
   @return ($px / 16) * 1rem;
 }
 
-$headline1: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(96),
-);
-$headline2: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(60),
-);
-$headline3: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(48),
-);
-$headline4: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(34),
-);
-$headline5: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(24),
-);
-$headline6: (
-  font-family: $body-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(21),
-);
-$body1: (
-  font-family: $body-font,
-  font-size: toRem(17),
-);
-$body2: (
-  font-family: $body-font,
-  font-size: toRem(15),
-);
-$subtitle1: (
-  font-family: $body-font,
-  font-size: toRem(17),
-);
-$subtitle2: (
-  font-family: $body-font,
-  font-size: toRem(15),
-);
-$button: (
-  font-family: $body-font,
-  font-size: toRem(15),
-);
-$overline: (
-  font-family: $body-font,
-  font-size: toRem(10),
-  line-height: toRem(26),
-);
-$caption: (
-  font-family: $body-font,
-  font-size: toRem(13),
-);
-
-$headline6-serif: (
-  font-family: $headline-font,
-  font-feature-settings: "lnum",
-  font-size: toRem(20),
-);
-$body1-serif: (
-  font-family: $headline-font,
-  font-size: toRem(16),
-);
-$body2-serif: (
-  font-family: $headline-font,
-  font-size: toRem(14),
-);
-$subtitle1-serif: (
-  font-family: $headline-font,
-  font-size: toRem(16),
-);
-$subtitle2-serif: (
-  font-family: $headline-font,
-  font-size: toRem(14),
-);
-$button-serif: (
-  font-family: $headline-font,
-  font-size: toRem(14),
-);
-$overline-serif: (
-  font-family: $headline-font,
-  font-size: toRem(10),
-  line-height: toRem(30),
-);
-$caption-serif: (
-  font-family: $headline-font,
-  font-size: toRem(12),
+$styles: (
+  headline1: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(96),
+  ),
+  headline2: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(60),
+  ),
+  headline3: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(48),
+  ),
+  headline4: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(34),
+  ),
+  headline5: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(24),
+  ),
+  headline6: (
+    font-family: $body-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(21),
+  ),
+  body1: (
+    font-family: $body-font,
+    font-size: toRem(17),
+  ),
+  body2: (
+    font-family: $body-font,
+    font-size: toRem(15),
+  ),
+  subtitle1: (
+    font-family: $body-font,
+    font-size: toRem(17),
+  ),
+  subtitle2: (
+    font-family: $body-font,
+    font-size: toRem(15),
+  ),
+  button: (
+    font-family: $body-font,
+    font-size: toRem(15),
+  ),
+  overline: (
+    font-family: $body-font,
+    font-size: toRem(10),
+    line-height: toRem(26),
+  ),
+  caption: (
+    font-family: $body-font,
+    font-size: toRem(13),
+  ),
+  headline6-serif: (
+    font-family: $headline-font,
+    font-feature-settings: "lnum",
+    font-size: toRem(20),
+  ),
+  body1-serif: (
+    font-family: $headline-font,
+    font-size: toRem(16),
+  ),
+  body2-serif: (
+    font-family: $headline-font,
+    font-size: toRem(14),
+  ),
+  subtitle1-serif: (
+    font-family: $headline-font,
+    font-size: toRem(16),
+  ),
+  subtitle2-serif: (
+    font-family: $headline-font,
+    font-size: toRem(14),
+  ),
+  button-serif: (
+    font-family: $headline-font,
+    font-size: toRem(14),
+  ),
+  overline-serif: (
+    font-family: $headline-font,
+    font-size: toRem(10),
+    line-height: toRem(30),
+  ),
+  caption-serif: (
+    font-family: $headline-font,
+    font-size: toRem(12),
+  ),
 );

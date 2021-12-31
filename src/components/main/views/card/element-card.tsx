@@ -16,10 +16,11 @@ import Twemoji from "react-twemoji";
 import { useAppSelector } from "~/app/hooks";
 import { queue } from "~/app/snackbar-queue";
 import { withTooltip } from "@c/util/hocs";
-import { selectDevice, selectPage } from "@s/common";
+import { selectDevice } from "@s/common";
 import type { SetType } from "@s/main/types";
-import { selectFavorites, selectHidden, selectUser } from "@s/user";
+import { selectFavorites, selectHidden } from "@s/user";
 import { toggleFavorite, toggleHidden } from "@s/user/functions";
+import type { CurrentUserType } from "@s/user/types";
 import { iconObject, pluralise } from "@s/util/functions";
 import { CheckCircle, Edit, Favorite, NewReleases, Share, Visibility, VisibilityOff } from "@i";
 import "./element-card.scss";
@@ -31,26 +32,37 @@ type ElementCardProps = {
   details: (set: SetType) => void;
   edit: (set: SetType) => void;
   image: string;
-  link: string;
   live: boolean;
   selected: boolean;
   set: SetType;
   subtitle: string;
   thisWeek: boolean;
   title: string;
+  user: CurrentUserType;
 };
 
-export const ElementCard = (props: ElementCardProps) => {
+export const ElementCard = ({
+  closeDetails,
+  daysLeft,
+  designer,
+  details,
+  edit,
+  image,
+  live,
+  selected,
+  set,
+  subtitle,
+  thisWeek,
+  title,
+  user,
+}: ElementCardProps) => {
   const device = useAppSelector(selectDevice);
-  const page = useAppSelector(selectPage);
-
-  const user = useAppSelector(selectUser);
   const favorites = useAppSelector(selectFavorites);
   const hidden = useAppSelector(selectHidden);
 
   const copyShareLink = () => {
     const arr = window.location.href.split("/");
-    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + props.set.alias;
+    const url = arr[0] + "//" + arr[2] + "?keysetAlias=" + set.alias;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -63,22 +75,21 @@ export const ElementCard = (props: ElementCardProps) => {
 
   const useLink = device === "desktop";
 
-  const liveIndicator =
-    props.live && page !== "live"
-      ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
-      : null;
-  const shipIndicator = props.set?.shipped
+  const liveIndicator = live
+    ? withTooltip(<Icon className="live-indicator" icon={iconObject(<NewReleases />)} />, "Live")
+    : null;
+  const shipIndicator = set?.shipped
     ? withTooltip(<Icon className="ship-indicator" icon={iconObject(<CheckCircle />)} />, "Shipped")
     : null;
-  const timeIndicator = props.thisWeek ? (
+  const timeIndicator = thisWeek ? (
     <Typography use="overline" tag="h4" className="time-indicator">
-      {pluralise`${props.daysLeft} ${[props.daysLeft, "day"]}`}
+      {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
   ) : null;
   const userButtons = user.email ? (
     useLink ? (
       <CardActionButtons>
-        <CardActionButton tag="a" label="Link" href={props.set.details} target="_blank" rel="noopener noreferrer" />
+        <CardActionButton tag="a" label="Link" href={set.details} target="_blank" rel="noopener noreferrer" />
       </CardActionButtons>
     ) : (
       <CardActionButtons>
@@ -91,17 +102,17 @@ export const ElementCard = (props: ElementCardProps) => {
         <CardActionIcon
           icon="open_in_new"
           tag="a"
-          href={props.set.details}
+          href={set.details}
           target="_blank"
           rel="noopener noreferrer"
-          label={"Link to " + props.title}
+          label={"Link to " + title}
         />,
         "Link"
       )
     : null;
   const shareIcon = !user.email
     ? withTooltip(
-        <CardActionIcon icon={iconObject(<Share />)} label={"Copy link to " + props.title} onClick={copyShareLink} />,
+        <CardActionIcon icon={iconObject(<Share />)} label={"Copy link to " + title} onClick={copyShareLink} />,
         "Share"
       )
     : null;
@@ -111,40 +122,39 @@ export const ElementCard = (props: ElementCardProps) => {
           icon="favorite_border"
           onIcon={iconObject(<Favorite />)}
           className="favorite"
-          checked={favorites.includes(props.set.id)}
-          onClick={() => toggleFavorite(props.set.id)}
+          checked={favorites.includes(set.id)}
+          onClick={() => toggleFavorite(set.id)}
         />,
-        favorites.includes(props.set.id) ? "Unfavorite" : "Favorite"
+        favorites.includes(set.id) ? "Unfavorite" : "Favorite"
       )
     : null;
   const hiddenIcon =
-    user.email &&
-    !(user.isEditor || (user.isDesigner && props.set.designer && props.set.designer.includes(user.nickname)))
+    user.email && !(user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname)))
       ? withTooltip(
           <CardActionIcon
             icon={iconObject(<Visibility />)}
             onIcon={iconObject(<VisibilityOff />)}
             className="hide"
-            checked={hidden.includes(props.set.id)}
-            onClick={() => toggleHidden(props.set.id)}
+            checked={hidden.includes(set.id)}
+            onClick={() => toggleHidden(set.id)}
           />,
-          hidden.includes(props.set.id) ? "Unhide" : "Hide"
+          hidden.includes(set.id) ? "Unhide" : "Hide"
         )
       : null;
   const editButton =
-    user.isEditor || (user.isDesigner && props.set.designer && props.set.designer.includes(user.nickname))
-      ? withTooltip(<CardActionIcon icon={iconObject(<Edit />)} onClick={() => props.edit(props.set)} />, "Edit")
+    user.isEditor || (user.isDesigner && set.designer && set.designer.includes(user.nickname))
+      ? withTooltip(<CardActionIcon icon={iconObject(<Edit />)} onClick={() => edit(set)} />, "Edit")
       : null;
   return (
     <div className="card-container">
-      <Card className={classNames({ "mdc-card--selected": props.selected })}>
+      <Card className={classNames({ "mdc-card--selected": selected })}>
         <CardPrimaryAction
-          className={classNames({ "mdc-card__primary-action--selected": props.selected })}
-          onClick={() => (!props.selected ? props.details(props.set) : props.closeDetails())}
+          className={classNames("content", { "mdc-card__primary-action--selected": selected })}
+          onClick={() => (!selected ? details(set) : closeDetails())}
         >
           <div className="media-container">
             <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
-              <CardMedia sixteenByNine style={{ backgroundImage: "url(" + props.image + ")" }} />
+              <CardMedia sixteenByNine style={{ backgroundImage: "url(" + image + ")" }} />
             </LazyLoad>
             {timeIndicator}
           </div>
@@ -152,19 +162,21 @@ export const ElementCard = (props: ElementCardProps) => {
             <div className="text-container">
               <div className="overline">
                 <Typography use="overline" tag="h3">
-                  {props.designer}
+                  {designer}
                 </Typography>
                 {liveIndicator}
                 {shipIndicator}
               </div>
               <div className="title">
                 <Typography use="headline5" tag="h2">
-                  <Twemoji options={{ className: "twemoji" }}>{props.title}</Twemoji>
+                  <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
                 </Typography>
               </div>
-              <Typography use="subtitle2" tag="p">
-                {props.subtitle}
-              </Typography>
+              <div className="subtitle">
+                <Typography use="subtitle2" tag="p">
+                  {subtitle}
+                </Typography>
+              </div>
             </div>
           </div>
         </CardPrimaryAction>
