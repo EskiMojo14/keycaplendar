@@ -37,6 +37,7 @@ module.exports = {
   parser: "@typescript-eslint/parser", // Specifies the ESLint parser
   extends: [
     "plugin:react/recommended", // Uses the recommended rules from @eslint-plugin-react
+    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended", // Uses the recommended rules from @typescript-eslint/eslint-plugin
     "plugin:import/recommended",
     "plugin:import/typescript",
@@ -74,9 +75,7 @@ module.exports = {
     "@typescript-eslint/member-delimiter-style": "warn",
     "@typescript-eslint/method-signature-style": "warn",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/prefer-includes": "warn",
     "@typescript-eslint/prefer-optional-chain": "warn",
-    "@typescript-eslint/prefer-reduce-type-parameter": "warn",
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
     "arrow-body-style": ["error", "as-needed"],
     "import/no-named-as-default": "off",
@@ -114,8 +113,15 @@ module.exports = {
       },
     ],
     "react/destructuring-assignment": ["error", "always"],
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
+    "react/function-component-definition": [
+      "error",
+      {
+        namedComponents: "arrow-function",
+        unnamedComponents: "arrow-function",
+      },
+    ],
+    "react/jsx-boolean-value": "error",
+    "react/jsx-fragments": "error",
     "sort-imports": [
       "warn",
       {
@@ -129,6 +135,10 @@ module.exports = {
       files: ["*.ts", "*.tsx"], // Your TypeScript files extension
       parserOptions: {
         project: ["./tsconfig.json"], // Specify it only for TypeScript files
+      },
+      rules: {
+        "@typescript-eslint/prefer-includes": "warn",
+        "@typescript-eslint/prefer-reduce-type-parameter": "warn",
       },
     },
   ],
