@@ -142,9 +142,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
       <div className="clear-filter">
         <Chip
           label={truncate(filterSet.title, 20)}
+          onTrailingIconInteraction={clearFilter}
           trailingIcon={iconObject(<FilterVariantRemove />)}
           trailingIconRemovesChip={false}
-          onTrailingIconInteraction={clearFilter}
         />
       </div>
     </TopAppBarSection>
@@ -158,29 +158,29 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
     const { [index]: tab } = historyTabs;
     const tabs = {
       recent: (
-        <div className="history-tab recent recent-grid" key={key}>
+        <div key={key} className="history-tab recent recent-grid">
           {recentSets.map((recentSet) => (
             <RecentSetCard
-              recentSet={recentSet}
+              key={recentSet.id}
               filterChangelog={filterChangelog}
               filtered={recentSet.id === filterSet.id}
-              selected={recentSet.id === detailSet.id}
               openDetails={openDetails}
-              key={recentSet.id}
+              recentSet={recentSet}
+              selected={recentSet.id === detailSet.id}
             />
           ))}
         </div>
       ),
       changelog: (
-        <div className="history-tab changelog changelog-container" key={key}>
+        <div key={key} className="history-tab changelog changelog-container">
           <Card
             className={classNames("changelog", {
               hidden: processedActions.length === 0,
             })}
           >
-            <List twoLine className="three-line">
+            <List className="three-line" twoLine>
               {filteredActions.map((action) => (
-                <ChangelogEntry action={action} key={action.timestamp} />
+                <ChangelogEntry key={action.timestamp} action={action} />
               ))}
             </List>
           </Card>
@@ -192,7 +192,7 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         {bottomNav ? tabRow : null}
         <TopAppBarRow>
           <TopAppBarSection alignStart>
@@ -213,25 +213,25 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
           })}
         >
           <DrawerDetails
-            open={detailsOpen}
             close={closeDetails}
-            set={detailSet}
+            open={detailsOpen}
             openSales={openSales}
+            set={detailSet}
           />
-          <DialogSales open={salesOpen} close={closeSales} set={salesSet} />
+          <DialogSales close={closeSales} open={salesOpen} set={salesSet} />
           <VirtualizeSwipeableViews
             className={classNames(tab, { swiping })}
+            index={historyTabs.indexOf(tab)}
+            onChangeIndex={handleChangeIndex}
+            onSwitching={() => setSwiping(true)}
+            onTransitionEnd={() => setSwiping(false)}
+            slideCount={historyTabs.length}
+            slideRenderer={slideRenderer}
             springConfig={{
               duration: "0.35s",
               easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
               delay: "0s",
             }}
-            slideCount={historyTabs.length}
-            index={historyTabs.indexOf(tab)}
-            onChangeIndex={handleChangeIndex}
-            slideRenderer={slideRenderer}
-            onSwitching={() => setSwiping(true)}
-            onTransitionEnd={() => setSwiping(false)}
           />
         </div>
       </div>

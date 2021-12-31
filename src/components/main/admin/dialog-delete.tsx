@@ -54,7 +54,7 @@ export const DialogDelete = ({
         ?
       </DialogContent>
       <DialogActions>
-        <DialogButton action="close" onClick={close} isDefaultAction>
+        <DialogButton action="close" isDefaultAction onClick={close}>
           Cancel
         </DialogButton>
         <DialogButton

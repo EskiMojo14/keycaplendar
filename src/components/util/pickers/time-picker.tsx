@@ -158,49 +158,49 @@ export const TimePicker = ({
   const modal = useInline ? (
     <MenuSurface
       {...modalProps}
-      open={open}
-      onClose={saveOnClose ? confirmDialog : undefined}
-      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
       anchorCorner="bottomLeft"
+      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={saveOnClose ? confirmDialog : undefined}
+      open={open}
     >
       <KeyboardTimePicker
+        ampm={false}
+        onChange={handleTimePickerChange}
+        openTo="hours"
+        orientation="portrait"
         value={`2020-12-20T${
           saveOnClose
             ? dialogVal
             : value || validFallback || DateTime.now().toISODate()
         }`}
-        onChange={handleTimePickerChange}
         variant="static"
-        orientation="portrait"
-        ampm={false}
-        openTo="hours"
         {...pickerProps}
       />
       {showNowButton ? (
         <div className={bemClasses("buttons")}>
-          <Button label="Now" type="button" onClick={setNow} />
+          <Button label="Now" onClick={setNow} type="button" />
         </div>
       ) : null}
     </MenuSurface>
   ) : (
     <Dialog
       {...modalProps}
-      open={open}
-      onClose={closeDialog}
       className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={closeDialog}
+      open={open}
       renderToPortal
     >
       <KeyboardTimePicker
+        ampm={false}
+        onChange={handleTimePickerChange}
+        openTo="hours"
+        orientation={orientation}
         value={`2020-12-20T${
           dialogVal ||
           validFallback ||
           DateTime.now().toLocaleString(DateTime.TIME_24_SIMPLE)
         }`}
-        onChange={handleTimePickerChange}
         variant="static"
-        orientation={orientation}
-        ampm={false}
-        openTo="hours"
         {...pickerProps}
       />
       <ConditionalWrapper
@@ -214,11 +214,11 @@ export const TimePicker = ({
             <Button
               className={bemClasses("show-now-button")}
               label="Now"
-              type="button"
               onClick={setNow}
+              type="button"
             />
           ) : null}
-          <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
+          <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>
       </ConditionalWrapper>
@@ -236,19 +236,15 @@ export const TimePicker = ({
     >
       <TextField
         {...props}
-        value={rifm.value}
-        onChange={rifm.onChange}
         className={bemClasses("field", { inline: useInline })}
-        inputMode="numeric"
-        pattern="^\d{2}:\d{2}"
-        onFocus={() => {
-          if (touched) {
-            setTouched(false);
-          }
-          if (useInline) {
-            setOpen(true);
-          }
+        helpText={{
+          persistent: true,
+          validationMsg: true,
+          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
+          ...helpTextProps,
         }}
+        inputMode="numeric"
+        invalid={!!invalid}
         onBlur={() => {
           if (!touched) {
             setTouched(true);
@@ -257,14 +253,17 @@ export const TimePicker = ({
             setOpen(false);
           }
         }}
-        required={required}
-        invalid={!!invalid}
-        helpText={{
-          persistent: true,
-          validationMsg: true,
-          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
-          ...helpTextProps,
+        onChange={rifm.onChange}
+        onFocus={() => {
+          if (touched) {
+            setTouched(false);
+          }
+          if (useInline) {
+            setOpen(true);
+          }
         }}
+        pattern="^\d{2}:\d{2}"
+        required={required}
         trailingIcon={
           useInline
             ? undefined
@@ -276,6 +275,7 @@ export const TimePicker = ({
                 "Time picker"
               )
         }
+        value={rifm.value}
       />
       {modal}
     </ConditionalWrapper>

@@ -78,37 +78,37 @@ export const DialogShareFavorites = ({
   };
 
   return (
-    <Dialog open={open} onClose={close} className="share-dialog">
+    <Dialog className="share-dialog" onClose={close} open={open}>
       <DialogTitle>Share favorites</DialogTitle>
       <DialogContent>
         <div className="group">
           <div className="text-field-container">
             <TextField
-              outlined
-              name="shareName"
-              label="Display name"
               className="name-field"
-              trailingIcon={
-                shareNameLoading ? (
-                  <CircularProgress size="medium" />
-                ) : undefined
-              }
               helpText={{
                 persistent: true,
                 validationMsg: false,
                 children: "Displayed username to link viewers.",
               }}
-              value={shareName}
+              label="Display name"
+              name="shareName"
               onChange={handleChange}
+              outlined
+              trailingIcon={
+                shareNameLoading ? (
+                  <CircularProgress size="medium" />
+                ) : undefined
+              }
+              value={shareName}
             />
           </div>
         </div>
         <div className="group">
           <div className="switch-container">
             <Switch
+              checked={shareable}
               label="Allow others to view"
               name="shareFavorites"
-              checked={shareable}
               onChange={handleSwitchChange}
             />
           </div>
@@ -119,18 +119,18 @@ export const DialogShareFavorites = ({
                 thus breaking any existing links.
               </Typography>
               <TextField
-                outlined
-                readOnly
-                value={shareLink}
                 className="display-link"
-                trailingIcon={
-                  <IconButton icon="content_copy" onClick={copyLink} />
-                }
                 helpText={{
                   persistent: true,
                   validationMsg: false,
                   children: "Anyone with the link can view.",
                 }}
+                outlined
+                readOnly
+                trailingIcon={
+                  <IconButton icon="content_copy" onClick={copyLink} />
+                }
+                value={shareLink}
               />
             </>
           ) : null}

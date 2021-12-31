@@ -19,7 +19,7 @@ export const SkeletonCompact = ({
   subtitle,
   icon,
 }: SkeletonCompactProps) => (
-  <ListItem ripple={false} className="skeleton">
+  <ListItem className="skeleton" ripple={false}>
     {icon && (
       <ListItemGraphic
         className="live-indicator ship-indicator"

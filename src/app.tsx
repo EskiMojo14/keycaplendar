@@ -129,8 +129,8 @@ export const App = () => {
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="/privacy" component={PrivacyPolicy} />
-        <Route path="/terms" component={TermsOfService} />
+        <Route component={PrivacyPolicy} path="/privacy" />
+        <Route component={TermsOfService} path="/terms" />
         <Route
           exact
           path={["/", ...allPages.map((page: string) => `/${page}`)]}
@@ -145,9 +145,9 @@ export const App = () => {
             />
             <SnackbarQueue messages={queue.messages} />
             <SnackbarCookies
-              open={!cookies}
               accept={acceptCookies}
               clear={clearCookies}
+              open={!cookies}
             />
             <Portal />
           </div>

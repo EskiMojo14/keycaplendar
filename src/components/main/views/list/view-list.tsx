@@ -29,7 +29,7 @@ export const ViewList = ({
   const yesterday = today.minus({ days: 1 });
   const oneDay = 24 * 60 * 60 * 1000;
   return (
-    <List twoLine nonInteractive={loading} className="view-list three-line">
+    <List className="view-list three-line" nonInteractive={loading} twoLine>
       {sets.map((set) => {
         const gbLaunch = set.gbLaunch
           ? set.gbLaunch.includes("Q") || !set.gbLaunch
@@ -100,15 +100,6 @@ export const ViewList = ({
         ) : (
           <ElementList
             key={set.id}
-            selected={detailSet === set}
-            title={`${set.profile} ${set.colorway}`}
-            image={set.image.replace("keysets", "list")}
-            thisWeek={
-              gbEnd
-                ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&
-                  gbEnd.valueOf() > today.valueOf()
-                : false
-            }
             daysLeft={
               gbEnd
                 ? Math.ceil(
@@ -116,6 +107,15 @@ export const ViewList = ({
                   )
                 : 0
             }
+            image={set.image.replace("keysets", "list")}
+            selected={detailSet === set}
+            thisWeek={
+              gbEnd
+                ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&
+                  gbEnd.valueOf() > today.valueOf()
+                : false
+            }
+            title={`${set.profile} ${set.colorway}`}
             {...{ set, subtitle, details, closeDetails, designer, live }}
           />
         );

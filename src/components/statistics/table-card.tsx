@@ -134,21 +134,21 @@ export const TableCard = ({
   const barChart =
     graphType === "bar" ? (
       <ChartistGraph
-        type="Bar"
         className="ct-double-octave"
         data={{ ...chartData.chartData }}
-        options={chartOptions}
         listener={listener}
+        options={chartOptions}
+        type="Bar"
       />
     ) : null;
   const lineChart =
     graphType === "line" ? (
       <ChartistGraph
-        type="Line"
         className="ct-double-octave"
         data={{ ...chartData.chartData }}
-        options={chartOptions}
         listener={listener}
+        options={chartOptions}
+        type="Line"
       />
     ) : null;
   const selectChips =
@@ -161,10 +161,10 @@ export const TableCard = ({
               <Chip
                 key={obj.name}
                 label={obj.name}
-                selected={index === selectedIndex}
                 onInteraction={() => {
                   setSelectedIndex(index === selectedIndex ? -1 : index);
                 }}
+                selected={index === selectedIndex}
               />
             ))}
         </ChipSet>
@@ -175,14 +175,14 @@ export const TableCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -191,20 +191,20 @@ export const TableCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon="bar_chart"
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               "Bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon="show_chart"
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               "Line chart"
             )}
@@ -258,7 +258,7 @@ export const TableCard = ({
         </div>
         {selectChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}

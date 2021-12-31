@@ -136,31 +136,31 @@ export const UserCard = ({
     <CircularProgress />
   ) : (
     <CardActionIcon
+      disabled={!edited}
+      icon={iconObject(<Save />)}
       onClick={() => {
         if (edited) {
           setRoles();
         }
       }}
-      icon={iconObject(<Save />)}
-      disabled={!edited}
     />
   );
   const deleteButton =
     user.email === currentUser.email ||
     user.email === "ben.j.durrant@gmail.com" ? null : (
       <IconButton
-        onClick={() => deleteFn(user)}
         icon={iconObject(<Delete />)}
+        onClick={() => deleteFn(user)}
       />
     );
   return (
     <Card className="user">
       <List nonInteractive>
-        <ListItem ripple={false} className="three-line">
+        <ListItem className="three-line" ripple={false}>
           <Avatar
-            src={user.photoURL}
             className="mdc-list-item__graphic"
             size="xlarge"
+            src={user.photoURL}
           />
           <ListItemText>
             <div className="overline">{user.nickname}</div>
@@ -171,7 +171,7 @@ export const UserCard = ({
         </ListItem>
       </List>
       <CollapsibleList
-        handle={<SimpleListItem text="Account dates" metaIcon="expand_more" />}
+        handle={<SimpleListItem metaIcon="expand_more" text="Account dates" />}
       >
         <List nonInteractive twoLine>
           <ListItem ripple={false}>
@@ -215,24 +215,24 @@ export const UserCard = ({
       <div className="text-field-container">
         <MenuSurfaceAnchor>
           <TextField
-            outlined
-            label="Nickname"
             className="nickname"
+            label="Nickname"
             name="nickname"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
             value={user.nickname}
           />
           <Autocomplete
-            open={focused === "nickname"}
             array={allDesigners}
-            query={user.nickname}
+            minChars={2}
+            open={focused === "nickname"}
             prop="nickname"
+            query={user.nickname}
             select={(prop, item) =>
               hasKey(user, prop) && selectValue(prop, item)
             }
-            minChars={2}
           />
         </MenuSurfaceAnchor>
       </div>
@@ -242,21 +242,21 @@ export const UserCard = ({
             {roles.map((role) => (
               <SegmentedButtonSegment
                 key={role}
-                label={role}
-                icon={
-                  device === "desktop" && hasKey(userRoleIcons, role)
-                    ? userRoleIcons[role]
-                    : null
-                }
-                selected={hasKey(user, role) && !!user[role]}
-                onClick={() => {
-                  toggleRole(role);
-                }}
                 disabled={
                   (user.email === currentUser.email ||
                     user.email === "ben.j.durrant@gmail.com") &&
                   role !== "designer"
                 }
+                icon={
+                  device === "desktop" && hasKey(userRoleIcons, role)
+                    ? userRoleIcons[role]
+                    : null
+                }
+                label={role}
+                onClick={() => {
+                  toggleRole(role);
+                }}
+                selected={hasKey(user, role) && !!user[role]}
               />
             ))}
           </SegmentedButton>

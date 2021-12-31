@@ -91,30 +91,30 @@ export const SearchBarPersistent = ({
         })}
       >
         <TextField
-          outlined
-          className={bemClasses("field")}
-          value={search}
           autoComplete="off"
-          placeholder="Search"
+          className={bemClasses("field")}
           icon="search"
+          name="search"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          outlined
+          placeholder="Search"
           trailingIcon={
             expanded ? <IconButton icon="clear" onClick={clearInput} /> : null
           }
-          name="search"
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          value={search}
         />
       </div>
       <Autocomplete
+        array={searchTerms}
+        minChars={2}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         open={focused}
         prop="search"
-        array={searchTerms}
         query={search}
         select={autoCompleteSearch}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        minChars={2}
       />
     </MenuSurfaceAnchor>
   );
@@ -239,31 +239,31 @@ export const SearchBarModal = ({
     >
       <div className={bemClasses("field-container")}>
         <TextField
-          id="search"
-          outlined
-          className={bemClasses("field")}
-          value={search}
           autoComplete="off"
-          placeholder="Search"
+          className={bemClasses("field")}
           icon={{
             icon: "arrow_back",
             tabIndex: 0,
             onClick: () => closeBar(),
           }}
-          trailingIcon={<IconButton icon="clear" onClick={clearInput} />}
+          id="search"
           name="search"
+          onBlur={handleBlur}
           onChange={handleChange}
           onFocus={handleFocus}
-          onBlur={handleBlur}
+          outlined
+          placeholder="Search"
+          trailingIcon={<IconButton icon="clear" onClick={clearInput} />}
+          value={search}
         />
       </div>
       <AutocompleteMobile
+        array={searchTerms}
+        minChars={1}
         open={focused && open}
         prop="search"
-        array={searchTerms}
         query={search}
         select={autoCompleteSearch}
-        minChars={1}
       />
     </div>
   );
@@ -343,21 +343,17 @@ export const SearchAppBar = ({
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames("search-app-bar", {
           "search-app-bar--open": open,
         })}
+        fixed
       >
         <TopAppBarRow>
           <div className={bemClasses({ modifiers: "modal open" })}>
             <div className={bemClasses("field-container")}>
               <TextField
-                id="search"
-                outlined
-                className={bemClasses("field")}
-                value={search}
                 autoComplete="off"
-                placeholder="Search"
+                className={bemClasses("field")}
                 icon={{
                   icon: "arrow_back",
                   tabIndex: 0,
@@ -366,20 +362,24 @@ export const SearchAppBar = ({
                     clearInput();
                   },
                 }}
-                trailingIcon={<IconButton icon="clear" onClick={clearInput} />}
+                id="search"
                 name="search"
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                placeholder="Search"
+                trailingIcon={<IconButton icon="clear" onClick={clearInput} />}
+                value={search}
               />
             </div>
             <AutocompleteMobile
+              array={searchTerms}
+              minChars={1}
               open={focused && open}
               prop="search"
-              array={searchTerms}
               query={search}
               select={autoCompleteSearch}
-              minChars={1}
             />
           </div>
         </TopAppBarRow>

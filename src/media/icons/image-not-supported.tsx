@@ -2,13 +2,13 @@ import { memo } from "react";
 
 const SvgImageNotSupported = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     height="1em"
     viewBox="0 0 24 24"
     width="1em"
+    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path fill="none" d="M0 0h24v24H0z" />
+    <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M7.83 5H19v11.17L7.83 5zm8.34 14l-2-2H6l3-4 2 2.72.84-1.05L5 7.83V19h11.17z"
       opacity={0.3}

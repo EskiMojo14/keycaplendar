@@ -81,9 +81,9 @@ export const AppBar = ({
     page === "favorites" && user.email && linkedFavorites.array.length === 0
       ? withTooltip(
           <TopAppBarActionItem
-            style={{ "--animation-delay": 4 }}
             icon={iconObject(<Share />)}
             onClick={openShare}
+            style={{ "--animation-delay": 4 }}
           />,
           "Share",
           { align: tooltipAlign }
@@ -94,9 +94,9 @@ export const AppBar = ({
 
   const searchBar = indentEl ? (
     <SearchAppBar
+      close={closeSearch}
       open={searchOpen}
       openBar={openSearch}
-      close={closeSearch}
       search={search}
       setSearch={setSearch}
     />
@@ -109,12 +109,12 @@ export const AppBar = ({
       <MenuSurfaceAnchor
         className={classNames({ hidden: page === "calendar" })}
       >
-        <MenuSort open={sortOpen} onClose={closeSort} />
+        <MenuSort onClose={closeSort} open={sortOpen} />
         {withTooltip(
           <TopAppBarActionItem
-            style={{ "--animation-delay": 1 }}
             icon="sort"
             onClick={openSort}
+            style={{ "--animation-delay": 1 }}
           />,
           "Sort",
           {
@@ -125,9 +125,9 @@ export const AppBar = ({
       </MenuSurfaceAnchor>
       {withTooltip(
         <TopAppBarActionItem
-          style={{ "--animation-delay": 2 }}
           icon="filter_list"
           onClick={openFilter}
+          style={{ "--animation-delay": 2 }}
         />,
         "Filter",
         {
@@ -135,12 +135,12 @@ export const AppBar = ({
         }
       )}
       <MenuSurfaceAnchor>
-        <MenuView open={viewOpen} onClose={closeView} />
+        <MenuView onClose={closeView} open={viewOpen} />
         {withTooltip(
           <TopAppBarActionItem
+            icon={viewIcons[view]}
             onClick={openView}
             style={{ "--animation-delay": 3 }}
-            icon={viewIcons[view]}
           />,
           "View",
           {
@@ -152,8 +152,8 @@ export const AppBar = ({
       {device !== "desktop" && !indentEl ? (
         <div>
           <SearchBarModal
-            open={searchOpen}
             close={closeSearch}
+            open={searchOpen}
             search={search}
             setSearch={setSearch}
           />
@@ -163,24 +163,24 @@ export const AppBar = ({
             <MenuSurfaceAnchor>
               <Menu
                 anchorCorner="bottomLeft"
-                open={moreOpen}
                 onClose={closeMore}
+                open={moreOpen}
               >
                 <MenuItem onClick={openSearch}>Search</MenuItem>
                 <MenuItem onClick={openShare}>Share</MenuItem>
               </Menu>
               <TopAppBarActionItem
-                style={{ "--animation-delay": 4 }}
                 icon="more_vert"
                 onClick={openMore}
+                style={{ "--animation-delay": 4 }}
               />
             </MenuSurfaceAnchor>
           ) : (
             withTooltip(
               <TopAppBarActionItem
-                style={{ "--animation-delay": 4 }}
                 icon="search"
                 onClick={openSearch}
+                style={{ "--animation-delay": 4 }}
               />,
               "Search"
             )
@@ -192,22 +192,22 @@ export const AppBar = ({
         user.email &&
         linkedFavorites.array.length === 0 ? (
           <MenuSurfaceAnchor>
-            <Menu anchorCorner="bottomLeft" open={moreOpen} onClose={closeMore}>
+            <Menu anchorCorner="bottomLeft" onClose={closeMore} open={moreOpen}>
               <MenuItem onClick={openSearch}>Search</MenuItem>
               <MenuItem onClick={openShare}>Share</MenuItem>
             </Menu>
             <TopAppBarActionItem
-              style={{ "--animation-delay": 4 }}
               icon="more_vert"
               onClick={openMore}
+              style={{ "--animation-delay": 4 }}
             />
           </MenuSurfaceAnchor>
         ) : (
           withTooltip(
             <TopAppBarActionItem
-              style={{ "--animation-delay": 4 }}
               icon="search"
               onClick={openSearch}
+              style={{ "--animation-delay": 4 }}
             />,
             "Search"
           )
@@ -232,12 +232,12 @@ export const AppBar = ({
     <>
       {searchBar}
       <TopAppBar
-        fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
           "bottom-app-bar--indent": indentEl,
           "search-open": searchOpen && device !== "desktop" && !bottomNav,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>

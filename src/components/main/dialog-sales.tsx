@@ -15,7 +15,7 @@ type DialogSalesProps = {
 };
 
 export const DialogSales = ({ close, open, set }: DialogSalesProps) => (
-  <Dialog className="sales-dialog" open={open} onClose={close}>
+  <Dialog className="sales-dialog" onClose={close} open={open}>
     <DialogTitle>{`Sales - ${set.profile} ${set.colorway}`}</DialogTitle>
     <DialogContent>
       <div className="sales-image">
@@ -25,11 +25,11 @@ export const DialogSales = ({ close, open, set }: DialogSalesProps) => (
     </DialogContent>
     <DialogActions>
       <DialogButton
-        label="Open original"
-        tag="a"
         href={set.sales?.img ?? ""}
-        target="_blank"
+        label="Open original"
         rel="noopener noreferrer"
+        tag="a"
+        target="_blank"
       />
       <DialogButton label="Close" onClick={close} />
     </DialogActions>

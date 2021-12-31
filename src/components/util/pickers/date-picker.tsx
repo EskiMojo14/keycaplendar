@@ -216,32 +216,32 @@ export const DatePicker = ({
   const modal = useInline ? (
     <MenuSurface
       {...modalProps}
-      open={open && (!allowQuarter || value.charAt(0) !== "Q")}
-      onClose={saveOnClose ? confirmDialog : undefined}
-      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
       anchorCorner="bottomLeft"
+      className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={saveOnClose ? confirmDialog : undefined}
+      open={open && (!allowQuarter || value.charAt(0) !== "Q")}
     >
       <KeyboardDatePicker
+        maxDate={maxDate}
+        minDate={minDate}
+        onChange={handleDatePickerChange}
+        openTo={openTo}
+        orientation="portrait"
         value={
           saveOnClose
             ? dialogVal
             : value || validFallback || DateTime.now().toISODate()
         }
-        onChange={handleDatePickerChange}
         variant="static"
-        orientation="portrait"
         views={views}
-        openTo={openTo}
-        minDate={minDate}
-        maxDate={maxDate}
         {...pickerProps}
       />
       {showNowButton ? (
         <div className={bemClasses("buttons")}>
           <Button
             label={month ? "This month" : "Today"}
-            type="button"
             onClick={setNow}
+            type="button"
           />
         </div>
       ) : null}
@@ -249,20 +249,20 @@ export const DatePicker = ({
   ) : (
     <Dialog
       {...modalProps}
-      open={open}
-      onClose={closeDialog}
       className={bemClasses("modal", { open }, [modalProps?.className || ""])}
+      onClose={closeDialog}
+      open={open}
       renderToPortal
     >
       <KeyboardDatePicker
-        value={dialogVal || validFallback || DateTime.now().toISODate()}
-        onChange={handleDatePickerChange}
-        variant="static"
-        orientation={orientation}
-        views={views}
-        openTo={openTo}
-        minDate={minDate}
         maxDate={maxDate}
+        minDate={minDate}
+        onChange={handleDatePickerChange}
+        openTo={openTo}
+        orientation={orientation}
+        value={dialogVal || validFallback || DateTime.now().toISODate()}
+        variant="static"
+        views={views}
         {...pickerProps}
       />
       <ConditionalWrapper
@@ -276,11 +276,11 @@ export const DatePicker = ({
             <Button
               className={bemClasses("show-now-button")}
               label={month ? "This month" : "Today"}
-              type="button"
               onClick={setNow}
+              type="button"
             />
           ) : null}
-          <DialogButton label="Cancel" isDefaultAction onClick={closeDialog} />
+          <DialogButton isDefaultAction label="Cancel" onClick={closeDialog} />
           <DialogButton label="Confirm" onClick={confirmDialog} />
         </DialogActions>
       </ConditionalWrapper>
@@ -298,31 +298,7 @@ export const DatePicker = ({
     >
       <TextField
         {...props}
-        value={rifm.value}
-        onChange={rifm.onChange}
         className={bemClasses("field")}
-        inputMode="numeric"
-        pattern={`^\\d{4}-\\d{1,2}${!month ? "-\\d{1,2}" : ""}$${
-          allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""
-        }`}
-        onFocus={() => {
-          if (touched) {
-            setTouched(false);
-          }
-          if (useInline) {
-            setOpen(true);
-          }
-        }}
-        onBlur={() => {
-          if (!touched) {
-            setTouched(true);
-          }
-          if (useInline) {
-            setOpen(false);
-          }
-        }}
-        required={required}
-        invalid={!!invalid}
         helpText={{
           persistent: true,
           validationMsg: true,
@@ -333,6 +309,29 @@ export const DatePicker = ({
               }`,
           ...helpTextProps,
         }}
+        inputMode="numeric"
+        invalid={!!invalid}
+        onBlur={() => {
+          if (!touched) {
+            setTouched(true);
+          }
+          if (useInline) {
+            setOpen(false);
+          }
+        }}
+        onChange={rifm.onChange}
+        onFocus={() => {
+          if (touched) {
+            setTouched(false);
+          }
+          if (useInline) {
+            setOpen(true);
+          }
+        }}
+        pattern={`^\\d{4}-\\d{1,2}${!month ? "-\\d{1,2}" : ""}$${
+          allowQuarter ? "|^Q[1-4]{1} \\d{4}$" : ""
+        }`}
+        required={required}
         trailingIcon={
           useInline
             ? undefined
@@ -344,6 +343,7 @@ export const DatePicker = ({
                 "Date picker"
               )
         }
+        value={rifm.value}
       />
       {modal}
     </ConditionalWrapper>

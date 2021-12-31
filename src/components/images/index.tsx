@@ -226,11 +226,11 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames("is-contextual", {
           "bottom-app-bar": bottomNav,
           contextual,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
@@ -283,18 +283,18 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                       { align: tooltipAlign }
                     )}
                     <Menu
-                      open={folderMenuOpen}
-                      onClose={closeFolderMenu}
                       anchorCorner="bottomLeft"
                       className="folder-menu"
+                      onClose={closeFolderMenu}
+                      open={folderMenuOpen}
                     >
                       {folders.map((folder) => (
                         <MenuItem
                           key={folder}
-                          selected={currentFolder === folder}
                           onClick={() => {
                             setFolder(folder);
                           }}
+                          selected={currentFolder === folder}
                         >
                           {`${folder}/`}
                         </MenuItem>
@@ -307,10 +307,10 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                       <SegmentedButtonSegment
                         key={folder}
                         label={folder}
-                        selected={currentFolder === folder}
                         onClick={() => {
                           setFolder(folder);
                         }}
+                        selected={currentFolder === folder}
                       />
                     ))}
                   </SegmentedButton>
@@ -329,22 +329,22 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
       >
         <div className="main">
           <DrawerSearch
-            open={searchOpen}
             close={closeSearch}
             images={images}
+            open={searchOpen}
             unusedImages={unusedImages}
           />
           <DrawerDetails
-            open={detailOpen}
             close={closeDetails}
             image={detailImage}
             metadata={detailMetadata}
+            open={detailOpen}
           />
           <DialogDelete
-            open={deleteOpen && checkedImages.length > 0}
             close={closeDelete}
-            images={checkedImages}
             folders={folders}
+            images={checkedImages}
+            open={deleteOpen && checkedImages.length > 0}
             toggleImageChecked={toggleImageChecked}
           />
           <ConditionalWrapper
@@ -363,7 +363,7 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
             >
               {display.map((obj) =>
                 obj.array.length > 0 ? (
-                  <div className="display-container" key={obj.title}>
+                  <div key={obj.title} className="display-container">
                     <div className="subheader">
                       <Typography use="caption">{`${obj.title} (${obj.array.length})`}</Typography>
                       <Button
@@ -391,11 +391,11 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
                                     offsetVertical={480}
                                   >
                                     <ImageListImage
-                                      tag="div"
                                       style={{
                                         backgroundImage:
                                           "url(" + image.src + ")",
                                       }}
+                                      tag="div"
                                     />
                                   </LazyLoad>
                                 </ImageListImageAspectContainer>

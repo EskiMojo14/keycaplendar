@@ -75,8 +75,8 @@ export const ElementCompact = ({
     : null;
   return (
     <ListItem
-      selected={selected}
       onClick={() => (!selected ? details(set) : closeDetails())}
+      selected={selected}
     >
       {liveIndicator}
       {shipIndicator}
@@ -90,21 +90,21 @@ export const ElementCompact = ({
         ? withTooltip(
             <IconButton
               className="mdc-list-item__meta"
-              icon="open_in_new"
-              tag="a"
               href={link}
-              target="_blank"
-              rel="noopener noreferrer"
+              icon="open_in_new"
               label={"Link to " + title}
+              rel="noopener noreferrer"
+              tag="a"
+              target="_blank"
             />,
             "Link"
           )
         : withTooltip(
             <ListItemMeta
-              tag={IconButton}
               icon={iconObject(<Share />)}
               label={"Copy link to " + title}
               onClick={copyShareLink}
+              tag={IconButton}
             />,
             "Share"
           )}

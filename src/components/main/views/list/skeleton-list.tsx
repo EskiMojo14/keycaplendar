@@ -20,16 +20,16 @@ export const SkeletonList = ({
   subtitle,
   icon,
 }: SkeletonListProps) => (
-  <ListItem ripple={false} className="skeleton">
+  <ListItem className="skeleton" ripple={false}>
     <div className="list-image-container">
       <div className="list-image" />
     </div>
     <ListItemText>
       <SkeletonBlock
         className="overline"
-        typography="overline"
-        content={designer}
         constrain
+        content={designer}
+        typography="overline"
       />
       <ListItemPrimaryText>
         <SkeletonBlock content={title} />

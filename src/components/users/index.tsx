@@ -160,10 +160,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     view === "card" || device !== "desktop" ? (
       <MenuSurfaceAnchor>
         <Menu
-          open={sortMenuOpen}
           anchorCorner="bottomLeft"
           onClose={closeSortMenu}
           onSelect={(e) => setSortIndex(e.detail.index)}
+          open={sortMenuOpen}
         >
           {sortProps.map((prop) => (
             <MenuItem key={prop} selected={userSort === prop}>
@@ -181,10 +181,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
     device === "desktop" ? (
       <MenuSurfaceAnchor>
         <Menu
-          open={viewMenuOpen}
           anchorCorner="bottomLeft"
           onClose={closeViewMenu}
           onSelect={(e) => setViewIndex(e.detail.index)}
+          open={viewMenuOpen}
         >
           {views.map((viewType) => (
             <MenuItem key={viewType} selected={view === viewType}>
@@ -193,14 +193,14 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
           ))}
         </Menu>
         {withTooltip(
-          <TopAppBarActionItem onClick={openViewMenu} icon={viewIcons[view]} />,
+          <TopAppBarActionItem icon={viewIcons[view]} onClick={openViewMenu} />,
           "View"
         )}
       </MenuSurfaceAnchor>
     ) : null;
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
@@ -225,6 +225,9 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                         <DataTableRow>
                           <DataTableHeadCell></DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("displayName");
+                            }}
                             sort={
                               userSort === "displayName"
                                 ? reverseUserSort
@@ -232,13 +235,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("displayName");
-                            }}
                           >
                             User
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("email");
+                            }}
                             sort={
                               userSort === "email"
                                 ? reverseUserSort
@@ -246,13 +249,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("email");
-                            }}
                           >
                             Email
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("dateCreated");
+                            }}
                             sort={
                               userSort === "dateCreated"
                                 ? reverseUserSort
@@ -260,13 +263,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("dateCreated");
-                            }}
                           >
                             Date created
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("lastSignIn");
+                            }}
                             sort={
                               userSort === "lastSignIn"
                                 ? reverseUserSort
@@ -274,13 +277,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("lastSignIn");
-                            }}
                           >
                             Last sign in
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("lastActive");
+                            }}
                             sort={
                               userSort === "lastActive"
                                 ? reverseUserSort
@@ -288,13 +291,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("lastActive");
-                            }}
                           >
                             Last active
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("nickname");
+                            }}
                             sort={
                               userSort === "nickname"
                                 ? reverseUserSort
@@ -302,13 +305,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("nickname");
-                            }}
                           >
                             Nickname
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("designer");
+                            }}
                             sort={
                               userSort === "designer"
                                 ? reverseUserSort
@@ -316,13 +319,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("designer");
-                            }}
                           >
                             Designer
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("editor");
+                            }}
                             sort={
                               userSort === "editor"
                                 ? reverseUserSort
@@ -330,13 +333,13 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("editor");
-                            }}
                           >
                             Editor
                           </DataTableHeadCell>
                           <DataTableHeadCell
+                            onClick={() => {
+                              setSort("admin");
+                            }}
                             sort={
                               userSort === "admin"
                                 ? reverseUserSort
@@ -344,9 +347,6 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                                   : 1
                                 : null
                             }
-                            onClick={() => {
-                              setSort("admin");
-                            }}
                           >
                             Admin
                           </DataTableHeadCell>
@@ -364,10 +364,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                       <DataTableBody>
                         {paginatedUsers.map((user) => (
                           <UserRow
-                            user={user}
+                            key={user.email}
                             delete={openDeleteDialog}
                             getUsers={getUsers}
-                            key={user.email}
+                            user={user}
                           />
                         ))}
                       </DataTableBody>
@@ -375,12 +375,12 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                     <DataTablePagination>
                       <div className="button-container">
                         <Button
-                          label={"Next " + length}
-                          outlined
                           disabled={!nextPageToken}
+                          label={"Next " + length}
                           onClick={() => {
                             getUsers(true);
                           }}
+                          outlined
                         />
                       </div>
                       <DataTablePaginationTrailing>
@@ -389,16 +389,16 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                             Rows per page
                           </DataTablePaginationRowsPerPageLabel>
                           <DataTablePaginationRowsPerPageSelect
-                            value={rowsPerPage.toString()}
+                            enhanced
+                            onChange={(e) =>
+                              setRowsPerPage(parseInt(e.currentTarget.value))
+                            }
                             options={Array(3)
                               .fill(rows)
                               .map((number, index) =>
                                 (number * (index + 1)).toString()
                               )}
-                            onChange={(e) =>
-                              setRowsPerPage(parseInt(e.currentTarget.value))
-                            }
-                            enhanced
+                            value={rowsPerPage.toString()}
                           />
                         </DataTablePaginationRowsPerPage>
                         <DataTablePaginationNavigation>
@@ -409,32 +409,32 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                           </DataTablePaginationTotal>
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="first_page"
                             disabled={firstIndex === 0}
+                            icon="first_page"
                             onClick={() => {
                               setPage(1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="chevron_left"
                             disabled={firstIndex === 0}
+                            icon="chevron_left"
                             onClick={() => {
                               setPage(page - 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="chevron_right"
                             disabled={lastIndex === sortedUsers.length - 1}
+                            icon="chevron_right"
                             onClick={() => {
                               setPage(page + 1);
                             }}
                           />
                           <DataTablePaginationButton
                             className="rtl-flip"
-                            icon="last_page"
                             disabled={lastIndex === sortedUsers.length - 1}
+                            icon="last_page"
                             onClick={() => {
                               setPage(
                                 Math.ceil(sortedUsers.length / rowsPerPage)
@@ -450,10 +450,10 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
                 <div className="user-container">
                   {sortedUsers.map((user) => (
                     <UserCard
-                      user={user}
                       key={user.email}
                       delete={openDeleteDialog}
                       getUsers={getUsers}
+                      user={user}
                     />
                   ))}
                 </div>
@@ -469,8 +469,8 @@ export const ContentUsers = ({ openNav }: ContentUsersProps) => {
             <DialogActions>
               <DialogButton
                 action="close"
-                onClick={closeDeleteDialog}
                 isDefaultAction
+                onClick={closeDeleteDialog}
               >
                 Cancel
               </DialogButton>

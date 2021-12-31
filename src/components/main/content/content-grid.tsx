@@ -79,12 +79,12 @@ export const ContentGrid = ({
   return (
     <div className="content-grid">
       {setGroups.map((group) => (
-        <div className="outer-container" key={group.title}>
+        <div key={group.title} className="outer-container">
           <div className="subheader">
             {loading ? (
               <SkeletonBlock
-                typography="caption"
                 content={`${group.title} (${group.sets.length})`}
+                typography="caption"
               />
             ) : (
               <Typography use="caption">

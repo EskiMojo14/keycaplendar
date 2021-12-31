@@ -185,21 +185,21 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
         onClick={openCreate}
       />
       <ModalCreate
-        open={createOpen}
-        onClose={closeCreate}
         getEntries={getEntries}
+        onClose={closeCreate}
+        open={createOpen}
       />
       <ModalEdit
-        open={editOpen}
-        onClose={closeEdit}
         entry={editEntry}
         getEntries={getEntries}
+        onClose={closeEdit}
+        open={editOpen}
       />
       <DialogDelete
-        open={deleteOpen}
-        onClose={closeDelete}
         entry={deleteEntry}
         getEntries={getEntries}
+        onClose={closeDelete}
+        open={deleteOpen}
       />
     </>
   ) : null;
@@ -216,22 +216,22 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   const content =
     device === "desktop" ? (
       <div className="guides-container">
-        <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
+        <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
         <div className="main drawer-margin">
           <div className="guide-container">
             {detailEntry.id ? (
               <GuideEntry
-                entry={detailEntry}
-                edit={openEdit}
                 delete={openDelete}
+                edit={openEdit}
+                entry={detailEntry}
               />
             ) : (
               <div className="empty-container">
-                <img className="image" src={emptyImg} alt="Empty" />
-                <Typography className="title" use="headline6" tag="h3">
+                <img alt="Empty" className="image" src={emptyImg} />
+                <Typography className="title" tag="h3" use="headline6">
                   Nothing to see here
                 </Typography>
-                <Typography className="subtitle" use="body1" tag="p">
+                <Typography className="subtitle" tag="p" use="body1">
                   No guide selected.
                 </Typography>
               </div>
@@ -243,13 +243,13 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
     ) : (
       <div className="guides-container">
         <div className="main">
-          <EntriesList openEntry={openDetail} detailEntry={detailEntry} />
+          <EntriesList detailEntry={detailEntry} openEntry={openDetail} />
           <ModalDetail
-            open={detailOpen}
-            onClose={closeDetail}
-            entry={detailEntry}
-            edit={openEdit}
             delete={openDelete}
+            edit={openEdit}
+            entry={detailEntry}
+            onClose={closeDetail}
+            open={detailOpen}
           />
           <Footer />
         </div>
@@ -259,11 +259,11 @@ export const ContentGuides = ({ openNav }: ContentGuidesProps) => {
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
           "bottom-app-bar--indent": bottomNav && user.isAdmin,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>

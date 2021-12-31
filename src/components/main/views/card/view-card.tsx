@@ -97,15 +97,13 @@ export const ViewCard = ({
         return loading ? (
           <SkeletonCard
             key={set.id}
-            loggedIn={!!user?.email}
             icon={set.shipped || live}
+            loggedIn={!!user?.email}
             {...{ title, subtitle, designer }}
           />
         ) : (
           <ElementCard
             key={set.id}
-            selected={detailSet === set}
-            image={set.image.replace("keysets", "card")}
             daysLeft={
               gbEnd
                 ? Math.ceil(
@@ -113,6 +111,8 @@ export const ViewCard = ({
                   )
                 : 0
             }
+            image={set.image.replace("keysets", "card")}
+            selected={detailSet === set}
             thisWeek={
               gbEnd
                 ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&

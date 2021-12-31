@@ -54,11 +54,11 @@ export const DrawerAuditFilter = ({
   };
   return (
     <Drawer
-      open={open}
+      className="drawer-right audit-filter"
       dismissible={device === "desktop"}
       modal={device !== "desktop"}
-      className="drawer-right audit-filter"
       onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Filters</DrawerTitle>
@@ -73,25 +73,25 @@ export const DrawerAuditFilter = ({
             <Slider
               discrete
               displayMarkers
-              min={50}
               max={250}
-              step={50}
-              value={auditLength}
-              onInput={(e) => {
-                dispatch(setLength(e.detail.value));
-              }}
+              min={50}
               onChange={() => {
                 getActions();
               }}
-            />
-            <TextField
-              outlined
-              type="number"
-              min={50}
-              max={250}
+              onInput={(e) => {
+                dispatch(setLength(e.detail.value));
+              }}
               step={50}
               value={auditLength}
+            />
+            <TextField
+              max={250}
+              min={50}
               onChange={handleLengthChange}
+              outlined
+              step={50}
+              type="number"
+              value={auditLength}
             />
           </div>
         </div>
@@ -100,19 +100,19 @@ export const DrawerAuditFilter = ({
             <Typography use="caption">Action</Typography>
           </div>
           <Select
-            outlined
+            className="action-select"
             enhanced={{ fixed: true }}
+            onChange={(e) => {
+              handleFilterChange(e, "filterAction");
+            }}
             options={[
               { label: "None", value: "none" },
               { label: "Created", value: "created" },
               { label: "Updated", value: "updated" },
               { label: "Deleted", value: "deleted" },
             ]}
+            outlined
             value={filterAction}
-            className="action-select"
-            onChange={(e) => {
-              handleFilterChange(e, "filterAction");
-            }}
           />
         </div>
         <div className="filter-group">
@@ -120,17 +120,17 @@ export const DrawerAuditFilter = ({
             <Typography use="caption">User</Typography>
           </div>
           <Select
-            outlined
+            className="user-select"
             enhanced={{ fixed: true }}
+            onChange={(e) => {
+              handleFilterChange(e, "filterUser");
+            }}
             options={[
               { label: "All", value: "all" },
               ...users.map((user) => ({ label: user, value: user })),
             ]}
+            outlined
             value={filterUser}
-            className="user-select"
-            onChange={(e) => {
-              handleFilterChange(e, "filterUser");
-            }}
           />
         </div>
       </DrawerContent>

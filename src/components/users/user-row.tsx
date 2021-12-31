@@ -121,27 +121,27 @@ export const UserRow = ({
     <CircularProgress />
   ) : (
     <IconButton
+      disabled={!edited}
+      icon={iconObject(<Save />)}
       onClick={() => {
         if (edited) {
           setRoles();
         }
       }}
-      icon={iconObject(<Save />)}
-      disabled={!edited}
     />
   );
   const deleteButton =
     user.email === currentUser.email ||
     user.email === "ben.j.durrant@gmail.com" ? null : (
       <IconButton
-        onClick={() => deleteFn(user)}
         icon={iconObject(<Delete />)}
+        onClick={() => deleteFn(user)}
       />
     );
   return (
     <DataTableRow>
       <DataTableCell>
-        <Avatar src={user.photoURL} name={user.displayName} size="large" />
+        <Avatar name={user.displayName} size="large" src={user.photoURL} />
       </DataTableCell>
       <DataTableCell>{user.displayName}</DataTableCell>
       <DataTableCell>{truncate(user.email, 20)}</DataTableCell>
@@ -163,53 +163,53 @@ export const UserRow = ({
       <DataTableCell>
         <MenuSurfaceAnchor>
           <TextField
-            outlined
             className="nickname"
             name="nickname"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
             value={user.nickname}
           />
           <Autocomplete
-            open={focused === "nickname"}
             array={allDesigners}
-            query={user.nickname}
+            minChars={2}
+            open={focused === "nickname"}
             prop="nickname"
+            query={user.nickname}
             select={(prop, item) =>
               hasKey(user, prop) && selectValue(prop, item)
             }
-            minChars={2}
           />
         </MenuSurfaceAnchor>
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
-          name="designer"
           checked={user.designer}
+          name="designer"
           onChange={handleCheckboxChange}
         />
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
-          name="editor"
           checked={user.editor}
-          onChange={handleCheckboxChange}
           disabled={
             user.email === currentUser.email ||
             user.email === "ben.j.durrant@gmail.com"
           }
+          name="editor"
+          onChange={handleCheckboxChange}
         />
       </DataTableCell>
       <DataTableCell hasFormControl>
         <Checkbox
-          name="admin"
           checked={user.admin}
-          onChange={handleCheckboxChange}
           disabled={
             user.email === currentUser.email ||
             user.email === "ben.j.durrant@gmail.com"
           }
+          name="admin"
+          onChange={handleCheckboxChange}
         />
       </DataTableCell>
       <DataTableCell hasFormControl>{saveButton}</DataTableCell>

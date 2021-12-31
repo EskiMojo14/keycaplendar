@@ -60,10 +60,10 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
   return (
     <Dialog
       className="statistics-dialog"
-      open={open}
       onClose={() => {
         onClose();
       }}
+      open={open}
     >
       <DialogTitle>Change category</DialogTitle>
       <DialogContent>
@@ -76,9 +76,9 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
             Profile
             <ListItemMeta>
               <Radio
-                tabIndex={-1}
                 checked={statistics === "profile"}
                 readOnly
+                tabIndex={-1}
               />
             </ListItemMeta>
           </ListItem>
@@ -90,9 +90,9 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
             Designer
             <ListItemMeta>
               <Radio
-                tabIndex={-1}
                 checked={statistics === "designer"}
                 readOnly
+                tabIndex={-1}
               />
             </ListItemMeta>
           </ListItem>
@@ -103,14 +103,14 @@ export const DialogStatistics = ({ open, onClose }: DialogStatisticsProps) => {
           >
             Vendor
             <ListItemMeta>
-              <Radio tabIndex={-1} checked={statistics === "vendor"} readOnly />
+              <Radio checked={statistics === "vendor"} readOnly tabIndex={-1} />
             </ListItemMeta>
           </ListItem>
         </List>
       </DialogContent>
       <DialogActions>
         <DialogButton action="close">Cancel</DialogButton>
-        <DialogButton action="accept" onClick={applyStatistics} isDefaultAction>
+        <DialogButton action="accept" isDefaultAction onClick={applyStatistics}>
           Confirm
         </DialogButton>
       </DialogActions>

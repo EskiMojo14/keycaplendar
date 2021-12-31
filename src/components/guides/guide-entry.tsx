@@ -62,8 +62,8 @@ export const GuideEntry = ({
     <CardActions>
       <CardActionButtons>
         <CardActionButton
-          label="Share"
           icon={iconObject(<Share />)}
+          label="Share"
           onClick={copyLink}
         />
       </CardActionButtons>
@@ -101,13 +101,13 @@ export const GuideEntry = ({
   return (
     <Card className="guide-entry">
       <div className="title">
-        <Typography use="overline" tag="h3">
+        <Typography tag="h3" use="overline">
           {entry.name}
         </Typography>
-        <Typography use="headline5" tag="h1">
+        <Typography tag="h1" use="headline5">
           {entry.title}
         </Typography>
-        <Typography use="caption" tag="p">
+        <Typography tag="p" use="caption">
           {entry.description}
         </Typography>
         <div className="tags-container">
@@ -120,10 +120,10 @@ export const GuideEntry = ({
               <Chip
                 key={tag}
                 label={tag}
-                selected={tag === filteredTag}
                 onClick={() => {
                   setFilter(tag);
                 }}
+                selected={tag === filteredTag}
               />
             ))}
           </ChipSet>

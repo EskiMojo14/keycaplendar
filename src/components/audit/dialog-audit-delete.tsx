@@ -27,7 +27,7 @@ export const DialogAuditDelete = ({
       {deleteAction.changelogId}?
     </DialogContent>
     <DialogActions>
-      <DialogButton action="close" onClick={close} isDefaultAction>
+      <DialogButton action="close" isDefaultAction onClick={close}>
         Cancel
       </DialogButton>
       <DialogButton

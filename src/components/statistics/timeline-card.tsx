@@ -169,9 +169,9 @@ export const ShippedCard = ({
           ] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
         }}
-        type={"Bar"}
         options={chartOptions("Month (GB end)")}
         responsiveOptions={responsiveOptions}
+        type={"Bar"}
       />
     ) : null;
   const lineChart =
@@ -189,10 +189,10 @@ export const ShippedCard = ({
           ] as IChartistData["series"],
           labels: months.map((label) => label.split(" ").join("\n")),
         }}
-        type={"Line"}
         listener={listener}
         options={chartOptions("Month (GB end)")}
         responsiveOptions={responsiveOptions}
+        type={"Line"}
       />
     ) : null;
   const selectChips =
@@ -205,10 +205,10 @@ export const ShippedCard = ({
               <Chip
                 key={obj.name}
                 label={obj.name}
-                selected={index === selectedIndex}
                 onInteraction={() => {
                   setSelectedIndex(index === selectedIndex ? -1 : index);
                 }}
+                selected={index === selectedIndex}
               />
             ))}
         </ChipSet>
@@ -219,14 +219,14 @@ export const ShippedCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -235,20 +235,20 @@ export const ShippedCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon="stacked_bar_chart"
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon="multiline_chart"
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               "Multiline chart"
             )}
@@ -288,7 +288,7 @@ export const ShippedCard = ({
         </div>
         {selectChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}
@@ -384,9 +384,9 @@ export const TimelinesCard = ({
           labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
-        type={"Bar"}
         options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
+        type={"Bar"}
       />
     ) : null;
   const lineChart =
@@ -397,10 +397,10 @@ export const TimelinesCard = ({
           labels: months.map((label) => label.split(" ").join("\n")),
           series: chartSeries,
         }}
-        type={"Line"}
         listener={listener}
         options={chartOptions("Month")}
         responsiveOptions={responsiveOptions}
+        type={"Line"}
       />
     ) : null;
   const selectChips =
@@ -413,10 +413,10 @@ export const TimelinesCard = ({
               <Chip
                 key={obj.name}
                 label={obj.name}
-                selected={index === selectedIndex}
                 onInteraction={() => {
                   setSelectedIndex(index === selectedIndex ? -1 : index);
                 }}
+                selected={index === selectedIndex}
               />
             ))}
         </ChipSet>
@@ -427,27 +427,27 @@ export const TimelinesCard = ({
       <>
         {withTooltip(
           <IconButton
-            icon={iconObject(<EyeCheck />)}
             disabled={focused.length === chartData.timeline.series.length}
+            icon={iconObject(<EyeCheck />)}
             onClick={focusAll}
           />,
           "Focus all series"
         )}
         {withTooltip(
           <IconButton
-            icon={iconObject(<EyeRemove />)}
             disabled={focused.length === 0}
+            icon={iconObject(<EyeRemove />)}
             onClick={clearFocus}
           />,
           "Clear focus"
         )}
         {withTooltip(
           <IconButton
+            checked={onlyFocused}
             className="primary-on"
             icon={iconObject(<FilterAltOff />)}
-            onIcon={iconObject(<FilterAlt />)}
-            checked={onlyFocused}
             onClick={() => setOnlyFocused((prev) => !prev)}
+            onIcon={iconObject(<FilterAlt />)}
           />,
           "Filter to focused items"
         )}
@@ -465,17 +465,17 @@ export const TimelinesCard = ({
               return (
                 <Chip
                   key={profile}
+                  className={`focus-chip focus-chip-index-${index}`}
                   icon={
                     focused.length && !focused.includes(index)
                       ? iconObject(<Circle />)
                       : "circle"
                   }
                   label={profile}
-                  selected={focused.includes(index)}
                   onInteraction={() => {
                     setFocus(index);
                   }}
-                  className={`focus-chip focus-chip-index-${index}`}
+                  selected={focused.includes(index)}
                 />
               );
             }
@@ -489,14 +489,14 @@ export const TimelinesCard = ({
       <div className="title-container">
         <div className="text-container">
           {overline ? (
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {overline}
             </Typography>
           ) : null}
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {data.name}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
           </Typography>
         </div>
@@ -506,20 +506,20 @@ export const TimelinesCard = ({
             {withTooltip(
               <SegmentedButtonSegment
                 icon={singleTheme ? "bar_chart" : "stacked_bar_chart"}
-                selected={graphType === "bar"}
                 onClick={() => {
                   setGraphType("bar");
                 }}
+                selected={graphType === "bar"}
               />,
               singleTheme ? "Bar chart" : "Stacked bar chart"
             )}
             {withTooltip(
               <SegmentedButtonSegment
                 icon={singleTheme ? "show_chart" : "multiline_chart"}
-                selected={graphType === "line"}
                 onClick={() => {
                   setGraphType("line");
                 }}
+                selected={graphType === "line"}
               />,
               singleTheme ? "Line chart" : "Multiline chart"
             )}
@@ -544,7 +544,7 @@ export const TimelinesCard = ({
         {selectChips}
         {focusChips}
         {note ? (
-          <Typography use="caption" tag="p" className="note">
+          <Typography className="note" tag="p" use="caption">
             {note}
           </Typography>
         ) : null}

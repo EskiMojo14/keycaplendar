@@ -30,7 +30,7 @@ export const ViewCompact = ({
   const yesterday = today.minus({ days: 1 });
   return (
     <Card>
-      <List twoLine nonInteractive={loading}>
+      <List nonInteractive={loading} twoLine>
         {sets.map((set) => {
           const gbLaunch = set.gbLaunch
             ? set.gbLaunch.includes("Q") || !set.gbLaunch
@@ -102,8 +102,8 @@ export const ViewCompact = ({
           ) : (
             <ElementCompact
               key={set.id}
-              selected={detailSet === set}
               link={set.details}
+              selected={detailSet === set}
               {...{ set, title, subtitle, details, closeDetails, live }}
             />
           );

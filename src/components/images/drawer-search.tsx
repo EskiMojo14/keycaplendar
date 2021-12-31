@@ -68,11 +68,11 @@ export const DrawerSearch = ({
   });
   return (
     <Drawer
+      className="drawer-right search-drawer"
       dismissible={dismissible}
       modal={!dismissible}
-      className="drawer-right search-drawer"
-      open={open}
       onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Search</DrawerTitle>
@@ -80,26 +80,26 @@ export const DrawerSearch = ({
       </DrawerHeader>
       <div className="search-bar__container">
         <TextField
-          outlined
           className="search-bar"
           label="Search"
-          value={search}
           onChange={handleChange}
+          outlined
           trailingIcon={withTooltip(
             <IconButton
               checked={regexSearch}
+              icon={iconObject(<RegexOff />)}
               onClick={toggleRegex}
               onIcon={iconObject(<Regex />)}
-              icon={iconObject(<RegexOff />)}
             />,
             (regexSearch ? "Disable" : "Enable") + " regex search"
           )}
+          value={search}
         />
       </div>
       <DrawerContent>
         <List twoLine>
           {searchedImages.map((image) => (
-            <ListItem disabled key={image.fullPath}>
+            <ListItem key={image.fullPath} disabled>
               <ListItemGraphic
                 className="image"
                 style={{ backgroundImage: "url(" + image.src + ")" }}
@@ -124,8 +124,8 @@ export const DrawerSearch = ({
                   checked={
                     !unusedImages.map(({ name }) => name).includes(image.name)
                   }
-                  readOnly
                   disabled
+                  readOnly
                 />
               </ListItemMeta>
             </ListItem>

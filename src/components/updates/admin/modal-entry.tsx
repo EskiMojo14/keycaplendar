@@ -114,44 +114,44 @@ export const ModalCreate = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={onClose}
-          className="drawer-right update-entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={onClose}
           className="update-entry-modal"
+          onClose={onClose}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right update-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create update
         </BoolWrapper>
@@ -162,47 +162,47 @@ export const ModalCreate = ({
           )}
         >
           <Button
-            label="Save"
-            outlined={useDrawer}
-            onClick={saveEntry}
             disabled={!valid}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="form">
           <DatePicker
-            outlined
             label="Date"
             name="date"
-            value={date}
             onChange={handleNamedChange("date")}
+            outlined
             required
             showNowButton
+            value={date}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
             <CustomReactMde
-              value={body}
               onChange={handleNamedChange("body")}
               required
+              value={body}
             />
           </div>
         </div>
@@ -310,44 +310,44 @@ export const ModalEdit = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={onClose}
-          className="drawer-right update-entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={onClose}
           className="update-entry-modal"
+          onClose={onClose}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right update-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create update
         </BoolWrapper>
@@ -359,47 +359,47 @@ export const ModalEdit = ({
           )}
         >
           <Button
-            label="Save"
-            outlined={useDrawer}
-            onClick={saveEntry}
             disabled={!valid}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="form">
           <DatePicker
-            outlined
             label="Date"
             name="date"
-            value={date}
             onChange={handleNamedChange("date")}
+            outlined
             required
             showNowButton
+            value={date}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
             <CustomReactMde
-              value={body}
               onChange={handleNamedChange("body")}
               required
+              value={body}
             />
           </div>
         </div>

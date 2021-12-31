@@ -27,10 +27,10 @@ export const SkeletonCard = ({
             <div className="overline">
               <div className="overline-container">
                 <SkeletonBlock
-                  typography="overline"
-                  content={designer}
                   constrain
+                  content={designer}
                   tag="span"
+                  typography="overline"
                 />
               </div>
               {icon && (
@@ -40,13 +40,13 @@ export const SkeletonCard = ({
               )}
             </div>
             <div className="title">
-              <SkeletonBlock typography="headline5" content={title} />
+              <SkeletonBlock content={title} typography="headline5" />
             </div>
             <div className="subtitle">
               <SkeletonBlock
-                typography="subtitle2"
                 content={subtitle}
                 tag="span"
+                typography="subtitle2"
               />
             </div>
           </div>
@@ -56,10 +56,10 @@ export const SkeletonCard = ({
         <CardActions>
           <div className="skeleton-button">
             <SkeletonBlock
-              typography="button"
-              content="Share"
               colour="var(--theme-primary)"
               constrain
+              content="Share"
+              typography="button"
             />
           </div>
           <SkeletonIcon />

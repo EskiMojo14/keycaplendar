@@ -135,44 +135,44 @@ export const ModalDetail = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={onClose}
-          className="drawer-right guide-detail-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={onClose}
           className="guide-detail-modal"
+          onClose={onClose}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right guide-detail-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Guide
         </BoolWrapper>
@@ -187,19 +187,19 @@ export const ModalDetail = ({
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="title">
-          <Typography use="overline" tag="h3">
+          <Typography tag="h3" use="overline">
             {entry.name}
           </Typography>
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {entry.title}
           </Typography>
-          <Typography use="caption" tag="p">
+          <Typography tag="p" use="caption">
             {entry.description}
           </Typography>
           <div className="tags-container">
@@ -212,10 +212,10 @@ export const ModalDetail = ({
                 <Chip
                   key={tag}
                   label={tag}
-                  selected={tag === filteredTag}
                   onClick={() => {
                     setFilter(tag);
                   }}
+                  selected={tag === filteredTag}
                 />
               ))}
             </ChipSet>

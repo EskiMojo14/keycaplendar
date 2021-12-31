@@ -37,7 +37,7 @@ export const DialogDeleteFilterPreset = ({
         filter preset {`"${preset.name}"`}?
       </DialogContent>
       <DialogActions>
-        <DialogButton action="close" onClick={close} isDefaultAction>
+        <DialogButton action="close" isDefaultAction onClick={close}>
           Cancel
         </DialogButton>
         <DialogButton action="accept" className="delete" onClick={deleteFn}>

@@ -144,8 +144,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   const userBadge =
     user.isAdmin || user.isEditor || user.isDesigner ? (
       <Badge
-        label={<Icon icon={sizedIcon} />}
         className="user-icon material-icons"
+        label={<Icon icon={sizedIcon} />}
       />
     ) : null;
   const userDisplay = user.email ? (
@@ -159,21 +159,21 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           "three-line": user.nickname && user.name,
         })}
       >
-        <ListItem disabled className="account">
+        <ListItem className="account" disabled>
           {user.avatar ? (
             <BadgeAnchor className="avatar">
               <Avatar
-                src={user.avatar}
-                size={user.name || user.nickname ? "xlarge" : "large"}
                 name={user.name ? user.name : ""}
+                size={user.name || user.nickname ? "xlarge" : "large"}
+                src={user.avatar}
               />
               {userBadge}
             </BadgeAnchor>
           ) : (
             <BadgeAnchor className="avatar">
               <Avatar
-                size={user.name || user.nickname ? "xlarge" : "large"}
                 name={user.name ? user.name : ""}
+                size={user.name || user.nickname ? "xlarge" : "large"}
               />
               {userBadge}
             </BadgeAnchor>
@@ -195,7 +195,7 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
             user.email
           )}
           <div className="button">
-            <Button raised label="Log out" onClick={signOut} />
+            <Button label="Log out" onClick={signOut} raised />
           </div>
         </ListItem>
         <div className="text-field-container account">
@@ -208,24 +208,24 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
               </Typography>
             </label>
             <TextField
-              outlined
+              className="name-field"
               id="shareName"
               name="shareName"
-              value={shareName}
-              className="name-field"
               onChange={handleChange}
+              outlined
               trailingIcon={
                 shareNameLoading ? (
                   <CircularProgress size="medium" />
                 ) : undefined
               }
+              value={shareName}
             />
           </FormField>
         </div>
         <div className="switch-container account">
           <Switch
-            label="Sync settings to account"
             checked={syncSettings}
+            label="Sync settings to account"
             onChange={(evt) => setSyncSettings(evt.currentTarget.checked)}
           />
         </div>
@@ -233,8 +233,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Button
             className="delete"
             label="Delete account"
-            outlined
             onClick={openDeleteDialog}
+            outlined
           />
         </div>
       </Card>
@@ -245,11 +245,11 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         <Typography use="caption">Account</Typography>
       </div>
       <Card className="placeholder-account">
-        <ListItem disabled className="account">
+        <ListItem className="account" disabled>
           No user logged in.
           <div className="button">
             <Link to="/login">
-              <Button raised label="Log in" />
+              <Button label="Log in" raised />
             </Link>
           </div>
         </ListItem>
@@ -258,8 +258,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   );
   const deleteUserDialog = user.email ? (
     <DialogDelete
-      open={deleteDialogOpen}
       close={closeDeleteDialog}
+      open={deleteDialogOpen}
       signOut={signOut}
     />
   ) : null;
@@ -272,8 +272,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
         <Card>
           <div className="switch-container">
             <Switch
-              label="Bottom navigation"
               checked={bottomNav}
+              label="Bottom navigation"
               onChange={(evt) => setBottomNav(evt.currentTarget.checked)}
             />
           </div>
@@ -287,12 +287,12 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Typography use="body2">From</Typography>
           <div className="field-container">
             <TimePicker
-              outlined
               icon="history"
-              value={fromTimeTheme}
               onChange={setFromTimeTheme}
-              showNowButton
+              outlined
               saveOnClose
+              showNowButton
+              value={fromTimeTheme}
             />
           </div>
         </FormField>
@@ -300,25 +300,25 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Typography use="body2">To</Typography>
           <div className="field-container">
             <TimePicker
-              outlined
               icon="update"
-              value={toTimeTheme}
               onChange={setToTimeTheme}
-              showNowButton
+              outlined
               saveOnClose
+              showNowButton
+              value={toTimeTheme}
             />
           </div>
         </FormField>
       </div>
     ) : (
       <FormField className="theme-form-field">
-        <Typography use="body2" tag="label" htmlFor="manualTheme">
+        <Typography htmlFor="manualTheme" tag="label" use="body2">
           Dark theme
         </Typography>
         <div className="switch-container">
           <Switch
-            id="manualTheme"
             checked={manualTheme}
+            id="manualTheme"
             onChange={(e) => {
               setManualTheme((e.target as HTMLInputElement).checked);
             }}
@@ -333,27 +333,27 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
           <Typography use="caption">Density</Typography>
         </div>
         <Card className="density-card">
-          <SegmentedButton toggle className="density-toggle">
+          <SegmentedButton className="density-toggle" toggle>
             <SegmentedButtonSegment
               label="Default"
-              selected={density === "default"}
               onClick={() => {
                 setDensity("default");
               }}
+              selected={density === "default"}
             />
             <SegmentedButtonSegment
               label="Comfortable"
-              selected={density === "comfortable"}
               onClick={() => {
                 setDensity("comfortable");
               }}
+              selected={density === "comfortable"}
             />
             <SegmentedButtonSegment
               label="Compact"
-              selected={density === "compact"}
               onClick={() => {
                 setDensity("compact");
               }}
+              selected={density === "compact"}
             />
           </SegmentedButton>
         </Card>
@@ -362,8 +362,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames({ "bottom-app-bar": bottomNavSetting })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
@@ -385,28 +385,28 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
               <Card className="theme-card">
                 <List className="theme-list">
                   <ListItem
-                    onClick={() => setLightTheme("light")}
                     className="light"
+                    onClick={() => setLightTheme("light")}
                   >
                     Light
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={lightTheme === "light"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
-                    onClick={() => setLightTheme("sepia")}
                     className="sepia"
+                    onClick={() => setLightTheme("sepia")}
                   >
                     Sepia
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={lightTheme === "sepia"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
@@ -422,6 +422,8 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                   <Typography use="body2">Apply dark theme</Typography>
                   <Select
                     enhanced
+                    onChange={selectApplyTheme}
+                    options={["Manual", "Timed", "System"]}
                     outlined
                     value={
                       applyTheme === "system"
@@ -430,74 +432,72 @@ export const ContentSettings = ({ openNav }: ContentSettingsProps) => {
                         ? "Timed"
                         : "Manual"
                     }
-                    options={["Manual", "Timed", "System"]}
-                    onChange={selectApplyTheme}
                   />
                 </FormField>
                 {themeOptions}
                 <List className="theme-list">
                   <ListItem
-                    onClick={() => setDarkTheme("ocean")}
                     className="ocean"
+                    onClick={() => setDarkTheme("ocean")}
                   >
                     Ocean
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={darkTheme === "ocean"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
-                    onClick={() => setDarkTheme("grey")}
                     className="grey"
+                    onClick={() => setDarkTheme("grey")}
                   >
                     Grey
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={darkTheme === "grey"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
-                    onClick={() => setDarkTheme("deep-ocean")}
                     className="deep-ocean"
+                    onClick={() => setDarkTheme("deep-ocean")}
                   >
                     Deep Ocean
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={darkTheme === "deep-ocean"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
-                    onClick={() => setDarkTheme("deep")}
                     className="deep"
+                    onClick={() => setDarkTheme("deep")}
                   >
                     Deep Purple
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={darkTheme === "deep"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>
                   <ListItem
-                    onClick={() => setDarkTheme("dark")}
                     className="dark"
+                    onClick={() => setDarkTheme("dark")}
                   >
                     Dark
                     <ListItemMeta>
                       <Radio
-                        tabIndex={-1}
                         checked={darkTheme === "dark"}
                         readOnly
+                        tabIndex={-1}
                       />
                     </ListItemMeta>
                   </ListItem>

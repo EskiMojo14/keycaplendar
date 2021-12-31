@@ -98,21 +98,21 @@ export const ViewImageList = ({
         ) : (
           <ElementImage
             key={set.id}
-            selected={detailSet === set}
-            image={set.image.replace("keysets", "image-list")}
-            link={set.details}
-            thisWeek={
-              gbEnd
-                ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&
-                  gbEnd.valueOf() > today.valueOf()
-                : false
-            }
             daysLeft={
               gbEnd
                 ? Math.ceil(
                     Math.abs((gbEnd.valueOf() - today.valueOf()) / oneDay)
                   )
                 : 0
+            }
+            image={set.image.replace("keysets", "image-list")}
+            link={set.details}
+            selected={detailSet === set}
+            thisWeek={
+              gbEnd
+                ? gbEnd.valueOf() - 7 * oneDay < today.valueOf() &&
+                  gbEnd.valueOf() > today.valueOf()
+                : false
             }
             {...{ title, subtitle, set, details, closeDetails, live }}
           />

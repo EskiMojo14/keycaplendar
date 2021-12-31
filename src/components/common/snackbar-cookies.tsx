@@ -8,10 +8,10 @@ type SnackbarCookiesProps = {
 
 export const SnackbarCookies = ({ open, accept }: SnackbarCookiesProps) => (
   <Snackbar
-    open={open}
-    onClose={accept}
-    message="By using this site, you consent to use of cookies to store preferences."
     action={[<SnackbarAction key="accept" label="Accept" onClick={accept} />]}
+    message="By using this site, you consent to use of cookies to store preferences."
+    onClose={accept}
+    open={open}
     timeout={200000}
   />
 );

@@ -49,11 +49,11 @@ export const DrawerDetails = ({
   };
   return (
     <Drawer
+      className="drawer-right details-drawer image-details"
       dismissible={dismissible}
       modal={!dismissible}
-      className="drawer-right details-drawer image-details"
-      open={open}
       onClose={close}
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -61,9 +61,9 @@ export const DrawerDetails = ({
       </DrawerHeader>
       <DrawerContent>
         <div className="image-container">
-          <img className="image" src={image.src} alt={image.name} />
+          <img alt={image.name} className="image" src={image.src} />
         </div>
-        <List twoLine className="details-list">
+        <List className="details-list" twoLine>
           <div className="subheader">
             <Typography use="caption">Image</Typography>
           </div>

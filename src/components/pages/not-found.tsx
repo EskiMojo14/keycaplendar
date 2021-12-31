@@ -21,11 +21,11 @@ export const NotFound = () => (
       </TopAppBarRow>
     </TopAppBar>
     <div className="message-container">
-      <img src={image} className="image" />
-      <Typography className="title" use="headline6" tag="h3">
+      <img className="image" src={image} />
+      <Typography className="title" tag="h3" use="headline6">
         404: Page not found
       </Typography>
-      <Typography className="subtitle" use="body1" tag="p">
+      <Typography className="subtitle" tag="p" use="body1">
         Unknown URL, please return to homepage.
       </Typography>
       <Link to="/">

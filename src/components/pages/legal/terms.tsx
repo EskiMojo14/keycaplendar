@@ -27,7 +27,7 @@ export const TermsOfService = () => (
     <div className="legal-container">
       <Card className="legal">
         <Typography use="headline5">1. Terms</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           By accessing the website at{" "}
           <a href="http://keycaplendar.firebaseapp.com">
             http://keycaplendar.firebaseapp.com
@@ -40,36 +40,36 @@ export const TermsOfService = () => (
           applicable copyright and trademark law.
         </Typography>
         <Typography use="headline5">2. Use Licence</Typography>
-        <Typography use="body2" tag="ol" type="a">
-          <Typography use="body2" tag="li">
+        <Typography tag="ol" type="a" use="body2">
+          <Typography tag="li" use="body2">
             Permission is granted to temporarily download one copy of the
             materials (information or software) on KeycapLendar&apos;s website
             for personal, non-commercial transitory viewing only. This is the
             grant of a licence, not a transfer of title, and under this licence
             you may not:
-            <Typography use="body2" tag="ol" type="i">
-              <Typography use="body2" tag="li">
+            <Typography tag="ol" type="i" use="body2">
+              <Typography tag="li" use="body2">
                 modify or copy the materials;
               </Typography>
-              <Typography use="body2" tag="li">
+              <Typography tag="li" use="body2">
                 use the materials for any commercial purpose, or for any public
                 display (commercial or non-commercial);
               </Typography>
-              <Typography use="body2" tag="li">
+              <Typography tag="li" use="body2">
                 attempt to decompile or reverse engineer any software contained
                 on KeycapLendar&apos;s website;
               </Typography>
-              <Typography use="body2" tag="li">
+              <Typography tag="li" use="body2">
                 remove any copyright or other proprietary notations from the
                 materials; or
               </Typography>
-              <Typography use="body2" tag="li">
+              <Typography tag="li" use="body2">
                 transfer the materials to another person or &ldquo;mirror&rdquo;
                 the materials on any other server.
               </Typography>
             </Typography>
           </Typography>
-          <Typography use="body2" tag="li">
+          <Typography tag="li" use="body2">
             This licence shall automatically terminate if you violate any of
             these restrictions and may be terminated by KeycapLendar at any
             time. Upon terminating your viewing of these materials or upon the
@@ -79,8 +79,8 @@ export const TermsOfService = () => (
           </Typography>
         </Typography>
         <Typography use="headline5">3. Disclaimer</Typography>
-        <Typography use="body2" tag="ol" type="a">
-          <Typography use="body2" tag="li">
+        <Typography tag="ol" type="a" use="body2">
+          <Typography tag="li" use="body2">
             The materials on KeycapLendar&apos;s website are provided on an
             &lsquo;as is&rsquo; basis. KeycapLendar makes no warranties,
             expressed or implied, and hereby disclaims and negates all other
@@ -89,7 +89,7 @@ export const TermsOfService = () => (
             non-infringement of intellectual property or other violation of
             rights.
           </Typography>
-          <Typography use="body2" tag="li">
+          <Typography tag="li" use="body2">
             Further, KeycapLendar does not warrant or make any representations
             concerning the accuracy, likely results, or reliability of the use
             of the materials on its website or otherwise relating to such
@@ -97,7 +97,7 @@ export const TermsOfService = () => (
           </Typography>
         </Typography>
         <Typography use="headline5">4. Limitations</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           In no event shall KeycapLendar or its suppliers be liable for any
           damages (including, without limitation, damages for loss of data or
           profit, or due to business interruption) arising out of the use or
@@ -109,7 +109,7 @@ export const TermsOfService = () => (
           incidental damages, these limitations may not apply to you.
         </Typography>
         <Typography use="headline5">5. Accuracy of materials</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           The materials appearing on KeycapLendar&apos;s website could include
           technical, typographical, or photographic errors. KeycapLendar does
           not warrant that any of the materials on its website are accurate,
@@ -118,7 +118,7 @@ export const TermsOfService = () => (
           KeycapLendar does not make any commitment to update the materials.
         </Typography>
         <Typography use="headline5">6. Links</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           KeycapLendar has not reviewed all of the sites linked to its website
           and is not responsible for the contents of any such linked site. The
           inclusion of any link does not imply endorsement by KeycapLendar of
@@ -126,18 +126,18 @@ export const TermsOfService = () => (
           risk.
         </Typography>
         <Typography use="headline5">7. Modifications</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           KeycapLendar may revise these terms of service for its website at any
           time without notice. By using this website you are agreeing to be
           bound by the then current version of these terms of service.
         </Typography>
         <Typography use="headline5">8. Governing Law</Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           These terms and conditions are governed by and construed in accordance
           with the laws of United Kingdom and you irrevocably submit to the
           exclusive jurisdiction of the courts in that State or location.
         </Typography>
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           <a
             href="https://getterms.io"
             title="Generate a free terms of use document"

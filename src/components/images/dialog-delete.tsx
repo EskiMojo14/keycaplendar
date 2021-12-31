@@ -64,7 +64,7 @@ export const DialogDelete = ({
       });
   };
   return (
-    <Dialog open={open} onClose={close} className="delete-image-dialog">
+    <Dialog className="delete-image-dialog" onClose={close} open={open}>
       <DialogTitle>{pluralise`Delete ${[images.length, "image"]}`}</DialogTitle>
       <DialogContent>
         {pluralise`The following ${[images.length, "image"]} will be deleted:`}
@@ -73,10 +73,10 @@ export const DialogDelete = ({
             {images.map((image) => (
               <Chip
                 key={image.fullPath}
-                label={image.name}
                 disabled
-                trailingIcon="close"
+                label={image.name}
                 onTrailingIconInteraction={() => toggleImageChecked(image)}
+                trailingIcon="close"
               />
             ))}
           </ChipSet>
@@ -89,16 +89,16 @@ export const DialogDelete = ({
       <DialogActions>
         <div className="checkbox-container">
           <Checkbox
-            label="Delete all versions"
             checked={deleteAllVersions}
+            label="Delete all versions"
             onChange={handleChange}
           />
         </div>
-        <DialogButton label="Close" onClick={close} action="close" />
+        <DialogButton action="close" label="Close" onClick={close} />
         <DialogButton
+          className="delete"
           label="Delete"
           onClick={deleteImages}
-          className="delete"
         />
       </DialogActions>
     </Dialog>

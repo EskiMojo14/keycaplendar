@@ -96,7 +96,7 @@ export const ElementCard = ({
       )
     : null;
   const timeIndicator = thisWeek ? (
-    <Typography use="overline" tag="h4" className="time-indicator">
+    <Typography className="time-indicator" tag="h4" use="overline">
       {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
   ) : null;
@@ -104,11 +104,11 @@ export const ElementCard = ({
     useLink ? (
       <CardActionButtons>
         <CardActionButton
-          tag="a"
-          label="Link"
           href={set.details}
-          target="_blank"
+          label="Link"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />
       </CardActionButtons>
     ) : (
@@ -120,12 +120,12 @@ export const ElementCard = ({
   const linkIcon = !user.email
     ? withTooltip(
         <CardActionIcon
-          icon="open_in_new"
-          tag="a"
           href={set.details}
-          target="_blank"
-          rel="noopener noreferrer"
+          icon="open_in_new"
           label={"Link to " + title}
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />,
         "Link"
       )
@@ -143,11 +143,11 @@ export const ElementCard = ({
   const favoriteIcon = user.email
     ? withTooltip(
         <CardActionIcon
-          icon="favorite_border"
-          onIcon={iconObject(<Favorite />)}
-          className="favorite"
           checked={favorites.includes(set.id)}
+          className="favorite"
+          icon="favorite_border"
           onClick={() => toggleFavorite(set.id)}
+          onIcon={iconObject(<Favorite />)}
         />,
         favorites.includes(set.id) ? "Unfavorite" : "Favorite"
       )
@@ -160,11 +160,11 @@ export const ElementCard = ({
     )
       ? withTooltip(
           <CardActionIcon
-            icon={iconObject(<Visibility />)}
-            onIcon={iconObject(<VisibilityOff />)}
-            className="hide"
             checked={hidden.includes(set.id)}
+            className="hide"
+            icon={iconObject(<Visibility />)}
             onClick={() => toggleHidden(set.id)}
+            onIcon={iconObject(<VisibilityOff />)}
           />,
           hidden.includes(set.id) ? "Unhide" : "Hide"
         )
@@ -191,9 +191,9 @@ export const ElementCard = ({
         >
           <div className="media-container">
             <LazyLoad
+              className="lazy-load"
               debounce={false}
               offsetVertical={480}
-              className="lazy-load"
             >
               <CardMedia
                 sixteenByNine
@@ -205,19 +205,19 @@ export const ElementCard = ({
           <div className="text-row">
             <div className="text-container">
               <div className="overline">
-                <Typography use="overline" tag="h3">
+                <Typography tag="h3" use="overline">
                   {designer}
                 </Typography>
                 {liveIndicator}
                 {shipIndicator}
               </div>
               <div className="title">
-                <Typography use="headline5" tag="h2">
+                <Typography tag="h2" use="headline5">
                   <Twemoji options={{ className: "twemoji" }}>{title}</Twemoji>
                 </Typography>
               </div>
               <div className="subtitle">
-                <Typography use="subtitle2" tag="p">
+                <Typography tag="p" use="subtitle2">
                   {subtitle}
                 </Typography>
               </div>

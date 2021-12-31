@@ -62,11 +62,11 @@ export const DataTablePaginationRowsPerPageSelect = ({
 }: DataTablePaginationRowsPerPageSelectProps) => (
   <Select
     {...props}
-    outlined
     className={bemClasses({
       element: "pagination-rows-per-page-select",
       extra: className,
     })}
+    outlined
   />
 );
 

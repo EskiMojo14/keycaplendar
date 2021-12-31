@@ -85,9 +85,9 @@ export const CustomReactMarkdown = ({
   ...filteredProps
 }: CustomReactMarkdownProps) => (
   <ReactMarkdown
-    remarkPlugins={[gfm]}
-    components={{ ...customComponents, ...components }}
     className={classNames("markdown", className)}
+    components={{ ...customComponents, ...components }}
+    remarkPlugins={[gfm]}
     {...filteredProps}
   />
 );
@@ -136,15 +136,15 @@ export const CustomReactMde = ({
       <SegmentedButton toggle>
         <SegmentedButtonSegment
           label="Write"
-          tag="div"
-          selected={selectedTab === "write"}
           onClick={() => setSelectedTab("write")}
+          selected={selectedTab === "write"}
+          tag="div"
         />
         <SegmentedButtonSegment
           label="Preview"
-          tag="div"
-          selected={selectedTab === "preview"}
           onClick={() => setSelectedTab("preview")}
+          selected={selectedTab === "preview"}
+          tag="div"
         />
       </SegmentedButton>
     ),
@@ -194,20 +194,20 @@ export const CustomReactMde = ({
   };
   return (
     <ReactMde
-      selectedTab={selectedTab}
-      onTabChange={onTabChange}
-      value={value}
-      commands={customCommands}
-      toolbarCommands={customToolbarCommands}
-      l18n={customTabButtons}
+      childProps={customChildProps}
       classes={customClasses}
-      getIcon={(command) => (
-        <IconButton tag="div" icon={markdownIcons[command]} />
-      )}
+      commands={customCommands}
       generateMarkdownPreview={(markdown) =>
         Promise.resolve(<CustomReactMarkdown>{markdown}</CustomReactMarkdown>)
       }
-      childProps={customChildProps}
+      getIcon={(command) => (
+        <IconButton icon={markdownIcons[command]} tag="div" />
+      )}
+      l18n={customTabButtons}
+      onTabChange={onTabChange}
+      selectedTab={selectedTab}
+      toolbarCommands={customToolbarCommands}
+      value={value}
       {...filteredProps}
     />
   );

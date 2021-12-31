@@ -208,25 +208,25 @@ export const DrawerDetails = ({
     shippedLine =
       gbEnd && gbEnd <= today ? (
         set.shipped ? (
-          <Typography use="body2" tag="p">
+          <Typography tag="p" use="body2">
             This set has shipped.
           </Typography>
         ) : (
-          <Typography use="body2" tag="p">
+          <Typography tag="p" use="body2">
             This set has not shipped.
           </Typography>
         )
       ) : null;
   }
   const gbLine = gb ? (
-    <Typography use="body2" tag="p">
+    <Typography tag="p" use="body2">
       {gb}
     </Typography>
   ) : null;
   const vendorList =
     set.vendors && set.vendors.length > 0 ? (
       <div className="details-list">
-        <Typography className="subheader" use="caption" tag="h4">
+        <Typography className="subheader" tag="h4" use="caption">
           Vendors
         </Typography>
         <List twoLine>
@@ -261,16 +261,16 @@ export const DrawerDetails = ({
                 wrapper={(children) => (
                   <a
                     href={vendor.storeLink}
-                    target="_blank"
                     rel="noopener noreferrer"
+                    target="_blank"
                   >
                     {children}
                   </a>
                 )}
               >
                 <ListItem
-                  disabled={!vendor.storeLink}
                   className={classNames({ "three-line": !!differentDate })}
+                  disabled={!vendor.storeLink}
                 >
                   <ListItemText>
                     <ListItemPrimaryText>{vendor.name}</ListItemPrimaryText>
@@ -297,56 +297,56 @@ export const DrawerDetails = ({
       <div className="editor-buttons">
         <Button
           className="edit"
-          outlined
+          icon={iconObject(<Edit />)}
           label="Edit"
           onClick={() => edit(set)}
-          icon={iconObject(<Edit />)}
+          outlined
         />
         {user.isEditor ? (
           <Button
             className="delete"
-            outlined
             danger
-            label="Delete"
             icon={iconObject(<Delete />)}
+            label="Delete"
             onClick={() => deleteSet(set)}
+            outlined
           />
         ) : null}
       </div>
     ) : null;
   const lichButton =
     set.colorway === "Lich" ? (
-      <IconButton onClick={toggleLichTheme} icon={iconObject(<Palette />)} />
+      <IconButton icon={iconObject(<Palette />)} onClick={toggleLichTheme} />
     ) : null;
   const userButtons = user.email ? (
     <>
       {withTooltip(
         <IconButton
-          icon="favorite_border"
-          onIcon={iconObject(<Favorite />)}
-          className="favorite"
           checked={favorites.includes(set.id)}
+          className="favorite"
+          icon="favorite_border"
           onClick={() => toggleFavorite(set.id)}
+          onIcon={iconObject(<Favorite />)}
         />,
         favorites.includes(set.id) ? "Unfavorite" : "Favorite"
       )}
       {withTooltip(
         <IconButton
-          icon={iconObject(<ShoppingBasketOff />)}
-          onIcon={iconObject(<ShoppingBasket />)}
-          className="bought"
           checked={bought.includes(set.id)}
+          className="bought"
+          icon={iconObject(<ShoppingBasketOff />)}
           onClick={() => toggleBought(set.id)}
+          onIcon={iconObject(<ShoppingBasket />)}
         />,
         bought.includes(set.id) ? "Bought" : "Not bought"
       )}
       {withTooltip(
         <IconButton
-          icon={iconObject(<Visibility />)}
-          onIcon={iconObject(<VisibilityOff />)}
-          className="hide"
           checked={hidden.includes(set.id)}
+          className="hide"
+          icon={iconObject(<Visibility />)}
           onClick={() => toggleHidden(set.id)}
+          onIcon={iconObject(<VisibilityOff />)}
         />,
         hidden.includes(set.id) ? "Unhide" : "Hide"
       )}
@@ -360,34 +360,34 @@ export const DrawerDetails = ({
     : null;
   const salesButton = set.sales?.img ? (
     <Button
-      outlined
-      label="Sales"
       icon="bar_chart"
+      label="Sales"
       onClick={() => openSales(set)}
+      outlined
     />
   ) : null;
   const notes = set.notes ? (
-    <Typography use="caption" tag="p" className="multiline">
+    <Typography className="multiline" tag="p" use="caption">
       {set.notes}
     </Typography>
   ) : null;
   const searchChips = arrayIncludes(mainPages, page) ? (
     <div className="search-chips-container">
       <div className="search-chips">
-        <ChipSet id="search-chip-set" choice>
+        <ChipSet choice id="search-chip-set">
           <div className="padding-fix" />
           {chips.map((value, index) => (
             <Chip
+              key={value.toLowerCase() + index}
               icon="search"
               label={value}
-              key={value.toLowerCase() + index}
-              selected={search.toLowerCase() === value.toLowerCase()}
               onClick={() => {
                 setSearch(value);
                 if (!dismissible) {
                   close();
                 }
               }}
+              selected={search.toLowerCase() === value.toLowerCase()}
             />
           ))}
         </ChipSet>
@@ -396,11 +396,11 @@ export const DrawerDetails = ({
   ) : null;
   return (
     <Drawer
+      className="details-drawer drawer-right"
       dismissible={dismissible}
       modal={!dismissible}
-      open={open}
       onClose={close}
-      className="details-drawer drawer-right"
+      open={open}
     >
       <DrawerHeader>
         <DrawerTitle>Details</DrawerTitle>
@@ -418,10 +418,10 @@ export const DrawerDetails = ({
             }}
           ></div>
           <div className="details-text">
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               Designed by {set.designer ? set.designer.join(" + ") : ""}
             </Typography>
-            <Typography use="headline4" tag="h1">
+            <Typography tag="h1" use="headline4">
               <Twemoji options={{ className: "twemoji" }}>
                 {`${set.profile ? set.profile : ""} ${
                   set.colorway ? set.colorway : ""
@@ -430,29 +430,29 @@ export const DrawerDetails = ({
             </Typography>
             {gbLine}
             {shippedLine}
-            <Typography use="body2" tag="p">
+            <Typography tag="p" use="body2">
               {ic}
             </Typography>
             {notes}
           </div>
           <div className="details-button">
             <Button
-              outlined
-              label="Link"
-              icon="launch"
-              tag="a"
               href={set.details}
-              target="_blank"
+              icon="launch"
+              label="Link"
+              outlined
               rel="noopener noreferrer"
+              tag="a"
+              target="_blank"
             />
             {salesButton}
           </div>
           <div className="details-button">
             <Button
-              outlined
-              label="Share"
               icon={iconObject(<Share />)}
+              label="Share"
               onClick={copyLink}
+              outlined
             />
           </div>
           {vendorList}

@@ -41,11 +41,11 @@ export const SegmentedButtonSegment = ({
   <Button
     {...props}
     {...{ icon, label }}
-    outlined
     className={bemClasses(
       "segment",
       { "only-icon": !!icon && !label, selected },
       className
     )}
+    outlined
   />
 );

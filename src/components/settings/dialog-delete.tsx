@@ -49,7 +49,7 @@ export const DialogDelete = ({ open, close, signOut }: DialogDeleteProps) => {
       });
   };
   return (
-    <Dialog open={open} onClose={close}>
+    <Dialog onClose={close} open={open}>
       <DialogTitle>Delete account</DialogTitle>
       <DialogContent>
         Are you sure you want to delete your account and all associated

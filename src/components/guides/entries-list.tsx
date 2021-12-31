@@ -72,16 +72,16 @@ export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
   const filterChips = (
     <div className="filter-chips-container">
       <div className="filter-chips">
-        <ChipSet id="filter-chip-set" choice>
+        <ChipSet choice id="filter-chip-set">
           <div className="padding-fix" />
           {allTags.map((value) => (
             <Chip
-              label={value}
               key={value}
-              selected={value === filteredTag}
+              label={value}
               onClick={() => {
                 setFilter(value);
               }}
+              selected={value === filteredTag}
             />
           ))}
         </ChipSet>
@@ -92,20 +92,20 @@ export const EntriesList = ({ openEntry, detailEntry }: EntriesDrawerProps) => {
   return (
     <BoolWrapper
       condition={device === "desktop"}
-      trueWrapper={(children) => (
-        <Drawer className="entries-drawer">
-          {filterChips}
-          <DrawerContent>{children}</DrawerContent>
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <div className="entries-list-container">
           {filterChips}
           {children}
         </div>
       )}
+      trueWrapper={(children) => (
+        <Drawer className="entries-drawer">
+          {filterChips}
+          <DrawerContent>{children}</DrawerContent>
+        </Drawer>
+      )}
     >
-      <List twoLine className="entries-list three-line">
+      <List className="entries-list three-line" twoLine>
         {visibilityVals.map((visibility) => {
           const filteredEntries = entries.filter(
             (entry) =>

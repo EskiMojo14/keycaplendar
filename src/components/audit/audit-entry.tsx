@@ -235,8 +235,8 @@ export const AuditEntry = ({
                                 Link:{" "}
                                 <a
                                   href={beforeVendor.storeLink}
-                                  target="_blank"
                                   rel="noopener noreferrer"
+                                  target="_blank"
                                 >
                                   {beforeVendor.storeLink
                                     ? beforeVendor.storeLink.match(domain)
@@ -299,8 +299,8 @@ export const AuditEntry = ({
                                 Link:{" "}
                                 <a
                                   href={afterVendor.storeLink}
-                                  target="_blank"
                                   rel="noopener noreferrer"
+                                  target="_blank"
                                 >
                                   {afterVendor.storeLink
                                     ? afterVendor.storeLink.match(domain)
@@ -339,8 +339,8 @@ export const AuditEntry = ({
                         <span className="highlight">
                           <a
                             href={beforeProp}
-                            target="_blank"
                             rel="noopener noreferrer"
+                            target="_blank"
                           >
                             {beforeProp.match(domain)}
                           </a>
@@ -350,8 +350,8 @@ export const AuditEntry = ({
                         <span className="highlight">
                           <a
                             href={afterProp}
-                            target="_blank"
                             rel="noopener noreferrer"
+                            target="_blank"
                           >
                             {afterProp.match(domain)}
                           </a>
@@ -363,10 +363,10 @@ export const AuditEntry = ({
                   return (
                     <DataTableRow key={property + index}>
                       <DataTableCell>{property}</DataTableCell>
-                      <DataTableCell hasFormControl className="before">
+                      <DataTableCell className="before" hasFormControl>
                         <Checkbox checked={!!beforeProp} disabled />
                       </DataTableCell>
-                      <DataTableCell hasFormControl className="after">
+                      <DataTableCell className="after" hasFormControl>
                         <Checkbox checked={!!afterProp} disabled />
                       </DataTableCell>
                     </DataTableRow>
@@ -395,8 +395,8 @@ export const AuditEntry = ({
                             Image:{" "}
                             <a
                               href={beforeSales}
-                              target="_blank"
                               rel="noopener noreferrer"
+                              target="_blank"
                             >
                               {beforeSales.match(domain)}
                             </a>
@@ -422,8 +422,8 @@ export const AuditEntry = ({
                             Image:{" "}
                             <a
                               href={afterSales}
-                              target="_blank"
                               rel="noopener noreferrer"
+                              target="_blank"
                             >
                               {afterSales.match(domain)}
                             </a>
@@ -510,8 +510,8 @@ export const AuditEntry = ({
                             {vendor.storeLink ? (
                               <a
                                 href={vendor.storeLink}
-                                target="_blank"
                                 rel="noopener noreferrer"
+                                target="_blank"
                               >
                                 {vendor.storeLink.match(domain)}
                               </a>
@@ -540,8 +540,8 @@ export const AuditEntry = ({
                         <span className="highlight">
                           <a
                             href={prop}
-                            target="_blank"
                             rel="noopener noreferrer"
+                            target="_blank"
                           >
                             {prop.match(domain)}
                           </a>
@@ -580,8 +580,8 @@ export const AuditEntry = ({
                             Image:{" "}
                             <a
                               href={sales}
-                              target="_blank"
                               rel="noopener noreferrer"
+                              target="_blank"
                             >
                               {sales.match(domain)}
                             </a>
@@ -608,8 +608,8 @@ export const AuditEntry = ({
       </DataTable>
       <div className="button-list">
         <Button
-          label="delete"
           className="delete"
+          label="delete"
           onClick={() => {
             openDeleteDialog(action);
           }}

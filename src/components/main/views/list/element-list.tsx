@@ -81,7 +81,7 @@ export const ElementList = ({
       )
     : null;
   const timeIndicator = thisWeek ? (
-    <Typography use="overline" className="time-indicator">
+    <Typography className="time-indicator" use="overline">
       {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
     </Typography>
   ) : null;
@@ -89,12 +89,12 @@ export const ElementList = ({
     ? withTooltip(
         <IconButton
           className="link-icon"
-          icon="open_in_new"
-          tag="a"
           href={set.details}
-          target="_blank"
-          rel="noopener noreferrer"
+          icon="open_in_new"
           label={"Link to " + title}
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />,
         "Link"
       )
@@ -104,13 +104,13 @@ export const ElementList = ({
       );
   return (
     <ListItem
-      selected={selected}
       onClick={() => (!selected ? details(set) : closeDetails())}
+      selected={selected}
     >
       <LazyLoad
+        className="list-image-container"
         debounce={false}
         offsetVertical={480}
-        className="list-image-container"
       >
         <div
           className="list-image"
@@ -118,7 +118,7 @@ export const ElementList = ({
         ></div>
       </LazyLoad>
       <ListItemText>
-        <Typography use="overline" className="overline">
+        <Typography className="overline" use="overline">
           {designer}
         </Typography>
         <ListItemPrimaryText>

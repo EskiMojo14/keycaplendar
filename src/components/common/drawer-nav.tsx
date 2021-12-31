@@ -103,8 +103,8 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
       <>
         <ListDivider />
         <ListItem
-          onClick={() => setPage("favorites")}
           activated={appPage === "favorites"}
+          onClick={() => setPage("favorites")}
         >
           <ListItemGraphic
             icon={
@@ -123,6 +123,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
     <>
       <ListDivider />
       <CollapsibleList
+        className="group-collapsible"
         defaultOpen
         handle={
           <ListItem
@@ -131,19 +132,18 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
             })}
           >
             <ListItemGraphic icon={iconObject(<Person />)} />
-            <Typography use="caption" className="subheader">
+            <Typography className="subheader" use="caption">
               User
             </Typography>
             <ListItemMeta icon="expand_more" />
           </ListItem>
         }
-        className="group-collapsible"
       >
         {userPages.map((page) => (
           <ListItem
             key={page}
-            onClick={() => setPage(page)}
             activated={appPage === page}
+            onClick={() => setPage(page)}
           >
             <ListItemGraphic
               icon={
@@ -168,6 +168,7 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
     <>
       <ListDivider />
       <CollapsibleList
+        className="group-collapsible"
         handle={
           <ListItem
             className={classNames({
@@ -175,19 +176,18 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
             })}
           >
             <ListItemGraphic icon={iconObject(<AdminPanelSettings />)} />
-            <Typography use="caption" className="subheader">
+            <Typography className="subheader" use="caption">
               Admin
             </Typography>
             <ListItemMeta icon="expand_more" />
           </ListItem>
         }
-        className="group-collapsible"
       >
         {adminPages.map((page) => (
           <ListItem
             key={page}
-            onClick={() => setPage(page)}
             activated={appPage === page}
+            onClick={() => setPage(page)}
           >
             <ListItemGraphic icon={pageIcons[page]} />
             {pageTitle[page]}
@@ -214,11 +214,11 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
       })}
       dismissible={dismissible}
       modal={!dismissible}
-      open={open}
       onClose={close}
+      open={open}
     >
       <DrawerHeader>
-        <img className="logo" src={logo} alt="logo" />
+        <img alt="logo" className="logo" src={logo} />
         <DrawerTitle>KeycapLendar</DrawerTitle>
         {closeIcon}
       </DrawerHeader>
@@ -227,8 +227,8 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
           {standardPages.map((page) => (
             <ListItem
               key={page}
-              onClick={() => setPage(page)}
               activated={appPage === page}
+              onClick={() => setPage(page)}
             >
               <ListItemGraphic icon={pageIcons[page]} />
               {pageTitle[page]}
@@ -236,15 +236,15 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
           ))}
           <ListDivider />
           <ListItem
-            onClick={() => setPage("statistics")}
             activated={appPage === "statistics"}
+            onClick={() => setPage("statistics")}
           >
             <ListItemGraphic icon={pageIcons.statistics} />
             {pageTitle.statistics}
           </ListItem>
           <ListItem
-            onClick={() => setPage("history")}
             activated={appPage === "history"}
+            onClick={() => setPage("history")}
           >
             <ListItemGraphic icon={pageIcons.history} />
             {pageTitle.history}
@@ -254,23 +254,23 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
           {adminOptions}
           <ListDivider />
           <ListItem
-            onClick={() => setPage("guides")}
             activated={appPage === "guides"}
+            onClick={() => setPage("guides")}
           >
             <ListItemGraphic icon={pageIcons.guides} />
             {pageTitle.guides}
           </ListItem>
           <ListItem
-            onClick={() => setPage("updates")}
             activated={appPage === "updates"}
+            onClick={() => setPage("updates")}
           >
             <ListItemGraphic icon={pageIcons.updates} />
             {pageTitle.updates}
             {newUpdateIcon}
           </ListItem>
           <ListItem
-            onClick={() => setPage("settings")}
             activated={appPage === "settings"}
+            onClick={() => setPage("settings")}
           >
             <ListItemGraphic icon={pageIcons.settings} />
             {pageTitle.settings}

@@ -67,9 +67,9 @@ export const UpdateEntry = ({
     <CardActions>
       <CardActionButtons>
         <CardActionButton
-          label={entry.pinned ? "Unpin" : "Pin"}
-          icon={iconObject(<PushPin />)}
           className={classNames({ secondary: entry.pinned })}
+          icon={iconObject(<PushPin />)}
+          label={entry.pinned ? "Unpin" : "Pin"}
           onClick={() => pin(entry)}
         />
         <CardActionButton
@@ -115,13 +115,13 @@ export const UpdateEntry = ({
     >
       <div className="title-container">
         <div className="title">
-          <Typography use="overline" tag="h3">
+          <Typography tag="h3" use="overline">
             {entry.name}
           </Typography>
-          <Typography use="headline5" tag="h1">
+          <Typography tag="h1" use="headline5">
             {entry.title}
           </Typography>
-          <Typography use="caption" tag="p">
+          <Typography tag="p" use="caption">
             {DateTime.fromISO(entry.date).toFormat(
               `d'${ordinal(DateTime.fromISO(entry.date).day)}' MMMM yyyy`
             )}

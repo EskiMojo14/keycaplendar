@@ -90,44 +90,44 @@ export const ModalFilterPreset = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={close}
-          className="drawer-right filter-preset-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={close}
           className="filter-preset-modal"
+          onClose={close}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right filter-preset-modal"
+          modal
+          onClose={close}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={close} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           {isNew ? "Create" : "Modify"}
           {preset.global && user.isAdmin ? " global" : ""} filter preset
@@ -140,30 +140,30 @@ export const ModalFilterPreset = ({
           )}
         >
           <Button
-            label="Save"
             disabled={!name}
-            outlined={useDrawer}
+            label="Save"
             onClick={savePreset}
+            outlined={useDrawer}
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <div className="form-container">
         <TextField
-          outlined
+          autoComplete="off"
           label="Name"
           name="name"
-          value={name}
           onChange={handleChange}
-          autoComplete="off"
+          outlined
           required
+          value={name}
         />
       </div>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="group">
           <div className="subheader">
@@ -212,7 +212,7 @@ export const ModalFilterPreset = ({
           <div className="chip-set-container">
             <ChipSet choice>
               {preset.whitelist.profiles.map((profile) => (
-                <Chip key={profile} label={profile} disabled />
+                <Chip key={profile} disabled label={profile} />
               ))}
             </ChipSet>
           </div>
@@ -224,7 +224,7 @@ export const ModalFilterPreset = ({
           <div className="chip-set-container">
             <ChipSet choice>
               {preset.whitelist.shipped.map((shipped) => (
-                <Chip key={shipped} label={shipped} disabled />
+                <Chip key={shipped} disabled label={shipped} />
               ))}
             </ChipSet>
           </div>
@@ -236,7 +236,7 @@ export const ModalFilterPreset = ({
           <div className="chip-set-container">
             <ChipSet choice>
               {preset.whitelist.regions.map((region) => (
-                <Chip key={region} label={region} disabled />
+                <Chip key={region} disabled label={region} />
               ))}
             </ChipSet>
           </div>
@@ -262,7 +262,7 @@ export const ModalFilterPreset = ({
           <div className="chip-set-container">
             <ChipSet choice>
               {preset.whitelist.vendors.map((vendor) => (
-                <Chip key={vendor} label={vendor} disabled />
+                <Chip key={vendor} disabled label={vendor} />
               ))}
             </ChipSet>
           </div>

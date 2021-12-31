@@ -39,7 +39,7 @@ export const DialogDelete = ({
       });
   };
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog onClose={onClose} open={open}>
       <DialogTitle>Delete &ldquo;{entry.title}&rdquo;</DialogTitle>
       <DialogContent>
         Are you sure you want to delete the guide entry &ldquo;{entry.title}
@@ -48,9 +48,9 @@ export const DialogDelete = ({
       <DialogActions>
         <DialogButton label="Cancel" onClick={onClose} />
         <DialogButton
+          className="delete"
           label="Confirm"
           onClick={deleteEntry}
-          className="delete"
         />
       </DialogActions>
     </Dialog>

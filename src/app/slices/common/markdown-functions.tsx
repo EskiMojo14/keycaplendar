@@ -29,7 +29,7 @@ export const typographyBuilder = (tag: string, typography: TypographyT) =>
       children,
       ...allProps
     }: Record<string, any>) => (
-      <Typography use={typography} tag={tag} {...allProps}>
+      <Typography tag={tag} use={typography} {...allProps}>
         {children}
       </Typography>
     ),

@@ -119,44 +119,44 @@ export const ModalCreate = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={onClose}
-          className="drawer-right guide-entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={onClose}
           className="guide-entry-modal"
+          onClose={onClose}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right guide-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create guide
         </BoolWrapper>
@@ -167,76 +167,76 @@ export const ModalCreate = ({
           )}
         >
           <Button
-            label="Save"
-            outlined={useDrawer}
-            onClick={saveEntry}
             disabled={!formFilled}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="form">
           <div className="double-field">
             <div className="half-field">
               <Select
-                outlined
                 enhanced
+                icon={visibilityIcons[visibility]}
                 label="Visibility"
+                onChange={selectVisibility}
                 options={(["all", ...userRoles] as const).map((role) => ({
                   value: role,
                   label: formattedVisibility[role],
                   key: role,
                 }))}
-                icon={visibilityIcons[visibility]}
+                outlined
                 value={visibility}
-                onChange={selectVisibility}
               />
             </div>
             <div className="half-field">
               <TextField
-                outlined
                 label="Tags"
                 name="tags"
-                value={tags.join(", ")}
                 onChange={handleChange}
+                outlined
                 required
+                value={tags.join(", ")}
               />
             </div>
           </div>
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Description"
-            value={description}
             name="description"
             onChange={handleChange}
+            outlined
             required
-            textarea
             rows={2}
+            textarea
+            value={description}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
             <CustomReactMde
-              value={body}
               onChange={(string) => handleEditorChange("body", string)}
               required
+              value={body}
             />
           </div>
         </div>
@@ -251,12 +251,12 @@ export const ModalCreate = ({
             <div className="tag-container">
               <ChipSet>
                 <Chip
+                  disabled
                   icon={visibilityIcons[visibility]}
                   label={formattedVisibility[visibility]}
-                  disabled
                 />
                 {tags.map((tag) => (
-                  <Chip label={tag} key={tag} disabled />
+                  <Chip key={tag} disabled label={tag} />
                 ))}
               </ChipSet>
             </div>
@@ -365,44 +365,44 @@ export const ModalEdit = ({
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={onClose}
-          className="drawer-right guide-entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={onClose}
           className="guide-entry-modal"
+          onClose={onClose}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right guide-entry-modal"
+          modal
+          onClose={onClose}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => <DrawerHeader>{children}</DrawerHeader>}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={onClose} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create guide
         </BoolWrapper>
@@ -414,76 +414,76 @@ export const ModalEdit = ({
           )}
         >
           <Button
-            label="Save"
-            outlined={useDrawer}
-            onClick={saveEntry}
             disabled={!formFilled}
+            label="Save"
+            onClick={saveEntry}
+            outlined={useDrawer}
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="form">
           <div className="double-field">
             <div className="half-field">
               <Select
-                outlined
                 enhanced
+                icon={visibilityIcons[visibility]}
                 label="Visibility"
+                onChange={selectVisibility}
                 options={(["all", ...userRoles] as const).map((role) => ({
                   value: role,
                   label: formattedVisibility[role],
                   key: role,
                 }))}
-                icon={visibilityIcons[visibility]}
+                outlined
                 value={visibility}
-                onChange={selectVisibility}
               />
             </div>
             <div className="half-field">
               <TextField
-                outlined
                 label="Tags"
                 name="tags"
-                value={tags.join(", ")}
                 onChange={handleChange}
+                outlined
                 required
+                value={tags.join(", ")}
               />
             </div>
           </div>
           <TextField
-            outlined
             autoComplete="off"
             label="Title"
-            value={title}
             name="title"
             onChange={handleChange}
+            outlined
             required
+            value={title}
           />
           <TextField
-            outlined
             autoComplete="off"
             label="Description"
-            value={description}
             name="description"
             onChange={handleChange}
+            outlined
             required
-            textarea
             rows={2}
+            textarea
+            value={description}
           />
           <div>
-            <Typography use="caption" tag="div" className="subheader">
+            <Typography className="subheader" tag="div" use="caption">
               Body*
             </Typography>
             <CustomReactMde
-              value={body}
               onChange={(string) => handleEditorChange("body", string)}
               required
+              value={body}
             />
           </div>
         </div>
@@ -498,12 +498,12 @@ export const ModalEdit = ({
             <div className="tag-container">
               <ChipSet>
                 <Chip
+                  disabled
                   icon={visibilityIcons[visibility]}
                   label={formattedVisibility[visibility]}
-                  disabled
                 />
                 {tags.map((tag) => (
-                  <Chip label={tag} key={tag} disabled />
+                  <Chip key={tag} disabled label={tag} />
                 ))}
               </ChipSet>
             </div>

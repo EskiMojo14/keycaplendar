@@ -115,32 +115,32 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
         onClick={openCreate}
       />
       <ModalCreate
-        open={createOpen}
-        onClose={closeCreate}
         getEntries={getEntries}
+        onClose={closeCreate}
+        open={createOpen}
       />
       <ModalEdit
-        open={editOpen}
-        onClose={closeEdit}
-        getEntries={getEntries}
         entry={editEntry}
+        getEntries={getEntries}
+        onClose={closeEdit}
+        open={editOpen}
       />
       <DialogDelete
-        open={deleteOpen}
-        onClose={closeDelete}
         entry={deleteEntry}
         getEntries={getEntries}
+        onClose={closeDelete}
+        open={deleteOpen}
       />
     </>
   ) : null;
   return (
     <>
       <TopAppBar
-        fixed
         className={classNames({
           "bottom-app-bar": bottomNav,
           "bottom-app-bar--indent": bottomNav && user.isAdmin,
         })}
+        fixed
       >
         <TopAppBarRow>
           <TopAppBarSection alignStart>
@@ -158,9 +158,9 @@ export const ContentUpdates = ({ openNav }: ContentUpdatesProps) => {
             {entries.map((entry) => (
               <UpdateEntry
                 key={entry.id}
-                entry={entry}
-                edit={openEdit}
                 delete={openDelete}
+                edit={openEdit}
+                entry={entry}
                 pin={pinEntry}
               />
             ))}

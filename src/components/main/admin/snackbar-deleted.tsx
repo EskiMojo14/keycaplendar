@@ -70,11 +70,11 @@ export const SnackbarDeleted = ({
   };
   return (
     <Snackbar
-      open={open}
-      message={`${set.profile} ${set.colorway} has been deleted.`}
-      onClose={() => closeBar()}
       action={<SnackbarAction label="Undo" onClick={recreateEntry} />}
       dismissesOnAction={false}
+      message={`${set.profile} ${set.colorway} has been deleted.`}
+      onClose={() => closeBar()}
+      open={open}
     />
   );
 };

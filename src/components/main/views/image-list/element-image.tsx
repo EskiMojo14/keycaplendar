@@ -79,7 +79,7 @@ export const ElementImage = ({
     : null;
   const timeIndicator = thisWeek ? (
     <div className="time-indicator">
-      <Typography use="overline" className="live-indicator-text">
+      <Typography className="live-indicator-text" use="overline">
         {pluralise`${daysLeft} ${[daysLeft, "day"]}`}
       </Typography>
     </div>
@@ -89,12 +89,12 @@ export const ElementImage = ({
     ? withTooltip(
         <IconButton
           className="link-icon"
-          icon="open_in_new"
-          tag="a"
           href={link}
-          target="_blank"
-          rel="noopener noreferrer"
+          icon="open_in_new"
           label={"Link to " + title}
+          rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />,
         "Link"
       )
@@ -102,8 +102,8 @@ export const ElementImage = ({
   return (
     <Ripple>
       <ImageListItem
-        onClick={() => (!selected ? details(set) : closeDetails())}
         className={classNames("image-list-item", { selected })}
+        onClick={() => (!selected ? details(set) : closeDetails())}
       >
         <div className="container">
           <div className="link-icon-container">
@@ -124,8 +124,8 @@ export const ElementImage = ({
             >
               <LazyLoad debounce={false} offsetVertical={480}>
                 <ImageListImage
-                  tag="div"
                   style={{ backgroundImage: "url(" + image + ")" }}
+                  tag="div"
                 />
               </LazyLoad>
             </ImageListImageAspectContainer>

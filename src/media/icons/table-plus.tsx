@@ -3,10 +3,10 @@ import { memo } from "react";
 const SvgTablePlus = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     data-name="Layer 1"
-    xmlns="http://www.w3.org/2000/svg"
+    height="1em"
     viewBox="0 0 24 24"
     width="1em"
-    height="1em"
+    xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path d="M0 0h24v24H0z" fill="none" />

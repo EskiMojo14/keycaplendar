@@ -29,18 +29,18 @@ export const SkeletonImage = ({
           <div className="text-container">
             <div className="primary-text">
               <SkeletonBlock
-                content={title}
                 colour="white"
-                typography="subtitle1"
                 constrain
+                content={title}
+                typography="subtitle1"
               />
             </div>
             <div className="secondary-text">
               <SkeletonBlock
-                content={subtitle}
-                typography="body2"
                 colour="hsla(0,0%,100%,.6)"
                 constrain
+                content={subtitle}
+                typography="body2"
               />
             </div>
           </div>

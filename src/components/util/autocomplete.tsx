@@ -37,10 +37,9 @@ export const Autocomplete = ({
   return (
     <Menu
       {...filteredProps}
+      anchorCorner="bottomLeft"
       className={classNames("autocomplete", className)}
       focusOnOpen={false}
-      open={open && useQuery.length >= minChars && matchingItems.length > 0}
-      anchorCorner="bottomLeft"
       onSelect={(e) => {
         select(prop, matchingItems[e.detail.index]);
         if (
@@ -50,6 +49,7 @@ export const Autocomplete = ({
           document.activeElement.blur();
         }
       }}
+      open={open && useQuery.length >= minChars && matchingItems.length > 0}
     >
       {useQuery.length >= minChars
         ? open

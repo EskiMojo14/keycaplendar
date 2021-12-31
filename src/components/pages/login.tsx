@@ -51,17 +51,17 @@ export const Login = () => {
         </TopAppBarRow>
       </TopAppBar>
       <div className="login-container">
-        <img className="image" src={peach} alt="Peach" />
-        <Typography className="title" use="headline6" tag="h3">
+        <img alt="Peach" className="image" src={peach} />
+        <Typography className="title" tag="h3" use="headline6">
           Sign in
         </Typography>
-        <Typography className="subtitle" use="body1" tag="p">
+        <Typography className="subtitle" tag="p" use="body1">
           Log in to gain access to features such as favorites, hiding sets, and
           filter presets.
         </Typography>
         <StyledFirebaseAuth
-          uiConfig={uiConfig}
           firebaseAuth={firebase.auth()}
+          uiConfig={uiConfig}
         />
       </div>
       <Footer />

@@ -90,7 +90,7 @@ export const Content = ({ className, ...filteredProps }: ContentProps) => {
       })}
       {...filteredProps}
     >
-      <DrawerNav open={navOpen} close={closeNav} />
+      <DrawerNav close={closeNav} open={navOpen} />
       <DrawerAppContent>
         {contentMain}
         {contentStatistics}

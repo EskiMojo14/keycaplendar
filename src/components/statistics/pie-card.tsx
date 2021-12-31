@@ -62,10 +62,10 @@ export const StatusCard = ({
               <Chip
                 key={obj.name}
                 label={obj.name}
-                selected={index === selectedIndex}
                 onInteraction={() => {
                   setSelectedIndex(index === selectedIndex ? -1 : index);
                 }}
+                selected={index === selectedIndex}
               />
             ))}
         </ChipSet>
@@ -80,14 +80,14 @@ export const StatusCard = ({
     >
       <div className="title-container">
         {overline ? (
-          <Typography use="overline" tag="h3">
+          <Typography tag="h3" use="overline">
             {overline}
           </Typography>
         ) : null}
-        <Typography use="headline5" tag="h1">
+        <Typography tag="h1" use="headline5">
           {data.name}
         </Typography>
-        <Typography use="subtitle2" tag="p">
+        <Typography tag="p" use="subtitle2">
           {pluralise`${chartData.total} ${[chartData.total, "set"]}`}
         </Typography>
       </div>
@@ -113,8 +113,8 @@ export const StatusCard = ({
                 chartData.postGb,
               ],
             }}
-            type="Pie"
             options={chartOptions}
+            type="Pie"
           />
         </div>
         <div className="table-container">
@@ -158,7 +158,7 @@ export const StatusCard = ({
       </div>
       {selectChips}
       {note ? (
-        <Typography use="caption" tag="p" className="note">
+        <Typography className="note" tag="p" use="caption">
           {note}
         </Typography>
       ) : null}

@@ -83,17 +83,31 @@ module.exports = {
     "import/order": [
       "warn",
       {
-        groups: ["builtin", "external", "internal", "index", "parent", "sibling"],
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "index",
+          "parent",
+          "sibling",
+        ],
         pathGroups: [
           ...Object.keys(paths)
-            .filter((path) => !pathGroupsOverrides.find((pathGroup) => pathGroup.pattern === path))
+            .filter(
+              (path) =>
+                !pathGroupsOverrides.find(
+                  (pathGroup) => pathGroup.pattern === path
+                )
+            )
             .map((path) => ({
               pattern: path,
               group: "internal",
             })),
           ...pathGroupsOverrides,
         ],
-        pathGroupsExcludedImportTypes: [...pathGroupsOverrides.map((pathGroup) => pathGroup.pattern)],
+        pathGroupsExcludedImportTypes: [
+          ...pathGroupsOverrides.map((pathGroup) => pathGroup.pattern),
+        ],
         alphabetize: {
           order: "asc",
           caseInsensitive: true,
@@ -122,6 +136,13 @@ module.exports = {
     ],
     "react/jsx-boolean-value": "error",
     "react/jsx-fragments": "error",
+    "react/jsx-sort-props": [
+      "error",
+      {
+        ignoreCase: true,
+        reservedFirst: true,
+      },
+    ],
     "sort-imports": [
       "warn",
       {

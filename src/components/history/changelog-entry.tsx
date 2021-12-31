@@ -84,7 +84,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               contents = (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && domain ? (
-                    <a href={useData} target="_blank" rel="noreferrer">
+                    <a href={useData} rel="noreferrer" target="_blank">
                       {domain[0]}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
@@ -118,8 +118,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                       Image:{" "}
                       <a
                         href={useData.img}
-                        target="_blank"
                         rel="noopener noreferrer"
+                        target="_blank"
                       >
                         {domain ? domain[0] : null}
                       </a>
@@ -138,8 +138,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   : null;
                 return (
                   <div
-                    className="vendor-container"
                     key={vendor.name + vendor.id}
+                    className="vendor-container"
                   >
                     <Typography use="subtitle2">Vendor {index + 1}</Typography>
                     <br />
@@ -153,8 +153,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                           Link:
                           <a
                             href={vendor.storeLink}
-                            target="_blank"
                             rel="noopener noreferrer"
+                            target="_blank"
                           >
                             {domain ? domain[0] : null}
                           </a>
@@ -178,10 +178,10 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               <DataTableRow key={prop}>
                 <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
                 <DataTableCell
+                  className={action.action === "created" ? "after" : "before"}
                   hasFormControl={
                     arrayIncludes(boolProps, prop) && is<boolean>(useData)
                   }
-                  className={action.action === "created" ? "after" : "before"}
                 >
                   {contents}
                 </DataTableCell>
@@ -213,7 +213,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               before: (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && beforeDomain ? (
-                    <a href={beforeData} target="_blank" rel="noreferrer">
+                    <a href={beforeData} rel="noreferrer" target="_blank">
                       {beforeDomain[0]}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
@@ -234,7 +234,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               after: (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && afterDomain ? (
-                    <a href={afterData} target="_blank" rel="noreferrer">
+                    <a href={afterData} rel="noreferrer" target="_blank">
                       {afterDomain[0]}
                     </a>
                   ) : arrayIncludes(dateProps, prop) ? (
@@ -290,8 +290,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                       Image:{" "}
                       <a
                         href={is<string>(afterData) ? afterData : afterData.img}
-                        target="_blank"
                         rel="noopener noreferrer"
+                        target="_blank"
                       >
                         {beforeDomain ? beforeDomain[0] : null}
                       </a>
@@ -312,8 +312,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                       Image:{" "}
                       <a
                         href={is<string>(afterData) ? afterData : afterData.img}
-                        target="_blank"
                         rel="noopener noreferrer"
+                        target="_blank"
                       >
                         {afterDomain ? afterDomain[0] : null}
                       </a>
@@ -338,7 +338,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                 ? vendor.storeLink.match(domainRegex)
                 : null;
               return (
-                <div className="vendor-container" key={vendor.name + vendor.id}>
+                <div key={vendor.name + vendor.id} className="vendor-container">
                   <Typography use="subtitle2">Vendor {index + 1}</Typography>
                   <br />
                   <span className="highlight">Name: {vendor.name}</span>
@@ -351,8 +351,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                         Link:
                         <a
                           href={vendor.storeLink}
-                          target="_blank"
                           rel="noopener noreferrer"
+                          target="_blank"
                         >
                           {domain ? domain[0] : null}
                         </a>
@@ -384,18 +384,18 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             <DataTableRow key={prop}>
               <DataTableCell>{auditPropertiesFormatted[prop]}</DataTableCell>
               <DataTableCell
+                className="before"
                 hasFormControl={
                   arrayIncludes(boolProps, prop) && is<boolean>(beforeData)
                 }
-                className="before"
               >
                 {contents.before}
               </DataTableCell>
               <DataTableCell
+                className="after"
                 hasFormControl={
                   arrayIncludes(boolProps, prop) && is<boolean>(afterData)
                 }
-                className="after"
               >
                 {contents.after}
               </DataTableCell>

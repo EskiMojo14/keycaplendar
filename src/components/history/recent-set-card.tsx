@@ -82,16 +82,16 @@ export const RecentSetCard = ({
         condition={!!set}
         wrapper={(children) => (
           <CardPrimaryAction
-            onClick={set ? () => openDetails(set) : undefined}
             className={classNames({
               "mdc-card__primary-action--selected": selected,
             })}
+            onClick={set ? () => openDetails(set) : undefined}
           >
             {children}
           </CardPrimaryAction>
         )}
       >
-        <LazyLoad debounce={false} offsetVertical={480} className="lazy-load">
+        <LazyLoad className="lazy-load" debounce={false} offsetVertical={480}>
           <CardMedia
             sixteenByNine
             style={
@@ -112,9 +112,9 @@ export const RecentSetCard = ({
                 />
                 {deleted ? (
                   <Typography
-                    use="overline"
-                    tag="div"
                     className="deleted-indicator"
+                    tag="div"
+                    use="overline"
                   >
                     Deleted
                   </Typography>
@@ -125,14 +125,14 @@ export const RecentSetCard = ({
         </LazyLoad>
         <div className="info-container">
           <div className="overline">
-            <Typography use="overline" tag="h3">
+            <Typography tag="h3" use="overline">
               {set?.designer.join(" + ") ?? recentSet.designer?.join(" + ")}
             </Typography>
           </div>
-          <Typography use="headline5" tag="h2">
+          <Typography tag="h2" use="headline5">
             {set ? `${set.profile} ${set.colorway}` : recentSet.title}
           </Typography>
-          <Typography use="subtitle2" tag="p">
+          <Typography tag="p" use="subtitle2">
             Last updated:{" "}
             {DateTime.fromISO(recentSet.latestTimestamp, {
               zone: "utc",
@@ -146,15 +146,15 @@ export const RecentSetCard = ({
       </ConditionalWrapper>
       <div className="filter-button-container">
         <Button
-          outlined
-          label={filtered ? "Clear filter" : "Filter changelog"}
           icon={filtered ? iconObject(<FilterVariantRemove />) : "filter_list"}
+          label={filtered ? "Clear filter" : "Filter changelog"}
           onClick={() => filterChangelog(recentSet)}
+          outlined
         />
       </div>
       {pages.length > 0 ? (
         <div className="page-list">
-          <Typography use="caption" className="caption">
+          <Typography className="caption" use="caption">
             Pages
           </Typography>
           <div className="button-container">
@@ -166,11 +166,11 @@ export const RecentSetCard = ({
                     : pageTitle[page];
                 return (
                   <Button
-                    outlined
-                    label={title}
-                    icon={pageIcons[page]}
-                    onClick={() => setPage(page)}
                     key={page}
+                    icon={pageIcons[page]}
+                    label={title}
+                    onClick={() => setPage(page)}
+                    outlined
                   />
                 );
               }

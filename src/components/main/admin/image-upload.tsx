@@ -154,18 +154,18 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   const imageTextField = imageFromURL ? (
     <TextField
       autoComplete="off"
-      icon="link"
-      outlined
-      label="Image link"
-      pattern="https?://.+\.(?:jpg|jpeg|png)"
-      name="imageLink"
-      value={imageLink}
-      onChange={handleChange}
       helpText={{
         persistent: false,
         validationMsg: true,
         children: "Must be valid link",
       }}
+      icon="link"
+      label="Image link"
+      name="imageLink"
+      onChange={handleChange}
+      outlined
+      pattern="https?://.+\.(?:jpg|jpeg|png)"
+      value={imageLink}
     />
   ) : null;
   const areaInner = hasImage ? (
@@ -176,7 +176,7 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
   ) : loading ? null : desktop && !imageFromURL ? (
     <div className="drag-label">
       <Icon icon={iconObject(<AddPhotoAlternate />, { size: "medium" })} />
-      <Typography use="body2" tag="p" className="caption">
+      <Typography className="caption" tag="p" use="body2">
         Drag image here
       </Typography>
     </div>
@@ -194,12 +194,12 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     <CardActions>
       <CardActionButtons>
         <div className="file-input">
-          <CardActionButton tag="label" htmlFor="file-upload" label="Browse" />
+          <CardActionButton htmlFor="file-upload" label="Browse" tag="label" />
           <input
-            type="file"
-            id="file-upload"
             accept=".png, .jpg, .jpeg"
+            id="file-upload"
             onChange={handleFileChange}
+            type="file"
           />
         </div>
         <CardActionButton label="From URL" onClick={fromUrl} />
@@ -213,8 +213,8 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     </CardActions>
   );
   return (
-    <Card outlined className="image-upload">
-      <Typography use="caption" tag="h3" className="image-upload-title">
+    <Card className="image-upload" outlined>
+      <Typography className="image-upload-title" tag="h3" use="caption">
         Image*
       </Typography>
       <div className="image-upload-form">

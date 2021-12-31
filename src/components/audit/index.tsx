@@ -155,7 +155,7 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
 
   return (
     <>
-      <TopAppBar fixed className={classNames({ "bottom-app-bar": bottomNav })}>
+      <TopAppBar className={classNames({ "bottom-app-bar": bottomNav })} fixed>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={openNav} />
@@ -178,9 +178,9 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
       >
         <div className="main extended-app-bar">
           <DrawerAuditFilter
-            open={filterOpen}
             close={closeFilter}
             handleFilterChange={handleFilterChange}
+            open={filterOpen}
           />
           <ConditionalWrapper
             condition={device === "desktop"}
@@ -195,15 +195,15 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
                     placeholder: filteredActions.length === 0,
                   })}
                 >
-                  <List twoLine className="three-line">
+                  <List className="three-line" twoLine>
                     {filteredActions.map((action) => {
                       const timestamp = DateTime.fromISO(action.timestamp);
                       return (
                         <AuditEntry
                           key={action.timestamp}
                           action={action}
-                          timestamp={timestamp}
                           openDeleteDialog={openDelete}
+                          timestamp={timestamp}
                         />
                       );
                     })}
@@ -213,10 +213,10 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
             </div>
           </ConditionalWrapper>
           <DialogAuditDelete
-            open={deleteOpen}
             close={closeDelete}
             deleteAction={deleteAction}
             deleteActionFn={deleteActionFn}
+            open={deleteOpen}
           />
         </div>
       </div>

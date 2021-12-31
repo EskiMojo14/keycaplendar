@@ -51,10 +51,10 @@ export const headerOneCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header one"
         icon={markdownIcons.h1}
         role="img"
-        aria-label="Add header one"
+        tag="div"
       />
     ),
     {
@@ -70,10 +70,10 @@ export const headerTwoCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header two"
         icon={markdownIcons.h2}
         role="img"
-        aria-label="Add header two"
+        tag="div"
       />
     ),
     {
@@ -89,10 +89,10 @@ export const headerThreeCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header three"
         icon={markdownIcons.h3}
         role="img"
-        aria-label="Add header three"
+        tag="div"
       />
     ),
     {
@@ -108,10 +108,10 @@ export const headerFourCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header four"
         icon={markdownIcons.h4}
         role="img"
-        aria-label="Add header four"
+        tag="div"
       />
     ),
     {
@@ -127,10 +127,10 @@ export const headerFiveCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header five"
         icon={markdownIcons.h5}
         role="img"
-        aria-label="Add header five"
+        tag="div"
       />
     ),
     {
@@ -146,10 +146,10 @@ export const headerSixCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Add header six"
         icon={markdownIcons.h6}
         role="img"
-        aria-label="Add header six"
+        tag="div"
       />
     ),
     {
@@ -165,10 +165,10 @@ export const insertTableCommand: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Insert table"
         icon={markdownIcons["insert-table"]}
         role="img"
-        aria-label="Insert table"
+        tag="div"
       />
     ),
     {
@@ -188,10 +188,10 @@ export const insertTableColumnAfter: Command = {
   icon: Object.assign(
     () => (
       <IconButton
-        tag="div"
+        aria-label="Insert column after"
         icon={markdownIcons["column-after"]}
         role="img"
-        aria-label="Insert column after"
+        tag="div"
       />
     ),
     {

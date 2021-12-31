@@ -439,62 +439,62 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
 
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Month
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB month"
-          value={state.gbLaunch}
+          month
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
-          month
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Date" onClick={toggleDate} />
+          <CardActionButton label="Date" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
   ) : (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Date
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB launch"
-          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
         <DatePicker
           autoComplete="off"
-          icon={iconObject(<CalendarToday />)}
-          outlined
-          label="GB end"
-          value={state.gbEnd}
           fallbackValue={state.gbLaunch}
+          icon={iconObject(<CalendarToday />)}
+          label="GB end"
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
+          outlined
           showNowButton
+          value={state.gbEnd}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Month" onClick={toggleDate} />
+          <CardActionButton label="Month" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -502,37 +502,28 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={closeModal}
-          className="drawer-right entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={closeModal}
           className="entry-modal"
+          onClose={closeModal}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right entry-modal"
+          modal
+          onClose={closeModal}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => (
-          <DrawerHeader>
-            {children}
-            <LinearProgress
-              closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? state.imageUploadProgress : undefined}
-            />
-          </DrawerHeader>
-        )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
@@ -542,16 +533,25 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
             />
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => (
+          <DrawerHeader>
+            {children}
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
+            />
+          </DrawerHeader>
+        )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Create Entry
         </BoolWrapper>
@@ -563,32 +563,32 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
           )}
         >
           <Button
-            type="button"
-            outlined={useDrawer}
+            disabled={!valid || uploadingImage || uploadingDoc}
             label="Save"
             onClick={() => {
               if (valid && !uploadingImage && !uploadingDoc) {
                 uploadImage();
               }
             }}
-            disabled={!valid || uploadingImage || uploadingDoc}
+            outlined={useDrawer}
+            type="button"
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
             <a
               href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
             >
               <Button label="guide" />
             </a>
@@ -600,22 +600,22 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  outlined
-                  required
                   label="Profile"
-                  value={state.profile}
                   name="profile"
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  outlined
+                  required
+                  value={state.profile}
                 />
                 <Autocomplete
-                  open={focused === "profile"}
                   array={allProfiles}
-                  query={state.profile}
-                  prop="profile"
-                  select={selectValue}
                   minChars={1}
+                  open={focused === "profile"}
+                  prop="profile"
+                  query={state.profile}
+                  select={selectValue}
                 />
               </MenuSurfaceAnchor>
             </div>
@@ -623,25 +623,21 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               <TextField
                 autoComplete="off"
                 className="field"
-                outlined
-                required
                 label="Colorway"
-                value={state.colorway}
                 name="colorway"
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                required
+                value={state.colorway}
               />
             </div>
           </div>
           <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              value={state.designer.join(", ")}
-              name="designer"
+              disabled={user.isEditor === false && user.isDesigner}
               helpText={{
                 persistent: true,
                 children: (
@@ -651,85 +647,89 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                   </>
                 ),
               }}
+              label="Designer"
+              name="designer"
+              onBlur={handleBlur}
               onChange={handleChange}
               onFocus={handleFocus}
-              onBlur={handleBlur}
-              disabled={user.isEditor === false && user.isDesigner}
+              outlined
+              required
+              value={state.designer.join(", ")}
             />
             <Autocomplete
-              open={focused === "designer"}
               array={allDesigners}
-              query={state.designer.join(", ")}
-              prop="designer"
-              select={selectValueAppend}
-              minChars={2}
               listSplit
+              minChars={2}
+              open={focused === "designer"}
+              prop="designer"
+              query={state.designer.join(", ")}
+              select={selectValueAppend}
             />
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
             icon={iconObject(<CalendarToday />)}
-            outlined
             label="IC date"
-            required
-            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
+            outlined
             pickerProps={{ disableFuture: true }}
+            required
             showNowButton
+            value={state.icDate}
           />
           <TextField
             autoComplete="off"
-            icon="link"
-            outlined
-            label="Details"
-            required
-            pattern={validLink}
-            value={state.details}
-            name="details"
             helpText={{
               persistent: false,
               validationMsg: true,
               children: "Must be valid link",
             }}
+            icon="link"
+            label="Details"
+            name="details"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
+            pattern={validLink}
+            required
+            value={state.details}
           />
           <TextField
-            textarea
-            rows={2}
             autoComplete="off"
-            outlined
             label="Notes"
-            value={state.notes}
             name="notes"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
+            rows={2}
+            textarea
+            value={state.notes}
           />
           <ImageUpload
+            desktop={device === "desktop"}
             image={state.image}
             setImage={setImage}
-            desktop={device === "desktop"}
           />
           {dateCard}
           <Checkbox
-            label="Shipped"
-            id="create-shipped"
-            name="shipped"
             checked={state.shipped}
+            id="create-shipped"
+            label="Shipped"
+            name="shipped"
             onChange={handleChange}
           />
-          <Typography use="caption" tag="h3" className="subheader">
+          <Typography className="subheader" tag="h3" use="caption">
             Vendors
           </Typography>
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-create">
               {(provided) => (
                 <div
-                  className="vendors-container"
                   ref={provided.innerRef}
+                  className="vendors-container"
                   {...provided.droppableProps}
                 >
                   {state.vendors.map((vendor, index) => {
@@ -738,13 +738,13 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                         <DatePicker
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
-                          outlined
                           label="End date"
-                          required
-                          value={vendor.endDate}
                           name={"endDate" + index}
                           onChange={handleNamedChangeVendor("endDate", index)}
+                          outlined
+                          required
                           showNowButton
+                          value={vendor.endDate}
                         />
                       ) : null;
                     return (
@@ -755,35 +755,35 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                       >
                         {(provided, snapshot) => (
                           <Card
-                            outlined
+                            ref={provided.innerRef}
                             className={classNames("vendor-container", {
                               dragged: snapshot.isDragging,
                             })}
-                            ref={provided.innerRef}
+                            outlined
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
                               <Typography
-                                use="caption"
                                 className="vendor-title"
+                                use="caption"
                               >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
                                 <IconButton
-                                  type="button"
                                   icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
+                                  type="button"
                                 />,
                                 "Delete"
                               )}
                               {withTooltip(
                                 <Icon
-                                  icon="drag_handle"
                                   className="drag-handle"
+                                  icon="drag_handle"
                                   {...provided.dragHandleProps}
                                 />,
                                 "Drag"
@@ -794,73 +794,73 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
-                                  required
-                                  outlined
                                   label="Name"
-                                  value={vendor.name}
                                   name={"name" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.name}
                                 />
                                 <Autocomplete
-                                  open={focused === "name" + index}
                                   array={allVendors}
-                                  query={vendor.name}
-                                  prop={"name" + index}
-                                  select={selectVendor}
                                   minChars={1}
+                                  open={focused === "name" + index}
+                                  prop={"name" + index}
+                                  query={vendor.name}
+                                  select={selectVendor}
                                 />
                               </MenuSurfaceAnchor>
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
-                                  required
-                                  outlined
                                   label="Region"
-                                  value={vendor.region}
                                   name={"region" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.region}
                                 />
                                 <Autocomplete
-                                  open={focused === "region" + index}
                                   array={allVendorRegions}
-                                  query={vendor.region}
-                                  prop={"region" + index}
-                                  select={selectVendorAppend}
-                                  minChars={1}
                                   listSplit
+                                  minChars={1}
+                                  open={focused === "region" + index}
+                                  prop={"region" + index}
+                                  query={vendor.region}
+                                  select={selectVendorAppend}
                                 />
                               </MenuSurfaceAnchor>
                               <TextField
                                 autoComplete="off"
-                                icon="link"
-                                outlined
-                                label="Store link"
-                                pattern={validLink}
-                                value={vendor.storeLink}
-                                name={"storeLink" + index}
-                                onChange={handleChangeVendor}
-                                onFocus={handleFocus}
-                                onBlur={handleBlur}
                                 helpText={{
                                   persistent: false,
                                   validationMsg: true,
                                   children: "Must be valid link",
                                 }}
+                                icon="link"
+                                label="Store link"
+                                name={"storeLink" + index}
+                                onBlur={handleBlur}
+                                onChange={handleChangeVendor}
+                                onFocus={handleFocus}
+                                outlined
+                                pattern={validLink}
+                                value={vendor.storeLink}
                               />
                               <Checkbox
-                                className="end-date-field"
-                                label="Different end date"
-                                name={"endDate" + index}
-                                id={"editEndDate" + index}
-                                onChange={handleChangeVendorEndDate}
                                 checked={
                                   !!vendor.endDate || vendor.endDate === ""
                                 }
+                                className="end-date-field"
+                                id={"editEndDate" + index}
+                                label="Different end date"
+                                name={"endDate" + index}
+                                onChange={handleChangeVendorEndDate}
                               />
                               {endDateField}
                             </div>
@@ -876,14 +876,14 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
           </DragDropContext>
           <div className="add-button">
             <Button
-              type="button"
-              outlined
               label="Add vendor"
               onClick={addVendor}
+              outlined
+              type="button"
             />
           </div>
-          <Card outlined className="sales-container">
-            <Typography use="caption" tag="h3" className="sales-title">
+          <Card className="sales-container" outlined>
+            <Typography className="sales-title" tag="h3" use="caption">
               Sales
             </Typography>
             <div
@@ -895,41 +895,41 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={state.salesImg}
                 alt=""
-                onLoad={() => {
-                  setSalesImageLoaded(true);
-                }}
                 onError={() => {
                   setSalesImageLoaded(false);
                 }}
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                src={state.salesImg}
               />
             </div>
             <div className="sales-field">
               <TextField
                 autoComplete="off"
-                icon="link"
-                outlined
-                label="URL"
-                pattern={validLink}
-                value={state.salesImg}
-                name="salesImg"
                 helpText={{
                   persistent: true,
                   validationMsg: true,
                   children: "Must be direct link to image",
                 }}
+                icon="link"
+                label="URL"
+                name="salesImg"
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                pattern={validLink}
+                value={state.salesImg}
               />
               <Checkbox
+                checked={state.salesThirdParty}
                 className="sales-checkbox"
+                id={"CreateSalesThirdParty"}
                 label="Third party graph"
                 name="salesThirdParty"
-                id={"CreateSalesThirdParty"}
                 onChange={handleChange}
-                checked={state.salesThirdParty}
               />
             </div>
           </Card>
@@ -1352,62 +1352,62 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   };
   const useDrawer = device !== "mobile";
   const dateCard = state.gbMonth ? (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Month
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB month"
-          value={state.gbLaunch}
+          month
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
-          month
-          allowQuarter
+          outlined
           showNowButton
+          value={state.gbLaunch}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Date" onClick={toggleDate} />
+          <CardActionButton label="Date" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
   ) : (
-    <Card outlined className="date-container">
-      <Typography use="caption" tag="h3" className="date-title">
+    <Card className="date-container" outlined>
+      <Typography className="date-title" tag="h3" use="caption">
         Date
       </Typography>
       <div className="date-form">
         <DatePicker
+          allowQuarter
           autoComplete="off"
           icon={iconObject(<CalendarToday />)}
-          outlined
           label="GB launch"
-          value={state.gbLaunch}
           name="gbLaunch"
           onChange={handleNamedChange("gbLaunch")}
+          outlined
           showNowButton
-          allowQuarter
+          value={state.gbLaunch}
         />
         <DatePicker
           autoComplete="off"
-          icon={iconObject(<CalendarToday />)}
-          outlined
-          label="GB end"
-          value={state.gbEnd}
           fallbackValue={state.gbLaunch}
+          icon={iconObject(<CalendarToday />)}
+          label="GB end"
           name="gbEnd"
           onChange={handleNamedChange("gbEnd")}
+          outlined
           showNowButton
+          value={state.gbEnd}
         />
       </div>
       <CardActions>
         <CardActionButtons>
-          <CardActionButton type="button" label="Month" onClick={toggleDate} />
+          <CardActionButton label="Month" onClick={toggleDate} type="button" />
         </CardActionButtons>
       </CardActions>
     </Card>
@@ -1415,37 +1415,28 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
   return (
     <BoolWrapper
       condition={useDrawer}
-      trueWrapper={(children) => (
-        <Drawer
-          modal
-          open={open}
-          onClose={closeModal}
-          className="drawer-right entry-modal"
-        >
-          {children}
-        </Drawer>
-      )}
       falseWrapper={(children) => (
         <FullScreenDialog
-          open={open}
-          onClose={closeModal}
           className="entry-modal"
+          onClose={closeModal}
+          open={open}
         >
           {children}
         </FullScreenDialog>
       )}
+      trueWrapper={(children) => (
+        <Drawer
+          className="drawer-right entry-modal"
+          modal
+          onClose={closeModal}
+          open={open}
+        >
+          {children}
+        </Drawer>
+      )}
     >
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => (
-          <DrawerHeader>
-            {children}
-            <LinearProgress
-              closed={!(uploadingImage || uploadingDoc)}
-              progress={uploadingImage ? state.imageUploadProgress : undefined}
-            />
-          </DrawerHeader>
-        )}
         falseWrapper={(children) => (
           <FullScreenDialogAppBar>
             <TopAppBarRow>{children}</TopAppBarRow>
@@ -1455,16 +1446,25 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
             />
           </FullScreenDialogAppBar>
         )}
+        trueWrapper={(children) => (
+          <DrawerHeader>
+            {children}
+            <LinearProgress
+              closed={!(uploadingImage || uploadingDoc)}
+              progress={uploadingImage ? state.imageUploadProgress : undefined}
+            />
+          </DrawerHeader>
+        )}
       >
         <BoolWrapper
           condition={useDrawer}
-          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
           falseWrapper={(children) => (
             <TopAppBarSection alignStart>
               <TopAppBarNavigationIcon icon="close" onClick={closeModal} />
               <TopAppBarTitle>{children}</TopAppBarTitle>
             </TopAppBarSection>
           )}
+          trueWrapper={(children) => <DrawerTitle>{children}</DrawerTitle>}
         >
           Edit Entry
         </BoolWrapper>
@@ -1476,8 +1476,7 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           )}
         >
           <Button
-            type="button"
-            outlined={useDrawer}
+            disabled={!valid || uploadingImage || uploadingDoc}
             label="Save"
             onClick={() => {
               if (valid && !uploadingImage && !uploadingDoc) {
@@ -1488,24 +1487,25 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 }
               }
             }}
-            disabled={!valid || uploadingImage || uploadingDoc}
+            outlined={useDrawer}
+            type="button"
           />
         </ConditionalWrapper>
       </BoolWrapper>
       <BoolWrapper
         condition={useDrawer}
-        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
         falseWrapper={(children) => (
           <FullScreenDialogContent>{children}</FullScreenDialogContent>
         )}
+        trueWrapper={(children) => <DrawerContent>{children}</DrawerContent>}
       >
         <div className="banner">
           <div className="banner-text">Make sure to read the entry guide.</div>
           <div className="banner-button">
             <a
               href="/guides?guideId=JLB4xxfx52NJmmnbvbzO"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
             >
               <Button label="guide" />
             </a>
@@ -1517,22 +1517,22 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               <MenuSurfaceAnchor>
                 <TextField
                   autoComplete="off"
-                  outlined
-                  required
                   label="Profile"
-                  value={state.profile}
                   name="profile"
+                  onBlur={handleBlur}
                   onChange={handleChange}
                   onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  outlined
+                  required
+                  value={state.profile}
                 />
                 <Autocomplete
-                  open={focused === "profile"}
                   array={allProfiles}
-                  query={state.profile}
-                  prop="profile"
-                  select={selectValue}
                   minChars={1}
+                  open={focused === "profile"}
+                  prop="profile"
+                  query={state.profile}
+                  select={selectValue}
                 />
               </MenuSurfaceAnchor>
             </div>
@@ -1540,28 +1540,24 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               <TextField
                 autoComplete="off"
                 className="field"
-                outlined
-                required
-                label="Colorway"
-                value={state.colorway}
-                name="colorway"
                 helpText={{
                   persistent: false,
                   validationMsg: true,
                   children: "Enter a name",
                 }}
+                label="Colorway"
+                name="colorway"
                 onChange={handleChange}
+                outlined
+                required
+                value={state.colorway}
               />
             </div>
           </div>
           <MenuSurfaceAnchor>
             <TextField
               autoComplete="off"
-              outlined
-              label="Designer"
-              required
-              value={state.designer.join(", ")}
-              name="designer"
+              disabled={user.isEditor === false && user.isDesigner}
               helpText={{
                 persistent: true,
                 children: (
@@ -1571,41 +1567,38 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                   </>
                 ),
               }}
+              label="Designer"
+              name="designer"
+              onBlur={handleBlur}
               onChange={handleChange}
               onFocus={handleFocus}
-              onBlur={handleBlur}
-              disabled={user.isEditor === false && user.isDesigner}
+              outlined
+              required
+              value={state.designer.join(", ")}
             />
             <Autocomplete
-              open={focused === "designer"}
               array={allDesigners}
-              query={state.designer.join(", ")}
-              prop="designer"
-              select={selectValueAppend}
-              minChars={2}
               listSplit
+              minChars={2}
+              open={focused === "designer"}
+              prop="designer"
+              query={state.designer.join(", ")}
+              select={selectValueAppend}
             />
           </MenuSurfaceAnchor>
           <DatePicker
             autoComplete="off"
             icon={iconObject(<CalendarToday />)}
-            outlined
             label="IC date"
-            required
-            value={state.icDate}
             name="icDate"
             onChange={handleNamedChange("icDate")}
+            outlined
+            required
             showNowButton
+            value={state.icDate}
           />
           <TextField
             autoComplete="off"
-            icon="link"
-            outlined
-            label="Details"
-            required
-            pattern={validLink}
-            value={state.details}
-            name="details"
             helpText={{
               persistent: false,
               validationMsg: true,
@@ -1614,46 +1607,53 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                   ? "Must be valid link"
                   : "Enter a link",
             }}
+            icon="link"
+            label="Details"
+            name="details"
             onChange={handleChange}
+            outlined
+            pattern={validLink}
+            required
+            value={state.details}
           />
           <TextField
-            textarea
-            rows={2}
             autoComplete="off"
-            outlined
             label="Notes"
-            value={state.notes}
             name="notes"
+            onBlur={handleBlur}
             onChange={handleChange}
             onFocus={handleFocus}
-            onBlur={handleBlur}
+            outlined
+            rows={2}
+            textarea
+            value={state.notes}
           />
           <ImageUpload
+            desktop={device === "desktop"}
             image={
               state.newImage
                 ? state.image
                 : state.imageURL.replace("keysets", "thumbs")
             }
             setImage={setImage}
-            desktop={device === "desktop"}
           />
           {dateCard}
           <Checkbox
-            label="Shipped"
-            id="edit-shipped"
-            name="shipped"
             checked={state.shipped}
+            id="edit-shipped"
+            label="Shipped"
+            name="shipped"
             onChange={handleChange}
           />
-          <Typography use="caption" tag="h3" className="subheader">
+          <Typography className="subheader" tag="h3" use="caption">
             Vendors
           </Typography>
           <DragDropContext onDragEnd={handleDragVendor}>
             <Droppable droppableId="vendors-edit">
               {(provided) => (
                 <div
-                  className="vendors-container"
                   ref={provided.innerRef}
+                  className="vendors-container"
                   {...provided.droppableProps}
                 >
                   {state.vendors.map((vendor, index) => {
@@ -1662,13 +1662,13 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                         <DatePicker
                           autoComplete="off"
                           icon={iconObject(<CalendarToday />)}
-                          outlined
                           label="End date"
-                          required
-                          value={vendor.endDate || ""}
                           name={"endDate" + index}
                           onChange={handleNamedChangeVendor("endDate", index)}
+                          outlined
+                          required
                           showNowButton
+                          value={vendor.endDate || ""}
                         />
                       ) : null;
                     return (
@@ -1679,35 +1679,35 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                       >
                         {(provided, snapshot) => (
                           <Card
-                            outlined
+                            ref={provided.innerRef}
                             className={classNames("vendor-container", {
                               dragged: snapshot.isDragging,
                             })}
-                            ref={provided.innerRef}
+                            outlined
                             {...provided.draggableProps}
                             style={getVendorStyle(provided)}
                           >
                             <div className="title-container">
                               <Typography
-                                use="caption"
                                 className="vendor-title"
+                                use="caption"
                               >
                                 {"Vendor " + (index + 1)}
                               </Typography>
                               {withTooltip(
                                 <IconButton
-                                  type="button"
                                   icon={iconObject(<Delete />)}
                                   onClick={() => {
                                     removeVendor(index);
                                   }}
+                                  type="button"
                                 />,
                                 "Delete"
                               )}
                               {withTooltip(
                                 <Icon
-                                  icon="drag_handle"
                                   className="drag-handle"
+                                  icon="drag_handle"
                                   {...provided.dragHandleProps}
                                 />,
                                 "Drag"
@@ -1718,72 +1718,72 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Store />)}
-                                  required
-                                  outlined
                                   label="Name"
-                                  value={vendor.name}
                                   name={"name" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.name}
                                 />
                                 <Autocomplete
-                                  open={focused === "name" + index}
                                   array={allVendors}
-                                  query={vendor.name}
-                                  prop={"name" + index}
-                                  select={selectVendor}
                                   minChars={1}
+                                  open={focused === "name" + index}
+                                  prop={"name" + index}
+                                  query={vendor.name}
+                                  select={selectVendor}
                                 />
                               </MenuSurfaceAnchor>
                               <MenuSurfaceAnchor>
                                 <TextField
                                   autoComplete="off"
                                   icon={iconObject(<Public />)}
-                                  required
-                                  outlined
                                   label="Region"
-                                  value={vendor.region}
                                   name={"region" + index}
+                                  onBlur={handleBlur}
                                   onChange={handleChangeVendor}
                                   onFocus={handleFocus}
-                                  onBlur={handleBlur}
+                                  outlined
+                                  required
+                                  value={vendor.region}
                                 />
                                 <Autocomplete
-                                  open={focused === "region" + index}
                                   array={allVendorRegions}
-                                  query={vendor.region}
-                                  prop={"region" + index}
-                                  select={selectVendorAppend}
                                   minChars={1}
+                                  open={focused === "region" + index}
+                                  prop={"region" + index}
+                                  query={vendor.region}
+                                  select={selectVendorAppend}
                                 />
                               </MenuSurfaceAnchor>
                               <TextField
                                 autoComplete="off"
-                                icon="link"
-                                outlined
-                                label="Store link"
-                                pattern={validLink}
-                                value={vendor.storeLink}
-                                name={"storeLink" + index}
-                                onChange={handleChangeVendor}
-                                onFocus={handleFocus}
-                                onBlur={handleBlur}
                                 helpText={{
                                   persistent: false,
                                   validationMsg: true,
                                   children: "Must be valid link",
                                 }}
+                                icon="link"
+                                label="Store link"
+                                name={"storeLink" + index}
+                                onBlur={handleBlur}
+                                onChange={handleChangeVendor}
+                                onFocus={handleFocus}
+                                outlined
+                                pattern={validLink}
+                                value={vendor.storeLink}
                               />
                               <Checkbox
-                                className="end-date-field"
-                                label="Different end date"
-                                name={"endDate" + index}
-                                id={"editEndDate" + index}
-                                onChange={handleChangeVendorEndDate}
                                 checked={
                                   !!vendor.endDate || vendor.endDate === ""
                                 }
+                                className="end-date-field"
+                                id={"editEndDate" + index}
+                                label="Different end date"
+                                name={"endDate" + index}
+                                onChange={handleChangeVendorEndDate}
                               />
                               {endDateField}
                             </div>
@@ -1799,14 +1799,14 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           </DragDropContext>
           <div className="add-button">
             <Button
-              type="button"
-              outlined
               label="Add vendor"
               onClick={addVendor}
+              outlined
+              type="button"
             />
           </div>
-          <Card outlined className="sales-container">
-            <Typography use="caption" tag="h3" className="sales-title">
+          <Card className="sales-container" outlined>
+            <Typography className="sales-title" tag="h3" use="caption">
               Sales
             </Typography>
             <div
@@ -1818,41 +1818,41 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 <Icon icon={iconObject(<AddPhotoAlternate />)} />
               </div>
               <img
-                src={state.salesImg}
                 alt=""
-                onLoad={() => {
-                  setSalesImageLoaded(true);
-                }}
                 onError={() => {
                   setSalesImageLoaded(false);
                 }}
+                onLoad={() => {
+                  setSalesImageLoaded(true);
+                }}
+                src={state.salesImg}
               />
             </div>
             <div className="sales-field">
               <TextField
                 autoComplete="off"
-                icon="link"
-                outlined
-                label="URL"
-                pattern={validLink}
-                value={state.salesImg}
-                name="salesImg"
                 helpText={{
                   persistent: true,
                   validationMsg: true,
                   children: "Must be direct link to image",
                 }}
+                icon="link"
+                label="URL"
+                name="salesImg"
+                onBlur={handleBlur}
                 onChange={handleChange}
                 onFocus={handleFocus}
-                onBlur={handleBlur}
+                outlined
+                pattern={validLink}
+                value={state.salesImg}
               />
               <Checkbox
+                checked={state.salesThirdParty}
                 className="sales-checkbox"
+                id="editSalesThirdParty"
                 label="Third party graph"
                 name="salesThirdParty"
-                id="editSalesThirdParty"
                 onChange={handleChange}
-                checked={state.salesThirdParty}
               />
             </div>
           </Card>

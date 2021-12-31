@@ -10,14 +10,14 @@ export const Footer = () => {
   const cannonkeysLogo = (
     <svg
       className="cannonkeys"
-      version="1.1"
       id="Layer_1"
+      version="1.1"
+      viewBox="0 0 1029.5 348.18"
+      x="0px"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      x="0px"
-      y="0px"
-      viewBox="0 0 1029.5 348.18"
       xmlSpace="preserve"
+      y="0px"
     >
       <g>
         <g>
@@ -114,11 +114,11 @@ export const Footer = () => {
   const prototypistLogo = (
     <svg
       className="prototypist"
-      version="1.1"
       id="Layer_1"
+      version="1.1"
+      viewBox="0 0 247.0917358 71.4936523"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      viewBox="0 0 247.0917358 71.4936523"
       xmlSpace="preserve"
     >
       <g>
@@ -216,11 +216,11 @@ export const Footer = () => {
   );
   const latamkeysLogo = (
     <div className="latamkeys">
-      <img src={latamkeysLogoImg} className="latamkeys-img" />
+      <img className="latamkeys-img" src={latamkeysLogoImg} />
       <svg
         className="latamkeys-text"
-        xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 405.3 59.5"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           d="M38.65,103.2H5.15V45.3h3.2v55h30.4v2.9Z"
@@ -263,7 +263,7 @@ export const Footer = () => {
   );
   return (
     <div className="footer">
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Site created by{" "}
         {withTooltip(<span className="bold">Ben Durrant</span>, "eskimojo", {
           align: "top",
@@ -282,25 +282,25 @@ export const Footer = () => {
         )}
         .
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Something to add/adjust? Join my{" "}
         <Button
-          label="Discord"
-          icon={iconObject(<Discord />)}
-          tag="a"
           href="https://discord.gg/zrcN3qF"
-          target="_blank"
+          icon={iconObject(<Discord />)}
+          label="Discord"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />{" "}
         and let us know, or contact me via{" "}
         {withTooltip(
           <Button
-            label="Email"
-            icon={iconObject(<Email />)}
-            tag="a"
             href="mailto:keycaplendar@gmail.com?subject=KeycapLendar%20Change"
-            target="_blank"
+            icon={iconObject(<Email />)}
+            label="Email"
             rel="noopener noreferrer"
+            tag="a"
+            target="_blank"
           />,
           "keycaplendar@gmail.com",
           { align: "top", showArrow: true, enterDelay: 0 }
@@ -308,53 +308,53 @@ export const Footer = () => {
         . Please note that for your IC to be added to the site, it needs a
         render of the keyset on a board (not rendered by keycaprenders.com).
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Please direct bug reports or feature requests to this project&apos;s{" "}
         <Button
-          label="Github"
-          icon={iconObject(<Github />)}
-          tag="a"
           href="https://github.com/EskiMojo14/keycaplendar/issues"
-          target="_blank"
+          icon={iconObject(<Github />)}
+          label="Github"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />{" "}
         page.
       </Typography>
-      <Typography use="body2" tag="div">
+      <Typography tag="div" use="body2">
         Appreciate what I do and want to support me? Check out my{" "}
         <Button
-          label="Ko-Fi"
-          icon={iconObject(<Kofi />)}
-          tag="a"
           href="https://ko-fi.com/eskimojo"
-          target="_blank"
+          icon={iconObject(<Kofi />)}
+          label="Ko-Fi"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />
         !
       </Typography>
       <div className="sponsors-container">
-        <Typography use="body2" tag="p">
+        <Typography tag="p" use="body2">
           <span className="bold">Kindly sponsored by:</span>
         </Typography>
         <div className="sponsors">
           <a
             href="https://cannonkeys.com/"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             {cannonkeysLogo}
           </a>
           <a
             href="https://prototypist.net/"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             {prototypistLogo}
           </a>
           <a
             href="https://www.deskhero.ca/"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             <div className="deskhero">
               Desk<span className="accent">[H]</span>ero
@@ -362,8 +362,8 @@ export const Footer = () => {
           </a>
           <a
             href="https://latamkeys.com/"
-            target="_blank"
             rel="noopener noreferrer"
+            target="_blank"
           >
             {latamkeysLogo}
           </a>
@@ -371,18 +371,18 @@ export const Footer = () => {
       </div>
       <div className="button-container">
         <Button
-          label="Privacy Policy"
-          tag="a"
           href="./privacy"
-          target="_blank"
+          label="Privacy Policy"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />
         <Button
-          label="Terms of Service"
-          tag="a"
           href="./terms"
-          target="_blank"
+          label="Terms of Service"
           rel="noopener noreferrer"
+          tag="a"
+          target="_blank"
         />
       </div>
     </div>
