@@ -16,12 +16,12 @@ afterAll(() => {
 });
 
 const blankEntry: UpdateEntryType = {
-  id: "",
-  name: "",
-  title: "",
   body: "",
   date: "",
+  id: "",
+  name: "",
   pinned: false,
+  title: "",
 };
 
 describe("sortEntries", () => {

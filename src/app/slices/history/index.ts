@@ -11,22 +11,18 @@ type HistoryState = {
 };
 
 export const initialState: HistoryState = {
-  tab: "recent",
   loading: false,
-
   processedActions: [],
   recentSets: [],
+  tab: "recent",
 };
 
 export const historySlice = createSlice({
-  name: "history",
   initialState,
+  name: "history",
   reducers: {
     setLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.loading = payload;
-    },
-    setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
-      state.tab = payload;
     },
     setProcessedActions: (
       state,
@@ -36,6 +32,9 @@ export const historySlice = createSlice({
     },
     setRecentSets: (state, { payload }: PayloadAction<RecentSet[]>) => {
       state.recentSets = payload;
+    },
+    setTab: (state, { payload }: PayloadAction<HistoryTab>) => {
+      state.tab = payload;
     },
   },
 });

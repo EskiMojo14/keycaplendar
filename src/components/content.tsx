@@ -82,11 +82,11 @@ export const Content = ({ className, ...filteredProps }: ContentProps) => {
   return (
     <div
       className={classNames(className, page, "app-container", {
+        "bottom-nav": bottomNav,
         "has-fab":
           (user.isEditor || user.isDesigner) &&
           device !== "desktop" &&
           arrayIncludes(mainPages, page),
-        "bottom-nav": bottomNav,
       })}
       {...filteredProps}
     >

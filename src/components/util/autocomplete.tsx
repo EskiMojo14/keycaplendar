@@ -102,7 +102,7 @@ export const AutocompleteMobile = ({
   return (
     <div
       {...filteredProps}
-      className={bemClasses({ modifiers: { open }, extra: className })}
+      className={bemClasses({ extra: className, modifiers: { open } })}
     >
       <List>
         {useQuery.length >= minChars

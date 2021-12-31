@@ -21,16 +21,16 @@ const createExampleAction = (
   nickname: ActionType["user"]["nickname"]
 ): ActionType => ({
   action,
+  after: {},
+  before: {},
   changelogId: "",
   documentId: "",
   timestamp: "",
   user: {
-    nickname,
     displayName: "",
     email: "",
+    nickname,
   },
-  before: {},
-  after: {},
 });
 
 describe("filterActions", () => {

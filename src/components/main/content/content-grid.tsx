@@ -39,14 +39,14 @@ export const ContentGrid = ({
         return (
           <ViewCard
             {...{
-              sets,
+              closeDetails,
               details,
               detailSet,
-              closeDetails,
               edit,
               loading,
-              user,
               page,
+              sets,
+              user,
             }}
           />
         );
@@ -54,21 +54,21 @@ export const ContentGrid = ({
       case "list": {
         return (
           <ViewList
-            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
           />
         );
       }
       case "imageList": {
         return (
           <ViewImageList
-            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
           />
         );
       }
       case "compact": {
         return (
           <ViewCompact
-            {...{ sets, details, detailSet, closeDetails, edit, loading, page }}
+            {...{ closeDetails, details, detailSet, edit, loading, page, sets }}
           />
         );
       }

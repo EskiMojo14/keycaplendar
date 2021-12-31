@@ -79,7 +79,7 @@ export const DrawerFilter = ({
   const profiles = useAppSelector(selectAllProfiles);
   const vendors = useAppSelector(selectAllVendors);
   const regions = useAppSelector(selectAllRegions);
-  const lists = { profiles, vendors, regions };
+  const lists = { profiles, regions, vendors };
 
   const preset = useAppSelector(selectCurrentPreset);
   const appPresets = useAppSelector(selectAppPresets);
@@ -143,12 +143,12 @@ export const DrawerFilter = ({
     const modifiedPreset = {
       ...preset,
       whitelist: {
-        favorites,
         bought,
+        favorites,
         hidden,
         profiles,
-        shipped,
         regions,
+        shipped,
         vendorMode,
         vendors,
       },
@@ -240,9 +240,9 @@ export const DrawerFilter = ({
       ) {
         const lengths = {
           profiles: profiles.length,
+          regions: regions.length,
           shipped: 2,
           vendors: 0,
-          regions: regions.length,
         };
         if (
           param === "profiles" ||
@@ -484,10 +484,10 @@ export const DrawerFilter = ({
                         </>
                       ),
                       options: [
-                        { label: "Default", key: "default", value: "default" },
+                        { key: "default", label: "Default", value: "default" },
                         ...appPresets.map((preset) => ({
-                          label: preset.name,
                           key: preset.id,
+                          label: preset.name,
                           value: preset.id,
                         })),
                       ],
@@ -504,17 +504,17 @@ export const DrawerFilter = ({
                         </>
                       ),
                       options: userPresets.map((preset) => ({
-                        label: preset.name,
                         key: preset.id,
+                        label: preset.name,
                         value: preset.id,
                       })),
                     },
                   ]
                 : [
-                    { label: "Default", key: "default", value: "default" },
+                    { key: "default", label: "Default", value: "default" },
                     ...appPresets.map((preset) => ({
-                      label: preset.name,
                       key: preset.id,
+                      label: preset.name,
                       value: preset.id,
                     })),
                   ]

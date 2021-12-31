@@ -157,20 +157,6 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
   const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = historyTabs;
     const tabs = {
-      recent: (
-        <div key={key} className="history-tab recent recent-grid">
-          {recentSets.map((recentSet) => (
-            <RecentSetCard
-              key={recentSet.id}
-              filterChangelog={filterChangelog}
-              filtered={recentSet.id === filterSet.id}
-              openDetails={openDetails}
-              recentSet={recentSet}
-              selected={recentSet.id === detailSet.id}
-            />
-          ))}
-        </div>
-      ),
       changelog: (
         <div key={key} className="history-tab changelog changelog-container">
           <Card
@@ -184,6 +170,20 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
               ))}
             </List>
           </Card>
+        </div>
+      ),
+      recent: (
+        <div key={key} className="history-tab recent recent-grid">
+          {recentSets.map((recentSet) => (
+            <RecentSetCard
+              key={recentSet.id}
+              filterChangelog={filterChangelog}
+              filtered={recentSet.id === filterSet.id}
+              openDetails={openDetails}
+              recentSet={recentSet}
+              selected={recentSet.id === detailSet.id}
+            />
+          ))}
         </div>
       ),
     };
@@ -228,9 +228,9 @@ export const ContentHistory = ({ openNav }: ContentHistoryProps) => {
             slideCount={historyTabs.length}
             slideRenderer={slideRenderer}
             springConfig={{
+              delay: "0s",
               duration: "0.35s",
               easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-              delay: "0s",
             }}
           />
         </div>

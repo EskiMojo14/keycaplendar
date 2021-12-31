@@ -24,20 +24,20 @@ beforeEach(() => {
 
 const action: ProcessedPublicActionType = {
   action: "created",
-  before: {},
   after: {},
-  timestamp: "",
+  before: {},
   documentId: "",
+  timestamp: "",
   title: "",
 };
 
 const recentSet: RecentSet = {
-  title: "",
-  latestTimestamp: "",
-  id: "",
+  currentSet: { ...new Keyset() },
   deleted: false,
   designer: [],
-  currentSet: { ...new Keyset() },
+  id: "",
+  latestTimestamp: "",
+  title: "",
 };
 
 it("sets loading state", () => {

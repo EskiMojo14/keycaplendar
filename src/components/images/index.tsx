@@ -80,8 +80,8 @@ const storage = firebase.storage();
 const storageRef = storage.ref();
 
 const aspectRatios = {
-  "image-list": 1,
   card: 16 / 9,
+  "image-list": 1,
   list: 16 / 9,
   thumbs: 16 / 9,
 };
@@ -213,16 +213,16 @@ export const ContentImages = ({ openNav }: ContentImagesProps) => {
   );
   const display = [
     {
-      title: "Unused images",
       array: unusedImages,
+      title: "Unused images",
     },
     {
-      title: "Duplicate images",
       array: duplicateImages,
+      title: "Duplicate images",
     },
     {
-      title: "Used images",
       array: usedImages,
+      title: "Used images",
     },
   ];
   const contextual = checkedImages.length > 0;

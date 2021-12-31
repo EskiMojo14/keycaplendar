@@ -51,11 +51,11 @@ const customPoint = (data: any) => {
     const circle = new Chartist.Svg(
       "circle",
       {
+        "ct:meta": data.meta,
+        "ct:value": data.value.y,
         cx: [data.x],
         cy: [data.y],
         r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
       },
       "ct-stroked-point"
     );
@@ -68,23 +68,21 @@ const listener = { draw: (e: any) => customPoint(e) };
 const chartOptions = (
   monthLabel: string
 ): IBarChartOptions & ILineChartOptions => ({
-  showArea: true,
-  stackBars: true,
-  low: 0,
   axisY: {
     onlyInteger: true,
   },
   chartPadding: {
-    top: 16,
-    right: 0,
     bottom: 32,
     left: 16,
+    right: 0,
+    top: 16,
   },
+  low: 0,
   plugins: [
     chartistPluginAxisTitle({
       axisX: {
-        axisTitle: monthLabel,
         axisClass: "ct-axis-title",
+        axisTitle: monthLabel,
         offset: {
           x: 0,
           y: 48,
@@ -92,17 +90,19 @@ const chartOptions = (
         textAnchor: "middle",
       },
       axisY: {
-        axisTitle: "Count",
         axisClass: "ct-axis-title",
+        axisTitle: "Count",
+        flipTitle: true,
         offset: {
           x: 0,
           y: 24,
         },
-        flipTitle: true,
       },
     }),
     chartistTooltip({ pointClass: "ct-stroked-point" }),
   ],
+  showArea: true,
+  stackBars: true,
 });
 
 const responsiveOptions: IResponsiveOptionTuple<ILineChartOptions>[] = [
@@ -163,11 +163,11 @@ export const ShippedCard = ({
             : "ct-major-twelfth"
         }
         data={{
+          labels: months.map((label) => label.split(" ").join("\n")),
           series: [
             chartData.timeline.shipped,
             chartData.timeline.unshipped,
           ] as IChartistData["series"],
-          labels: months.map((label) => label.split(" ").join("\n")),
         }}
         options={chartOptions("Month (GB end)")}
         responsiveOptions={responsiveOptions}
@@ -183,11 +183,11 @@ export const ShippedCard = ({
             : "ct-major-twelfth"
         }
         data={{
+          labels: months.map((label) => label.split(" ").join("\n")),
           series: [
             chartData.timeline.shipped,
             chartData.timeline.unshipped,
           ] as IChartistData["series"],
-          labels: months.map((label) => label.split(" ").join("\n")),
         }}
         listener={listener}
         options={chartOptions("Month (GB end)")}
@@ -531,8 +531,8 @@ export const TimelinesCard = ({
           className={classNames(
             "timeline-chart-container timelines",
             {
-              single: singleTheme,
               focused: focused.length > 0,
+              single: singleTheme,
             },
             typeof singleTheme === "string" ? singleTheme : "",
             focused.map((index) => `series-index-${index}`)

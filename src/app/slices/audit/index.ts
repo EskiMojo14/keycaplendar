@@ -14,29 +14,21 @@ type AuditState = {
 };
 
 export const initialState: AuditState = {
-  loading: false,
-  //actions
   allActions: [],
-  filteredActions: [],
-  //filter
-  users: [],
   filterAction: "none",
+  filteredActions: [],
   filterUser: "all",
   length: 50,
+  loading: false,
+  users: [],
 };
 
 export const auditSlice = createSlice({
-  name: "audit",
   initialState,
+  name: "audit",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
     setAllActions: (state, { payload }: PayloadAction<ActionType[]>) => {
       state.allActions = payload;
-    },
-    setFilteredActions: (state, { payload }: PayloadAction<ActionType[]>) => {
-      state.filteredActions = payload;
     },
     setFilterAction: (
       state,
@@ -44,11 +36,17 @@ export const auditSlice = createSlice({
     ) => {
       state.filterAction = payload;
     },
+    setFilteredActions: (state, { payload }: PayloadAction<ActionType[]>) => {
+      state.filteredActions = payload;
+    },
     setFilterUser: (state, { payload }: PayloadAction<string>) => {
       state.filterUser = payload;
     },
     setLength: (state, { payload }: PayloadAction<number>) => {
       state.length = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
     setUsers: (state, { payload }: PayloadAction<string[]>) => {
       state.users = payload;

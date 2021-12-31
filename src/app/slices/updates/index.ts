@@ -10,21 +10,20 @@ type UpdatesState = {
 };
 
 export const initialState: UpdatesState = {
-  loading: false,
-
   entries: [],
+  loading: false,
   urlEntry: "",
 };
 
 export const updatesSlice = createSlice({
-  name: "updates",
   initialState,
+  name: "updates",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
     setEntries: (state, { payload }: PayloadAction<UpdateEntryType[]>) => {
       state.entries = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
     },
     setURLEntry: (state, { payload }: PayloadAction<string>) => {
       state.urlEntry = payload;

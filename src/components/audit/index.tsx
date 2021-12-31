@@ -56,9 +56,9 @@ export const ContentAudit = ({ openNav }: ContentAuditProps) => {
   const filteredActions = useAppSelector(selectFilteredActions);
 
   const blankAction: ActionType = {
-    before: new Keyset(),
-    after: new Keyset(),
     action: "created",
+    after: new Keyset(),
+    before: new Keyset(),
     changelogId: "",
     documentId: "",
     timestamp: "",

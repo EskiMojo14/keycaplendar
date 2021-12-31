@@ -9,12 +9,12 @@ import "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2gQez-yGoqRpI-G8kqB5CvusDvDyFiy4",
+  appId: "1:422111576432:web:35088aee2889ffc2b60fb5",
   authDomain: "keycaplendar.firebaseapp.com",
   databaseURL: "https://keycaplendar.firebaseio.com",
+  messagingSenderId: "422111576432",
   projectId: "keycaplendar",
   storageBucket: "keycaplendar.appspot.com",
-  messagingSenderId: "422111576432",
-  appId: "1:422111576432:web:35088aee2889ffc2b60fb5",
   //measurementId: "G-DTG7KB21BQ",
 };
 // Initialize Firebase

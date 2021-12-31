@@ -248,17 +248,17 @@ export const setDensity = (density: string, write = true) => {
 };
 
 export const settingFns: Record<string, (val: any, write: boolean) => void> = {
-  view: setView,
-  bottomNav: setBottomNav,
-  applyTheme: setApplyTheme,
-  lightTheme: setLightTheme,
-  darkTheme: setDarkTheme,
-  manualTheme: setManualTheme,
-  fromTimeTheme: setFromTimeTheme,
-  toTimeTheme: setToTimeTheme,
-  density: setDensity,
-  presetId: console.log,
   accepted: console.log,
+  applyTheme: setApplyTheme,
+  bottomNav: setBottomNav,
+  darkTheme: setDarkTheme,
+  density: setDensity,
+  fromTimeTheme: setFromTimeTheme,
+  lightTheme: setLightTheme,
+  manualTheme: setManualTheme,
+  presetId: console.log,
+  toTimeTheme: setToTimeTheme,
+  view: setView,
 };
 
 export const checkStorage = () => {
@@ -322,7 +322,7 @@ export const setSyncSettings = (
     firestore
       .collection("users")
       .doc(user.id as UserId)
-      .set({ syncSettings: bool, settings: settingsObject }, { merge: true })
+      .set({ settings: settingsObject, syncSettings: bool }, { merge: true })
       .catch((error) => {
         console.log("Failed to set sync setting: " + error);
         queue.notify({ title: "Failed to set sync setting: " + error });

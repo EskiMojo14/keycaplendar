@@ -16,12 +16,12 @@ beforeEach(() => {
 });
 
 const blankEntry: UpdateEntryType = {
-  id: "",
-  name: "",
-  title: "",
   body: "",
   date: "",
+  id: "",
+  name: "",
   pinned: false,
+  title: "",
 };
 
 const string = "test";

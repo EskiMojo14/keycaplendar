@@ -29,15 +29,15 @@ const reducer = {
 
 export const createStore = (preloadedState?: any) =>
   configureStore({
-    preloadedState,
-    reducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
+        immutableCheck: false,
         serializableCheck: {
           ignoredPaths: ["statistics.data", "images.images"],
         },
-        immutableCheck: false,
       }),
+    preloadedState,
+    reducer,
   });
 
 export const store = createStore(loadState());

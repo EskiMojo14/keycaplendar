@@ -79,8 +79,8 @@ export const SearchBarPersistent = ({
       <div
         className={bemClasses({
           modifiers: {
-            persistent: true,
             expanded,
+            persistent: true,
           },
         })}
       >
@@ -224,11 +224,11 @@ export const SearchBarModal = ({
     <div
       className={bemClasses({
         modifiers: {
+          animate,
+          closing,
           modal: true,
           open,
           opening,
-          closing,
-          animate,
         },
       })}
     >
@@ -238,8 +238,8 @@ export const SearchBarModal = ({
           className={bemClasses("field")}
           icon={{
             icon: "arrow_back",
-            tabIndex: 0,
             onClick: () => closeBar(),
+            tabIndex: 0,
           }}
           id="search"
           name="search"
@@ -348,11 +348,11 @@ export const SearchAppBar = ({
                 className={bemClasses("field")}
                 icon={{
                   icon: "arrow_back",
-                  tabIndex: 0,
                   onClick: () => {
                     close();
                     clearInput();
                   },
+                  tabIndex: 0,
                 }}
                 id="search"
                 name="search"

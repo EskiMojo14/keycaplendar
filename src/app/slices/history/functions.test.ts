@@ -34,49 +34,49 @@ const tab = "changelog";
 
 const action: PublicActionType = {
   action: "updated",
-  before: {
-    profile: "GMK",
-    colorway: "Test",
-    icDate: "2021-04-02",
-    details: "test",
-  },
   after: {
-    profile: "GMK",
     colorway: "Test",
-    icDate: "2021-04-02",
     details: "test2",
+    icDate: "2021-04-02",
+    profile: "GMK",
   },
-  timestamp: "test",
+  before: {
+    colorway: "Test",
+    details: "test",
+    icDate: "2021-04-02",
+    profile: "GMK",
+  },
   documentId: "test",
+  timestamp: "test",
 };
 
 const processedAction: ProcessedPublicActionType = {
   action: "updated",
-  before: {
-    details: "test",
-  },
   after: {
     details: "test2",
   },
-  timestamp: "test",
+  before: {
+    details: "test",
+  },
   documentId: "test",
+  timestamp: "test",
   title: "GMK Test",
 };
 
 const keyset = {
   ...new Keyset(),
+  colorway: "test",
   id: "test",
   profile: "GMK",
-  colorway: "test",
 };
 
 const recentSet: RecentSet = {
-  id: "test",
-  title: "GMK Test",
-  latestTimestamp: "test",
-  deleted: false,
   currentSet: keyset,
+  deleted: false,
   designer: [],
+  id: "test",
+  latestTimestamp: "test",
+  title: "GMK Test",
 };
 
 describe("setHistoryTab", () => {

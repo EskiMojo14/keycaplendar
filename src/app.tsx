@@ -79,14 +79,14 @@ export const App = () => {
           .then((result) => {
             dispatch(
               setUser({
-                email: user.email ? user.email : "",
-                name: user.displayName ? user.displayName : "",
                 avatar: user.photoURL ? user.photoURL : "",
+                email: user.email ? user.email : "",
                 id: user.uid,
-                nickname: result.data.nickname,
+                isAdmin: result.data.admin,
                 isDesigner: result.data.designer,
                 isEditor: result.data.editor,
-                isAdmin: result.data.admin,
+                name: user.displayName ? user.displayName : "",
+                nickname: result.data.nickname,
               })
             );
             if (result.data.admin) {
@@ -97,10 +97,10 @@ export const App = () => {
             queue.notify({ title: "Error verifying custom claims: " + error });
             dispatch(
               setUser({
-                email: user.email ? user.email : "",
-                name: user.displayName ? user.displayName : "",
                 avatar: user.photoURL ? user.photoURL : "",
+                email: user.email ? user.email : "",
                 id: user.uid,
+                name: user.displayName ? user.displayName : "",
               })
             );
           });

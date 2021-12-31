@@ -267,8 +267,8 @@ export const Footer = () => {
         Site created by{" "}
         {withTooltip(<span className="bold">Ben Durrant</span>, "eskimojo", {
           align: "top",
-          showArrow: true,
           enterDelay: 0,
+          showArrow: true,
         })}
         , inspired by the spreadsheet created by{" "}
         {withTooltip(
@@ -276,8 +276,8 @@ export const Footer = () => {
           "Langelandia",
           {
             align: "top",
-            showArrow: true,
             enterDelay: 0,
+            showArrow: true,
           }
         )}
         .
@@ -303,7 +303,7 @@ export const Footer = () => {
             target="_blank"
           />,
           "keycaplendar@gmail.com",
-          { align: "top", showArrow: true, enterDelay: 0 }
+          { align: "top", enterDelay: 0, showArrow: true }
         )}
         . Please note that for your IC to be added to the site, it needs a
         render of the keyset on a board (not rendered by keycaprenders.com).

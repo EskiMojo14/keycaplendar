@@ -12,33 +12,31 @@ type UpdatesState = {
 };
 
 export const initialState: UpdatesState = {
-  loading: false,
-
-  entries: [],
-  urlEntry: "",
-
   allTags: [],
+  entries: [],
   filteredTag: "",
+  loading: false,
+  urlEntry: "",
 };
 
 export const guidesSlice = createSlice({
-  name: "guides",
   initialState,
+  name: "guides",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
+    setAllTags: (state, { payload }: PayloadAction<string[]>) => {
+      state.allTags = payload;
     },
     setEntries: (state, { payload }: PayloadAction<GuideEntryType[]>) => {
       state.entries = payload;
     },
-    setURLEntry: (state, { payload }: PayloadAction<string>) => {
-      state.urlEntry = payload;
-    },
-    setAllTags: (state, { payload }: PayloadAction<string[]>) => {
-      state.allTags = payload;
-    },
     setFilteredTag: (state, { payload }: PayloadAction<string>) => {
       state.filteredTag = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
+    },
+    setURLEntry: (state, { payload }: PayloadAction<string>) => {
+      state.urlEntry = payload;
     },
   },
 });

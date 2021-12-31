@@ -61,8 +61,8 @@ const processActions = (actions: ActionType[]) => {
     }
     return {
       ...restAction,
-      before,
       after,
+      before,
     };
   });
 

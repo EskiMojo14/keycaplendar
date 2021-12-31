@@ -13,36 +13,36 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const theme = currentThemeMap.primary
     ? createTheme({
         palette: {
-          type: currentThemeMap.dark ? "dark" : "light",
-          primary: {
-            main: currentThemeMap.primary,
-            contrastText: currentThemeMap.onPrimary,
-          },
-          secondary: {
-            main: currentThemeMap.secondary,
-            contrastText: currentThemeMap.onSecondary,
-          },
-          error: {
-            main: currentThemeMap.error,
-            contrastText: currentThemeMap.onError,
-          },
-          text: {
-            primary: alpha(currentThemeMap.onSurface, 0.87),
-            secondary: alpha(currentThemeMap.onSurface, 0.6),
-            disabled: alpha(currentThemeMap.onSurface, 0.38),
-          },
           action: {
             active: currentThemeMap.onSurface,
-            hover: alpha(currentThemeMap.onSurface, 0.08),
-            selected: alpha(currentThemeMap.onSurface, 0.16),
             disabled: alpha(currentThemeMap.onSurface, 0.3),
             disabledBackground: alpha(currentThemeMap.onSurface, 0.12),
+            hover: alpha(currentThemeMap.onSurface, 0.08),
+            selected: alpha(currentThemeMap.onSurface, 0.16),
           },
           background: {
-            paper: currentThemeMap.surface,
             default: currentThemeMap.background,
+            paper: currentThemeMap.surface,
           },
           divider: alpha(currentThemeMap.onSurface, 0.12),
+          error: {
+            contrastText: currentThemeMap.onError,
+            main: currentThemeMap.error,
+          },
+          primary: {
+            contrastText: currentThemeMap.onPrimary,
+            main: currentThemeMap.primary,
+          },
+          secondary: {
+            contrastText: currentThemeMap.onSecondary,
+            main: currentThemeMap.secondary,
+          },
+          text: {
+            disabled: alpha(currentThemeMap.onSurface, 0.38),
+            primary: alpha(currentThemeMap.onSurface, 0.87),
+            secondary: alpha(currentThemeMap.onSurface, 0.6),
+          },
+          type: currentThemeMap.dark ? "dark" : "light",
         },
       })
     : createTheme();

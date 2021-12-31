@@ -43,9 +43,9 @@ export const ViewCompact = ({
           const gbEnd = set.gbEnd
             ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
                 hour: 23,
+                millisecond: 999,
                 minute: 59,
                 second: 59,
-                millisecond: 999,
               })
             : null;
           const gbEndOrdinal =
@@ -97,14 +97,14 @@ export const ViewCompact = ({
             <SkeletonCompact
               key={set.id}
               icon={set.shipped || live}
-              {...{ title, subtitle }}
+              {...{ subtitle, title }}
             />
           ) : (
             <ElementCompact
               key={set.id}
               link={set.details}
               selected={detailSet === set}
-              {...{ set, title, subtitle, details, closeDetails, live }}
+              {...{ closeDetails, details, live, set, subtitle, title }}
             />
           );
         })}

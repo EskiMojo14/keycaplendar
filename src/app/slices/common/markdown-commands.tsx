@@ -11,8 +11,8 @@ const customPrefix = (
 ) => {
   // Adjust the selection to encompass the whole word if the caret is inside one
   const newSelectionRange = MarkdownUtil.selectWord({
-    text: initialState.text,
     selection: initialState.selection,
+    text: initialState.text,
   });
 
   const state1 = api.setSelectionRange(newSelectionRange);
@@ -20,8 +20,8 @@ const customPrefix = (
   const state2 = api.replaceSelection(`${prefix}${state1.selectedText}`);
   // Adjust the selection to not contain the prefix
   api.setSelectionRange({
-    start: state2.selection.end,
     end: state2.selection.end,
+    start: state2.selection.end,
   });
 };
 
@@ -33,8 +33,8 @@ const customSuffix = (
 ) => {
   // Adjust the selection to encompass the whole word if the caret is inside one
   const newSelectionRange = MarkdownUtil.selectWord({
-    text: initialState.text,
     selection: initialState.selection,
+    text: initialState.text,
   });
 
   const state1 = api.setSelectionRange(newSelectionRange);
@@ -42,12 +42,15 @@ const customSuffix = (
   const state2 = api.replaceSelection(`${state1.selectedText}${suffix}`);
   // Adjust the selection to not contain the prefix
   api.setSelectionRange({
-    start: state2.selection.end,
     end: state2.selection.end,
+    start: state2.selection.end,
   });
 };
 
 export const headerOneCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "# ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -61,12 +64,12 @@ export const headerOneCommand: Command = {
       displayName: "H1Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "# ");
-  },
 };
 
 export const headerTwoCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "## ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -80,12 +83,12 @@ export const headerTwoCommand: Command = {
       displayName: "H2Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "## ");
-  },
 };
 
 export const headerThreeCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "### ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -99,12 +102,12 @@ export const headerThreeCommand: Command = {
       displayName: "H3Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "### ");
-  },
 };
 
 export const headerFourCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "#### ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -118,12 +121,12 @@ export const headerFourCommand: Command = {
       displayName: "H4Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "#### ");
-  },
 };
 
 export const headerFiveCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "##### ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -137,12 +140,12 @@ export const headerFiveCommand: Command = {
       displayName: "H5Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "##### ");
-  },
 };
 
 export const headerSixCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customPrefix(initialState, textApi, "###### ");
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -156,12 +159,16 @@ export const headerSixCommand: Command = {
       displayName: "H6Icon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customPrefix(initialState, textApi, "###### ");
-  },
 };
 
 export const insertTableCommand: Command = {
+  execute: ({ initialState, textApi }) => {
+    customSuffix(
+      initialState,
+      textApi,
+      `| a | b  |  c |  d  |\n| - | :- | -: | :-: |\n|  |  |  |  |`
+    );
+  },
   icon: Object.assign(
     () => (
       <IconButton
@@ -175,29 +182,9 @@ export const insertTableCommand: Command = {
       displayName: "InsertTableIcon",
     }
   ),
-  execute: ({ initialState, textApi }) => {
-    customSuffix(
-      initialState,
-      textApi,
-      `| a | b  |  c |  d  |\n| - | :- | -: | :-: |\n|  |  |  |  |`
-    );
-  },
 };
 
 export const insertTableColumnAfter: Command = {
-  icon: Object.assign(
-    () => (
-      <IconButton
-        aria-label="Insert column after"
-        icon={markdownIcons["column-after"]}
-        role="img"
-        tag="div"
-      />
-    ),
-    {
-      displayName: "ColumnAfterIcon",
-    }
-  ),
   execute: ({ initialState, textApi }) => {
     const splitText = initialState.selectedText.split("\n");
     const splitLines = splitText.map((line) =>
@@ -240,8 +227,8 @@ export const insertTableColumnAfter: Command = {
       .join("\n");
     // Adjust the selection to encompass the whole word if the caret is inside one
     const newSelectionRange = MarkdownUtil.selectWord({
-      text: initialState.text,
       selection: initialState.selection,
+      text: initialState.text,
     });
 
     textApi.setSelectionRange(newSelectionRange);
@@ -249,8 +236,21 @@ export const insertTableColumnAfter: Command = {
     const state2 = textApi.replaceSelection(newLines);
     // Adjust the selection to not contain the prefix
     textApi.setSelectionRange({
-      start: state2.selection.end,
       end: state2.selection.end,
+      start: state2.selection.end,
     });
   },
+  icon: Object.assign(
+    () => (
+      <IconButton
+        aria-label="Insert column after"
+        icon={markdownIcons["column-after"]}
+        role="img"
+        tag="div"
+      />
+    ),
+    {
+      displayName: "ColumnAfterIcon",
+    }
+  ),
 };

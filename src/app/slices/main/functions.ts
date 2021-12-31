@@ -109,25 +109,25 @@ export const pageConditions = (
   });
   const endDate = DateTime.fromISO(set.gbEnd).set({
     hour: 23,
+    millisecond: 999,
     minute: 59,
     second: 59,
-    millisecond: 999,
   });
   return {
+    archive: true,
+    bought: bought.includes(set.id),
     calendar:
       startDate > today ||
       (startDate <= today && (endDate >= yesterday || !set.gbEnd)),
-    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
-    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
-    previous: !!(endDate && endDate <= yesterday),
-    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
-    archive: true,
     favorites:
       linkedFavorites.array.length > 0
         ? linkedFavorites.array.includes(set.id)
         : favorites.includes(set.id),
-    bought: bought.includes(set.id),
     hidden: hidden.includes(set.id),
+    ic: !set.gbLaunch || set.gbLaunch.includes("Q"),
+    live: startDate <= today && (endDate >= yesterday || !set.gbEnd),
+    previous: !!(endDate && endDate <= yesterday),
+    timeline: !!(set.gbLaunch && !set.gbLaunch.includes("Q")),
   };
 };
 
@@ -265,8 +265,8 @@ const createGroups = (transition = false, state = store.getState()) => {
   };
 
   const setGroups: SetGroup[] = groups.map((group) => ({
-    title: group,
     sets: filterSets(sets, group, sort),
+    title: group,
   }));
 
   dispatch(setSetGroups(setGroups));
@@ -586,11 +586,11 @@ const generateLists = (state = store.getState()) => {
   dispatch(setDefaultPreset(defaultPreset));
 
   const lists = {
-    allVendorRegions,
-    allRegions,
-    allVendors,
     allDesigners,
     allProfiles,
+    allRegions,
+    allVendorRegions,
+    allVendors,
   } as const;
 
   objectKeys(lists).forEach((key) => {
@@ -819,7 +819,7 @@ export const updatePreset = (
     : preset.whitelist.hidden;
   const updatedPreset: PresetType = {
     ...preset,
-    whitelist: { ...preset.whitelist, regions, bought, hidden },
+    whitelist: { ...preset.whitelist, bought, hidden, regions },
   };
   return updatedPreset;
 };

@@ -169,6 +169,64 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   );
 
   const buttons = {
+    duration: (
+      <>
+        <SegmentedButton toggle>
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortNumericVariant />)}
+              onClick={() => {
+                setSort("duration", "total");
+              }}
+              selected={statisticsSort.duration === "total"}
+            />,
+            "Sort by total",
+            { align: tooltipAlign }
+          )}
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<SortNumericVariant />)}
+              onClick={() => {
+                setSort("duration", "alphabetical");
+              }}
+              selected={statisticsSort.duration === "alphabetical"}
+            />,
+            "Sort alphabetically",
+            { align: tooltipAlign }
+          )}
+          {withTooltip(
+            <SegmentedButtonSegment
+              icon={iconObject(<DateRange />)}
+              onClick={() => {
+                setSort("duration", "duration");
+              }}
+              selected={statisticsSort.duration === "duration"}
+            />,
+            "Sort by duration",
+            { align: tooltipAlign }
+          )}
+        </SegmentedButton>
+        <SegmentedButton toggle>
+          <SegmentedButtonSegment
+            label="IC"
+            onClick={() => {
+              setSetting("durationCat", "icDate");
+            }}
+            selected={settings.durationCat === "icDate"}
+          />
+          <SegmentedButtonSegment
+            label="GB"
+            onClick={() => {
+              setSetting("durationCat", "gbLaunch");
+            }}
+            selected={settings.durationCat === "gbLaunch"}
+          />
+        </SegmentedButton>
+        {categoryButtons("durationGroup")}
+      </>
+    ),
+    shipped: genericButtons,
+    status: genericButtons,
     summary: (
       <>
         <SegmentedButton toggle>
@@ -234,64 +292,6 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
         {categoryButtons("timelinesGroup")}
       </>
     ),
-    status: genericButtons,
-    shipped: genericButtons,
-    duration: (
-      <>
-        <SegmentedButton toggle>
-          {withTooltip(
-            <SegmentedButtonSegment
-              icon={iconObject(<SortNumericVariant />)}
-              onClick={() => {
-                setSort("duration", "total");
-              }}
-              selected={statisticsSort.duration === "total"}
-            />,
-            "Sort by total",
-            { align: tooltipAlign }
-          )}
-          {withTooltip(
-            <SegmentedButtonSegment
-              icon={iconObject(<SortNumericVariant />)}
-              onClick={() => {
-                setSort("duration", "alphabetical");
-              }}
-              selected={statisticsSort.duration === "alphabetical"}
-            />,
-            "Sort alphabetically",
-            { align: tooltipAlign }
-          )}
-          {withTooltip(
-            <SegmentedButtonSegment
-              icon={iconObject(<DateRange />)}
-              onClick={() => {
-                setSort("duration", "duration");
-              }}
-              selected={statisticsSort.duration === "duration"}
-            />,
-            "Sort by duration",
-            { align: tooltipAlign }
-          )}
-        </SegmentedButton>
-        <SegmentedButton toggle>
-          <SegmentedButtonSegment
-            label="IC"
-            onClick={() => {
-              setSetting("durationCat", "icDate");
-            }}
-            selected={settings.durationCat === "icDate"}
-          />
-          <SegmentedButtonSegment
-            label="GB"
-            onClick={() => {
-              setSetting("durationCat", "gbLaunch");
-            }}
-            selected={settings.durationCat === "gbLaunch"}
-          />
-        </SegmentedButton>
-        {categoryButtons("durationGroup")}
-      </>
-    ),
     vendors: genericButtons,
   };
 
@@ -321,6 +321,40 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
   const slideRenderer: SlideRendererCallback = ({ index, key }) => {
     const { [index]: tab } = statsTabs;
     const tabs = {
+      duration: (
+        <div key={key} className="stats-tab stats-grid duration">
+          {statisticsData.duration[settings.durationCat].breakdown[
+            settings.durationGroup
+          ].map((data) => (
+            <TableCard
+              key={data.name}
+              category={settings.durationCat}
+              data={data}
+              unit={`Time ${
+                settings.durationCat === "icDate" ? "(months)" : "(days)"
+              }`}
+            />
+          ))}
+        </div>
+      ),
+      shipped: (
+        <div key={key} className="stats-tab stats-grid shipped">
+          {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
+            <ShippedCard
+              key={data.name}
+              data={data}
+              months={statisticsData.shipped.months}
+            />
+          ))}
+        </div>
+      ),
+      status: (
+        <div key={key} className="stats-tab stats-grid status">
+          {statisticsData.status.breakdown[settings.status].map((data) => (
+            <StatusCard key={data.name} data={data} />
+          ))}
+        </div>
+      ),
       summary: (
         <div key={key} className="stats-tab stats-grid summary">
           <TimelinesCard
@@ -402,40 +436,6 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           ))}
         </div>
       ),
-      status: (
-        <div key={key} className="stats-tab stats-grid status">
-          {statisticsData.status.breakdown[settings.status].map((data) => (
-            <StatusCard key={data.name} data={data} />
-          ))}
-        </div>
-      ),
-      shipped: (
-        <div key={key} className="stats-tab stats-grid shipped">
-          {statisticsData.shipped.breakdown[settings.shipped].map((data) => (
-            <ShippedCard
-              key={data.name}
-              data={data}
-              months={statisticsData.shipped.months}
-            />
-          ))}
-        </div>
-      ),
-      duration: (
-        <div key={key} className="stats-tab stats-grid duration">
-          {statisticsData.duration[settings.durationCat].breakdown[
-            settings.durationGroup
-          ].map((data) => (
-            <TableCard
-              key={data.name}
-              category={settings.durationCat}
-              data={data}
-              unit={`Time ${
-                settings.durationCat === "icDate" ? "(months)" : "(days)"
-              }`}
-            />
-          ))}
-        </div>
-      ),
       vendors: (
         <div key={key} className="stats-tab stats-grid vendors">
           {statisticsData.vendors.breakdown[settings.vendors].map((data) => (
@@ -475,9 +475,9 @@ export const ContentStatistics = ({ openNav }: ContentStatisticsProps) => {
           slideCount={statsTabs.length}
           slideRenderer={slideRenderer}
           springConfig={{
+            delay: "0s",
             duration: "0.35s",
             easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-            delay: "0s",
           }}
         />
         <Footer />

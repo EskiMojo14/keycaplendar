@@ -90,11 +90,11 @@ export const ModalCreate = ({
       firestore
         .collection("updates")
         .add({
-          name,
-          date,
-          title,
           body,
+          date,
+          name,
           pinned: false,
+          title,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -287,11 +287,11 @@ export const ModalEdit = ({
         .collection("updates")
         .doc(entry.id as UpdateId)
         .set({
-          name,
-          date,
-          title,
           body,
+          date,
+          name,
           pinned: entry.pinned,
+          title,
         })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });

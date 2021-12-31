@@ -35,21 +35,21 @@ export const SkeletonBlock = <
   <Tag
     {...props}
     className={bemClasses({
-      modifiers: {
-        typography: !!typography || !!content,
-        constrain: !!constrain,
-      },
       extra: {
         [className]: !!className,
         [`mdc-typography--${typography}`]: !!typography,
       },
+      modifiers: {
+        constrain: !!constrain,
+        typography: !!typography || !!content,
+      },
     })}
     style={{
       ...style,
+      [`--color`]: colour,
+      [`--content`]: content && `"${content}"`,
       height,
       width,
-      [`--content`]: content && `"${content}"`,
-      [`--color`]: colour,
     }}
   >
     {content && <span className={bemClasses("content")}>{content}</span>}
@@ -61,7 +61,7 @@ export const SkeletonIcon = ({
   ...props
 }: Omit<SkeletonBlockProps, "height" | "tag" | "width">) => (
   <SkeletonBlock
-    className={bemClasses({ modifiers: "icon", extra: className })}
+    className={bemClasses({ extra: className, modifiers: "icon" })}
     height={24}
     width={24}
     {...props}

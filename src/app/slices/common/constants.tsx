@@ -27,8 +27,8 @@ const iconObject = (
   jsx: ReactNode,
   config?: Omit<IconOptions, "icon">
 ): IconPropT => ({
-  strategy: "component",
   icon: jsx,
+  strategy: "component",
   ...config,
 });
 
@@ -114,51 +114,50 @@ export const adminPages: Page[] = ["audit", "users", "images"];
 /** Formatted page title to use within nav and app bar. */
 
 export const pageTitle: Record<Page, string> = {
-  calendar: "Calendar",
-  live: "Live GBs",
-  ic: "IC Tracker",
-  previous: "Previous Sets",
-  timeline: "Timeline",
   archive: "Archive",
-  favorites: "Favorites",
-  bought: "Bought",
-  hidden: "Hidden",
-  statistics: "Statistics",
-  history: "History",
   audit: "Audit Log",
-  users: "Users",
-  images: "Images",
+  bought: "Bought",
+  calendar: "Calendar",
+  favorites: "Favorites",
   guides: "Guides",
-  updates: "Updates",
+  hidden: "Hidden",
+  history: "History",
+  ic: "IC Tracker",
+  images: "Images",
+  live: "Live GBs",
+  previous: "Previous Sets",
   settings: "Settings",
+  statistics: "Statistics",
+  timeline: "Timeline",
+  updates: "Updates",
+  users: "Users",
 };
 
 /** Corresponding icons for each page, to use in the nav drawer. */
 
 export const pageIcons: Record<Page, IconPropT> = {
-  calendar: iconObject(<CalendarToday />),
-  live: iconObject(<Store />),
-  ic: iconObject(<Forum />),
-  previous: "history",
-  timeline: "timeline",
   archive: "all_inclusive",
-  favorites: iconObject(<Favorites />),
-  bought: iconObject(<ShoppingBasket />),
-  hidden: iconObject(<VisibilityOff />),
-  statistics: "bar_chart",
-  history: "history",
   audit: iconObject(<HistoryEdu />),
-  users: iconObject(<People />),
-  images: iconObject(<Collections />),
+  bought: iconObject(<ShoppingBasket />),
+  calendar: iconObject(<CalendarToday />),
+  favorites: iconObject(<Favorites />),
   guides: iconObject(<Info />),
-  updates: iconObject(<Campaign />),
+  hidden: iconObject(<VisibilityOff />),
+  history: "history",
+  ic: iconObject(<Forum />),
+  images: iconObject(<Collections />),
+  live: iconObject(<Store />),
+  previous: "history",
   settings: iconObject(<Settings />),
+  statistics: "bar_chart",
+  timeline: "timeline",
+  updates: iconObject(<Campaign />),
+  users: iconObject(<People />),
 };
 
 export const blankTheme: ThemeMap = {
-  dark: false,
   background: "",
-  surface: "",
+  dark: false,
   error: "",
   onError: "",
   onPrimary: "",
@@ -166,4 +165,5 @@ export const blankTheme: ThemeMap = {
   onSurface: "",
   primary: "",
   secondary: "",
+  surface: "",
 };

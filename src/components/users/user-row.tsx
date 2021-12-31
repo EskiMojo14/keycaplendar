@@ -94,11 +94,11 @@ export const UserRow = ({
     setLoading(true);
     const setRolesFn = firebase.functions().httpsCallable("setRoles");
     setRolesFn({
-      email: user.email,
-      nickname: user.nickname,
+      admin: user.admin,
       designer: user.designer,
       editor: user.editor,
-      admin: user.admin,
+      email: user.email,
+      nickname: user.nickname,
     }).then((result) => {
       setLoading(false);
       if (

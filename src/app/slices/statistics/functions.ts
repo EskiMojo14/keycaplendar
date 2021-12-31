@@ -41,8 +41,8 @@ export const getData = async () => {
               `HH:mm d'${timestampOrdinal}' MMM yyyy 'UTC'`
             );
             queue.notify({
-              title: "Last updated: " + formattedTimestamp,
               timeout: 4000,
+              title: "Last updated: " + formattedTimestamp,
             });
             dispatch(setStatisticsData(statisticsData));
             dispatch(setLoading(false));

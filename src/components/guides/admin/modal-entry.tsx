@@ -94,12 +94,12 @@ export const ModalCreate = ({
       firestore
         .collection("guides")
         .add({
+          body,
+          description,
           name: user.nickname,
-          visibility,
           tags,
           title,
-          description,
-          body,
+          visibility,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -190,9 +190,9 @@ export const ModalCreate = ({
                 label="Visibility"
                 onChange={selectVisibility}
                 options={(["all", ...userRoles] as const).map((role) => ({
-                  value: role,
-                  label: formattedVisibility[role],
                   key: role,
+                  label: formattedVisibility[role],
+                  value: role,
                 }))}
                 outlined
                 value={visibility}
@@ -341,12 +341,12 @@ export const ModalEdit = ({
         .collection("guides")
         .doc(entry.id as GuideId)
         .set({
+          body,
+          description,
           name: user.nickname,
-          visibility,
           tags,
           title,
-          description,
-          body,
+          visibility,
         })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
@@ -437,9 +437,9 @@ export const ModalEdit = ({
                 label="Visibility"
                 onChange={selectVisibility}
                 options={(["all", ...userRoles] as const).map((role) => ({
-                  value: role,
-                  label: formattedVisibility[role],
                   key: role,
+                  label: formattedVisibility[role],
+                  value: role,
                 }))}
                 outlined
                 value={visibility}

@@ -171,10 +171,10 @@ export const DatePicker = ({
         .toFormat(month ? "yyyy-MM" : "yyyy-MM-dd");
 
   const rifm = useRifm({
-    value,
-    onChange,
     accept: allowQuarter ? /\d|\s|Q/g : /\d/g,
     format: formatDateWithAppend(month, allowQuarter),
+    onChange,
+    value,
   });
 
   const [open, setOpen] = useState(false);
@@ -300,13 +300,13 @@ export const DatePicker = ({
         {...props}
         className={bemClasses("field")}
         helpText={{
-          persistent: true,
-          validationMsg: true,
           children: invalid
             ? capitalise(invalid)
             : `Format: ${month ? "YYYY-MM" : "YYYY-MM-DD"}${
                 allowQuarter ? " or Q1-4 YYYY" : ""
               }`,
+          persistent: true,
+          validationMsg: true,
           ...helpTextProps,
         }}
         inputMode="numeric"

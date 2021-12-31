@@ -334,8 +334,8 @@ export const iconObject = (
   jsx: ReactNode,
   config: Omit<IconOptions, "icon"> = {}
 ): IconPropT => ({
-  strategy: "component",
   icon: jsx,
+  strategy: "component",
   ...config,
 });
 

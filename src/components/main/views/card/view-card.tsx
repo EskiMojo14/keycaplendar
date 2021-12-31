@@ -46,9 +46,9 @@ export const ViewCard = ({
         const gbEnd = set.gbEnd
           ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
               hour: 23,
+              millisecond: 999,
               minute: 59,
               second: 59,
-              millisecond: 999,
             })
           : null;
         const gbEndOrdinal =
@@ -99,7 +99,7 @@ export const ViewCard = ({
             key={set.id}
             icon={set.shipped || live}
             loggedIn={!!user?.email}
-            {...{ title, subtitle, designer }}
+            {...{ designer, subtitle, title }}
           />
         ) : (
           <ElementCard
@@ -120,15 +120,15 @@ export const ViewCard = ({
                 : false
             }
             {...{
-              set,
-              title,
-              subtitle,
+              closeDetails,
               designer,
               details,
-              closeDetails,
               edit,
-              user,
               live,
+              set,
+              subtitle,
+              title,
+              user,
             }}
           />
         );

@@ -109,10 +109,10 @@ export const TimePicker = ({
   const validFallback = invalidTime(fallbackValue || "") ? "" : fallbackValue;
 
   const rifm = useRifm({
-    value,
-    onChange,
     accept: /\d:/g,
     format: formatTime,
+    onChange,
+    value,
   });
 
   const [open, setOpen] = useState(false);
@@ -238,9 +238,9 @@ export const TimePicker = ({
         {...props}
         className={bemClasses("field", { inline: useInline })}
         helpText={{
+          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
           persistent: true,
           validationMsg: true,
-          children: invalid ? capitalise(invalid) : "Format: HH:YY (24hr)",
           ...helpTextProps,
         }}
         inputMode="numeric"

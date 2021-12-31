@@ -20,8 +20,8 @@ export const SegmentedButton = ({
   <div
     {...filteredProps}
     className={bemClasses({
-      modifiers: { toggle: !!toggle },
       extra: className,
+      modifiers: { toggle: !!toggle },
     })}
   />
 );

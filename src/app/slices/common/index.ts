@@ -20,9 +20,12 @@ export const initialState: CommonState = {
 };
 
 export const commonSlice = createSlice({
-  name: "common",
   initialState,
+  name: "common",
   reducers: {
+    setAppPage: (state, { payload }: PayloadAction<Page>) => {
+      state.page = payload;
+    },
     setDevice: (
       state,
       { payload }: PayloadAction<"desktop" | "mobile" | "tablet">
@@ -34,9 +37,6 @@ export const commonSlice = createSlice({
       { payload }: PayloadAction<"landscape" | "portrait">
     ) => {
       state.orientation = payload;
-    },
-    setAppPage: (state, { payload }: PayloadAction<Page>) => {
-      state.page = payload;
     },
     setTheme: (state, { payload }: PayloadAction<string>) => {
       state.theme = payload;

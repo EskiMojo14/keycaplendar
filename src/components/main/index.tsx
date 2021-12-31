@@ -312,8 +312,8 @@ export const ContentMain = ({ openNav }: ContentMainProps) => {
 
   const drawerOpen = (detailsOpen || filterOpen) && device === "desktop";
   const wrapperClasses = classNames("main", view, {
-    "extended-app-bar": view === "card" && !bottomNav && contentBool,
     "drawer-open": drawerOpen,
+    "extended-app-bar": view === "card" && !bottomNav && contentBool,
   });
   return (
     <>

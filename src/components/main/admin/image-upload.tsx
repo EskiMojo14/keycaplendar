@@ -155,9 +155,9 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
     <TextField
       autoComplete="off"
       helpText={{
+        children: "Must be valid link",
         persistent: false,
         validationMsg: true,
-        children: "Must be valid link",
       }}
       icon="link"
       label="Image link"
@@ -220,8 +220,8 @@ export const ImageUpload = ({ desktop, image, setImage }: ImageUploadProps) => {
       <div className="image-upload-form">
         <div
           className={classNames("image-display", {
-            over: dragOver,
             image: hasImage,
+            over: dragOver,
           })}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}

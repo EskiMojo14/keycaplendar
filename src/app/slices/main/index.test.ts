@@ -90,7 +90,7 @@ it("sets specified set list", () => {
 });
 
 it("sets set groups", () => {
-  const groups: SetGroup[] = [{ title: "test", sets: [new Keyset("test")] }];
+  const groups: SetGroup[] = [{ sets: [new Keyset("test")], title: "test" }];
   store.dispatch(setSetGroups(groups));
   const response = selectSetGroups(store.getState());
   expect(response).toEqual(groups);

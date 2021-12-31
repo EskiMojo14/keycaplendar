@@ -86,9 +86,9 @@ export const DialogShareFavorites = ({
             <TextField
               className="name-field"
               helpText={{
+                children: "Displayed username to link viewers.",
                 persistent: true,
                 validationMsg: false,
-                children: "Displayed username to link viewers.",
               }}
               label="Display name"
               name="shareName"
@@ -121,9 +121,9 @@ export const DialogShareFavorites = ({
               <TextField
                 className="display-link"
                 helpText={{
+                  children: "Anyone with the link can view.",
                   persistent: true,
                   validationMsg: false,
-                  children: "Anyone with the link can view.",
                 }}
                 outlined
                 readOnly

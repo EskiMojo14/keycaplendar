@@ -65,11 +65,11 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   };
 
   const quantities: Record<string, number> = {
+    bought: bought.length,
     favorites:
       linkedFavorites.array.length > 0
         ? linkedFavorites.array.length
         : favorites.length,
-    bought: bought.length,
     hidden: hidden.length,
   };
 
@@ -209,8 +209,8 @@ export const DrawerNav = ({ close, open }: DrawerNavProps) => {
   return (
     <Drawer
       className={classNames("nav", {
-        rail: dismissible,
         "drawer-bottom": bottomNav,
+        rail: dismissible,
       })}
       dismissible={dismissible}
       modal={!dismissible}

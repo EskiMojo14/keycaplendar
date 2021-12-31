@@ -42,9 +42,9 @@ export const ViewList = ({
         const gbEnd = set.gbEnd
           ? DateTime.fromISO(set.gbEnd, { zone: "utc" }).set({
               hour: 23,
+              millisecond: 999,
               minute: 59,
               second: 59,
-              millisecond: 999,
             })
           : null;
         const gbEndOrdinal =
@@ -95,7 +95,7 @@ export const ViewList = ({
           <SkeletonList
             key={set.id}
             icon={set.shipped || live}
-            {...{ title, subtitle, designer }}
+            {...{ designer, subtitle, title }}
           />
         ) : (
           <ElementList
@@ -116,7 +116,7 @@ export const ViewList = ({
                 : false
             }
             title={`${set.profile} ${set.colorway}`}
-            {...{ set, subtitle, details, closeDetails, designer, live }}
+            {...{ closeDetails, designer, details, live, set, subtitle }}
           />
         );
       })}

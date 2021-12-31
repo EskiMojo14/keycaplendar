@@ -173,7 +173,6 @@ export const toggleHidden = (id: string, state = store.getState()) => {
   }
   const isHidden = hidden.includes(id);
   queue.notify({
-    title: `Set ${isHidden ? "hidden" : "unhidden"}.`,
     actions: [
       {
         label: "Undo",
@@ -182,8 +181,9 @@ export const toggleHidden = (id: string, state = store.getState()) => {
         },
       },
     ],
-    timeout: 2500,
     dismissesOnAction: true,
+    timeout: 2500,
+    title: `Set ${isHidden ? "hidden" : "unhidden"}.`,
   });
   if (user.id) {
     firestore

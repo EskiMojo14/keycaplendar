@@ -108,8 +108,8 @@ export const UpdateEntry = ({
   return (
     <Card
       className={classNames("update-entry", {
-        pinned: entry.pinned,
         linked: entry.id === urlEntry,
+        pinned: entry.pinned,
       })}
       id={"update-entry-" + entry.id}
     >

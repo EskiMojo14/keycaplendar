@@ -22,63 +22,61 @@ type UserState = {
 };
 
 export const initialState: UserState = {
-  view: "table",
-  loading: false,
-  sort: "editor",
-  reverseSort: false,
-  // users
   allUsers: [],
-  sortedUsers: [],
-  paginatedUsers: [],
-  // pagination
-  nextPageToken: "",
-  rowsPerPage: 25,
-  page: 1,
   indices: {
     first: 0,
     last: 0,
   },
+  loading: false,
+  nextPageToken: "",
+  page: 1,
+  paginatedUsers: [],
+  reverseSort: false,
+  rowsPerPage: 25,
+  sort: "editor",
+  sortedUsers: [],
+  view: "table",
 };
 
 export const usersSlice = createSlice({
-  name: "users",
   initialState,
+  name: "users",
   reducers: {
-    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
-      state.view = payload;
-    },
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
-    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
-      state.sort = payload;
-    },
-    setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
-      state.reverseSort = payload;
-    },
     setAllUsers: (state, { payload }: PayloadAction<UserType[]>) => {
       state.allUsers = payload;
-    },
-    setSortedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      state.sortedUsers = payload;
-    },
-    setPaginatedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
-      state.paginatedUsers = payload;
-    },
-    setNextPageToken: (state, { payload }: PayloadAction<string>) => {
-      state.nextPageToken = payload;
-    },
-    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
-      state.rowsPerPage = payload;
-    },
-    setPage: (state, { payload }: PayloadAction<number>) => {
-      state.page = payload;
     },
     setIndices: (
       state,
       { payload }: PayloadAction<{ first: number; last: number }>
     ) => {
       state.indices = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
+    },
+    setNextPageToken: (state, { payload }: PayloadAction<string>) => {
+      state.nextPageToken = payload;
+    },
+    setPage: (state, { payload }: PayloadAction<number>) => {
+      state.page = payload;
+    },
+    setPaginatedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.paginatedUsers = payload;
+    },
+    setReverseSort: (state, { payload }: PayloadAction<boolean>) => {
+      state.reverseSort = payload;
+    },
+    setRowsPerPage: (state, { payload }: PayloadAction<number>) => {
+      state.rowsPerPage = payload;
+    },
+    setSort: (state, { payload }: PayloadAction<typeof sortProps[number]>) => {
+      state.sort = payload;
+    },
+    setSortedUsers: (state, { payload }: PayloadAction<UserType[]>) => {
+      state.sortedUsers = payload;
+    },
+    setView: (state, { payload }: PayloadAction<"card" | "table">) => {
+      state.view = payload;
     },
   },
 });

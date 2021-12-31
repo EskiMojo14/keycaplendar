@@ -10,9 +10,9 @@ import App from "./app";
 class LocalizedUtils extends LuxonUtils {
   getDatePickerHeaderText(date: DateTime) {
     return date.toLocaleString({
-      weekday: "short",
-      month: "short",
       day: "numeric",
+      month: "short",
+      weekday: "short",
     });
   }
 }
@@ -21,7 +21,7 @@ export const Root = () => (
   <Provider store={store}>
     <MuiPickersUtilsProvider utils={LocalizedUtils}>
       <ThemeProvider>
-        <RMWCProvider tooltip={{ enterDelay: 500, align: "bottom" }}>
+        <RMWCProvider tooltip={{ align: "bottom", enterDelay: 500 }}>
           <App />
         </RMWCProvider>
       </ThemeProvider>

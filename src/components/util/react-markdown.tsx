@@ -59,22 +59,22 @@ const dataTableContainer = Object.assign(
 );
 
 const customComponents = {
+  code: typographyBuilder("code", "body2"),
   h1: typographyBuilder("h1", "headline5"),
   h2: typographyBuilder("h2", "headline6"),
   h3: typographyBuilder("h3", "overline"),
   h4: typographyBuilder("h4", "subtitle1"),
   h5: typographyBuilder("h4", "subtitle2"),
   h6: typographyBuilder("h5", "caption"),
-  p: typographyBuilder("p", "body2"),
-  li: typographyBuilder("li", "body2"),
-  code: typographyBuilder("code", "body2"),
   input,
+  li: typographyBuilder("li", "body2"),
+  p: typographyBuilder("p", "body2"),
   table: dataTableContainer,
-  thead: componentBuilder("thead", DataTableHead),
   tbody: componentBuilder("tbody", DataTableBody),
-  tr: componentBuilder("tr", DataTableRow),
-  th: componentBuilder("th", DataTableHeadCell),
   td: componentBuilder("td", DataTableCell),
+  th: componentBuilder("th", DataTableHeadCell),
+  thead: componentBuilder("thead", DataTableHead),
+  tr: componentBuilder("tr", DataTableRow),
 };
 
 type CustomReactMarkdownProps = ReactMarkdownOptions;
@@ -112,6 +112,7 @@ export const CustomReactMde = ({
   ...filteredProps
 }: CustomReactMdeProps) => {
   const customCommands: CommandMap = {
+    "column-after": insertTableColumnAfter,
     h1: headerOneCommand,
     h2: headerTwoCommand,
     h3: headerThreeCommand,
@@ -119,7 +120,6 @@ export const CustomReactMde = ({
     h5: headerFiveCommand,
     h6: headerSixCommand,
     "insert-table": insertTableCommand,
-    "column-after": insertTableColumnAfter,
   };
   const customToolbarCommands = toolbarCommands
     ? toolbarCommands
@@ -132,6 +132,10 @@ export const CustomReactMde = ({
       ];
   const [selectedTab, setSelectedTab] = useState<"preview" | "write">("write");
   const customTabButtons: L18n = {
+    pasteDropSelect:
+      "Attach files by dragging & dropping, selecting or pasting them.",
+    preview: null,
+    uploadingImage: "Uploading image...",
     write: (
       <SegmentedButton toggle>
         <SegmentedButtonSegment
@@ -148,10 +152,6 @@ export const CustomReactMde = ({
         />
       </SegmentedButton>
     ),
-    preview: null,
-    uploadingImage: "Uploading image...",
-    pasteDropSelect:
-      "Attach files by dragging & dropping, selecting or pasting them.",
   };
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -162,33 +162,33 @@ export const CustomReactMde = ({
   const [invalid, setInvalid] = useState(false);
 
   const customClasses: Classes = {
-    reactMde: [bemClasses(), classes ? classes.reactMde : ""],
-    toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
     preview: [bemClasses("preview"), classes ? classes.preview : ""],
-    textArea: [
-      bemClasses("textarea", { hovered, focused, invalid }),
-      classes ? classes.textArea : "",
-    ],
+    reactMde: [bemClasses(), classes ? classes.reactMde : ""],
     suggestionsDropdown: [
       bemClasses("dropdown"),
       classes ? classes.suggestionsDropdown : "",
     ],
+    textArea: [
+      bemClasses("textarea", { focused, hovered, invalid }),
+      classes ? classes.textArea : "",
+    ],
+    toolbar: [bemClasses("toolbar"), classes ? classes.toolbar : ""],
   };
 
   const customChildProps: ChildProps = {
     ...childProps,
     textArea: {
       ...childProps?.textArea,
-      onMouseEnter: () => setHovered(true),
-      onMouseLeave: () => setHovered(false),
-      onFocus: () => setFocused(true),
       onBlur: () => {
         setFocused(false);
         if (required) {
           setInvalid(value.length === 0);
         }
       },
+      onFocus: () => setFocused(true),
       onInvalid: () => setInvalid(true),
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
       required,
     },
   };

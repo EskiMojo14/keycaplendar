@@ -68,8 +68,8 @@ export const AuditEntry = ({
   const boolProps: string[] = ["gbMonth", "shipped"];
   const icons: Record<string, string> = {
     created: "add_circle_outline",
-    updated: "update",
     deleted: "remove_circle_outline",
+    updated: "update",
   };
   return (
     <CollapsibleList

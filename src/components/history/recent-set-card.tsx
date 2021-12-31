@@ -53,15 +53,15 @@ export const RecentSetCard = ({
   useEffect(() => {
     if (recentSet.currentSet) {
       const falsePages: Record<MainPage, boolean> = {
+        archive: false,
+        bought: false,
         calendar: false,
-        live: false,
+        favorites: false,
+        hidden: false,
         ic: false,
+        live: false,
         previous: false,
         timeline: false,
-        archive: false,
-        favorites: false,
-        bought: false,
-        hidden: false,
       };
       const pageBools: Record<MainPage, boolean> = set
         ? pageConditions(set, favorites, bought, hidden)
@@ -74,8 +74,8 @@ export const RecentSetCard = ({
   return (
     <Card
       className={classNames("set-changelog", {
-        "mdc-card--selected": selected,
         deleted,
+        "mdc-card--selected": selected,
       })}
     >
       <ConditionalWrapper

@@ -48,8 +48,8 @@ export const StatusCard = ({
   const chartOptions: IPieChartOptions = {
     donut: true,
     donutWidth: "50%",
-    showLabel: false,
     plugins: [chartistTooltip()],
+    showLabel: false,
   };
   const sideways = summary && device === "desktop";
   const selectChips =
@@ -100,17 +100,17 @@ export const StatusCard = ({
           <ChartistGraph
             className={sideways ? "ct-square" : "ct-octave"}
             data={{
-              series: [
-                { meta: "IC", value: chartData.ic },
-                { meta: "Pre GB", value: chartData.preGb },
-                { meta: "Live GB", value: chartData.liveGb },
-                { meta: "Post GB", value: chartData.postGb },
-              ],
               labels: [
                 chartData.ic,
                 chartData.preGb,
                 chartData.liveGb,
                 chartData.postGb,
+              ],
+              series: [
+                { meta: "IC", value: chartData.ic },
+                { meta: "Pre GB", value: chartData.preGb },
+                { meta: "Live GB", value: chartData.liveGb },
+                { meta: "Post GB", value: chartData.postGb },
               ],
             }}
             options={chartOptions}

@@ -38,12 +38,12 @@ export const DrawerDetails = ({
       )
     : null;
   const imageProps = {
-    name: "File name",
     fullPath: "Path",
+    name: "File name",
   };
   const metadataLabels = {
-    size: "File size",
     contentType: "Type",
+    size: "File size",
     timeCreated: "Created",
     updated: "Updated",
   };

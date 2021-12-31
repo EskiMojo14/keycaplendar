@@ -5,14 +5,14 @@ import type { PresetType } from "@s/main/types";
 import type { CurrentUserType } from "./types";
 
 export const blankUser: CurrentUserType = {
-  email: "",
-  name: "",
   avatar: "",
-  nickname: "",
+  email: "",
+  id: "",
+  isAdmin: false,
   isDesigner: false,
   isEditor: false,
-  isAdmin: false,
-  id: "",
+  name: "",
+  nickname: "",
 };
 
 type UserState = {
@@ -26,36 +26,30 @@ type UserState = {
 };
 
 export const initialState: UserState = {
-  user: {
-    email: "",
-    name: "",
-    avatar: "",
-    isEditor: false,
-    isAdmin: false,
-    nickname: "",
-    isDesigner: false,
-    id: "",
-  },
-  shareName: "",
+  bought: [],
   favorites: [],
   favoritesId: "",
-  bought: [],
   hidden: [],
+  shareName: "",
+  user: {
+    avatar: "",
+    email: "",
+    id: "",
+    isAdmin: false,
+    isDesigner: false,
+    isEditor: false,
+    name: "",
+    nickname: "",
+  },
   userPresets: [],
 };
 
 export const userSlice = createSlice({
-  name: "user",
   initialState,
+  name: "user",
   reducers: {
-    setUser: (state, { payload }: PayloadAction<Partial<CurrentUserType>>) => {
-      state.user = { ...blankUser, ...payload };
-    },
-    setShareName: (state, { payload }: PayloadAction<string>) => {
-      state.shareName = payload;
-    },
-    setUserPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
-      state.userPresets = payload;
+    setBought: (state, { payload }: PayloadAction<string[]>) => {
+      state.bought = payload;
     },
     setFavorites: (state, { payload }: PayloadAction<string[]>) => {
       state.favorites = payload;
@@ -63,11 +57,17 @@ export const userSlice = createSlice({
     setFavoritesId: (state, { payload }: PayloadAction<string>) => {
       state.favoritesId = payload;
     },
-    setBought: (state, { payload }: PayloadAction<string[]>) => {
-      state.bought = payload;
-    },
     setHidden: (state, { payload }: PayloadAction<string[]>) => {
       state.hidden = payload;
+    },
+    setShareName: (state, { payload }: PayloadAction<string>) => {
+      state.shareName = payload;
+    },
+    setUser: (state, { payload }: PayloadAction<Partial<CurrentUserType>>) => {
+      state.user = { ...blankUser, ...payload };
+    },
+    setUserPresets: (state, { payload }: PayloadAction<PresetType[]>) => {
+      state.userPresets = payload;
     },
   },
 });

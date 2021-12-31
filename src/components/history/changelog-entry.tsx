@@ -44,8 +44,8 @@ const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/gim;
 export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
   const icons = {
     created: "add_circle_outline",
-    updated: "update",
     deleted: "remove_circle_outline",
+    updated: "update",
   } as const;
   const arrayProps = ["designer"] as const;
   const urlProps = ["details"] as const;
@@ -54,7 +54,7 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
 
   const data: DataObject =
     action.action === "updated"
-      ? { before: action.before, after: action.after }
+      ? { after: action.after, before: action.before }
       : { data: action.action === "deleted" ? action.before : action.after };
 
   const timestamp = DateTime.fromISO(action.timestamp, { zone: "utc" });
@@ -203,13 +203,32 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             before: { [prop]: beforeData },
           } = dataObj;
           let contents: { after: ReactNode; before: ReactNode } = {
-            before: null,
             after: null,
+            before: null,
           };
           if (is<string>(beforeData) && is<string>(afterData)) {
             const beforeDomain = beforeData.match(domainRegex);
             const afterDomain = afterData.match(domainRegex);
             contents = {
+              after: (
+                <span className="highlight">
+                  {arrayIncludes(urlProps, prop) && afterDomain ? (
+                    <a href={afterData} rel="noreferrer" target="_blank">
+                      {afterDomain[0]}
+                    </a>
+                  ) : arrayIncludes(dateProps, prop) ? (
+                    DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
+                      `d'${ordinal(
+                        DateTime.fromISO(afterData, { zone: "utc" }).day
+                      )}' MMM yyyy`
+                    )
+                  ) : prop === "image" ? (
+                    "<link>"
+                  ) : (
+                    afterData
+                  )}
+                </span>
+              ),
               before: (
                 <span className="highlight">
                   {arrayIncludes(urlProps, prop) && beforeDomain ? (
@@ -231,25 +250,6 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                   )}
                 </span>
               ),
-              after: (
-                <span className="highlight">
-                  {arrayIncludes(urlProps, prop) && afterDomain ? (
-                    <a href={afterData} rel="noreferrer" target="_blank">
-                      {afterDomain[0]}
-                    </a>
-                  ) : arrayIncludes(dateProps, prop) ? (
-                    DateTime.fromISO(afterData, { zone: "utc" }).toFormat(
-                      `d'${ordinal(
-                        DateTime.fromISO(afterData, { zone: "utc" }).day
-                      )}' MMM yyyy`
-                    )
-                  ) : prop === "image" ? (
-                    "<link>"
-                  ) : (
-                    afterData
-                  )}
-                </span>
-              ),
             };
           } else if (
             arrayIncludes(arrayProps, prop) &&
@@ -257,10 +257,10 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             is<string[]>(afterData)
           ) {
             contents = {
+              after: <span className="highlight">{afterData.join(", ")}</span>,
               before: (
                 <span className="highlight">{beforeData.join(", ")}</span>
               ),
-              after: <span className="highlight">{afterData.join(", ")}</span>,
             };
           } else if (
             arrayIncludes(boolProps, prop) &&
@@ -268,8 +268,8 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
             is<boolean>(afterData)
           ) {
             contents = {
-              before: <Checkbox checked={beforeData} disabled />,
               after: <Checkbox checked={afterData} disabled />,
+              before: <Checkbox checked={beforeData} disabled />,
             };
           } else if (
             prop === "sales" &&
@@ -283,28 +283,6 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               is<string>(afterData) ? afterData : afterData.img
             ).match(domainRegex);
             contents = {
-              before: (
-                <>
-                  <div>
-                    <span className="highlight">
-                      Image:{" "}
-                      <a
-                        href={is<string>(afterData) ? afterData : afterData.img}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {beforeDomain ? beforeDomain[0] : null}
-                      </a>
-                    </span>
-                  </div>
-                  {is<string>(beforeData) ? null : (
-                    <div className="list-checkbox">
-                      <span className="highlight">Third party:</span>{" "}
-                      <Checkbox checked={beforeData.thirdParty} disabled />
-                    </div>
-                  )}
-                </>
-              ),
               after: (
                 <>
                   <div>
@@ -323,6 +301,28 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
                     <div className="list-checkbox">
                       <span className="highlight">Third party:</span>{" "}
                       <Checkbox checked={afterData.thirdParty} disabled />
+                    </div>
+                  )}
+                </>
+              ),
+              before: (
+                <>
+                  <div>
+                    <span className="highlight">
+                      Image:{" "}
+                      <a
+                        href={is<string>(afterData) ? afterData : afterData.img}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {beforeDomain ? beforeDomain[0] : null}
+                      </a>
+                    </span>
+                  </div>
+                  {is<string>(beforeData) ? null : (
+                    <div className="list-checkbox">
+                      <span className="highlight">Third party:</span>{" "}
+                      <Checkbox checked={beforeData.thirdParty} disabled />
                     </div>
                   )}
                 </>
@@ -372,10 +372,10 @@ export const ChangelogEntry = ({ action }: ChangelogEntryProps) => {
               );
             };
             contents = {
-              before: beforeData.map((vendor, index) =>
+              after: afterData.map((vendor, index) =>
                 displayVendor(vendor, index)
               ),
-              after: afterData.map((vendor, index) =>
+              before: beforeData.map((vendor, index) =>
                 displayVendor(vendor, index)
               ),
             };

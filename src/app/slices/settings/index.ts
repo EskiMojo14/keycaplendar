@@ -20,32 +20,27 @@ type SettingsState = {
 };
 
 export const initialState: SettingsState = {
-  view: "card",
-  bottomNav: false,
   applyTheme: "manual",
-  lightTheme: "light",
-  darkTheme: "deep",
-  manualTheme: false,
-  fromTimeTheme: "21:00",
-  toTimeTheme: "06:00",
-  lichTheme: false,
-  density: "default",
-  syncSettings: false,
+  bottomNav: false,
   cookies: false,
-
+  darkTheme: "deep",
+  density: "default",
+  fromTimeTheme: "21:00",
+  lichTheme: false,
+  lightTheme: "light",
+  manualTheme: false,
   shareNameLoading: false,
+  syncSettings: false,
+  toTimeTheme: "06:00",
+  view: "card",
 };
 
 export const settingsSlice = createSlice({
-  name: "settings",
   initialState,
+  name: "settings",
   reducers: {
-    setSettingState: <K extends keyof SettingsState>(
-      state: SettingsState,
-      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
-    ) => {
-      const { key, value } = payload;
-      state[key] = value;
+    setCookies: (state, { payload }: PayloadAction<boolean>) => {
+      state.cookies = payload;
     },
     setSettings: (
       state,
@@ -54,14 +49,18 @@ export const settingsSlice = createSlice({
       ...state,
       ...payload,
     }),
-    toggleLich: (state) => {
-      state.lichTheme = !state.lichTheme;
-    },
-    setCookies: (state, { payload }: PayloadAction<boolean>) => {
-      state.cookies = payload;
+    setSettingState: <K extends keyof SettingsState>(
+      state: SettingsState,
+      { payload }: PayloadAction<{ key: K; value: SettingsState[K] }>
+    ) => {
+      const { key, value } = payload;
+      state[key] = value;
     },
     setShareNameLoading: (state, { payload }: PayloadAction<boolean>) => {
       state.shareNameLoading = payload;
+    },
+    toggleLich: (state) => {
+      state.lichTheme = !state.lichTheme;
     },
   },
 });

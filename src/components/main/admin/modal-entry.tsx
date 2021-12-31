@@ -140,23 +140,23 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
   };
 
   const initialState: State = {
-    profile: "",
     colorway: "",
     designer: [""],
-    icDate: "",
     details: "",
-    notes: "",
-    gbMonth: true,
-    gbLaunch: "",
     gbEnd: "",
-    shipped: false,
-    vendors: [],
-    salesImg: "",
-    salesThirdParty: false,
-    salesImageLoaded: false,
+    gbLaunch: "",
+    gbMonth: true,
+    icDate: "",
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
+    notes: "",
+    profile: "",
+    salesImageLoaded: false,
+    salesImg: "",
+    salesThirdParty: false,
+    shipped: false,
+    vendors: [],
   };
 
   const [state, updateState] = useImmer(initialState);
@@ -361,20 +361,20 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
         .collection("keysets")
         .add({
           alias: nanoid(10),
-          profile: state.profile,
           colorway: state.colorway,
           designer: state.designer,
-          icDate: state.icDate,
           details: state.details,
+          gbEnd: state.gbEnd,
+          gbLaunch: state.gbLaunch,
+          gbMonth: state.gbMonth,
+          icDate: state.icDate,
+          image: url,
+          latestEditor: user.id,
           notes: state.notes,
+          profile: state.profile,
           sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
           shipped: state.shipped,
-          image: url,
-          gbMonth: state.gbMonth,
-          gbLaunch: state.gbLaunch,
-          gbEnd: state.gbEnd,
           vendors: state.vendors,
-          latestEditor: user.id,
         })
         .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -639,13 +639,13 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               autoComplete="off"
               disabled={user.isEditor === false && user.isDesigner}
               helpText={{
-                persistent: true,
                 children: (
                   <>
                     Separate multiple designers with{" "}
                     <code className="multiline">, </code>.
                   </>
                 ),
+                persistent: true,
               }}
               label="Designer"
               name="designer"
@@ -681,9 +681,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
           <TextField
             autoComplete="off"
             helpText={{
+              children: "Must be valid link",
               persistent: false,
               validationMsg: true,
-              children: "Must be valid link",
             }}
             icon="link"
             label="Details"
@@ -838,9 +838,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
                               <TextField
                                 autoComplete="off"
                                 helpText={{
+                                  children: "Must be valid link",
                                   persistent: false,
                                   validationMsg: true,
-                                  children: "Must be valid link",
                                 }}
                                 icon="link"
                                 label="Store link"
@@ -909,9 +909,9 @@ export const ModalCreate = ({ close, open }: ModalCreateProps) => {
               <TextField
                 autoComplete="off"
                 helpText={{
+                  children: "Must be direct link to image",
                   persistent: true,
                   validationMsg: true,
-                  children: "Must be direct link to image",
                 }}
                 icon="link"
                 label="URL"
@@ -979,24 +979,24 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
 
   const initialState: State = {
     alias: "",
-    profile: "",
     colorway: "",
     designer: [""],
-    icDate: "",
     details: "",
-    notes: "",
-    gbMonth: true,
-    gbLaunch: "",
     gbEnd: "",
-    shipped: false,
-    vendors: [],
-    salesImg: "",
-    salesThirdParty: false,
-    salesImageLoaded: false,
+    gbLaunch: "",
+    gbMonth: true,
+    icDate: "",
     image: null,
     imageUploadProgress: 0,
     imageURL: "",
     newImage: false,
+    notes: "",
+    profile: "",
+    salesImageLoaded: false,
+    salesImg: "",
+    salesThirdParty: false,
+    shipped: false,
+    vendors: [],
   };
 
   const [state, updateState] = useImmer(initialState);
@@ -1034,17 +1034,19 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
     updateState((draft) => ({
       ...draft,
       alias: set.alias || nanoid(10),
-      profile: set.profile,
       colorway: set.colorway,
       designer: set.designer,
-      icDate: set.icDate,
       details: set.details,
-      notes: set.notes ?? "",
-      gbMonth: !!set.gbMonth ?? false,
-      gbLaunch,
       gbEnd: set.gbEnd,
-      shipped: set.shipped ?? false,
+      gbLaunch,
+      gbMonth: !!set.gbMonth ?? false,
+      icDate: set.icDate,
       imageURL: set.image,
+      notes: set.notes ?? "",
+      profile: set.profile,
+      salesImg: set.sales?.img ?? "",
+      salesThirdParty: set.sales?.thirdParty ?? false,
+      shipped: set.shipped ?? false,
       vendors:
         set.vendors?.map((vendor) => {
           if (!vendor.id) {
@@ -1052,8 +1054,6 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           }
           return vendor;
         }) ?? [],
-      salesImg: set.sales?.img ?? "",
-      salesThirdParty: set.sales?.thirdParty ?? false,
     }));
   };
 
@@ -1253,20 +1253,20 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
         .doc(id as KeysetId)
         .update({
           alias: state.alias,
-          profile: state.profile,
           colorway: state.colorway,
           designer: state.designer,
-          icDate: state.icDate,
           details: state.details,
+          gbEnd: state.gbEnd,
+          gbLaunch: state.gbLaunch,
+          gbMonth: state.gbMonth,
+          icDate: state.icDate,
+          image: imageUrl,
+          latestEditor: user.id,
           notes: state.notes,
+          profile: state.profile,
           sales: { img: state.salesImg, thirdParty: state.salesThirdParty },
           shipped: state.shipped,
-          image: imageUrl,
-          gbMonth: state.gbMonth,
-          gbLaunch: state.gbLaunch,
-          gbEnd: state.gbEnd,
           vendors: state.vendors,
-          latestEditor: user.id,
         })
         .then(() => {
           queue.notify({ title: "Entry edited successfully." });
@@ -1541,9 +1541,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                 autoComplete="off"
                 className="field"
                 helpText={{
+                  children: "Enter a name",
                   persistent: false,
                   validationMsg: true,
-                  children: "Enter a name",
                 }}
                 label="Colorway"
                 name="colorway"
@@ -1559,13 +1559,13 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               autoComplete="off"
               disabled={user.isEditor === false && user.isDesigner}
               helpText={{
-                persistent: true,
                 children: (
                   <>
                     Separate multiple designers with{" "}
                     <code className="multiline">, </code>.
                   </>
                 ),
+                persistent: true,
               }}
               label="Designer"
               name="designer"
@@ -1600,12 +1600,12 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
           <TextField
             autoComplete="off"
             helpText={{
-              persistent: false,
-              validationMsg: true,
               children:
                 state.details.length > 0
                   ? "Must be valid link"
                   : "Enter a link",
+              persistent: false,
+              validationMsg: true,
             }}
             icon="link"
             label="Details"
@@ -1761,9 +1761,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
                               <TextField
                                 autoComplete="off"
                                 helpText={{
+                                  children: "Must be valid link",
                                   persistent: false,
                                   validationMsg: true,
-                                  children: "Must be valid link",
                                 }}
                                 icon="link"
                                 label="Store link"
@@ -1832,9 +1832,9 @@ export const ModalEdit = ({ close, open, set }: ModalEditProps) => {
               <TextField
                 autoComplete="off"
                 helpText={{
+                  children: "Must be direct link to image",
                   persistent: true,
                   validationMsg: true,
-                  children: "Must be direct link to image",
                 }}
                 icon="link"
                 label="URL"

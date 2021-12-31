@@ -7,34 +7,34 @@ const {
 
 const pathGroupsOverrides = [
   {
-    pattern: "react",
     group: "external",
+    pattern: "react",
     position: "before",
   },
   {
+    group: "internal",
     pattern: "~/app/*",
-    group: "internal",
     position: "before",
   },
   {
-    pattern: "@i",
     group: "internal",
+    pattern: "@i",
     position: "after",
   },
   {
+    group: "object",
     pattern: "@m/*",
-    group: "object",
     position: "after",
   },
   {
-    pattern: "./*.scss",
     group: "object",
+    pattern: "./*.scss",
     position: "after",
   },
 ];
 
 module.exports = {
-  parser: "@typescript-eslint/parser", // Specifies the ESLint parser
+  // Specifies the ESLint parser
   extends: [
     "plugin:react/recommended", // Uses the recommended rules from @eslint-plugin-react
     "plugin:react/jsx-runtime",
@@ -42,14 +42,30 @@ module.exports = {
     "plugin:import/recommended",
     "plugin:import/typescript",
   ],
-  plugins: ["sort-destructure-keys", "typescript-sort-keys"],
+  overrides: [
+    {
+      files: ["*.ts", "*.tsx"], // Your TypeScript files extension
+      parserOptions: {
+        project: ["./tsconfig.json"], // Specify it only for TypeScript files
+      },
+      rules: {
+        "@typescript-eslint/prefer-includes": "warn",
+        "@typescript-eslint/prefer-reduce-type-parameter": "warn",
+      },
+    },
+  ],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: "module", // Allows for the use of imports
+    // Allows for the use of imports
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
+
+    ecmaVersion: 2018,
+    // Allows for the parsing of modern ECMAScript features
+    sourceType: "module",
   },
+  plugins: ["sort-destructure-keys", "sort-keys", "typescript-sort-keys"],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
@@ -59,6 +75,7 @@ module.exports = {
         default: "array",
       },
     ],
+    "@typescript-eslint/consistent-indexed-object-style": ["warn", "record"],
     "@typescript-eslint/consistent-type-assertions": [
       "warn",
       {
@@ -71,7 +88,6 @@ module.exports = {
         prefer: "type-imports",
       },
     ],
-    "@typescript-eslint/consistent-indexed-object-style": ["warn", "record"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/member-delimiter-style": "warn",
     "@typescript-eslint/method-signature-style": "warn",
@@ -79,11 +95,15 @@ module.exports = {
     "@typescript-eslint/prefer-optional-chain": "warn",
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
     "arrow-body-style": ["error", "as-needed"],
-    "import/no-named-as-default": "off",
     "import/newline-after-import": "error",
+    "import/no-named-as-default": "off",
     "import/order": [
       "warn",
       {
+        alphabetize: {
+          caseInsensitive: true,
+          order: "asc",
+        },
         groups: [
           "builtin",
           "external",
@@ -101,18 +121,14 @@ module.exports = {
                 )
             )
             .map((path) => ({
-              pattern: path,
               group: "internal",
+              pattern: path,
             })),
           ...pathGroupsOverrides,
         ],
         pathGroupsExcludedImportTypes: [
           ...pathGroupsOverrides.map((pathGroup) => pathGroup.pattern),
         ],
-        alphabetize: {
-          order: "asc",
-          caseInsensitive: true,
-        },
         warnOnUnassignedImports: true,
       },
     ],
@@ -145,6 +161,10 @@ module.exports = {
         reservedFirst: true,
       },
     ],
+    "sort-destructure-keys/sort-destructure-keys": [
+      2,
+      { caseSensitive: false },
+    ],
     "sort-imports": [
       "warn",
       {
@@ -152,9 +172,13 @@ module.exports = {
         ignoreDeclarationSort: true,
       },
     ],
-    "sort-destructure-keys/sort-destructure-keys": [
-      2,
-      { caseSensitive: false },
+    "sort-keys/sort-keys-fix": [
+      "error",
+      "asc",
+      {
+        caseSensitive: false,
+        natural: true,
+      },
     ],
     "typescript-sort-keys/interface": [
       "error",
@@ -167,26 +191,14 @@ module.exports = {
       { caseSensitive: false, natural: true },
     ],
   },
-  overrides: [
-    {
-      files: ["*.ts", "*.tsx"], // Your TypeScript files extension
-      parserOptions: {
-        project: ["./tsconfig.json"], // Specify it only for TypeScript files
-      },
-      rules: {
-        "@typescript-eslint/prefer-includes": "warn",
-        "@typescript-eslint/prefer-reduce-type-parameter": "warn",
-      },
-    },
-  ],
   settings: {
-    react: {
-      version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
-    },
     "import/resolver": {
       typescript: {
         alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
       },
+    },
+    react: {
+      version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
     },
   },
 };

@@ -37,11 +37,11 @@ const customPoint = (data: any) => {
     const circle = new Chartist.Svg(
       "circle",
       {
+        "ct:meta": data.meta,
+        "ct:value": data.value.y,
         cx: [data.x],
         cy: [data.y],
         r: [6],
-        "ct:value": data.value.y,
-        "ct:meta": data.meta,
       },
       "ct-stroked-point"
     );
@@ -84,13 +84,6 @@ export const TableCard = ({
     defaultType || "line"
   );
   const chartOptions: ILineChartOptions = {
-    showArea: true,
-    chartPadding: {
-      top: 16,
-      right: 0,
-      bottom: 16,
-      left: 16,
-    },
     axisX: {
       labelInterpolationFnc: (value: number, index: number) =>
         is<any[]>(chartData.chartData.series[0]) &&
@@ -107,11 +100,17 @@ export const TableCard = ({
     axisY: {
       onlyInteger: true,
     },
+    chartPadding: {
+      bottom: 16,
+      left: 16,
+      right: 0,
+      top: 16,
+    },
     plugins: [
       chartistPluginAxisTitle({
         axisX: {
-          axisTitle: unit.split(" ")[0],
           axisClass: "ct-axis-title",
+          axisTitle: unit.split(" ")[0],
           offset: {
             x: 0,
             y: 40,
@@ -119,17 +118,18 @@ export const TableCard = ({
           textAnchor: "middle",
         },
         axisY: {
-          axisTitle: "Count",
           axisClass: "ct-axis-title",
+          axisTitle: "Count",
+          flipTitle: true,
           offset: {
             x: 0,
             y: 24,
           },
-          flipTitle: true,
         },
       }),
       chartistTooltip({ pointClass: "ct-stroked-point" }),
     ],
+    showArea: true,
   };
   const barChart =
     graphType === "bar" ? (

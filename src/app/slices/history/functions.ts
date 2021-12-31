@@ -69,8 +69,8 @@ export const processActions = (actions: PublicActionType[]) => {
       }
       return {
         ...restAction,
-        before,
         after,
+        before,
         title,
       };
     }
@@ -113,12 +113,12 @@ export const generateSets = (state = store.getState()) => {
     const deleted = filteredActions[0].action === "deleted";
     const currentSet = getSetById(id, state);
     return {
-      id,
-      title,
-      designer: designer ?? currentSet?.designer ?? null,
-      deleted,
       currentSet,
+      deleted,
+      designer: designer ?? currentSet?.designer ?? null,
+      id,
       latestTimestamp,
+      title,
     };
   });
   alphabeticalSortProp(recentSets, "latestTimestamp", true);

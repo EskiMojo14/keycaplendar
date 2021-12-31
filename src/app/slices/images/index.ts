@@ -19,47 +19,29 @@ type ImagesState = {
 };
 
 export const initialState: ImagesState = {
-  loading: false,
-  // folders
-  currentFolder: "thumbs",
-  folders: [],
-  // images
-  images: [],
   checkedImages: [],
-  setImages: [],
-  duplicateSetImages: [],
-  // details
+  currentFolder: "thumbs",
   detailImage: blankImage,
   detailMetadata: {},
+  duplicateSetImages: [],
+  folders: [],
+  images: [],
+  loading: false,
+  setImages: [],
 };
 
 export const imagesSlice = createSlice({
-  name: "images",
   initialState,
+  name: "images",
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
-      state.loading = payload;
-    },
-    setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
-      state.currentFolder = payload;
-    },
-    setFolders: (state, { payload }: PayloadAction<string[]>) => {
-      state.folders = payload;
-    },
-    setImages: (state, { payload }: PayloadAction<ImageType[]>) => {
-      state.images = payload;
-    },
     appendImages: (state, { payload }: PayloadAction<ImageType[]>) => {
       state.images = state.images.concat(payload);
     },
     setCheckedImages: (state, { payload }: PayloadAction<ImageType[]>) => {
       state.checkedImages = payload;
     },
-    setSetImages: (state, { payload }: PayloadAction<string[]>) => {
-      state.setImages = payload;
-    },
-    setDuplicateSetImages: (state, { payload }: PayloadAction<string[]>) => {
-      state.duplicateSetImages = payload;
+    setCurrentFolder: (state, { payload }: PayloadAction<string>) => {
+      state.currentFolder = payload;
     },
     setDetailImage: (state, { payload }: PayloadAction<ImageType>) => {
       state.detailImage = payload;
@@ -69,6 +51,21 @@ export const imagesSlice = createSlice({
       { payload }: PayloadAction<Record<string, unknown>>
     ) => {
       state.detailMetadata = payload;
+    },
+    setDuplicateSetImages: (state, { payload }: PayloadAction<string[]>) => {
+      state.duplicateSetImages = payload;
+    },
+    setFolders: (state, { payload }: PayloadAction<string[]>) => {
+      state.folders = payload;
+    },
+    setImages: (state, { payload }: PayloadAction<ImageType[]>) => {
+      state.images = payload;
+    },
+    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.loading = payload;
+    },
+    setSetImages: (state, { payload }: PayloadAction<string[]>) => {
+      state.setImages = payload;
     },
   },
 });

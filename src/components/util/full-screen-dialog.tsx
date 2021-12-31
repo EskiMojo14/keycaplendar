@@ -53,13 +53,13 @@ export const FullScreenDialog = ({
       <div
         {...filteredProps}
         className={bemClasses({
+          extra: className,
           modifiers: {
+            animate,
+            closing,
             open,
             opening,
-            closing,
-            animate,
           },
-          extra: className,
         })}
       >
         {children}
